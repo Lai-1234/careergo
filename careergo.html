@@ -3048,7 +3048,9 @@ function CareerProfile({ toast }){
 
           {/* AI suggestions */}
           <Card className="p-5">
-            <h3 className="font-bold text-slate-800 flex items-center gap-2 mb-3"><Icon name="wand-2" size={16} className="text-brand-600"/> AI Optimisation Suggestions</h3>
+            <h3 className="font-bold text-slate-800 flex items-center gap-2 mb-3">
+              <Icon name="sparkles" size={16} className="text-brand-600"/> Vera's Recommendations · {suggestions.length} actions
+            </h3>
             <div className="space-y-2.5">
               {suggestions.map((s,i)=>(
                 <div key={i} className="flex items-start gap-2.5 p-3 bg-brand-50 rounded-xl">
