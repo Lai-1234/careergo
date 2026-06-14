@@ -718,12 +718,18 @@ function Gauge({ value, min=50000, max=150000, size=280, label='Your market valu
 const USER = {
   name:'Aisha Rahman', firstName:'Aisha',
   role:'Product Designer', seniority:'Mid-level', yoe:5,
-  location:'Kuala Lumpur, MY',
+  location:'Kuala Lumpur, MY', industry:'Fintech',
   email:'aisha.rahman@email.com',
   marketValue:92000, marketMin:55000, marketMax:140000,
   careerScore:78, atsScore:84, readiness:71,
   skills:['UI Design','Figma','Design Systems','User Research','Prototyping','A/B Testing'],
   xp:2340, level:7, streak:12,
+  weeklyDeltas:{careerScore:3, atsScore:0, readiness:5, marketValue:2},
+  newMatches:3,
+  profileComplete:true,
+  currentLevel:'Senior Product Designer',
+  nextMilestone:'Staff Product Designer',
+  nextMilestoneEta:'~14 months',
 };
 
 const CAREER_PATHS = {
@@ -763,11 +769,11 @@ const JOBS = [
 ];
 
 const CHECKLIST = [
-  {id:1,skill:'Team leadership & 1:1 coaching',for:'Design Manager',done:false},
-  {id:2,skill:'Stakeholder storytelling',for:'UX Lead',done:true},
-  {id:3,skill:'Design ops & process at scale',for:'Staff Designer',done:false},
-  {id:4,skill:'Quantitative UX research',for:'Senior Researcher',done:false},
-  {id:5,skill:'Front-end (React) basics',for:'Systems Engineer',done:true},
+  {id:1,skill:'Team leadership & 1:1 coaching',for:'Design Manager',done:false,paths:['design-manager'],why:'Needed for Design Manager · High demand (+38%) · Learn in 4–6 mo'},
+  {id:2,skill:'Stakeholder storytelling',for:'UX Lead',done:true,paths:['design-manager','staff-ic'],why:'Core for any lead role · Builds cross-team credibility'},
+  {id:3,skill:'Design ops & process at scale',for:'Staff Designer',done:false,paths:['staff-ic'],why:'Essential for Staff level · Multiplies team output · Learn in 3–5 mo'},
+  {id:4,skill:'Quantitative UX research',for:'Senior Researcher',done:false,paths:['design-manager','staff-ic'],why:'Lifts salary ceiling · Demand growing +14% · Learn in 2–3 mo'},
+  {id:5,skill:'Front-end (React) basics',for:'Systems Engineer',done:true,paths:['staff-ic','pm'],why:'Bridges design and code · Opens PM path · Already in progress'},
 ];
 
 const PAYOFF_SKILLS=[
