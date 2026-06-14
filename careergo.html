@@ -218,6 +218,36 @@ tailwind.config = {
   /* ── DARK TESTIMONIAL ── */
   .dark-test-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:16px;transition:transform 200ms cubic-bezier(.4,0,.2,1),border-color 200ms,background 200ms}
   .dark-test-card:hover{transform:translateY(-4px);border-color:rgba(91,46,255,.45);background:rgba(255,255,255,.08)}
+
+  /* ── Onboarding Tour ── */
+  .tour-backdrop{position:fixed;inset:0;z-index:9000;pointer-events:all}
+  .tour-spotlight{position:fixed;z-index:9001;pointer-events:none;border-radius:14px;transition:all 300ms cubic-bezier(.4,0,.2,1)}
+  .tour-tooltip{position:fixed;z-index:9002;width:320px;background:#fff;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.38);transition:opacity 200ms ease,transform 200ms ease}
+  .tour-tooltip.entering{opacity:0;transform:translateY(8px)}
+  .tour-tooltip.visible{opacity:1;transform:none}
+  .tour-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin:0 3px;transition:background 200ms}
+  /* ── Career Health Ring ── */
+  @keyframes ringDraw{from{stroke-dashoffset:var(--ring-full)}to{stroke-dashoffset:var(--ring-target)}}
+  .health-arc{animation:ringDraw 1.2s cubic-bezier(.4,0,.2,1) both}
+  /* ── Metric card tooltip ── */
+  .metric-tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a0a3d;color:#fff;font-size:11px;line-height:1.5;padding:8px 12px;border-radius:10px;width:200px;text-align:center;white-space:normal;opacity:0;pointer-events:none;transition:opacity 150ms;z-index:20}
+  .metric-tip-anchor{position:relative;display:inline-flex;align-items:center}
+  .metric-tip-anchor:hover .metric-tip{opacity:1}
+  /* ── Streak progress bar ── */
+  @keyframes streakGlow{0%,100%{box-shadow:0 0 4px rgba(253,186,45,.4)}50%{box-shadow:0 0 10px rgba(253,186,45,.7)}}
+  .streak-bar-fill{animation:streakGlow 2s ease-in-out infinite}
+  /* ── Career Futures path cards ── */
+  .future-card{border-radius:14px;border-width:1px;border-style:solid;padding:20px;border-left-width:4px;transition:transform 150ms,box-shadow 150ms}
+  .future-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+  /* ── Quick reply chips ── */
+  .quick-chip{display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid #C4B8FF;background:#EEEDFE;color:#534AB7;cursor:pointer;transition:background 150ms,border-color 150ms;white-space:nowrap}
+  .quick-chip:hover{background:#DDD9FF;border-color:#8A63FF}
+  /* ── Interview setup panel ── */
+  .interview-type-chip{padding:6px 14px;border-radius:10px;font-size:13px;font-weight:600;border:1px solid #e2e8f0;background:#f8fafc;color:#64748b;cursor:pointer;transition:all 150ms}
+  .interview-type-chip.active{background:#5B2EFF;color:#fff;border-color:#5B2EFF}
+  /* ── Score dimension bar ── */
+  .dim-bar-track{height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden}
+  .dim-bar-fill{height:100%;border-radius:3px;transition:width 800ms cubic-bezier(.4,0,.2,1)}
 </style>
 </head>
 <body>
