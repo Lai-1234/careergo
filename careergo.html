@@ -3160,6 +3160,7 @@ function CareerCompanion({ toast }){
   const [mockQ,setMockQ]=useState(0);
   const [mockAns,setMockAns]=useState('');
   const [mockFeedback,setMockFeedback]=useState(null);
+  const [skillFilter,setSkillFilter]=useState('all');
 
   const QUICK_REPLIES=[
     {label:"Build my 90-day plan",response:"Here's your 90-day plan to fix the cross-team gap:\n\nMonth 1: Identify a live project across eng or data that needs design input. Volunteer to lead the design decisions.\nMonth 2: Run one cross-functional design review with 3+ stakeholders. Document it.\nMonth 3: Publish a short internal write-up on the outcomes. This becomes your portfolio proof.\n\nI'll add these as missions. Want me to set reminders?"},
@@ -3328,18 +3329,32 @@ function CareerCompanion({ toast }){
         <div className="space-y-6">
           <div className="grid lg:grid-cols-3 gap-6">
             <Card className="lg:col-span-2 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-slate-900">Learning Checklist</h3>
+              <div className="mb-4">
+                <h3 className="font-bold text-slate-900">Skills Growth — personalised for {USER.firstName}&rsquo;s path to Design Manager</h3>
+                <p className="text-xs text-slate-400 mt-0.5">Based on your current skills and career trajectory</p>
+              </div>
+              {/* Path filter */}
+              <div className="flex gap-2 flex-wrap mb-5">
+                {[{id:'all',label:'All paths'},{id:'design-manager',label:'Design Manager'},{id:'staff-ic',label:'Staff IC'},{id:'pm',label:'Product Manager'}].map(f=>(
+                  <button key={f.id} onClick={()=>setSkillFilter(f.id)}
+                    className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${skillFilter===f.id?'bg-brand-700 text-white border-brand-700':'bg-white text-slate-600 border-slate-200 hover:border-brand-300'}`}>
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center justify-between mb-3">
                 <div className="text-right"><span className="text-2xl font-extrabold text-brand-950">{checkPct}%</span><div className="text-xs text-slate-400">complete</div></div>
               </div>
               <ProgressBar value={checkPct} className="mb-5"/>
               <div className="grid sm:grid-cols-2 gap-3">
-                {checklist.map(item=>(
+                {checklist.filter(item=>skillFilter==='all'||item.paths?.includes(skillFilter)).map(item=>(
                   <button key={item.id} onClick={()=>setChecklist(l=>l.map(x=>x.id===item.id?{...x,done:!x.done}:x))}
-                    className={`flex items-center gap-3 p-3 rounded-xl border text-left transition ${item.done?'bg-emerald-50 border-emerald-100':'bg-white border-slate-100 hover:border-brand-200'}`}>
-                    <Icon name={item.done?'check-circle-2':'circle'} size={18} className={item.done?'text-emerald-500':'text-slate-300'}/>
-                    <div><div className={`text-sm font-medium ${item.done?'text-emerald-700 line-through':'text-slate-700'}`}>{item.skill}</div>
-                    <div className="text-xs text-slate-400">For: {item.for}</div></div>
+                    className={`flex items-start gap-3 p-3 rounded-xl border text-left transition ${item.done?'bg-emerald-50 border-emerald-100':'bg-white border-slate-100 hover:border-brand-200'}`}>
+                    <Icon name={item.done?'check-circle-2':'circle'} size={18} className={`${item.done?'text-emerald-500':'text-slate-300'} shrink-0 mt-0.5`}/>
+                    <div>
+                      <div className={`text-sm font-medium ${item.done?'text-emerald-700 line-through':'text-slate-700'}`}>{item.skill}</div>
+                      {item.why&&<div className="text-xs text-slate-400 mt-0.5">{item.why}</div>}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -3347,15 +3362,23 @@ function CareerCompanion({ toast }){
             <Card className="p-6">
               <h3 className="font-bold text-slate-900 mb-4">Skill demand signals</h3>
               <div className="space-y-3">
-                {PULSE_SKILLS.slice(0,6).map(s=>(
-                  <div key={s.name}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="font-medium text-slate-700">{s.name}</span>
-                      <span className={`font-bold ${s.chg.startsWith('+')?'text-emerald-600':'text-red-500'}`}>{s.chg}</span>
+                {PULSE_SKILLS.slice(0,6).map(s=>{
+                  const userHas=USER.skills.some(us=>us.toLowerCase().includes(s.name.toLowerCase().split(' ')[0]));
+                  const isClose=!userHas&&USER.skills.some(us=>['Figma','Design Systems','User Research'].includes(us)&&['React','Next.js','Framer'].includes(s.name));
+                  return (
+                    <div key={s.name}>
+                      <div className="flex justify-between text-xs mb-1 items-center">
+                        <span className="font-medium text-slate-700">{s.name}</span>
+                        <div className="flex items-center gap-1.5">
+                          {userHas&&<span className="text-xs font-bold px-1.5 py-0.5 rounded-full" style={{background:'rgba(29,158,117,0.1)',color:'#1D9E75'}}>You have this ✓</span>}
+                          {isClose&&<span className="text-xs font-bold px-1.5 py-0.5 rounded-full" style={{background:'rgba(239,159,39,0.1)',color:'#BA7517'}}>You&rsquo;re close</span>}
+                          <span className={`font-bold ${s.chg.startsWith('+')?'text-emerald-600':'text-red-500'}`}>{s.chg}</span>
+                        </div>
+                      </div>
+                      <ProgressBar value={s.idx} tone={s.idx>70?'brand':s.idx>40?'amber':'green'}/>
                     </div>
-                    <ProgressBar value={s.idx} tone={s.idx>70?'brand':s.idx>40?'amber':'green'}/>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </Card>
           </div>
