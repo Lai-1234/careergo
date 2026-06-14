@@ -2367,6 +2367,75 @@ function StatCard({ icon, label, value, sub, tone='brand', onClick }){
   );
 }
 
+function CareerHealthRing({ careerScore, atsScore, readiness }){
+  const score=Math.round((careerScore+atsScore+readiness)/3);
+  const SIZE=120; const STROKE=10; const R=(SIZE-STROKE*2)/2;
+  const CIRC=2*Math.PI*R;
+  const offset=CIRC*(1-score/100);
+  return (
+    <div className="flex flex-col items-center">
+      <svg width={SIZE} height={SIZE} style={{'--ring-full':CIRC,'--ring-target':offset}}>
+        {/* Track */}
+        <circle cx={SIZE/2} cy={SIZE/2} r={R} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={STROKE}/>
+        {/* Arc */}
+        <circle cx={SIZE/2} cy={SIZE/2} r={R} fill="none"
+          stroke="#FDBA2D" strokeWidth={STROKE}
+          strokeDasharray={CIRC} strokeDashoffset={CIRC}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${SIZE/2} ${SIZE/2})`}
+          className="health-arc"
+          style={{'--ring-full':CIRC,'--ring-target':offset,animationFillMode:'forwards'}}/>
+        <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle"
+          fill="white" fontSize="26" fontWeight="800">{score}</text>
+      </svg>
+      <div style={{color:'rgba(255,255,255,0.6)',fontSize:11,marginTop:4,fontWeight:600,letterSpacing:'0.05em'}}>CAREER HEALTH</div>
+    </div>
+  );
+}
+
+function DashHero({ setView }){
+  const hasActions=!USER.profileComplete||USER.newMatches>0;
+  return (
+    <div className="rounded-3xl p-7 relative overflow-hidden" style={{background:'linear-gradient(135deg,#1A0146 0%,#0d0222 55%,#1a1060 100%)'}}>
+      <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full blur-3xl pointer-events-none" style={{background:'rgba(91,46,255,0.2)'}}/>
+      <div className="absolute right-8 bottom-0 w-40 h-40 rounded-full blur-3xl pointer-events-none" style={{background:'rgba(138,99,255,0.15)'}}/>
+      <div className="relative flex items-center justify-between gap-6">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-2 h-2 bg-emerald-400 rounded-full" style={{animation:'liveDot 2s ease-in-out infinite'}}/>
+            <span style={{fontSize:12,color:'rgba(255,255,255,0.5)',fontWeight:600}}>Career OS · Active</span>
+          </div>
+          <h1 style={{fontSize:26,fontWeight:800,color:'#fff',marginBottom:6}}>Good morning, {USER.firstName} 👋</h1>
+          <p style={{fontSize:14,color:'rgba(255,255,255,0.7)',marginBottom:4,maxWidth:480}}>
+            Your ATS score is strong — you&rsquo;re in the top 18% for Product Designers in KL.
+          </p>
+          <p style={{fontSize:14,color:'rgba(255,255,255,0.55)',maxWidth:480}}>
+            One skill gap stands between you and a RM 145k role.
+          </p>
+          <div className="flex flex-wrap gap-3 mt-5">
+            {!USER.profileComplete&&(
+              <button onClick={()=>setView('profile')} className="cta-gold inline-flex items-center gap-2 px-4 py-2 text-sm font-bold" style={{borderRadius:10}}>
+                <Icon name="user-check" size={14}/> Complete your profile
+              </button>
+            )}
+            {USER.newMatches>0&&(
+              <button onClick={()=>setView('jobs')} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-white" style={{background:'rgba(91,46,255,0.7)',border:'1px solid rgba(138,99,255,0.5)',borderRadius:10}}>
+                <Icon name="target" size={14}/> View {USER.newMatches} new matches
+              </button>
+            )}
+            <button onClick={()=>setView('companion')} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white" style={{background:'rgba(255,255,255,0.08)',border:'1px solid rgba(255,255,255,0.18)',borderRadius:10}}>
+              <Icon name="bot" size={14}/> Ask Coach Vera
+            </button>
+          </div>
+        </div>
+        <div className="shrink-0 hidden sm:block">
+          <CareerHealthRing careerScore={USER.careerScore} atsScore={USER.atsScore} readiness={USER.readiness}/>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CandidateDashboard({ setView, toast }){
   const riskBg={Low:'bg-emerald-50 border-emerald-100',Med:'bg-amber-50 border-amber-100',Higher:'bg-violet-50 border-violet-100'};
   const riskTxt={Low:'text-emerald-700',Med:'text-amber-700',Higher:'text-violet-700'};
