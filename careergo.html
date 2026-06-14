@@ -2482,12 +2482,49 @@ function CandidateDashboard({ setView, toast }){
         </div>
       </div>
 
-      {/* Stat cards */}
+      {/* Activity cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon="send" label="Applications" value="9" sub="4 in conversation" tone="brand" onClick={()=>setView('jobs')}/>
-        <StatCard icon="bookmark" label="Saved jobs" value="12" sub="3 closing this week" tone="amber" onClick={()=>setView('jobs')}/>
-        <StatCard icon="calendar-check" label="Interviews" value="2" sub="Next: Mon 10am" tone="green" onClick={()=>setView('jobs')}/>
-        <StatCard icon="flame" label="Streak" value={`${USER.streak} days`} sub="Keep it going!" tone="blue" onClick={()=>setView('companion')}/>
+        <div onClick={()=>setView('jobs')} className="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background:'#EEEDFE',color:'#5B2EFF'}}><Icon name="send" size={16}/></div>
+            <span className="text-xs font-semibold text-slate-500">Applications</span>
+          </div>
+          <div className="text-3xl font-extrabold text-slate-900">9</div>
+          <div className="text-xs text-slate-400 mt-1">4 in conversation</div>
+        </div>
+        <div onClick={()=>setView('jobs')} className="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background:'#FAEEDA',color:'#EF9F27'}}><Icon name="bookmark" size={16}/></div>
+            <span className="text-xs font-semibold text-slate-500">Saved Jobs</span>
+          </div>
+          <div className="text-3xl font-extrabold text-slate-900">12</div>
+          <div className="flex items-center gap-1.5 mt-1">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{background:'rgba(239,159,39,0.12)',color:'#EF9F27'}}>3 closing this week</span>
+          </div>
+        </div>
+        <div onClick={()=>setView('jobs')} className="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background:'#E1F5EE',color:'#1D9E75'}}><Icon name="calendar-check" size={16}/></div>
+            <span className="text-xs font-semibold text-slate-500">Interviews</span>
+          </div>
+          <div className="text-3xl font-extrabold text-slate-900">2</div>
+          <div className="flex items-center gap-1 mt-1" style={{color:'#1D9E75',fontSize:11,fontWeight:600}}>
+            <Icon name="clock" size={11}/> Next: Mon 10am
+          </div>
+        </div>
+        <div onClick={()=>setView('companion')} className="bg-white rounded-2xl p-5 cursor-pointer hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background:'rgba(253,186,45,0.15)',color:'#FDBA2D'}}><Icon name="flame" size={16}/></div>
+            <span className="text-xs font-semibold text-slate-500">Streak</span>
+          </div>
+          <div className="text-3xl font-extrabold text-slate-900">{USER.streak} <span className="text-base font-semibold text-slate-400">days</span></div>
+          <div className="mt-2">
+            <div className="flex justify-between text-xs text-slate-400 mb-1"><span>{USER.streak}/30 day goal</span></div>
+            <div className="h-1.5 rounded-full" style={{background:'rgba(253,186,45,0.15)'}}>
+              <div className="h-1.5 rounded-full streak-bar-fill" style={{width:`${(USER.streak/30)*100}%`,background:'#FDBA2D'}}/>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Career Futures + AI Summary */}
