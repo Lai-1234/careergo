@@ -3582,7 +3582,7 @@ function MarketIntelligence({ toast }){
       </div>
       {/* Tab content */}
       {mktTab==='my-value'&&<FairPayContent/>}
-      {mktTab==='signals'&&<div className="p-8 text-center text-slate-400 bg-white rounded-2xl">Market Signals — coming soon (Task 5)</div>}
+      {mktTab==='signals'&&<MarketSignalsContent/>}
     </div>
   );
 }
@@ -3885,7 +3885,136 @@ function FairPayEngine(){
 }
 
 /* ══════════════════════════════════════════════════════════════
-   19. CAREER MARKET PULSE
+   19. MARKET SIGNALS CONTENT
+══════════════════════════════════════════════════════════════ */
+function MarketSignalsContent(){
+  const industries=[
+    {name:'AI & Machine Learning',growth:'+48%',jobs:2840,color:'emerald'},
+    {name:'Fintech',growth:'+24%',jobs:1620,color:'blue'},
+    {name:'Healthcare Tech',growth:'+19%',jobs:980,color:'violet'},
+    {name:'E-commerce',growth:'+14%',jobs:1340,color:'amber'},
+    {name:'Cybersecurity',growth:'+31%',jobs:760,color:'red'},
+    {name:'Traditional Banking',growth:'-6%',jobs:340,color:'slate'},
+  ];
+  const locations=[
+    {city:'Kuala Lumpur',idx:88,chg:'+12%'},{city:'Singapore',idx:95,chg:'+8%'},
+    {city:'Penang',idx:64,chg:'+18%'},{city:'Johor Bahru',idx:57,chg:'+22%'},
+    {city:'Remote (MY)',idx:79,chg:'+31%'},
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="text-xs text-slate-400 mb-2">Data as of today · 847 sources</div>
+
+      {/* Trending jobs ticker */}
+      <Card className="p-6">
+        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="trending-up" size={15} className="text-brand-600"/> Job Market Ticker</h3>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {PULSE_JOBS.map((j,i)=>(
+            <div key={i} className={`p-4 rounded-xl border ${j.hot?'bg-emerald-50 border-emerald-100':'bg-red-50 border-red-100'}`}>
+              <div className={`flex items-center gap-1.5 text-xs font-bold mb-1 ${j.hot?'text-emerald-600':'text-red-500'}`}>
+                <Icon name={j.hot?'trending-up':'trending-down'} size={13}/>
+                {j.chg}
+              </div>
+              <div className="font-semibold text-slate-800 text-sm">{j.title}</div>
+              <div className="text-xs text-slate-400 mt-0.5">{j.hot?'Rising demand':'Declining demand'}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Skill demand + industries */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card className="p-6">
+          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="activity" size={15} className="text-brand-600"/> Skill Demand Index</h3>
+          <div className="space-y-3">
+            {PULSE_SKILLS.map(s=>{
+              const userHas=USER.skills.some(us=>us.toLowerCase().includes(s.name.toLowerCase().split(' ')[0]));
+              return (
+                <div key={s.name}>
+                  <div className="flex items-center justify-between text-sm mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-slate-700">{s.name}</span>
+                      {userHas&&<span className="text-xs font-bold px-1.5 py-0.5 rounded-full" style={{background:'rgba(29,158,117,0.1)',color:'#1D9E75'}}>You have this ✓</span>}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs font-bold ${s.chg.startsWith('+')?'text-emerald-600':'text-red-500'}`}>{s.chg}</span>
+                      <span className="text-xs text-slate-400 w-8 text-right">{s.idx}</span>
+                    </div>
+                  </div>
+                  <ProgressBar value={s.idx} tone={s.idx>70?'brand':s.idx>40?'amber':'green'}/>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="building-2" size={15} className="text-brand-600"/> Industry Growth Tracker</h3>
+          <div className="space-y-3">
+            {industries.map(ind=>{
+              const hot=!ind.growth.startsWith('-');
+              const pct=Math.abs(parseInt(ind.growth));
+              return (
+                <div key={ind.name} className="flex items-center gap-3">
+                  <div className="flex-1">
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="font-medium text-slate-700">{ind.name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs font-bold ${hot?'text-emerald-600':'text-red-500'}`}>{ind.growth}</span>
+                        <span className="text-xs text-slate-400">{ind.jobs.toLocaleString()} jobs</span>
+                      </div>
+                    </div>
+                    <div className="bg-slate-100 rounded-full h-2">
+                      <div className={`h-2 rounded-full ${hot?'bg-emerald-500':'bg-red-400'}`} style={{width:`${Math.min(pct*2,100)}%`}}/>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      </div>
+
+      {/* Location opportunities */}
+      <Card className="p-6">
+        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="map-pin" size={15} className="text-brand-600"/> Location Opportunity Index</h3>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {locations.map(l=>(
+            <div key={l.city} className="text-center p-4 rounded-xl bg-slate-50 hover:bg-brand-50 hover:border-brand-100 border border-transparent transition">
+              <ScoreRing score={l.idx} size={64} color="#7c3aed"/>
+              <div className="font-semibold text-slate-800 text-sm mt-2">{l.city}</div>
+              <div className="text-xs text-emerald-600 font-bold">{l.chg} YoY</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Future outlook */}
+      <Card className="p-6">
+        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="telescope" size={15} className="text-brand-600"/> Future Outlook — 5-Year Signals</h3>
+        <div className="grid sm:grid-cols-3 gap-4">
+          {[
+            {icon:'bot',t:'AI-augmented roles',d:'70% of knowledge work will involve AI co-pilots by 2028. Prompt design, AI oversight and human-AI UX are the fastest-growing adjacencies.',tone:'brand'},
+            {icon:'globe',t:'Remote-first expansion',d:'Cross-border remote hiring in SEA is up 38%. Malaysian professionals can now access Singapore salary bands without relocating.',tone:'green'},
+            {icon:'graduation-cap',t:'Micro-credentials rise',d:'Portfolio + verifiable skills beat degrees for 65% of tech hires in 2025. Speed of learning matters more than institution.',tone:'amber'},
+          ].map(({icon,t,d,tone})=>(
+            <div key={t} className="p-5 rounded-xl border border-slate-100 hover:border-brand-100 transition">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${tone==='green'?'bg-emerald-50 text-emerald-600':tone==='amber'?'bg-amber-50 text-amber-600':'bg-brand-50 text-brand-600'}`}>
+                <Icon name={icon} size={18}/>
+              </div>
+              <div className="font-semibold text-slate-900 mb-1.5">{t}</div>
+              <p className="text-sm text-slate-500 leading-relaxed">{d}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   20. CAREER MARKET PULSE
 ══════════════════════════════════════════════════════════════ */
 function MarketPulseModule(){
   const industries=[
