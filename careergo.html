@@ -2531,6 +2531,83 @@ const CANDIDATE_NAV=[
   {id:'auto',icon:'radar',tk:'appAuto',tourStep:5},
 ];
 
+/* ── Onboarding Tour ── */
+const TOUR_STEPS=[
+  {target:'step-1',title:'Start here — build your Career Profile',body:'Upload your resume or fill in your details. CareerGo analyses your skills, ATS readiness, and market positioning to build your Career Intelligence Report — the foundation for everything else.',cta:'Got it →'},
+  {target:'step-2',title:'Meet Coach Vera, your AI career mentor',body:"Vera isn't a chatbot. She knows your profile, tracks your goals, and gives you personalised weekly missions. Ask her anything — from salary negotiation to career pivots.",cta:'Got it →'},
+  {target:'step-3',title:'Know your true market value',body:'See your real salary range based on your verified skills, not job post guesses. Add skills to the Skill Payoff Calculator to instantly see how your earning potential changes.',cta:'Got it →'},
+  {target:'step-4',title:'Track where the market is moving',body:'Like a Bloomberg terminal for your career. See which skills are surging, which industries are hiring, and where opportunities are shifting — updated in real time.',cta:'Got it →'},
+  {target:'step-5',title:'Let CareerGo hunt for you',body:'Set your rules once — minimum salary, location, work arrangement. Autopilot scans opportunities continuously and applies on your behalf when a 90%+ match is found. Full daily log, always transparent.',cta:'Got it →'},
+  {target:'step-6',title:"You're all set. Your Career OS is live.",body:'Your dashboard shows your career score, upcoming missions, live matches, and simulated futures — all in one place. CareerGo works in the background so you can focus on growing.',cta:'Start exploring →'},
+];
+
+function OnboardingTour({ onDone }){
+  const [step,setStep]=useState(0);
+  const [rect,setRect]=useState(null);
+  const [entering,setEntering]=useState(true);
+  const PAD=10;
+
+  useEffect(()=>{
+    const target=document.querySelector(`[data-tour="${TOUR_STEPS[step].target}"]`);
+    if(target){
+      const r=target.getBoundingClientRect();
+      setRect(r);
+      target.style.position='relative';
+      target.style.zIndex='9002';
+    }
+    setEntering(true);
+    const t=setTimeout(()=>setEntering(false),20);
+    return ()=>{
+      clearTimeout(t);
+      if(target) target.style.zIndex='';
+    };
+  },[step]);
+
+  const advance=()=>{
+    if(step<TOUR_STEPS.length-1){ setStep(s=>s+1); }
+    else { localStorage.setItem('cg_tour_done','1'); onDone(); }
+  };
+  const skip=()=>{ localStorage.setItem('cg_tour_done','1'); onDone(); };
+
+  if(!rect) return null;
+  const s=TOUR_STEPS[step];
+  const isLast=step===TOUR_STEPS.length-1;
+  // Tooltip placement: steps 1-5 are sidebar (left) → tooltip to right; step 6 is center → tooltip above
+  const isSidebar=step<5;
+  const tooltipStyle=isSidebar
+    ?{top:rect.top-PAD,left:rect.right+PAD+16}
+    :{bottom:window.innerHeight-rect.top+16,left:Math.max(16,rect.left+rect.width/2-160)};
+
+  return (
+    <div>
+      {/* Backdrop */}
+      <div className="tour-backdrop" style={{background:'rgba(0,0,0,0.72)'}} onClick={skip}/>
+      {/* Spotlight ring */}
+      <div className="tour-spotlight" style={{
+        top:rect.top-PAD, left:rect.left-PAD,
+        width:rect.width+PAD*2, height:rect.height+PAD*2,
+        boxShadow:`0 0 0 4px #FDBA2D, 0 0 0 9999px rgba(0,0,0,0.72)`,
+      }}/>
+      {/* Tooltip */}
+      <div className={`tour-tooltip ${entering?'entering':'visible'}`} style={tooltipStyle}>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex gap-1">
+            {TOUR_STEPS.map((_,i)=>(
+              <span key={i} className="tour-dot" style={{background:i===step?'#5B2EFF':'rgba(0,0,0,0.18)'}}/>
+            ))}
+          </div>
+          <button onClick={skip} style={{fontSize:12,color:'#9CA3AF',background:'none',border:'none',cursor:'pointer'}}>Skip tour</button>
+        </div>
+        <h3 style={{fontSize:17,fontWeight:700,color:'#1a0a3d',marginBottom:10}}>{s.title}</h3>
+        <p style={{fontSize:14,color:'#4B5563',lineHeight:1.65,marginBottom:20}}>{s.body}</p>
+        <button onClick={advance} className="cta-gold inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold w-full justify-center" style={{borderRadius:12}}>
+          {s.cta}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function CandidateApp({ lang, toggleLang, go, toast }){
   const t=useT(lang);
   const [view,setView]=useState('dashboard');
