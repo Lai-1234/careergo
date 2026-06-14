@@ -3150,8 +3150,9 @@ function JobsOpportunities({ toast }){
 function CareerCompanion({ toast }){
   const [mode,setMode]=useState('planning');
   const [chatMsgs,setChatMsgs]=useState([
-    {from:'coach',text:`Hi ${USER.firstName} 👋 I've reviewed your full profile. You're strongest in craft & design systems. Want to aim for Staff IC or the management track? I'll build the roadmap either way.`},
+    {from:'coach',text:`Hi ${USER.firstName} 👋 I've reviewed your full profile. You're strongest in craft & design systems — top 12% for your role in KL.\n\nThe one gap before your next raise: no cross-team project ownership on your record. Want me to build you a 90-day plan to fix that, or would you rather explore the Staff IC vs Design Manager fork first?`},
   ]);
+  const [quickRepliesDone,setQuickRepliesDone]=useState(false);
   const [chatInput,setChatInput]=useState('');
   const chatEnd=useRef(null);
   const [checklist,setChecklist]=useState(CHECKLIST);
@@ -3159,6 +3160,12 @@ function CareerCompanion({ toast }){
   const [mockQ,setMockQ]=useState(0);
   const [mockAns,setMockAns]=useState('');
   const [mockFeedback,setMockFeedback]=useState(null);
+
+  const QUICK_REPLIES=[
+    {label:"Build my 90-day plan",response:"Here's your 90-day plan to fix the cross-team gap:\n\nMonth 1: Identify a live project across eng or data that needs design input. Volunteer to lead the design decisions.\nMonth 2: Run one cross-functional design review with 3+ stakeholders. Document it.\nMonth 3: Publish a short internal write-up on the outcomes. This becomes your portfolio proof.\n\nI'll add these as missions. Want me to set reminders?"},
+    {label:"Staff IC vs Design Manager — show me both",response:"Staff IC path: Higher craft autonomy, individual contributor. Typical timeline 3–4 years. Salary ceiling RM 110–145k. Requires: design systems ownership, a signature project, visible technical depth.\n\nDesign Manager path: People leadership, 1:1s, hiring. Timeline 4–5 years. Ceiling RM 130–200k. Requires: cross-team ownership (your current gap), stakeholder alignment track record, a direct report you've grown.\n\nMy recommendation: fix the cross-team gap first — it unlocks BOTH paths."},
+    {label:"What's blocking my next raise?",response:"Three things, in priority order:\n\n1. Cross-team project (critical) — no record of leading work outside your immediate squad.\n2. Case study gap — your Bloompay work is strong but undocumented publicly.\n3. Salary anchor — you haven't renegotiated since joining. Market moved +12% since then.\n\nFix #1 first. It's the fastest lever and unlocks everything else."},
+  ];
 
   const replies=[
     "Got it. Based on people with your profile who made that move, the median time is ~18 months. The biggest lever is leading a visible cross-team project — let's add that as a mission.",
@@ -3259,12 +3266,23 @@ function CareerCompanion({ toast }){
               ))}
               <div ref={chatEnd}/>
             </div>
-            {/* Suggested prompts */}
-            <div className="px-4 py-2 flex gap-2 overflow-x-auto">
-              {['How do I reach Staff in 2 years?','What\'s blocking my next raise?','Should I pivot to PM?'].map(p=>(
-                <button key={p} onClick={()=>{setChatInput(p);}} className="shrink-0 text-xs text-brand-700 bg-brand-50 border border-brand-100 px-3 py-1.5 rounded-full hover:bg-brand-100 transition whitespace-nowrap">{p}</button>
-              ))}
-            </div>
+            {/* Quick replies / Suggested prompts */}
+            {!quickRepliesDone&&chatMsgs.filter(m=>m.from==='user').length===0?(
+              <div className="px-4 py-2 flex gap-2 overflow-x-auto">
+                {QUICK_REPLIES.map(qr=>(
+                  <button key={qr.label} onClick={()=>{
+                    setChatMsgs(m=>[...m,{from:'user',text:qr.label},{from:'coach',text:qr.response}]);
+                    setQuickRepliesDone(true);
+                  }} className="quick-chip shrink-0">{qr.label}</button>
+                ))}
+              </div>
+            ):(
+              <div className="px-4 py-2 flex gap-2 overflow-x-auto">
+                {['How do I reach Staff in 2 years?','What\'s blocking my next raise?','Should I pivot to PM?'].map(p=>(
+                  <button key={p} onClick={()=>setChatInput(p)} className="shrink-0 text-xs text-brand-700 bg-brand-50 border border-brand-100 px-3 py-1.5 rounded-full hover:bg-brand-100 transition whitespace-nowrap">{p}</button>
+                ))}
+              </div>
+            )}
             <div className="p-3 border-t border-slate-100 flex gap-2">
               <input value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&sendMsg()}
                 placeholder="Ask Coach Vera anything about your career…"
@@ -3277,7 +3295,7 @@ function CareerCompanion({ toast }){
             <Card className="p-5">
               <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="map" size={15} className="text-brand-600"/> Your Roadmap</h3>
               <div className="relative pl-4 border-l-2 border-brand-100 space-y-4">
-                {[{t:'Now',d:'Mid Product Designer',on:true},{t:'6 mo',d:'Own a cross-team project',on:false},{t:'18 mo',d:'Senior Product Designer',on:false},{t:'3–4 yr',d:'Staff / Design Manager',on:false}].map((s,i)=>(
+                {[{t:'Now',d:USER.currentLevel,on:true},{t:'6 mo',d:'Lead a cross-team initiative',on:false},{t:'14 mo',d:USER.nextMilestone+' ('+USER.nextMilestoneEta+')',on:false},{t:'4–5 yr',d:'Design Manager / Director',on:false}].map((s,i)=>(
                   <div key={i} className="relative">
                     <span className={`absolute -left-[21px] top-1 w-3 h-3 rounded-full border-2 ${s.on?'bg-brand-600 border-brand-300':'bg-slate-200 border-slate-100'}`}/>
                     <div className="text-xs text-slate-400">{s.t}</div>
