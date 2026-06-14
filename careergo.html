@@ -3161,6 +3161,10 @@ function CareerCompanion({ toast }){
   const [mockAns,setMockAns]=useState('');
   const [mockFeedback,setMockFeedback]=useState(null);
   const [skillFilter,setSkillFilter]=useState('all');
+  const [interviewSetupDone,setInterviewSetupDone]=useState(false);
+  const [interviewRole,setInterviewRole]=useState('Senior Product Designer at Nimbus Labs');
+  const [interviewType,setInterviewType]=useState('behavioural');
+  const [interviewFocus,setInterviewFocus]=useState('leadership');
 
   const QUICK_REPLIES=[
     {label:"Build my 90-day plan",response:"Here's your 90-day plan to fix the cross-team gap:\n\nMonth 1: Identify a live project across eng or data that needs design input. Volunteer to lead the design decisions.\nMonth 2: Run one cross-functional design review with 3+ stakeholders. Document it.\nMonth 3: Publish a short internal write-up on the outcomes. This becomes your portfolio proof.\n\nI'll add these as missions. Want me to set reminders?"},
@@ -3205,6 +3209,25 @@ function CareerCompanion({ toast }){
       model:'Strong answer. Lead with the outcome first next time for a more memorable opening.',
     });
   };
+
+  const ROLE_QUESTIONS={
+    behavioural:{
+      leadership:"Nimbus Labs focuses on B2B SaaS. Tell me about a time you had to align multiple stakeholder types around a design decision for a complex enterprise workflow.",
+      'design-process':"Walk me through your end-to-end design process for a feature that required significant iteration before reaching the right solution at Nimbus Labs.",
+      'stakeholder-management':"Describe a situation at a B2B product company where you had to manage conflicting feedback from sales, engineering, and the end-user simultaneously.",
+    },
+    technical:{
+      leadership:"How would you structure a design system handoff process for a distributed team at Nimbus Labs?",
+      'design-process':"Explain your approach to conducting usability testing for an enterprise dashboard with limited access to real end-users.",
+      'stakeholder-management':"How do you document and communicate design decisions to ensure engineering buy-in at scale?",
+    },
+    portfolio:{
+      leadership:"Walk me through a project where you drove a significant design direction change. What was your process for getting alignment?",
+      'design-process':"Show me a project in your portfolio where the final solution was significantly different from your initial concept. What changed and why?",
+      'stakeholder-management':"Tell me about a case study where you navigated pushback from a stakeholder who fundamentally disagreed with your design approach.",
+    },
+  };
+  const currentQ=ROLE_QUESTIONS[mockMode]?.[interviewFocus]||qs[mockQ];
 
   const checkDone=checklist.filter(i=>i.done).length;
   const checkPct=Math.round((checkDone/checklist.length)*100);
@@ -3390,80 +3413,129 @@ function CareerCompanion({ toast }){
         <div className="space-y-6">
           <div className="grid lg:grid-cols-3 gap-6">
             <Card className="lg:col-span-2 p-6 space-y-5">
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <h3 className="font-bold text-slate-900">Mock Interview</h3>
-                <div className="flex gap-2">
-                  {['behavioral','technical'].map(t=>(
-                    <button key={t} onClick={()=>{setMockMode(t);setMockQ(0);setMockAns('');setMockFeedback(null);}}
-                      className={`text-sm font-semibold px-3 py-1.5 rounded-xl transition ${mockMode===t?'bg-brand-700 text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
-                      {t.charAt(0).toUpperCase()+t.slice(1)}
-                    </button>
-                  ))}
+              {!interviewSetupDone?(
+                /* ── Setup panel ── */
+                <div>
+                  <h3 className="font-bold text-slate-900 mb-1">Interview Setup</h3>
+                  <p className="text-xs text-slate-400 mb-5">Configure your practice session for the most relevant preparation.</p>
+                  <div className="space-y-5">
+                    <div>
+                      <label className="text-xs font-semibold text-slate-500 block mb-2">Preparing for</label>
+                      <select value={interviewRole} onChange={e=>setInterviewRole(e.target.value)}
+                        className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 outline-none focus:ring-2 ring-brand-200 bg-white">
+                        {JOBS.map(j=><option key={j.id}>{j.title} at {j.company}</option>)}
+                        <option>Custom role</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-500 block mb-2">Interview type</label>
+                      <div className="flex gap-2 flex-wrap">
+                        {[{id:'behavioural',label:'Behavioural'},{id:'technical',label:'Technical'},{id:'portfolio',label:'Portfolio Review'}].map(t=>(
+                          <button key={t.id} onClick={()=>setMockMode(t.id)} className={`interview-type-chip ${mockMode===t.id?'active':''}`}>{t.label}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-500 block mb-2">Focus area</label>
+                      <div className="flex gap-2 flex-wrap">
+                        {[{id:'leadership',label:'Leadership'},{id:'design-process',label:'Design Process'},{id:'stakeholder-management',label:'Stakeholder Management'}].map(f=>(
+                          <button key={f.id} onClick={()=>setInterviewFocus(f.id)} className={`interview-type-chip ${interviewFocus===f.id?'active':''}`}>{f.label}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <Btn onClick={()=>setInterviewSetupDone(true)}>
+                      <Icon name="play" size={15}/> Start Practice →
+                    </Btn>
+                  </div>
                 </div>
-              </div>
-              {/* Question navigation */}
-              <div className="flex gap-2">
-                {qs.map((_,i)=>(
-                  <button key={i} onClick={()=>{setMockQ(i);setMockAns('');setMockFeedback(null);}}
-                    className={`w-8 h-8 rounded-lg text-xs font-bold transition ${mockQ===i?'bg-brand-700 text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>{i+1}</button>
-                ))}
-              </div>
-              <div className="bg-brand-50 border border-brand-100 rounded-xl p-4">
-                <div className="text-xs text-brand-600 font-semibold uppercase tracking-wide mb-2">Question {mockQ+1}</div>
-                <p className="text-slate-800 font-medium">{qs[mockQ]}</p>
-              </div>
-              <label className="block">
-                <span className="text-xs font-semibold text-slate-500 mb-2 block">Your answer — speak naturally, in your own words</span>
-                <textarea value={mockAns} onChange={e=>setMockAns(e.target.value)} rows={5}
-                  placeholder="Start typing or use the microphone below…"
-                  className="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200 resize-none"/>
-              </label>
-              <div className="flex gap-2">
-                <Btn size="sm" onClick={submitAnswer} disabled={!mockAns.trim()}>
-                  <Icon name="send" size={15}/> Get AI Feedback
-                </Btn>
-                <Btn size="sm" variant="secondary">
-                  <Icon name="mic" size={15}/> Record
-                </Btn>
-              </div>
-              {mockFeedback&&(
-                <div className="border border-slate-100 rounded-2xl p-4 space-y-3 bg-white fade-up">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-900">AI Feedback</span>
-                    <div className="flex items-center gap-2">
-                      <ScoreRing score={mockFeedback.score} size={52} color="#7c3aed"/>
-                      <span className="text-xs text-slate-500">Interview<br/>score</span>
+              ):(
+                /* ── Practice panel ── */
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between flex-wrap gap-3">
+                    <div>
+                      <h3 className="font-bold text-slate-900">Mock Interview</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">{interviewRole} · {mockMode.charAt(0).toUpperCase()+mockMode.slice(1)} · {interviewFocus.split('-').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ')}</p>
                     </div>
+                    <button onClick={()=>{setInterviewSetupDone(false);setMockFeedback(null);setMockAns('');}} className="text-xs text-slate-400 hover:text-slate-600 underline">Change setup</button>
                   </div>
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    <div className="bg-emerald-50 rounded-xl p-3">
-                      <div className="text-xs font-bold text-emerald-700 mb-1.5">Strengths</div>
-                      {mockFeedback.strengths.map((s,i)=><div key={i} className="text-xs text-emerald-800 flex gap-1.5"><Icon name="check" size={12} className="mt-0.5 shrink-0"/>{s}</div>)}
+                  <div className="rounded-xl p-4" style={{background:'#F4F0FF',border:'1px solid #EEEDFE'}}>
+                    <div className="text-xs font-semibold uppercase tracking-wide mb-2" style={{color:'#5B2EFF'}}>Your question</div>
+                    <p className="text-slate-800 font-medium text-sm leading-relaxed">{currentQ}</p>
+                  </div>
+                  <label className="block">
+                    <span className="text-xs font-semibold text-slate-500 mb-2 block">Your answer — speak naturally, in your own words</span>
+                    <textarea value={mockAns} onChange={e=>setMockAns(e.target.value)} rows={5}
+                      placeholder="Start typing your answer…"
+                      className="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200 resize-none"/>
+                  </label>
+                  <div className="flex gap-2">
+                    <Btn size="sm" onClick={submitAnswer} disabled={!mockAns.trim()}>
+                      <Icon name="send" size={15}/> Get AI Feedback
+                    </Btn>
+                    <Btn size="sm" variant="secondary" onClick={()=>{setMockAns('');setMockFeedback(null);}}>
+                      <Icon name="refresh-cw" size={15}/> New question
+                    </Btn>
+                  </div>
+                  {mockFeedback&&(
+                    <div className="border border-slate-100 rounded-2xl p-5 space-y-4 bg-white fade-up">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-slate-900">AI Feedback</span>
+                        <ScoreRing score={mockFeedback.score} size={52} color="#7c3aed"/>
+                      </div>
+                      {/* 4-dimension bars */}
+                      <div className="space-y-3">
+                        {[
+                          {dim:'STAR Method',score:78,note:'Good structure. Lead with the Situation more clearly.'},
+                          {dim:'Specificity',score:65,note:'Add 1–2 concrete metrics to make the impact memorable.'},
+                          {dim:'Relevance to role',score:88,note:'Well aligned with B2B SaaS context and stakeholder complexity.'},
+                          {dim:'Confidence signals',score:72,note:'Avoid hedging phrases ("I think", "sort of"). State outcomes directly.'},
+                        ].map(({dim,score,note})=>(
+                          <div key={dim}>
+                            <div className="flex justify-between text-xs mb-1">
+                              <span className="font-semibold text-slate-700">{dim}</span>
+                              <span className="font-bold text-slate-500">{score}/100</span>
+                            </div>
+                            <div className="dim-bar-track">
+                              <div className="dim-bar-fill" style={{width:`${score}%`,background:score>=80?'#1D9E75':score>=65?'#EF9F27':'#E24B4A'}}/>
+                            </div>
+                            <div className="text-xs text-slate-400 mt-0.5">{note}</div>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Model answer */}
+                      <details className="border border-slate-100 rounded-xl overflow-hidden">
+                        <summary className="px-4 py-3 text-sm font-semibold text-slate-700 cursor-pointer hover:bg-slate-50">Example answer structure</summary>
+                        <div className="px-4 pb-4 text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
+                          <strong>Situation:</strong> "At Bloompay, we were redesigning the merchant onboarding flow with 3 stakeholder teams pulling in different directions."<br/>
+                          <strong>Task:</strong> "I needed to align sales (wanted speed), compliance (wanted rigour), and the end merchants (wanted simplicity)."<br/>
+                          <strong>Action:</strong> "I ran a 2-hour design sprint with reps from each team, mapped their non-negotiables, and found the 80% overlap. Prototyped that version in 3 days."<br/>
+                          <strong>Result:</strong> "Onboarding time dropped 34%. Compliance signed off first attempt. Sales used it as a selling point in the next quarter."
+                        </div>
+                      </details>
+                      <button onClick={()=>{setMockAns('');setMockFeedback(null);}} className="text-xs font-semibold" style={{color:'#5B2EFF'}}>Try again with this structure →</button>
                     </div>
-                    <div className="bg-amber-50 rounded-xl p-3">
-                      <div className="text-xs font-bold text-amber-700 mb-1.5">To improve</div>
-                      {mockFeedback.improve.map((s,i)=><div key={i} className="text-xs text-amber-800 flex gap-1.5"><Icon name="arrow-up-right" size={12} className="mt-0.5 shrink-0"/>{s}</div>)}
-                    </div>
-                  </div>
-                  <div className="bg-brand-50 border border-brand-100 rounded-xl p-3 text-sm text-brand-900">
-                    <Icon name="lightbulb" size={14} className="text-brand-600 inline mr-1.5"/>
-                    {mockFeedback.model}
-                  </div>
+                  )}
                 </div>
               )}
             </Card>
             <Card className="p-6">
               <h3 className="font-bold text-slate-900 mb-4">Interview Readiness</h3>
               <div className="flex justify-center mb-4"><ScoreRing score={74} size={96} color="#7c3aed" label="Readiness"/></div>
-              <div className="space-y-3">
-                {[['STAR Method','Good','green'],['Technical depth','Needs work','amber'],['Conciseness','Needs work','amber'],['Confidence','Good','green']].map(([l,s,t])=>(
-                  <div key={l} className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">{l}</span>
-                    <Badge tone={t}>{s}</Badge>
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Session 3 · 5 questions answered</div>
+              <div className="space-y-3 mb-4">
+                {[['STAR Method',78,'amber'],['Technical depth',65,'amber'],['Conciseness',72,'amber'],['Confidence',80,'green']].map(([l,s,t])=>(
+                  <div key={l}>
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="text-slate-600">{l}</span>
+                      <Badge tone={t}>{s}/100</Badge>
+                    </div>
+                    <div className="dim-bar-track">
+                      <div className="dim-bar-fill" style={{width:`${s}%`,background:t==='green'?'#1D9E75':'#EF9F27'}}/>
+                    </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 p-3 bg-slate-50 rounded-xl text-xs text-slate-500">Practice 3 more behavioral questions to reach 85+ readiness score.</div>
+              <div className="p-3 rounded-xl text-xs text-slate-500" style={{background:'#F8F7FF'}}>Practice 3 more behavioural questions to reach 85+ readiness score.</div>
             </Card>
           </div>
         </div>
