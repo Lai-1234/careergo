@@ -3182,6 +3182,9 @@ function JobsOpportunities({ toast }){
   const [query,setQuery]=useState('');
   const [filter,setFilter]=useState('All');
   const [sortBy,setSortBy]=useState('match');
+  const [compareIds,setCompareIds]=useState([]);
+  const [impactFilter,setImpactFilter]=useState(false);
+  const [notAppliedFilter,setNotAppliedFilter]=useState(false);
 
   const filters=['All','Remote','Hybrid','90%+ fit'];
   const list=JOBS
@@ -3191,6 +3194,8 @@ function JobsOpportunities({ toast }){
       const mf=filter==='All'||(filter==='Remote'&&j.type.includes('Remote'))||(filter==='Hybrid'&&j.type.includes('Hybrid'))||(filter==='90%+ fit'&&j.match>=90);
       return mq&&mf;
     })
+    .filter(j=>!impactFilter||j.impact==='High')
+    .filter(j=>!notAppliedFilter||!applied[j.id])
     .sort((a,b)=> sortBy==='match'? b.match-a.match : b.salary.localeCompare(a.salary));
 
   const applyJob=j=>{
@@ -3236,6 +3241,14 @@ function JobsOpportunities({ toast }){
                 {f}
               </button>
             ))}
+            <button onClick={()=>setImpactFilter(v=>!v)}
+              className={`text-sm font-semibold px-4 py-2 rounded-xl transition flex items-center gap-1.5 ${impactFilter?'bg-amber-500 text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+              <Icon name="zap" size={14}/> High impact only
+            </button>
+            <button onClick={()=>setNotAppliedFilter(v=>!v)}
+              className={`text-sm font-semibold px-4 py-2 rounded-xl transition ${notAppliedFilter?'bg-brand-600 text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+              Not yet applied
+            </button>
           </div>
           <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
             className="text-sm bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 outline-none text-slate-600">
@@ -3249,7 +3262,11 @@ function JobsOpportunities({ toast }){
       <div className="space-y-4">
         {list.length===0&&<Card className="p-12 text-center text-slate-400">No roles match that search.</Card>}
         {list.map(j=>(
-          <Card key={j.id} className="p-5 hover-lift">
+          <Card key={j.id} className="p-5 hover-lift group relative">
+            <input type="checkbox"
+              checked={compareIds.includes(j.id)}
+              onChange={e=>setCompareIds(ids=>e.target.checked?[...ids,j.id]:ids.filter(i=>i!==j.id))}
+              className="absolute top-3 right-3 w-4 h-4 accent-brand-600 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"/>
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 text-lg font-extrabold flex items-center justify-center shrink-0">{j.logo}</div>
               <div className="flex-1 min-w-0">
@@ -3261,7 +3278,10 @@ function JobsOpportunities({ toast }){
                 <div className="text-sm text-slate-500 mb-2">{j.company} · {j.type}</div>
                 <div className="flex gap-3 flex-wrap mb-3">
                   <span className="text-base font-bold text-emerald-600 flex items-center gap-1"><Icon name="banknote" size={15}/>{j.salary}</span>
-                  <Badge tone={impactColor[j.impact]}>Career impact: {j.impact}</Badge>
+                  <span className="impact-tip">
+                    <Badge tone={impactColor[j.impact]}>Career impact: {j.impact}</Badge>
+                    <span className="impact-tooltip">Why high for you:<br/>• Moves you toward Staff IC path<br/>• +RM 18k salary potential<br/>• Builds cross-team leadership gap</span>
+                  </span>
                   <Badge tone="blue">Growth: {j.growth}</Badge>
                 </div>
                 <div className="flex items-start gap-2 bg-brand-50 border border-brand-100 rounded-xl p-3 mb-3">
@@ -3281,11 +3301,23 @@ function JobsOpportunities({ toast }){
                   <Icon name={saved[j.id]?'bookmark-check':'bookmark'} size={15}/>
                   {saved[j.id]?'Saved':'Save'}
                 </Btn>
+                <button onClick={()=>toast('Preference noted — Autopilot will learn from this','x')}
+                  className="text-xs text-slate-400 hover:text-rose-500 px-2 py-1.5 rounded-lg hover:bg-rose-50 transition w-full opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1">
+                  <Icon name="x" size={12}/> Not interested
+                </button>
               </div>
             </div>
           </Card>
         ))}
       </div>
+
+      {compareIds.length>=2&&(
+        <div className="fixed bottom-6 left-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl text-white font-semibold text-sm shadow-glow" style={{background:'#5B2EFF',transform:'translateX(-50%)'}}>
+          <Icon name="columns-2" size={16}/> Comparing {compareIds.length} roles
+          <button onClick={()=>toast('Compare view — coming in full release','layers')} className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-xs transition">Compare now →</button>
+          <button onClick={()=>setCompareIds([])} className="text-white/60 hover:text-white ml-1"><Icon name="x" size={14}/></button>
+        </div>
+      )}
     </div>
   );
 }
