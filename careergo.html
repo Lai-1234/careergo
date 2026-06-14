@@ -3364,7 +3364,7 @@ function CareerCompanion({ toast }){
               <div className="space-y-3">
                 {PULSE_SKILLS.slice(0,6).map(s=>{
                   const userHas=USER.skills.some(us=>us.toLowerCase().includes(s.name.toLowerCase().split(' ')[0]));
-                  const isClose=!userHas&&USER.skills.some(us=>['Figma','Design Systems','User Research'].includes(us)&&['React','Next.js','Framer'].includes(s.name));
+                  const isClose=!userHas&&['React','Next.js','Framer'].includes(s.name)&&USER.skills.some(us=>['Figma','Design Systems','User Research'].includes(us));
                   return (
                     <div key={s.name}>
                       <div className="flex justify-between text-xs mb-1 items-center">
