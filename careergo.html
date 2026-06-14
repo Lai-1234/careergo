@@ -248,6 +248,21 @@ tailwind.config = {
   /* ── Score dimension bar ── */
   .dim-bar-track{height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden}
   .dim-bar-fill{height:100%;border-radius:3px;transition:width 800ms cubic-bezier(.4,0,.2,1)}
+
+  /* ── Radar ping animation ── */
+  @keyframes radarPing{0%{transform:scale(0.5);opacity:0.8}100%{transform:scale(2.5);opacity:0}}
+  .radar-ping{position:absolute;width:10px;height:10px;border-radius:50%;background:#FDBA2D;animation:radarPing 1.8s ease-out infinite}
+  /* ── Autopilot toggle pill ── */
+  .ap-toggle{display:flex;align-items:center;gap:3px;width:44px;height:24px;border-radius:12px;background:#e2e8f0;cursor:pointer;transition:background 200ms;padding:2px}
+  .ap-toggle.on{background:#1D9E75}
+  .ap-toggle-thumb{width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.2);transition:transform 200ms}
+  .ap-toggle.on .ap-toggle-thumb{transform:translateX(20px)}
+  /* ── Market Intelligence tabs ── */
+  .market-tab{padding:8px 20px;border-radius:10px;font-size:13px;font-weight:600;color:#64748b;border:1px solid transparent;cursor:pointer;transition:all 150ms}
+  .market-tab.active{background:#5B2EFF;color:#fff;border-color:#5B2EFF}
+  /* ── Profile dimension bar ── */
+  .profile-dim-bar{height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;margin-top:4px}
+  .profile-dim-fill{height:100%;border-radius:3px;background:#5B2EFF;transition:width 800ms cubic-bezier(.4,0,.2,1)}
 </style>
 </head>
 <body>
