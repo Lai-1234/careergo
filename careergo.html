@@ -2736,13 +2736,14 @@ function CandidateApp({ lang, toggleLang, go, toast }){
     if(!localStorage.getItem('cg_tour_done')) setTourActive(true);
   },[]);
 
+  useEffect(()=>{ if(view==='pulse') setView('pay'); },[view]);
+
   const views={
     dashboard: <CandidateDashboard setView={setView} toast={toast}/>,
     profile:   <CareerProfile toast={toast}/>,
     jobs:      <JobsOpportunities toast={toast}/>,
     companion: <CareerCompanion toast={toast}/>,
-    pay:       <FairPayEngine/>,
-    pulse:     <MarketPulseModule/>,
+    pay:       <MarketIntelligence toast={toast}/>,
     auto:      <AutopilotProxy toast={toast}/>,
   };
 
@@ -3554,6 +3555,34 @@ function CareerCompanion({ toast }){
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   15. MARKET INTELLIGENCE
+══════════════════════════════════════════════════════════════ */
+function MarketIntelligence({ toast }){
+  const [mktTab,setMktTab]=useState('my-value');
+  return (
+    <div className="space-y-6 fade-up">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-extrabold text-slate-900">Market Intelligence</h1>
+        <p className="text-slate-500">Your salary, skill payoffs, and live market signals — unified.</p>
+      </div>
+      {/* Tab bar */}
+      <div className="flex gap-2 p-1 rounded-xl w-fit" style={{background:'#f1f5f9'}}>
+        <button onClick={()=>setMktTab('my-value')} className={`market-tab ${mktTab==='my-value'?'active':''}`}>
+          <Icon name="gauge" size={14} className="inline mr-1.5"/> My Value
+        </button>
+        <button onClick={()=>setMktTab('signals')} className={`market-tab ${mktTab==='signals'?'active':''}`}>
+          <Icon name="activity" size={14} className="inline mr-1.5"/> Market Signals
+        </button>
+      </div>
+      {/* Tab content */}
+      {mktTab==='my-value'&&<div className="p-8 text-center text-slate-400 bg-white rounded-2xl">My Value — coming soon (Task 4)</div>}
+      {mktTab==='signals'&&<div className="p-8 text-center text-slate-400 bg-white rounded-2xl">Market Signals — coming soon (Task 5)</div>}
     </div>
   );
 }
