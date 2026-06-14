@@ -2522,13 +2522,13 @@ function CandidateDashboard({ setView, toast }){
    12. CANDIDATE APP — Sidebar + Shell
 ══════════════════════════════════════════════════════════════ */
 const CANDIDATE_NAV=[
-  {id:'dashboard',icon:'layout-dashboard',tk:'appDashboard'},
-  {id:'profile',icon:'brain-circuit',tk:'appProfile'},
-  {id:'jobs',icon:'briefcase',tk:'appJobs'},
-  {id:'companion',icon:'bot',tk:'appCompanion'},
-  {id:'pay',icon:'gauge',tk:'appPay'},
-  {id:'pulse',icon:'activity',tk:'appPulse'},
-  {id:'auto',icon:'radar',tk:'appAuto'},
+  {id:'dashboard',icon:'layout-dashboard',tk:'appDashboard',tourStep:null},
+  {id:'profile',icon:'brain-circuit',tk:'appProfile',tourStep:1},
+  {id:'jobs',icon:'briefcase',tk:'appJobs',tourStep:null},
+  {id:'companion',icon:'bot',tk:'appCompanion',tourStep:2},
+  {id:'pay',icon:'gauge',tk:'appPay',tourStep:3},
+  {id:'pulse',icon:'activity',tk:'appPulse',tourStep:4},
+  {id:'auto',icon:'radar',tk:'appAuto',tourStep:5},
 ];
 
 function CandidateApp({ lang, toggleLang, go, toast }){
@@ -2560,8 +2560,11 @@ function CandidateApp({ lang, toggleLang, go, toast }){
         {/* Nav */}
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto mt-1">
           {CANDIDATE_NAV.map(n=>(
-            <button key={n.id} onClick={()=>{ setView(n.id); setMobileOpen(false); }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${view===n.id?'bg-white/15 text-white shadow-inner':'text-brand-200 hover:bg-white/8 hover:text-white'}`}>
+            <button key={n.id}
+              {...(n.tourStep?{'data-tour':`step-${n.tourStep}`}:{})}
+              onClick={()=>{ setView(n.id); setMobileOpen(false); }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${view===n.id?'bg-white/15 text-white shadow-inner':'text-brand-200 hover:bg-white/8 hover:text-white'}`}
+              style={{position:'relative'}}>
               <Icon name={n.icon} size={18}/>
               <span>{t(n.tk)}</span>
               {view===n.id&&<span className="ml-auto w-1.5 h-1.5 rounded-full bg-gold-400"/>}
