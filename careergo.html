@@ -4178,19 +4178,71 @@ function AutopilotProxy({ toast }){
 
   return (
     <div className="space-y-6 fade-up">
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">Autopilot Proxy</h1>
-          <p className="text-slate-500">Set your rules. The AI agent hunts, matches, and applies — so you don't burn out.</p>
+      {/* Command Header */}
+      <div className="rounded-2xl overflow-hidden relative" style={{background:'linear-gradient(135deg,#1A0146 0%,#0d0222 60%,#1a1060 100%)'}}>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full" style={{background:'rgba(91,46,255,0.12)',filter:'blur(60px)'}}/>
+          <div className="absolute left-1/2 -bottom-10 w-60 h-60 rounded-full" style={{background:'rgba(253,186,45,0.06)',filter:'blur(40px)'}}/>
         </div>
-        <button onClick={()=>{
-          const next=!active;
-          setActive(next);
-          toast(next?'Autopilot is running in the background':'Autopilot paused',next?'radar':'pause');
-        }}
-          className={`flex items-center gap-2 font-semibold px-5 py-2.5 rounded-xl transition ${active?'bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100':'bg-brand-700 hover:bg-brand-800 text-white shadow-glow-sm'}`}>
-          <Icon name={active?'pause':'play'} size={18}/>{active?'Pause autopilot':'Start autopilot'}
-        </button>
+        <div className="relative flex items-center gap-6 p-7">
+          {/* Left: title + badge + button */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded-full" style={{background:'rgba(253,186,45,0.15)',color:'#FDBA2D'}}>AI JOB AGENT</span>
+            </div>
+            <h1 className="text-2xl font-extrabold text-white">Autopilot</h1>
+            <p className="text-sm mt-0.5" style={{color:'rgba(255,255,255,0.5)'}}>Set your rules. The agent hunts 24/7.</p>
+            <button onClick={()=>{
+              const next=!active;
+              setActive(next);
+              toast(next?'Autopilot is running in the background':'Autopilot paused',next?'radar':'pause');
+            }} className={`mt-4 flex items-center gap-2 font-semibold px-5 py-2.5 rounded-xl transition text-sm ${active?'bg-rose-500/20 border border-rose-400/40 text-rose-300 hover:bg-rose-500/30':'text-white hover:opacity-90'}`}
+              style={active?{}:{background:'#5B2EFF',boxShadow:'0 0 20px rgba(91,46,255,0.4)'}}>
+              <Icon name={active?'pause':'play'} size={16}/>{active?'Pause autopilot':'Start autopilot'}
+            </button>
+          </div>
+
+          {/* Center: radar */}
+          <div className="flex flex-col items-center gap-2 shrink-0">
+            <span className={`text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full ${active?'text-emerald-300':'text-slate-400'}`}
+              style={{background:active?'rgba(29,158,117,0.2)':'rgba(255,255,255,0.08)'}}>
+              {active?'SCANNING · Live':'PAUSED'}
+            </span>
+            <div className="relative w-32 h-32 flex items-center justify-center">
+              {active&&<>
+                <span className="absolute inset-0 rounded-full pulse-ring" style={{background:'rgba(91,46,255,0.25)'}}/>
+                <span className="absolute inset-0 rounded-full pulse-ring" style={{background:'rgba(91,46,255,0.15)',animationDelay:'.7s'}}/>
+                <span className="absolute inset-0 rounded-full pulse-ring" style={{background:'rgba(91,46,255,0.1)',animationDelay:'1.4s'}}/>
+                {[45,135,210,315,70,250].map((deg,i)=>(
+                  <span key={i} className="radar-ping" style={{
+                    top:'50%',left:'50%',
+                    transform:`rotate(${deg}deg) translateY(-44px) translateX(-5px)`,
+                    animationDelay:`${i*0.3}s`
+                  }}/>
+                ))}
+              </>}
+              <div className={`w-24 h-24 rounded-full flex items-center justify-center text-white transition-all duration-500 ${active?'':'opacity-40'}`}
+                style={active?{background:'linear-gradient(135deg,#5B2EFF,#8A63FF)',boxShadow:'0 0 30px rgba(91,46,255,0.5)'}:{background:'rgba(255,255,255,0.1)'}}>
+                <Icon name="radar" size={40}/>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: 2x2 stats */}
+          <div className="grid grid-cols-2 gap-3 shrink-0">
+            {[
+              {n:scanned.toLocaleString(),l:'Jobs scanned',c:'#FDBA2D'},
+              {n:appliedCount,l:'Auto-applied',c:'#1D9E75'},
+              {n:'3',l:'Held by rules',c:'#EF9F27'},
+              {n:`${(appliedCount/Math.max(1,scanned)*100).toFixed(1)}%`,l:'Success rate',c:'#8A63FF'},
+            ].map(({n,l,c})=>(
+              <div key={l} className="rounded-xl p-3.5 text-center" style={{background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.1)'}}>
+                <div className="text-xl font-extrabold" style={{color:c}}>{n}</div>
+                <div className="text-xs mt-0.5" style={{color:'rgba(255,255,255,0.5)'}}>{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
@@ -4219,39 +4271,9 @@ function AutopilotProxy({ toast }){
           </div>
         </Card>
 
-        {/* Agent status */}
-        <Card className="lg:col-span-2 p-6 flex flex-col">
-          <div className="flex items-center justify-between mb-5">
-            <h3 className="font-bold text-slate-900 flex items-center gap-2"><Icon name="radar" size={15} className="text-brand-600"/> Auto-Apply Agent</h3>
-            <Badge tone={active?'green':'slate'} dot>{active?'Running':'Idle'}</Badge>
-          </div>
-          <div className="flex-1 flex flex-col items-center justify-center py-4">
-            <div className="relative w-40 h-40 flex items-center justify-center">
-              {active&&<>
-                <span className="absolute inset-0 rounded-full bg-brand-300/30 pulse-ring"/>
-                <span className="absolute inset-0 rounded-full bg-brand-300/20 pulse-ring" style={{animationDelay:'.7s'}}/>
-                <span className="absolute inset-0 rounded-full bg-brand-300/15 pulse-ring" style={{animationDelay:'1.4s'}}/>
-              </>}
-              <div className={`w-28 h-28 rounded-full flex items-center justify-center text-white transition-all duration-500 ${active?'bg-gradient-to-br from-brand-600 to-brand-900 shadow-glow':'bg-slate-200'}`}>
-                <Icon name="radar" size={46}/>
-              </div>
-            </div>
-            <p className="mt-5 text-sm font-medium text-slate-600 text-center">
-              {active?'Scanning the market for perfect matches…':'Agent paused — press Start to let it work.'}
-            </p>
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            {[
-              {n:scanned.toLocaleString(),l:'Jobs scanned',tone:'slate'},
-              {n:appliedCount,l:'Auto-applied',tone:'brand'},
-              {n:'3',l:'Held by rules',tone:'amber'},
-            ].map(({n,l,tone})=>(
-              <div key={l} className={`rounded-xl p-4 text-center ${tone==='brand'?'bg-brand-50':tone==='amber'?'bg-amber-50':'bg-slate-50'}`}>
-                <div className={`text-2xl font-extrabold ${tone==='brand'?'text-brand-700':tone==='amber'?'text-amber-600':'text-slate-900'}`}>{n}</div>
-                <div className="text-xs text-slate-400 mt-0.5">{l}</div>
-              </div>
-            ))}
-          </div>
+        {/* Placeholder: Activity log (Task 7 will fill this) */}
+        <Card className="lg:col-span-2 p-6">
+          {/* Task 7 fills this */}
         </Card>
       </div>
 
