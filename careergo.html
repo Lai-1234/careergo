@@ -4354,6 +4354,14 @@ function MarketPulseModule(){
   );
 }
 
+const TRACKED_APPS=[
+  {id:1,role:'Senior Product Designer',company:'Nimbus Labs',fit:94,date:'Jun 14',status:'Interview scheduled',statusTone:'green'},
+  {id:2,role:'Head of Design',company:'Finovo',fit:89,date:'Jun 13',status:'Applied',statusTone:'brand'},
+  {id:3,role:'Product Design Lead',company:'HealthOS',fit:91,date:'Jun 12',status:'Applied',statusTone:'brand'},
+  {id:4,role:'UX Designer III',company:'Orbit Health',fit:76,date:'Jun 11',status:'Rejected',statusTone:'slate'},
+  {id:5,role:'Senior UX Designer',company:'ByteStack',fit:88,date:'Jun 10',status:'Applied',statusTone:'brand'},
+];
+
 /* ══════════════════════════════════════════════════════════════
    18. AUTOPILOT PROXY
 ══════════════════════════════════════════════════════════════ */
@@ -4366,6 +4374,7 @@ function AutopilotProxy({ toast }){
   const [noWeekend,setNoWeekend]=useState(true);
   const [autoSend,setAutoSend]=useState(true);
   const [noContracts,setNoContracts]=useState(false);
+  const [apTab,setApTab]=useState('activity');
 
   useEffect(()=>{
     if(!active) return;
@@ -4454,6 +4463,17 @@ function AutopilotProxy({ toast }){
         </div>
       </div>
 
+      {/* Tab bar */}
+      <div className="flex gap-1 p-1 rounded-xl w-fit" style={{background:'#f1f5f9'}}>
+        <button onClick={()=>setApTab('activity')} className={`market-tab ${apTab==='activity'?'active':''}`}>
+          <Icon name="activity" size={13} className="inline mr-1.5"/> Agent Activity
+        </button>
+        <button onClick={()=>setApTab('tracker')} className={`market-tab ${apTab==='tracker'?'active':''}`}>
+          <Icon name="list" size={13} className="inline mr-1.5"/> Application Tracker
+        </button>
+      </div>
+
+      {apTab==='activity'&&(
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Preferences */}
         <Card className="p-6 space-y-5">
@@ -4532,6 +4552,35 @@ function AutopilotProxy({ toast }){
           </div>
         </Card>
       </div>
+      )}
+      {apTab==='tracker'&&(
+      <Card className="p-6">
+        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <Icon name="list" size={15} className="text-brand-600"/> Application Tracker
+          <Badge tone="brand">{TRACKED_APPS.length} total</Badge>
+        </h3>
+        <div className="space-y-2">
+          <div className="grid items-center gap-3 px-3 pb-2 border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wide"
+            style={{gridTemplateColumns:'48px 1fr 80px 160px 60px'}}>
+            <span>Fit</span><span>Role</span><span>Date</span><span>Status</span><span></span>
+          </div>
+          {TRACKED_APPS.map(a=>(
+            <div key={a.id} className="grid items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-50 transition"
+              style={{gridTemplateColumns:'48px 1fr 80px 160px 60px'}}>
+              <Badge tone={a.fit>=90?'green':'brand'}>{a.fit}%</Badge>
+              <div>
+                <div className="text-sm font-semibold text-slate-800">{a.role}</div>
+                <div className="text-xs text-slate-400">{a.company}</div>
+              </div>
+              <span className="text-xs text-slate-400">{a.date}</span>
+              <Badge tone={a.statusTone}>{a.status}</Badge>
+              <button onClick={()=>toast(`Opening ${a.company} application…`,'external-link')}
+                className="text-xs font-semibold text-brand-600 hover:underline">View →</button>
+            </div>
+          ))}
+        </div>
+      </Card>
+      )}
     </div>
   );
 }
