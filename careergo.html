@@ -357,7 +357,7 @@ const LANG = {
     // App nav
     appDashboard:'Dashboard', appProfile:'Career Intelligence',
     appJobs:'Jobs & Opportunities', appCompanion:'Career Companion',
-    appPay:'Fair Pay Engine', appPulse:'Market Pulse', appAuto:'Autopilot',
+    appPay:'Fair Pay Engine', appPulse:'Market Pulse', appMarket:'Market Intelligence', appAuto:'Autopilot',
     appSettings:'Settings', appSignout:'Sign out',
     // Employer nav
     empDash:'Dashboard', empTalent:'Talent Discovery',
@@ -431,7 +431,7 @@ const LANG = {
     onbStep4:'Analisis AI', onbStep5:'Anda Bersedia',
     appDashboard:'Papan Pemuka', appProfile:'Kecerdasan Kerjaya',
     appJobs:'Kerja & Peluang', appCompanion:'Rakan Kerjaya',
-    appPay:'Enjin Gaji Adil', appPulse:'Denyutan Pasaran', appAuto:'Autopilot',
+    appPay:'Enjin Gaji Adil', appPulse:'Denyutan Pasaran', appMarket:'Perisikan Pasaran', appAuto:'Autopilot',
     appSettings:'Tetapan', appSignout:'Log Keluar',
     empDash:'Papan Pemuka', empTalent:'Penemuan Bakat',
     empInsights:'Pandangan Calon', empAI:'Pembantu Pengambilan AI',
@@ -2644,10 +2644,9 @@ function CandidateDashboard({ setView, toast }){
 const CANDIDATE_NAV=[
   {id:'dashboard',icon:'layout-dashboard',tk:'appDashboard',tourStep:null},
   {id:'profile',icon:'brain-circuit',tk:'appProfile',tourStep:1},
-  {id:'jobs',icon:'briefcase',tk:'appJobs',tourStep:null},
+  {id:'jobs',icon:'briefcase',tk:'appJobs',tourStep:4},
   {id:'companion',icon:'bot',tk:'appCompanion',tourStep:2},
-  {id:'pay',icon:'gauge',tk:'appPay',tourStep:3},
-  {id:'pulse',icon:'activity',tk:'appPulse',tourStep:4},
+  {id:'pay',icon:'bar-chart-2',tk:'appMarket',tourStep:3},
   {id:'auto',icon:'radar',tk:'appAuto',tourStep:5},
 ];
 
@@ -2655,8 +2654,8 @@ const CANDIDATE_NAV=[
 const TOUR_STEPS=[
   {target:'step-1',title:'Start here — build your Career Profile',body:'Upload your resume or fill in your details. CareerGo analyses your skills, ATS readiness, and market positioning to build your Career Intelligence Report — the foundation for everything else.',cta:'Got it →'},
   {target:'step-2',title:'Meet Coach Vera, your AI career mentor',body:"Vera isn't a chatbot. She knows your profile, tracks your goals, and gives you personalised weekly missions. Ask her anything — from salary negotiation to career pivots.",cta:'Got it →'},
-  {target:'step-3',title:'Know your true market value',body:'See your real salary range based on your verified skills, not job post guesses. Add skills to the Skill Payoff Calculator to instantly see how your earning potential changes.',cta:'Got it →'},
-  {target:'step-4',title:'Track where the market is moving',body:'Like a Bloomberg terminal for your career. See which skills are surging, which industries are hiring, and where opportunities are shifting — updated in real time.',cta:'Got it →'},
+  {target:'step-3',title:'Understand your market position',body:'See your real salary range, skill payoffs, and live market signals — all in one place. Know exactly what you\'re worth and where the market is heading.',cta:'Got it →'},
+  {target:'step-4',title:'Browse and apply to matched jobs',body:'Every opportunity is scored against your profile. Filter by fit, salary, or growth signal. Apply in one click — Autopilot handles the rest for 90%+ matches.',cta:'Got it →'},
   {target:'step-5',title:'Let CareerGo hunt for you',body:'Set your rules once — minimum salary, location, work arrangement. Autopilot scans opportunities continuously and applies on your behalf when a 90%+ match is found. Full daily log, always transparent.',cta:'Got it →'},
   {target:'step-6',title:"You're all set. Your Career OS is live.",body:'Your dashboard shows your career score, upcoming missions, live matches, and simulated futures — all in one place. CareerGo works in the background so you can focus on growing.',cta:'Start exploring →'},
 ];
