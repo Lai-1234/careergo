@@ -2612,6 +2612,10 @@ function CandidateApp({ lang, toggleLang, go, toast }){
   const t=useT(lang);
   const [view,setView]=useState('dashboard');
   const [mobileOpen,setMobileOpen]=useState(false);
+  const [tourActive,setTourActive]=useState(false);
+  useEffect(()=>{
+    if(!localStorage.getItem('cg_tour_done')) setTourActive(true);
+  },[]);
 
   const views={
     dashboard: <CandidateDashboard setView={setView} toast={toast}/>,
@@ -2627,6 +2631,7 @@ function CandidateApp({ lang, toggleLang, go, toast }){
 
   return (
     <div className="min-h-screen flex bg-[#f8fafc]">
+      {tourActive&&<OnboardingTour onDone={()=>setTourActive(false)}/>}
       {/* Sidebar */}
       <aside className={`fixed lg:static z-40 inset-y-0 left-0 w-64 bg-sidebar-gradient flex flex-col transition-transform duration-300 ${mobileOpen?'translate-x-0':'-translate-x-full lg:translate-x-0'}`}>
         {/* Logo */}
