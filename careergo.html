@@ -411,7 +411,7 @@ const LANG = {
     // App nav
     appDashboard:'Dashboard', appProfile:'Career Intelligence',
     appJobs:'Jobs & Opportunities', appCompanion:'Career Companion',
-    appPay:'Fair Pay Engine', appPulse:'Market Pulse', appMarket:'Market Intelligence', appAuto:'Autopilot',
+    appPay:'Fair Pay Engine', appPulse:'Market Pulse', appMarket:'Market Intelligence', appAuto:'Autopilot', appAssistant:'AI Assistant',
     appSettings:'Settings', appSignout:'Sign out',
     // Employer nav
     empDash:'Dashboard', empTalent:'Talent Discovery',
@@ -485,7 +485,7 @@ const LANG = {
     onbStep4:'Analisis AI', onbStep5:'Anda Bersedia',
     appDashboard:'Papan Pemuka', appProfile:'Kecerdasan Kerjaya',
     appJobs:'Kerja & Peluang', appCompanion:'Rakan Kerjaya',
-    appPay:'Enjin Gaji Adil', appPulse:'Denyutan Pasaran', appMarket:'Perisikan Pasaran', appAuto:'Autopilot',
+    appPay:'Enjin Gaji Adil', appPulse:'Denyutan Pasaran', appMarket:'Perisikan Pasaran', appAuto:'Autopilot', appAssistant:'Pembantu AI',
     appSettings:'Tetapan', appSignout:'Log Keluar',
     empDash:'Papan Pemuka', empTalent:'Penemuan Bakat',
     empInsights:'Pandangan Calon', empAI:'Pembantu Pengambilan AI',
@@ -2864,6 +2864,7 @@ const CANDIDATE_NAV=[
   {id:'companion',icon:'bot',tk:'appCompanion',tourStep:2},
   {id:'pay',icon:'bar-chart-2',tk:'appMarket',tourStep:3},
   {id:'auto',icon:'radar',tk:'appAuto',tourStep:5},
+  {id:'assistant',icon:'sparkles',tk:'appAssistant',tourStep:null},
 ];
 
 /* ── Onboarding Tour ── */
@@ -2988,6 +2989,193 @@ function NotificationBell(){
   );
 }
 
+function AIAssistant({ toast, setView }){
+  const [workspace,setWorkspace]=useState('Career Planning');
+  const [messages,setMessages]=useState(AI_INITIAL_MESSAGES);
+  const [input,setInput]=useState('');
+  const [pinned,setPinned]=useState([]);
+
+  const RECENT_CHATS=[
+    {id:1,title:'Promotion roadmap for 2026',time:'2h ago'},
+    {id:2,title:'Negotiation script for Nimbus offer',time:'Yesterday'},
+    {id:3,title:'Skills gap analysis vs PM roles',time:'2 days ago'},
+    {id:4,title:'Interview prep for Finovo',time:'3 days ago'},
+    {id:5,title:'Design system leadership project plan',time:'Last week'},
+  ];
+
+  const send=()=>{
+    if(!input.trim()) return;
+    const userMsg={from:'user',text:input};
+    const replies={
+      'Career Planning':["Great question! Based on your current trajectory and the 12-month timeline you've set, here's what I'd prioritize: First, focus on getting a cross-functional leadership project on your record in the next 30 days. This single move unlocks both the Staff IC and Manager paths simultaneously.","Looking at your Career Score of 78 and your target of Senior PM, the most direct path is to close the leadership gap — it appears in 84% of Senior PM job descriptions in your target companies."],
+      'Interview Coach':["Let's practice that. For this type of behavioral question, I recommend the outcome-first STAR method: lead with the result, then walk back through the situation and actions. Want me to give you a sample answer you can riff on?","Good answer! I'd give that an 8/10. The structure was clean but you buried the impact. Next time open with: 'I increased team velocity by 35%' — then tell the story."],
+      'Skill Growth':["Based on your skill profile, the fastest path to Senior PM is a combination of stakeholder management and AI product strategy. Both appear in 78%+ of your target job descriptions and you can build them simultaneously.","For stakeholder management, I recommend starting with the 'Influence Without Authority' framework. You can apply it immediately in your current role — document one example per week for 8 weeks."],
+      'Salary Negotiation':["Your market value is RM 92k but your leverage is higher than that number suggests. You have 3 active interviews, the market is hot for your skill set, and you have a competing offer. Use all three.","The anchoring strategy I'd recommend: open at RM 118k. That gives you room to 'concede' to RM 108–112k while still landing above market. Never reveal your floor in round 1."],
+    };
+    const replyPool=replies[workspace]||["I'm analyzing your career data... Based on your profile, here's what I'd recommend as your next step.","That's a great strategic question. Let me cross-reference your skill profile with current market demand data to give you the most relevant answer."];
+    const reply={from:'assistant',text:replyPool[messages.filter(m=>m.from==='assistant').length%replyPool.length]};
+    setMessages(m=>[...m,userMsg,reply]);
+    setInput('');
+  };
+
+  return(
+    <div className="flex gap-5 h-full fade-up" style={{minHeight:'80vh'}}>
+
+      {/* LEFT PANEL — Chats & Context */}
+      <div className="w-60 shrink-0 flex flex-col gap-4">
+        <button onClick={()=>setMessages(AI_INITIAL_MESSAGES)}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm text-white transition"
+          style={{background:'linear-gradient(135deg,#5B2EFF,#8B5CF6)'}}>
+          <Icon name="plus" size={15}/> New Chat
+        </button>
+
+        <Card className="p-4 flex-1">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">Recent Chats</p>
+          <div className="space-y-1">
+            {RECENT_CHATS.map(c=>(
+              <button key={c.id} onClick={()=>toast(`Opening: ${c.title}`,'message-circle')}
+                className="w-full text-left p-2.5 rounded-lg hover:bg-brand-50 transition group">
+                <p className="text-xs font-medium text-slate-700 group-hover:text-brand-700 leading-snug">{c.title}</p>
+                <p className="text-xs text-slate-400 mt-0.5">{c.time}</p>
+              </button>
+            ))}
+          </div>
+          {pinned.length>0&&(
+            <>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mt-4 mb-2">Pinned</p>
+              {pinned.map((p,i)=>(
+                <div key={i} className="flex items-center gap-2 p-2.5 rounded-lg bg-gold-50 border border-gold-200">
+                  <Icon name="pin" size={11} className="text-gold-500 shrink-0"/>
+                  <p className="text-xs text-slate-700">{p}</p>
+                </div>
+              ))}
+            </>
+          )}
+        </Card>
+
+        {/* Career Context Panel */}
+        <Card className="p-4">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-3">Career Context</p>
+          <div className="space-y-2 text-xs">
+            {[
+              {l:'Goal',v:'Senior PM',icon:'target'},
+              {l:'Score',v:'78/100',icon:'star'},
+              {l:'Market Value',v:'RM 92k',icon:'trending-up'},
+              {l:'Timeline',v:'12 Months',icon:'calendar'},
+              {l:'Active Jobs',v:'5 matches',icon:'briefcase'},
+            ].map(({l,v,icon})=>(
+              <div key={l} className="flex items-center gap-2">
+                <Icon name={icon} size={12} className="text-brand-500 shrink-0"/>
+                <span className="text-slate-500">{l}:</span>
+                <span className="font-semibold text-slate-700 ml-auto">{v}</span>
+              </div>
+            ))}
+          </div>
+          <button onClick={()=>setView&&setView('companion')} className="mt-3 text-xs text-brand-600 font-bold hover:underline w-full text-center">
+            Open Career Strategy Center →
+          </button>
+        </Card>
+      </div>
+
+      {/* CENTER — Main Chat */}
+      <div className="flex-1 flex flex-col gap-4 min-w-0">
+        {/* Career Mission Control */}
+        <div className="rounded-2xl p-4 relative overflow-hidden" style={{background:'linear-gradient(135deg,#1A0146 0%,#0d0222 60%,#1a1060 100%)'}}>
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full" style={{background:'rgba(91,46,255,0.2)',filter:'blur(40px)'}}/>
+          </div>
+          <div className="relative flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold tracking-widest uppercase mb-0.5" style={{color:'#FDBA2D'}}>AI ASSISTANT</div>
+              <h2 className="text-lg font-extrabold text-white">Career Mission Control</h2>
+              <p className="text-xs mt-0.5" style={{color:'rgba(255,255,255,0.55)'}}>Your personal AI career advisor · Always on · Always in context</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block"/>Online
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Workspace Selector */}
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {AI_WORKSPACES.map(w=>(
+            <button key={w} onClick={()=>setWorkspace(w)}
+              className={`workspace-tab shrink-0 ${workspace===w?'active':'inactive'}`}>
+              {w}
+            </button>
+          ))}
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-4 gap-2">
+          {AI_QUICK_ACTIONS.slice(0,8).map(a=>(
+            <button key={a.label} onClick={()=>{setInput(a.label);}}
+              className="quick-action-btn">
+              <span className="text-base">{a.emoji}</span>
+              <span className="text-xs font-medium text-slate-700 text-center leading-tight">{a.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Chat Messages */}
+        <Card className="flex-1 p-0 overflow-hidden flex flex-col" style={{minHeight:320}}>
+          <div className="flex-1 overflow-auto p-4 space-y-4 bg-slate-50" style={{maxHeight:420}}>
+            {messages.map((m,i)=>(
+              <div key={i} className={`flex ${m.from==='user'?'justify-end':'justify-start'} gap-2`}>
+                {m.from==='assistant'&&(
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-600 to-purple-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <Icon name="sparkles" size={14} className="text-white"/>
+                  </div>
+                )}
+                <div className={`ai-chat-bubble ${m.from==='assistant'?'assistant':'user'}`}>
+                  {m.text}
+                </div>
+                {m.from==='user'&&(
+                  <div className="w-8 h-8 rounded-xl bg-brand-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <Icon name="user" size={14} className="text-brand-600"/>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          {/* Conversation Starters */}
+          {messages.length<=1&&(
+            <div className="px-4 pb-3 flex flex-wrap gap-2">
+              {AI_CONVERSATION_STARTERS.slice(0,4).map(s=>(
+                <button key={s} onClick={()=>setInput(s)}
+                  className="text-xs font-medium px-3 py-1.5 rounded-full bg-brand-50 text-brand-700 border border-brand-100 hover:bg-brand-100 transition">
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="p-3 border-t border-slate-100 flex gap-2 bg-white">
+            <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()}
+              placeholder={`Ask about ${workspace}…`}
+              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 ring-brand-200"/>
+            <Btn onClick={send}><Icon name="send" size={16}/></Btn>
+          </div>
+        </Card>
+
+        {/* Conversation starters as chips below chat when has messages */}
+        {messages.length>1&&(
+          <div className="flex flex-wrap gap-2">
+            {AI_CONVERSATION_STARTERS.slice(4).map(s=>(
+              <button key={s} onClick={()=>setInput(s)}
+                className="text-xs font-medium px-3 py-1.5 rounded-full bg-brand-50 text-brand-700 border border-brand-100 hover:bg-brand-100 transition">
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+    </div>
+  );
+}
+
 function CandidateApp({ lang, toggleLang, go, toast }){
   const t=useT(lang);
   const [view,setView]=useState('dashboard');
@@ -3006,6 +3194,7 @@ function CandidateApp({ lang, toggleLang, go, toast }){
     companion: <CareerCompanion toast={toast} setView={setView}/>,
     pay:       <MarketIntelligence toast={toast}/>,
     auto:      <AutopilotProxy toast={toast}/>,
+    assistant: <AIAssistant toast={toast} setView={setView}/>,
   };
 
   const current=CANDIDATE_NAV.find(n=>n.id===view);
