@@ -10,6 +10,7 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -3489,52 +3490,183 @@ function CareerProfile({ toast }){
   const [resumeAnalyzed,setResumeAnalyzed]=useState(false);
   const [analyzing,setAnalyzing]=useState(false);
 
-  const exportPDF=()=>{
-    const resume=`AISHA RAHMAN
-Product Designer · Kuala Lumpur, Malaysia
-aisha.rahman@email.com · linkedin.com/in/aisha-rahman · +60 11-2345 6789
+  const exportPDF = () => {
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const W = 210; // A4 width mm
+    const margin = 20;
+    let y = 20;
 
-SUMMARY
-Senior-level Product Designer with 6+ years experience in B2B SaaS and fintech. Proven track record of leading design systems, conducting user research, and delivering measurable product outcomes. Currently targeting Senior Product Manager roles.
+    const addLine = (text, opts = {}) => {
+      const { size = 10, bold = false, color = [30,30,30], indent = 0, center = false } = opts;
+      doc.setFontSize(size);
+      doc.setFont('helvetica', bold ? 'bold' : 'normal');
+      doc.setTextColor(...color);
+      const x = center ? W / 2 : margin + indent;
+      const align = center ? 'center' : 'left';
+      doc.text(text, x, y, { align });
+      y += (size * 0.45) + 2;
+    };
 
-EXPERIENCE
+    const addRule = (color = [200,190,240]) => {
+      doc.setDrawColor(...color);
+      doc.setLineWidth(0.4);
+      doc.line(margin, y, W - margin, y);
+      y += 4;
+    };
 
-Senior Product Designer — Bloompay
-2022–Present · Kuala Lumpur
-• Led end-to-end design of mobile payment flow adopted by 240,000+ users
-• Built and maintained a 120-component design system reducing dev handoff time by 40%
-• Facilitated 18 user research sessions, surfacing insights that reduced onboarding drop-off by 22%
-• Partnered with PM and engineering on roadmap prioritisation for 3 product squads
+    const section = (title) => {
+      y += 3;
+      addLine(title, { size: 9, bold: true, color: [91, 46, 255] });
+      addRule([180, 160, 230]);
+    };
 
-Product Designer — FinEdge
-2020–2022 · Remote
-• Redesigned core dashboard, increasing daily active usage by 31%
-• Established design tokens and component library from scratch
-• Managed design QA process with 2 junior designers
+    // ── HEADER ──
+    addLine('AISHA RAHMAN', { size: 22, bold: true, color: [30, 20, 80], center: true });
+    y += 1;
+    addLine('Senior Product Designer  ·  Kuala Lumpur, Malaysia', { size: 10, color: [100, 90, 140], center: true });
+    addLine('aisha.rahman@email.com  ·  linkedin.com/in/aisha-rahman  ·  +60 11-2345 6789', { size: 9, color: [120, 110, 160], center: true });
+    y += 2;
+    addRule([91, 46, 255]);
 
-UX Designer — Kite Digital
-2018–2020 · Kuala Lumpur
-• Delivered UI/UX for 8 client projects across e-commerce, healthcare, and education sectors
+    // ── SUMMARY ──
+    section('PROFESSIONAL SUMMARY');
+    const summary = 'Results-driven Senior Product Designer with 6+ years of experience in B2B SaaS and fintech. Proven track record of leading design systems, conducting user research, and delivering measurable product outcomes. Currently transitioning toward Senior Product Manager roles with a strong foundation in cross-functional collaboration, stakeholder management, and data-informed product strategy.';
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(50, 50, 70);
+    const summaryLines = doc.splitTextToSize(summary, W - margin * 2);
+    doc.text(summaryLines, margin, y);
+    y += summaryLines.length * 5 + 4;
 
-SKILLS
-Design: Figma, Prototyping, User Research, Design Systems, Wireframing
-Product: Roadmap Planning, Stakeholder Management, OKR Setting, Agile/Scrum
-Technical: HTML/CSS, React basics, SQL basics, Prompt Engineering
+    // ── EXPERIENCE ──
+    section('PROFESSIONAL EXPERIENCE');
 
-EDUCATION
-B.Sc. Computer Science with Design — Universiti Malaya · 2018
-Google UX Design Certificate · 2020
+    const jobs = [
+      {
+        role: 'Senior Product Designer',
+        company: 'Bloompay',
+        period: '2022 – Present  ·  Kuala Lumpur',
+        bullets: [
+          'Led end-to-end design of mobile payment flow adopted by 240,000+ active users',
+          'Built and maintained a 120-component design system, reducing dev handoff time by 40%',
+          'Facilitated 18 user research sessions, reducing onboarding drop-off rate by 22%',
+          'Partnered with PM and engineering on roadmap prioritisation for 3 product squads',
+        ],
+      },
+      {
+        role: 'Product Designer',
+        company: 'FinEdge',
+        period: '2020 – 2022  ·  Remote',
+        bullets: [
+          'Redesigned core analytics dashboard, increasing daily active usage by 31%',
+          'Established design tokens and component library from scratch for a 12-engineer team',
+          'Managed design QA process with 2 junior designers across 4 product areas',
+        ],
+      },
+      {
+        role: 'UX Designer',
+        company: 'Kite Digital',
+        period: '2018 – 2020  ·  Kuala Lumpur',
+        bullets: [
+          'Delivered UI/UX for 8 client projects across e-commerce, healthcare, and education sectors',
+          'Improved client NPS by an average of 18 points through user-centered redesigns',
+        ],
+      },
+    ];
 
-CAREER SCORE: 78/100 · MARKET VALUE: RM 92,000`;
-    const blob=new Blob([resume],{type:'text/plain'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;
-    a.download='Aisha_Rahman_Resume.txt';
-    a.click();
+    for (const job of jobs) {
+      if (y > 250) { doc.addPage(); y = 20; }
+      doc.setFontSize(10.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(30, 20, 80);
+      doc.text(job.role, margin, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(91, 46, 255);
+      doc.text(` — ${job.company}`, margin + doc.getTextWidth(job.role), y);
+      y += 5;
+      doc.setFontSize(8.5);
+      doc.setTextColor(120, 110, 160);
+      doc.text(job.period, margin, y);
+      y += 5;
+      doc.setFontSize(9.5);
+      doc.setTextColor(50, 50, 70);
+      for (const b of job.bullets) {
+        const wrapped = doc.splitTextToSize(`• ${b}`, W - margin * 2 - 4);
+        doc.text(wrapped, margin + 2, y);
+        y += wrapped.length * 4.8;
+      }
+      y += 3;
+    }
+
+    // ── SKILLS ──
+    if (y > 240) { doc.addPage(); y = 20; }
+    section('SKILLS & EXPERTISE');
+    const skillCols = [
+      ['Design', 'Figma', 'Prototyping', 'User Research', 'Design Systems', 'Wireframing', 'UI/UX'],
+      ['Product', 'Roadmap Planning', 'Stakeholder Mgmt', 'OKR Setting', 'Agile / Scrum', 'A/B Testing'],
+      ['Technical', 'HTML / CSS', 'React basics', 'SQL basics', 'Prompt Engineering', 'Analytics'],
+    ];
+    const colW = (W - margin * 2) / 3;
+    const skillY = y;
+    for (let i = 0; i < skillCols.length; i++) {
+      let cy = skillY;
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(91, 46, 255);
+      doc.text(skillCols[i][0], margin + i * colW, cy);
+      cy += 5;
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(50, 50, 70);
+      for (const s of skillCols[i].slice(1)) {
+        doc.setFontSize(8.5);
+        doc.text(`• ${s}`, margin + i * colW + 1, cy);
+        cy += 4.5;
+      }
+      y = Math.max(y, cy);
+    }
+    y += 4;
+
+    // ── EDUCATION ──
+    if (y > 250) { doc.addPage(); y = 20; }
+    section('EDUCATION & CERTIFICATIONS');
+    const edu = [
+      { deg: 'B.Sc. Computer Science with Design', inst: 'Universiti Malaya', year: '2018' },
+      { deg: 'Google UX Design Certificate', inst: 'Google / Coursera', year: '2020' },
+      { deg: 'Product Management Foundations', inst: 'Product School', year: '2023' },
+    ];
+    for (const e of edu) {
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(30, 20, 80);
+      doc.text(e.deg, margin, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(120, 110, 160);
+      doc.text(`${e.inst}  ·  ${e.year}`, margin, y + 4.5);
+      y += 10;
+    }
+    y += 2;
+
+    // ── FOOTER ──
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(160, 150, 190);
+    doc.text('Generated by CareerGo · Career OS Platform  ·  careergo.app', W / 2, 285, { align: 'center' });
+
+    doc.save('Aisha_Rahman_Resume.pdf');
+    toast('Resume PDF downloaded successfully!', 'download');
+  } catch(e) {
+    // Fallback to text if jsPDF not loaded
+    const blob = new Blob(['AISHA RAHMAN\nProduct Designer · Kuala Lumpur\n\nResume export — please view in browser for PDF.'], {type:'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'Resume.txt'; a.click();
     URL.revokeObjectURL(url);
-    toast('Resume downloaded successfully!','download');
-  };
+    toast('Resume downloaded (PDF library not loaded, fallback used)', 'download');
+  }
+};
 
   const scores=[
     {label:'ATS Score',value:84,color:'#22c55e',note:'Well optimised'},
