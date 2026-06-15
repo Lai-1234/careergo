@@ -3193,7 +3193,7 @@ function CandidateApp({ lang, toggleLang, go, toast }){
     jobs:      <JobsOpportunities toast={toast}/>,
     companion: <CareerCompanion toast={toast} setView={setView}/>,
     pay:       <MarketIntelligence toast={toast}/>,
-    auto:      <AutopilotProxy toast={toast}/>,
+    auto:      <AutopilotProxy toast={toast} setView={setView}/>,
     assistant: <AIAssistant toast={toast} setView={setView}/>,
   };
 
@@ -4256,7 +4256,7 @@ function CareerCompanion({ toast, setView }){
           <Card className="p-5 bg-brand-50 border border-brand-100">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-brand-900 flex items-center gap-2"><Icon name="sparkles" size={15} className="text-brand-600"/> AI Recommendations</h3>
-              <button onClick={()=>toast('Opening AI Assistant…','bot')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
+              <button onClick={()=>setView&&setView('assistant')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
                 Discuss With AI Assistant →
               </button>
             </div>
@@ -4362,7 +4362,7 @@ function CareerCompanion({ toast, setView }){
           <Card className="p-5 bg-brand-50 border border-brand-100">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-brand-900 flex items-center gap-2"><Icon name="sparkles" size={15} className="text-brand-600"/> AI Suggested Skill Paths</h3>
-              <button onClick={()=>toast('Opening AI Assistant…','bot')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
+              <button onClick={()=>setView&&setView('assistant')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
                 Continue In AI Assistant →
               </button>
             </div>
@@ -4373,7 +4373,7 @@ function CareerCompanion({ toast, setView }){
                 {path:'Technical Specialist',desc:'Design systems + component APIs. Unlocks Staff IC path.',icon:'code-2',color:'#6D28D9'},
                 {path:'Management Track',desc:'People management + hiring + 1:1 coaching + OKR setting.',icon:'briefcase',color:'#EF9F27'},
               ].map(p=>(
-                <button key={p.path} onClick={()=>toast(`Starting ${p.path} in AI Assistant…`,'sparkles')}
+                <button key={p.path} onClick={()=>setView&&setView('assistant')}
                   className="p-4 rounded-xl bg-white border border-brand-100 text-left hover:border-brand-400 transition">
                   <div className="flex items-center gap-2 mb-1.5">
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background:`${p.color}20`}}>
@@ -5287,7 +5287,7 @@ const TRACKED_APPS=[
 /* ══════════════════════════════════════════════════════════════
    18. AUTOPILOT PROXY
 ══════════════════════════════════════════════════════════════ */
-function AutopilotProxy({ toast }){
+function AutopilotProxy({ toast, setView }){
   const [active,setActive]=useState(false);
   const [scanned,setScanned]=useState(1284);
   const [appliedCount,setAppliedCount]=useState(7);
@@ -5539,7 +5539,7 @@ function AutopilotProxy({ toast }){
               <span className="text-sm font-bold text-brand-900">Advanced AI Rules</span>
             </div>
             <p className="text-xs text-slate-500 mb-3">Manage complex career preferences and application strategies through AI Assistant.</p>
-            <button onClick={()=>toast('Opening AI Assistant…','bot')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
+            <button onClick={()=>setView&&setView('assistant')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
               Configure in AI Assistant →
             </button>
           </div>
