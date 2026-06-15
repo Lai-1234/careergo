@@ -289,6 +289,34 @@ tailwind.config = {
   .chip-multi.on{background:#5B2EFF;color:#fff;border-color:#5B2EFF;}
   .chip-multi.off{background:white;color:#475569;border-color:#e2e8f0;}
   .chip-multi.off:hover{border-color:#8B5CF6;}
+/* Batch E */
+.mission-card{border-radius:14px;border:1px solid #f1f5f9;background:white;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color 150ms,box-shadow 150ms;}
+.mission-card:hover{border-color:#8B5CF6;box-shadow:0 2px 12px rgba(91,46,255,0.08);}
+.mission-card.done{background:#f0fdf4;border-color:#86efac;}
+.roadmap-line{position:relative;padding-left:32px;}
+.roadmap-line::before{content:'';position:absolute;left:11px;top:24px;bottom:0;width:2px;background:linear-gradient(to bottom,#8B5CF6,#e2e8f0);}
+.roadmap-dot{position:absolute;left:0;top:4px;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+.roadmap-dot.done{background:#1D9E75;color:white;}
+.roadmap-dot.active{background:#5B2EFF;color:white;box-shadow:0 0 0 4px rgba(91,46,255,0.2);}
+.roadmap-dot.future{background:#e2e8f0;color:#94a3b8;}
+.interview-category-card{border-radius:16px;border:2px solid #f1f5f9;background:white;padding:20px;cursor:pointer;transition:all 150ms;}
+.interview-category-card:hover{border-color:#8B5CF6;transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,46,255,0.1);}
+.interview-category-card.active{border-color:#5B2EFF;background:#f4f0ff;}
+.sim-bubble{border-radius:16px;padding:14px 18px;max-width:80%;font-size:14px;line-height:1.6;}
+.sim-bubble.interviewer{background:#f4f0ff;color:#1e1b4b;border-radius:16px 16px 16px 4px;}
+.sim-bubble.user{background:#5B2EFF;color:white;border-radius:16px 16px 4px 16px;}
+.ai-chat-bubble{border-radius:18px;padding:16px 20px;max-width:82%;font-size:14px;line-height:1.7;}
+.ai-chat-bubble.assistant{background:#f4f0ff;color:#1e1b4b;border-radius:18px 18px 18px 4px;}
+.ai-chat-bubble.user{background:#5B2EFF;color:white;border-radius:18px 18px 4px 18px;}
+.workspace-tab{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:all 150ms;white-space:nowrap;}
+.workspace-tab.active{background:#5B2EFF;color:white;}
+.workspace-tab.inactive{background:transparent;color:#64748b;}
+.workspace-tab.inactive:hover{background:#f1f5f9;color:#334155;}
+.quick-action-btn{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid #e2e8f0;background:white;cursor:pointer;font-size:13px;font-weight:600;color:#334155;transition:all 150ms;text-align:left;}
+.quick-action-btn:hover{border-color:#8B5CF6;background:#f4f0ff;color:#5B2EFF;}
+.skill-level-bar{height:8px;border-radius:4px;background:#e2e8f0;overflow:hidden;}
+.skill-level-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#5B2EFF,#8B5CF6);transition:width 800ms cubic-bezier(.4,0,.2,1);}
+.score-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;}
 </style>
 </head>
 <body>
@@ -872,6 +900,124 @@ const INBOX_ITEMS=[
   {id:2,time:'08:03',title:'Applied — Product Designer (Growth)',company:'Bloompay',match:91,note:'Above pay floor, remote, matched skills.',applied:true},
   {id:3,time:'08:04',title:'Skipped — UX Lead',company:'Orbit Health',match:88,note:'Weekend on-call required. Against your rules.',applied:false,skipReason:'Salary Below Threshold'},
   {id:4,time:'08:05',title:'Applied — Design Systems Engineer',company:'Vertex',match:86,note:'Matched 4 of 5 required skills.',applied:true},
+];
+
+const CAREER_GOALS=[
+  {id:1,title:'Land New Job',icon:'briefcase',desc:'Transition to Senior Product Manager',timeline:'6 Months',priority:'High',status:'Active',progress:62},
+  {id:2,title:'Salary Increase',icon:'trending-up',desc:'Reach RM 120,000 base salary',timeline:'12 Months',priority:'High',status:'Active',progress:45},
+  {id:3,title:'Become Team Lead',icon:'users',desc:'Lead a product design team of 3+',timeline:'18 Months',priority:'Med',status:'Planned',progress:20},
+];
+
+const ROADMAP_MILESTONES=[
+  {period:'Today',label:'Profile & Skills Audit',status:'done',tasks:['Complete skill verification','Update resume','Review market positioning']},
+  {period:'30 Days',label:'Leadership Project Start',status:'active',tasks:['Volunteer for cross-team initiative','Complete stakeholder mapping','Schedule 1st cross-functional review']},
+  {period:'90 Days',label:'Portfolio Case Study',status:'future',tasks:['Document Bloompay design system','Publish impact metrics','Add to portfolio site']},
+  {period:'6 Months',label:'Promotion Bid Preparation',status:'future',tasks:['Collect peer feedback','Prepare impact summary','Schedule 1:1 with manager']},
+  {period:'12 Months',label:'Senior Role Target',status:'future',tasks:['Apply to target companies','Negotiate offer','Transition plan']},
+];
+
+const DAILY_MISSIONS=[
+  {id:1,label:'Update resume with Bloompay project outcome',xp:50,done:true,category:'Resume'},
+  {id:2,label:'Apply to 2 matched jobs on CareerGo',xp:75,done:true,category:'Job Search'},
+  {id:3,label:'Complete 1 practice interview question',xp:60,done:false,category:'Interview'},
+  {id:4,label:'Review AI market signals for Product Design',xp:30,done:false,category:'Market'},
+  {id:5,label:'Improve LinkedIn headline',xp:40,done:false,category:'Networking'},
+];
+
+const WEEKLY_MISSIONS=[
+  {id:1,label:'Complete mock interview session',xp:200,done:false,category:'Interview'},
+  {id:2,label:'Attend 1 industry networking event',xp:150,done:false,category:'Networking'},
+  {id:3,label:'Finish Leadership Fundamentals module',xp:180,done:true,category:'Learning'},
+  {id:4,label:'Portfolio case study — first draft',xp:250,done:false,category:'Portfolio'},
+];
+
+const SUCCESS_METRICS=[
+  {label:'Interview Readiness',value:72,target:90,color:'#5B2EFF'},
+  {label:'Resume Strength',value:84,target:95,color:'#1D9E75'},
+  {label:'Career Readiness',value:68,target:85,color:'#6D28D9'},
+  {label:'Promotion Readiness',value:55,target:80,color:'#EF9F27'},
+  {label:'Networking Score',value:41,target:70,color:'#8B5CF6'},
+  {label:'Market Competitiveness',value:79,target:90,color:'#3b82f6'},
+];
+
+const CAREER_RISKS=[
+  {risk:'Missing Leadership Experience',level:'High',rec:'Volunteer to lead a cross-team project this quarter — it closes the biggest gap before any promotion bid.'},
+  {risk:'Limited Portfolio Visibility',level:'High',rec:'Document and publish your Bloompay design system work. It directly raises your market value by est. RM 8–12k.'},
+  {risk:'Weak Networking Activity',level:'Med',rec:'Attend 1 industry event per month. Your network has not grown in 6+ months.'},
+  {risk:'Outdated Stakeholder Skills',level:'Med',rec:'Complete the Stakeholder Management short course — it appears in 78% of Senior PM job descriptions.'},
+];
+
+const ACTIVE_LEARNING_PLANS=[
+  {id:1,title:'Leadership Development',progress:65,weeks:8,impact:'High',demand:'High',color:'#5B2EFF',skills:['Team Leadership','Decision Making','1:1 Coaching']},
+  {id:2,title:'AI Product Management',progress:30,weeks:12,impact:'Very High',demand:'Very High',color:'#1D9E75',skills:['Prompt Engineering','AI Strategy','LLM Evaluation']},
+  {id:3,title:'Advanced Design Systems',progress:85,weeks:4,impact:'High',demand:'High',color:'#EF9F27',skills:['Token Architecture','Component APIs','Documentation']},
+];
+
+const SKILL_ROADMAP=[
+  {skill:'Product Thinking',current:'Advanced',target:'Expert',time:'3 mo',difficulty:'Medium',outcome:'Unlocks Lead Designer roles'},
+  {skill:'Team Leadership',current:'Beginner',target:'Intermediate',time:'6 mo',difficulty:'High',outcome:'Required for Design Manager'},
+  {skill:'AI Product Design',current:'None',target:'Intermediate',time:'4 mo',difficulty:'Medium',outcome:'+28% salary premium'},
+  {skill:'Stakeholder Management',current:'Intermediate',target:'Advanced',time:'4 mo',difficulty:'Medium',outcome:'Unlocks Staff IC path'},
+];
+
+const SKILL_GAPS=[
+  {category:'Critical',skills:['Team Leadership','Project Ownership','Stakeholder Management'],color:'#ef4444'},
+  {category:'Recommended',skills:['AI Product Design','Data Analysis','Prompt Engineering'],color:'#5B2EFF'},
+  {category:'Future',skills:['LLM Evaluation','AI Ethics','Voice UI Design'],color:'#8B5CF6'},
+  {category:'Emerging',skills:['Spatial Computing','AI Agent Design','Multimodal UX'],color:'#64748b'},
+];
+
+const INTERVIEW_CATEGORIES=[
+  {id:'behavioral',label:'Behavioural',icon:'heart',count:25,desc:'STAR method, situational, competency-based'},
+  {id:'technical',label:'Technical',icon:'code-2',count:42,desc:'Design systems, UX metrics, process'},
+  {id:'portfolio',label:'Portfolio',icon:'folder',count:18,desc:'Case studies, design decisions, outcomes'},
+  {id:'case',label:'Case Study',icon:'lightbulb',count:15,desc:'Problem-solving, ambiguity, frameworks'},
+  {id:'leadership',label:'Leadership',icon:'users',count:20,desc:'People management, vision, influence'},
+  {id:'negotiation',label:'Salary Negotiation',icon:'banknote',count:15,desc:'Offers, counter-offers, anchoring'},
+];
+
+const INTERVIEW_PERSONALITIES=[
+  {id:'friendly',label:'Friendly',icon:'smile',desc:'Warm, encouraging, supportive tone'},
+  {id:'professional',label:'Professional',icon:'briefcase',desc:'Standard corporate interview style'},
+  {id:'strict',label:'Strict',icon:'shield',desc:'Direct, minimal feedback, high standards'},
+  {id:'exec',label:'Executive',icon:'crown',desc:'Strategic, big-picture focus, C-suite style'},
+  {id:'pressure',label:'Pressure',icon:'zap',desc:'Interruptions, challenges, time pressure'},
+  {id:'coach',label:'Supportive Coach',icon:'heart',desc:'Builds confidence, lots of encouragement'},
+];
+
+const AI_QUICK_ACTIONS=[
+  {emoji:'🚀',label:'Build Career Plan'},
+  {emoji:'📈',label:'Increase Market Worth'},
+  {emoji:'🎯',label:'Prepare For Interview'},
+  {emoji:'📝',label:'Improve Resume'},
+  {emoji:'🔍',label:'Find Better Jobs'},
+  {emoji:'🧠',label:'Suggest Skills'},
+  {emoji:'💰',label:'Increase Salary'},
+  {emoji:'👔',label:'Promotion Strategy'},
+  {emoji:'🤝',label:'Salary Negotiation'},
+  {emoji:'📚',label:'Learning Roadmap'},
+  {emoji:'📊',label:'Analyze Market'},
+  {emoji:'📍',label:'Relocation Advice'},
+];
+
+const AI_WORKSPACES=[
+  'Career Planning','Skill Growth','Interview Coach','Resume Review',
+  'Job Search','Market Intelligence','Autopilot Rules','Salary Negotiation','Community Advisor',
+];
+
+const AI_INITIAL_MESSAGES=[
+  {from:'assistant',text:`Hi Aisha 👋 I'm your CareerGo AI. I've reviewed your full profile and I'm ready to help you reach RM 120,000 and Senior Product Manager level.\n\nYour biggest opportunity right now: you're 62% of the way to your 12-month goal, but **leadership project experience** is the one thing blocking your next raise.\n\nWhat would you like to work on today?`},
+];
+
+const AI_CONVERSATION_STARTERS=[
+  'Build a promotion roadmap for me.',
+  'How can I increase my salary to RM 120k?',
+  'Prepare me for a Product Manager interview.',
+  'Suggest the most valuable skills to learn next.',
+  'Create a 90-day career plan.',
+  'Help me switch into AI product management.',
+  'Review my resume and suggest improvements.',
+  'How do I become a team lead in 12 months?',
 ];
 
 const COMMUNITY_POSTS=[
