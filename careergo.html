@@ -3856,144 +3856,103 @@ function MarketIntelligence({ toast }){
    16. FAIR PAY CONTENT
 ══════════════════════════════════════════════════════════════ */
 function FairPayContent(){
-  const [selected,setSelected]=useState([]);
-  const [locIdx,setLocIdx]=useState(0);
-
-  const uplift=PAYOFF_SKILLS.filter(s=>selected.includes(s.name)).reduce((a,s)=>a+s.uplift,0);
-  const projected=USER.marketValue+uplift;
-  const toggle=name=>setSelected(s=>s.includes(name)?s.filter(x=>x!==name):[...s,name]);
-
-  const locs=[
-    {name:'Kuala Lumpur',base:92000,low:72000,high:120000},
-    {name:'Singapore',base:118000,low:95000,high:150000},
-    {name:'Remote (Global)',base:105000,low:80000,high:135000},
-  ];
-  const curLoc=locs[locIdx];
-
-  const compBreakdown=[
-    {label:'Base salary',value:Math.round(projected*0.78),pct:78},
-    {label:'Annual bonus',value:Math.round(projected*0.12),pct:12},
-    {label:'Equity (vested/yr)',value:Math.round(projected*0.07),pct:7},
-    {label:'Benefits & perks',value:Math.round(projected*0.03),pct:3},
-  ];
-
-  const projection=[
-    {yr:'2025',val:projected},{yr:'2026',val:Math.round(projected*1.09)},
-    {yr:'2027',val:Math.round(projected*1.19)},{yr:'2028',val:Math.round(projected*1.31)},
-  ];
-  const projMax=projection[projection.length-1].val;
-
-  const pct=Math.round((1-(USER.marketValue-USER.marketMin)/(USER.marketMax-USER.marketMin))*100);
+  const [roleIdx,setRoleIdx]=useState(1);
+  const role=CAREER_ROLES[roleIdx];
 
   return (
     <div className="space-y-6">
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Gauge + location */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-3">
-            <span className="font-semibold text-slate-700">Market Value Meter</span>
-            <Badge tone="green" dot>Skills verified</Badge>
-          </div>
-          <div className="text-xs font-semibold mb-1" style={{color:'#1D9E75'}}>
-            Top {pct}% for your seniority and location
-          </div>
-          <Gauge value={projected} min={USER.marketMin} max={USER.marketMax} size={300} label={uplift?'Projected value':'Current value'}/>
-          {uplift>0&&<div className="text-center mt-2 text-sm text-emerald-600 font-semibold flex items-center justify-center gap-1.5"><Icon name="trending-up" size={15}/>+RM {(uplift/1000).toFixed(0)}k from selected skills</div>}
-          {/* Location switcher */}
-          <div className="mt-5">
-            <div className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">Location adjustment</div>
-            <div className="flex gap-2">
-              {locs.map((l,i)=>(
-                <button key={l.name} onClick={()=>setLocIdx(i)}
-                  className={`flex-1 text-xs font-semibold py-2 rounded-xl border transition ${locIdx===i?'bg-brand-700 text-white border-brand-700':'bg-white border-slate-200 text-slate-600 hover:border-brand-300'}`}>
-                  {l.name}
-                </button>
-              ))}
-            </div>
-            <div className="mt-3 grid grid-cols-3 gap-3 text-center">
-              <div className="bg-slate-50 rounded-xl p-3"><div className="text-xs text-slate-400">Floor</div><div className="font-bold text-slate-700">RM {(curLoc.low/1000).toFixed(0)}k</div></div>
-              <div className="bg-brand-50 rounded-xl p-3"><div className="text-xs text-brand-500">Your fair pay</div><div className="font-bold text-brand-800">RM {(curLoc.base/1000).toFixed(0)}k</div></div>
-              <div className="bg-slate-50 rounded-xl p-3"><div className="text-xs text-slate-400">Ceiling</div><div className="font-bold text-slate-700">RM {(curLoc.high/1000).toFixed(0)}k</div></div>
-            </div>
-          </div>
-        </Card>
-        {/* Skill payoff calculator */}
-        <Card className="p-6">
-          <h3 className="font-bold text-slate-900 mb-1 flex items-center gap-2"><Icon name="calculator" size={16} className="text-brand-600"/> Skill Payoff — what each skill adds</h3>
-          <p className="text-sm text-slate-500 mb-4">Pick skills to learn and see the salary impact instantly.</p>
-          <div className="space-y-2">
-            {PAYOFF_SKILLS.map(s=>(
-              <button key={s.name} onClick={()=>toggle(s.name)}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl border transition ${selected.includes(s.name)?'bg-brand-50 border-brand-300':'bg-white border-slate-100 hover:border-brand-200'}`}>
-                <Icon name={selected.includes(s.name)?'check-circle-2':'plus-circle'} size={18} className={selected.includes(s.name)?'text-brand-600':'text-slate-300'}/>
-                <div className="flex-1 text-left">
-                  <div className="text-sm font-medium text-slate-800">{s.name}</div>
-                  <div className="text-xs text-slate-400">Demand: {s.demand} · Learn in {s.time}</div>
-                </div>
-                <span className="text-sm font-bold text-emerald-600">+RM {(s.uplift/1000).toFixed(0)}k</span>
-              </button>
-            ))}
-          </div>
-          <div className="mt-4 rounded-2xl bg-gradient-to-r from-brand-950 to-brand-700 p-5 text-white">
-            <div className="text-sm text-brand-200">Projected market value</div>
-            <div className="text-3xl font-extrabold mt-1">RM {(projected/1000).toFixed(0)}k<span className="text-lg font-medium text-brand-300"> / year</span></div>
-            <div className="text-xs text-brand-300 mt-1">
-              {selected.length?`Learning ${selected.length} skill${selected.length>1?'s':''} lifts you ${((uplift/USER.marketValue)*100).toFixed(0)}%`:'Select skills above to model your upside.'}
-            </div>
-          </div>
-        </Card>
-      </div>
-      {/* Compensation breakdown + pay projection */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="pie-chart" size={15} className="text-brand-600"/> Compensation Breakdown</h3>
-          <div className="space-y-3">
-            {compBreakdown.map(c=>(
-              <div key={c.label}>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-slate-600">{c.label}</span>
-                  <span className="font-bold text-slate-900">RM {(c.value/1000).toFixed(0)}k<span className="text-xs text-slate-400 ml-1">({c.pct}%)</span></span>
-                </div>
-                <ProgressBar value={c.pct} tone="brand"/>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 pt-3 border-t border-slate-100 flex justify-between">
-            <span className="font-bold text-slate-900">Total compensation</span>
-            <span className="font-extrabold text-brand-950">RM {(projected/1000).toFixed(0)}k</span>
-          </div>
-        </Card>
-        <Card className="p-6">
-          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="line-chart" size={15} className="text-brand-600"/> Pay Growth Projection</h3>
-          <div className="flex items-end gap-3 h-40">
-            {projection.map((p,i)=>(
-              <div key={p.yr} className="flex-1 flex flex-col items-center gap-1">
-                <div className="text-xs font-bold text-slate-700">RM {(p.val/1000).toFixed(0)}k</div>
-                <div className="w-full rounded-t-xl bg-gradient-to-t from-brand-700 to-brand-400 transition-all" style={{height:`${(p.val/projMax)*120}px`}}/>
-                <div className="text-xs text-slate-400">{p.yr}</div>
-              </div>
-            ))}
-          </div>
-          <p className="text-xs text-slate-400 mt-3">Projection assumes consistent skill development and market rate growth of ~9%/yr for your profile.</p>
-        </Card>
-      </div>
-      {/* Why this number */}
-      <Card className="p-6">
-        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="info" size={15} className="text-brand-600"/> Why this number — no black box</h3>
-        <div className="grid sm:grid-cols-3 gap-4">
+
+      {/* Career Worth Dashboard */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-slate-900">Career Worth Dashboard</h2>
+          <span className="text-xs text-slate-400">Based on your verified profile · KL Market</span>
+        </div>
+        <div className="grid grid-cols-3 gap-4">
           {[
-            {icon:'users',t:'Peer benchmarking',d:'Compared against 2,400 designers with your skills, seniority and region.'},
-            {icon:'shield-check',t:'Verified skills',d:'5 of your 6 skills are evidence-verified, raising confidence in the estimate.'},
-            {icon:'map-pin',t:'Geography-adjusted',d:'Calibrated to Kuala Lumpur salary bands + remote pay premiums.'},
-          ].map(({icon,t,d})=>(
-            <div key={t} className="bg-slate-50 rounded-xl p-4">
-              <Icon name={icon} size={18} className="text-brand-600 mb-2"/>
-              <div className="font-semibold text-slate-800 text-sm">{t}</div>
-              <p className="text-xs text-slate-500 mt-1">{d}</p>
+            {label:'Current Worth',value:'RM 92,000',sub:'Your profile today',bg:'#f8fafc',border:'#e2e8f0',vc:'#1e293b'},
+            {label:'Target Worth',value:'RM 120,000',sub:'+30% achievable',bg:'#f4f0ff',border:'#c4b5fd',vc:'#5B2EFF'},
+            {label:'Potential Worth',value:'RM 145,000',sub:'Full skill potential',bg:'#fffbeb',border:'#fde68a',vc:'#d97706'},
+          ].map(w=>(
+            <div key={w.label} className="worth-card" style={{background:w.bg,border:`1px solid ${w.border}`}}>
+              <p className="text-xs font-semibold text-slate-400 mb-1">{w.label}</p>
+              <p className="text-2xl font-extrabold" style={{color:w.vc}}>{w.value}</p>
+              <p className="text-xs text-slate-400 mt-1">{w.sub}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Value Breakdown */}
+      <Card className="p-5">
+        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="pie-chart" size={15} className="text-brand-600"/> Value Breakdown</h3>
+        <div className="space-y-3">
+          {[
+            {label:'Experience (5 yrs)',value:28000,max:30000},
+            {label:'Skills (Figma, Systems, Research)',value:18000,max:30000},
+            {label:'Industry Premium (Fintech)',value:12000,max:30000},
+            {label:'Location (Kuala Lumpur)',value:8000,max:30000},
+            {label:'Leadership Potential',value:15000,max:30000},
+            {label:'Market Demand',value:11000,max:30000},
+          ].map(c=>(
+            <div key={c.label} className="flex items-center gap-3">
+              <span className="text-sm text-slate-600 w-52 shrink-0">{c.label}</span>
+              <div className="contrib-bar-track">
+                <div className="contrib-bar-fill" style={{width:`${Math.round((c.value/c.max)*100)}%`}}/>
+              </div>
+              <span className="text-sm font-bold text-slate-700 w-20 text-right shrink-0">+RM {Math.round(c.value/1000)}k</span>
             </div>
           ))}
         </div>
       </Card>
+
+      {/* Career Value Explorer */}
+      <Card className="p-5">
+        <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2"><Icon name="layers" size={15} className="text-brand-600"/> Career Value Explorer</h3>
+        <div className="flex gap-1.5 flex-wrap mb-4">
+          {CAREER_ROLES.map((r,i)=>(
+            <button key={r.role} onClick={()=>setRoleIdx(i)}
+              className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${roleIdx===i?'bg-brand-700 text-white border-brand-700':'bg-white text-slate-600 border-slate-200 hover:border-brand-300'}`}>
+              {r.role}
+            </button>
+          ))}
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {[
+            {label:'Salary Range',value:role.range,icon:'banknote'},
+            {label:'Market Demand',value:role.demand,icon:'trending-up'},
+            {label:'Growth Potential',value:role.growth,icon:'rocket'},
+            {label:'Remote Opps',value:`${role.remote}%`,icon:'globe'},
+            {label:'Hiring Trend',value:role.trend,icon:'bar-chart-2'},
+          ].map(m=>(
+            <div key={m.label} className="bg-slate-50 rounded-xl p-3">
+              <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1"><Icon name={m.icon} size={12}/>{m.label}</div>
+              <div className="text-sm font-bold text-slate-800">{m.value}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Market Value Growth Simulator */}
+      <Card className="p-5">
+        <h3 className="font-bold text-slate-900 mb-1 flex items-center gap-2"><Icon name="zap" size={15} className="text-amber-500"/> Market Value Growth Simulator</h3>
+        <p className="text-sm text-slate-400 mb-4">See how adding skills compounds your career worth</p>
+        <div className="grid grid-cols-2 gap-3">
+          {SALARY_SCENARIOS.map(s=>(
+            <div key={s.id} className="scenario-card">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-slate-400">Scenario {s.id}</span>
+                {s.gain&&<span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{background:'rgba(29,158,117,0.1)',color:'#1D9E75'}}>{s.gain} growth</span>}
+              </div>
+              <div className="text-xl font-extrabold mb-2" style={{color:s.color}}>{s.value}</div>
+              {s.skills.length>0
+                ?<div className="flex flex-wrap gap-1">{s.skills.map(sk=><span key={sk} className="text-xs bg-brand-50 text-brand-700 px-2 py-0.5 rounded-full">{sk}</span>)}</div>
+                :<span className="text-xs text-slate-400">Current profile</span>}
+            </div>
+          ))}
+        </div>
+      </Card>
+
     </div>
   );
 }
