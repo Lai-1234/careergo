@@ -379,11 +379,21 @@ tailwind.config = {
 .scan-pulse { animation: scanPulse 1.8s ease-in-out infinite; }
 
 @keyframes scanBar {
-  0% { left: -30%; }
+  0% { left: -35%; }
   100% { left: 110%; }
 }
-.scan-bar-wrap { position:relative; overflow:hidden; height:3px; border-radius:2px; background:rgba(91,46,255,0.12); }
-.scan-bar-fill { position:absolute; top:0; height:100%; width:30%; border-radius:2px; background:linear-gradient(90deg,transparent,#5B2EFF,transparent); animation:scanBar 1.6s linear infinite; }
+/* Unified career scan animation — identical timing used by Autopilot and Jobs pages */
+.scan-bar-wrap,
+.career-scan-bar-wrap { position:relative; overflow:hidden; height:3px; border-radius:2px; background:rgba(91,46,255,0.12); }
+.scan-bar-fill,
+.career-scan-bar-fill { position:absolute; top:0; height:100%; width:30%; border-radius:2px; background:linear-gradient(90deg,transparent,#5B2EFF,transparent); animation:scanBar 1.8s ease-in-out infinite; }
+
+/* Unified radar dot — same timing as radarPing (1.8s ease-out) */
+.career-scan-dot { position:absolute; width:10px; height:10px; border-radius:50%; background:#FDBA2D; animation:radarPing 1.8s ease-out infinite; }
+.career-scan-dot:nth-child(2) { animation-delay:0.6s; }
+.career-scan-dot:nth-child(3) { animation-delay:1.2s; }
+/* Glow pulse — same 1.8s ease-in-out as scanPulse */
+.career-scan-status { animation:scanPulse 1.8s ease-in-out infinite; }
 
 /* Progress bar fill animation */
 @keyframes growWidth {
@@ -3353,7 +3363,7 @@ function CandidateApp({ lang, toggleLang, go, toast }){
               className={`nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium ${view===n.id?'active text-white':'text-brand-200 hover:text-white'}`}>
               <Icon name={n.icon} size={18}/>
               <span className="flex-1 text-left">{t(n.tk)}</span>
-              {n.id==='jobs'&&USER.newMatches>0&&<span className="nav-gold-dot"/>}
+              {view===n.id&&<span className="nav-gold-dot" style={{transition:'opacity 300ms ease-in-out'}}/>}
             </button>
           ))}
         </nav>
@@ -4120,6 +4130,18 @@ function JobsOpportunities({ toast }){
               ))}
             </div>
           </div>
+        </div>
+        {/* Unified scan animation bar — same visual as Autopilot */}
+        <div className="mt-4 flex items-center gap-3">
+          <div className="relative w-5 h-5 flex items-center justify-center shrink-0">
+            <span className="career-scan-dot" style={{width:8,height:8}}/>
+            <span className="career-scan-dot" style={{width:8,height:8}}/>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 relative z-10 career-scan-status"/>
+          </div>
+          <div className="career-scan-bar-wrap flex-1">
+            <div className="career-scan-bar-fill"/>
+          </div>
+          <span className="text-xs font-semibold shrink-0" style={{color:'rgba(255,255,255,0.6)'}}>AI Matching Active · {USER.newMatches} new matches</span>
         </div>
       </div>
 
@@ -5768,8 +5790,8 @@ function AutopilotProxy({ toast, setView }){
       <div className="space-y-6">
       <Card className="p-4 flex flex-col gap-3">
         {active&&(
-          <div className="scan-bar-wrap mb-3">
-            <div className="scan-bar-fill"/>
+          <div className="career-scan-bar-wrap mb-3">
+            <div className="career-scan-bar-fill"/>
           </div>
         )}
         <div className="flex items-center justify-between flex-wrap gap-4">
