@@ -4474,6 +4474,11 @@ function AutopilotProxy({ toast }){
               style={active?{}:{background:'#5B2EFF',boxShadow:'0 0 20px rgba(91,46,255,0.4)'}}>
               <Icon name={active?'pause':'play'} size={16}/>{active?'Pause autopilot':'Start autopilot'}
             </button>
+            <button onClick={()=>toast('Scanning market — no applications sent','search')}
+              className="mt-2 flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-xl border transition"
+              style={{borderColor:'rgba(255,255,255,0.2)',color:'rgba(255,255,255,0.65)'}}>
+              <Icon name="search" size={13}/> Scan Jobs Only
+            </button>
           </div>
 
           {/* Center: radar */}
@@ -4530,6 +4535,29 @@ function AutopilotProxy({ toast }){
       </div>
 
       {apTab==='activity'&&(
+      <div className="space-y-6">
+      <Card className="p-4 flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-3">
+          <span className={`flex items-center gap-1.5 text-sm font-bold px-3 py-1.5 rounded-full ${active?'bg-emerald-50 text-emerald-600':'bg-slate-100 text-slate-500'}`}>
+            <span className={`w-2 h-2 rounded-full inline-block ${active?'bg-emerald-500':'bg-slate-300'}`}/>
+            {active?'Active — Scanning':'Paused'}
+          </span>
+          <span className="text-sm text-slate-400">Last scan: {active?'2 min ago':'—'}</span>
+        </div>
+        <div className="flex items-center gap-6">
+          {[
+            {n:scanned.toLocaleString(),l:'Scanned',c:'text-slate-800'},
+            {n:'16',l:'Recommended',c:'text-brand-700'},
+            {n:appliedCount,l:'Applied',c:'text-emerald-600'},
+            {n:'12',l:'Saved',c:'text-amber-600'},
+          ].map(({n,l,c})=>(
+            <div key={l} className="text-center">
+              <div className={`text-lg font-extrabold ${c}`}>{n}</div>
+              <div className="text-xs text-slate-400">{l}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Preferences */}
         <Card className="p-6 space-y-5">
@@ -4607,6 +4635,7 @@ function AutopilotProxy({ toast }){
             Showing today's activity · <strong>{scanned.toLocaleString()}</strong> scanned · <strong>{appliedCount}</strong> applied · <strong>3</strong> held
           </div>
         </Card>
+      </div>
       </div>
       )}
       {apTab==='tracker'&&(
