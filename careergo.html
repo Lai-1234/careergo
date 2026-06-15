@@ -595,6 +595,16 @@ function getEmployerJobById(jobs,id){
   return jobs.find(job=>job.id===id);
 }
 
+function buildEmployerPostDraft(job){
+  return {
+    role:job?.title || '',
+    location:job?.location || '',
+    caption:'',
+    tags:job?.mustHave?.slice(0,3).join(', ') || '',
+    priority:job?.priority || 'Medium',
+  };
+}
+
 function EmployerDashboardV2({ setView, jobs, pipeline, savedCandidateIds, selectedJobId }){
   const selectedJob=getEmployerJobById(jobs,selectedJobId)||jobs[0];
   const activeJobs=jobs.filter(job=>job.status==='Active');
@@ -700,13 +710,14 @@ function EmployerRolesWorkspace(props){
   return <EmployerRolesWorkspaceV2 {...props} />;
 }
 
-function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast, setView, updateJobStatus, posts, onTogglePostLike, onUpdatePost }){
+function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast, setView, updateJobStatus, posts, onTogglePostLike, onUpdatePost, onCreatePost }){
   const selectedJob=getEmployerJobById(jobs,selectedJobId)||jobs[0];
   const [feedFilter,setFeedFilter]=useState('all');
   const [workspaceTab,setWorkspaceTab]=useState('feed');
   const ownPosts=posts.filter(post=>post.own);
   const [editingPostId,setEditingPostId]=useState(ownPosts[0]?.id || null);
   const editingPost=posts.find(post=>post.id===editingPostId) || ownPosts[0] || posts[0];
+  const [editorMode,setEditorMode]=useState('edit');
   const [editorDraft,setEditorDraft]=useState(()=>{
     const base=ownPosts[0] || posts[0];
     return base ? {
@@ -715,10 +726,14 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
       caption:base.caption,
       tags:base.tags.join(', '),
       priority:base.priority,
-    } : { role:'', location:'', caption:'', tags:'', priority:'Medium' };
+    } : buildEmployerPostDraft(selectedJob);
   });
 
   useEffect(()=>{
+    if(editorMode==='create'){
+      setEditorDraft(buildEmployerPostDraft(selectedJob));
+      return;
+    }
     if(!editingPost) return;
     setEditorDraft({
       role:editingPost.role,
@@ -727,7 +742,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
       tags:editingPost.tags.join(', '),
       priority:editingPost.priority,
     });
-  },[editingPostId]);
+  },[editingPostId, editorMode, selectedJobId]);
 
   const visiblePosts=posts.filter(post=>{
     if(feedFilter==='mine') return post.own;
@@ -738,7 +753,34 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
   const totalComments=posts.reduce((sum,post)=>sum+post.comments.length,0);
   const totalLikes=posts.reduce((sum,post)=>sum+post.likes,0);
 
+  const startCreatePost=()=>{
+    setEditorMode('create');
+    setEditingPostId(null);
+    setEditorDraft(buildEmployerPostDraft(selectedJob));
+    setWorkspaceTab('editor');
+  };
+
+  const startEditPost=(postId)=>{
+    setEditorMode('edit');
+    setEditingPostId(postId);
+    setWorkspaceTab('editor');
+  };
+
   const savePostEdits=()=>{
+    if(editorMode==='create'){
+      const createdRole=editorDraft.role.trim() || selectedJob.title;
+      onCreatePost({
+        role:createdRole,
+        location:editorDraft.location.trim() || selectedJob.location,
+        caption:editorDraft.caption.trim() || `We are hiring a ${createdRole} to join ${selectedJob.team}.`,
+        tags:editorDraft.tags.split(',').map(tag=>tag.trim()).filter(Boolean).slice(0,5),
+        priority:editorDraft.priority,
+        jobId:selectedJob.id,
+      });
+      toast(`Created post for ${createdRole}`,'check-circle');
+      setWorkspaceTab('feed');
+      return;
+    }
     if(!editingPost) return;
     onUpdatePost(editingPost.id,{
       role:editorDraft.role.trim() || editingPost.role,
@@ -759,7 +801,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
           <p className="text-slate-500">Post browsing and post editing now live in separate workspaces so the page is simpler to scan.</p>
         </div>
         <div className="flex gap-3">
-          <Btn variant="secondary" onClick={()=>toast('Draft role template generated','sparkles')}><Icon name="file-plus" size={15}/> New role draft</Btn>
+          <Btn variant="secondary" onClick={startCreatePost}><Icon name="file-plus" size={15}/> Create post</Btn>
           <Btn onClick={()=>setView('emp-ai')}><Icon name="wand-2" size={15}/> Generate job description</Btn>
         </div>
       </div>
@@ -804,7 +846,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                 <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Existing posts</div>
                 <div className="space-y-2">
                   {ownPosts.map(post=>(
-                    <button key={post.id} onClick={()=>{ setEditingPostId(post.id); setWorkspaceTab('editor'); }} className={`w-full rounded-xl px-4 py-3 text-left transition border ${editingPostId===post.id?'border-brand-300 bg-brand-50':'border-slate-100 bg-slate-50 hover:bg-white'}`}>
+                    <button key={post.id} onClick={()=>startEditPost(post.id)} className={`w-full rounded-xl px-4 py-3 text-left transition border ${editingPostId===post.id&&editorMode==='edit'?'border-brand-300 bg-brand-50':'border-slate-100 bg-slate-50 hover:bg-white'}`}>
                       <div className="font-semibold text-slate-900 text-sm">{post.role}</div>
                       <div className="text-xs text-slate-500 mt-1">{post.posted} - {post.likes} likes</div>
                     </button>
@@ -816,7 +858,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                 <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Existing posts</div>
                 <div className="space-y-2">
                   {ownPosts.map(post=>(
-                    <button key={post.id} onClick={()=>setEditingPostId(post.id)} className={`w-full rounded-xl px-4 py-3 text-left transition border ${editingPostId===post.id?'border-brand-300 bg-brand-50':'border-slate-100 bg-slate-50 hover:bg-white'}`}>
+                    <button key={post.id} onClick={()=>{ setEditorMode('edit'); setEditingPostId(post.id); }} className={`w-full rounded-xl px-4 py-3 text-left transition border ${editingPostId===post.id&&editorMode==='edit'?'border-brand-300 bg-brand-50':'border-slate-100 bg-slate-50 hover:bg-white'}`}>
                       <div className="font-semibold text-slate-900 text-sm">{post.role}</div>
                       <div className="text-xs text-slate-500 mt-1">{post.posted} - {post.likes} likes</div>
                     </button>
@@ -851,7 +893,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                       </div>
                       <div className="flex items-center gap-2">
                         <button onClick={()=>setSelectedJobId(post.jobId)} className="text-xs font-semibold text-brand-700 hover:text-brand-800">Open role</button>
-                        {post.own && <button onClick={()=>{ setEditingPostId(post.id); setWorkspaceTab('editor'); }} className="text-xs font-semibold text-slate-500 hover:text-brand-700">Edit post</button>}
+                        {post.own && <button onClick={()=>startEditPost(post.id)} className="text-xs font-semibold text-slate-500 hover:text-brand-700">Edit post</button>}
                       </div>
                     </div>
                     <div className={`h-64 bg-gradient-to-br ${post.imageTone} px-6 py-6 flex flex-col justify-between`}>
@@ -893,17 +935,20 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
               <Card className="p-6 min-h-0 overflow-y-auto">
                 <div className="mb-6">
                   <div className="text-xs uppercase tracking-wide font-semibold text-slate-500">Editing workspace</div>
-                  <h2 className="text-xl font-extrabold text-slate-900 mt-1">{editingPost?.role || 'Company post'}</h2>
-                  <p className="text-sm text-slate-500 mt-1">Choose an existing company post, then update its content here.</p>
+                  <h2 className="text-xl font-extrabold text-slate-900 mt-1">{editorMode==='create' ? 'Create new post' : (editingPost?.role || 'Company post')}</h2>
+                  <p className="text-sm text-slate-500 mt-1">{editorMode==='create' ? 'Draft a new hiring post here, then publish it straight into your feed.' : 'Choose an existing company post, then update its content here.'}</p>
                 </div>
 
-                {ownPosts.length ? (
+                {ownPosts.length || editorMode==='create' ? (
                   <>
                     <div className="mb-6">
-                      <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Existing posts</div>
+                      <div className="flex items-center justify-between gap-3 mb-3">
+                        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Existing posts</div>
+                        <button onClick={startCreatePost} className={`text-xs font-semibold px-3 py-1.5 rounded-full transition ${editorMode==='create'?'bg-brand-700 text-white':'bg-brand-50 text-brand-700 hover:bg-brand-100'}`}>New post</button>
+                      </div>
                       <div className="grid lg:grid-cols-2 gap-3">
                         {ownPosts.map(post=>(
-                          <button key={post.id} onClick={()=>setEditingPostId(post.id)} className={`rounded-2xl border px-4 py-4 text-left transition ${editingPostId===post.id?'border-brand-300 bg-brand-50':'border-slate-200 bg-white hover:border-brand-200 hover:bg-slate-50'}`}>
+                          <button key={post.id} onClick={()=>{ setEditorMode('edit'); setEditingPostId(post.id); }} className={`rounded-2xl border px-4 py-4 text-left transition ${editingPostId===post.id&&editorMode==='edit'?'border-brand-300 bg-brand-50':'border-slate-200 bg-white hover:border-brand-200 hover:bg-slate-50'}`}>
                             <div className="flex items-start justify-between gap-3">
                               <div>
                                 <div className="font-semibold text-slate-900">{post.role}</div>
@@ -927,14 +972,23 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                     </div>
                     <label className="block mt-4"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Caption</div><textarea value={editorDraft.caption} onChange={e=>setEditorDraft(d=>({...d,caption:e.target.value}))} rows={8} className="w-full rounded-3xl border border-slate-200 px-4 py-4 text-sm outline-none focus:ring-2 ring-brand-200 resize-none" /></label>
                     <div className="flex flex-wrap gap-3 mt-5">
-                      <Btn onClick={savePostEdits}><Icon name="save" size={15}/> Save changes</Btn>
-                      <Btn variant="secondary" onClick={()=>setEditorDraft({ role:editingPost?.role || '', location:editingPost?.location || '', caption:editingPost?.caption || '', tags:editingPost?.tags.join(', ') || '', priority:editingPost?.priority || 'Medium' })}><Icon name="rotate-ccw" size={15}/> Reset</Btn>
+                      <Btn onClick={savePostEdits}><Icon name="save" size={15}/>{editorMode==='create' ? 'Publish post' : 'Save changes'}</Btn>
+                      <Btn variant="secondary" onClick={()=>{
+                        if(editorMode==='create'){
+                          setEditorDraft(buildEmployerPostDraft(selectedJob));
+                          return;
+                        }
+                        setEditorDraft({ role:editingPost?.role || '', location:editingPost?.location || '', caption:editingPost?.caption || '', tags:editingPost?.tags.join(', ') || '', priority:editingPost?.priority || 'Medium' });
+                      }}><Icon name="rotate-ccw" size={15}/> Reset</Btn>
                     </div>
                   </>
                 ) : (
                   <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
                     <div className="text-lg font-bold text-slate-900">No company posts to edit yet</div>
-                    <p className="text-sm text-slate-500 mt-2">Once your team has published a post, it will appear here for editing.</p>
+                    <p className="text-sm text-slate-500 mt-2">Create your first hiring post here and it will appear in the feed immediately.</p>
+                    <div className="mt-4">
+                      <Btn onClick={startCreatePost}><Icon name="file-plus" size={15}/> Create first post</Btn>
+                    </div>
                   </div>
                 )}
               </Card>
@@ -3558,7 +3612,7 @@ function CandidateApp({ lang, toggleLang, go, toast }){
 
   const views={
     dashboard: <CandidateDashboard setView={setView} toast={toast}/>,
-    profile:   <CareerProfile toast={toast}/>,
+    profile:   <CareerProfileV2 toast={toast}/>,
     jobs:      <JobsOpportunities toast={toast}/>,
     companion: <CareerCompanion toast={toast}/>,
     pay:       <MarketIntelligence toast={toast}/>,
@@ -3605,12 +3659,18 @@ function CandidateApp({ lang, toggleLang, go, toast }){
           </div>
 
           {/* User */}
-          <div className="flex items-center gap-2.5 px-1">
+          <button
+            onClick={()=>{ setView('profile'); setMobileOpen(false); }}
+            className="flex flex-1 items-center gap-2.5 px-1 py-1.5 -mx-1 rounded-xl text-left hover:bg-white/8 transition"
+            title="Open employee profile"
+          >
             <Avatar name={USER.name} size="sm"/>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold text-white truncate">{USER.name}</div>
               <div className="text-xs text-brand-300 truncate">{USER.role}</div>
             </div>
+          </button>
+          <div className="shrink-0">
             <button onClick={()=>go('landing')} className="text-brand-400 hover:text-white transition" title="Sign out">
               <Icon name="log-out" size={15}/>
             </button>
@@ -3981,6 +4041,430 @@ function CareerProfile({ toast }){
 /* ══════════════════════════════════════════════════════════════
    14. JOBS & OPPORTUNITIES
 ══════════════════════════════════════════════════════════════ */
+function CareerProfileV2({ toast }){
+  const [profile,setProfile]=useState({
+    name:'Aisha Rahman',
+    title:'Product Designer',
+    email:'aisha.rahman@email.com',
+    phone:'+60 12-884 2219',
+    location:'Kuala Lumpur, MY',
+    portfolio:'aisharahman.design',
+    targetRole:'Senior Product Designer',
+    preferredWork:'Hybrid',
+    preferredLocation:'Kuala Lumpur, Singapore, Remote',
+    salaryTarget:'RM 9k - RM 12k / month',
+    availability:'30 days notice',
+    summary:'Product designer with 5 years shaping fintech and health products. I turn messy workflows into clean systems, align product and engineering quickly, and like leaving teams with better patterns than I found.',
+    skills:'UI Design, Figma, Design Systems, User Research, Prototyping, A/B Testing',
+  });
+  const [exp,setExp]=useState([
+    {id:1,role:'Product Designer',company:'Bloompay',period:'2022 - Present',desc:'Led design-system migration, cutting design-to-dev time by 40%.'},
+    {id:2,role:'UI Designer',company:'Cobalt Studio',period:'2019 - 2022',desc:'Shipped 3 mobile apps and launched the first usability-testing program.'},
+  ]);
+  const [projects,setProjects]=useState([
+    {id:1,name:'Design System Rebuild',impact:'Reduced design QA rounds by 40%',tools:'Figma, Tokens, Storybook'},
+    {id:2,name:'Growth Experiment Program',impact:'Improved activation by 14%',tools:'A/B Testing, Analytics, Prototyping'},
+  ]);
+  const [highlights,setHighlights]=useState([
+    '5 years across fintech and product design',
+    'Strong design systems and cross-functional delivery',
+    'Comfortable with research, experimentation, and stakeholder alignment',
+  ]);
+
+  const set=(k,v)=>setProfile(p=>({...p,[k]:v}));
+  const setExpF=(id,k,v)=>setExp(list=>list.map(item=>item.id===id?{...item,[k]:v}:item));
+  const setProjectF=(id,k,v)=>setProjects(list=>list.map(item=>item.id===id?{...item,[k]:v}:item));
+  const skillsList=profile.skills.split(',').map(s=>s.trim()).filter(Boolean);
+
+  const completionChecks=[
+    profile.name,
+    profile.title,
+    profile.email,
+    profile.phone,
+    profile.location,
+    profile.portfolio,
+    profile.targetRole,
+    profile.preferredWork,
+    profile.preferredLocation,
+    profile.salaryTarget,
+    profile.availability,
+    profile.summary,
+    skillsList.length>=5,
+    exp.some(item=>item.role && item.company && item.desc),
+    projects.some(item=>item.name && item.impact),
+  ];
+  const completion=Math.round((completionChecks.filter(Boolean).length/completionChecks.length)*100);
+  const readiness=Math.min(96,Math.round((completion*0.44)+(skillsList.length*4)+(projects.length*6)));
+  const marketStrength=Math.min(95,Math.round((exp.length*18)+(skillsList.length*5)));
+  const storyStrength=Math.min(94,Math.round((highlights.filter(Boolean).length*18)+(profile.summary.length>120?20:8)));
+
+  const scores=[
+    {label:'Profile Complete',value:completion,color:'#22c55e'},
+    {label:'Career Readiness',value:readiness,color:'#7c3aed'},
+    {label:'Market Strength',value:marketStrength,color:'#3b82f6'},
+    {label:'Story Quality',value:storyStrength,color:'#f59e0b'},
+  ];
+
+  const gaps=[
+    {skill:'Leadership signal',impact:'High',for:'Design Manager',time:'4-6 mo'},
+    {skill:'Business outcome proof',impact:'High',for:'Senior Product Designer',time:'2-4 wk'},
+    {skill:'Quant Research',impact:'Med',for:'Senior Researcher',time:'2-3 mo'},
+  ];
+
+  const suggestions=[
+    'Add one measurable business outcome to every role so recruiters can scan impact faster.',
+    'Promote one flagship project to the top of the profile to create a stronger first impression.',
+    'Clarify your target role and preferred work setup so matching can rank opportunities better.',
+    'Trim broad skills into a sharper set of strengths you want to be hired for.',
+  ];
+
+  return (
+    <div className="space-y-6 fade-up">
+      <div className="rounded-2xl overflow-hidden relative" style={{background:'linear-gradient(135deg,#1A0146 0%,#0d0222 60%,#1a1060 100%)'}}>
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -right-24 -top-24 w-80 h-80 rounded-full" style={{background:'rgba(91,46,255,0.15)',filter:'blur(60px)'}}/>
+          <div className="absolute left-1/3 -bottom-16 w-60 h-60 rounded-full" style={{background:'rgba(253,186,45,0.06)',filter:'blur(40px)'}}/>
+        </div>
+        <div className="relative p-7">
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{color:'rgba(255,255,255,0.45)'}}>Employee Profile</p>
+              <h1 className="text-2xl font-extrabold text-white">{profile.name}</h1>
+              <p className="text-sm mt-0.5" style={{color:'rgba(255,255,255,0.6)'}}>{profile.targetRole} - {profile.location}</p>
+              <p className="text-xs mt-0.5" style={{color:'rgba(255,255,255,0.35)'}}>Last updated: today</p>
+            </div>
+            <div className="flex gap-2 shrink-0 mt-1">
+              <button onClick={()=>toast('LinkedIn imported successfully','linkedin')}
+                className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl border transition hover:bg-white/10"
+                style={{borderColor:'rgba(255,255,255,0.25)',color:'rgba(255,255,255,0.8)'}}>
+                <Icon name="linkedin" size={14}/> Import LinkedIn
+              </button>
+              <button onClick={()=>toast('Profile PDF exported','download')}
+                className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl border transition hover:bg-white/10"
+                style={{borderColor:'rgba(255,255,255,0.25)',color:'rgba(255,255,255,0.8)'}}>
+                <Icon name="download" size={14}/> Export PDF
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mt-5">
+            {scores.map(score=>(
+              <div key={score.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
+                style={{background:'rgba(255,255,255,0.12)',color:'#fff'}}>
+                <span className="inline-block w-2 h-2 rounded-full" style={{backgroundColor:score.color}}></span> {score.value} {score.label}
+              </div>
+            ))}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
+              style={{background:'rgba(255,255,255,0.12)',color:'#fff'}}>
+              <span className="inline-block w-2 h-2 rounded-full" style={{backgroundColor:'#FDBA2D'}}></span> {profile.preferredWork} preference
+            </div>
+          </div>
+
+          <div className="mt-4 flex items-start gap-2">
+            <span style={{color:'#FDBA2D'}}><Icon name="sparkles" size={14} className="shrink-0 mt-0.5"/></span>
+            <p className="text-sm font-medium" style={{color:'#FDBA2D'}}>"Your profile already reads strong. The biggest upside now is making your impact easier to scan in 15 seconds."</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-5">
+        <Card className="lg:col-span-2 p-6">
+          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <Icon name="bar-chart-2" size={16} className="text-brand-600"/> Profile Health
+          </h3>
+          <div className="space-y-5">
+            {[
+              {label:'Identity clarity',pct:Math.min(98,completion+4),insight:'Headline, target role, and work preference are clearly stated'},
+              {label:'Experience depth',pct:Math.min(94,(exp.length*22)+38),insight:'Your work history supports senior-level positioning'},
+              {label:'Skills coverage',pct:Math.min(96,(skillsList.length*9)+18),insight:'Core strengths are visible to ATS filters and human reviewers'},
+              {label:'Proof of impact',pct:Math.min(92,(projects.length*16)+28),insight:'Projects and quantified wins make the profile more convincing'},
+              {label:'Search readiness',pct:readiness,insight:'You are close to a fully polished profile for matching and outreach'},
+            ].map(({label,pct,insight})=>(
+              <div key={label}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium text-slate-700">{label}</span>
+                  <span className="text-sm font-bold text-brand-700">{pct}%</span>
+                </div>
+                <div className="profile-dim-bar">
+                  <div className="profile-dim-fill" style={{width:`${pct}%`}}/>
+                </div>
+                <p className="text-xs text-slate-400 mt-1">{insight}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <Icon name="target" size={16} className="text-amber-500"/> Search Preferences
+          </h3>
+          <div className="space-y-4">
+            {[
+              ['Target role',profile.targetRole],
+              ['Work setup',profile.preferredWork],
+              ['Preferred markets',profile.preferredLocation],
+              ['Comp expectation',profile.salaryTarget],
+              ['Availability',profile.availability],
+            ].map(([label,value])=>(
+              <div key={label} className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
+                <div className="text-xs uppercase tracking-wide font-semibold text-slate-400">{label}</div>
+                <div className="text-sm font-semibold text-slate-800 mt-1">{value}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      <ScoreBreakdown/>
+
+      <div className="grid xl:grid-cols-[minmax(0,1.35fr)_380px] lg:grid-cols-[minmax(0,1fr)_340px] gap-6">
+        <div className="space-y-4">
+          <Card className="p-5 space-y-3">
+            <h3 className="font-bold text-slate-800 flex items-center gap-2"><Icon name="user-round" size={16} className="text-brand-600"/> Basics</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {[['Full name','name'],['Title','title'],['Email','email'],['Location','location'],['Phone','phone'],['Portfolio','portfolio']].map(([label,key])=>(
+                <label key={key} className="block">
+                  <span className="text-xs font-semibold text-slate-500 mb-1 block">{label}</span>
+                  <input value={profile[key]} onChange={e=>set(key,e.target.value)}
+                    className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+                </label>
+              ))}
+            </div>
+            <label className="block">
+              <span className="text-xs font-semibold text-slate-500 mb-1 block">Professional summary</span>
+              <textarea value={profile.summary} onChange={e=>set('summary',e.target.value)} rows={4}
+                className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200 resize-none"/>
+            </label>
+            <label className="block">
+              <span className="text-xs font-semibold text-slate-500 mb-1 block">Skills (comma-separated)</span>
+              <input value={profile.skills} onChange={e=>set('skills',e.target.value)}
+                className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+            </label>
+          </Card>
+
+          <Card className="p-5 space-y-3">
+            <h3 className="font-bold text-slate-800 flex items-center gap-2"><Icon name="sliders-horizontal" size={16} className="text-brand-600"/> Career Preferences</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {[['Target role','targetRole'],['Work style','preferredWork'],['Salary target','salaryTarget'],['Availability','availability']].map(([label,key])=>(
+                <label key={key} className="block">
+                  <span className="text-xs font-semibold text-slate-500 mb-1 block">{label}</span>
+                  <input value={profile[key]} onChange={e=>set(key,e.target.value)}
+                    className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+                </label>
+              ))}
+            </div>
+            <label className="block">
+              <span className="text-xs font-semibold text-slate-500 mb-1 block">Preferred locations</span>
+              <input value={profile.preferredLocation} onChange={e=>set('preferredLocation',e.target.value)}
+                className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+            </label>
+          </Card>
+
+          <Card className="p-5 space-y-3">
+            <h3 className="font-bold text-slate-800 flex items-center gap-2"><Icon name="briefcase" size={16} className="text-brand-600"/> Work history</h3>
+            {exp.map(item=>(
+              <div key={item.id} className="rounded-xl border border-slate-100 p-3 space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  {[['Role','role'],['Company','company']].map(([label,key])=>(
+                    <label key={key} className="block">
+                      <span className="text-xs font-semibold text-slate-400 mb-0.5 block">{label}</span>
+                      <input value={item[key]} onChange={e=>setExpF(item.id,key,e.target.value)}
+                        className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+                    </label>
+                  ))}
+                </div>
+                <label className="block">
+                  <span className="text-xs font-semibold text-slate-400 mb-0.5 block">Period</span>
+                  <input value={item.period} onChange={e=>setExpF(item.id,'period',e.target.value)}
+                    className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+                </label>
+                <label className="block">
+                  <span className="text-xs font-semibold text-slate-400 mb-0.5 block">Key achievement</span>
+                  <textarea value={item.desc} onChange={e=>setExpF(item.id,'desc',e.target.value)} rows={2}
+                    className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200 resize-none"/>
+                </label>
+              </div>
+            ))}
+            <button onClick={()=>setExp(list=>[...list,{id:Date.now(),role:'',company:'',period:'',desc:''}])}
+              className="text-sm font-semibold text-brand-700 hover:text-brand-900 flex items-center gap-1.5">
+              <Icon name="plus-circle" size={15}/> Add role
+            </button>
+          </Card>
+
+          <div className="grid xl:grid-cols-[0.95fr_1.05fr] gap-4">
+            <Card className="p-5">
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <h3 className="font-bold text-slate-800 flex items-center gap-2"><Icon name="star" size={16} className="text-brand-600"/> Profile Highlights</h3>
+                <Badge tone="brand">{highlights.length} signals</Badge>
+              </div>
+              <div className="space-y-3">
+                {highlights.map((item,index)=>(
+                  <div key={index} className="rounded-xl border border-slate-100 bg-slate-50/70 px-3 py-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="w-6 h-6 rounded-full bg-white border border-brand-100 text-xs font-bold text-brand-700 flex items-center justify-center">{index+1}</span>
+                      <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">Highlight</span>
+                    </div>
+                    <input value={item} onChange={e=>setHighlights(list=>list.map((line,i)=>i===index?e.target.value:line))}
+                      className="w-full text-sm bg-white rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card className="p-5">
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <h3 className="font-bold text-slate-800 flex items-center gap-2"><Icon name="folder-kanban" size={16} className="text-brand-600"/> Signature Projects</h3>
+                <button onClick={()=>setProjects(list=>[...list,{id:Date.now(),name:'',impact:'',tools:''}])}
+                  className="text-sm font-semibold text-brand-700 hover:text-brand-900 flex items-center gap-1.5">
+                  <Icon name="plus-circle" size={15}/> Add project
+                </button>
+              </div>
+              <div className="space-y-3">
+                {projects.map((item,index)=>(
+                  <div key={item.id} className="rounded-xl border border-slate-100 bg-white p-4 space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">Project {index+1}</div>
+                      <Badge tone="slate">{item.tools ? item.tools.split(',').filter(Boolean).length : 0} tools</Badge>
+                    </div>
+                    <label className="block">
+                      <span className="text-xs font-semibold text-slate-400 mb-1 block">Project name</span>
+                      <input value={item.name} onChange={e=>setProjectF(item.id,'name',e.target.value)}
+                        className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+                    </label>
+                    <label className="block">
+                      <span className="text-xs font-semibold text-slate-400 mb-1 block">Business impact</span>
+                      <input value={item.impact} onChange={e=>setProjectF(item.id,'impact',e.target.value)}
+                        className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+                    </label>
+                    <label className="block">
+                      <span className="text-xs font-semibold text-slate-400 mb-1 block">Tools used</span>
+                      <input value={item.tools} onChange={e=>setProjectF(item.id,'tools',e.target.value)}
+                        className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+
+          <Card className="p-5">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                <Icon name="sparkles" size={16} className="text-brand-600"/> Vera's Recommendations
+              </h3>
+              <Badge tone="violet">{suggestions.length} actions</Badge>
+            </div>
+            <div className="grid gap-3">
+              {suggestions.map((item,index)=>(
+                <div key={index} className="flex items-start gap-3 p-3.5 rounded-xl border border-brand-100 bg-gradient-to-r from-brand-50 to-white">
+                  <div className="w-7 h-7 rounded-full bg-white border border-brand-100 text-xs font-bold text-brand-700 flex items-center justify-center shrink-0">{index+1}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-sm font-semibold text-brand-900">Recommended next move</span>
+                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${index<2?'bg-amber-100 text-amber-700':'bg-slate-100 text-slate-500'}`}>{index<2?'Higher impact':'Good follow-up'}</span>
+                    </div>
+                    <p className="text-sm text-slate-700 leading-relaxed">{item}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        <div className="space-y-4">
+          <div className="lg:sticky lg:top-6">
+            <div className="text-xs uppercase tracking-wide text-slate-400 mb-2 flex items-center gap-1.5"><Icon name="eye" size={13}/> Profile preview</div>
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-card p-7" style={{minHeight:420}}>
+              <div className="border-b-4 border-brand-700 pb-4 mb-4">
+                <h2 className="text-2xl font-extrabold text-slate-900">{profile.name}</h2>
+                <p className="text-brand-700 font-semibold">{profile.title}</p>
+                <p className="text-xs text-slate-500 mt-1">{profile.email} - {profile.location}</p>
+                <p className="text-xs text-slate-400 mt-1">{profile.phone} Â· {profile.portfolio}</p>
+              </div>
+              <p className="text-sm text-slate-600 mb-4 leading-relaxed">{profile.summary}</p>
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                {[
+                  ['Target role',profile.targetRole],
+                  ['Work style',profile.preferredWork],
+                  ['Locations',profile.preferredLocation],
+                  ['Availability',profile.availability],
+                ].map(([label,value])=>(
+                  <div key={label} className="rounded-lg bg-slate-50 px-3 py-2">
+                    <div className="text-[10px] uppercase tracking-wide font-semibold text-slate-400">{label}</div>
+                    <div className="text-xs text-slate-700 mt-1">{value}</div>
+                  </div>
+                ))}
+              </div>
+              <h3 className="text-xs font-extrabold uppercase tracking-widest text-brand-700 mb-2">Experience</h3>
+              {exp.map(item=>(
+                <div key={item.id} className="mb-3">
+                  <div className="flex justify-between items-baseline">
+                    <span className="font-bold text-slate-800 text-sm">{item.role}</span>
+                    <span className="text-xs text-slate-400">{item.period}</span>
+                  </div>
+                  <div className="text-sm text-slate-500 italic">{item.company}</div>
+                  {item.desc&&<p className="text-xs text-slate-500 mt-0.5">- {item.desc}</p>}
+                </div>
+              ))}
+              <h3 className="text-xs font-extrabold uppercase tracking-widest text-brand-700 mt-4 mb-2">Skills</h3>
+              <div className="flex flex-wrap gap-1.5">
+                {skillsList.map((skill,index)=>(
+                  <span key={index} className="text-xs bg-brand-50 text-brand-700 px-2 py-0.5 rounded">{skill}</span>
+                ))}
+              </div>
+              <h3 className="text-xs font-extrabold uppercase tracking-widest text-brand-700 mt-5 mb-2">Signature Projects</h3>
+              <div className="space-y-2">
+                {projects.map(item=>(
+                  <div key={item.id} className="rounded-lg bg-slate-50 px-3 py-3">
+                    <div className="text-sm font-semibold text-slate-800">{item.name || 'Untitled project'}</div>
+                    <div className="text-xs text-slate-500 mt-1">{item.impact}</div>
+                    <div className="text-[11px] text-slate-400 mt-1">{item.tools}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Card className="p-5 mt-4">
+              <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2"><Icon name="zap" size={15} className="text-amber-500"/> Priority Gaps</h3>
+              <div className="space-y-3">
+                {gaps.map((item,index)=>(
+                  <div key={index} className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0"/>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-700">{item.skill}</span>
+                        <Badge tone={item.impact==='High'?'amber':'slate'}>{item.impact} impact</Badge>
+                      </div>
+                      <div className="text-xs text-slate-400">Needed for {item.for} Â· ~{item.time}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card className="p-5 mt-4">
+              <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2"><Icon name="check-circle-2" size={15} className="text-emerald-500"/> Profile Actions</h3>
+              <div className="space-y-2">
+                {[
+                  `Profile completion at ${completion}%`,
+                  `${projects.length} signature projects ready for review`,
+                  `${skillsList.length} skills currently visible`,
+                ].map(item=>(
+                  <div key={item} className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">{item}</div>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-2 mt-4">
+                <Btn size="sm" onClick={()=>toast('Profile saved successfully','check-circle')}>Save profile</Btn>
+                <Btn size="sm" variant="secondary" onClick={()=>toast('Profile link copied','link')}>Share profile</Btn>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function JobsOpportunities({ toast }){
   const [applied,setApplied]=useState({});
   const [saved,setSaved]=useState({2:true});
@@ -5641,9 +6125,34 @@ function EmployerApp({ lang, toggleLang, go, toast }){
     setPosts(items=>items.map(post=>post.id===postId?{...post,...updates}:post));
   };
 
+  const onCreatePost=(draft)=>{
+    const relatedJob=getEmployerJobById(jobs,draft.jobId) || selectedJob;
+    const newPost={
+      id:`post-${Date.now()}`,
+      author:'Nexgen Sdn Bhd',
+      handle:'@nexgenhiring',
+      role:draft.role,
+      team:relatedJob?.team || 'Hiring Team',
+      location:draft.location,
+      jobId:relatedJob?.id || selectedJobId,
+      own:true,
+      priority:draft.priority,
+      posted:'Just now',
+      imageTone:'from-[#4f46e5] via-[#7c3aed] to-[#f59e0b]',
+      caption:draft.caption,
+      tags:draft.tags.length ? draft.tags : (relatedJob?.mustHave?.slice(0,3) || []),
+      likes:0,
+      liked:false,
+      saves:0,
+      comments:[],
+    };
+    setPosts(items=>[newPost,...items]);
+  };
+
   const views={
     'emp-home':<EmployerDashboardV2 setView={setView} jobs={jobs} pipeline={pipeline} savedCandidateIds={savedCandidateIds} selectedJobId={selectedJobId}/>,
-    'emp-jobs':<EmployerRolesWorkspaceV2 jobs={jobs} selectedJobId={selectedJobId} setSelectedJobId={setSelectedJobId} toast={toast} setView={setView} updateJobStatus={updateJobStatus} posts={posts} onTogglePostLike={onTogglePostLike} onUpdatePost={onUpdatePost}/>,
+    'emp-profile':<CareerProfileV2 toast={toast}/>,
+    'emp-jobs':<EmployerRolesWorkspaceV2 jobs={jobs} selectedJobId={selectedJobId} setSelectedJobId={setSelectedJobId} toast={toast} setView={setView} updateJobStatus={updateJobStatus} posts={posts} onTogglePostLike={onTogglePostLike} onUpdatePost={onUpdatePost} onCreatePost={onCreatePost}/>,
     'emp-talent':<EmployerTalentDiscoveryV2 toast={toast} selectedJobId={selectedJobId} jobs={jobs} savedCandidateIds={savedCandidateIds} onToggleSaveCandidate={onToggleSaveCandidate} onAddToPipeline={onAddToPipeline}/>,
     'emp-pipeline':<EmployerHiringPipeline pipeline={pipeline} jobs={jobs} selectedJobId={selectedJobId} movePipelineStage={movePipelineStage} setView={setView}/>,
     'emp-ai':<EmployerAIHiringAssistantV2 toast={toast} selectedJob={selectedJob}/>,
@@ -5674,11 +6183,17 @@ function EmployerApp({ lang, toggleLang, go, toast }){
             <div className="text-xs text-emerald-400">{totalApplicants} applicants</div>
           </div>
           <div className="flex items-center gap-2.5 px-1">
-            <div className="w-9 h-9 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">N</div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-white truncate">Nexgen Sdn Bhd</div>
-              <div className="text-xs text-brand-300">HR Manager</div>
-            </div>
+            <button
+              onClick={()=>{ setView('emp-profile'); setMobileOpen(false); }}
+              className="flex flex-1 items-center gap-2.5 -mx-1 px-1 py-1.5 rounded-xl text-left hover:bg-white/8 transition"
+              title="Open employee profile"
+            >
+              <div className="w-9 h-9 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">N</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold text-white truncate">Nexgen Sdn Bhd</div>
+                <div className="text-xs text-brand-300">HR Manager</div>
+              </div>
+            </button>
             <button onClick={()=>go('landing')} className="text-brand-400 hover:text-white transition"><Icon name="log-out" size={15}/></button>
           </div>
           <button onClick={()=>go('app')} className="w-full text-xs font-semibold text-white/40 hover:text-white/70 py-1.5 border border-white/10 rounded-lg transition">
