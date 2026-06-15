@@ -271,6 +271,36 @@ tailwind.config = {
   .nav-gold-dot{width:7px;height:7px;border-radius:50%;background:#FDBA2D;flex-shrink:0;}
   .hover-lift{transition:transform 180ms ease,box-shadow 180ms ease;}
   .hover-lift:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.10);}
+  .emp-ig-sidebar{background:linear-gradient(180deg,#14072c 0%,#220b45 38%,#37105f 68%,#4c1368 100%);border-right:1px solid rgba(255,255,255,.08)}
+  .emp-ig-logo{transition:transform 220ms cubic-bezier(.2,.8,.2,1),opacity 220ms ease}
+  .emp-ig-logo:hover{transform:scale(1.04);opacity:.96}
+  .emp-ig-nav{padding:14px 10px 18px;overflow-x:hidden}
+  .emp-ig-item{position:relative;display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;border-radius:16px;color:rgba(233,213,255,.86);transition:transform 260ms cubic-bezier(.2,.8,.2,1),background 220ms ease,color 220ms ease,box-shadow 220ms ease}
+  .emp-ig-item::before{content:'';position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,0));opacity:0;transition:opacity 220ms ease}
+  .emp-ig-item:hover{transform:scale(1.01);background:rgba(255,255,255,.08);color:#fff;box-shadow:0 10px 30px rgba(10,10,30,.20)}
+  .emp-ig-item:hover::before{opacity:1}
+  .emp-ig-item.active{background:rgba(255,255,255,.12);color:#fff;box-shadow:0 12px 36px rgba(8,8,24,.26)}
+  .emp-ig-item.active::before{opacity:1}
+  .emp-ig-icon{transform-origin:center;transition:transform 260ms cubic-bezier(.18,.9,.2,1.18)}
+  .emp-ig-item:hover .emp-ig-icon,.emp-ig-item.active .emp-ig-icon{transform:translateX(3px) scale(1.16)}
+  .emp-ig-item:hover .emp-ig-icon{animation:empIgIconBounce 420ms cubic-bezier(.18,.9,.2,1.18)}
+  .emp-ig-label{font-size:14px;font-weight:600;letter-spacing:0;opacity:.86;transform:translateX(-6px);transition:transform 280ms cubic-bezier(.2,.8,.2,1),opacity 220ms ease;transition-delay:0ms}
+  .emp-ig-item:hover .emp-ig-label,.emp-ig-item.active .emp-ig-label{opacity:1;transform:translateX(6px)}
+  .emp-ig-item:hover .emp-ig-label{transition-delay:70ms}
+  .emp-ig-active-dot{width:8px;height:8px;border-radius:999px;background:linear-gradient(135deg,#fbbf24,#fb7185);box-shadow:0 0 12px rgba(251,191,36,.45);opacity:.9;transition:transform 260ms ease,opacity 220ms ease}
+  .emp-ig-item:hover .emp-ig-active-dot,.emp-ig-item.active .emp-ig-active-dot{transform:translateX(2px)}
+  .emp-ig-item:hover .emp-ig-active-dot,.emp-ig-item.active .emp-ig-active-dot{opacity:1}
+  @keyframes empIgIconBounce{
+    0%{transform:translateX(0) scale(1)}
+    45%{transform:translateX(4px) scale(1.22)}
+    100%{transform:translateX(3px) scale(1.16)}
+  }
+  .emp-ig-panel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:18px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:transform 220ms cubic-bezier(.2,.8,.2,1),background 220ms ease,border-color 220ms ease}
+  .emp-ig-panel:hover{transform:translateY(-2px);background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.16)}
+  .emp-ig-account{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 12px;border-radius:16px;transition:transform 220ms cubic-bezier(.2,.8,.2,1),background 220ms ease}
+  .emp-ig-account:hover{transform:translateX(4px);background:rgba(255,255,255,.08)}
+  .emp-ig-switch{transition:transform 220ms cubic-bezier(.2,.8,.2,1),background 220ms ease,color 220ms ease,border-color 220ms ease}
+  .emp-ig-switch:hover{transform:translateY(-1px);background:rgba(255,255,255,.08);color:rgba(255,255,255,.9);border-color:rgba(255,255,255,.18)}
   .skill-badge{transition:transform 120ms,box-shadow 120ms;display:inline-block;}
   .skill-badge:hover{transform:scale(1.05);box-shadow:0 2px 8px rgba(91,46,255,0.20);}
   .impact-tip{position:relative;cursor:default;}
@@ -814,7 +844,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
       </div>
 
       <div className="grid xl:grid-cols-[280px_minmax(0,1fr)_320px] lg:grid-cols-[260px_minmax(0,1fr)] gap-6 items-start flex-1 min-h-0 overflow-hidden px-6 lg:px-7 py-6">
-        <div className="space-y-4 h-full min-h-0 overflow-y-auto pr-1">
+        <div className={workspaceTab==='feed' ? 'space-y-4 self-stretch h-full overflow-hidden pr-1' : 'space-y-4 lg:sticky lg:top-0 self-start lg:max-h-[calc(100vh-13.5rem)] overflow-y-auto pr-1'}>
           <Card className="p-4 shrink-0">
             <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Your roles</div>
             <div className="space-y-3">
@@ -876,7 +906,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
           </Card>
         </div>
 
-        <div className="space-y-5 h-full min-h-0 flex flex-col overflow-hidden">
+        <div className={`space-y-5 h-full min-h-0 flex flex-col overflow-hidden ${workspaceTab==='editor'?'xl:col-span-2':''}`}>
           {workspaceTab==='feed' ? (
             <div className="space-y-5 flex-1 min-h-0 overflow-y-auto pr-2" style={{overscrollBehavior:'contain'}}>
                 {visiblePosts.map(post=>(
@@ -940,48 +970,101 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                 </div>
 
                 {ownPosts.length || editorMode==='create' ? (
-                  <>
-                    <div className="mb-6">
-                      <div className="flex items-center justify-between gap-3 mb-3">
-                        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Existing posts</div>
-                        <button onClick={startCreatePost} className={`text-xs font-semibold px-3 py-1.5 rounded-full transition ${editorMode==='create'?'bg-brand-700 text-white':'bg-brand-50 text-brand-700 hover:bg-brand-100'}`}>New post</button>
-                      </div>
-                      <div className="grid lg:grid-cols-2 gap-3">
-                        {ownPosts.map(post=>(
-                          <button key={post.id} onClick={()=>{ setEditorMode('edit'); setEditingPostId(post.id); }} className={`rounded-2xl border px-4 py-4 text-left transition ${editingPostId===post.id&&editorMode==='edit'?'border-brand-300 bg-brand-50':'border-slate-200 bg-white hover:border-brand-200 hover:bg-slate-50'}`}>
-                            <div className="flex items-start justify-between gap-3">
-                              <div>
-                                <div className="font-semibold text-slate-900">{post.role}</div>
-                                <div className="text-xs text-slate-500 mt-1">{post.location}</div>
+                  <div className="grid xl:grid-cols-[minmax(0,1.25fr)_320px] gap-6 items-start">
+                    <div>
+                      <div className="mb-6">
+                        <div className="flex items-center justify-between gap-3 mb-3">
+                          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Existing posts</div>
+                          <button onClick={startCreatePost} className={`text-xs font-semibold px-3 py-1.5 rounded-full transition ${editorMode==='create'?'bg-brand-700 text-white':'bg-brand-50 text-brand-700 hover:bg-brand-100'}`}>New post</button>
+                        </div>
+                        <div className="grid lg:grid-cols-2 gap-3">
+                          {ownPosts.map(post=>(
+                            <button key={post.id} onClick={()=>{ setEditorMode('edit'); setEditingPostId(post.id); }} className={`rounded-2xl border px-4 py-4 text-left transition ${editingPostId===post.id&&editorMode==='edit'?'border-brand-300 bg-brand-50':'border-slate-200 bg-white hover:border-brand-200 hover:bg-slate-50'}`}>
+                              <div className="flex items-start justify-between gap-3">
+                                <div>
+                                  <div className="font-semibold text-slate-900">{post.role}</div>
+                                  <div className="text-xs text-slate-500 mt-1">{post.location}</div>
+                                </div>
+                                <Badge tone={post.priority==='Urgent'?'red':post.priority==='High'?'amber':'slate'}>{post.priority}</Badge>
                               </div>
-                              <Badge tone={post.priority==='Urgent'?'red':post.priority==='High'?'amber':'slate'}>{post.priority}</Badge>
-                            </div>
-                            <p className="text-sm text-slate-600 mt-3 line-clamp-2">{post.caption}</p>
-                          </button>
-                        ))}
+                              <p className="text-sm text-slate-600 mt-3 line-clamp-2">{post.caption}</p>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Role title</div><input value={editorDraft.role} onChange={e=>setEditorDraft(d=>({...d,role:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
+                        <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Location</div><input value={editorDraft.location} onChange={e=>setEditorDraft(d=>({...d,location:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-4 mt-4">
+                        <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Priority</div><select value={editorDraft.priority} onChange={e=>setEditorDraft(d=>({...d,priority:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200 bg-white">{['Urgent','High','Medium'].map(level=><option key={level} value={level}>{level}</option>)}</select></label>
+                        <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Tags</div><input value={editorDraft.tags} onChange={e=>setEditorDraft(d=>({...d,tags:e.target.value}))} placeholder="Frontend, Remote, TypeScript" className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
+                      </div>
+                      <label className="block mt-4"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Caption</div><textarea value={editorDraft.caption} onChange={e=>setEditorDraft(d=>({...d,caption:e.target.value}))} rows={8} className="w-full rounded-3xl border border-slate-200 px-4 py-4 text-sm outline-none focus:ring-2 ring-brand-200 resize-none" /></label>
+                      <div className="flex flex-wrap gap-3 mt-5">
+                        <Btn onClick={savePostEdits}><Icon name="save" size={15}/>{editorMode==='create' ? 'Publish post' : 'Save changes'}</Btn>
+                        <Btn variant="secondary" onClick={()=>{
+                          if(editorMode==='create'){
+                            setEditorDraft(buildEmployerPostDraft(selectedJob));
+                            return;
+                          }
+                          setEditorDraft({ role:editingPost?.role || '', location:editingPost?.location || '', caption:editingPost?.caption || '', tags:editingPost?.tags.join(', ') || '', priority:editingPost?.priority || 'Medium' });
+                        }}><Icon name="rotate-ccw" size={15}/> Reset</Btn>
                       </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Role title</div><input value={editorDraft.role} onChange={e=>setEditorDraft(d=>({...d,role:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
-                      <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Location</div><input value={editorDraft.location} onChange={e=>setEditorDraft(d=>({...d,location:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
+                    <div className="space-y-4 xl:sticky xl:top-6">
+                      <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">Post setup</div>
+                        <div className="space-y-3">
+                          <div className="rounded-2xl bg-white px-4 py-3">
+                            <div className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Mode</div>
+                            <div className="text-sm font-semibold text-slate-900 mt-1">{editorMode==='create' ? 'Creating a new post' : 'Editing an existing post'}</div>
+                          </div>
+                          <div className="rounded-2xl bg-white px-4 py-3">
+                            <div className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Selected role</div>
+                            <div className="text-sm font-semibold text-slate-900 mt-1">{selectedJob.title}</div>
+                            <div className="text-xs text-slate-500 mt-1">{selectedJob.team} · {selectedJob.location}</div>
+                          </div>
+                          <div className="rounded-2xl bg-white px-4 py-3">
+                            <div className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Priority</div>
+                            <div className="mt-1"><Badge tone={editorDraft.priority==='Urgent'?'red':editorDraft.priority==='High'?'amber':'slate'}>{editorDraft.priority}</Badge></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="rounded-3xl border border-slate-200 bg-white p-5">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">Publishing checklist</div>
+                        <div className="space-y-3">
+                          {[
+                            ['Role title added',Boolean(editorDraft.role.trim())],
+                            ['Location added',Boolean(editorDraft.location.trim())],
+                            ['Caption has enough detail',editorDraft.caption.trim().length>=80],
+                            ['At least one tag included',editorDraft.tags.split(',').map(tag=>tag.trim()).filter(Boolean).length>0],
+                          ].map(([label,done])=>(
+                            <div key={label} className={`flex items-center gap-3 rounded-2xl px-4 py-3 ${done?'bg-emerald-50 text-emerald-800':'bg-slate-50 text-slate-600'}`}>
+                              <Icon name={done?'check-circle-2':'circle'} size={16} className={done?'text-emerald-500':'text-slate-300'}/>
+                              <span className="text-sm font-medium">{label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="rounded-3xl border border-slate-200 bg-white p-5">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">Writing tips</div>
+                        <div className="space-y-3">
+                          {[
+                            'Open with the role and why it matters to the team.',
+                            'Mention one concrete outcome or project the hire will own.',
+                            'Keep tags focused so candidates instantly understand fit.',
+                          ].map(tip=>(
+                            <div key={tip} className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">{tip}</div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <div className="grid md:grid-cols-2 gap-4 mt-4">
-                      <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Priority</div><select value={editorDraft.priority} onChange={e=>setEditorDraft(d=>({...d,priority:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200 bg-white">{['Urgent','High','Medium'].map(level=><option key={level} value={level}>{level}</option>)}</select></label>
-                      <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Tags</div><input value={editorDraft.tags} onChange={e=>setEditorDraft(d=>({...d,tags:e.target.value}))} placeholder="Frontend, Remote, TypeScript" className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
-                    </div>
-                    <label className="block mt-4"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Caption</div><textarea value={editorDraft.caption} onChange={e=>setEditorDraft(d=>({...d,caption:e.target.value}))} rows={8} className="w-full rounded-3xl border border-slate-200 px-4 py-4 text-sm outline-none focus:ring-2 ring-brand-200 resize-none" /></label>
-                    <div className="flex flex-wrap gap-3 mt-5">
-                      <Btn onClick={savePostEdits}><Icon name="save" size={15}/>{editorMode==='create' ? 'Publish post' : 'Save changes'}</Btn>
-                      <Btn variant="secondary" onClick={()=>{
-                        if(editorMode==='create'){
-                          setEditorDraft(buildEmployerPostDraft(selectedJob));
-                          return;
-                        }
-                        setEditorDraft({ role:editingPost?.role || '', location:editingPost?.location || '', caption:editingPost?.caption || '', tags:editingPost?.tags.join(', ') || '', priority:editingPost?.priority || 'Medium' });
-                      }}><Icon name="rotate-ccw" size={15}/> Reset</Btn>
-                    </div>
-                  </>
+                  </div>
                 ) : (
                   <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
                     <div className="text-lg font-bold text-slate-900">No company posts to edit yet</div>
@@ -997,7 +1080,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
         </div>
 
         {workspaceTab==='feed' && (
-          <div className="space-y-4 h-full min-h-0 overflow-y-auto pr-1">
+          <div className="space-y-4 self-stretch h-full overflow-hidden pr-1">
             <Card className="p-4 shrink-0">
               <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Feed insights</div>
               <div className="grid grid-cols-2 gap-3">{[['Posts',String(posts.length)],['Likes',String(totalLikes)],['Comments',String(totalComments)],['My posts',String(posts.filter(p=>p.own).length)]].map(([label,value])=><div key={label} className="rounded-2xl bg-slate-50 px-4 py-4"><div className="text-xl font-extrabold text-slate-900">{value}</div><div className="text-xs text-slate-500 mt-1">{label}</div></div>)}</div>
@@ -1240,6 +1323,18 @@ function EmployerProfileV2({ toast, jobs, posts, selectedJobId, setSelectedJobId
     employerBrand:'Practical, high-trust, product-minded teams with strong design and engineering partnership.',
     hiringFocus:'Senior product, design, and frontend hiring across Malaysia and remote Southeast Asia.',
   });
+  const [account,setAccount]=useState({
+    workspaceName:'Nexgen Hiring',
+    loginEmail:'hana.lee@nexgen.com',
+    password:'**********',
+    timezone:'Malaysia Time (GMT+8)',
+    companyVisibility:'Public employer profile',
+    candidateInbox:'Open to candidate messages',
+    hiringAlerts:true,
+    weeklyDigest:true,
+    twoFactor:true,
+  });
+  const [showPassword,setShowPassword]=useState(false);
   const [benefits,setBenefits]=useState([
     'Hybrid work with flexible in-office days',
     'Medical coverage and mental health support',
@@ -1257,6 +1352,7 @@ function EmployerProfileV2({ toast, jobs, posts, selectedJobId, setSelectedJobId
   const totalApplicants=jobs.reduce((sum,job)=>sum+job.applicants,0);
   const totalQualified=jobs.reduce((sum,job)=>sum+job.qualified,0);
   const setField=(key,value)=>setCompany(prev=>({...prev,[key]:value}));
+  const setAccountField=(key,value)=>setAccount(prev=>({...prev,[key]:value}));
 
   return (
     <div className="space-y-6 fade-up">
@@ -1277,7 +1373,7 @@ function EmployerProfileV2({ toast, jobs, posts, selectedJobId, setSelectedJobId
               </div>
             </div>
             <div className="flex gap-2 flex-wrap">
-              <Btn size="sm" variant="secondary" onClick={()=>toast('Employer profile link copied','link')} className="bg-white/10 border-white/20 text-white hover:bg-white/15">
+              <Btn size="sm" onClick={()=>toast('Employer profile link copied','link')} className="bg-white text-slate-900 hover:bg-slate-100">
                 <Icon name="link" size={14}/> Share profile
               </Btn>
               <Btn size="sm" onClick={()=>toast('Employer profile saved','check-circle')} className="bg-white text-slate-900 hover:bg-slate-100">
@@ -1326,6 +1422,70 @@ function EmployerProfileV2({ toast, jobs, posts, selectedJobId, setSelectedJobId
                   <span className="text-xs font-semibold text-slate-500 mb-1 block">{label}</span>
                   <input value={company[key]} onChange={e=>setField(key,e.target.value)} className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
                 </label>
+              ))}
+            </div>
+          </Card>
+
+          <Card className="p-5 space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-bold text-slate-900 flex items-center gap-2"><Icon name="shield-check" size={16} className="text-brand-600"/> Account Settings</h3>
+              <Badge tone="emerald">Employer account</Badge>
+            </div>
+            <div className="grid md:grid-cols-2 gap-3">
+              {[['Workspace name','workspaceName'],['Login email','loginEmail'],['Timezone','timezone']].map(([label,key])=>(
+                <label key={key} className="block">
+                  <span className="text-xs font-semibold text-slate-500 mb-1 block">{label}</span>
+                  <input value={account[key]} onChange={e=>setAccountField(key,e.target.value)} className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+                </label>
+              ))}
+              <label className="block">
+                <span className="text-xs font-semibold text-slate-500 mb-1 block">Password</span>
+                <div className="relative">
+                  <input
+                    type={showPassword?'text':'password'}
+                    value={account.password}
+                    onChange={e=>setAccountField('password',e.target.value)}
+                    className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 pr-10 outline-none focus:ring-2 ring-brand-200"
+                  />
+                  <button
+                    type="button"
+                    onClick={()=>setShowPassword(v=>!v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition"
+                    aria-label={showPassword?'Hide password':'Show password'}
+                    title={showPassword?'Hide password':'Show password'}
+                  >
+                    <Icon name={showPassword?'eye-off':'eye'} size={16}/>
+                  </button>
+                </div>
+              </label>
+            </div>
+            <div className="grid md:grid-cols-2 gap-3">
+              <label className="block">
+                <span className="text-xs font-semibold text-slate-500 mb-1 block">Profile visibility</span>
+                <select value={account.companyVisibility} onChange={e=>setAccountField('companyVisibility',e.target.value)} className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200">
+                  {['Public employer profile','Visible with limited details','Private workspace only'].map(option=><option key={option} value={option}>{option}</option>)}
+                </select>
+              </label>
+              <label className="block">
+                <span className="text-xs font-semibold text-slate-500 mb-1 block">Candidate inbox</span>
+                <select value={account.candidateInbox} onChange={e=>setAccountField('candidateInbox',e.target.value)} className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200">
+                  {['Open to candidate messages','Only applicants can message','Closed for now'].map(option=><option key={option} value={option}>{option}</option>)}
+                </select>
+              </label>
+            </div>
+            <div className="grid md:grid-cols-3 gap-3">
+              {[
+                ['Hiring alerts','hiringAlerts'],
+                ['Weekly digest','weeklyDigest'],
+                ['Two-factor login','twoFactor'],
+              ].map(([label,key])=>(
+                <button key={key} type="button" onClick={()=>setAccountField(key,!account[key])}
+                  className={`rounded-2xl border px-4 py-3 text-left transition ${account[key]?'border-emerald-200 bg-emerald-50':'border-slate-200 bg-slate-50 hover:bg-white'}`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-semibold text-slate-800">{label}</span>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${account[key]?'bg-emerald-100 text-emerald-700':'bg-slate-200 text-slate-500'}`}>{account[key]?'On':'Off'}</span>
+                  </div>
+                </button>
               ))}
             </div>
           </Card>
@@ -1435,6 +1595,35 @@ function EmployerProfileV2({ toast, jobs, posts, selectedJobId, setSelectedJobId
                     ))}
                   </div>
                 </div>
+              </div>
+            </Card>
+
+            <Card className="p-5">
+              <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2"><Icon name="settings-2" size={15} className="text-brand-600"/> Account Snapshot</h3>
+              <div className="space-y-3 mb-4">
+                {[
+                  ['Workspace',account.workspaceName],
+                  ['Login email',account.loginEmail],
+                  ['Visibility',account.companyVisibility],
+                  ['Candidate inbox',account.candidateInbox],
+                ].map(([label,value])=>(
+                  <div key={label} className="rounded-xl bg-slate-50 px-3 py-3">
+                    <div className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{label}</div>
+                    <div className="text-sm text-slate-700 mt-1">{value}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  ['Alerts',account.hiringAlerts],
+                  ['Digest',account.weeklyDigest],
+                  ['2FA',account.twoFactor],
+                ].map(([label,enabled])=>(
+                  <div key={label} className={`rounded-lg px-3 py-3 text-center ${enabled?'bg-emerald-50 text-emerald-700':'bg-slate-100 text-slate-500'}`}>
+                    <div className="text-sm font-extrabold">{enabled?'On':'Off'}</div>
+                    <div className="text-[11px] mt-1">{label}</div>
+                  </div>
+                ))}
               </div>
             </Card>
 
@@ -4291,6 +4480,18 @@ function CareerProfileV2({ toast }){
     summary:'Product designer with 5 years shaping fintech and health products. I turn messy workflows into clean systems, align product and engineering quickly, and like leaving teams with better patterns than I found.',
     skills:'UI Design, Figma, Design Systems, User Research, Prototyping, A/B Testing',
   });
+  const [account,setAccount]=useState({
+    username:'aisha.rahman',
+    loginEmail:'aisha.rahman@email.com',
+    password:'**********',
+    timezone:'Malaysia Time (GMT+8)',
+    language:'English',
+    profileVisibility:'Visible to employers',
+    recruiterInbox:'Open to recruiter messages',
+    jobAlerts:true,
+    weeklyDigest:true,
+    twoFactor:true,
+  });
   const [exp,setExp]=useState([
     {id:1,role:'Product Designer',company:'Bloompay',period:'2022 - Present',desc:'Led design-system migration, cutting design-to-dev time by 40%.'},
     {id:2,role:'UI Designer',company:'Cobalt Studio',period:'2019 - 2022',desc:'Shipped 3 mobile apps and launched the first usability-testing program.'},
@@ -4306,6 +4507,7 @@ function CareerProfileV2({ toast }){
   ]);
 
   const set=(k,v)=>setProfile(p=>({...p,[k]:v}));
+  const setAccountField=(k,v)=>setAccount(prev=>({...prev,[k]:v}));
   const setExpF=(id,k,v)=>setExp(list=>list.map(item=>item.id===id?{...item,[k]:v}:item));
   const setProjectF=(id,k,v)=>setProjects(list=>list.map(item=>item.id===id?{...item,[k]:v}:item));
   const skillsList=profile.skills.split(',').map(s=>s.trim()).filter(Boolean);
@@ -4428,23 +4630,56 @@ function CareerProfileV2({ toast }){
           </div>
         </Card>
 
-        <Card className="p-6">
-          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-            <Icon name="target" size={16} className="text-amber-500"/> Search Preferences
-          </h3>
-          <div className="space-y-4">
-            {[
-              ['Target role',profile.targetRole],
-              ['Work setup',profile.preferredWork],
-              ['Preferred markets',profile.preferredLocation],
-              ['Comp expectation',profile.salaryTarget],
-              ['Availability',profile.availability],
-            ].map(([label,value])=>(
-              <div key={label} className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
-                <div className="text-xs uppercase tracking-wide font-semibold text-slate-400">{label}</div>
-                <div className="text-sm font-semibold text-slate-800 mt-1">{value}</div>
-              </div>
+        <Card className="p-6 space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="font-bold text-slate-900 flex items-center gap-2">
+              <Icon name="shield-check" size={16} className="text-brand-600"/> Account Settings
+            </h3>
+            <Badge tone="emerald">Visible now</Badge>
+          </div>
+          <div className="grid gap-3">
+            {[['Username','username'],['Login email','loginEmail']].map(([label,key])=>(
+              <label key={key} className="block">
+                <span className="text-xs font-semibold text-slate-500 mb-1 block">{label}</span>
+                <input value={account[key]} onChange={e=>setAccountField(key,e.target.value)}
+                  className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+              </label>
             ))}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block">
+              <span className="text-xs font-semibold text-slate-500 mb-1 block">Visibility</span>
+              <select value={account.profileVisibility} onChange={e=>setAccountField('profileVisibility',e.target.value)}
+                className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200">
+                {['Visible to employers','Visible with limited details','Private'].map(option=><option key={option} value={option}>{option}</option>)}
+              </select>
+            </label>
+            <label className="block">
+              <span className="text-xs font-semibold text-slate-500 mb-1 block">Recruiter inbox</span>
+              <select value={account.recruiterInbox} onChange={e=>setAccountField('recruiterInbox',e.target.value)}
+                className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200">
+                {['Open to recruiter messages','Only matched employers','Closed for now'].map(option=><option key={option} value={option}>{option}</option>)}
+              </select>
+            </label>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              ['Alerts','jobAlerts'],
+              ['Digest','weeklyDigest'],
+              ['2FA','twoFactor'],
+            ].map(([label,key])=>(
+              <button key={key} type="button" onClick={()=>setAccountField(key,!account[key])}
+                className={`rounded-xl px-3 py-3 text-center transition ${account[key]?'bg-emerald-50 text-emerald-700 border border-emerald-200':'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-white'}`}>
+                <div className="text-sm font-extrabold">{account[key]?'On':'Off'}</div>
+                <div className="text-[11px] mt-1">{label}</div>
+              </button>
+            ))}
+          </div>
+          <div className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
+            <div className="text-xs uppercase tracking-wide font-semibold text-slate-400">Search Preferences</div>
+            <div className="text-sm text-slate-700 mt-2 leading-relaxed">
+              {profile.targetRole} · {profile.preferredWork} · {profile.preferredLocation}
+            </div>
           </div>
         </Card>
       </div>
@@ -4453,6 +4688,55 @@ function CareerProfileV2({ toast }){
 
       <div className="grid xl:grid-cols-[minmax(0,1.35fr)_380px] lg:grid-cols-[minmax(0,1fr)_340px] gap-6">
         <div className="space-y-4">
+          <Card className="p-5 space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-bold text-slate-800 flex items-center gap-2"><Icon name="settings-2" size={16} className="text-brand-600"/> Advanced Account Controls</h3>
+              <Badge tone="slate">More details</Badge>
+            </div>
+            <div className="grid md:grid-cols-2 gap-3">
+              {[['Username','username'],['Login email','loginEmail'],['Password','password'],['Timezone','timezone']].map(([label,key])=>(
+                <label key={key} className="block">
+                  <span className="text-xs font-semibold text-slate-500 mb-1 block">{label}</span>
+                  <input value={account[key]} onChange={e=>setAccountField(key,e.target.value)}
+                    className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+                </label>
+              ))}
+            </div>
+            <div className="grid md:grid-cols-2 gap-3">
+              {[['Language','language'],['Profile visibility','profileVisibility'],['Recruiter messages','recruiterInbox']].map(([label,key])=>(
+                <label key={key} className="block">
+                  <span className="text-xs font-semibold text-slate-500 mb-1 block">{label}</span>
+                  <select value={account[key]} onChange={e=>setAccountField(key,e.target.value)}
+                    className="w-full text-sm bg-slate-50 rounded-lg px-3 py-2 outline-none focus:ring-2 ring-brand-200">
+                    {key==='language' && ['English','Bahasa Malaysia','Chinese'].map(option=><option key={option} value={option}>{option}</option>)}
+                    {key==='profileVisibility' && ['Visible to employers','Visible with limited details','Private'].map(option=><option key={option} value={option}>{option}</option>)}
+                    {key==='recruiterInbox' && ['Open to recruiter messages','Only matched employers','Closed for now'].map(option=><option key={option} value={option}>{option}</option>)}
+                  </select>
+                </label>
+              ))}
+            </div>
+            <div className="grid md:grid-cols-3 gap-3">
+              {[
+                ['Job alerts','jobAlerts'],
+                ['Weekly digest','weeklyDigest'],
+                ['Two-factor login','twoFactor'],
+              ].map(([label,key])=>(
+                <button key={key} type="button" onClick={()=>setAccountField(key,!account[key])}
+                  className={`rounded-2xl border px-4 py-3 text-left transition ${account[key]?'border-emerald-200 bg-emerald-50':'border-slate-200 bg-slate-50 hover:bg-white'}`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-semibold text-slate-800">{label}</span>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${account[key]?'bg-emerald-100 text-emerald-700':'bg-slate-200 text-slate-500'}`}>{account[key]?'On':'Off'}</span>
+                  </div>
+                  <div className="text-xs text-slate-500 mt-2">
+                    {key==='jobAlerts' && 'Receive new role matches based on your preferences.'}
+                    {key==='weeklyDigest' && 'Get a weekly summary of profile traction and activity.'}
+                    {key==='twoFactor' && 'Require an extra verification step when signing in.'}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </Card>
+
           <Card className="p-5 space-y-3">
             <h3 className="font-bold text-slate-800 flex items-center gap-2"><Icon name="user-round" size={16} className="text-brand-600"/> Basics</h3>
             <div className="grid grid-cols-2 gap-3">
@@ -4659,6 +4943,35 @@ function CareerProfileV2({ toast }){
             </div>
 
             <Card className="p-5 mt-4">
+              <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2"><Icon name="settings-2" size={15} className="text-brand-600"/> Account Snapshot</h3>
+              <div className="space-y-3">
+                {[
+                  ['Username',account.username],
+                  ['Login email',account.loginEmail],
+                  ['Visibility',account.profileVisibility],
+                  ['Recruiter inbox',account.recruiterInbox],
+                ].map(([label,value])=>(
+                  <div key={label} className="rounded-lg bg-slate-50 px-3 py-3">
+                    <div className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">{label}</div>
+                    <div className="text-sm text-slate-700 mt-1">{value}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-3 gap-2 mt-4">
+                {[
+                  ['Alerts',account.jobAlerts],
+                  ['Digest',account.weeklyDigest],
+                  ['2FA',account.twoFactor],
+                ].map(([label,enabled])=>(
+                  <div key={label} className={`rounded-lg px-3 py-3 text-center ${enabled?'bg-emerald-50 text-emerald-700':'bg-slate-100 text-slate-500'}`}>
+                    <div className="text-sm font-extrabold">{enabled?'On':'Off'}</div>
+                    <div className="text-[11px] mt-1">{label}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card className="p-5 mt-4">
               <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2"><Icon name="zap" size={15} className="text-amber-500"/> Priority Gaps</h3>
               <div className="space-y-3">
                 {gaps.map((item,index)=>(
@@ -4688,7 +5001,7 @@ function CareerProfileV2({ toast }){
                 ))}
               </div>
               <div className="flex flex-wrap gap-2 mt-4">
-                <Btn size="sm" onClick={()=>toast('Profile saved successfully','check-circle')}>Save profile</Btn>
+                <Btn size="sm" onClick={()=>toast('Profile and account settings saved','check-circle')}>Save profile</Btn>
                 <Btn size="sm" variant="secondary" onClick={()=>toast('Profile link copied','link')}>Share profile</Btn>
               </div>
             </Card>
@@ -6397,21 +6710,23 @@ function EmployerApp({ lang, toggleLang, go, toast }){
 
   return (
     <div className="min-h-screen flex bg-[#f8fafc]">
-      <aside className={`fixed z-40 inset-y-0 left-0 w-64 h-screen bg-sidebar-gradient flex flex-col overflow-hidden transition-transform duration-300 ${mobileOpen?'translate-x-0':'-translate-x-full lg:translate-x-0'}`}>
+      <aside className={`emp-ig-sidebar fixed z-40 inset-y-0 left-0 w-64 h-screen flex flex-col overflow-hidden transition-transform duration-300 ${mobileOpen?'translate-x-0':'-translate-x-full lg:translate-x-0'}`}>
         <div className="p-5 border-b border-white/8 shrink-0">
-          <button onClick={()=>go('landing')}><LogoFull size={32} dark/></button>
-          <div className="mt-3 text-xs text-brand-300 font-semibold uppercase tracking-widest">Employer</div>
+          <button onClick={()=>go('landing')} className="emp-ig-logo"><LogoFull size={32} dark/></button>
+          <div className="mt-3 text-[11px] text-brand-200/80 font-semibold uppercase tracking-[0.22em]">Employer</div>
         </div>
-        <nav className="flex-1 min-h-0 overflow-y-auto p-3 space-y-0.5 mt-1">
+        <nav className="emp-ig-nav flex-1 min-h-0 overflow-y-auto space-y-1.5 mt-1">
           {EMP_NAV.map(n=>(
             <button key={n.id} onClick={()=>{ setView(n.id); setMobileOpen(false); }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${view===n.id?'bg-white/15 text-white':'text-brand-200 hover:bg-white/8 hover:text-white'}`}>
-              <Icon name={n.icon} size={18}/>{t(n.tk) || n.tk}{view===n.id&&<span className="ml-auto w-1.5 h-1.5 rounded-full bg-gold-400"/>}
+              className={`emp-ig-item ${view===n.id?'active':''}`}>
+              <span className="emp-ig-icon"><Icon name={n.icon} size={20}/></span>
+              <span className="emp-ig-label">{t(n.tk) || n.tk}</span>
+              {view===n.id&&<span className="ml-auto emp-ig-active-dot"/>}
             </button>
           ))}
         </nav>
         <div className="p-4 space-y-3 shrink-0 border-t border-white/8 bg-black/10">
-          <div className="rounded-xl bg-white/8 border border-white/10 p-3 text-center">
+          <div className="emp-ig-panel p-3 text-center">
             <div className="text-xs text-brand-300 mb-1">Active jobs</div>
             <div className="text-2xl font-extrabold text-white">{activeJobs}</div>
             <div className="text-xs text-emerald-400">{totalApplicants} applicants</div>
@@ -6419,7 +6734,7 @@ function EmployerApp({ lang, toggleLang, go, toast }){
           <div className="flex items-center gap-2.5 px-1">
             <button
               onClick={()=>{ setView('emp-profile'); setMobileOpen(false); }}
-              className="flex flex-1 items-center gap-2.5 -mx-1 px-1 py-1.5 rounded-xl text-left hover:bg-white/8 transition"
+              className="emp-ig-account flex flex-1 items-center gap-2.5 -mx-1 px-1 py-1.5 text-left"
               title="Open employee profile"
             >
               <div className="w-9 h-9 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">N</div>
@@ -6430,8 +6745,8 @@ function EmployerApp({ lang, toggleLang, go, toast }){
             </button>
             <button onClick={()=>go('landing')} className="text-brand-400 hover:text-white transition"><Icon name="log-out" size={15}/></button>
           </div>
-          <button onClick={()=>go('app')} className="w-full text-xs font-semibold text-white/40 hover:text-white/70 py-1.5 border border-white/10 rounded-lg transition">
-            Switch to Candidate view →
+          <button onClick={()=>go('app')} className="emp-ig-switch w-full text-xs font-semibold text-white/40 py-1.5 border border-white/10 rounded-lg">
+            Switch to Candidate view ->
           </button>
         </div>
       </aside>
