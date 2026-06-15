@@ -4523,6 +4523,28 @@ function CareerCompanion({ toast, setView }){
                 </div>
               ))}
             </div>
+            <div className="grid sm:grid-cols-2 gap-3 mt-3">
+              <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
+                <h4 className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-2">Opportunities</h4>
+                <ul className="space-y-1 text-xs text-blue-800">
+                  {['Singapore PM market is actively hiring your profile.',
+                    'AI Product Design demand up 42% — you are 60% of the way there.',
+                    'Your Bloompay case study is publishable now — do it this week.'].map(o=>(
+                    <li key={o} className="flex items-start gap-1"><Icon name="arrow-right" size={10} className="mt-0.5 shrink-0"/>{o}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="p-3 rounded-xl bg-brand-50 border border-brand-100">
+                <h4 className="text-xs font-bold text-brand-700 uppercase tracking-wide mb-2">Next Actions</h4>
+                <ul className="space-y-1 text-xs text-brand-800">
+                  {['Complete the 30-day leadership challenge mission.',
+                    'Book a salary strategy session with Coach Vera.',
+                    'Update your LinkedIn with the Bloompay impact metrics.'].map(a=>(
+                    <li key={a} className="flex items-start gap-1"><Icon name="check-circle" size={10} className="mt-0.5 shrink-0"/>{a}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </Card>
         </div>
       )}
@@ -4635,6 +4657,28 @@ function CareerCompanion({ toast, setView }){
                   <p className="text-xs text-slate-500">{p.desc}</p>
                 </button>
               ))}
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3 mt-4">
+              <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
+                <h4 className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-2">Skill Opportunities</h4>
+                <ul className="space-y-1 text-xs text-blue-800">
+                  {['AI Product Management is the fastest path to +40% salary growth.',
+                    'Leadership Track unlocks both Manager and Director paths simultaneously.',
+                    'System Design skill is required in 91% of Staff IC job descriptions.'].map(o=>(
+                    <li key={o} className="flex items-start gap-1"><Icon name="arrow-right" size={10} className="mt-0.5 shrink-0"/>{o}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="p-3 rounded-xl bg-brand-50 border border-brand-100">
+                <h4 className="text-xs font-bold text-brand-700 uppercase tracking-wide mb-2">Skill Next Actions</h4>
+                <ul className="space-y-1 text-xs text-brand-800">
+                  {['Enroll in the AI Product Strategy course this week (4 weeks, high impact).',
+                    'Request a leadership project at work within the next 14 days.',
+                    'Ask Coach Vera to build your personalised skill growth sprint.'].map(a=>(
+                    <li key={a} className="flex items-start gap-1"><Icon name="check-circle" size={10} className="mt-0.5 shrink-0"/>{a}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </Card>
         </div>
@@ -4858,6 +4902,38 @@ function CareerCompanion({ toast, setView }){
                   ))}
                 </div>
               </Card>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
+                  <h4 className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                    <Icon name="target" size={12}/> Opportunities
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {['Apply to 2 Senior PM roles this week while momentum is high.',
+                      'Use your STAR-method strength in salary negotiation interviews.',
+                      'Your stakeholder management answers stood out — highlight in cover letters.',
+                      'Schedule a mock panel interview next — your 1:1 performance is strong.'].map(s=>(
+                      <li key={s} className="flex items-start gap-1.5 text-xs text-blue-800">
+                        <Icon name="arrow-right" size={11} className="mt-0.5 shrink-0"/>{s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="p-4 rounded-xl bg-brand-50 border border-brand-100">
+                  <h4 className="text-xs font-bold text-brand-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                    <Icon name="list-checks" size={12}/> Recommended Next Actions
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {['Re-practice Case Study questions (your weakest category).',
+                      'Record yourself answering Q3 — review body language and pacing.',
+                      'Add 2 quantified metrics to your leadership story.',
+                      'Share this report with Coach Vera for personalised coaching.'].map(s=>(
+                      <li key={s} className="flex items-start gap-1.5 text-xs text-brand-800">
+                        <Icon name="check-circle" size={11} className="mt-0.5 shrink-0"/>{s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
               <div className="flex gap-3">
                 <Btn variant="secondary" fullWidth onClick={()=>setInterviewMode('setup')}><Icon name="refresh-cw" size={15}/> Try Again</Btn>
                 <Btn fullWidth onClick={()=>toast('Report saved to your Career Profile','save')}><Icon name="save" size={15}/> Save Report</Btn>
