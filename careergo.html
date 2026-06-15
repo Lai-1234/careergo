@@ -481,6 +481,765 @@ function Icon({ name, size=20, className='', strokeWidth=2 }){
   return <span ref={ref} className={'inline-flex items-center justify-center leading-none '+(className)} />;
 }
 
+const EMP_JOBS=[
+  {id:'job-pd',title:'Senior Product Designer',team:'Product Design',location:'Kuala Lumpur / Hybrid',salary:'$108k-$128k',status:'Active',priority:'Urgent',openings:1,applicants:34,qualified:11,timeToHire:'16 days',mustHave:['Figma','Design Systems','Fintech UX'],summary:'Own the end-to-end experience for our payments workflows and evolve the design system across mobile and web.'},
+  {id:'job-fe',title:'Frontend Engineer',team:'Engineering',location:'Remote, MY',salary:'$96k-$118k',status:'Active',priority:'High',openings:2,applicants:27,qualified:9,timeToHire:'19 days',mustHave:['React','TypeScript','Performance'],summary:'Build fast product surfaces with strong UX fidelity and partner closely with product and design.'},
+  {id:'job-pm',title:'Product Manager',team:'Core Product',location:'Kuala Lumpur',salary:'$102k-$122k',status:'Draft',priority:'Medium',openings:1,applicants:8,qualified:3,timeToHire:'24 days',mustHave:['Roadmapping','Analytics','Stakeholder Mgmt'],summary:'Drive roadmap execution for our employer intelligence suite from discovery through launch.'},
+];
+
+const EMP_PIPELINE_SEED=[
+  {id:'pipe-1',candidateId:1,jobId:'job-pd',stage:'Interview',nextStep:'Portfolio review on Thursday',owner:'Hana',lastActive:'2h ago'},
+  {id:'pipe-2',candidateId:3,jobId:'job-pd',stage:'Screen',nextStep:'AI screening summary ready',owner:'Hana',lastActive:'20m ago'},
+  {id:'pipe-3',candidateId:2,jobId:'job-fe',stage:'Offer',nextStep:'Comp package awaiting approval',owner:'Marcus',lastActive:'1d ago'},
+  {id:'pipe-4',candidateId:4,jobId:'job-pm',stage:'Applied',nextStep:'Needs hiring manager review',owner:'Sara',lastActive:'3h ago'},
+  {id:'pipe-5',candidateId:5,jobId:'job-fe',stage:'Screen',nextStep:'SQL assessment scheduled',owner:'Marcus',lastActive:'5h ago'},
+];
+
+const EMP_PIPELINE_STAGES=['Applied','Screen','Interview','Offer','Hired'];
+
+const EMP_SOCIAL_POSTS=[
+  {
+    id:'post-1',
+    author:'Nexgen Sdn Bhd',
+    handle:'@nexgenhiring',
+    role:'Senior Product Designer',
+    team:'Product Design',
+    location:'Kuala Lumpur / Hybrid',
+    jobId:'job-pd',
+    own:true,
+    priority:'Urgent',
+    posted:'2h ago',
+    imageTone:'from-[#4f46e5] via-[#7c3aed] to-[#f59e0b]',
+    caption:'We are hiring a Senior Product Designer to shape the future of employer intelligence. Looking for strong design systems thinking, fintech UX depth, and someone who can partner tightly with product and engineering.',
+    tags:['Design Systems','Fintech UX','Hybrid'],
+    likes:128,
+    liked:false,
+    saves:36,
+    comments:[
+      {name:'Aisha Rahman',type:'candidate',text:'I love the clarity here. Is a portfolio with fintech case studies preferred over broader SaaS experience?',time:'34m ago'},
+      {name:'Daniel Wong',type:'candidate',text:'What does the first 90 days look like for this role?',time:'1h ago'},
+    ],
+  },
+  {
+    id:'post-2',
+    author:'Orbit Commerce',
+    handle:'@orbitcommerce',
+    role:'Frontend Engineer',
+    team:'Checkout Experience',
+    location:'Remote, MY',
+    jobId:'job-fe',
+    own:false,
+    priority:'High',
+    posted:'5h ago',
+    imageTone:'from-[#0f766e] via-[#14b8a6] to-[#67e8f9]',
+    caption:'Hiring frontend engineers who care about polished interaction details, performance, and experimentation velocity. React, TypeScript, and product ownership mindset are all important here.',
+    tags:['React','Remote','Performance'],
+    likes:214,
+    liked:true,
+    saves:49,
+    comments:[
+      {name:'Farid Azman',type:'candidate',text:'This looks right up my alley. Are you open to candidates with strong product design collaboration experience?',time:'2h ago'},
+      {name:'Amelia Tan',type:'candidate',text:'What is the interview process like for remote engineers?',time:'3h ago'},
+    ],
+  },
+  {
+    id:'post-3',
+    author:'Lattice Health',
+    handle:'@latticehealthjobs',
+    role:'Product Manager',
+    team:'Patient Platform',
+    location:'Singapore / KL',
+    jobId:'job-pm',
+    own:false,
+    priority:'Medium',
+    posted:'1d ago',
+    imageTone:'from-[#ea580c] via-[#f97316] to-[#fdba74]',
+    caption:'Looking for a PM who can turn messy healthcare workflows into lovable product experiences. Bonus if you have experience aligning data, ops, and design into one roadmap.',
+    tags:['Product','Healthcare','Cross-functional'],
+    likes:176,
+    liked:false,
+    saves:28,
+    comments:[
+      {name:'Priya Nair',type:'candidate',text:'Really appreciate how specific this brief is. Is healthcare domain experience required or just preferred?',time:'6h ago'},
+    ],
+  },
+  {
+    id:'post-4',
+    author:'Nexgen Sdn Bhd',
+    handle:'@nexgenhiring',
+    role:'Frontend Engineer',
+    team:'Platform UX',
+    location:'Remote, MY',
+    jobId:'job-fe',
+    own:true,
+    priority:'High',
+    posted:'Yesterday',
+    imageTone:'from-[#1d4ed8] via-[#2563eb] to-[#93c5fd]',
+    caption:'We just opened a frontend role for engineers who love shipping fast interfaces without sacrificing maintainability. If you care about React architecture and user empathy, this one is for you.',
+    tags:['Frontend','TypeScript','Remote'],
+    likes:96,
+    liked:false,
+    saves:22,
+    comments:[
+      {name:'Farid Azman',type:'candidate',text:'The balance between speed and maintainability is exactly what I look for. Would love to know how your team handles design-engineering handoff.',time:'11h ago'},
+      {name:'Nur Iman',type:'candidate',text:'Is there room for ownership over the design system frontend implementation too?',time:'14h ago'},
+    ],
+  },
+];
+
+function getEmployerCandidateById(id){
+  return EMP_CANDIDATES.find(c=>c.id===id);
+}
+
+function getEmployerJobById(jobs,id){
+  return jobs.find(job=>job.id===id);
+}
+
+function EmployerDashboardV2({ setView, jobs, pipeline, savedCandidateIds, selectedJobId }){
+  const selectedJob=getEmployerJobById(jobs,selectedJobId)||jobs[0];
+  const activeJobs=jobs.filter(job=>job.status==='Active');
+  const urgentJobs=jobs.filter(job=>job.priority==='Urgent'||job.priority==='High');
+  const funnel=[
+    {l:'Job views',n:1284},
+    {l:'Applied',n:pipeline.filter(p=>p.stage==='Applied').length+activeJobs.reduce((sum,job)=>sum+job.applicants,0)},
+    {l:'Screened',n:pipeline.filter(p=>p.stage==='Screen').length},
+    {l:'Interviewed',n:pipeline.filter(p=>p.stage==='Interview').length},
+    {l:'Offer',n:pipeline.filter(p=>p.stage==='Offer').length},
+  ];
+  const max=funnel[0].n;
+  const hiringVelocity=Math.max(1,Math.round((pipeline.filter(p=>p.stage==='Interview'||p.stage==='Offer').length/Math.max(activeJobs.length,1))*7));
+
+  return (
+    <div className="space-y-6 fade-up">
+      <div className="rounded-3xl bg-gradient-to-br from-brand-950 via-brand-900 to-[#1e1560] p-7 relative overflow-hidden">
+        <div className="absolute -right-20 -top-20 w-72 h-72 bg-brand-500/15 rounded-full blur-3xl"/>
+        <div className="relative">
+          <Badge tone="gold"><Icon name="building-2" size={12}/> Employer Dashboard</Badge>
+          <h1 className="text-2xl font-extrabold text-white mt-3">Nexgen Sdn Bhd</h1>
+          <p className="text-brand-200">AI is screening candidates 24/7. You focus on the conversations, priorities, and offers that move hiring forward.</p>
+          <div className="flex flex-wrap gap-3 mt-5">
+            <Btn size="sm" onClick={()=>setView('emp-jobs')} className="bg-white/15 border border-white/25 text-white hover:bg-white/25"><Icon name="briefcase" size={15}/> Manage Roles</Btn>
+            <Btn size="sm" onClick={()=>setView('emp-talent')} className="bg-white/15 border border-white/25 text-white hover:bg-white/25"><Icon name="search" size={15}/> Find Talent</Btn>
+            <Btn size="sm" onClick={()=>setView('emp-pipeline')} className="bg-white/15 border border-white/25 text-white hover:bg-white/25"><Icon name="git-branch" size={15}/> Hiring Pipeline</Btn>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[{icon:'briefcase',l:'Open Jobs',v:String(activeJobs.length),sub:`${urgentJobs.length} priority roles`,t:'brand'},{icon:'users',l:'Saved Talent',v:String(savedCandidateIds.length),sub:'Ready for outreach',t:'blue'},{icon:'star',l:'Qualified',v:String(pipeline.filter(p=>p.stage==='Screen'||p.stage==='Interview'||p.stage==='Offer').length),sub:'In active review',t:'green'},{icon:'calendar',l:'Hiring Velocity',v:`${hiringVelocity}/wk`,sub:'Interviews + offers moving',t:'amber'}].map(x=>(
+          <StatCard key={x.l} icon={x.icon} label={x.l} value={x.v} sub={x.sub} tone={x.t}/>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        <Card className="p-6">
+          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="filter" size={15} className="text-brand-600"/> Hiring Funnel</h3>
+          <div className="space-y-3">
+            {funnel.map((f,i)=>(
+              <div key={f.l}>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-slate-600">{f.l}</span><span className="font-bold text-slate-900">{f.n.toLocaleString()}</span>
+                </div>
+                <div className="bg-slate-100 rounded-full h-3">
+                  <div className={`h-3 rounded-full ${i===0?'bg-brand-300':i===1?'bg-brand-400':i===2?'bg-brand-500':i===3?'bg-brand-700':'bg-emerald-500'}`} style={{width:`${(f.n/max)*100}%`}}/>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-xs text-emerald-800">
+            <Icon name="zap" size={12} className="inline mr-1"/> AI acceptance prediction for the current pipeline: <strong>2 of 3 offers likely to be accepted</strong>.
+          </div>
+        </Card>
+        <Card className="p-6">
+          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="clock" size={15} className="text-brand-600"/> Priority Roles</h3>
+          <div className="space-y-3">
+            {jobs.map(job=>(
+              <div key={job.id} className={`flex items-center gap-3 p-3 rounded-2xl border transition cursor-pointer ${job.id===selectedJobId?'bg-brand-50 border-brand-200':'border-slate-100 hover:bg-slate-50'}`} onClick={()=>setView('emp-jobs')}>
+                <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-700 flex items-center justify-center shrink-0">
+                  <Icon name="briefcase" size={18}/>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-slate-900 text-sm truncate">{job.title}</div>
+                  <div className="text-xs text-slate-400 truncate">{job.team} · {job.location}</div>
+                </div>
+                <div className="shrink-0 text-center">
+                  <div className="text-sm font-bold text-brand-700">{job.qualified}</div>
+                  <div className="text-xs text-slate-400">qualified</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Btn variant="outline" size="sm" fullWidth className="mt-3" onClick={()=>setView('emp-jobs')}>
+            Open hiring workspace <Icon name="arrow-right" size={13}/>
+          </Btn>
+        </Card>
+        <Card className="p-6">
+          <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="sparkles" size={15} className="text-brand-600"/> Focus This Week</h3>
+          <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+            <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-2">Selected role</div>
+            <div className="text-lg font-extrabold text-slate-900">{selectedJob.title}</div>
+            <p className="text-sm text-slate-500 mt-1">{selectedJob.summary}</p>
+            <div className="flex flex-wrap gap-2 mt-4">
+              <Badge tone="brand">{selectedJob.priority} priority</Badge>
+              <Badge tone="green">{selectedJob.qualified} qualified</Badge>
+              <Badge tone="amber">{selectedJob.timeToHire} avg. time-to-hire</Badge>
+            </div>
+          </div>
+          <div className="mt-4 space-y-2 text-sm text-slate-600">
+            <div className="flex items-start gap-2"><Icon name="check-circle-2" size={16} className="text-emerald-500 mt-0.5"/>Review AI-screened candidates for this role.</div>
+            <div className="flex items-start gap-2"><Icon name="calendar" size={16} className="text-brand-600 mt-0.5"/>Advance shortlisted candidates into interview scheduling.</div>
+            <div className="flex items-start gap-2"><Icon name="wand-2" size={16} className="text-amber-500 mt-0.5"/>Use AI Assistant to draft outreach and interview questions.</div>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function EmployerRolesWorkspace(props){
+  return <EmployerRolesWorkspaceV2 {...props} />;
+}
+
+function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast, setView, updateJobStatus, posts, onTogglePostLike, onUpdatePost }){
+  const selectedJob=getEmployerJobById(jobs,selectedJobId)||jobs[0];
+  const [feedFilter,setFeedFilter]=useState('all');
+  const [workspaceTab,setWorkspaceTab]=useState('feed');
+  const ownPosts=posts.filter(post=>post.own);
+  const [editingPostId,setEditingPostId]=useState(ownPosts[0]?.id || null);
+  const editingPost=posts.find(post=>post.id===editingPostId) || ownPosts[0] || posts[0];
+  const [editorDraft,setEditorDraft]=useState(()=>{
+    const base=ownPosts[0] || posts[0];
+    return base ? {
+      role:base.role,
+      location:base.location,
+      caption:base.caption,
+      tags:base.tags.join(', '),
+      priority:base.priority,
+    } : { role:'', location:'', caption:'', tags:'', priority:'Medium' };
+  });
+
+  useEffect(()=>{
+    if(!editingPost) return;
+    setEditorDraft({
+      role:editingPost.role,
+      location:editingPost.location,
+      caption:editingPost.caption,
+      tags:editingPost.tags.join(', '),
+      priority:editingPost.priority,
+    });
+  },[editingPostId]);
+
+  const visiblePosts=posts.filter(post=>{
+    if(feedFilter==='mine') return post.own;
+    if(feedFilter==='others') return !post.own;
+    return true;
+  });
+
+  const totalComments=posts.reduce((sum,post)=>sum+post.comments.length,0);
+  const totalLikes=posts.reduce((sum,post)=>sum+post.likes,0);
+
+  const savePostEdits=()=>{
+    if(!editingPost) return;
+    onUpdatePost(editingPost.id,{
+      role:editorDraft.role.trim() || editingPost.role,
+      location:editorDraft.location.trim() || editingPost.location,
+      caption:editorDraft.caption.trim() || editingPost.caption,
+      tags:editorDraft.tags.split(',').map(tag=>tag.trim()).filter(Boolean).slice(0,5),
+      priority:editorDraft.priority,
+    });
+    toast(`Updated post for ${editingPost.role}`,'check-circle');
+    setWorkspaceTab('feed');
+  };
+
+  return (
+    <div className="fade-up h-full min-h-0 overflow-hidden flex flex-col bg-slate-50 rounded-[28px] border border-slate-200">
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 px-6 lg:px-7 pt-6 lg:pt-7 pb-5 shrink-0 bg-white border-b border-slate-200">
+        <div>
+          <h1 className="text-2xl font-extrabold text-slate-900">Hiring Feed</h1>
+          <p className="text-slate-500">Post browsing and post editing now live in separate workspaces so the page is simpler to scan.</p>
+        </div>
+        <div className="flex gap-3">
+          <Btn variant="secondary" onClick={()=>toast('Draft role template generated','sparkles')}><Icon name="file-plus" size={15}/> New role draft</Btn>
+          <Btn onClick={()=>setView('emp-ai')}><Icon name="wand-2" size={15}/> Generate job description</Btn>
+        </div>
+      </div>
+
+      <div className="px-6 lg:px-7 pt-4 shrink-0 bg-white border-b border-slate-200">
+        <div className="flex gap-2 flex-wrap">
+          <button onClick={()=>setWorkspaceTab('feed')} className={`px-4 py-2.5 rounded-t-2xl text-sm font-semibold border ${workspaceTab==='feed'?'bg-slate-50 border-slate-200 border-b-slate-50 text-slate-900':'border-transparent text-slate-500 hover:text-brand-700'}`}>Post Feed</button>
+          <button onClick={()=>setWorkspaceTab('editor')} className={`px-4 py-2.5 rounded-t-2xl text-sm font-semibold border ${workspaceTab==='editor'?'bg-slate-50 border-slate-200 border-b-slate-50 text-slate-900':'border-transparent text-slate-500 hover:text-brand-700'}`}>Edit Post</button>
+        </div>
+      </div>
+
+      <div className="grid xl:grid-cols-[280px_minmax(0,1fr)_320px] lg:grid-cols-[260px_minmax(0,1fr)] gap-6 items-start flex-1 min-h-0 overflow-hidden px-6 lg:px-7 py-6">
+        <div className="space-y-4 h-full min-h-0 overflow-y-auto pr-1">
+          <Card className="p-4 shrink-0">
+            <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Your roles</div>
+            <div className="space-y-3">
+              {jobs.map(job=>(
+                <button key={job.id} onClick={()=>setSelectedJobId(job.id)} className={`w-full text-left rounded-2xl border px-4 py-3 transition ${job.id===selectedJobId?'border-brand-300 bg-brand-50':'border-slate-100 hover:bg-slate-50'}`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="font-bold text-slate-900">{job.title}</div>
+                      <div className="text-sm text-slate-500 mt-1">{job.team} · {job.location}</div>
+                    </div>
+                    <Badge tone={job.status==='Active'?'green':'slate'}>{job.status}</Badge>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 mt-3 text-center">
+                    {[['Applicants',job.applicants],['Qualified',job.qualified],['Openings',job.openings]].map(([label,value])=>(
+                      <div key={label} className="rounded-xl bg-white px-2 py-2">
+                        <div className="text-sm font-extrabold text-slate-900">{value}</div>
+                        <div className="text-[10px] text-slate-500">{label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          <Card className="p-4 shrink-0">
+            {workspaceTab==='feed' ? (
+              <>
+                <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Existing posts</div>
+                <div className="space-y-2">
+                  {ownPosts.map(post=>(
+                    <button key={post.id} onClick={()=>{ setEditingPostId(post.id); setWorkspaceTab('editor'); }} className={`w-full rounded-xl px-4 py-3 text-left transition border ${editingPostId===post.id?'border-brand-300 bg-brand-50':'border-slate-100 bg-slate-50 hover:bg-white'}`}>
+                      <div className="font-semibold text-slate-900 text-sm">{post.role}</div>
+                      <div className="text-xs text-slate-500 mt-1">{post.posted} - {post.likes} likes</div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Existing posts</div>
+                <div className="space-y-2">
+                  {ownPosts.map(post=>(
+                    <button key={post.id} onClick={()=>setEditingPostId(post.id)} className={`w-full rounded-xl px-4 py-3 text-left transition border ${editingPostId===post.id?'border-brand-300 bg-brand-50':'border-slate-100 bg-slate-50 hover:bg-white'}`}>
+                      <div className="font-semibold text-slate-900 text-sm">{post.role}</div>
+                      <div className="text-xs text-slate-500 mt-1">{post.posted} - {post.likes} likes</div>
+                    </button>
+                  ))}
+                </div>
+                <div className="border-t border-slate-100 my-3"></div>
+                <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Browse filter</div>
+                <div className="space-y-2">
+                  {[['all','All posts'],['mine','My company posts'],['others','Other companies']].map(([id,label])=>(
+                    <button key={id} onClick={()=>setFeedFilter(id)} className={`w-full rounded-xl px-4 py-3 text-sm font-semibold text-left transition ${feedFilter===id?'bg-brand-700 text-white':'bg-slate-50 text-slate-600 hover:bg-brand-50 hover:text-brand-700'}`}>{label}</button>
+                  ))}
+                </div>
+              </>
+            )}
+          </Card>
+        </div>
+
+        <div className="space-y-5 h-full min-h-0 flex flex-col overflow-hidden">
+          {workspaceTab==='feed' ? (
+            <div className="space-y-5 flex-1 min-h-0 overflow-y-auto pr-2" style={{overscrollBehavior:'contain'}}>
+                {visiblePosts.map(post=>(
+                  <Card key={post.id} className="overflow-hidden">
+                    <div className="p-5 flex items-center gap-3">
+                      <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${post.own?'from-brand-500 to-brand-900':'from-slate-700 to-slate-900'} text-white font-bold flex items-center justify-center shrink-0`}>{post.author.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <div className="font-bold text-slate-900">{post.author}</div>
+                          {post.own && <Badge tone="brand">Your post</Badge>}
+                          <Badge tone={post.priority==='Urgent'?'red':post.priority==='High'?'amber':'slate'}>{post.priority}</Badge>
+                        </div>
+                        <div className="text-xs text-slate-400">{post.handle} · {post.posted}</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button onClick={()=>setSelectedJobId(post.jobId)} className="text-xs font-semibold text-brand-700 hover:text-brand-800">Open role</button>
+                        {post.own && <button onClick={()=>{ setEditingPostId(post.id); setWorkspaceTab('editor'); }} className="text-xs font-semibold text-slate-500 hover:text-brand-700">Edit post</button>}
+                      </div>
+                    </div>
+                    <div className={`h-64 bg-gradient-to-br ${post.imageTone} px-6 py-6 flex flex-col justify-between`}>
+                      <div className="flex items-center justify-between">
+                        <Badge tone="gold"><Icon name="briefcase" size={12}/>{post.team}</Badge>
+                        <div className="text-white/80 text-sm">{post.location}</div>
+                      </div>
+                      <div>
+                        <div className="text-white/70 text-xs uppercase tracking-[0.24em] font-semibold mb-2">Now hiring</div>
+                        <div className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">{post.role}</div>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <p className="text-sm text-slate-700 leading-relaxed">{post.caption}</p>
+                      <div className="flex flex-wrap gap-2 mt-4">{post.tags.map(tag=><span key={tag} className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-100 text-slate-600">#{tag}</span>)}</div>
+                      <div className="flex items-center justify-between text-sm text-slate-500 mt-5">
+                        <div className="flex items-center gap-2"><span className="w-7 h-7 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center"><Icon name="heart" size={14}/></span><span>{post.likes} likes</span></div>
+                        <div>{post.comments.length} candidate comments · {post.saves} saves</div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-slate-100">
+                        <button onClick={()=>onTogglePostLike(post.id)} className={`rounded-xl py-2.5 text-sm font-semibold transition flex items-center justify-center gap-2 ${post.liked?'bg-rose-50 text-rose-600':'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}><Icon name="heart" size={15}/>{post.liked?'Liked':'Like'}</button>
+                        <button onClick={()=>toast(`Opened comments on ${post.role}`,'message-circle')} className="rounded-xl py-2.5 text-sm font-semibold bg-slate-50 text-slate-600 hover:bg-slate-100 transition flex items-center justify-center gap-2"><Icon name="message-circle" size={15}/> Comment</button>
+                        <button onClick={()=>toast(`Shared ${post.role} post`,'send')} className="rounded-xl py-2.5 text-sm font-semibold bg-slate-50 text-slate-600 hover:bg-slate-100 transition flex items-center justify-center gap-2"><Icon name="send" size={15}/> Share</button>
+                      </div>
+                      <div className="mt-4 space-y-3">
+                        {post.comments.map((comment,idx)=>(
+                          <div key={`${post.id}-${idx}`} className="rounded-2xl bg-slate-50 px-4 py-3">
+                            <div className="flex items-center gap-2 text-xs text-slate-500 mb-1"><span className="font-semibold text-slate-800">{comment.name}</span><span>candidate</span><span>·</span><span>{comment.time}</span></div>
+                            <p className="text-sm text-slate-700 leading-relaxed">{comment.text}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+            </div>
+          ) : (
+            <div className="flex-1 min-h-0">
+              <Card className="p-6 min-h-0 overflow-y-auto">
+                <div className="mb-6">
+                  <div className="text-xs uppercase tracking-wide font-semibold text-slate-500">Editing workspace</div>
+                  <h2 className="text-xl font-extrabold text-slate-900 mt-1">{editingPost?.role || 'Company post'}</h2>
+                  <p className="text-sm text-slate-500 mt-1">Choose an existing company post, then update its content here.</p>
+                </div>
+
+                {ownPosts.length ? (
+                  <>
+                    <div className="mb-6">
+                      <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Existing posts</div>
+                      <div className="grid lg:grid-cols-2 gap-3">
+                        {ownPosts.map(post=>(
+                          <button key={post.id} onClick={()=>setEditingPostId(post.id)} className={`rounded-2xl border px-4 py-4 text-left transition ${editingPostId===post.id?'border-brand-300 bg-brand-50':'border-slate-200 bg-white hover:border-brand-200 hover:bg-slate-50'}`}>
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <div className="font-semibold text-slate-900">{post.role}</div>
+                                <div className="text-xs text-slate-500 mt-1">{post.location}</div>
+                              </div>
+                              <Badge tone={post.priority==='Urgent'?'red':post.priority==='High'?'amber':'slate'}>{post.priority}</Badge>
+                            </div>
+                            <p className="text-sm text-slate-600 mt-3 line-clamp-2">{post.caption}</p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Role title</div><input value={editorDraft.role} onChange={e=>setEditorDraft(d=>({...d,role:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
+                      <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Location</div><input value={editorDraft.location} onChange={e=>setEditorDraft(d=>({...d,location:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4 mt-4">
+                      <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Priority</div><select value={editorDraft.priority} onChange={e=>setEditorDraft(d=>({...d,priority:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200 bg-white">{['Urgent','High','Medium'].map(level=><option key={level} value={level}>{level}</option>)}</select></label>
+                      <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Tags</div><input value={editorDraft.tags} onChange={e=>setEditorDraft(d=>({...d,tags:e.target.value}))} placeholder="Frontend, Remote, TypeScript" className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
+                    </div>
+                    <label className="block mt-4"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Caption</div><textarea value={editorDraft.caption} onChange={e=>setEditorDraft(d=>({...d,caption:e.target.value}))} rows={8} className="w-full rounded-3xl border border-slate-200 px-4 py-4 text-sm outline-none focus:ring-2 ring-brand-200 resize-none" /></label>
+                    <div className="flex flex-wrap gap-3 mt-5">
+                      <Btn onClick={savePostEdits}><Icon name="save" size={15}/> Save changes</Btn>
+                      <Btn variant="secondary" onClick={()=>setEditorDraft({ role:editingPost?.role || '', location:editingPost?.location || '', caption:editingPost?.caption || '', tags:editingPost?.tags.join(', ') || '', priority:editingPost?.priority || 'Medium' })}><Icon name="rotate-ccw" size={15}/> Reset</Btn>
+                    </div>
+                  </>
+                ) : (
+                  <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
+                    <div className="text-lg font-bold text-slate-900">No company posts to edit yet</div>
+                    <p className="text-sm text-slate-500 mt-2">Once your team has published a post, it will appear here for editing.</p>
+                  </div>
+                )}
+              </Card>
+            </div>
+          )}
+        </div>
+
+        {workspaceTab==='feed' && (
+          <div className="space-y-4 h-full min-h-0 overflow-y-auto pr-1">
+            <Card className="p-4 shrink-0">
+              <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Feed insights</div>
+              <div className="grid grid-cols-2 gap-3">{[['Posts',String(posts.length)],['Likes',String(totalLikes)],['Comments',String(totalComments)],['My posts',String(posts.filter(p=>p.own).length)]].map(([label,value])=><div key={label} className="rounded-2xl bg-slate-50 px-4 py-4"><div className="text-xl font-extrabold text-slate-900">{value}</div><div className="text-xs text-slate-500 mt-1">{label}</div></div>)}</div>
+            </Card>
+            <Card className="p-4 shrink-0">
+              <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Trending candidate questions</div>
+              <div className="space-y-3">{['What does the first 90 days look like?','Is remote work truly supported?','How quickly do you review applicants?','What makes someone stand out for interview?'].map(q=><div key={q} className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">{q}</div>)}</div>
+            </Card>
+            <Card className="p-4 shrink-0">
+              <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Quick actions</div>
+              <div className="space-y-2">
+                <button onClick={()=>setView('emp-pipeline')} className="w-full text-left rounded-xl bg-slate-50 hover:bg-brand-50 transition px-4 py-3 text-sm text-slate-700 flex items-center justify-between">Review pipeline for this role <Icon name="arrow-right" size={15}/></button>
+                <button onClick={()=>setView('emp-ai')} className="w-full text-left rounded-xl bg-slate-50 hover:bg-brand-50 transition px-4 py-3 text-sm text-slate-700 flex items-center justify-between">Ask AI for better captions <Icon name="arrow-right" size={15}/></button>
+                <button onClick={()=>toast(`Hiring brief shared for ${selectedJob.title}`,'send')} className="w-full text-left rounded-xl bg-slate-50 hover:bg-brand-50 transition px-4 py-3 text-sm text-slate-700 flex items-center justify-between">Share hiring brief with team <Icon name="arrow-right" size={15}/></button>
+              </div>
+            </Card>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function EmployerTalentDiscoveryV2({ toast, selectedJobId, jobs, savedCandidateIds, onToggleSaveCandidate, onAddToPipeline }){
+  const [query,setQuery]=useState('');
+  const [sel,setSel]=useState(EMP_CANDIDATES[0]);
+  const [activeFilter,setActiveFilter]=useState('All');
+  const selectedJob=getEmployerJobById(jobs,selectedJobId)||jobs[0];
+
+  const filtered=EMP_CANDIDATES.filter(c=>{
+    const q=query.toLowerCase();
+    const matchesQuery=!q||c.name.toLowerCase().includes(q)||c.role.toLowerCase().includes(q)||c.skills.join(' ').toLowerCase().includes(q);
+    const matchesFilter=
+      activeFilter==='All'||
+      (activeFilter==='Saved'&&savedCandidateIds.includes(c.id))||
+      (activeFilter==='Available now'&&c.status==='Available now')||
+      (activeFilter==='High growth'&&c.growth.includes('Strong'))||
+      (activeFilter==='Verified skills'&&c.skills.length>=3);
+    const jobToken=selectedJob.title.toLowerCase().split(' ')[1]||'';
+    const matchesJob=selectedJob.mustHave.some(skill=>c.skills.includes(skill))||c.role.toLowerCase().includes(jobToken);
+    return matchesQuery && matchesFilter && matchesJob;
+  });
+
+  return (
+    <div className="space-y-6 fade-up">
+      <div>
+        <h1 className="text-2xl font-extrabold text-slate-900">Talent Discovery</h1>
+        <p className="text-slate-500">Find candidates by skill trajectory and growth potential, then move them directly into your hiring flow.</p>
+      </div>
+      <Card className="p-4 bg-gradient-to-r from-brand-50 to-white border-brand-100">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-brand-700">Currently sourcing for</div>
+            <div className="text-lg font-extrabold text-slate-900">{selectedJob.title}</div>
+            <div className="text-sm text-slate-500 mt-1">{selectedJob.team} · Must-have: {selectedJob.mustHave.join(', ')}</div>
+          </div>
+          <Btn variant="secondary" onClick={()=>toast(`AI sourcing brief refreshed for ${selectedJob.title}`,'sparkles')}>
+            <Icon name="brain-circuit" size={15}/> Refresh AI match brief
+          </Btn>
+        </div>
+      </Card>
+      <Card className="p-4 flex items-center gap-3">
+        <Icon name="search" size={17} className="text-slate-400"/>
+        <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search by skill, role, or name... e.g. 'Figma', 'Product Designer'"
+          className="flex-1 outline-none text-sm text-slate-700 placeholder:text-slate-400 bg-transparent"/>
+        <div className="flex gap-2 flex-wrap">
+          {['All','Available now','High growth','Verified skills','Saved'].map(f=>(
+            <button key={f} onClick={()=>setActiveFilter(f)} className={`text-xs font-semibold px-3 py-1.5 rounded-xl transition ${activeFilter===f?'bg-brand-700 text-white':'bg-slate-100 text-slate-600 hover:bg-brand-100 hover:text-brand-700'}`}>{f}</button>
+          ))}
+        </div>
+      </Card>
+
+      <div className="grid lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-1 space-y-3">
+          {filtered.map(c=>(
+            <Card key={c.id} className={`p-4 cursor-pointer transition-all ${sel?.id===c.id?'border-brand-300 shadow-card':''}`} hover onClick={()=>setSel(c)}>
+              <div className="flex items-center gap-3 mb-3">
+                <Avatar name={c.name} size="md"/>
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-slate-900 truncate">{c.name}</div>
+                  <div className="text-sm text-slate-500">{c.role} · {c.yoe} yrs</div>
+                </div>
+                <div className="text-center shrink-0">
+                  <div className="text-lg font-extrabold text-brand-700">{c.score}%</div>
+                  <div className="text-xs text-slate-400">AI fit</div>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-1.5 mb-2">{c.skills.map(s=><Badge key={s} tone="slate">{s}</Badge>)}</div>
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"/>{c.status}</span>
+                <span className="font-semibold text-slate-700">{c.market}</span>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        <Card className="lg:col-span-2 p-6">
+          {sel?(
+            <div className="space-y-5">
+              <div className="flex items-center gap-4">
+                <Avatar name={sel.name} size="lg"/>
+                <div>
+                  <h2 className="text-xl font-extrabold text-slate-900">{sel.name}</h2>
+                  <p className="text-slate-500">{sel.role} · {sel.yoe} years experience</p>
+                  <div className="flex gap-2 mt-2 flex-wrap">
+                    <Badge tone={sel.status.includes('now')?'green':'amber'} dot>{sel.status}</Badge>
+                    <Badge tone="brand">Growth: {sel.growth}</Badge>
+                    {savedCandidateIds.includes(sel.id)&&<Badge tone="blue">Saved</Badge>}
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                {[['AI Fit Score',`${sel.score}%`,'brand'],['Market Value',sel.market,'green'],['Trajectory',sel.growth,'amber']].map(([l,v,t])=>(
+                  <div key={l} className={`p-3 rounded-xl text-center ${t==='brand'?'bg-brand-50':t==='green'?'bg-emerald-50':'bg-amber-50'}`}>
+                    <div className={`text-lg font-extrabold ${t==='brand'?'text-brand-700':t==='green'?'text-emerald-700':'text-amber-700'}`}>{v}</div>
+                    <div className="text-xs text-slate-500">{l}</div>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Verified Skills</div>
+                <div className="flex flex-wrap gap-2">{sel.skills.map(s=><Badge key={s} tone="brand">{s}</Badge>)}</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Career Trajectory</div>
+                <div className="bg-slate-50 rounded-xl p-4 text-sm text-slate-600">
+                  Strong upward arc. Consistent skill growth over 3 years. On pace for Senior/Lead in about 18 months. Low flight risk based on engagement signals.
+                </div>
+              </div>
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Why this role fits</div>
+                <div className="text-sm text-slate-600 leading-relaxed">
+                  {sel.name} overlaps with <span className="font-semibold text-slate-800">{selectedJob.title}</span> through {sel.skills.filter(skill=>selectedJob.mustHave.includes(skill)).join(', ') || 'complementary adjacent skills'} and shows {sel.growth.toLowerCase()} momentum.
+                </div>
+              </div>
+              <div className="flex gap-3 flex-wrap">
+                <Btn onClick={()=>toast(`Interview invite sent to ${sel.name}`,'calendar')}><Icon name="calendar" size={15}/> Invite to interview</Btn>
+                <Btn variant="secondary" onClick={()=>{ onToggleSaveCandidate(sel.id); toast(savedCandidateIds.includes(sel.id)?`${sel.name} removed from saved talent`:`${sel.name} saved to talent pool`,'bookmark'); }}>
+                  <Icon name={savedCandidateIds.includes(sel.id)?'bookmark-check':'bookmark'} size={15}/>{savedCandidateIds.includes(sel.id)?'Saved':'Save talent'}
+                </Btn>
+                <Btn variant="outline" onClick={()=>onAddToPipeline(sel.id,selectedJob.id)}>
+                  <Icon name="git-branch" size={15}/> Move to screen
+                </Btn>
+              </div>
+            </div>
+          ):(
+            <div className="flex flex-col items-center justify-center h-full py-16 text-center">
+              <Icon name="user-search" size={40} className="text-slate-200 mb-4"/>
+              <p className="text-slate-400">Select a candidate on the left to view their full Career Intelligence profile.</p>
+            </div>
+          )}
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function EmployerHiringPipeline({ pipeline, jobs, selectedJobId, movePipelineStage, setView }){
+  const selectedJob=getEmployerJobById(jobs,selectedJobId)||jobs[0];
+  const pipelineForJob=pipeline.filter(item=>item.jobId===selectedJob.id);
+
+  return (
+    <div className="space-y-6 fade-up">
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-extrabold text-slate-900">Hiring Pipeline</h1>
+          <p className="text-slate-500">Track every candidate stage for {selectedJob.title} and keep momentum visible across the team.</p>
+        </div>
+        <div className="flex gap-3">
+          <Btn variant="secondary" onClick={()=>setView('emp-talent')}><Icon name="search" size={15}/> Add candidates</Btn>
+          <Btn onClick={()=>setView('emp-ai')}><Icon name="wand-2" size={15}/> Draft outreach</Btn>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-3 xl:grid-cols-5 gap-4">
+        {EMP_PIPELINE_STAGES.map(stage=>{
+          const items=pipelineForJob.filter(item=>item.stage===stage);
+          return (
+            <Card key={stage} className="p-4 bg-slate-50/70">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <div className="font-bold text-slate-900">{stage}</div>
+                  <div className="text-xs text-slate-400">{items.length} candidate{items.length===1?'':'s'}</div>
+                </div>
+                <span className="w-8 h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-brand-700 font-bold text-sm">{items.length}</span>
+              </div>
+              <div className="space-y-3">
+                {items.length ? items.map(item=>{
+                  const candidate=getEmployerCandidateById(item.candidateId);
+                  return (
+                    <div key={item.id} className="rounded-2xl bg-white border border-slate-100 p-3 shadow-soft">
+                      <div className="flex items-center gap-3">
+                        <Avatar name={candidate.name} size="sm"/>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-slate-900 text-sm truncate">{candidate.name}</div>
+                          <div className="text-xs text-slate-400 truncate">{candidate.role}</div>
+                        </div>
+                        <div className="text-sm font-bold text-brand-700">{candidate.score}%</div>
+                      </div>
+                      <div className="text-xs text-slate-500 mt-3">{item.nextStep}</div>
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2">
+                        <span>Owner: {item.owner}</span>
+                        <span>{item.lastActive}</span>
+                      </div>
+                      {stage!=='Hired'&&(
+                        <button onClick={()=>movePipelineStage(item.id)} className="mt-3 w-full rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 text-xs font-semibold py-2 transition">
+                          Move to {EMP_PIPELINE_STAGES[EMP_PIPELINE_STAGES.indexOf(stage)+1]}
+                        </button>
+                      )}
+                    </div>
+                  );
+                }) : (
+                  <div className="rounded-2xl border border-dashed border-slate-200 px-3 py-8 text-center text-xs text-slate-400">
+                    No candidates in {stage.toLowerCase()} yet.
+                  </div>
+                )}
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function EmployerAIHiringAssistantV2({ toast, selectedJob }){
+  const [msgs,setMsgs]=useState([{from:'ai',text:"Hi! I'm your AI Hiring Assistant. I can write job descriptions, screen applicants, summarise candidate profiles, suggest interview questions, and more. What do you need?"}]);
+  const [input,setInput]=useState('');
+  const end=useRef(null);
+  const aiReplies=[
+    "Here's a job description for Senior Product Designer:\n\n**Nimbus Labs** is looking for a **Senior Product Designer** to join our Fintech team.\n\n**What you'll do:** Lead end-to-end design of our core payment product, build and maintain our design system, run user research sprints.\n\n**You have:** 5+ years of product design, expert in Figma, experience with design systems, strong portfolio with measurable impact.\n\n**We offer:** $108k-$128k, remote-first, equity, unlimited leave.",
+    "Top 3 candidates for your Senior Product Designer role:\n\n1. **Aisha Rahman** (91% fit) - design systems expert, 5 yrs fintech, available now\n2. **Wei Lin Tan** (94% fit) - senior UX, 7 yrs, strong research depth\n3. **Farid Azman** (87% fit) - frontend+design hybrid, fast learner\n\nWant me to send interview invites to all three?",
+    "Interview questions for a Product Designer (Design Systems focus):\n\n1. Walk me through how you built or scaled a design system. What would you do differently now?\n2. How do you balance component flexibility vs. consistency?\n3. Tell me about a time a system you built broke down in production. How did you debug it?\n4. How do you get engineering buy-in on design tokens?",
+  ];
+  const send=()=>{
+    if(!input.trim()) return;
+    const u={from:'user',text:input};
+    const r={from:'ai',text:aiReplies[msgs.filter(m=>m.from==='user').length%aiReplies.length]};
+    setMsgs(m=>[...m,u,r]);
+    setInput('');
+  };
+  useEffect(()=>end.current?.scrollIntoView({behavior:'smooth'}),[msgs]);
+
+  const prompts=[`Write a job description for ${selectedJob.title}`,'Who are the top candidates for my open role?','Generate interview questions for a PM role','Summarise Aisha Rahman\'s profile'];
+
+  return (
+    <div className="space-y-6 fade-up">
+      <div>
+        <h1 className="text-2xl font-extrabold text-slate-900">AI Hiring Assistant</h1>
+        <p className="text-slate-500">Write JDs, screen candidates, generate interview questions, and work from the live context of your selected role.</p>
+      </div>
+      <Card className="p-4 bg-brand-50 border-brand-100">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <div className="text-xs uppercase tracking-wide font-semibold text-brand-700">Active hiring context</div>
+            <div className="text-lg font-extrabold text-slate-900">{selectedJob.title}</div>
+            <div className="text-sm text-slate-500">{selectedJob.team} · {selectedJob.location}</div>
+          </div>
+          <Btn variant="secondary" onClick={()=>toast(`AI generated candidate outreach for ${selectedJob.title}`,'send')}>
+            <Icon name="mail" size={15}/> Draft outreach
+          </Btn>
+        </div>
+      </Card>
+      <Card className="flex flex-col" style={{height:580}}>
+        <div className="p-4 border-b border-slate-100 flex items-center gap-3">
+          <div className="relative">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-600 to-brand-900 text-white flex items-center justify-center"><Icon name="bot" size={18}/></div>
+            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white"/>
+          </div>
+          <div><div className="font-bold text-slate-900">AI Hiring Assistant</div><div className="text-xs text-emerald-600">Online · instant responses</div></div>
+        </div>
+        <div className="flex-1 overflow-auto p-4 space-y-3 bg-slate-50/50">
+          {msgs.map((m,i)=>(
+            <div key={i} className={`flex ${m.from==='user'?'justify-end':'justify-start'}`}>
+              <div className={`max-w-[85%] text-sm px-4 py-3 rounded-2xl whitespace-pre-wrap leading-relaxed ${m.from==='user'?'bg-brand-700 text-white rounded-br-sm':'bg-white border border-slate-100 text-slate-700 rounded-bl-sm shadow-sm'}`}>
+                {m.text}
+              </div>
+            </div>
+          ))}
+          <div ref={end}/>
+        </div>
+        <div className="px-4 py-2 flex gap-2 overflow-x-auto border-t border-slate-50">
+          {prompts.map(p=>(
+            <button key={p} onClick={()=>setInput(p)} className="shrink-0 text-xs text-brand-700 bg-brand-50 border border-brand-100 px-3 py-1.5 rounded-full hover:bg-brand-100 transition whitespace-nowrap">{p}</button>
+          ))}
+        </div>
+        <div className="p-3 border-t border-slate-100 flex gap-2">
+          <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()}
+            placeholder="Ask anything about hiring, candidates, or job descriptions..."
+            className="flex-1 bg-slate-50 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 ring-brand-200"/>
+          <button onClick={send} className="bg-brand-700 hover:bg-brand-800 text-white px-4 rounded-xl flex items-center transition"><Icon name="send" size={16}/></button>
+        </div>
+      </Card>
+    </div>
+  );
+}
 /* ══════════════════════════════════════════════════════════════
    3. LOGO  (SVG approximation of the uploaded CareerGo logo)
 ══════════════════════════════════════════════════════════════ */
@@ -2812,7 +3571,7 @@ function CandidateApp({ lang, toggleLang, go, toast }){
     <div className="min-h-screen flex bg-[#f8fafc]">
       {tourActive&&<OnboardingTour onDone={()=>setTourActive(false)}/>}
       {/* Sidebar */}
-      <aside className={`fixed lg:static z-40 inset-y-0 left-0 w-64 bg-sidebar-gradient flex flex-col transition-transform duration-300 ${mobileOpen?'translate-x-0':'-translate-x-full lg:translate-x-0'}`}>
+      <aside className={`fixed z-40 inset-y-0 left-0 w-64 bg-sidebar-gradient flex flex-col transition-transform duration-300 ${mobileOpen?'translate-x-0':'-translate-x-full lg:translate-x-0'}`}>
         {/* Logo */}
         <div className="p-5 border-b border-white/8">
           <button onClick={()=>go('landing')}><LogoFull size={32} dark/></button>
@@ -2868,7 +3627,7 @@ function CandidateApp({ lang, toggleLang, go, toast }){
       {mobileOpen&&<div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={()=>setMobileOpen(false)}/>}
 
       {/* Main */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 min-h-0">
         {/* Topbar */}
         <header className="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-100 px-4 lg:px-7 h-14 flex items-center gap-4 shadow-sm">
           <button className="lg:hidden text-slate-600" onClick={()=>setMobileOpen(o=>!o)}>
@@ -4590,7 +5349,9 @@ function AutopilotProxy({ toast }){
 ══════════════════════════════════════════════════════════════ */
 const EMP_NAV=[
   {id:'emp-home',icon:'layout-dashboard',tk:'empDash'},
+  {id:'emp-jobs',icon:'briefcase',tk:'empJobs'},
   {id:'emp-talent',icon:'users-round',tk:'empTalent'},
+  {id:'emp-pipeline',icon:'git-branch',tk:'empPipeline'},
   {id:'emp-ai',icon:'bot',tk:'empAI'},
 ];
 
@@ -4834,33 +5595,83 @@ function EmployerApp({ lang, toggleLang, go, toast }){
   const t=useT(lang);
   const [view,setView]=useState('emp-home');
   const [mobileOpen,setMobileOpen]=useState(false);
+  const [jobs,setJobs]=useState(EMP_JOBS);
+  const [selectedJobId,setSelectedJobId]=useState(EMP_JOBS[0].id);
+  const [savedCandidateIds,setSavedCandidateIds]=useState([1,2]);
+  const [pipeline,setPipeline]=useState(EMP_PIPELINE_SEED);
+  const [posts,setPosts]=useState(EMP_SOCIAL_POSTS);
+  const selectedJob=getEmployerJobById(jobs,selectedJobId)||jobs[0];
+
+  const onToggleSaveCandidate=(candidateId)=>{
+    setSavedCandidateIds(ids=>ids.includes(candidateId)?ids.filter(id=>id!==candidateId):[...ids,candidateId]);
+  };
+
+  const onAddToPipeline=(candidateId,jobId)=>{
+    const existing=pipeline.find(item=>item.candidateId===candidateId&&item.jobId===jobId);
+    if(existing){
+      toast(`${getEmployerCandidateById(candidateId).name} is already in the pipeline`,'circle-alert');
+      return;
+    }
+    setPipeline(items=>[...items,{id:`pipe-${Date.now()}`,candidateId,jobId,stage:'Screen',nextStep:'Recruiter intro pending',owner:'Hana',lastActive:'just now'}]);
+    toast(`${getEmployerCandidateById(candidateId).name} moved into screening`,'git-branch');
+  };
+
+  const movePipelineStage=(pipelineId)=>{
+    setPipeline(items=>items.map(item=>{
+      if(item.id!==pipelineId) return item;
+      const idx=EMP_PIPELINE_STAGES.indexOf(item.stage);
+      const nextStage=EMP_PIPELINE_STAGES[Math.min(idx+1,EMP_PIPELINE_STAGES.length-1)];
+      return {...item,stage:nextStage,lastActive:'just now'};
+    }));
+  };
+
+  const updateJobStatus=(jobId,status)=>{
+    setJobs(list=>list.map(job=>job.id===jobId?{...job,status}:job));
+    toast(`Role updated to ${status}`,'briefcase');
+  };
+
+  const onTogglePostLike=(postId)=>{
+    setPosts(items=>items.map(post=>{
+      if(post.id!==postId) return post;
+      return {...post,liked:!post.liked,likes:post.liked?post.likes-1:post.likes+1};
+    }));
+  };
+
+  const onUpdatePost=(postId,updates)=>{
+    setPosts(items=>items.map(post=>post.id===postId?{...post,...updates}:post));
+  };
+
   const views={
-    'emp-home':<EmployerDash setView={setView}/>,
-    'emp-talent':<TalentDiscovery toast={toast}/>,
-    'emp-ai':<AIHiringAssistant toast={toast}/>,
+    'emp-home':<EmployerDashboardV2 setView={setView} jobs={jobs} pipeline={pipeline} savedCandidateIds={savedCandidateIds} selectedJobId={selectedJobId}/>,
+    'emp-jobs':<EmployerRolesWorkspaceV2 jobs={jobs} selectedJobId={selectedJobId} setSelectedJobId={setSelectedJobId} toast={toast} setView={setView} updateJobStatus={updateJobStatus} posts={posts} onTogglePostLike={onTogglePostLike} onUpdatePost={onUpdatePost}/>,
+    'emp-talent':<EmployerTalentDiscoveryV2 toast={toast} selectedJobId={selectedJobId} jobs={jobs} savedCandidateIds={savedCandidateIds} onToggleSaveCandidate={onToggleSaveCandidate} onAddToPipeline={onAddToPipeline}/>,
+    'emp-pipeline':<EmployerHiringPipeline pipeline={pipeline} jobs={jobs} selectedJobId={selectedJobId} movePipelineStage={movePipelineStage} setView={setView}/>,
+    'emp-ai':<EmployerAIHiringAssistantV2 toast={toast} selectedJob={selectedJob}/>,
   };
   const current=EMP_NAV.find(n=>n.id===view);
+  const activeJobs=jobs.filter(job=>job.status==='Active').length;
+  const totalApplicants=jobs.reduce((sum,job)=>sum+job.applicants,0);
 
   return (
     <div className="min-h-screen flex bg-[#f8fafc]">
-      <aside className={`fixed lg:static z-40 inset-y-0 left-0 w-64 bg-sidebar-gradient flex flex-col transition-transform duration-300 ${mobileOpen?'translate-x-0':'-translate-x-full lg:translate-x-0'}`}>
-        <div className="p-5 border-b border-white/8">
+      <aside className={`fixed z-40 inset-y-0 left-0 w-64 h-screen bg-sidebar-gradient flex flex-col overflow-hidden transition-transform duration-300 ${mobileOpen?'translate-x-0':'-translate-x-full lg:translate-x-0'}`}>
+        <div className="p-5 border-b border-white/8 shrink-0">
           <button onClick={()=>go('landing')}><LogoFull size={32} dark/></button>
           <div className="mt-3 text-xs text-brand-300 font-semibold uppercase tracking-widest">Employer</div>
         </div>
-        <nav className="flex-1 p-3 space-y-0.5 mt-1">
+        <nav className="flex-1 min-h-0 overflow-y-auto p-3 space-y-0.5 mt-1">
           {EMP_NAV.map(n=>(
             <button key={n.id} onClick={()=>{ setView(n.id); setMobileOpen(false); }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${view===n.id?'bg-white/15 text-white':'text-brand-200 hover:bg-white/8 hover:text-white'}`}>
-              <Icon name={n.icon} size={18}/>{t(n.tk)}{view===n.id&&<span className="ml-auto w-1.5 h-1.5 rounded-full bg-gold-400"/>}
+              <Icon name={n.icon} size={18}/>{t(n.tk) || n.tk}{view===n.id&&<span className="ml-auto w-1.5 h-1.5 rounded-full bg-gold-400"/>}
             </button>
           ))}
         </nav>
-        <div className="p-4 space-y-3">
+        <div className="p-4 space-y-3 shrink-0 border-t border-white/8 bg-black/10">
           <div className="rounded-xl bg-white/8 border border-white/10 p-3 text-center">
             <div className="text-xs text-brand-300 mb-1">Active jobs</div>
-            <div className="text-2xl font-extrabold text-white">3</div>
-            <div className="text-xs text-emerald-400">84 applicants</div>
+            <div className="text-2xl font-extrabold text-white">{activeJobs}</div>
+            <div className="text-xs text-emerald-400">{totalApplicants} applicants</div>
           </div>
           <div className="flex items-center gap-2.5 px-1">
             <div className="w-9 h-9 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm">N</div>
@@ -4876,12 +5687,12 @@ function EmployerApp({ lang, toggleLang, go, toast }){
         </div>
       </aside>
       {mobileOpen&&<div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={()=>setMobileOpen(false)}/>}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-64 min-h-screen">
         <header className="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-100 px-4 lg:px-7 h-14 flex items-center gap-4 shadow-sm">
           <button className="lg:hidden text-slate-600" onClick={()=>setMobileOpen(o=>!o)}><Icon name="menu" size={22}/></button>
           <div className="flex items-center gap-2 text-sm text-slate-500">
             <span className="text-slate-400">Employer OS</span><Icon name="chevron-right" size={14}/>
-            <span className="font-semibold text-slate-800">{t(current?.tk||'empDash')}</span>
+            <span className="font-semibold text-slate-800">{t(current?.tk||'empDash') || current?.tk || 'Dashboard'}</span>
           </div>
           <div className="ml-auto flex items-center gap-3">
             <Btn size="sm" variant="outline" onClick={()=>setView('emp-ai')}><Icon name="wand-2" size={14}/> AI Assistant</Btn>
@@ -4890,7 +5701,7 @@ function EmployerApp({ lang, toggleLang, go, toast }){
             </button>
           </div>
         </header>
-        <main className="flex-1 p-5 lg:p-7 max-w-7xl w-full mx-auto">
+        <main className={`flex-1 max-w-7xl w-full mx-auto min-h-0 ${view==='emp-jobs'?'overflow-hidden p-0 lg:p-0':'overflow-y-auto p-5 lg:p-7'}`}>
           {views[view]||views['emp-home']}
         </main>
       </div>
