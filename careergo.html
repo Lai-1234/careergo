@@ -5586,11 +5586,11 @@ function AutopilotProxy({ toast, setView }){
         <div className="relative flex items-center gap-6 p-7">
           {/* Left: title + badge + button */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded-full" style={{background:'rgba(253,186,45,0.15)',color:'#FDBA2D'}}>AI JOB AGENT</span>
+            <div className="mb-1">
+              <span className="text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded-full" style={{background:'rgba(253,186,45,0.15)',color:'#FDBA2D'}}>AUTOPILOT</span>
             </div>
-            <h1 className="text-2xl font-extrabold text-white">Autopilot</h1>
-            <p className="text-sm mt-0.5" style={{color:'rgba(255,255,255,0.5)'}}>Set your rules. The agent hunts 24/7.</p>
+            <h1 className="text-2xl font-extrabold text-white mb-2">Automated Career Discovery</h1>
+            <p className="text-sm max-w-2xl" style={{color:'rgba(255,255,255,0.6)'}}>Let CareerGo automatically discover high-quality opportunities based on your career goals, skills, preferences, salary expectations, and growth targets. Monitor job matches, application activity, and opportunity discovery automatically through your personalized career engine.</p>
             <button onClick={()=>{
               const next=!active;
               setActive(next);
@@ -5661,10 +5661,16 @@ function AutopilotProxy({ toast, setView }){
 
       {apTab==='activity'&&(
       <div className="space-y-6">
-      <Card className="p-4 flex items-center justify-between flex-wrap gap-4">
+      <Card className="p-4 flex flex-col gap-3">
+        {active&&(
+          <div className="scan-bar-wrap mb-3">
+            <div className="scan-bar-fill"/>
+          </div>
+        )}
+        <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-3">
           <span className={`flex items-center gap-1.5 text-sm font-bold px-3 py-1.5 rounded-full ${active?'bg-emerald-50 text-emerald-600':'bg-slate-100 text-slate-500'}`}>
-            <span className={`w-2 h-2 rounded-full inline-block ${active?'bg-emerald-500':'bg-slate-300'}`}/>
+            <span className={`w-2 h-2 rounded-full inline-block ${active?'bg-emerald-500 scan-pulse':'bg-slate-300'}`}/>
             {active?'Active — Scanning':'Paused'}
           </span>
           <span className="text-sm text-slate-400">Last scan: {active?'2 min ago':'—'}</span>
@@ -5681,6 +5687,7 @@ function AutopilotProxy({ toast, setView }){
               <div className="text-xs text-slate-400">{l}</div>
             </div>
           ))}
+        </div>
         </div>
       </Card>
       <div className="grid lg:grid-cols-3 gap-6">
@@ -5783,9 +5790,9 @@ function AutopilotProxy({ toast, setView }){
               <Icon name="bot" size={14} className="text-brand-600"/>
               <span className="text-sm font-bold text-brand-900">Advanced AI Rules</span>
             </div>
-            <p className="text-xs text-slate-500 mb-3">Manage complex career preferences and application strategies through Coach Vera.</p>
+            <p className="text-xs text-slate-500 mb-3">Fine-tune career preferences, application behavior, salary targets, role requirements, and opportunity discovery settings with guidance from Coach Vera.</p>
             <button onClick={()=>setView&&setView('assistant')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
-              Configure in Coach Vera →
+              Configure With Coach Vera →
             </button>
           </div>
           <div className="flex items-center gap-2 rounded-xl p-3 text-xs font-semibold" style={{background:'rgba(29,158,117,0.1)',color:'#1D9E75'}}>
