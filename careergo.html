@@ -895,53 +895,53 @@ const USER = {
 
 const CAREER_PATHS = {
   'Product Designer':[
-    {path:'Deepen Craft',role:'Staff Product Designer',years:'4–5 yr',range:'RM 72k–110k',prob:68,risk:'Low',color:'emerald',trade:'Highest certainty. Real ceiling without a management title.',skills:['Design Ops','Systems Thinking']},
-    {path:'Lead People',role:'Design Manager → Director',years:'5–6 yr',range:'RM 95k–145k',prob:45,risk:'Med',color:'amber',trade:'Higher ceiling — but craft time shrinks as reviews and politics grow.',skills:['Leadership','Stakeholder Mgmt']},
-    {path:'Pivot to Product',role:'Product Manager',years:'3–4 yr',range:'RM 85k–130k',prob:38,risk:'Higher',color:'violet',trade:'Resets some seniority 12–18 months. Broadest long-term optionality.',skills:['Product Strategy','SQL Basics']},
+    {path:'Deepen Craft',role:'Staff Product Designer',years:'4–5 yr',range:'RM 72k–110k / yr',prob:68,risk:'Low',color:'emerald',trade:'Highest certainty. Real ceiling without a management title.',skills:['Design Ops','Systems Thinking']},
+    {path:'Lead People',role:'Design Manager → Director',years:'5–6 yr',range:'RM 95k–145k / yr',prob:45,risk:'Med',color:'amber',trade:'Higher ceiling — but craft time shrinks as reviews and politics grow.',skills:['Leadership','Stakeholder Mgmt']},
+    {path:'Pivot to Product',role:'Product Manager',years:'3–4 yr',range:'RM 85k–130k / yr',prob:38,risk:'Higher',color:'violet',trade:'Resets some seniority 12–18 months. Broadest long-term optionality.',skills:['Product Strategy','SQL Basics']},
   ],
   'Frontend Developer':[
-    {path:'Go Deep',role:'Senior Engineer',years:'3–4 yr',range:'RM 80k–120k',prob:72,risk:'Low',color:'emerald',trade:'Safest path. Strong market demand in Malaysia.',skills:['System Design','TypeScript']},
-    {path:'Lead Teams',role:'Engineering Manager',years:'5–6 yr',range:'RM 110k–160k',prob:40,risk:'Med',color:'amber',trade:'Less coding, more planning. Not for everyone.',skills:['Team Leadership','Agile']},
-    {path:'Go Broad',role:'Full Stack Architect',years:'4–5 yr',range:'RM 100k–150k',prob:35,risk:'Higher',color:'violet',trade:'High optionality. Requires breadth across frontend and backend.',skills:['Cloud Infra','API Design']},
+    {path:'Go Deep',role:'Senior Engineer',years:'3–4 yr',range:'RM 80k–120k / yr',prob:72,risk:'Low',color:'emerald',trade:'Safest path. Strong market demand in Malaysia.',skills:['System Design','TypeScript']},
+    {path:'Lead Teams',role:'Engineering Manager',years:'5–6 yr',range:'RM 110k–160k / yr',prob:40,risk:'Med',color:'amber',trade:'Less coding, more planning. Not for everyone.',skills:['Team Leadership','Agile']},
+    {path:'Go Broad',role:'Full Stack Architect',years:'4–5 yr',range:'RM 100k–150k / yr',prob:35,risk:'Higher',color:'violet',trade:'High optionality. Requires breadth across frontend and backend.',skills:['Cloud Infra','API Design']},
   ],
   'Data Analyst':[
-    {path:'Specialist',role:'Senior Data Scientist',years:'3–5 yr',range:'RM 85k–125k',prob:65,risk:'Low',color:'emerald',trade:'High demand. Specialisation in ML lifts ceiling significantly.',skills:['ML/Python','Statistics']},
-    {path:'Leadership',role:'Analytics Manager → VP',years:'6–8 yr',range:'RM 120k–180k',prob:35,risk:'Med',color:'amber',trade:'Slower climb but broader business impact.',skills:['Strategy','Stakeholder Mgmt']},
-    {path:'Pivot to PM',role:'Product Manager (Data)',years:'3–4 yr',range:'RM 85k–130k',prob:42,risk:'Med',color:'amber',trade:'Natural fit. Data intuition is a superpower in PM roles.',skills:['Product Thinking','Roadmap']},
+    {path:'Specialist',role:'Senior Data Scientist',years:'3–5 yr',range:'RM 85k–125k / yr',prob:65,risk:'Low',color:'emerald',trade:'High demand. Specialisation in ML lifts ceiling significantly.',skills:['ML/Python','Statistics']},
+    {path:'Leadership',role:'Analytics Manager → VP',years:'6–8 yr',range:'RM 120k–180k / yr',prob:35,risk:'Med',color:'amber',trade:'Slower climb but broader business impact.',skills:['Strategy','Stakeholder Mgmt']},
+    {path:'Pivot to PM',role:'Product Manager (Data)',years:'3–4 yr',range:'RM 85k–130k / yr',prob:42,risk:'Med',color:'amber',trade:'Natural fit. Data intuition is a superpower in PM roles.',skills:['Product Thinking','Roadmap']},
   ],
   'Marketing Manager':[
-    {path:'Specialist',role:'Growth Director',years:'4–5 yr',range:'RM 80k–120k',prob:58,risk:'Low',color:'emerald',trade:'Performance marketing is high-ROI but narrow. Ceiling = VP.',skills:['Paid Acquisition','Analytics']},
-    {path:'General Manager',role:'VP Marketing → CMO',years:'7–9 yr',range:'RM 130k–200k',prob:28,risk:'Med',color:'amber',trade:'High ceiling but very few seats. Strong network is required.',skills:['Brand Strategy','P&L']},
+    {path:'Specialist',role:'Growth Director',years:'4–5 yr',range:'RM 80k–120k / yr',prob:58,risk:'Low',color:'emerald',trade:'Performance marketing is high-ROI but narrow. Ceiling = VP.',skills:['Paid Acquisition','Analytics']},
+    {path:'General Manager',role:'VP Marketing → CMO',years:'7–9 yr',range:'RM 130k–200k / yr',prob:28,risk:'Med',color:'amber',trade:'High ceiling but very few seats. Strong network is required.',skills:['Brand Strategy','P&L']},
     {path:'Founder',role:'Startup Co-founder',years:'3–6 yr',range:'RM 0–unbounded',prob:20,risk:'High',color:'violet',trade:'Highest risk, highest upside. Marketing skill is founder-relevant.',skills:['Product Sense','Fundraising']},
   ],
 };
 
 const JOBS = [
-  {id:1,title:'Senior Product Designer',company:'Nimbus Labs',logo:'N',salary:'$108k–$128k',type:'Remote',match:94,impact:'High',growth:'Strong',
+  {id:1,title:'Senior Product Designer',company:'Nimbus Labs',logo:'N',salary:'RM 108k–128k / yr',type:'Remote',match:94,impact:'High',growth:'Strong',
    why:'Your design-systems work and 5 yrs in fintech line up almost exactly. This is a natural next step.',tags:['Design Systems','Figma','Fintech'],
    reasons:['Matches 12 verified skills','Salary exceeds RM target','High industry growth','Remote-first culture'],
    cautions:['Cross-team leadership gap (manageable)'],
    promo:'High',competition:'Medium',remote:true,
    alignedSkills:['Product Thinking','Design Systems','Stakeholder Mgmt'],outlook:'Strong'},
-  {id:2,title:'UX Lead',company:'Orbit Health',logo:'O',salary:'$118k–$140k',type:'Hybrid · KL',match:88,impact:'High',growth:'Strong',
+  {id:2,title:'UX Lead',company:'Orbit Health',logo:'O',salary:'RM 118k–140k / yr',type:'Hybrid · KL',match:88,impact:'High',growth:'Strong',
    why:'Stretch role — strong on craft, you\'d grow into the people-leadership component over 12 months.',tags:['Leadership','User Research'],
    reasons:['Strong design leadership fit','Fintech aligns with your background','Growth-stage company'],
    cautions:['Startup pace may differ from current role'],
    promo:'Very High',competition:'Low',remote:true,
    alignedSkills:['UX Research','Figma','Leadership'],outlook:'Strong'},
-  {id:3,title:'Product Designer (Growth)',company:'Bloompay',logo:'B',salary:'$95k–$115k',type:'Remote',match:91,impact:'Med',growth:'Very Strong',
+  {id:3,title:'Product Designer (Growth)',company:'Bloompay',logo:'B',salary:'RM 95k–115k / yr',type:'Remote',match:91,impact:'Med',growth:'Very Strong',
    why:'Growth + experimentation is the natural next step from your A/B testing experience.',tags:['Prototyping','Experimentation'],
    reasons:['Healthcare tech is high-growth','Competitive salary band','Strong remote culture'],
    cautions:['Domain switch from fintech to health','Benefits package smaller'],
    promo:'High',competition:'High',remote:true,
    alignedSkills:['User Research','Prototyping','Product Thinking'],outlook:'Very Strong'},
-  {id:4,title:'Design Systems Engineer',company:'Vertex',logo:'V',salary:'$112k–$130k',type:'Remote',match:86,impact:'Med',growth:'Strong',
+  {id:4,title:'Design Systems Engineer',company:'Vertex',logo:'V',salary:'RM 112k–130k / yr',type:'Remote',match:86,impact:'Med',growth:'Strong',
    why:'Bridges design + code. Matches your tokens & component-library background perfectly.',tags:['Design Systems','Front-end'],
    reasons:['Major brand name for your CV','Large team leadership exposure','Regional influence'],
    cautions:['Match score lower — 4 key skills gap','High competition pool'],
    promo:'Moderate',competition:'Very High',remote:false,
    alignedSkills:['Design Strategy','Stakeholder Mgmt','Systems'],outlook:'Stable'},
-  {id:5,title:'Senior UX Researcher',company:'Cobalt',logo:'C',salary:'$100k–$120k',type:'Hybrid · Singapore',match:79,impact:'High',growth:'Moderate',
+  {id:5,title:'Senior UX Researcher',company:'Cobalt',logo:'C',salary:'RM 100k–120k / yr',type:'Hybrid · Singapore',match:79,impact:'High',growth:'Moderate',
    why:'A pivot path — research-heavy, lighter on visual craft. Higher ceiling long-term.',tags:['User Research','Strategy'],
    reasons:['Strong product culture','Emerging AI product space','Fast promotion track'],
    cautions:['Below your salary target by RM8k','Smaller team — less mentoring'],
@@ -996,7 +996,7 @@ const INBOX_ITEMS=[
 
 const CAREER_GOALS=[
   {id:1,title:'Land New Job',icon:'briefcase',desc:'Transition to Senior Product Manager',timeline:'6 Months',priority:'High',status:'Active',progress:62},
-  {id:2,title:'Salary Increase',icon:'trending-up',desc:'Reach RM 120,000 base salary',timeline:'12 Months',priority:'High',status:'Active',progress:45},
+  {id:2,title:'Salary Increase',icon:'trending-up',desc:'Reach RM 120,000 base salary per year',timeline:'12 Months',priority:'High',status:'Active',progress:45},
   {id:3,title:'Become Team Lead',icon:'users',desc:'Lead a product design team of 3+',timeline:'18 Months',priority:'Med',status:'Planned',progress:20},
 ];
 
@@ -1048,7 +1048,7 @@ const ACTIVE_LEARNING_PLANS=[
 const SKILL_ROADMAP=[
   {skill:'Product Thinking',current:'Advanced',target:'Expert',time:'3 mo',difficulty:'Medium',outcome:'Unlocks Lead Designer roles'},
   {skill:'Team Leadership',current:'Beginner',target:'Intermediate',time:'6 mo',difficulty:'High',outcome:'Required for Design Manager'},
-  {skill:'AI Product Design',current:'None',target:'Intermediate',time:'4 mo',difficulty:'Medium',outcome:'+28% salary premium'},
+  {skill:'AI Product Design',current:'None',target:'Intermediate',time:'4 mo',difficulty:'Medium',outcome:'+28% salary premium / yr'},
   {skill:'Stakeholder Management',current:'Intermediate',target:'Advanced',time:'4 mo',difficulty:'Medium',outcome:'Unlocks Staff IC path'},
 ];
 
@@ -1121,19 +1121,19 @@ const COMMUNITY_POSTS=[
 ];
 
 const CAREER_ROLES=[
-  {role:'Product Designer',range:'RM 72k–95k',demand:'High',growth:'Strong',remote:62,trend:'+18%'},
-  {role:'Senior Product Designer',range:'RM 88k–115k',demand:'Very High',growth:'Strong',remote:68,trend:'+24%'},
-  {role:'Lead Product Designer',range:'RM 105k–135k',demand:'High',growth:'Very Strong',remote:65,trend:'+19%'},
-  {role:'Design Manager',range:'RM 120k–155k',demand:'High',growth:'Strong',remote:55,trend:'+22%'},
-  {role:'Product Manager',range:'RM 115k–148k',demand:'Very High',growth:'Very Strong',remote:71,trend:'+31%'},
-  {role:'Head of Product',range:'RM 148k–200k+',demand:'Moderate',growth:'Strong',remote:58,trend:'+15%'},
+  {role:'Product Designer',range:'RM 72k–95k / yr',demand:'High',growth:'Strong',remote:62,trend:'+18%'},
+  {role:'Senior Product Designer',range:'RM 88k–115k / yr',demand:'Very High',growth:'Strong',remote:68,trend:'+24%'},
+  {role:'Lead Product Designer',range:'RM 105k–135k / yr',demand:'High',growth:'Very Strong',remote:65,trend:'+19%'},
+  {role:'Design Manager',range:'RM 120k–155k / yr',demand:'High',growth:'Strong',remote:55,trend:'+22%'},
+  {role:'Product Manager',range:'RM 115k–148k / yr',demand:'Very High',growth:'Very Strong',remote:71,trend:'+31%'},
+  {role:'Head of Product',range:'RM 148k–200k+ / yr',demand:'Moderate',growth:'Strong',remote:58,trend:'+15%'},
 ];
 
 const SALARY_SCENARIOS=[
-  {id:1,label:'Current',skills:[],value:'RM 92,000',gain:'',color:'#64748b'},
-  {id:2,label:'+ Leadership',skills:['Team Leadership'],value:'RM 104,000',gain:'+13%',color:'#5B2EFF'},
-  {id:3,label:'+ Strategy',skills:['Team Leadership','Product Strategy'],value:'RM 118,000',gain:'+28%',color:'#7C3AED'},
-  {id:4,label:'+ AI Skills',skills:['Team Leadership','Product Strategy','AI Product Design'],value:'RM 128,000',gain:'+39%',color:'#1D9E75'},
+  {id:1,label:'Current',skills:[],value:'RM 92,000 / yr',gain:'',color:'#64748b'},
+  {id:2,label:'+ Leadership',skills:['Team Leadership'],value:'RM 104,000 / yr',gain:'+13%',color:'#5B2EFF'},
+  {id:3,label:'+ Strategy',skills:['Team Leadership','Product Strategy'],value:'RM 118,000 / yr',gain:'+28%',color:'#7C3AED'},
+  {id:4,label:'+ AI Skills',skills:['Team Leadership','Product Strategy','AI Product Design'],value:'RM 128,000 / yr',gain:'+39%',color:'#1D9E75'},
 ];
 
 const MISSIONS=[
@@ -2732,7 +2732,7 @@ function DashHero({ setView }){
             Your ATS score is strong — you&rsquo;re in the top 18% for Product Designers in KL.
           </p>
           <p style={{fontSize:14,color:'rgba(255,255,255,0.55)',maxWidth:480}}>
-            One skill gap stands between you and a RM 145k role.
+            One skill gap stands between you and a RM 145k / yr role.
           </p>
           <div className="flex flex-wrap gap-3 mt-5">
             {!USER.profileComplete&&(
@@ -2793,7 +2793,7 @@ function CandidateDashboard({ setView, toast }){
           <div className="flex gap-3 shrink-0 flex-wrap">
             {[
               {l:'Career Score',v:`${USER.careerScore}`,sub:'/100'},
-              {l:'Market Value',v:'RM 92k',sub:''},
+              {l:'Market Value',v:'RM 92k',sub:'/ yr'},
               {l:'Job Matches',v:`${USER.newMatches}`,sub:'new'},
             ].map(({l,v,sub})=>(
               <div key={l} className="rounded-xl px-4 py-3 text-center" style={{background:'rgba(255,255,255,0.1)',border:'1px solid rgba(255,255,255,0.15)'}}>
@@ -2832,7 +2832,7 @@ function CandidateDashboard({ setView, toast }){
               <span style={{fontSize:13,color:'#94a3b8',cursor:'default'}}>ⓘ</span>
               <div className="metric-tip">Your estimated salary range based on your verified skills and current market demand.</div>
             </div>
-            <div className="text-3xl font-extrabold text-brand-950">RM {(USER.marketValue/1000).toFixed(0)}k</div>
+            <div className="text-3xl font-extrabold text-brand-950">RM {(USER.marketValue/1000).toFixed(0)}k<span className="text-sm font-normal text-brand-500 ml-1">/ yr</span></div>
             <div className="text-sm font-semibold text-slate-700">Market Value</div>
             <div className="text-xs font-medium flex items-center gap-1" style={{color:'#1D9E75'}}>
               <Icon name="trending-up" size={12}/> +{USER.weeklyDeltas.marketValue}% this week
@@ -3139,7 +3139,7 @@ function AIAssistant({ toast, setView }){
       'Career Planning':["Great question! Based on your current trajectory and the 12-month timeline you've set, here's what I'd prioritize: First, focus on getting a cross-functional leadership project on your record in the next 30 days. This single move unlocks both the Staff IC and Manager paths simultaneously.","Looking at your Career Score of 78 and your target of Senior PM, the most direct path is to close the leadership gap — it appears in 84% of Senior PM job descriptions in your target companies."],
       'Interview Coach':["Let's practice that. For this type of behavioral question, I recommend the outcome-first STAR method: lead with the result, then walk back through the situation and actions. Want me to give you a sample answer you can riff on?","Good answer! I'd give that an 8/10. The structure was clean but you buried the impact. Next time open with: 'I increased team velocity by 35%' — then tell the story."],
       'Skill Growth':["Based on your skill profile, the fastest path to Senior PM is a combination of stakeholder management and AI product strategy. Both appear in 78%+ of your target job descriptions and you can build them simultaneously.","For stakeholder management, I recommend starting with the 'Influence Without Authority' framework. You can apply it immediately in your current role — document one example per week for 8 weeks."],
-      'Salary Negotiation':["Your market value is RM 92k but your leverage is higher than that number suggests. You have 3 active interviews, the market is hot for your skill set, and you have a competing offer. Use all three.","The anchoring strategy I'd recommend: open at RM 118k. That gives you room to 'concede' to RM 108–112k while still landing above market. Never reveal your floor in round 1."],
+      'Salary Negotiation':["Your market value is RM 92k / yr but your leverage is higher than that number suggests. You have 3 active interviews, the market is hot for your skill set, and you have a competing offer. Use all three.","The anchoring strategy I'd recommend: open at RM 118k / yr. That gives you room to 'concede' to RM 108–112k / yr while still landing above market. Never reveal your floor in round 1."],
     };
     const replyPool=replies[workspace]||["I'm analyzing your career data... Based on your profile, here's what I'd recommend as your next step.","That's a great strategic question. Let me cross-reference your skill profile with current market demand data to give you the most relevant answer."];
     const reply={from:'assistant',text:replyPool[messages.filter(m=>m.from==='assistant').length%replyPool.length]};
@@ -3189,7 +3189,7 @@ function AIAssistant({ toast, setView }){
             {[
               {l:'Goal',v:'Senior PM',icon:'target'},
               {l:'Score',v:'78/100',icon:'star'},
-              {l:'Market Value',v:'RM 92k',icon:'trending-up'},
+              {l:'Market Value',v:'RM 92k / yr',icon:'trending-up'},
               {l:'Timeline',v:'12 Months',icon:'calendar'},
               {l:'Active Jobs',v:'5 matches',icon:'briefcase'},
             ].map(({l,v,icon})=>(
@@ -3705,7 +3705,7 @@ function CareerProfile({ toast }){
             {[
               {l:'Career Score',v:`${USER.careerScore}/100`,icon:'star'},
               {l:'Profile Strength',v:'84%',icon:'bar-chart-2'},
-              {l:'Market Value',v:'RM 92k',icon:'trending-up'},
+              {l:'Market Value',v:'RM 92k / yr',icon:'trending-up'},
               {l:'Skills',v:`${USER.skills.length} verified`,icon:'zap'},
             ].map(({l,v,icon})=>(
               <div key={l} className="rounded-xl p-3 text-center" style={{background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.1)'}}>
@@ -3754,7 +3754,7 @@ function CareerProfile({ toast }){
             ))}
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
               style={{background:'rgba(255,255,255,0.12)',color:'#fff'}}>
-              <span style={{color:'#FDBA2D'}}>●</span> RM 92k Market Value
+              <span style={{color:'#FDBA2D'}}>●</span> RM 92k / yr Market Value
             </div>
           </div>
 
@@ -4325,7 +4325,7 @@ function CareerCompanion({ toast, setView }){
                 <span className="text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded-full" style={{background:'rgba(253,186,45,0.15)',color:'#FDBA2D'}}>CAREER STRATEGY CENTER</span>
               </div>
               <h1 className="text-2xl font-extrabold text-white mb-1">Become Senior Product Manager</h1>
-              <p className="text-sm" style={{color:'rgba(255,255,255,0.55)'}}>Target: RM 120,000 · Timeline: 12 Months · Next: Leadership Project Completion</p>
+              <p className="text-sm" style={{color:'rgba(255,255,255,0.55)'}}>Target: RM 120,000 / yr · Timeline: 12 Months · Next: Leadership Project Completion</p>
             </div>
             <button onClick={()=>setView&&setView('assistant')}
               className="flex items-center gap-2 font-semibold px-4 py-2.5 rounded-xl text-sm transition shrink-0"
@@ -4342,7 +4342,7 @@ function CareerCompanion({ toast, setView }){
           <div className="grid grid-cols-4 gap-3">
             {[
               {l:'Current Goal',v:'Senior PM'},
-              {l:'Target Salary',v:'RM 120k'},
+              {l:'Target Salary',v:'RM 120k / yr'},
               {l:'Timeline',v:'12 Months'},
               {l:'XP Today',v:`${totalXP} XP`},
             ].map(({l,v})=>(
@@ -4912,9 +4912,9 @@ function FairPayContent(){
         </div>
         <div className="grid grid-cols-3 gap-4">
           {[
-            {label:'Current Worth',value:'RM 92,000',sub:'Your profile today',bg:'#f8fafc',border:'#e2e8f0',vc:'#1e293b'},
-            {label:'Target Worth',value:'RM 120,000',sub:'+30% achievable',bg:'#f4f0ff',border:'#c4b5fd',vc:'#5B2EFF'},
-            {label:'Potential Worth',value:'RM 145,000',sub:'Full skill potential',bg:'#fffbeb',border:'#fde68a',vc:'#d97706'},
+            {label:'Current Worth',value:'RM 92,000 / year',sub:'Your profile today',bg:'#f8fafc',border:'#e2e8f0',vc:'#1e293b'},
+            {label:'Target Worth',value:'RM 120,000 / year',sub:'+30% achievable',bg:'#f4f0ff',border:'#c4b5fd',vc:'#5B2EFF'},
+            {label:'Potential Worth',value:'RM 145,000 / year',sub:'Full skill potential',bg:'#fffbeb',border:'#fde68a',vc:'#d97706'},
           ].map(w=>(
             <div key={w.label} className="worth-card" style={{background:w.bg,border:`1px solid ${w.border}`}}>
               <p className="text-xs font-semibold text-slate-400 mb-1">{w.label}</p>
@@ -5176,7 +5176,7 @@ function MarketSignalsContent({ toast }){
       <div className="grid grid-cols-4 gap-3 mb-4">
         {[
           {l:'Demand Index',v:'87/100',delta:'+5',up:true,icon:'trending-up'},
-          {l:'Avg Salary',v:'RM 94k',delta:'+8%',up:true,icon:'dollar-sign'},
+          {l:'Avg Salary',v:'RM 94k / yr',delta:'+8%',up:true,icon:'dollar-sign'},
           {l:'Job Openings',v:'2,847',delta:'+12%',up:true,icon:'briefcase'},
           {l:'Remote Roles',v:'43%',delta:'+6%',up:true,icon:'globe'},
         ].map(s=>(
@@ -5487,10 +5487,10 @@ function MarketPulseModule(){
         <p className="text-xs text-slate-400 mb-4">Projected median for your role cluster</p>
         <div className="flex items-end gap-4 h-40">
           {[
-            {period:'Now',value:92,label:'RM 92k',color:'#8B5CF6'},
-            {period:'12 mo',value:101,label:'RM 101k',color:'#5B2EFF'},
-            {period:'24 mo',value:112,label:'RM 112k',color:'#1D9E75'},
-            {period:'36 mo',value:128,label:'RM 128k',color:'#d97706'},
+            {period:'Now',value:92,label:'RM 92k / yr',color:'#8B5CF6'},
+            {period:'12 mo',value:101,label:'RM 101k / yr',color:'#5B2EFF'},
+            {period:'24 mo',value:112,label:'RM 112k / yr',color:'#1D9E75'},
+            {period:'36 mo',value:128,label:'RM 128k / yr',color:'#d97706'},
           ].map((b,i)=>(
             <div key={b.period} className="flex-1 flex flex-col items-center gap-1">
               <span className="text-xs font-bold" style={{color:b.color}}>{b.label}</span>
@@ -5722,7 +5722,7 @@ function AutopilotProxy({ toast, setView }){
           <div>
             <div className="flex justify-between text-sm mb-1.5">
               <span className="font-medium text-slate-600">Minimum salary</span>
-              <span className="font-bold text-brand-700">RM {minPay}k+</span>
+              <span className="font-bold text-brand-700">RM {minPay}k+ / yr</span>
             </div>
             <input type="range" min="60" max="150" value={minPay} onChange={e=>setMinPay(+e.target.value)} className="w-full accent-brand-700"/>
           </div>
