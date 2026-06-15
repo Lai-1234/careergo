@@ -4431,6 +4431,16 @@ function AutopilotProxy({ toast }){
   const [autoSend,setAutoSend]=useState(true);
   const [noContracts,setNoContracts]=useState(false);
   const [apTab,setApTab]=useState('activity');
+  const [workArr,setWorkArr]=useState(['Remote']);
+  const [empType,setEmpType]=useState(['Full-time']);
+  const [expLevel,setExpLevel]=useState(['Mid']);
+  const [compSize,setCompSize]=useState(['Any']);
+  const [industry,setIndustry]=useState('Any');
+  const [matchThreshold,setMatchThreshold]=useState(90);
+  const [visaToggle,setVisaToggle]=useState(false);
+  const [relocToggle,setRelocToggle]=useState(false);
+  const [excludedCo,setExcludedCo]=useState('');
+  const [excludedKw,setExcludedKw]=useState('');
 
   useEffect(()=>{
     if(!active) return;
@@ -4440,6 +4450,8 @@ function AutopilotProxy({ toast }){
     },900);
     return ()=>clearInterval(id);
   },[active]);
+
+  const toggleChip=(arr,set,val)=>set(a=>a.includes(val)?a.filter(x=>x!==val):[...a,val]);
 
   const Toggle=({label,desc,on,set})=>(
     <button onClick={()=>set(v=>!v)} className="w-full flex items-center justify-between text-left py-1">
@@ -4560,7 +4572,7 @@ function AutopilotProxy({ toast }){
       </Card>
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Preferences */}
-        <Card className="p-6 space-y-5">
+        <Card className="p-5 space-y-4 overflow-y-auto" style={{maxHeight:620}}>
           <h3 className="font-bold text-slate-900 flex items-center gap-2">
             <Icon name="lock" size={15} className="text-brand-600"/> Your Rules
           </h3>
@@ -4570,30 +4582,98 @@ function AutopilotProxy({ toast }){
               <span className="font-bold text-brand-700">RM {minPay}k+</span>
             </div>
             <input type="range" min="60" max="150" value={minPay} onChange={e=>setMinPay(+e.target.value)} className="w-full accent-brand-700"/>
-            <div className="flex justify-between text-xs text-slate-400 mt-0.5"><span>RM 60k</span><span>RM 150k</span></div>
           </div>
           <div>
-            <span className="text-sm font-medium text-slate-600 block mb-1.5">Preferred location</span>
-            <select value={location} onChange={e=>setLocation(e.target.value)} className="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:ring-2 ring-brand-200">
+            <span className="text-sm font-medium text-slate-600 block mb-1.5">Location</span>
+            <select value={location} onChange={e=>setLocation(e.target.value)} className="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none focus:ring-2 ring-brand-200">
               <option>Remote / KL</option><option>Remote only</option><option>Hybrid · KL</option><option>Anywhere in SEA</option>
             </select>
           </div>
-          <div className="space-y-4 pt-1 border-t border-slate-100">
+          <div>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-2">Work Arrangement</span>
+            <div className="flex gap-2 flex-wrap">
+              {['Remote','Hybrid','Onsite'].map(v=>(
+                <button key={v} onClick={()=>toggleChip(workArr,setWorkArr,v)}
+                  className={`chip-multi ${workArr.includes(v)?'on':'off'}`}>{v}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-2">Employment Type</span>
+            <div className="flex gap-2 flex-wrap">
+              {['Full-time','Part-time','Contract','Internship'].map(v=>(
+                <button key={v} onClick={()=>toggleChip(empType,setEmpType,v)}
+                  className={`chip-multi ${empType.includes(v)?'on':'off'}`}>{v}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-2">Experience Level</span>
+            <div className="flex gap-2 flex-wrap">
+              {['Entry','Junior','Mid','Senior','Lead'].map(v=>(
+                <button key={v} onClick={()=>toggleChip(expLevel,setExpLevel,v)}
+                  className={`chip-multi ${expLevel.includes(v)?'on':'off'}`}>{v}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-2">Company Size</span>
+            <div className="flex gap-2 flex-wrap">
+              {['Startup','SME','Enterprise','Any'].map(v=>(
+                <button key={v} onClick={()=>toggleChip(compSize,setCompSize,v)}
+                  className={`chip-multi ${compSize.includes(v)?'on':'off'}`}>{v}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-2">Industry</span>
+            <select value={industry} onChange={e=>setIndustry(e.target.value)} className="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none focus:ring-2 ring-brand-200">
+              <option>Any</option><option>Tech</option><option>Fintech</option><option>Healthcare</option><option>SaaS</option><option>E-commerce</option>
+            </select>
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-2">Auto-Apply Threshold</span>
+            <div className="flex gap-2">
+              {[70,80,90,95].map(v=>(
+                <button key={v} onClick={()=>setMatchThreshold(v)}
+                  className={`chip-multi flex-1 justify-center ${matchThreshold===v?'on':'off'}`}>{v}%</button>
+              ))}
+            </div>
+          </div>
+          <div className="space-y-3 pt-1 border-t border-slate-100">
             {[
-              {label:'No weekend shifts',desc:'Skip roles with weekend on-call',on:noWeekend,set:setNoWeekend},
-              {label:'Auto-send résumé',desc:'Apply automatically on 90%+ fit',on:autoSend,set:setAutoSend},
-              {label:'No contract roles',desc:'Skip freelance and fixed-term',on:noContracts,set:setNoContracts},
-            ].map(({label,desc,on,set})=>(
-              <div key={label} className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-sm font-medium text-slate-700">{label}</div>
-                  <div className="text-xs text-slate-400">{desc}</div>
-                </div>
+              {label:'Visa Sponsorship',on:visaToggle,set:setVisaToggle},
+              {label:'Open to Relocation',on:relocToggle,set:setRelocToggle},
+              {label:'Exclude Weekend Work',on:noWeekend,set:setNoWeekend},
+              {label:'Exclude Contract Roles',on:noContracts,set:setNoContracts},
+            ].map(({label,on,set})=>(
+              <div key={label} className="flex items-center justify-between">
+                <span className="text-sm font-medium text-slate-700">{label}</span>
                 <button onClick={()=>set(v=>!v)} className={`ap-toggle${on?' on':''}`}>
                   <span className="ap-toggle-thumb"/>
                 </button>
               </div>
             ))}
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-1.5">Excluded Companies</span>
+            <input value={excludedCo} onChange={e=>setExcludedCo(e.target.value)} placeholder="e.g. Acme Corp, XYZ Ltd"
+              className="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+          </div>
+          <div>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-1.5">Excluded Keywords</span>
+            <input value={excludedKw} onChange={e=>setExcludedKw(e.target.value)} placeholder="e.g. Insurance Sales, MLM, Commission Only"
+              className="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none focus:ring-2 ring-brand-200"/>
+          </div>
+          <div className="rounded-xl border border-dashed border-brand-200 bg-brand-50 p-4">
+            <div className="flex items-center gap-2 mb-1">
+              <Icon name="bot" size={14} className="text-brand-600"/>
+              <span className="text-sm font-bold text-brand-900">Advanced AI Rules</span>
+            </div>
+            <p className="text-xs text-slate-500 mb-3">Manage complex career preferences and application strategies through AI Assistant.</p>
+            <button onClick={()=>toast('Opening AI Assistant…','bot')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
+              Configure in AI Assistant →
+            </button>
           </div>
           <div className="flex items-center gap-2 rounded-xl p-3 text-xs font-semibold" style={{background:'rgba(29,158,117,0.1)',color:'#1D9E75'}}>
             <Icon name="check-circle" size={14}/> Rules saved · Agent respects all filters
