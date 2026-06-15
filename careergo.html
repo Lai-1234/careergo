@@ -317,6 +317,97 @@ tailwind.config = {
 .skill-level-bar{height:8px;border-radius:4px;background:#e2e8f0;overflow:hidden;}
 .skill-level-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#5B2EFF,#8B5CF6);transition:width 800ms cubic-bezier(.4,0,.2,1);}
 .score-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;}
+
+/* ═══════════ BATCH F — ANIMATIONS & VISUAL POLISH ═══════════ */
+
+/* Page fade-in (already may exist as fade-up, just ensure this exists) */
+@keyframes fadeSlideUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.fade-up { animation: fadeSlideUp 0.35s ease both; }
+
+/* Stagger children */
+.stagger-child { opacity:0; animation: fadeSlideUp 0.35s ease both; }
+.stagger-child:nth-child(1) { animation-delay:0.04s; }
+.stagger-child:nth-child(2) { animation-delay:0.08s; }
+.stagger-child:nth-child(3) { animation-delay:0.12s; }
+.stagger-child:nth-child(4) { animation-delay:0.16s; }
+.stagger-child:nth-child(5) { animation-delay:0.20s; }
+.stagger-child:nth-child(6) { animation-delay:0.24s; }
+
+/* Hover scale (subtle lift + scale) */
+.hover-scale { transition: transform 180ms ease, box-shadow 180ms ease; }
+.hover-scale:hover { transform: translateY(-2px) scale(1.015); box-shadow: 0 8px 28px rgba(91,46,255,0.12); }
+
+/* Purple gradient cards */
+.purple-card {
+  background: linear-gradient(135deg, #5B2EFF 0%, #6D28D9 60%, #8B5CF6 100%);
+  color: #fff;
+  border-radius: 16px;
+}
+.purple-card-soft {
+  background: linear-gradient(135deg, rgba(91,46,255,0.08) 0%, rgba(139,92,246,0.06) 100%);
+  border: 1px solid rgba(91,46,255,0.15);
+  border-radius: 16px;
+}
+
+/* KPI stat card */
+.kpi-card {
+  background: #fff;
+  border: 1px solid #e8e2ff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  transition: box-shadow 180ms, transform 180ms;
+}
+.kpi-card:hover { box-shadow: 0 4px 18px rgba(91,46,255,0.10); transform: translateY(-1px); }
+.kpi-card .kpi-value { font-size: 1.6rem; font-weight: 800; line-height: 1.1; color: #1e1b4b; }
+.kpi-card .kpi-label { font-size: 0.7rem; font-weight: 600; color: #64748b; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+.kpi-card .kpi-delta { font-size: 0.72rem; font-weight: 700; margin-top: 4px; }
+.kpi-card .kpi-delta.up { color: #1D9E75; }
+.kpi-card .kpi-delta.down { color: #ef4444; }
+
+/* Compact card override */
+.card-compact { padding: 12px 14px !important; }
+
+/* Scan pulse animation */
+@keyframes scanPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(91,46,255,0.3); }
+  50% { box-shadow: 0 0 0 8px rgba(91,46,255,0); }
+}
+.scan-pulse { animation: scanPulse 1.8s ease-in-out infinite; }
+
+@keyframes scanBar {
+  0% { left: -30%; }
+  100% { left: 110%; }
+}
+.scan-bar-wrap { position:relative; overflow:hidden; height:3px; border-radius:2px; background:rgba(91,46,255,0.12); }
+.scan-bar-fill { position:absolute; top:0; height:100%; width:30%; border-radius:2px; background:linear-gradient(90deg,transparent,#5B2EFF,transparent); animation:scanBar 1.6s linear infinite; }
+
+/* Progress bar fill animation */
+@keyframes growWidth {
+  from { width: 0; }
+}
+.animated-bar { animation: growWidth 0.8s ease both; }
+
+/* Coach Vera gradient */
+.vera-gradient {
+  background: linear-gradient(135deg,#1A0146 0%,#0d0222 60%,#1a1060 100%);
+}
+
+/* Purple info panel */
+.purple-info-panel {
+  background: linear-gradient(135deg, rgba(91,46,255,0.10) 0%, rgba(109,40,217,0.07) 100%);
+  border: 1px solid rgba(91,46,255,0.18);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+/* Compact stat row */
+.stat-row { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid #f1f5f9; }
+.stat-row:last-child { border-bottom:none; }
+.stat-row .stat-label { flex:1; font-size:0.8rem; color:#64748b; }
+.stat-row .stat-val { font-size:0.85rem; font-weight:700; color:#1e1b4b; }
 </style>
 </head>
 <body>
