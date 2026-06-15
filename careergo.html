@@ -3847,7 +3847,7 @@ function MarketIntelligence({ toast }){
       </div>
       {/* Tab content */}
       {mktTab==='my-value'&&<FairPayContent/>}
-      {mktTab==='signals'&&<MarketSignalsContent/>}
+      {mktTab==='signals'&&<MarketSignalsContent toast={toast}/>}
     </div>
   );
 }
@@ -4111,7 +4111,7 @@ function FairPayEngine(){
 /* ══════════════════════════════════════════════════════════════
    19. MARKET SIGNALS CONTENT
 ══════════════════════════════════════════════════════════════ */
-function MarketSignalsContent(){
+function MarketSignalsContent({ toast }){
   const industries=[
     {name:'AI & Machine Learning',growth:'+48%',jobs:2840,color:'emerald'},
     {name:'Fintech',growth:'+24%',jobs:1620,color:'blue'},
@@ -4361,6 +4361,116 @@ function MarketPulseModule(){
               </div>
               <div className="font-semibold text-slate-900 mb-1.5">{t}</div>
               <p className="text-sm text-slate-500 leading-relaxed">{d}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Emerging Roles */}
+      <Card className="p-5">
+        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="sparkles" size={15} className="text-brand-600"/> Emerging Roles in Your Field</h3>
+        <div className="space-y-3">
+          {[
+            {role:'AI Product Manager',demand:'Very High',trend:'+67%',hot:true},
+            {role:'Prompt Engineer',demand:'Very High',trend:'+89%',hot:true},
+            {role:'AI UX Designer',demand:'High',trend:'+44%',hot:true},
+            {role:'AI Operations Specialist',demand:'High',trend:'+38%',hot:false},
+            {role:'AI Business Analyst',demand:'High',trend:'+31%',hot:false},
+          ].map(r=>(
+            <div key={r.role} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-brand-50 transition">
+              <div className="flex items-center gap-2">
+                {r.hot&&<span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"/>}
+                <span className="text-sm font-semibold text-slate-800">{r.role}</span>
+                <Badge tone={r.demand==='Very High'?'green':'brand'}>{r.demand}</Badge>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold text-emerald-600">{r.trend}</span>
+                <button onClick={()=>toast&&toast(`Exploring ${r.role} opportunities…`,'search')} className="text-xs text-brand-600 font-semibold hover:underline">Explore →</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Skills to Watch */}
+      <Card className="p-5">
+        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="eye" size={15} className="text-amber-500"/> Skills to Watch</h3>
+        <div className="space-y-3">
+          {[
+            {skill:'Generative AI',pct:94,trend:'Rising'},
+            {skill:'Prompt Engineering',pct:89,trend:'Rising'},
+            {skill:'LLM Development',pct:82,trend:'Rising'},
+            {skill:'AI Product Strategy',pct:76,trend:'Rising'},
+            {skill:'System Design',pct:71,trend:'Stable'},
+            {skill:'Cybersecurity',pct:68,trend:'Rising'},
+            {skill:'Cloud Architecture',pct:65,trend:'Stable'},
+          ].map(s=>(
+            <div key={s.skill} className="flex items-center gap-3">
+              <span className="text-sm text-slate-700 w-44 shrink-0">{s.skill}</span>
+              <div className="contrib-bar-track flex-1">
+                <div className="contrib-bar-fill" style={{width:`${s.pct}%`,background:s.trend==='Rising'?'#5B2EFF':'#64748b'}}/>
+              </div>
+              <Badge tone={s.trend==='Rising'?'green':'slate'}>{s.trend}</Badge>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Salary Trend Forecast */}
+      <Card className="p-5">
+        <h3 className="font-bold text-slate-900 mb-1 flex items-center gap-2"><Icon name="trending-up" size={15} className="text-emerald-600"/> Salary Trend Forecast — Product Design, KL</h3>
+        <p className="text-xs text-slate-400 mb-4">Projected median for your role cluster</p>
+        <div className="flex items-end gap-4 h-40">
+          {[
+            {period:'Now',value:92,label:'RM 92k',color:'#8B5CF6'},
+            {period:'12 mo',value:101,label:'RM 101k',color:'#5B2EFF'},
+            {period:'24 mo',value:112,label:'RM 112k',color:'#1D9E75'},
+            {period:'36 mo',value:128,label:'RM 128k',color:'#d97706'},
+          ].map((b,i)=>(
+            <div key={b.period} className="flex-1 flex flex-col items-center gap-1">
+              <span className="text-xs font-bold" style={{color:b.color}}>{b.label}</span>
+              <div className="w-full rounded-t-lg" style={{height:`${Math.round((b.value/128)*120)}px`,background:b.color,opacity:0.85}}/>
+              <span className="text-xs text-slate-400">{b.period}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Industry Outlook */}
+      <Card className="p-5">
+        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Icon name="building-2" size={15} className="text-brand-600"/> Industry Outlook</h3>
+        <div className="space-y-2">
+          {[
+            {ind:'AI / Machine Learning',outlook:'Very Strong',pct:96,c:'#1D9E75'},
+            {ind:'Cybersecurity',outlook:'Very Strong',pct:91,c:'#1D9E75'},
+            {ind:'Fintech',outlook:'Strong',pct:78,c:'#5B2EFF'},
+            {ind:'Healthcare Technology',outlook:'Strong',pct:74,c:'#5B2EFF'},
+            {ind:'Green Technology',outlook:'Emerging',pct:62,c:'#d97706'},
+          ].map(x=>(
+            <div key={x.ind} className="flex items-center gap-3">
+              <span className="text-sm text-slate-700 flex-1">{x.ind}</span>
+              <div className="contrib-bar-track w-32">
+                <div className="contrib-bar-fill" style={{width:`${x.pct}%`,background:x.c}}/>
+              </div>
+              <span className="text-xs font-bold w-24 text-right shrink-0" style={{color:x.c}}>{x.outlook}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* AI Market Insights */}
+      <Card className="p-5 bg-brand-50 border border-brand-100">
+        <h3 className="font-bold text-brand-900 mb-3 flex items-center gap-2"><Icon name="sparkles" size={15} className="text-brand-600"/> AI Market Insights</h3>
+        <div className="space-y-2.5">
+          {[
+            'AI Product Management demand is projected to grow significantly over the next 3 years as companies accelerate AI adoption.',
+            'Cybersecurity remains one of the most resilient technology sectors, with demand consistently outpacing supply.',
+            'Remote-first opportunities continue growing for senior professionals — 68% of Product Design roles above RM100k now offer remote options.',
+            'Professionals with both design and AI literacy are commanding a 28–40% market premium in the SEA region.',
+          ].map((insight,i)=>(
+            <div key={i} className="flex items-start gap-2.5 p-3 bg-white rounded-xl border border-brand-100">
+              <Icon name="lightbulb" size={14} className="text-brand-600 mt-0.5 shrink-0"/>
+              <p className="text-sm text-brand-900">{insight}</p>
             </div>
           ))}
         </div>
