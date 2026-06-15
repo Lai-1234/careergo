@@ -502,7 +502,7 @@ const LANG = {
     // App nav
     appDashboard:'Dashboard', appProfile:'Career Intelligence',
     appJobs:'Jobs & Opportunities', appCompanion:'Career Companion',
-    appPay:'Fair Pay Engine', appPulse:'Market Pulse', appMarket:'Market Intelligence', appAuto:'Autopilot', appAssistant:'AI Assistant',
+    appPay:'Fair Pay Engine', appPulse:'Market Pulse', appMarket:'Market Intelligence', appAuto:'Autopilot', appAssistant:'Coach Vera',
     appSettings:'Settings', appSignout:'Sign out',
     // Employer nav
     empDash:'Dashboard', empTalent:'Talent Discovery',
@@ -576,7 +576,7 @@ const LANG = {
     onbStep4:'Analisis AI', onbStep5:'Anda Bersedia',
     appDashboard:'Papan Pemuka', appProfile:'Kecerdasan Kerjaya',
     appJobs:'Kerja & Peluang', appCompanion:'Rakan Kerjaya',
-    appPay:'Enjin Gaji Adil', appPulse:'Denyutan Pasaran', appMarket:'Perisikan Pasaran', appAuto:'Autopilot', appAssistant:'Pembantu AI',
+    appPay:'Enjin Gaji Adil', appPulse:'Denyutan Pasaran', appMarket:'Perisikan Pasaran', appAuto:'Autopilot', appAssistant:'Coach Vera',
     appSettings:'Tetapan', appSignout:'Log Keluar',
     empDash:'Papan Pemuka', empTalent:'Penemuan Bakat',
     empInsights:'Pandangan Calon', empAI:'Pembantu Pengambilan AI',
@@ -1097,7 +1097,7 @@ const AI_WORKSPACES=[
 ];
 
 const AI_INITIAL_MESSAGES=[
-  {from:'assistant',text:`Hi Aisha 👋 I'm your CareerGo AI. I've reviewed your full profile and I'm ready to help you reach RM 120,000 and Senior Product Manager level.\n\nYour biggest opportunity right now: you're 62% of the way to your 12-month goal, but **leadership project experience** is the one thing blocking your next raise.\n\nWhat would you like to work on today?`},
+  {from:'assistant',text:`Hi Aisha! 👋 I'm Vera, your AI Career Growth Coach. I'm here to help you navigate your career journey — from planning your promotion roadmap to preparing for interviews, analyzing market opportunities, and growing your skills. What would you like to work on today?`},
 ];
 
 const AI_CONVERSATION_STARTERS=[
@@ -2955,7 +2955,7 @@ const CANDIDATE_NAV=[
   {id:'companion',icon:'bot',tk:'appCompanion',tourStep:2},
   {id:'pay',icon:'bar-chart-2',tk:'appMarket',tourStep:3},
   {id:'auto',icon:'radar',tk:'appAuto',tourStep:5},
-  {id:'assistant',icon:'sparkles',tk:'appAssistant',tourStep:null},
+  {id:'assistant',icon:'bot',tk:'appAssistant',tourStep:null},
 ];
 
 /* ── Onboarding Tour ── */
@@ -3117,7 +3117,7 @@ function AIAssistant({ toast, setView }){
         <button onClick={()=>setMessages(AI_INITIAL_MESSAGES)}
           className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm text-white transition"
           style={{background:'linear-gradient(135deg,#5B2EFF,#8B5CF6)'}}>
-          <Icon name="plus" size={15}/> New Chat
+          <Icon name="plus" size={15}/> New Conversation
         </button>
 
         <Card className="p-4 flex-1">
@@ -3163,7 +3163,7 @@ function AIAssistant({ toast, setView }){
             ))}
           </div>
           <button onClick={()=>setView&&setView('companion')} className="mt-3 text-xs text-brand-600 font-bold hover:underline w-full text-center">
-            Open Career Strategy Center →
+            Open Career Companion →
           </button>
         </Card>
       </div>
@@ -3177,9 +3177,9 @@ function AIAssistant({ toast, setView }){
           </div>
           <div className="relative flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold tracking-widest uppercase mb-0.5" style={{color:'#FDBA2D'}}>AI ASSISTANT</div>
-              <h2 className="text-lg font-extrabold text-white">Career Mission Control</h2>
-              <p className="text-xs mt-0.5" style={{color:'rgba(255,255,255,0.55)'}}>Your personal AI career advisor · Always on · Always in context</p>
+              <div className="text-xs font-bold tracking-widest uppercase mb-0.5" style={{color:'#FDBA2D'}}>COACH VERA</div>
+              <h2 className="text-lg font-extrabold text-white">Meet Vera — Your AI Career Growth Coach</h2>
+              <p className="text-xs mt-0.5" style={{color:'rgba(255,255,255,0.55)'}}>Get personalized career guidance, resume feedback, interview prep, salary growth strategies, and skill recommendations.</p>
             </div>
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
@@ -3244,7 +3244,7 @@ function AIAssistant({ toast, setView }){
           )}
           <div className="p-3 border-t border-slate-100 flex gap-2 bg-white">
             <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()}
-              placeholder={`Ask about ${workspace}…`}
+              placeholder={`Ask Vera about ${workspace}…`}
               className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 ring-brand-200"/>
             <Btn onClick={send}><Icon name="send" size={16}/></Btn>
           </div>
@@ -4176,7 +4176,7 @@ function CareerCompanion({ toast, setView }){
             <button onClick={()=>setView&&setView('assistant')}
               className="flex items-center gap-2 font-semibold px-4 py-2.5 rounded-xl text-sm transition shrink-0"
               style={{background:'rgba(255,255,255,0.12)',color:'rgba(255,255,255,0.85)',border:'1px solid rgba(255,255,255,0.2)'}}>
-              <Icon name="sparkles" size={15}/> Open In AI Assistant
+              <Icon name="bot" size={15}/> Open In Coach Vera
             </button>
           </div>
           <div className="mt-5 flex items-center gap-3 mb-4">
@@ -4348,7 +4348,7 @@ function CareerCompanion({ toast, setView }){
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-brand-900 flex items-center gap-2"><Icon name="sparkles" size={15} className="text-brand-600"/> AI Recommendations</h3>
               <button onClick={()=>setView&&setView('assistant')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
-                Discuss With AI Assistant →
+                Discuss With Coach Vera →
               </button>
             </div>
             <div className="space-y-2">
@@ -4454,7 +4454,7 @@ function CareerCompanion({ toast, setView }){
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-brand-900 flex items-center gap-2"><Icon name="sparkles" size={15} className="text-brand-600"/> AI Suggested Skill Paths</h3>
               <button onClick={()=>setView&&setView('assistant')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
-                Continue In AI Assistant →
+                Continue In Coach Vera →
               </button>
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
@@ -5629,9 +5629,9 @@ function AutopilotProxy({ toast, setView }){
               <Icon name="bot" size={14} className="text-brand-600"/>
               <span className="text-sm font-bold text-brand-900">Advanced AI Rules</span>
             </div>
-            <p className="text-xs text-slate-500 mb-3">Manage complex career preferences and application strategies through AI Assistant.</p>
+            <p className="text-xs text-slate-500 mb-3">Manage complex career preferences and application strategies through Coach Vera.</p>
             <button onClick={()=>setView&&setView('assistant')} className="text-xs font-bold text-brand-600 border border-brand-200 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition">
-              Configure in AI Assistant →
+              Configure in Coach Vera →
             </button>
           </div>
           <div className="flex items-center gap-2 rounded-xl p-3 text-xs font-semibold" style={{background:'rgba(29,158,117,0.1)',color:'#1D9E75'}}>
