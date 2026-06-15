@@ -272,6 +272,23 @@ tailwind.config = {
   .nav-gold-dot{width:7px;height:7px;border-radius:50%;background:#FDBA2D;flex-shrink:0;}
   .hover-lift{transition:transform 180ms ease,box-shadow 180ms ease;}
   .hover-lift:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.10);}
+  /* Candidate sidebar smooth nav (employer ig-style) */
+  @keyframes empIgIconBounce{0%{transform:translateX(0) scale(1)}45%{transform:translateX(4px) scale(1.22)}100%{transform:translateX(3px) scale(1.16)}}
+  .cand-nav-item{position:relative;display:flex;align-items:center;gap:14px;width:100%;padding:11px 14px;border-radius:14px;color:rgba(233,213,255,.82);transition:transform 260ms cubic-bezier(.2,.8,.2,1),background 220ms ease,color 220ms ease,box-shadow 220ms ease}
+  .cand-nav-item::before{content:'';position:absolute;inset:0;border-radius:14px;background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,0));opacity:0;transition:opacity 220ms ease}
+  .cand-nav-item:hover{transform:scale(1.01);background:rgba(255,255,255,.08);color:#fff;box-shadow:0 10px 28px rgba(10,10,30,.18)}
+  .cand-nav-item:hover::before,.cand-nav-item.active::before{opacity:1}
+  .cand-nav-item.active{background:rgba(255,255,255,.12);color:#fff;box-shadow:0 12px 32px rgba(8,8,24,.24)}
+  .cand-nav-icon{transform-origin:center;transition:transform 260ms cubic-bezier(.18,.9,.2,1.18)}
+  .cand-nav-item:hover .cand-nav-icon,.cand-nav-item.active .cand-nav-icon{transform:translateX(3px) scale(1.16)}
+  .cand-nav-item:hover .cand-nav-icon{animation:empIgIconBounce 420ms cubic-bezier(.18,.9,.2,1.18)}
+  .cand-nav-label{font-size:14px;font-weight:600;opacity:.86;transform:translateX(-5px);transition:transform 280ms cubic-bezier(.2,.8,.2,1),opacity 220ms ease;transition-delay:0ms}
+  .cand-nav-item:hover .cand-nav-label,.cand-nav-item.active .cand-nav-label{opacity:1;transform:translateX(5px)}
+  .cand-nav-item:hover .cand-nav-label{transition-delay:60ms}
+  .cand-nav-dot{width:8px;height:8px;border-radius:999px;background:linear-gradient(135deg,#fbbf24,#fb7185);box-shadow:0 0 12px rgba(251,191,36,.45);opacity:.9;transition:transform 260ms ease,opacity 220ms ease}
+  .cand-nav-item:hover .cand-nav-dot,.cand-nav-item.active .cand-nav-dot{transform:translateX(2px);opacity:1}
+  .cand-nav-account{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;transition:transform 220ms cubic-bezier(.2,.8,.2,1),background 220ms ease}
+  .cand-nav-account:hover{transform:translateX(4px);background:rgba(255,255,255,.08)}
   .skill-badge{transition:transform 120ms,box-shadow 120ms;display:inline-block;}
   .skill-badge:hover{transform:scale(1.05);box-shadow:0 2px 8px rgba(91,46,255,0.20);}
   .impact-tip{position:relative;cursor:default;}
@@ -511,7 +528,7 @@ const LANG = {
     onbStep1:'Upload Résumé', onbStep2:'Career Goals', onbStep3:'Skills Check',
     onbStep4:'AI Analysis', onbStep5:'You\'re Ready',
     // App nav
-    appDashboard:'Dashboard', appProfile:'Career Intelligence',
+    appDashboard:'Dashboard', appProfile:'Career Intelligence', appPosts:'Posts & Updates',
     appJobs:'Jobs & Opportunities', appCompanion:'Career Companion',
     appPay:'Fair Pay Engine', appPulse:'Market Pulse', appMarket:'Market Intelligence', appAuto:'Autopilot', appAssistant:'Coach Vera',
     appSettings:'Settings', appSignout:'Sign out',
@@ -2998,11 +3015,12 @@ function CandidateDashboard({ setView, toast }){
 ══════════════════════════════════════════════════════════════ */
 const CANDIDATE_NAV=[
   {id:'dashboard',icon:'layout-dashboard',tk:'appDashboard',tourStep:null},
+  {id:'posts',icon:'newspaper',tk:'appPosts',tourStep:null},
   {id:'jobs',icon:'briefcase',tk:'appJobs',tourStep:4},
   {id:'companion',icon:'bot',tk:'appCompanion',tourStep:2},
   {id:'pay',icon:'bar-chart-2',tk:'appMarket',tourStep:3},
   {id:'auto',icon:'radar',tk:'appAuto',tourStep:5},
-  {id:'assistant',icon:'bot',tk:'appAssistant',tourStep:null},
+  {id:'assistant',icon:'sparkles',tk:'appAssistant',tourStep:null},
 ];
 
 /* ── Onboarding Tour ── */
@@ -3321,6 +3339,158 @@ function AIAssistant({ toast, setView }){
   );
 }
 
+/* ── Candidate Posts & Updates ── */
+const CAND_FEED_POSTS=[
+  {id:'cf1',author:'Nexgen Sdn Bhd',handle:'@nexgenhiring',category:'Hiring update',time:'2h ago',imageTone:'from-[#4f46e5] via-[#7c3aed] to-[#f59e0b]',title:'Senior Product Designer — Now Hiring',caption:'We are looking for a Senior Product Designer to shape the future of employer intelligence. Strong design systems thinking and fintech UX depth preferred.',tags:['Design Systems','Hybrid','KL'],likes:128,liked:false,saves:36,comments:2,following:true},
+  {id:'cf2',author:'CareerGo Insights',handle:'@careergo',category:'Career tip',time:'4h ago',imageTone:'from-[#0f766e] via-[#14b8a6] to-[#67e8f9]',title:'5 skills that will triple your salary in 2026',caption:'AI Product Strategy, LLM Product Design, and cross-functional leadership are the fastest-rising skill premiums in Southeast Asia. Each adds RM 10–18k to your market value.',tags:['AI Skills','Career Growth','Salary'],likes:841,liked:true,saves:210,comments:47,following:true},
+  {id:'cf3',author:'Lattice Health',handle:'@latticehealthjobs',category:'Industry insight',time:'1d ago',imageTone:'from-[#ea580c] via-[#f97316] to-[#fdba74]',title:'What product teams learn from support calls',caption:'Our team reviewed 42 patient support calls this month. The strongest signal was not a missing feature — it was language. When the product speaks like the user, trust goes up before conversion does.',tags:['Product','UX Research','Healthcare'],likes:176,liked:false,saves:28,comments:8,following:false},
+  {id:'cf4',author:'Orbit Commerce',handle:'@orbitcommerce',category:'Hiring update',time:'1d ago',imageTone:'from-[#1d4ed8] via-[#2563eb] to-[#93c5fd]',title:'Frontend Engineer — Remote MY',caption:'Hiring frontend engineers who care about polished interaction, performance, and experimentation velocity. React + TypeScript + product ownership mindset.',tags:['React','Remote','Performance'],likes:214,liked:false,saves:49,comments:12,following:false},
+  {id:'cf5',author:'CareerGo Insights',handle:'@careergo',category:'Career tip',time:'2d ago',imageTone:'from-[#7c3aed] via-[#a855f7] to-[#ec4899]',title:'How to negotiate when you have competing offers',caption:'Open at 120% of your target. Never reveal your floor in round 1. Use silence after your number — the next person to speak usually concedes.',tags:['Salary Negotiation','Career Moves'],likes:1204,liked:false,saves:388,comments:93,following:true},
+];
+
+function CandidatePosts({ toast }){
+  const [posts,setPosts]=useState(CAND_FEED_POSTS);
+  const [filter,setFilter]=useState('All');
+  const filters=['All','Hiring update','Career tip','Industry insight'];
+  const toggleLike=id=>setPosts(ps=>ps.map(p=>p.id===id?{...p,liked:!p.liked,likes:p.liked?p.likes-1:p.likes+1}:p));
+  const visible=filter==='All'?posts:posts.filter(p=>p.category===filter);
+  return (
+    <div className="space-y-6 fade-up">
+      <div className="rounded-2xl p-7 relative overflow-hidden" style={{background:'linear-gradient(135deg,#1A0146 0%,#0d0222 60%,#1a1060 100%)'}}>
+        <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full" style={{background:'rgba(91,46,255,0.18)',filter:'blur(50px)'}}/>
+        <div className="relative flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <span className="text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded-full" style={{background:'rgba(253,186,45,0.15)',color:'#FDBA2D'}}>POSTS & UPDATES</span>
+            <h1 className="text-2xl font-extrabold text-white mt-1 mb-1">Your Career Feed</h1>
+            <p className="text-sm max-w-lg" style={{color:'rgba(255,255,255,0.6)'}}>Hiring updates, industry insights, and career tips from companies and communities you follow.</p>
+          </div>
+          <div className="flex gap-3">
+            {[{n:posts.filter(p=>p.following).length,l:'Following'},{n:'12',l:'Saved Posts'},{n:'3',l:'New Today'}].map(s=>(
+              <div key={s.l} className="rounded-xl px-3 py-2 text-center" style={{background:'rgba(255,255,255,0.08)',border:'1px solid rgba(255,255,255,0.12)'}}>
+                <div className="text-lg font-extrabold text-white">{s.n}</div>
+                <div className="text-xs" style={{color:'rgba(255,255,255,0.5)'}}>{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="flex gap-5 items-start">
+        <div className="w-52 shrink-0 space-y-4 hidden xl:block">
+          <div className="bg-white rounded-2xl p-4 border border-slate-100">
+            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Following</div>
+            {[{n:'Nexgen Sdn Bhd',role:'HR Tech',f:true},{n:'CareerGo Insights',role:'Career tips',f:true},{n:'Orbit Commerce',role:'E-commerce',f:false},{n:'TalentEdge MY',role:'Recruiting',f:false}].map(c=>(
+              <div key={c.n} className="flex items-center gap-2 py-2 border-b border-slate-50 last:border-0">
+                <div className="w-7 h-7 rounded-lg bg-brand-100 text-brand-700 font-bold text-xs flex items-center justify-center shrink-0">{c.n[0]}</div>
+                <div className="flex-1 min-w-0"><div className="text-xs font-semibold text-slate-800 truncate">{c.n}</div><div className="text-xs text-slate-400">{c.role}</div></div>
+                <button className={`text-xs font-bold px-2 py-0.5 rounded-full transition ${c.f?'text-brand-600 bg-brand-50':'text-white bg-brand-600 hover:bg-brand-700'}`} onClick={()=>toast(c.f?`Unfollowed ${c.n}`:`Following ${c.n}`)}>{c.f?'✓':'+Follow'}</button>
+              </div>
+            ))}
+          </div>
+          <div className="bg-brand-50 rounded-2xl p-4 border border-brand-100">
+            <div className="text-xs font-bold text-brand-700 mb-1">Vera Recommends</div>
+            <p className="text-xs text-slate-600 leading-relaxed">Follow 3 more companies in your target industry to improve your market awareness score.</p>
+          </div>
+        </div>
+        <div className="flex-1 min-w-0 space-y-4">
+          <div className="flex gap-2 flex-wrap">
+            {filters.map(f=>(
+              <button key={f} onClick={()=>setFilter(f)} className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${filter===f?'bg-brand-700 text-white':'bg-white border border-slate-200 text-slate-600 hover:border-brand-300'}`}>{f}</button>
+            ))}
+          </div>
+          {visible.map(post=>(
+            <div key={post.id} className="bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-card transition-shadow">
+              <div className="flex items-center gap-3 px-5 pt-4 pb-3">
+                <div className="w-9 h-9 rounded-xl bg-brand-700 text-white font-bold text-sm flex items-center justify-center shrink-0">{post.author[0]}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-bold text-slate-900">{post.author}</span>
+                    <span className="text-xs text-slate-400">{post.handle}</span>
+                    <span className="text-xs px-1.5 py-0.5 rounded-full font-semibold" style={{background:post.category==='Career tip'?'rgba(29,158,117,0.12)':post.category==='Hiring update'?'rgba(91,46,255,0.1)':'rgba(239,159,39,0.12)',color:post.category==='Career tip'?'#1D9E75':post.category==='Hiring update'?'#5B2EFF':'#EF9F27'}}>{post.category}</span>
+                  </div>
+                  <div className="text-xs text-slate-400">{post.time}</div>
+                </div>
+                <button onClick={()=>setPosts(ps=>ps.map(p=>p.id===post.id?{...p,following:!p.following}:p))} className={`text-xs font-bold px-3 py-1 rounded-full transition ${post.following?'text-brand-600 bg-brand-50 hover:bg-brand-100':'text-white bg-brand-600 hover:bg-brand-700'}`}>{post.following?'Following':'+ Follow'}</button>
+              </div>
+              <div className={`mx-4 mb-3 h-32 rounded-xl bg-gradient-to-br ${post.imageTone} flex items-end p-4`}>
+                <div><div className="text-xs font-bold text-white/70 uppercase tracking-widest mb-0.5">{post.category}</div><div className="text-base font-extrabold text-white leading-tight">{post.title}</div></div>
+              </div>
+              <div className="px-5 pb-3">
+                <p className="text-sm text-slate-700 leading-relaxed mb-2">{post.caption}</p>
+                <div className="flex flex-wrap gap-1.5">{post.tags.map(tag=><span key={tag} className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">#{tag.replace(/\s/g,'')}</span>)}</div>
+              </div>
+              <div className="flex items-center gap-1 px-4 py-3 border-t border-slate-100">
+                <button onClick={()=>toggleLike(post.id)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${post.liked?'text-rose-600 bg-rose-50':'text-slate-500 hover:bg-slate-50'}`}><Icon name="heart" size={14}/> {post.likes}</button>
+                <button onClick={()=>toast('Comments coming soon')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-50 transition"><Icon name="message-circle" size={14}/> {post.comments}</button>
+                <button onClick={()=>toast('Shared!')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-50 transition"><Icon name="share-2" size={14}/></button>
+                <button onClick={()=>toast('Saved!')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-50 transition ml-auto"><Icon name="bookmark" size={14}/> {post.saves}</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Candidate Profile / Account Page ── */
+function CandidateProfilePage({ toast }){
+  const [profile,setProfile]=useState({name:USER.name,role:USER.role,location:'Kuala Lumpur, Malaysia',bio:'Product Designer with 6 years of experience building fintech and SaaS products. Passionate about design systems, user research, and cross-functional collaboration.',goal:'Senior Product Manager',yearsExp:'6',linkedin:'linkedin.com/in/aisharahman',portfolio:'aisharahman.design'});
+  const [account,setAccount]=useState({email:'aisha.rahman@email.com',password:'**********',timezone:'Malaysia Time (GMT+8)',profileVisibility:'Public profile',jobAlerts:true,weeklyInsights:true,applicationUpdates:true,twoFactor:false});
+  const [showPassword,setShowPassword]=useState(false);
+  const setField=(k,v)=>setProfile(p=>({...p,[k]:v}));
+  const setAccField=(k,v)=>setAccount(a=>({...a,[k]:v}));
+  return (
+    <div className="space-y-6 fade-up">
+      <div className="rounded-2xl p-7 relative overflow-hidden" style={{background:'linear-gradient(135deg,#102033 0%,#172554 58%,#3b1d74 100%)'}}>
+        <div className="absolute -right-20 -top-24 w-80 h-80 rounded-full" style={{background:'rgba(91,46,255,0.2)',filter:'blur(60px)'}}/>
+        <div className="relative flex items-center gap-5 flex-wrap">
+          <div className="w-16 h-16 rounded-2xl bg-brand-600 text-white font-extrabold text-2xl flex items-center justify-center shrink-0">AR</div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xl font-extrabold text-white">{profile.name}</div>
+            <div className="text-brand-200 text-sm">{profile.role} · {profile.location}</div>
+            <div className="flex gap-5 mt-2">{[{n:USER.careerScore,l:'Career Score'},{n:'RM 92k',l:'Market Value'},{n:'6 yrs',l:'Experience'}].map(s=><div key={s.l} className="text-center"><div className="text-base font-extrabold text-white">{s.n}</div><div className="text-xs text-brand-300">{s.l}</div></div>)}</div>
+          </div>
+          <Btn size="sm" onClick={()=>toast('Profile link copied!')} className="bg-white/15 border border-white/25 text-white hover:bg-white/25 shrink-0"><Icon name="share-2" size={14}/> Share Profile</Btn>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-2xl p-6 border border-slate-100 space-y-4">
+          <div className="font-bold text-slate-900 text-base flex items-center gap-2"><Icon name="user" size={16} className="text-brand-600"/> Personal Information</div>
+          {[{label:'Full Name',key:'name'},{label:'Current Role',key:'role'},{label:'Location',key:'location'},{label:'Career Goal',key:'goal'},{label:'Years of Experience',key:'yearsExp'}].map(f=>(
+            <div key={f.key}><label className="text-xs font-semibold text-slate-500 block mb-1">{f.label}</label><input value={profile[f.key]} onChange={e=>setField(f.key,e.target.value)} className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-400"/></div>
+          ))}
+          <div><label className="text-xs font-semibold text-slate-500 block mb-1">Professional Bio</label><textarea value={profile.bio} onChange={e=>setField('bio',e.target.value)} rows={3} className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-900 resize-none focus:outline-none focus:border-brand-400"/></div>
+          <Btn onClick={()=>toast('Personal info saved!')} className="w-full bg-brand-700 text-white hover:bg-brand-800">Save Changes</Btn>
+        </div>
+        <div className="space-y-4">
+          <div className="bg-white rounded-2xl p-6 border border-slate-100 space-y-4">
+            <div className="font-bold text-slate-900 text-base flex items-center gap-2"><Icon name="settings" size={16} className="text-brand-600"/> Account Settings</div>
+            <div><label className="text-xs font-semibold text-slate-500 block mb-1">Login Email</label><input value={account.email} onChange={e=>setAccField('email',e.target.value)} className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-brand-400"/></div>
+            <div><label className="text-xs font-semibold text-slate-500 block mb-1">Password</label>
+              <div className="relative"><input type={showPassword?'text':'password'} value={account.password} onChange={e=>setAccField('password',e.target.value)} className="w-full border border-slate-200 rounded-xl px-3 py-2.5 pr-10 text-sm focus:outline-none focus:border-brand-400"/>
+                <button onClick={()=>setShowPassword(s=>!s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"><Icon name={showPassword?'eye-off':'eye'} size={16}/></button>
+              </div>
+            </div>
+            <div><label className="text-xs font-semibold text-slate-500 block mb-1">Profile Visibility</label>
+              <div className="flex gap-2">{['Public profile','Recruiters only','Private'].map(opt=><button key={opt} onClick={()=>setAccField('profileVisibility',opt)} className={`flex-1 px-2 py-2 rounded-xl text-xs font-semibold border transition ${account.profileVisibility===opt?'bg-brand-700 text-white border-brand-700':'border-slate-200 text-slate-600 hover:border-brand-300'}`}>{opt}</button>)}</div>
+            </div>
+            <Btn onClick={()=>toast('Account saved!')} className="w-full bg-brand-700 text-white hover:bg-brand-800">Save Account</Btn>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border border-slate-100 space-y-3">
+            <div className="font-bold text-slate-900 text-base flex items-center gap-2"><Icon name="bell" size={16} className="text-brand-600"/> Notifications</div>
+            {[{key:'jobAlerts',label:'Job match alerts'},{key:'weeklyInsights',label:'Weekly career insights'},{key:'applicationUpdates',label:'Application status updates'},{key:'twoFactor',label:'Two-factor authentication'}].map(({key,label})=>(
+              <div key={key} className="flex items-center justify-between py-1.5 border-b border-slate-50 last:border-0">
+                <span className="text-sm text-slate-700">{label}</span>
+                <button onClick={()=>setAccField(key,!account[key])} className={`w-10 h-5 rounded-full transition-colors relative ${account[key]?'bg-brand-600':'bg-slate-200'}`}><span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${account[key]?'left-5':'left-0.5'}`}/></button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CandidateApp({ lang, toggleLang, go, toast }){
   const t=useT(lang);
   const [view,setView]=useState('dashboard');
@@ -3335,11 +3505,13 @@ function CandidateApp({ lang, toggleLang, go, toast }){
   const views={
     dashboard: <CandidateDashboard setView={setView} toast={toast}/>,
     profile:   <CareerProfile toast={toast}/>,
+    posts:     <CandidatePosts toast={toast}/>,
     jobs:      <JobsOpportunities toast={toast}/>,
     companion: <CareerCompanion toast={toast} setView={setView}/>,
     pay:       <MarketIntelligence toast={toast}/>,
     auto:      <AutopilotProxy toast={toast} setView={setView}/>,
     assistant: <AIAssistant toast={toast} setView={setView}/>,
+    account:   <CandidateProfilePage toast={toast}/>,
   };
 
   const current=CANDIDATE_NAV.find(n=>n.id===view);
@@ -3355,15 +3527,15 @@ function CandidateApp({ lang, toggleLang, go, toast }){
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto mt-1">
+        <nav className="flex-1 p-2.5 space-y-1 overflow-y-auto mt-1">
           {CANDIDATE_NAV.map(n=>(
             <button key={n.id}
               {...(n.tourStep?{'data-tour':`step-${n.tourStep}`}:{})}
               onClick={()=>{ setView(n.id); setMobileOpen(false); }}
-              className={`nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium ${view===n.id?'active text-white':'text-brand-200 hover:text-white'}`}>
-              <Icon name={n.icon} size={18}/>
-              <span className="flex-1 text-left">{t(n.tk)}</span>
-              {view===n.id&&<span className="nav-gold-dot" style={{transition:'opacity 300ms ease-in-out'}}/>}
+              className={`cand-nav-item ${view===n.id?'active':''}`}>
+              <span className="cand-nav-icon"><Icon name={n.icon} size={19}/></span>
+              <span className="cand-nav-label flex-1 text-left">{t(n.tk)}</span>
+              {view===n.id&&<span className="ml-auto cand-nav-dot"/>}
             </button>
           ))}
         </nav>
@@ -3376,19 +3548,22 @@ function CandidateApp({ lang, toggleLang, go, toast }){
               <span className="text-xs font-semibold text-white/70">Market value</span>
               <span className="ml-auto w-1.5 h-1.5 bg-emerald-400 rounded-full"/>
             </div>
-            <div className="text-2xl font-extrabold text-white">${(USER.marketValue/1000).toFixed(0)}k</div>
+            <div className="text-2xl font-extrabold text-white">RM {(USER.marketValue/1000).toFixed(0)}k</div>
             <div className="text-xs text-emerald-400 mt-0.5">+4% this month · verified</div>
             <ProgressBar value={USER.marketValue} max={USER.marketMax} tone="gold" className="mt-2"/>
           </div>
 
           {/* User */}
-          <div className="flex items-center gap-2.5 px-1">
-            <Avatar name={USER.name} size="sm"/>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-white truncate">{USER.name}</div>
-              <div className="text-xs text-brand-300 truncate">{USER.role}</div>
-            </div>
-            <button onClick={()=>go('landing')} className="text-brand-400 hover:text-white transition" title="Sign out">
+          <div className="flex items-center gap-1">
+            <button onClick={()=>{ setView('account'); setMobileOpen(false); }} className="cand-nav-account flex-1 text-left" title="Profile & account settings">
+              <Avatar name={USER.name} size="sm"/>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold text-white truncate">{USER.name}</div>
+                <div className="text-xs text-brand-300 truncate">{USER.role}</div>
+              </div>
+              <Icon name="chevron-right" size={14} className="text-brand-400 shrink-0"/>
+            </button>
+            <button onClick={()=>go('landing')} className="text-brand-400 hover:text-white transition p-1.5 rounded-xl hover:bg-white/8" title="Sign out">
               <Icon name="log-out" size={15}/>
             </button>
           </div>
