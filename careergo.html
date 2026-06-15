@@ -3890,31 +3890,34 @@ function JobsOpportunities({ toast }){
 
   return (
     <div className="space-y-6 fade-up">
-      <div>
-        <h1 className="text-2xl font-extrabold text-slate-900">Jobs & Opportunities</h1>
-        <p className="text-slate-500">Smart matches based on your verified skills and career goals.</p>
-      </div>
-
-      <div className="flex gap-1 p-1 rounded-xl w-fit" style={{background:'#f1f5f9'}}>
-        <button onClick={()=>setJobsTab('jobs')} className={`market-tab ${jobsTab==='jobs'?'active':''}`}>
-          Jobs
-        </button>
-        <button onClick={()=>setJobsTab('community')} className={`market-tab ${jobsTab==='community'?'active':''}`}>
-          Community
-        </button>
-      </div>
-
-      {jobsTab==='jobs'&&(<>
-      {/* Smart match banner */}
-      <div className="rounded-2xl bg-gradient-to-r from-brand-950 to-brand-700 p-5 flex items-center gap-4">
-        <div className="w-11 h-11 rounded-xl bg-white/15 text-white flex items-center justify-center shrink-0"><Icon name="wand-2" size={20}/></div>
-        <div className="flex-1">
-          <div className="font-semibold text-white">Smart Job Matching is on</div>
-          <p className="text-sm text-brand-200">Roles ranked by career-alignment score using your verified skills: {USER.skills.slice(0,3).join(', ')} + {USER.skills.length-3} more.</p>
+      {/* Jobs & Opportunities Banner */}
+      <div className="rounded-2xl p-6 relative overflow-hidden mb-2" style={{background:'linear-gradient(135deg,#1A0146 0%,#0d0222 60%,#1a1060 100%)'}}>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -right-12 -top-12 w-56 h-56 rounded-full" style={{background:'rgba(91,46,255,0.18)',filter:'blur(48px)'}}/>
+          <div className="absolute -left-8 -bottom-8 w-40 h-40 rounded-full" style={{background:'rgba(109,40,217,0.12)',filter:'blur(36px)'}}/>
         </div>
-        <div className="text-right shrink-0">
-          <div className="text-xl font-extrabold text-gold-400">{JOBS.length}</div>
-          <div className="text-xs text-brand-300">matches today</div>
+        <div className="relative flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div className="mb-1">
+              <span className="text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded-full" style={{background:'rgba(253,186,45,0.15)',color:'#FDBA2D'}}>JOBS & OPPORTUNITIES</span>
+            </div>
+            <h1 className="text-2xl font-extrabold text-white mb-1">Discover Your Next Career Move</h1>
+            <p className="text-sm max-w-xl" style={{color:'rgba(255,255,255,0.6)'}}>Personalized job opportunities matched to your skills, experience, career goals, salary expectations, and market demand. AI-ranked by career growth potential.</p>
+          </div>
+          <div className="flex flex-col gap-2 shrink-0 text-right">
+            <div className="flex gap-3">
+              {[
+                {n:'94%',l:'Top Match'},
+                {n:USER.newMatches,l:'New Today'},
+                {n:'5',l:'Saved'},
+              ].map(s=>(
+                <div key={s.l} className="rounded-xl px-3 py-2 text-center" style={{background:'rgba(255,255,255,0.08)',border:'1px solid rgba(255,255,255,0.12)'}}>
+                  <div className="text-lg font-extrabold text-white">{s.n}</div>
+                  <div className="text-xs" style={{color:'rgba(255,255,255,0.5)'}}>{s.l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -4064,51 +4067,6 @@ function JobsOpportunities({ toast }){
           <Icon name="columns-2" size={16}/> Comparing {compareIds.length} roles
           <button onClick={()=>toast('Compare view — coming in full release','layers')} className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-xs transition">Compare now →</button>
           <button onClick={()=>setCompareIds([])} className="text-white/60 hover:text-white ml-1"><Icon name="x" size={14}/></button>
-        </div>
-      )}
-      </>)}
-
-      {jobsTab==='community'&&(
-        <div className="space-y-4">
-          <Card className="p-4 flex items-center gap-3">
-            <Avatar name={USER.name} size="xs"/>
-            <button onClick={()=>toast('Post composer coming soon','pen-line')}
-              className="flex-1 text-left text-sm text-slate-400 bg-slate-50 rounded-xl px-4 py-3 border border-slate-200 hover:border-brand-300 transition">
-              Share a career insight, question, or tip…
-            </button>
-            <Btn size="sm" onClick={()=>toast('Post created!','check')}>Post</Btn>
-          </Card>
-          {COMMUNITY_POSTS.map(post=>(
-            <div key={post.id} className="community-card p-5">
-              <div className="flex items-start gap-3 mb-3">
-                <Avatar name={post.avatar} size="sm"/>
-                <div>
-                  <div className="font-semibold text-slate-900 text-sm">{post.name}</div>
-                  <div className="text-xs text-slate-400">{post.title} · {post.time}</div>
-                </div>
-              </div>
-              <p className="text-sm text-slate-700 leading-relaxed mb-4">{post.content}</p>
-              <div className="flex items-center gap-4 pt-3 border-t border-slate-100">
-                <button onClick={()=>setPostLikes(l=>({...l,[post.id]:!l[post.id]}))}
-                  className={`flex items-center gap-1.5 text-sm font-medium transition ${postLikes[post.id]?'text-brand-600':'text-slate-400 hover:text-brand-600'}`}>
-                  <Icon name="thumbs-up" size={15}/> {post.likes+(postLikes[post.id]?1:0)}
-                </button>
-                <button onClick={()=>toast('Comments coming soon','message-circle')}
-                  className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 font-medium transition">
-                  <Icon name="message-circle" size={15}/> {post.comments}
-                </button>
-                <button onClick={()=>toast('Post shared!','share-2')}
-                  className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 font-medium transition">
-                  <Icon name="share-2" size={15}/> Share
-                </button>
-                <button onClick={()=>setPostBookmarks(b=>({...b,[post.id]:!b[post.id]}))}
-                  className={`flex items-center gap-1.5 text-sm font-medium ml-auto transition ${postBookmarks[post.id]?'text-amber-500':'text-slate-400 hover:text-amber-500'}`}>
-                  <Icon name={postBookmarks[post.id]?'bookmark-check':'bookmark'} size={15}/>
-                  {post.bookmarks+(postBookmarks[post.id]?1:0)}
-                </button>
-              </div>
-            </div>
-          ))}
         </div>
       )}
     </div>
