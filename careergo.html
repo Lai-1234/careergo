@@ -404,8 +404,8 @@ const LANG = {
     appPay:'Fair Pay Engine', appPulse:'Market Pulse', appMarket:'Market Intelligence', appAuto:'Autopilot',
     appSettings:'Settings', appSignout:'Sign out',
     // Employer nav
-    empDash:'Dashboard', empTalent:'Talent Discovery',
-    empInsights:'Candidate Insights', empAI:'AI Hiring Assistant',
+    empDash:'Dashboard', empJobs:'Posts & Updates', empTalent:'Talent Discovery',
+    empPipeline:'Candidate Pipeline', empInsights:'Candidate Insights', empAI:'AI Hiring Assistant',
   },
   bm: {
     navProduct:'Produk', navSolutions:'Penyelesaian', navPricing:'Harga',
@@ -477,8 +477,8 @@ const LANG = {
     appJobs:'Kerja & Peluang', appCompanion:'Rakan Kerjaya',
     appPay:'Enjin Gaji Adil', appPulse:'Denyutan Pasaran', appMarket:'Perisikan Pasaran', appAuto:'Autopilot',
     appSettings:'Tetapan', appSignout:'Log Keluar',
-    empDash:'Papan Pemuka', empTalent:'Penemuan Bakat',
-    empInsights:'Pandangan Calon', empAI:'Pembantu Pengambilan AI',
+    empDash:'Papan Pemuka', empJobs:'Pos & Kemas Kini', empTalent:'Penemuan Bakat',
+    empPipeline:'Peringkat Calon', empInsights:'Pandangan Calon', empAI:'Pembantu Pengambilan AI',
   },
 };
 
@@ -536,6 +536,7 @@ const EMP_SOCIAL_POSTS=[
     team:'Product Design',
     location:'Kuala Lumpur / Hybrid',
     jobId:'job-pd',
+    category:'Hiring update',
     own:true,
     priority:'Urgent',
     posted:'2h ago',
@@ -558,6 +559,7 @@ const EMP_SOCIAL_POSTS=[
     team:'Checkout Experience',
     location:'Remote, MY',
     jobId:'job-fe',
+    category:'Hiring update',
     own:false,
     priority:'High',
     posted:'5h ago',
@@ -576,16 +578,17 @@ const EMP_SOCIAL_POSTS=[
     id:'post-3',
     author:'Lattice Health',
     handle:'@latticehealthjobs',
-    role:'Product Manager',
+    role:'What product teams can learn from patient support calls',
     team:'Patient Platform',
     location:'Singapore / KL',
     jobId:'job-pm',
+    category:'Industry insight',
     own:false,
     priority:'Medium',
     posted:'1d ago',
     imageTone:'from-[#ea580c] via-[#f97316] to-[#fdba74]',
-    caption:'Looking for a PM who can turn messy healthcare workflows into lovable product experiences. Bonus if you have experience aligning data, ops, and design into one roadmap.',
-    tags:['Product','Healthcare','Cross-functional'],
+    caption:'Our product team reviewed 42 patient support calls this month. The strongest signal was not a missing feature. It was language. When the product speaks like the user, trust goes up before conversion does.',
+    tags:['Product Lessons','Healthcare','User Research'],
     likes:176,
     liked:false,
     saves:28,
@@ -597,16 +600,17 @@ const EMP_SOCIAL_POSTS=[
     id:'post-4',
     author:'Nexgen Sdn Bhd',
     handle:'@nexgenhiring',
-    role:'Frontend Engineer',
+    role:'Behind the scenes: rebuilding our design-engineering handoff',
     team:'Platform UX',
     location:'Remote, MY',
     jobId:'job-fe',
+    category:'Team story',
     own:true,
     priority:'High',
     posted:'Yesterday',
     imageTone:'from-[#1d4ed8] via-[#2563eb] to-[#93c5fd]',
-    caption:'We just opened a frontend role for engineers who love shipping fast interfaces without sacrificing maintainability. If you care about React architecture and user empathy, this one is for you.',
-    tags:['Frontend','TypeScript','Remote'],
+    caption:'This week our design and frontend team replaced a messy handoff checklist with shared component contracts. Fewer surprises, faster QA, and a calmer Friday release. Small systems work can change the whole team mood.',
+    tags:['Team Culture','Frontend','Design Systems'],
     likes:96,
     liked:false,
     saves:22,
@@ -660,7 +664,7 @@ function EmployerDashboardV2({ setView, jobs, pipeline, savedCandidateIds, selec
           <div className="flex flex-wrap gap-3 mt-5">
             <Btn size="sm" onClick={()=>setView('emp-jobs')} className="bg-white/15 border border-white/25 text-white hover:bg-white/25"><Icon name="briefcase" size={15}/> Manage Roles</Btn>
             <Btn size="sm" onClick={()=>setView('emp-talent')} className="bg-white/15 border border-white/25 text-white hover:bg-white/25"><Icon name="search" size={15}/> Find Talent</Btn>
-            <Btn size="sm" onClick={()=>setView('emp-pipeline')} className="bg-white/15 border border-white/25 text-white hover:bg-white/25"><Icon name="git-branch" size={15}/> Hiring Pipeline</Btn>
+            <Btn size="sm" onClick={()=>setView('emp-pipeline')} className="bg-white/15 border border-white/25 text-white hover:bg-white/25"><Icon name="git-branch" size={15}/> Candidate Pipeline</Btn>
           </div>
         </div>
       </div>
@@ -740,6 +744,192 @@ function EmployerRolesWorkspace(props){
   return <EmployerRolesWorkspaceV2 {...props} />;
 }
 
+function EmployerCommandDashboard({ setView, jobs, pipeline, savedCandidateIds, selectedJobId, setSelectedJobId, posts }){
+  const activeJobs=jobs.filter(job=>job.status==='Active');
+  const urgentJobs=jobs.filter(job=>job.priority==='Urgent'||job.priority==='High');
+  const totalApplicants=activeJobs.reduce((sum,job)=>sum+job.applicants,0);
+  const hiringVelocity=Math.max(1,Math.round((pipeline.filter(p=>p.stage==='Interview'||p.stage==='Offer').length/Math.max(activeJobs.length,1))*7));
+  const stageCounts=EMP_PIPELINE_STAGES.map(stage=>({stage,count:pipeline.filter(p=>p.stage===stage).length}));
+  const actionQueue=pipeline
+    .map(item=>({ ...item, candidate:getEmployerCandidateById(item.candidateId), job:getEmployerJobById(jobs,item.jobId) }))
+    .filter(item=>item.candidate&&item.job)
+    .sort((a,b)=>{
+      const order={Offer:0,Interview:1,Screen:2,Applied:3,Hired:4};
+      return (order[a.stage]??9)-(order[b.stage]??9);
+    })
+    .slice(0,4);
+  const topTalent=[...EMP_CANDIDATES].sort((a,b)=>b.score-a.score).slice(0,3);
+  const latestOwnPost=(posts||[]).filter(post=>post.own)[0];
+  const contentIdeas=[
+    {icon:'megaphone',title:'Team update',body:'Share what the team shipped this week and who would enjoy building with you.'},
+    {icon:'calendar',title:'Event invite',body:'Announce a hiring AMA, portfolio review, or open office hour for candidates.'},
+    {icon:'lightbulb',title:'Industry insight',body:'Post one lesson from interviewing, onboarding, or building product in your market.'},
+  ];
+
+  return (
+    <div className="space-y-5 fade-up">
+      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-soft">
+        <div className="grid xl:grid-cols-[minmax(0,1.45fr)_420px]">
+          <div className="p-6 lg:p-7">
+            <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-emerald-700">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Live hiring workspace
+            </div>
+            <h1 className="text-3xl font-extrabold text-slate-950 mt-3">Nexgen hiring cockpit</h1>
+            <p className="text-slate-500 mt-2 max-w-3xl">Turn candidate signals, pipeline movement, and employer-brand content into the next best action for the team.</p>
+            <div className="grid sm:grid-cols-3 gap-3 mt-6">
+              {[
+                {icon:'briefcase',label:'Open roles',value:String(activeJobs.length),sub:`${urgentJobs.length} need attention`,view:'emp-jobs',tone:'brand'},
+                {icon:'users-round',label:'Talent pool',value:String(savedCandidateIds.length),sub:'saved for outreach',view:'emp-talent',tone:'blue'},
+                {icon:'activity',label:'Momentum',value:`${hiringVelocity}/wk`,sub:'interviews + offers',view:'emp-pipeline',tone:'green'},
+              ].map(item=>(
+                <button key={item.label} onClick={()=>setView(item.view)} className="rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-brand-200 hover:shadow-soft transition p-4 text-left">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3 ${item.tone==='green'?'bg-emerald-50 text-emerald-600':item.tone==='blue'?'bg-blue-50 text-blue-600':'bg-brand-50 text-brand-700'}`}><Icon name={item.icon} size={17}/></div>
+                  <div className="text-2xl font-extrabold text-slate-950">{item.value}</div>
+                  <div className="text-sm font-semibold text-slate-700">{item.label}</div>
+                  <div className="text-xs text-slate-400 mt-0.5">{item.sub}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="bg-slate-950 text-white p-6 lg:p-7 flex flex-col justify-between">
+            <div>
+              <div className="text-xs font-extrabold uppercase tracking-widest text-amber-300">Recommended next move</div>
+              <h2 className="text-xl font-extrabold mt-3">Approve the offer package for {actionQueue[0]?.candidate?.name || 'your top candidate'}</h2>
+              <p className="text-sm text-slate-300 mt-2 leading-relaxed">{actionQueue[0]?.nextStep || 'Review the highest-priority hiring action before new applicants pile up.'}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mt-6">
+              <Btn size="sm" onClick={()=>setView('emp-pipeline')} className="bg-white text-slate-950 hover:bg-slate-100"><Icon name="arrow-right" size={14}/> Review queue</Btn>
+              <Btn size="sm" onClick={()=>setView('emp-ai')} className="bg-amber-300 text-slate-950 hover:bg-amber-200"><Icon name="wand-2" size={14}/> Draft reply</Btn>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid xl:grid-cols-[minmax(0,1.35fr)_380px] gap-5">
+        <div className="space-y-5">
+          <Card className="p-5">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h3 className="font-bold text-slate-950 flex items-center gap-2"><Icon name="check-circle-2" size={16} className="text-emerald-600"/> Action queue</h3>
+              <Badge tone="amber">{actionQueue.length} pending</Badge>
+            </div>
+            <div className="grid md:grid-cols-2 gap-3">
+              {actionQueue.map(item=>(
+                <button key={item.id} onClick={()=>{ setSelectedJobId(item.job.id); setView('emp-pipeline'); }} className="rounded-2xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/40 transition p-4 text-left">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Avatar name={item.candidate.name} size="sm"/>
+                      <div className="min-w-0">
+                        <div className="font-bold text-slate-900 truncate">{item.candidate.name}</div>
+                        <div className="text-xs text-slate-500 truncate">{item.job.title}</div>
+                      </div>
+                    </div>
+                    <Badge tone={item.stage==='Offer'?'green':item.stage==='Interview'?'brand':'slate'}>{item.stage}</Badge>
+                  </div>
+                  <p className="text-sm text-slate-600 mt-3 leading-relaxed">{item.nextStep}</p>
+                  <div className="flex items-center justify-between mt-3 text-xs text-slate-400">
+                    <span>Owner: {item.owner}</span>
+                    <span>{item.lastActive}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          <div className="grid lg:grid-cols-2 gap-5">
+            <Card className="p-5">
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <h3 className="font-bold text-slate-950 flex items-center gap-2"><Icon name="radar" size={16} className="text-blue-600"/> Talent radar</h3>
+                <button onClick={()=>setView('emp-talent')} className="text-xs font-bold text-brand-700 hover:text-brand-900">Open discovery</button>
+              </div>
+              <div className="space-y-3">
+                {topTalent.map(candidate=>(
+                  <button key={candidate.id} onClick={()=>setView('emp-talent')} className="w-full flex items-center gap-3 rounded-2xl bg-slate-50 hover:bg-blue-50 transition px-4 py-3 text-left">
+                    <Avatar name={candidate.name} size="sm"/>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-slate-900 truncate">{candidate.name}</div>
+                      <div className="text-xs text-slate-500 truncate">{candidate.role} - {candidate.status}</div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="font-extrabold text-blue-700">{candidate.score}%</div>
+                      <div className="text-[11px] text-slate-400">fit</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </Card>
+
+            <Card className="p-5">
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <h3 className="font-bold text-slate-950 flex items-center gap-2"><Icon name="line-chart" size={16} className="text-brand-600"/> Pipeline shape</h3>
+                <span className="text-xs text-slate-400">{totalApplicants} applicants</span>
+              </div>
+              <div className="space-y-3">
+                {stageCounts.map(({stage,count},index)=>(
+                  <div key={stage}>
+                    <div className="flex items-center justify-between text-sm mb-1">
+                      <span className="font-medium text-slate-600">{stage}</span>
+                      <span className="font-bold text-slate-900">{count}</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div className={`${index<2?'bg-brand-500':index<4?'bg-emerald-500':'bg-slate-400'} h-full rounded-full`} style={{width:`${Math.max(8,(count/Math.max(pipeline.length,1))*100)}%`}}/>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button onClick={()=>setView('emp-pipeline')} className="mt-4 w-full rounded-xl border border-slate-200 hover:border-brand-300 hover:bg-brand-50 transition px-4 py-2.5 text-sm font-semibold text-slate-700">Review candidate pipeline</button>
+            </Card>
+          </div>
+        </div>
+
+        <div className="space-y-5">
+          <Card className="p-5">
+            <h3 className="font-bold text-slate-950 mb-4 flex items-center gap-2"><Icon name="target" size={16} className="text-amber-600"/> Role health</h3>
+            <div className="space-y-3">
+              {jobs.map(job=>{
+                const health=Math.min(100,Math.round((job.qualified/Math.max(job.openings,1))*22+(job.status==='Active'?24:10)));
+                return (
+                  <button key={job.id} onClick={()=>{ setSelectedJobId(job.id); setView('emp-jobs'); }} className={`w-full rounded-2xl border px-4 py-3 text-left transition ${job.id===selectedJobId?'border-brand-300 bg-brand-50':'border-slate-100 hover:bg-slate-50'}`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="font-bold text-slate-900">{job.title}</div>
+                        <div className="text-xs text-slate-500 mt-1">{job.qualified} qualified - {job.timeToHire}</div>
+                      </div>
+                      <Badge tone={job.priority==='Urgent'?'red':job.priority==='High'?'amber':'slate'}>{job.priority}</Badge>
+                    </div>
+                    <div className="h-2 rounded-full bg-white mt-3 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full" style={{width:`${health}%`}}/>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </Card>
+
+          <Card className="p-5">
+            <h3 className="font-bold text-slate-950 mb-4 flex items-center gap-2"><Icon name="newspaper" size={16} className="text-emerald-600"/> Content engine</h3>
+            {latestOwnPost&&(
+              <div className="rounded-2xl bg-slate-50 px-4 py-3 mb-3">
+                <div className="text-xs uppercase tracking-wide font-semibold text-slate-400">Latest company post</div>
+                <div className="font-semibold text-slate-900 mt-1">{latestOwnPost.role}</div>
+                <div className="text-xs text-slate-500 mt-1">{latestOwnPost.likes} likes - {latestOwnPost.comments.length} comments</div>
+              </div>
+            )}
+            <div className="space-y-2">
+              {contentIdeas.map(idea=>(
+                <button key={idea.title} onClick={()=>setView('emp-jobs')} className="w-full rounded-2xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/40 transition px-4 py-3 text-left">
+                  <div className="flex items-center gap-2 font-semibold text-slate-900"><Icon name={idea.icon} size={15} className="text-emerald-600"/>{idea.title}</div>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">{idea.body}</p>
+                </button>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast, setView, updateJobStatus, posts, onTogglePostLike, onUpdatePost, onCreatePost }){
   const selectedJob=getEmployerJobById(jobs,selectedJobId)||jobs[0];
   const [feedFilter,setFeedFilter]=useState('all');
@@ -806,6 +996,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
         tags:editorDraft.tags.split(',').map(tag=>tag.trim()).filter(Boolean).slice(0,5),
         priority:editorDraft.priority,
         jobId:selectedJob.id,
+        category:'Hiring update',
       });
       toast(`Created post for ${createdRole}`,'check-circle');
       setWorkspaceTab('feed');
@@ -827,19 +1018,19 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
     <div className="fade-up h-full min-h-0 overflow-hidden flex flex-col bg-slate-50 rounded-[28px] border border-slate-200">
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 px-6 lg:px-7 pt-6 lg:pt-7 pb-5 shrink-0 bg-white border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">Hiring Feed</h1>
-          <p className="text-slate-500">Post browsing and post editing now live in separate workspaces so the page is simpler to scan.</p>
+          <h1 className="text-2xl font-extrabold text-slate-900">Professional Feed</h1>
+          <p className="text-slate-500">Share hiring updates, team moments, industry insights, events, and professional stories in a feed that feels closer to LinkedIn than a job board.</p>
         </div>
         <div className="flex gap-3">
           <Btn variant="secondary" onClick={startCreatePost}><Icon name="file-plus" size={15}/> Create post</Btn>
-          <Btn onClick={()=>setView('emp-ai')}><Icon name="wand-2" size={15}/> Generate job description</Btn>
+          <Btn onClick={()=>setView('emp-ai')}><Icon name="wand-2" size={15}/> Create with AI</Btn>
         </div>
       </div>
 
       <div className="px-6 lg:px-7 pt-4 shrink-0 bg-white border-b border-slate-200">
         <div className="flex gap-2 flex-wrap">
-          <button onClick={()=>setWorkspaceTab('feed')} className={`px-4 py-2.5 rounded-t-2xl text-sm font-semibold border ${workspaceTab==='feed'?'bg-slate-50 border-slate-200 border-b-slate-50 text-slate-900':'border-transparent text-slate-500 hover:text-brand-700'}`}>Post Feed</button>
-          <button onClick={()=>setWorkspaceTab('editor')} className={`px-4 py-2.5 rounded-t-2xl text-sm font-semibold border ${workspaceTab==='editor'?'bg-slate-50 border-slate-200 border-b-slate-50 text-slate-900':'border-transparent text-slate-500 hover:text-brand-700'}`}>Edit Post</button>
+          <button onClick={()=>setWorkspaceTab('feed')} className={`px-4 py-2.5 rounded-t-2xl text-sm font-semibold border ${workspaceTab==='feed'?'bg-slate-50 border-slate-200 border-b-slate-50 text-slate-900':'border-transparent text-slate-500 hover:text-brand-700'}`}>Feed</button>
+          <button onClick={()=>setWorkspaceTab('editor')} className={`px-4 py-2.5 rounded-t-2xl text-sm font-semibold border ${workspaceTab==='editor'?'bg-slate-50 border-slate-200 border-b-slate-50 text-slate-900':'border-transparent text-slate-500 hover:text-brand-700'}`}>Post Editor</button>
         </div>
       </div>
 
@@ -873,7 +1064,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
           <Card className="p-4 shrink-0">
             {workspaceTab==='feed' ? (
               <>
-                <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Existing posts</div>
+                <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Your recent posts</div>
                 <div className="space-y-2">
                   {ownPosts.map(post=>(
                     <button key={post.id} onClick={()=>startEditPost(post.id)} className={`w-full rounded-xl px-4 py-3 text-left transition border ${editingPostId===post.id&&editorMode==='edit'?'border-brand-300 bg-brand-50':'border-slate-100 bg-slate-50 hover:bg-white'}`}>
@@ -885,7 +1076,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
               </>
             ) : (
               <>
-                <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Existing posts</div>
+                <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Your recent posts</div>
                 <div className="space-y-2">
                   {ownPosts.map(post=>(
                     <button key={post.id} onClick={()=>{ setEditorMode('edit'); setEditingPostId(post.id); }} className={`w-full rounded-xl px-4 py-3 text-left transition border ${editingPostId===post.id&&editorMode==='edit'?'border-brand-300 bg-brand-50':'border-slate-100 bg-slate-50 hover:bg-white'}`}>
@@ -895,9 +1086,9 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                   ))}
                 </div>
                 <div className="border-t border-slate-100 my-3"></div>
-                <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Browse filter</div>
+                <div className="text-xs uppercase tracking-wide font-semibold text-slate-500 mb-3">Feed filter</div>
                 <div className="space-y-2">
-                  {[['all','All posts'],['mine','My company posts'],['others','Other companies']].map(([id,label])=>(
+                  {[['all','All updates'],['mine','My company updates'],['others','Community posts']].map(([id,label])=>(
                     <button key={id} onClick={()=>setFeedFilter(id)} className={`w-full rounded-xl px-4 py-3 text-sm font-semibold text-left transition ${feedFilter===id?'bg-brand-700 text-white':'bg-slate-50 text-slate-600 hover:bg-brand-50 hover:text-brand-700'}`}>{label}</button>
                   ))}
                 </div>
@@ -922,17 +1113,17 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                         <div className="text-xs text-slate-400">{post.handle} · {post.posted}</div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button onClick={()=>setSelectedJobId(post.jobId)} className="text-xs font-semibold text-brand-700 hover:text-brand-800">Open role</button>
+                        <button onClick={()=>setSelectedJobId(post.jobId)} className="text-xs font-semibold text-brand-700 hover:text-brand-800">{post.category==='Hiring update'?'View role':'Related role'}</button>
                         {post.own && <button onClick={()=>startEditPost(post.id)} className="text-xs font-semibold text-slate-500 hover:text-brand-700">Edit post</button>}
                       </div>
                     </div>
                     <div className={`h-64 bg-gradient-to-br ${post.imageTone} px-6 py-6 flex flex-col justify-between`}>
                       <div className="flex items-center justify-between">
-                        <Badge tone="gold"><Icon name="briefcase" size={12}/>{post.team}</Badge>
+                        <Badge tone="gold"><Icon name={post.category==='Industry insight'?'lightbulb':post.category==='Team story'?'users-round':'briefcase'} size={12}/>{post.category || post.team}</Badge>
                         <div className="text-white/80 text-sm">{post.location}</div>
                       </div>
                       <div>
-                        <div className="text-white/70 text-xs uppercase tracking-[0.24em] font-semibold mb-2">Now hiring</div>
+                        <div className="text-white/70 text-xs uppercase tracking-[0.24em] font-semibold mb-2">{post.category || 'Featured update'}</div>
                         <div className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">{post.role}</div>
                       </div>
                     </div>
@@ -965,8 +1156,8 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
               <Card className="p-6 min-h-0 overflow-y-auto">
                 <div className="mb-6">
                   <div className="text-xs uppercase tracking-wide font-semibold text-slate-500">Editing workspace</div>
-                  <h2 className="text-xl font-extrabold text-slate-900 mt-1">{editorMode==='create' ? 'Create new post' : (editingPost?.role || 'Company post')}</h2>
-                  <p className="text-sm text-slate-500 mt-1">{editorMode==='create' ? 'Draft a new hiring post here, then publish it straight into your feed.' : 'Choose an existing company post, then update its content here.'}</p>
+                  <h2 className="text-xl font-extrabold text-slate-900 mt-1">{editorMode==='create' ? 'Create new post' : (editingPost?.role || 'Company update')}</h2>
+                  <p className="text-sm text-slate-500 mt-1">{editorMode==='create' ? 'Draft a post for hiring, team updates, events, wins, or professional insights, then publish it to your feed.' : 'Choose one of your posts, then update its content here.'}</p>
                 </div>
 
                 {ownPosts.length || editorMode==='create' ? (
@@ -974,7 +1165,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                     <div>
                       <div className="mb-6">
                         <div className="flex items-center justify-between gap-3 mb-3">
-                          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Existing posts</div>
+                          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Your recent posts</div>
                           <button onClick={startCreatePost} className={`text-xs font-semibold px-3 py-1.5 rounded-full transition ${editorMode==='create'?'bg-brand-700 text-white':'bg-brand-50 text-brand-700 hover:bg-brand-100'}`}>New post</button>
                         </div>
                         <div className="grid lg:grid-cols-2 gap-3">
@@ -994,7 +1185,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-4">
-                        <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Role title</div><input value={editorDraft.role} onChange={e=>setEditorDraft(d=>({...d,role:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
+                        <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Post headline</div><input value={editorDraft.role} onChange={e=>setEditorDraft(d=>({...d,role:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
                         <label className="block"><div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Location</div><input value={editorDraft.location} onChange={e=>setEditorDraft(d=>({...d,location:e.target.value}))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:ring-2 ring-brand-200" /></label>
                       </div>
                       <div className="grid md:grid-cols-2 gap-4 mt-4">
@@ -1023,7 +1214,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                             <div className="text-sm font-semibold text-slate-900 mt-1">{editorMode==='create' ? 'Creating a new post' : 'Editing an existing post'}</div>
                           </div>
                           <div className="rounded-2xl bg-white px-4 py-3">
-                            <div className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Selected role</div>
+                            <div className="text-[11px] uppercase tracking-wide font-semibold text-slate-400">Linked role</div>
                             <div className="text-sm font-semibold text-slate-900 mt-1">{selectedJob.title}</div>
                             <div className="text-xs text-slate-500 mt-1">{selectedJob.team} · {selectedJob.location}</div>
                           </div>
@@ -1038,7 +1229,7 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                         <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">Publishing checklist</div>
                         <div className="space-y-3">
                           {[
-                            ['Role title added',Boolean(editorDraft.role.trim())],
+                            ['Headline added',Boolean(editorDraft.role.trim())],
                             ['Location added',Boolean(editorDraft.location.trim())],
                             ['Caption has enough detail',editorDraft.caption.trim().length>=80],
                             ['At least one tag included',editorDraft.tags.split(',').map(tag=>tag.trim()).filter(Boolean).length>0],
@@ -1052,12 +1243,12 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                       </div>
 
                       <div className="rounded-3xl border border-slate-200 bg-white p-5">
-                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">Writing tips</div>
+                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">Content tips</div>
                         <div className="space-y-3">
                           {[
-                            'Open with the role and why it matters to the team.',
-                            'Mention one concrete outcome or project the hire will own.',
-                            'Keep tags focused so candidates instantly understand fit.',
+                            'Lead with one clear idea: a hiring update, team moment, event, or professional insight.',
+                            'Add one concrete detail so the post feels real and worth engaging with.',
+                            'Keep tags focused so readers quickly understand the topic.',
                           ].map(tip=>(
                             <div key={tip} className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">{tip}</div>
                           ))}
@@ -1067,8 +1258,8 @@ function EmployerRolesWorkspaceV2({ jobs, selectedJobId, setSelectedJobId, toast
                   </div>
                 ) : (
                   <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
-                    <div className="text-lg font-bold text-slate-900">No company posts to edit yet</div>
-                    <p className="text-sm text-slate-500 mt-2">Create your first hiring post here and it will appear in the feed immediately.</p>
+                    <div className="text-lg font-bold text-slate-900">No posts to edit yet</div>
+                    <p className="text-sm text-slate-500 mt-2">Create your first post here and it will appear in the feed immediately.</p>
                     <div className="mt-4">
                       <Btn onClick={startCreatePost}><Icon name="file-plus" size={15}/> Create first post</Btn>
                     </div>
@@ -1246,7 +1437,7 @@ function EmployerHiringPipeline({ pipeline, jobs, selectedJobId, movePipelineSta
     <div className="space-y-6 fade-up">
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">Hiring Pipeline</h1>
+          <h1 className="text-2xl font-extrabold text-slate-900">Candidate Pipeline</h1>
           <p className="text-slate-500">Track every candidate stage for {selectedJob.title} and keep momentum visible across the team.</p>
         </div>
         <div className="flex gap-3">
@@ -1647,13 +1838,14 @@ function EmployerProfileV2({ toast, jobs, posts, selectedJobId, setSelectedJobId
 }
 
 function EmployerAIHiringAssistantV2({ toast, selectedJob }){
-  const [msgs,setMsgs]=useState([{from:'ai',text:"Hi! I'm your AI Hiring Assistant. I can write job descriptions, screen applicants, summarise candidate profiles, suggest interview questions, and more. What do you need?"}]);
+  const [msgs,setMsgs]=useState([{from:'ai',text:"Hi! I'm your AI Hiring Assistant. I can help with outreach, candidate screening, interview planning, and professional feed posts. What should we work on?"}]);
   const [input,setInput]=useState('');
   const end=useRef(null);
   const aiReplies=[
     "Here's a job description for Senior Product Designer:\n\n**Nimbus Labs** is looking for a **Senior Product Designer** to join our Fintech team.\n\n**What you'll do:** Lead end-to-end design of our core payment product, build and maintain our design system, run user research sprints.\n\n**You have:** 5+ years of product design, expert in Figma, experience with design systems, strong portfolio with measurable impact.\n\n**We offer:** $108k-$128k, remote-first, equity, unlimited leave.",
     "Top 3 candidates for your Senior Product Designer role:\n\n1. **Aisha Rahman** (91% fit) - design systems expert, 5 yrs fintech, available now\n2. **Wei Lin Tan** (94% fit) - senior UX, 7 yrs, strong research depth\n3. **Farid Azman** (87% fit) - frontend+design hybrid, fast learner\n\nWant me to send interview invites to all three?",
     "Interview questions for a Product Designer (Design Systems focus):\n\n1. Walk me through how you built or scaled a design system. What would you do differently now?\n2. How do you balance component flexibility vs. consistency?\n3. Tell me about a time a system you built broke down in production. How did you debug it?\n4. How do you get engineering buy-in on design tokens?",
+    "Professional feed post draft:\n\nWe have been thinking a lot about what makes product teams move faster without losing craft. This week our design and engineering team shipped a cleaner onboarding flow, and the biggest lesson was simple: good systems make good judgment easier.\n\nIf you care about design systems, fintech UX, and cross-functional product work, we would love to meet you.",
   ];
   const send=()=>{
     if(!input.trim()) return;
@@ -1664,13 +1856,13 @@ function EmployerAIHiringAssistantV2({ toast, selectedJob }){
   };
   useEffect(()=>end.current?.scrollIntoView({behavior:'smooth'}),[msgs]);
 
-  const prompts=[`Write a job description for ${selectedJob.title}`,'Who are the top candidates for my open role?','Generate interview questions for a PM role','Summarise Aisha Rahman\'s profile'];
+  const prompts=[`Draft outreach for ${selectedJob.title}`,'Write a professional feed post','Who are the top candidates for my open role?','Generate interview questions for this role'];
 
   return (
     <div className="space-y-6 fade-up">
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900">AI Hiring Assistant</h1>
-        <p className="text-slate-500">Write JDs, screen candidates, generate interview questions, and work from the live context of your selected role.</p>
+        <p className="text-slate-500">Draft outreach, plan interviews, screen candidates, and create professional feed posts from your live hiring context.</p>
       </div>
       <Card className="p-4 bg-brand-50 border-brand-100">
         <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -1709,7 +1901,7 @@ function EmployerAIHiringAssistantV2({ toast, selectedJob }){
         </div>
         <div className="p-3 border-t border-slate-100 flex gap-2">
           <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()}
-            placeholder="Ask anything about hiring, candidates, or job descriptions..."
+            placeholder="Ask about outreach, candidates, interviews, or feed posts..."
             className="flex-1 bg-slate-50 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 ring-brand-200"/>
           <button onClick={send} className="bg-brand-700 hover:bg-brand-800 text-white px-4 rounded-xl flex items-center transition"><Icon name="send" size={16}/></button>
         </div>
@@ -6682,6 +6874,7 @@ function EmployerApp({ lang, toggleLang, go, toast }){
       team:relatedJob?.team || 'Hiring Team',
       location:draft.location,
       jobId:relatedJob?.id || selectedJobId,
+      category:draft.category || 'Hiring update',
       own:true,
       priority:draft.priority,
       posted:'Just now',
@@ -6697,7 +6890,7 @@ function EmployerApp({ lang, toggleLang, go, toast }){
   };
 
   const views={
-    'emp-home':<EmployerDashboardV2 setView={setView} jobs={jobs} pipeline={pipeline} savedCandidateIds={savedCandidateIds} selectedJobId={selectedJobId}/>,
+    'emp-home':<EmployerCommandDashboard setView={setView} jobs={jobs} pipeline={pipeline} savedCandidateIds={savedCandidateIds} selectedJobId={selectedJobId} setSelectedJobId={setSelectedJobId} posts={posts}/>,
     'emp-profile':<EmployerProfileV2 toast={toast} jobs={jobs} posts={posts} selectedJobId={selectedJobId} setSelectedJobId={setSelectedJobId}/>,
     'emp-jobs':<EmployerRolesWorkspaceV2 jobs={jobs} selectedJobId={selectedJobId} setSelectedJobId={setSelectedJobId} toast={toast} setView={setView} updateJobStatus={updateJobStatus} posts={posts} onTogglePostLike={onTogglePostLike} onUpdatePost={onUpdatePost} onCreatePost={onCreatePost}/>,
     'emp-talent':<EmployerTalentDiscoveryV2 toast={toast} selectedJobId={selectedJobId} jobs={jobs} savedCandidateIds={savedCandidateIds} onToggleSaveCandidate={onToggleSaveCandidate} onAddToPipeline={onAddToPipeline}/>,
