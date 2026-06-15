@@ -3168,6 +3168,57 @@ function CareerProfile({ toast }){
   const set=(k,v)=>setProfile(p=>({...p,[k]:v}));
   const setExpF=(id,k,v)=>setExp(l=>l.map(e=>e.id===id?{...e,[k]:v}:e));
 
+  const [resumeFile,setResumeFile]=useState(null);
+  const [resumeAnalyzed,setResumeAnalyzed]=useState(false);
+  const [analyzing,setAnalyzing]=useState(false);
+
+  const exportPDF=()=>{
+    const resume=`AISHA RAHMAN
+Product Designer · Kuala Lumpur, Malaysia
+aisha.rahman@email.com · linkedin.com/in/aisha-rahman · +60 11-2345 6789
+
+SUMMARY
+Senior-level Product Designer with 6+ years experience in B2B SaaS and fintech. Proven track record of leading design systems, conducting user research, and delivering measurable product outcomes. Currently targeting Senior Product Manager roles.
+
+EXPERIENCE
+
+Senior Product Designer — Bloompay
+2022–Present · Kuala Lumpur
+• Led end-to-end design of mobile payment flow adopted by 240,000+ users
+• Built and maintained a 120-component design system reducing dev handoff time by 40%
+• Facilitated 18 user research sessions, surfacing insights that reduced onboarding drop-off by 22%
+• Partnered with PM and engineering on roadmap prioritisation for 3 product squads
+
+Product Designer — FinEdge
+2020–2022 · Remote
+• Redesigned core dashboard, increasing daily active usage by 31%
+• Established design tokens and component library from scratch
+• Managed design QA process with 2 junior designers
+
+UX Designer — Kite Digital
+2018–2020 · Kuala Lumpur
+• Delivered UI/UX for 8 client projects across e-commerce, healthcare, and education sectors
+
+SKILLS
+Design: Figma, Prototyping, User Research, Design Systems, Wireframing
+Product: Roadmap Planning, Stakeholder Management, OKR Setting, Agile/Scrum
+Technical: HTML/CSS, React basics, SQL basics, Prompt Engineering
+
+EDUCATION
+B.Sc. Computer Science with Design — Universiti Malaya · 2018
+Google UX Design Certificate · 2020
+
+CAREER SCORE: 78/100 · MARKET VALUE: RM 92,000`;
+    const blob=new Blob([resume],{type:'text/plain'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='Aisha_Rahman_Resume.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Resume downloaded successfully!','download');
+  };
+
   const scores=[
     {label:'ATS Score',value:84,color:'#22c55e',note:'Well optimised'},
     {label:'Career Score',value:78,color:'#7c3aed',note:'3 pts up this week'},
@@ -3209,7 +3260,7 @@ function CareerProfile({ toast }){
                 style={{borderColor:'rgba(255,255,255,0.25)',color:'rgba(255,255,255,0.8)'}}>
                 <Icon name="linkedin" size={14}/> Import LinkedIn
               </button>
-              <button onClick={()=>toast('Résumé_Aisha_Rahman.pdf downloaded','download')}
+              <button onClick={exportPDF}
                 className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl border transition hover:bg-white/10"
                 style={{borderColor:'rgba(255,255,255,0.25)',color:'rgba(255,255,255,0.8)'}}>
                 <Icon name="download" size={14}/> Download PDF
@@ -3238,6 +3289,106 @@ function CareerProfile({ toast }){
           </div>
         </div>
       </div>
+
+      {/* Resume Upload & Analysis */}
+      <Card className="p-5">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-bold text-slate-900 flex items-center gap-2">
+            <Icon name="upload" size={15} className="text-brand-600"/> Resume Upload &amp; Analysis
+          </h3>
+          {resumeFile && !analyzing && <Badge tone="green">Analyzed</Badge>}
+        </div>
+        {!resumeFile ? (
+          <label className="flex flex-col items-center justify-center gap-3 p-8 rounded-2xl border-2 border-dashed border-slate-200 hover:border-brand-400 cursor-pointer transition bg-slate-50 hover:bg-brand-50">
+            <Icon name="file-text" size={32} className="text-slate-300"/>
+            <div className="text-center">
+              <p className="font-semibold text-slate-700">Drop your resume here or click to upload</p>
+              <p className="text-xs text-slate-400 mt-1">PDF or DOCX · Max 10MB</p>
+            </div>
+            <input type="file" accept=".pdf,.docx" className="hidden" onChange={e=>{
+              if(e.target.files[0]){
+                setResumeFile(e.target.files[0]);
+                setAnalyzing(true);
+                setTimeout(()=>{setAnalyzing(false);setResumeAnalyzed(true);},2200);
+              }
+            }}/>
+          </label>
+        ) : analyzing ? (
+          <div className="flex flex-col items-center py-8 gap-3">
+            <div className="w-10 h-10 rounded-full border-4 border-brand-200 border-t-brand-600 animate-spin"/>
+            <p className="text-sm font-medium text-slate-600">Analyzing your resume with AI…</p>
+          </div>
+        ) : resumeAnalyzed ? (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+              <Icon name="check-circle" size={18} className="text-emerald-600"/>
+              <div>
+                <p className="text-sm font-bold text-emerald-800">{resumeFile.name}</p>
+                <p className="text-xs text-emerald-600">Analysis complete</p>
+              </div>
+              <button onClick={()=>{setResumeFile(null);setResumeAnalyzed(false);}} className="ml-auto text-slate-400 hover:text-slate-600">
+                <Icon name="x" size={14}/>
+              </button>
+            </div>
+            {/* Mock Analysis Scores */}
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                {l:'ATS Score',v:84,c:'#1D9E75',icon:'cpu'},
+                {l:'Keyword Match',v:76,c:'#5B2EFF',icon:'tag'},
+                {l:'Skills Match',v:81,c:'#6D28D9',icon:'zap'},
+                {l:'Formatting',v:92,c:'#3b82f6',icon:'layout'},
+                {l:'Experience Quality',v:79,c:'#EF9F27',icon:'briefcase'},
+                {l:'Career Readiness',v:88,c:'#1D9E75',icon:'rocket'},
+              ].map(s=>(
+                <div key={s.l} className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                  <div className="text-xl font-extrabold mb-0.5" style={{color:s.c}}>{s.v}</div>
+                  <div className="text-xs text-slate-500">{s.l}</div>
+                </div>
+              ))}
+            </div>
+            {/* Strengths & Weaknesses */}
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
+                <h4 className="text-xs font-bold text-emerald-700 uppercase tracking-wide mb-2">Strengths</h4>
+                <ul className="space-y-1.5">
+                  {['Strong quantified impact statements','Clean, ATS-friendly formatting','Good keyword density for PM/Design roles','Clear career progression narrative'].map(s=>(
+                    <li key={s} className="flex items-start gap-1.5 text-xs text-emerald-800"><Icon name="check" size={11} className="mt-0.5 shrink-0"/>{s}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="p-4 rounded-xl bg-amber-50 border border-amber-100">
+                <h4 className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Improve</h4>
+                <ul className="space-y-1.5">
+                  {['Add leadership / team size context','Missing: "stakeholder management" keyword','Skills section lacks AI/ML tools','No certifications or courses listed'].map(s=>(
+                    <li key={s} className="flex items-start gap-1.5 text-xs text-amber-800"><Icon name="alert-circle" size={11} className="mt-0.5 shrink-0"/>{s}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            {/* Benchmarking */}
+            <div className="p-4 rounded-xl bg-brand-50 border border-brand-100">
+              <h4 className="text-xs font-bold text-brand-700 uppercase tracking-wide mb-3">Benchmarking vs. Similar Candidates</h4>
+              <div className="space-y-2">
+                {[
+                  {l:'Industry Average',pct:68,yours:84},
+                  {l:'Top 25%',pct:82,yours:84},
+                  {l:'Top 10%',pct:91,yours:84},
+                ].map(b=>(
+                  <div key={b.l} className="flex items-center gap-3 text-sm">
+                    <span className="text-slate-600 w-36 shrink-0">{b.l}</span>
+                    <div className="flex-1 h-2 rounded-full bg-slate-200 relative">
+                      <div className="h-2 rounded-full bg-slate-400" style={{width:`${b.pct}%`}}/>
+                      <div className="absolute top-0 h-2 w-0.5 bg-brand-600" style={{left:`${b.yours}%`}}/>
+                    </div>
+                    <span className="text-xs font-bold text-slate-500 shrink-0">{b.pct}%</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-brand-700 mt-2 font-medium">Your score (84) is in the <strong>top 28%</strong> of Product Designer candidates in Southeast Asia.</p>
+            </div>
+          </div>
+        ) : null}
+      </Card>
 
       {/* Profile Strength + Skill Gap 2-col */}
       <div className="grid lg:grid-cols-3 gap-5">
