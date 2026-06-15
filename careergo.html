@@ -2988,7 +2988,6 @@ function CandidateDashboard({ setView, toast }){
 ══════════════════════════════════════════════════════════════ */
 const CANDIDATE_NAV=[
   {id:'dashboard',icon:'layout-dashboard',tk:'appDashboard',tourStep:null},
-  {id:'profile',icon:'brain-circuit',tk:'appProfile',tourStep:1},
   {id:'jobs',icon:'briefcase',tk:'appJobs',tourStep:4},
   {id:'companion',icon:'bot',tk:'appCompanion',tourStep:2},
   {id:'pay',icon:'bar-chart-2',tk:'appMarket',tourStep:3},
@@ -3184,7 +3183,7 @@ function AIAssistant({ toast, setView }){
 
         {/* Career Context Panel */}
         <Card className="p-4">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-3">Career Context</p>
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-3">Career Snapshot</p>
           <div className="space-y-2 text-xs">
             {[
               {l:'Goal',v:'Senior PM',icon:'target'},
@@ -3217,7 +3216,14 @@ function AIAssistant({ toast, setView }){
             <div>
               <div className="text-xs font-bold tracking-widest uppercase mb-0.5" style={{color:'#FDBA2D'}}>COACH VERA</div>
               <h2 className="text-lg font-extrabold text-white">Meet Vera — Your AI Career Growth Coach</h2>
-              <p className="text-xs mt-0.5" style={{color:'rgba(255,255,255,0.55)'}}>Get personalized career guidance, resume feedback, interview prep, salary growth strategies, and skill recommendations.</p>
+              <p className="text-xs mt-1 mb-3" style={{color:'rgba(255,255,255,0.55)'}}>Your personal career mentor — powered by AI, built around your goals.</p>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                {['Build personalised career plans','Evaluate and improve your resume','Prepare for interviews','Discover critical skill gaps','Increase your market value','Plan salary growth strategies','Track career progress','Find better opportunities'].map(item=>(
+                  <div key={item} className="flex items-center gap-1.5 text-xs" style={{color:'rgba(255,255,255,0.75)'}}>
+                    <span style={{color:'#FDBA2D',fontWeight:700}}>✓</span> {item}
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
@@ -4154,7 +4160,7 @@ function JobsOpportunities({ toast }){
       <div className="space-y-4">
         {list.length===0&&<Card className="p-12 text-center text-slate-400">No roles match that search.</Card>}
         {list.map(j=>(
-          <Card key={j.id} className="p-5 hover-lift group relative">
+          <Card key={j.id} className="p-5 hover-lift hover-scale group relative">
             <input type="checkbox"
               checked={compareIds.includes(j.id)}
               onChange={e=>setCompareIds(ids=>e.target.checked?[...ids,j.id]:ids.filter(i=>i!==j.id))}
