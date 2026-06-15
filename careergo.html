@@ -2767,6 +2767,43 @@ function CandidateDashboard({ setView, toast }){
       {/* Hero */}
       <DashHero setView={setView}/>
 
+      {/* Profile Summary Card */}
+      <div className="rounded-2xl p-5 relative overflow-hidden" style={{background:'linear-gradient(135deg,#5B2EFF 0%,#6D28D9 60%,#8B5CF6 100%)'}}>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -right-8 -top-8 w-44 h-44 rounded-full" style={{background:'rgba(255,255,255,0.08)',filter:'blur(36px)'}}/>
+        </div>
+        <div className="relative flex items-start gap-5 flex-wrap">
+          <div className="w-14 h-14 rounded-2xl bg-white/15 border border-white/25 flex items-center justify-center text-white text-xl font-extrabold shrink-0">
+            AR
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+              <h2 className="text-lg font-extrabold text-white">{USER.name}</h2>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{background:'rgba(253,186,45,0.25)',color:'#FDBA2D'}}>Senior Level</span>
+            </div>
+            <p className="text-sm mb-3" style={{color:'rgba(255,255,255,0.7)'}}>Product Designer · 6 Years Experience · Goal: Senior PM</p>
+            <div className="flex flex-wrap gap-1.5">
+              {USER.skills.slice(0,6).map(s=>(
+                <span key={s} className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{background:'rgba(255,255,255,0.15)',color:'rgba(255,255,255,0.9)'}}>{s}</span>
+              ))}
+              {USER.skills.length>6&&<span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{background:'rgba(255,255,255,0.1)',color:'rgba(255,255,255,0.6)'}}>+{USER.skills.length-6} more</span>}
+            </div>
+          </div>
+          <div className="flex gap-3 shrink-0 flex-wrap">
+            {[
+              {l:'Career Score',v:`${USER.careerScore}`,sub:'/100'},
+              {l:'Market Value',v:'RM 92k',sub:''},
+              {l:'Job Matches',v:`${USER.newMatches}`,sub:'new'},
+            ].map(({l,v,sub})=>(
+              <div key={l} className="rounded-xl px-4 py-3 text-center" style={{background:'rgba(255,255,255,0.1)',border:'1px solid rgba(255,255,255,0.15)'}}>
+                <div className="text-xl font-extrabold text-white">{v}<span className="text-xs font-normal opacity-60">{sub}</span></div>
+                <div className="text-xs mt-0.5" style={{color:'rgba(255,255,255,0.55)'}}>{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Scores row */}
       <div className="rounded-2xl p-1" style={{background:'#F8F7FF'}}>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-1">
@@ -3521,6 +3558,33 @@ CAREER SCORE: 78/100 · MARKET VALUE: RM 92,000`;
 
   return (
     <div className="space-y-6 fade-up">
+      {/* Career Intelligence Banner */}
+      <div className="rounded-2xl p-6 relative overflow-hidden" style={{background:'linear-gradient(135deg,#1A0146 0%,#0d0222 60%,#1a1060 100%)'}}>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -right-10 -top-10 w-52 h-52 rounded-full" style={{background:'rgba(91,46,255,0.18)',filter:'blur(44px)'}}/>
+        </div>
+        <div className="relative">
+          <div className="mb-1">
+            <span className="text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded-full" style={{background:'rgba(253,186,45,0.15)',color:'#FDBA2D'}}>CAREER INTELLIGENCE CENTER</span>
+          </div>
+          <h1 className="text-2xl font-extrabold text-white mb-1">Build & Evaluate Your Professional Profile</h1>
+          <p className="text-sm max-w-2xl" style={{color:'rgba(255,255,255,0.6)'}}>Analyze resumes, identify strengths and weaknesses, uncover skill gaps, improve market competitiveness, and receive personalized career development recommendations. Your central hub for career growth analysis.</p>
+          <div className="mt-4 grid grid-cols-4 gap-3">
+            {[
+              {l:'Career Score',v:`${USER.careerScore}/100`,icon:'star'},
+              {l:'Profile Strength',v:'84%',icon:'bar-chart-2'},
+              {l:'Market Value',v:'RM 92k',icon:'trending-up'},
+              {l:'Skills',v:`${USER.skills.length} verified`,icon:'zap'},
+            ].map(({l,v,icon})=>(
+              <div key={l} className="rounded-xl p-3 text-center" style={{background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.1)'}}>
+                <div className="text-xs font-medium mb-0.5" style={{color:'rgba(255,255,255,0.5)'}}>{l}</div>
+                <div className="text-sm font-extrabold text-white">{v}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div className="rounded-2xl overflow-hidden relative" style={{background:'linear-gradient(135deg,#1A0146 0%,#0d0222 60%,#1a1060 100%)'}}>
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -right-24 -top-24 w-80 h-80 rounded-full" style={{background:'rgba(91,46,255,0.15)',filter:'blur(60px)'}}/>
