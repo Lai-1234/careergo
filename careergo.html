@@ -277,6 +277,18 @@ tailwind.config = {
   .impact-tip .impact-tooltip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);width:220px;background:#1a0a3d;color:#fff;font-size:11px;line-height:1.5;border-radius:10px;padding:10px 12px;z-index:100;pointer-events:none;white-space:normal;}
   .impact-tip:hover .impact-tooltip{display:block;}
   .notif-dropdown{position:absolute;top:calc(100% + 8px);right:0;width:300px;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.15);border:1px solid #f1f5f9;z-index:200;overflow:hidden;}
+  /* Batch D */
+  .community-card{border-radius:16px;background:white;border:1px solid #f1f5f9;transition:box-shadow 150ms;}
+  .community-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.08);}
+  .scenario-card{border-radius:14px;border:1px solid #ede9fe;background:white;padding:16px;transition:border-color 150ms,box-shadow 150ms;}
+  .scenario-card:hover{border-color:#5B2EFF;box-shadow:0 4px 20px rgba(91,46,255,0.10);}
+  .contrib-bar-track{height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;flex:1;}
+  .contrib-bar-fill{height:100%;border-radius:3px;background:#5B2EFF;transition:width 800ms cubic-bezier(.4,0,.2,1);}
+  .worth-card{border-radius:16px;padding:20px;text-align:center;}
+  .chip-multi{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid;cursor:pointer;transition:all 150ms;}
+  .chip-multi.on{background:#5B2EFF;color:#fff;border-color:#5B2EFF;}
+  .chip-multi.off{background:white;color:#475569;border-color:#e2e8f0;}
+  .chip-multi.off:hover{border-color:#8B5CF6;}
 </style>
 </head>
 <body>
@@ -786,15 +798,35 @@ const CAREER_PATHS = {
 
 const JOBS = [
   {id:1,title:'Senior Product Designer',company:'Nimbus Labs',logo:'N',salary:'$108k–$128k',type:'Remote',match:94,impact:'High',growth:'Strong',
-   why:'Your design-systems work and 5 yrs in fintech line up almost exactly. This is a natural next step.',tags:['Design Systems','Figma','Fintech']},
+   why:'Your design-systems work and 5 yrs in fintech line up almost exactly. This is a natural next step.',tags:['Design Systems','Figma','Fintech'],
+   reasons:['Matches 12 verified skills','Salary exceeds RM target','High industry growth','Remote-first culture'],
+   cautions:['Cross-team leadership gap (manageable)'],
+   promo:'High',competition:'Medium',remote:true,
+   alignedSkills:['Product Thinking','Design Systems','Stakeholder Mgmt'],outlook:'Strong'},
   {id:2,title:'UX Lead',company:'Orbit Health',logo:'O',salary:'$118k–$140k',type:'Hybrid · KL',match:88,impact:'High',growth:'Strong',
-   why:'Stretch role — strong on craft, you\'d grow into the people-leadership component over 12 months.',tags:['Leadership','User Research']},
+   why:'Stretch role — strong on craft, you\'d grow into the people-leadership component over 12 months.',tags:['Leadership','User Research'],
+   reasons:['Strong design leadership fit','Fintech aligns with your background','Growth-stage company'],
+   cautions:['Startup pace may differ from current role'],
+   promo:'Very High',competition:'Low',remote:true,
+   alignedSkills:['UX Research','Figma','Leadership'],outlook:'Strong'},
   {id:3,title:'Product Designer (Growth)',company:'Bloompay',logo:'B',salary:'$95k–$115k',type:'Remote',match:91,impact:'Med',growth:'Very Strong',
-   why:'Growth + experimentation is the natural next step from your A/B testing experience.',tags:['Prototyping','Experimentation']},
+   why:'Growth + experimentation is the natural next step from your A/B testing experience.',tags:['Prototyping','Experimentation'],
+   reasons:['Healthcare tech is high-growth','Competitive salary band','Strong remote culture'],
+   cautions:['Domain switch from fintech to health','Benefits package smaller'],
+   promo:'High',competition:'High',remote:true,
+   alignedSkills:['User Research','Prototyping','Product Thinking'],outlook:'Very Strong'},
   {id:4,title:'Design Systems Engineer',company:'Vertex',logo:'V',salary:'$112k–$130k',type:'Remote',match:86,impact:'Med',growth:'Strong',
-   why:'Bridges design + code. Matches your tokens & component-library background perfectly.',tags:['Design Systems','Front-end']},
+   why:'Bridges design + code. Matches your tokens & component-library background perfectly.',tags:['Design Systems','Front-end'],
+   reasons:['Major brand name for your CV','Large team leadership exposure','Regional influence'],
+   cautions:['Match score lower — 4 key skills gap','High competition pool'],
+   promo:'Moderate',competition:'Very High',remote:false,
+   alignedSkills:['Design Strategy','Stakeholder Mgmt','Systems'],outlook:'Stable'},
   {id:5,title:'Senior UX Researcher',company:'Cobalt',logo:'C',salary:'$100k–$120k',type:'Hybrid · Singapore',match:79,impact:'High',growth:'Moderate',
-   why:'A pivot path — research-heavy, lighter on visual craft. Higher ceiling long-term.',tags:['User Research','Strategy']},
+   why:'A pivot path — research-heavy, lighter on visual craft. Higher ceiling long-term.',tags:['User Research','Strategy'],
+   reasons:['Strong product culture','Emerging AI product space','Fast promotion track'],
+   cautions:['Below your salary target by RM8k','Smaller team — less mentoring'],
+   promo:'Very High',competition:'Medium',remote:true,
+   alignedSkills:['UX Research','Interaction Design','Design Systems'],outlook:'Strong'},
 ];
 
 const CHECKLIST = [
@@ -838,8 +870,32 @@ const TESTIMONIALS=[
 const INBOX_ITEMS=[
   {id:1,time:'08:02',title:'Applied — Senior Product Designer',company:'Nimbus Labs',match:94,note:'Perfect match. Résumé sent.',applied:true},
   {id:2,time:'08:03',title:'Applied — Product Designer (Growth)',company:'Bloompay',match:91,note:'Above pay floor, remote, matched skills.',applied:true},
-  {id:3,time:'08:04',title:'Skipped — UX Lead',company:'Orbit Health',match:88,note:'Weekend on-call required. Against your rules.',applied:false},
+  {id:3,time:'08:04',title:'Skipped — UX Lead',company:'Orbit Health',match:88,note:'Weekend on-call required. Against your rules.',applied:false,skipReason:'Salary Below Threshold'},
   {id:4,time:'08:05',title:'Applied — Design Systems Engineer',company:'Vertex',match:86,note:'Matched 4 of 5 required skills.',applied:true},
+];
+
+const COMMUNITY_POSTS=[
+  {id:1,name:'Sarah Chen',title:'Senior PM at Grab',time:'2h ago',content:"Just negotiated a 35% raise by showing market data from 3 salary surveys. Data > feelings every time. Happy to share the template I used — comment below!",likes:142,comments:38,bookmarks:24,avatar:'SC'},
+  {id:2,name:'Farid Azman',title:'Frontend Engineer · Open to work',time:'5h ago',content:"Question for the community: worth taking a 10% salary cut for a brand-name company? Torn between a startup at RM95k and a bigger tech firm at RM86k. What would you do?",likes:89,comments:61,bookmarks:12,avatar:'FA'},
+  {id:3,name:'Priya Nair',title:'Product Designer → Design Manager',time:'1d ago',content:"6 months into my first Design Manager role. Biggest surprise: 70% of the job is people work, not design work. If you're aiming for DM, start building coaching skills NOW.",likes:234,comments:45,bookmarks:78,avatar:'PN'},
+  {id:4,name:'Wei Lin Tan',title:'UX Researcher at GoTo',time:'2d ago',content:"Interview tip: When asked 'Where do you see yourself in 5 years?' — answer with skills, not job titles. It signals growth mindset. Got the offer using this approach.",likes:67,comments:19,bookmarks:31,avatar:'WT'},
+  {id:5,name:'Amirul Hakimi',title:'Data Analyst · Fintech',time:'3d ago',content:"SQL + Python fundamentals took me 4 months to learn. Switched roles, got a 28% raise. For everyone asking about transitioning into data — just start. The compound effect is real.",likes:198,comments:52,bookmarks:89,avatar:'AH'},
+];
+
+const CAREER_ROLES=[
+  {role:'Product Designer',range:'RM 72k–95k',demand:'High',growth:'Strong',remote:62,trend:'+18%'},
+  {role:'Senior Product Designer',range:'RM 88k–115k',demand:'Very High',growth:'Strong',remote:68,trend:'+24%'},
+  {role:'Lead Product Designer',range:'RM 105k–135k',demand:'High',growth:'Very Strong',remote:65,trend:'+19%'},
+  {role:'Design Manager',range:'RM 120k–155k',demand:'High',growth:'Strong',remote:55,trend:'+22%'},
+  {role:'Product Manager',range:'RM 115k–148k',demand:'Very High',growth:'Very Strong',remote:71,trend:'+31%'},
+  {role:'Head of Product',range:'RM 148k–200k+',demand:'Moderate',growth:'Strong',remote:58,trend:'+15%'},
+];
+
+const SALARY_SCENARIOS=[
+  {id:1,label:'Current',skills:[],value:'RM 92,000',gain:'',color:'#64748b'},
+  {id:2,label:'+ Leadership',skills:['Team Leadership'],value:'RM 104,000',gain:'+13%',color:'#5B2EFF'},
+  {id:3,label:'+ Strategy',skills:['Team Leadership','Product Strategy'],value:'RM 118,000',gain:'+28%',color:'#7C3AED'},
+  {id:4,label:'+ AI Skills',skills:['Team Leadership','Product Strategy','AI Product Design'],value:'RM 128,000',gain:'+39%',color:'#1D9E75'},
 ];
 
 const MISSIONS=[
