@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jobs - CareerGo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900;1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body data-page="jobs">
+  <header class="topbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
+      <nav class="nav-links"><a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="vera" href="vera.html">Vera</a><a data-nav="employers" href="employers.html">Employers</a></nav>
+      <div class="nav-actions"><a class="btn btn-ghost" href="companies.html"><i data-lucide="search"></i> Research</a><a class="btn btn-primary" href="dashboard.html"><i data-lucide="rocket"></i> Open OS</a></div>
+    </div>
+    <nav class="mobile-nav"><a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="vera" href="vera.html">Vera</a></nav>
+  </header>
+  <main data-jobs-page>
+    <section class="page-hero">
+      <div class="container">
+        <div class="eyebrow"><span class="spark">*</span> Job matching</div>
+        <h1>Find roles that move your career <span>forward.</span></h1>
+        <p class="page-copy">Search roles, filter by level and industry, inspect Vera's match reasoning, save jobs, and apply from one focused workspace.</p>
+      </div>
+    </section>
+    <section class="container layout">
+      <aside class="filters card">
+        <h2 class="filter-title">Search jobs</h2>
+        <div class="filter-stack">
+          <div class="field"><i data-lucide="search"></i><input data-job-query placeholder="Role, company, skill"></div>
+          <div class="field"><i data-lucide="layers"></i><select data-job-industry></select></div>
+          <div class="field"><i data-lucide="user-round"></i><select data-job-level></select></div>
+          <div class="field"><i data-lucide="map-pin"></i><select data-job-type></select></div>
+          <label class="range-field"><span>Minimum match <strong data-threshold-label>70%</strong></span><input data-job-threshold type="range" min="60" max="95" value="70"></label>
+          <label class="check-field"><input data-job-compare-mode type="checkbox"> Compare roles</label>
+          <a class="btn btn-cyan btn-wide" href="vera.html?topic=job search"><i data-lucide="sparkles"></i> Ask Vera</a>
+        </div>
+      </aside>
+      <div class="content-grid">
+        <section>
+          <div class="tab-row" style="margin-bottom:12px">
+            <button class="pill cyan active" data-job-tab="matches">Matches</button>
+            <button class="pill" data-job-tab="community">Community</button>
+          </div>
+          <div class="list-stack" data-job-list></div>
+        </section>
+        <section class="detail-panel glass-card" data-job-detail></section>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Companies - CareerGo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900;1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body data-page="companies" data-directory="companies">
+  <header class="topbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
+      <nav class="nav-links"><a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="vera" href="vera.html">Vera</a><a data-nav="employers" href="employers.html">Employers</a></nav>
+      <div class="nav-actions"><a class="btn btn-ghost" href="universities.html"><i data-lucide="graduation-cap"></i> Universities</a><a class="btn btn-primary" href="dashboard.html"><i data-lucide="rocket"></i> Open OS</a></div>
+    </div>
+    <nav class="mobile-nav"><a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="vera" href="vera.html">Vera</a></nav>
+  </header>
+  <main data-directory-page>
+    <section class="page-hero">
+      <div class="container">
+        <div class="eyebrow"><span class="spark">*</span> Company research</div>
+        <h1>Research companies before you <span>apply.</span></h1>
+        <p class="page-copy">Read ratings, background, salary signals, review themes, highlights, and watchouts. Users can also write reviews to help others.</p>
+      </div>
+    </section>
+    <section class="container layout">
+      <aside class="filters card">
+        <h2 class="filter-title">Find companies</h2>
+        <div class="filter-stack">
+          <div class="field"><i data-lucide="search"></i><input data-org-query placeholder="Company, industry, location"></div>
+          <a class="btn btn-cyan btn-wide" href="vera.html?topic=company research"><i data-lucide="sparkles"></i> Ask Vera</a>
+        </div>
+      </aside>
+      <div class="content-grid">
+        <section class="list-stack" data-org-list></section>
+        <section class="detail-panel glass-card" data-org-detail></section>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
