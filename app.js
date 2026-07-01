@@ -658,13 +658,44 @@ function requireAccount(root, purpose = "open this workspace") {
   const state = readState();
   if (state.session.loggedIn) return true;
   root.innerHTML = `
-    <div class="locked-state glass-card">
-      <div class="eyebrow"><span class="spark">*</span> Account required</div>
-      <h1 class="section-title">Create your account to ${purpose}.</h1>
-      <p class="section-sub">CareerGo personalizes your roadmap, Vera's coaching style, job matching, and dashboard from your own career situation.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create account</a>
-        <a class="btn btn-ghost" href="login.html">${icon("log-in")} Log in</a>
+    <div class="locked-state-wrap">
+      <div class="locked-state glass-card">
+        <div class="eyebrow"><span class="spark">*</span> Account required</div>
+        <h1 class="section-title">Create your account to ${purpose}.</h1>
+        <p class="section-sub">CareerGo personalizes your roadmap, Vera’s coaching style, job matching, and dashboard from your own career situation.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create account</a>
+          <a class="btn btn-ghost" href="login.html">${icon("log-in")} Log in</a>
+        </div>
+      </div>
+      <div class="locked-panel glass-card">
+        <div class="eyebrow"><span class="spark">*</span> Why CareerGo?</div>
+        <div class="locked-panel-stats">
+          <div class="locked-stat">
+            <div class="locked-stat-icon">${icon("brain-circuit")}</div>
+            <div>
+              <strong>AI-Personalized Roadmap</strong>
+              <p>Vera adapts your career plan, coaching tone, and job suggestions based on your real profile — not templates.</p>
+            </div>
+          </div>
+          <div class="locked-stat">
+            <div class="locked-stat-icon">${icon("bar-chart-2")}</div>
+            <div>
+              <strong>Career Readiness Score</strong>
+              <p>Get a live ATS score, skill gap analysis, and actionable missions updated as you grow.</p>
+            </div>
+          </div>
+          <div class="locked-stat">
+            <div class="locked-stat-icon">${icon("radar")}</div>
+            <div>
+              <strong>Autopilot Job Matching</strong>
+              <p>Set your criteria once. CareerGo surfaces high-fit openings and tracks applications automatically.</p>
+            </div>
+          </div>
+        </div>
+        <div class="locked-panel-footer">
+          <span class="locked-badge">${icon("shield-check")} Free to start &middot; No credit card</span>
+        </div>
       </div>
     </div>
   `;

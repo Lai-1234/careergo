@@ -1219,10 +1219,143 @@ input[type="checkbox"] {
   background: rgba(34, 211, 238, 0.15);
 }
 
+/* ── Account Required — two-column desktop wrapper ─────────────────── */
+.locked-state-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 1.5rem;
+  width: 100%;
+  margin: 48px auto 80px;
+  /* Span full width of any parent grid (e.g. .os-layout) */
+  grid-column: 1 / -1;
+}
+
+/* ── Auth card (left column) ─────────────────────────────────────────── */
 .locked-state {
-  width: min(900px, 100%);
-  margin: 34px auto 80px;
-  padding: 34px;
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  padding: 2rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Scoped heading — never let it dominate the narrow card */
+.locked-state .section-title {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Eyebrow badge — remove its default bottom margin so gap handles it */
+.locked-state .eyebrow,
+.locked-panel .eyebrow {
+  margin-bottom: 0;
+}
+
+/* Body text — legible at desktop, scales down on mobile */
+.locked-state .section-sub {
+  font-size: clamp(0.875rem, 2.2vw, 1rem);
+  line-height: 1.65;
+  margin: 0;
+  max-width: 100%;
+}
+
+/* Button group — always stacked vertically, consistent gap */
+.locked-state .hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0;
+}
+
+/* Buttons full-width inside card */
+.locked-state .hero-actions .btn {
+  width: 100%;
+  justify-content: center;
+  flex: unset;
+}
+
+/* ── Benefits panel (right column) ──────────────────────────────────── */
+.locked-panel {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.locked-panel-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+}
+
+.locked-stat {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.locked-stat-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.28), rgba(34, 211, 238, 0.18));
+  color: var(--gold);
+}
+
+.locked-stat-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.locked-stat strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.3rem;
+  color: #fff;
+}
+
+.locked-stat p {
+  margin: 0;
+  font-size: 0.825rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.locked-panel-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.locked-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #a3f7bf;
+  text-transform: uppercase;
+}
+
+.locked-badge svg {
+  width: 14px;
+  height: 14px;
+  color: #a3f7bf;
 }
 
 .toast-stack {
@@ -1382,6 +1515,25 @@ input[type="checkbox"] {
     width: 100%;
     max-width: min(360px, calc(100vw - 24px));
   }
+  /* Locked gate: collapse to single column, card full width */
+  .locked-state-wrap {
+    flex-direction: column;
+    margin: 32px auto 60px;
+    gap: 1rem;
+  }
+  .locked-state {
+    flex: unset;
+    width: 100%;
+    max-width: min(420px, calc(100vw - 24px));
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  .locked-panel {
+    width: 100%;
+    max-width: min(420px, calc(100vw - 24px));
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
   .hero-search { margin-top: -28px; }
   .grid-3,
   .grid-4,
@@ -1411,4 +1563,31 @@ input[type="checkbox"] {
     grid-template-columns: 1fr;
   }
   .message { max-width: 92%; }
+}
+
+/* ── Account Required — mobile (<480px) ──────────────────────────── */
+@media (max-width: 480px) {
+  .locked-state-wrap {
+    margin: 24px auto 48px;
+    gap: 0.875rem;
+  }
+  .locked-state {
+    max-width: unset;
+    width: 90%;
+    margin: 0 auto;
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+  .locked-panel {
+    max-width: unset;
+    width: 90%;
+    margin: 0 auto;
+    padding: 1.25rem;
+  }
+  .locked-state .section-title {
+    font-size: clamp(1.375rem, 6vw, 1.75rem);
+  }
+  .locked-state .section-sub {
+    font-size: 0.875rem;
+  }
 }
