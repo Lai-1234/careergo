@@ -809,6 +809,7 @@ function osNav(active = "") {
       <div class="os-user">
         <img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo">
         <div><strong>${getUserName(state)}</strong><span>${profile.careerStage || profile.personal.roleType || "Personal Career OS"}</span></div>
+        <button class="sidebar-toggle" id="sidebar-close-btn" aria-label="Close navigation" style="margin-left:auto">${icon("x")}</button>
       </div>
       <nav class="os-nav" aria-label="Career OS navigation">
         ${links.map(([key, label, ic, href]) => `<a class="${active === key ? "active" : ""}" href="${href}">${icon(ic)} ${label}</a>`).join("")}
@@ -823,7 +824,37 @@ function osNav(active = "") {
 }
 
 function appShell(active, content) {
-  return `${osNav(active)}<div class="os-main">${content}</div>`;
+  return `${osNav(active)}<div class="os-main">${content}</div><div class="sidebar-overlay" id="sidebar-overlay"></div>`;
+}
+
+function initSidebarToggle() {
+  // Inject hamburger button into topbar nav-actions if on an OS page
+  const navActions = qs(".nav-actions");
+  if (navActions && !qs("#sidebar-open-btn")) {
+    const btn = document.createElement("button");
+    btn.id = "sidebar-open-btn";
+    btn.className = "sidebar-toggle";
+    btn.setAttribute("aria-label", "Open navigation");
+    btn.innerHTML = icon("menu");
+    navActions.prepend(btn);
+    createIcons(); // re-render icons in new button
+  }
+
+  const openBtn = qs("#sidebar-open-btn");
+  const closeBtn = qs("#sidebar-close-btn");
+  const overlay = qs("#sidebar-overlay");
+
+  function openSidebar() { document.body.classList.add("sidebar-open"); }
+  function closeSidebar() { document.body.classList.remove("sidebar-open"); }
+
+  if (openBtn) openBtn.addEventListener("click", openSidebar);
+  if (closeBtn) closeBtn.addEventListener("click", closeSidebar);
+  if (overlay) overlay.addEventListener("click", closeSidebar);
+
+  // Close on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeSidebar();
+  }, { once: false });
 }
 
 function setActiveNav() {
@@ -2257,6 +2288,7 @@ function init() {
   renderComparison();
   bindGlobalActions();
   createIcons();
+  initSidebarToggle();
 }
 
 document.addEventListener("DOMContentLoaded", init);

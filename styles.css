@@ -883,9 +883,58 @@ img { max-width: 100%; display: block; }
 
 .os-sidebar {
   position: sticky;
-  top: 98px;
-  height: fit-content;
+  top: 76px;                          /* exact topbar height */
+  height: calc(100vh - 76px);        /* full remaining viewport height */
+  overflow-y: auto;                  /* scroll internally if content is taller */
+  overflow-x: hidden;
+  scroll-behavior: smooth;
   padding: 18px;
+  /* Hide scrollbar visually but keep it functional */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.12) transparent;
+}
+
+.os-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.os-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.os-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+}
+
+/* Hamburger toggle — hidden on desktop, shown on tablet/mobile */
+.sidebar-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 160ms ease;
+}
+.sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Off-canvas overlay — hidden until .sidebar-open on body */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 88;
+  background: rgba(3, 0, 12, 0.64);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 240ms ease;
+  cursor: pointer;
 }
 
 .os-user {
@@ -1447,8 +1496,35 @@ input[type="checkbox"] {
   .auth-shell {
     grid-template-columns: 1fr;
   }
-  .filters,
-  .os-sidebar { position: static; }
+  /* Tablet/mobile: collapse os-layout to single column */
+  .os-layout {
+    grid-template-columns: 1fr;
+  }
+  /* Sidebar becomes off-canvas drawer */
+  .os-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 90;
+    height: 100dvh;
+    width: 280px;
+    max-height: 100dvh;
+    transform: translateX(-100%);
+    transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  /* Show sidebar when body has .sidebar-open */
+  body.sidebar-open .os-sidebar {
+    transform: translateX(0);
+  }
+  body.sidebar-open .sidebar-overlay {
+    display: block;
+    opacity: 1;
+  }
+  /* Hamburger visible on tablet/mobile */
+  .sidebar-toggle { display: flex; }
+  /* Inject toggle into topbar — it sits in .nav-actions area */
+  .filters { position: static; }
   .grid-3,
   .grid-4,
   .grid-2,
@@ -1465,8 +1541,7 @@ input[type="checkbox"] {
   .container,
   .nav-inner,
   .footer-inner,
-  .hero-content,
-  .os-layout {
+  .hero-content {
     width: min(360px, calc(100vw - 24px)) !important;
     max-width: min(360px, calc(100vw - 24px)) !important;
     margin-left: auto;
@@ -1474,7 +1549,9 @@ input[type="checkbox"] {
   }
   .brand-text strong { font-size: 17px; }
   .brand-logo { width: 42px; height: 42px; }
-  .nav-actions { display: none; }
+  /* On mobile, hide nav-actions items except the sidebar toggle */
+  .nav-actions { display: flex; }
+  .nav-actions > :not(.sidebar-toggle) { display: none; }
   .hero h1,
   .page-hero h1 {
     display: block;
@@ -1507,7 +1584,6 @@ input[type="checkbox"] {
   .tool-card,
   .detail-panel,
   .filters,
-  .os-sidebar,
   .os-main,
   .os-main > *,
   .list-card,
