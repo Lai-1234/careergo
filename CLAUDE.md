@@ -2,23 +2,28 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**CRITICAL RULE:** 任何代码上传（如 `git push`）到 GitHub 之前，必须先询问用户并获得明确同意。
+
 ## Running the prototype
 
 Open `careergo.html` directly in a browser — no build step, no server required. All dependencies load from CDN at runtime. Double-click the file or use `start careergo.html` on Windows.
 
 ## Project context
 
-CareerGo is a **hackathon demonstration prototype** — an AI-powered Career Operating System. It is NOT a production system or MVP. The goal is to communicate product vision to judges, lecturers, and stakeholders.
+CareerGo v3 is an **AI-guided career platform** and Career Operating System. It should feel like a complete, useful website rather than a visual-only hackathon demo. The product should help candidates make real career decisions across jobs, company research, university research, applications, market value, and mentoring.
 
-**Demo narrative:** The platform helps users navigate their entire 40-year career journey with intelligence, simulation, and automation. The demo flows through: Onboarding → Dashboard → Career Intelligence → Career Companion → Market Intelligence → Autopilot.
+**Product narrative:** The platform helps users navigate their long-term career journey with intelligence, research, applications, simulation, automation, and active mentorship from Vera. The core flow is: Start with Vera -> explore jobs -> research companies/universities -> compare choices -> apply with evidence -> track progress.
 
-**What should feel real:** UI/UX, workflows, mock data, visual polish, product storytelling.
-**What is intentionally fake:** All AI responses, market data, salary figures, job matches, scores, analytics — all are hardcoded mock/demo data.
-**Only real feature:** Resume PDF export (must actually generate a downloadable PDF).
+**Vera product principle:** Vera is not a simple chatbot or passive Q&A box. Vera should feel like the user's career life coach, gym coach, and teacher combined: warm from day one, aware of the user's profile, and proactive about what the user should do next. Chat is only one surface for Vera; the larger idea is that CareerGo is AI-guided everywhere.
+
+**Research principle:** Company and university research is a first-class workflow. Users should be able to check backgrounds, ratings, review themes, culture, salary/outcome signals, highlights, watchouts, and comparisons before applying or choosing a career path.
+
+**What should feel real:** UI/UX, workflows, mock data, visual polish, product storytelling, organization research, reviews, comparison, and Vera's continuous mentor presence.
+**What is simulated:** AI reasoning, market data, salary figures, job matches, ratings, reviews, and analytics are local mock data for the current static build. Interactions such as saving jobs, applying, filtering, comparing, and writing reviews should work in-session.
 
 ## Architecture
 
-Single HTML file (`careergo.html`) — all markup, styles, and logic live here (~5,100+ lines after Batches A–C). React 18 is loaded via CDN; Babel Standalone compiles JSX in the browser at runtime.
+Single HTML app mirrored in both `index.html` and `careergo.html`. All markup, styles, data, and logic live in the file. React 18 is loaded via CDN; Babel Standalone compiles JSX in the browser at runtime.
 
 **CDN dependencies (in `<head>`):**
 - `react@18` + `react-dom@18` (production builds)
@@ -26,29 +31,13 @@ Single HTML file (`careergo.html`) — all markup, styles, and logic live here (
 - Tailwind CSS CDN with a custom `tailwind.config` block
 - `lucide@latest` (exposes icons on `window.lucide`)
 
-**`<script type="text/babel" data-presets="react">` block order (current, post Batch A–C):**
-1. `LANG` translations object + `useT(lang)` hook (EN ↔ BM)
-2. `Icon` component — wraps Lucide via DOM refs
-3. `LogoMark` SVG + `LogoFull`
-4. Design atoms: `Btn`, `Card`, `GlassCard`, `Badge`, `SectionLabel`, `Avatar`, `ProgressBar`, `ScoreRing`, `Gauge`, `MatchBadge`
-5. Mock data: `USER`, `CAREER_PATHS`, `JOBS`, `CHECKLIST`, `PAYOFF_SKILLS`, `PULSE_JOBS`, `PULSE_SKILLS`, `TESTIMONIALS`, `INBOX_ITEMS`, `TRACKED_APPS`
-6. `ToastContainer`
-7. Landing page: `LandingNav` → `FooterSection` → `LandingPage`
-8. Auth: `LoginPage`, `RegisterPage` (in `AuthShell`)
-9. Onboarding: `CandidateOnboarding` (5 steps), `EmployerOnboarding` (5 steps)
-10. `OnboardingTour` — 6-step spotlight overlay (Batch A)
-11. `NotificationBell` — dropdown with 4 mock alerts (Batch C)
-12. `CandidateDashboard` — hero banner, metric cards, activity cards, career futures, Coach Vera widget
-13. `ScoreBreakdown` — expandable Career Score breakdown panel (Batch C)
-14. `CareerProfile` — intelligence banner, profile strength dims, skill gap, editor, PDF preview, Vera's Recommendations
-15. `JobsOpportunities` — job cards with compare mode, not-interested, impact tooltip, community tab
-16. `CareerCompanion` — Vera header, planning/skills/interview tabs
-17. `MarketIntelligence` shell → `FairPayContent` (My Value tab) + `MarketSignalsContent` (Market Signals tab)
-18. `FairPayEngine` (legacy, kept for reference) + `MarketPulseModule` (legacy, kept for reference)
-19. `AutopilotProxy` — dark command header, radar, preferences, activity log, application tracker tab
-20. Employer app: `EmployerDash`, `TalentDiscovery`, `AIHiringAssistant`, `EmployerApp`
-21. `CandidateApp` shell — sidebar nav, header with NotificationBell
-22. `App` (top-level router) + `ReactDOM.createRoot`
+**`<script type="text/babel" data-presets="react">` block order (v3):**
+1. `Icon` component — wraps Lucide via DOM refs
+2. Mock data: `jobs`, `companies`, `universities`, `baseReviews`, `profile`
+3. Shared UI: `Rating`, `Button`, `SectionTitle`, `VeraCard`, `TopNav`
+4. Main pages: `Home`, `JobsPage`, `ResearchPage`, `Dashboard`, `EmployersPage`
+5. Review workflow: `ReviewModal`
+6. `App` top-level router with query-string support (`?page=jobs`, `?page=research`, etc.)
 
 ## Critical patterns
 
