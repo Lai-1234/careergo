@@ -24,7 +24,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; overflow-x: hidden; }
+html { scroll-behavior: smooth; overflow-x: clip; }
 body {
   margin: 0;
   min-height: 100vh;
@@ -35,7 +35,7 @@ body {
     radial-gradient(circle at 82% 8%, rgba(34, 211, 238, 0.18), transparent 28%),
     linear-gradient(135deg, #12002f 0%, #240061 48%, #130031 100%);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 button, input, select, textarea { font: inherit; }
@@ -885,6 +885,7 @@ img { max-width: 100%; display: block; }
   position: sticky;
   top: 76px;                          /* exact topbar height */
   height: calc(100vh - 76px);        /* full remaining viewport height */
+  align-self: start;                 /* prevents grid stretch which breaks sticky */
   overflow-y: auto;                  /* scroll internally if content is taller */
   overflow-x: hidden;
   scroll-behavior: smooth;
