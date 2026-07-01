@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**CRITICAL RULE:** 任何代码上传（如 `git push`）到 GitHub 之前，必须先询问用户并获得明确同意。
+
 ## Running the prototype
 
 Open `careergo.html` directly in a browser — no build step, no server required. All dependencies load from CDN at runtime. Double-click the file or use `start careergo.html` on Windows.
