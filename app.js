@@ -343,18 +343,75 @@ const CAREER_GOALS = [
   "Explore part-time / advisory roles"
 ];
 
+const DASHBOARD_TOUR_STEPS = [
+  {
+    target: "[data-tour-target='dashboard-hero']",
+    title: "Your personal Career OS",
+    body: "This dashboard changes based on your career stage, goals, skills, and preferences. It is the home base Vera uses to guide your next move.",
+    mission: "Start here whenever you feel unsure what to do next."
+  },
+  {
+    target: "[data-tour-target='sidebar']",
+    title: "CareerGo navigation",
+    body: "These sections are your operating system: profile intelligence, jobs, Vera, market insights, applications, and professional posts.",
+    mission: "Open one area whenever you want deeper support."
+  },
+  {
+    target: "[data-tour-target='metrics']",
+    title: "Readiness at a glance",
+    body: "These are quick signals, not fake precision. They show whether CareerGo has enough evidence to recommend roles, resume actions, and next steps.",
+    mission: "Improve the weakest signal first."
+  },
+  {
+    target: "[data-tour-target='vera']",
+    title: "Vera is your coach",
+    body: "Vera is designed to act like a mentor, teacher, and life coach for your career. She uses your profile instead of giving generic chatbot answers.",
+    mission: "Ask Vera for a 7-day plan after this tour."
+  },
+  {
+    target: "[data-tour-target='intelligence']",
+    title: "Career Intelligence Profile",
+    body: "This section explains your resume readiness, ATS signals, skill competitiveness, and market fit using the information you have provided.",
+    mission: "Update your profile whenever your situation changes."
+  },
+  {
+    target: "[data-tour-target='missions']",
+    title: "Small missions",
+    body: "Missions turn career growth into manageable actions. Complete them to build evidence, confidence, and better recommendations.",
+    mission: "Finish one beginner mission today."
+  },
+  {
+    target: "[data-tour-target='applications']",
+    title: "Application journey",
+    body: "Track saved jobs, applications, follow-ups, and interview prep so your search feels organized instead of scattered.",
+    mission: "Save or review one role that matches your roadmap."
+  }
+];
+
+const APPLICATION_STAGES = [
+  { key: "saved", label: "Saved", icon: "bookmark", tone: "gold" },
+  { key: "applied", label: "Applied", icon: "send", tone: "cyan" },
+  { key: "screening", label: "Screening", icon: "scan-search", tone: "cyan" },
+  { key: "interview", label: "Interview", icon: "messages-square", tone: "green" },
+  { key: "offer", label: "Offer", icon: "badge-check", tone: "green" },
+  { key: "rejected", label: "Rejected", icon: "x-circle", tone: "red" },
+  { key: "archived", label: "Archived", icon: "archive", tone: "" }
+];
+
 function readState() {
   const fallback = {
     auth: { users: [] },
-    session: { loggedIn: false, role: "guest", currentUserId: null, name: "" },
+    session: { loggedIn: false, role: "guest", currentUserId: null, name: "", isDemo: false },
     onboarding: { candidateDone: false, employerDone: false, currentStep: 0, lastSavedAt: "" },
     profile: createEmptyProfile(),
     savedJobs: [],
     applications: [],
+    applicationRecords: {},
     ignoredJobs: [],
     comparedJobs: [],
     savedOrgs: [],
     missionProgress: {},
+    guidedTour: { dashboard: { status: "new", step: 0 } },
     reviews: DATA.reviews,
     chat: [],
     notifications: [],
@@ -478,9 +535,9 @@ function createEmptyProfile(seed = {}) {
 
 function normalizeState(state) {
   const profile = normalizeProfile(state.profile || createEmptyProfile());
-  const session = state.session || { loggedIn: false, role: "guest", currentUserId: null, name: "" };
+  const session = { loggedIn: false, role: "guest", currentUserId: null, name: "", isDemo: false, ...(state.session || {}) };
   if (session.loggedIn && !session.name) session.name = profile.personal.fullName;
-  return {
+  return ensureGuidedTour({
     ...state,
     auth: state.auth || { users: [] },
     session,
@@ -489,11 +546,23 @@ function normalizeState(state) {
     notifications: Array.isArray(state.notifications) ? state.notifications : [],
     savedJobs: Array.isArray(state.savedJobs) ? state.savedJobs : [],
     applications: Array.isArray(state.applications) ? state.applications : [],
+    applicationRecords: normalizeApplicationRecords(state),
     ignoredJobs: Array.isArray(state.ignoredJobs) ? state.ignoredJobs : [],
     comparedJobs: Array.isArray(state.comparedJobs) ? state.comparedJobs : [],
     savedOrgs: Array.isArray(state.savedOrgs) ? state.savedOrgs : [],
     posts: Array.isArray(state.posts) ? state.posts : DATA.communityPosts
+  });
+}
+
+function ensureGuidedTour(state) {
+  const guidedTour = state.guidedTour || {};
+  guidedTour.dashboard = {
+    status: "new",
+    step: 0,
+    ...(guidedTour.dashboard || {})
   };
+  state.guidedTour = guidedTour;
+  return state;
 }
 
 function normalizeProfile(profile) {
@@ -530,8 +599,244 @@ function normalizeProfile(profile) {
   return migrated;
 }
 
+function createDemoProfile() {
+  const profile = createEmptyProfile({
+    id: "careergo-demo-user",
+    fullName: "Mira Tan",
+    email: "judge.demo@careergo.local",
+    phone: "+60 12-345 6789",
+    ageRange: "25-34",
+    country: "Malaysia",
+    cityState: "Petaling Jaya, Selangor",
+    preferredLanguage: "English",
+    roleType: "Career Switcher"
+  });
+  profile.careerStage = "Planning to switch career";
+  profile.background = {
+    ...profile.background,
+    currentRole: "Operations Executive",
+    industry: "Marketplace Operations",
+    yearsExperience: "3 years",
+    currentSalaryRange: "RM 4,500 - RM 5,500 / month",
+    companySize: "500-1,000 employees",
+    previousRoles: "Customer operations intern, marketplace operations associate",
+    reasonForCareerGo: "I want a clear path into product analytics without starting from zero.",
+    currentCareerField: "Operations",
+    targetCareerField: "Product Analytics",
+    transferableSkills: "Process improvement, stakeholder communication, reporting, customer journey analysis",
+    switchConcerns: "I need stronger SQL and portfolio proof before applying.",
+    transitionTimeline: "3-6 months"
+  };
+  profile.goals = ["Find a job", "Improve resume", "Know my market salary", "Switch career", "Learn new skills", "Prepare for interview", "Build portfolio"];
+  profile.skills = {
+    ...profile.skills,
+    technical: ["SQL basics", "Excel", "Looker Studio", "Figma", "Customer journey mapping"],
+    soft: ["Stakeholder communication", "Problem solving", "Adaptability", "Presentation"],
+    tools: ["Google Sheets", "Notion", "Jira", "Looker Studio", "Figma"],
+    certifications: ["Google Data Analytics certificate in progress"],
+    languages: ["English", "Bahasa Malaysia", "Mandarin"],
+    workExperience: "3 years improving marketplace operations workflows, reporting weekly performance, and coordinating with product teams.",
+    projects: ["Built a churn analysis dashboard for support tickets", "Mapped onboarding pain points for new sellers", "Created weekly operations scorecard"],
+    achievements: ["Reduced manual reporting time by 40%", "Supported a seller onboarding workflow used by 800+ accounts"],
+    portfolioLinks: "notion.site/mira-product-analytics",
+    linkedin: "linkedin.com/in/miratan-demo",
+    github: "github.com/miratan-demo"
+  };
+  profile.preferences = {
+    ...profile.preferences,
+    industries: ["Technology", "Banking", "Marketplace"],
+    roles: ["Product Analyst", "Data Analyst", "Associate Product Manager"],
+    locations: ["Kuala Lumpur", "Petaling Jaya", "Remote Malaysia"],
+    workMode: "Hybrid",
+    employmentTypes: ["Full-time", "Contract"],
+    minimumSalary: "RM 5,500 / month",
+    relocate: "Maybe",
+    companySize: "Growth-stage or enterprise",
+    workCulture: "Mentorship, clear feedback, data-driven teams",
+    workLifeBalance: "Balanced",
+    riskTolerance: "Medium",
+    learningIntensity: "High",
+    ambitionLevel: "Fast but sustainable growth"
+  };
+  profile.resume = { name: "Mira_Tan_Product_Analytics_Resume.pdf", uploaded: true };
+  profile.coach = {
+    worry: "I worry employers will not believe my operations experience is relevant.",
+    supportStyle: "Give me structured steps, confidence support, and honest trade-off analysis.",
+    growthPreference: "Fast growth",
+    explanationStyle: "Detailed explanations",
+    missionFrequency: "Weekly",
+    confidenceToday: "Medium"
+  };
+  profile.privacy = {
+    profileVisibility: "Private",
+    allowEmployerDiscovery: true,
+    allowCoachMemory: true
+  };
+  profile.onboardingStatus = { started: true, completed: true, currentStep: 6 };
+  profile.intelligence = generateCareerIntelligence(profile);
+  profile.updatedAt = nowStamp();
+  return profile;
+}
+
+function applyDemoAccount(state) {
+  const profile = createDemoProfile();
+  const previewAccount = {
+    id: profile.id,
+    email: profile.personal.email,
+    password: "",
+    fullName: profile.personal.fullName,
+    role: "candidate",
+    profile,
+    createdAt: profile.createdAt,
+    isDemo: true
+  };
+  state.auth = state.auth || { users: [] };
+  state.auth.users = [
+    ...state.auth.users.filter(user => user.id !== previewAccount.id),
+    previewAccount
+  ];
+  state.session = { loggedIn: true, role: "candidate", currentUserId: profile.id, name: profile.personal.fullName, isDemo: true };
+  state.profile = profile;
+  state.onboarding = { ...state.onboarding, candidateDone: true, currentStep: 6, lastSavedAt: nowStamp() };
+  state.savedJobs = ["job-data-analyst", "job-ai-product", "job-product-designer"];
+  state.applications = ["job-data-analyst"];
+  state.applicationRecords = {
+    "job-data-analyst": createApplicationRecord("job-data-analyst", "interview", {
+      nextAction: "Practice one SQL case and prepare a short dashboard walkthrough before Friday.",
+      deadline: "Friday",
+      note: "Vera flagged SQL proof as the interview risk."
+    }),
+    "job-ai-product": createApplicationRecord("job-ai-product", "saved", {
+      nextAction: "Ask Vera whether this is a stretch role or a strategic long-term target.",
+      deadline: "This week",
+      note: "High upside, but product strategy proof is still light."
+    }),
+    "job-product-designer": createApplicationRecord("job-product-designer", "screening", {
+      nextAction: "Tailor resume bullets around research, journey mapping, and stakeholder outcomes.",
+      deadline: "Tomorrow",
+      note: "Recruiter review simulated for the judge preview."
+    })
+  };
+  state.savedOrgs = ["grab", "maybank", "taylors"];
+  state.missionProgress = {
+    ...state.missionProgress,
+    "pm1": 45,
+    "pm2": 30,
+    "pm3": 20,
+    "tour-profile": 60
+  };
+  state.guidedTour = { dashboard: { status: "new", step: 0, startedAt: "" } };
+  state.notifications = [
+    { id: "n-demo", title: "Demo mode", body: "This judge preview uses a realistic personalized profile. You can explore safely." },
+    { id: "n-vera", title: "Vera next step", body: "Ask for a 7-day switcher roadmap or review the Product Analyst path." }
+  ];
+  return state;
+}
+
 function splitList(value) {
   return String(value || "").split(",").map(item => item.trim()).filter(Boolean);
+}
+
+function stageIndex(stage) {
+  return Math.max(0, APPLICATION_STAGES.findIndex(item => item.key === stage));
+}
+
+function stageMeta(stage) {
+  return APPLICATION_STAGES.find(item => item.key === stage) || APPLICATION_STAGES[0];
+}
+
+function createApplicationRecord(jobId, stage = "saved", seed = {}) {
+  const job = DATA.jobs.find(item => item.id === jobId) || DATA.jobs[0];
+  const now = seed.createdAt || nowStamp();
+  const stageLabel = stageMeta(stage).label;
+  const timeline = seed.timeline || [
+    { label: "Saved role", date: seed.savedAt || "Today", done: true },
+    { label: "Resume tailored", date: stageIndex(stage) >= stageIndex("applied") ? "Today" : "Next", done: stageIndex(stage) >= stageIndex("applied") },
+    { label: "Applied", date: stageIndex(stage) >= stageIndex("applied") ? "Today" : "Pending", done: stageIndex(stage) >= stageIndex("applied") },
+    { label: "Screening", date: stageIndex(stage) >= stageIndex("screening") ? "In progress" : "Pending", done: stageIndex(stage) >= stageIndex("screening") },
+    { label: "Interview", date: stageIndex(stage) >= stageIndex("interview") ? "Scheduled" : "Pending", done: stageIndex(stage) >= stageIndex("interview") },
+    { label: "Outcome", date: stageIndex(stage) >= stageIndex("offer") ? stageLabel : "Pending", done: ["offer", "rejected", "archived"].includes(stage) }
+  ];
+  return {
+    jobId,
+    stage,
+    savedAt: seed.savedAt || "Today",
+    appliedAt: seed.appliedAt || (stageIndex(stage) >= stageIndex("applied") ? "Today" : ""),
+    deadline: seed.deadline || (stage === "saved" ? "This week" : "Next 3 days"),
+    nextAction: seed.nextAction || defaultApplicationAction(job, stage),
+    note: seed.note || `Vera is watching for ${job.skills[0]} proof and company-fit signals.`,
+    timeline,
+    updatedAt: now
+  };
+}
+
+function defaultApplicationAction(job, stage) {
+  if (stage === "saved") return `Research ${job.company} and decide whether this belongs in your shortlist.`;
+  if (stage === "applied") return "Send a thoughtful follow-up if there is no update after 5-7 days.";
+  if (stage === "screening") return `Prepare proof for ${job.skills[0]} and ${job.skills[1]}.`;
+  if (stage === "interview") return "Practice one role-specific story and one salary expectation answer.";
+  if (stage === "offer") return "Compare salary, growth, culture, and long-term fit before accepting.";
+  if (stage === "rejected") return "Ask Vera to convert feedback into a next-application improvement.";
+  return "Archive or revisit later if your goals change.";
+}
+
+function normalizeApplicationRecords(state) {
+  const records = { ...(state.applicationRecords || {}) };
+  (Array.isArray(state.savedJobs) ? state.savedJobs : []).forEach(jobId => {
+    if (!records[jobId]) records[jobId] = createApplicationRecord(jobId, "saved");
+  });
+  (Array.isArray(state.applications) ? state.applications : []).forEach(jobId => {
+    if (!records[jobId]) records[jobId] = createApplicationRecord(jobId, "applied");
+    if (records[jobId].stage === "saved") records[jobId] = { ...records[jobId], stage: "applied", appliedAt: records[jobId].appliedAt || "Today" };
+  });
+  Object.keys(records).forEach(jobId => {
+    records[jobId] = { ...createApplicationRecord(jobId, records[jobId].stage || "saved"), ...records[jobId] };
+  });
+  return records;
+}
+
+function getTrackedJobs(state = readState()) {
+  return Object.values(state.applicationRecords || {})
+    .map(record => ({ record, job: DATA.jobs.find(job => job.id === record.jobId) }))
+    .filter(item => item.job);
+}
+
+function updateApplicationStage(jobId, stage) {
+  const state = readState();
+  const existing = state.applicationRecords?.[jobId] || createApplicationRecord(jobId, stage);
+  const job = DATA.jobs.find(item => item.id === jobId) || DATA.jobs[0];
+  const record = createApplicationRecord(jobId, stage, {
+    ...existing,
+    stage,
+    appliedAt: stageIndex(stage) >= stageIndex("applied") ? existing.appliedAt || "Today" : existing.appliedAt,
+    nextAction: defaultApplicationAction(job, stage),
+    updatedAt: nowStamp()
+  });
+  state.applicationRecords = { ...(state.applicationRecords || {}), [jobId]: record };
+  if (!state.savedJobs.includes(jobId)) state.savedJobs.push(jobId);
+  if (stageIndex(stage) >= stageIndex("applied") && !state.applications.includes(jobId)) state.applications.push(jobId);
+  if (stage === "saved") state.applications = state.applications.filter(id => id !== jobId);
+  writeState(syncCurrentUser(state));
+  return record;
+}
+
+function applicationStagePill(stage) {
+  const meta = stageMeta(stage);
+  return `<span class="pill ${meta.tone}">${icon(meta.icon)} ${meta.label}</span>`;
+}
+
+function applicationProgress(record) {
+  const max = APPLICATION_STAGES.length - 3;
+  const progress = Math.min(100, Math.round((Math.min(stageIndex(record.stage), max) / max) * 100));
+  return progressBar(progress);
+}
+
+function applicationSummaryCounts(state = readState()) {
+  const tracked = getTrackedJobs(state);
+  return APPLICATION_STAGES.reduce((acc, stage) => {
+    acc[stage.key] = tracked.filter(item => item.record.stage === stage.key).length;
+    return acc;
+  }, {});
 }
 
 function checkboxValues(form, name) {
@@ -654,6 +959,210 @@ function personalizedMissions(profile) {
   ];
 }
 
+function starterMissions(profile) {
+  return [
+    {
+      id: "tour-profile",
+      title: "Complete one profile section",
+      body: "Add or review skills, projects, or preferences so recommendations become more accurate.",
+      href: "profile.html",
+      icon: "user-round"
+    },
+    {
+      id: "tour-vera",
+      title: "Ask Vera for a plan",
+      body: `Get a simple 7-day plan for ${getTargetLabel(profile)} with actions you can actually finish.`,
+      href: "vera.html#plan",
+      icon: "sparkles"
+    },
+    {
+      id: "tour-job",
+      title: "Review one job match",
+      body: "Open a suggested role, check why it matches, then save or compare it.",
+      href: "jobs.html",
+      icon: "briefcase"
+    },
+    {
+      id: "tour-research",
+      title: "Research an organization",
+      body: "Check ratings, background, salary or outcome signals, and review themes before deciding.",
+      href: "companies.html",
+      icon: "building-2"
+    },
+    {
+      id: "tour-market",
+      title: "Check market value",
+      body: "Use salary and skill-payoff insights to choose your next learning priority.",
+      href: "market.html",
+      icon: "trending-up"
+    }
+  ];
+}
+
+function bindMissionActions() {
+  qsa("[data-complete-mission]").forEach(button => {
+    button.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const id = button.dataset.completeMission;
+      const state = readState();
+      state.missionProgress = { ...state.missionProgress, [id]: 100 };
+      state.notifications = [
+        { id: `n-${id}`, title: "Mission completed", body: "CareerGo updated your mission progress." },
+        ...state.notifications.filter(item => item.id !== `n-${id}`)
+      ].slice(0, 5);
+      writeState(syncCurrentUser(state));
+      const card = qs(`[data-mission-card="${id}"]`);
+      if (card) {
+        card.classList.add("complete");
+        const bar = qs(".progress span", card);
+        if (bar) bar.style.width = "100%";
+      }
+      button.innerHTML = `${icon("check")} Done`;
+      createIcons();
+      showToast("Mission marked complete.");
+    });
+  });
+}
+
+function getDashboardTourState() {
+  const state = readState();
+  return state.guidedTour?.dashboard || { status: "new", step: 0 };
+}
+
+function saveDashboardTour(partial) {
+  const state = readState();
+  state.guidedTour = state.guidedTour || {};
+  state.guidedTour.dashboard = {
+    status: "new",
+    step: 0,
+    ...(state.guidedTour.dashboard || {}),
+    ...partial
+  };
+  writeState(syncCurrentUser(state));
+}
+
+function initDashboardTour() {
+  const root = qs("[data-dashboard]");
+  if (!root) return;
+  const state = readState();
+  if (!state.session.loggedIn || !state.onboarding.candidateDone) return;
+  const tour = getDashboardTourState();
+  if (tour.status === "completed" || tour.status === "skipped") {
+    injectTourRestart();
+    return;
+  }
+  window.setTimeout(() => showDashboardTourStep(tour.step || 0), 180);
+}
+
+function injectTourRestart() {
+  if (qs("[data-restart-tour]")) return;
+  const target = qs("[data-tour-target='dashboard-hero'] .hero-actions") || qs("[data-tour-target='dashboard-hero']");
+  if (!target) return;
+  const btn = document.createElement("button");
+  btn.className = "btn btn-ghost tour-restart-btn";
+  btn.type = "button";
+  btn.dataset.restartTour = "";
+  btn.innerHTML = `${icon("map")} Replay tour`;
+  btn.addEventListener("click", () => {
+    saveDashboardTour({ status: "active", step: 0, startedAt: nowStamp() });
+    showDashboardTourStep(0);
+  });
+  target.appendChild(btn);
+  createIcons();
+}
+
+function removeDashboardTour() {
+  qsa(".tour-highlight").forEach(item => item.classList.remove("tour-highlight"));
+  qsa("[data-tour-layer]").forEach(item => item.remove());
+  document.body.classList.remove("sidebar-open");
+  if (window.__careergoTourReposition) window.removeEventListener("resize", window.__careergoTourReposition);
+}
+
+function showDashboardTourStep(index) {
+  const stepIndex = Math.max(0, Math.min(DASHBOARD_TOUR_STEPS.length - 1, index));
+  const step = DASHBOARD_TOUR_STEPS[stepIndex];
+  const target = qs(step.target);
+  if (!target) return;
+  removeDashboardTour();
+  saveDashboardTour({ status: "active", step: stepIndex, startedAt: getDashboardTourState().startedAt || nowStamp() });
+  document.body.classList.toggle("sidebar-open", step.target.includes("sidebar") && window.innerWidth <= 1020);
+  target.classList.add("tour-highlight");
+  target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+  const backdrop = document.createElement("div");
+  backdrop.className = "tour-backdrop";
+  backdrop.dataset.tourLayer = "";
+  backdrop.setAttribute("aria-hidden", "true");
+
+  const card = document.createElement("aside");
+  card.className = "tour-card glass-card";
+  card.dataset.tourLayer = "";
+  card.setAttribute("role", "dialog");
+  card.setAttribute("aria-live", "polite");
+  card.innerHTML = `
+    <div class="tour-progress">
+      <span>Step ${stepIndex + 1} of ${DASHBOARD_TOUR_STEPS.length}</span>
+      <div class="tour-dots">${DASHBOARD_TOUR_STEPS.map((_, dotIndex) => `<i class="${dotIndex <= stepIndex ? "active" : ""}"></i>`).join("")}</div>
+    </div>
+    <h2>${step.title}</h2>
+    <p>${step.body}</p>
+    <div class="tour-mission">${icon("target")} ${step.mission}</div>
+    <div class="tour-actions">
+      <button class="btn btn-ghost" type="button" data-tour-skip>Skip</button>
+      <div>
+        <button class="btn btn-ghost" type="button" data-tour-back ${stepIndex === 0 ? "disabled" : ""}>Back</button>
+        <button class="btn btn-primary" type="button" data-tour-next>${icon(stepIndex === DASHBOARD_TOUR_STEPS.length - 1 ? "check" : "arrow-right")} ${stepIndex === DASHBOARD_TOUR_STEPS.length - 1 ? "Finish" : "Next"}</button>
+      </div>
+    </div>
+  `;
+  document.body.append(backdrop, card);
+  positionTourCard(card, target);
+  window.setTimeout(() => positionTourCard(card, target), 260);
+  window.__careergoTourReposition = () => positionTourCard(card, target);
+  window.addEventListener("resize", window.__careergoTourReposition);
+
+  qs("[data-tour-skip]", card).addEventListener("click", () => {
+    saveDashboardTour({ status: "skipped", step: stepIndex, skippedAt: nowStamp() });
+    removeDashboardTour();
+    injectTourRestart();
+  });
+  qs("[data-tour-back]", card).addEventListener("click", () => showDashboardTourStep(stepIndex - 1));
+  qs("[data-tour-next]", card).addEventListener("click", () => {
+    if (stepIndex === DASHBOARD_TOUR_STEPS.length - 1) {
+      saveDashboardTour({ status: "completed", step: stepIndex, completedAt: nowStamp() });
+      removeDashboardTour();
+      injectTourRestart();
+      showToast("Tour completed. Your first missions are ready.");
+      return;
+    }
+    showDashboardTourStep(stepIndex + 1);
+  });
+  createIcons();
+}
+
+function positionTourCard(card, target) {
+  if (window.innerWidth <= 760) {
+    card.style.left = "16px";
+    card.style.right = "16px";
+    card.style.top = "auto";
+    card.style.bottom = "16px";
+    return;
+  }
+  const rect = target.getBoundingClientRect();
+  const width = Math.min(420, window.innerWidth - 40);
+  card.style.width = `${width}px`;
+  card.style.right = "auto";
+  card.style.bottom = "auto";
+  const leftCandidate = rect.right + 18;
+  const left = leftCandidate + width < window.innerWidth - 20
+    ? leftCandidate
+    : Math.max(20, rect.left - width - 18);
+  const top = Math.max(92, Math.min(window.innerHeight - 340, rect.top + rect.height / 2 - 170));
+  card.style.left = `${left}px`;
+  card.style.top = `${top}px`;
+}
+
 function requireAccount(root, purpose = "open this workspace") {
   const state = readState();
   if (state.session.loggedIn) return true;
@@ -730,6 +1239,71 @@ function bindGlobalActions() {
   }));
 }
 
+function publicNav() {
+  const page = document.body.dataset.page || "home";
+  return `
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
+    <nav class="nav-links" aria-label="Public navigation">
+      ${[
+        ["home", "Home", "index.html"],
+        ["jobs", "Jobs", "jobs.html"],
+        ["companies", "Companies", "companies.html"],
+        ["universities", "Universities", "universities.html"]
+      ].map(([key, label, href]) => `<a data-nav="${key}" class="${page === key ? "active" : ""}" href="${href}">${label}</a>`).join("")}
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost ${page === "login" ? "active" : ""}" href="login.html">Login</a>
+      <a class="btn btn-primary ${page === "register" ? "active" : ""}" href="register.html">Create Account</a>
+    </div>
+  `;
+}
+
+function workspaceTopNav() {
+  const state = readState();
+  return `
+    <a class="brand" href="dashboard.html"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Workspace</span></span></a>
+    <form class="workspace-search" role="search" data-workspace-search data-tour-target="workspace-search">
+      ${icon("search")}
+      <input name="q" aria-label="Search workspace" placeholder="Search jobs, companies, universities">
+    </form>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="autopilot.html">${icon("bell")} ${state.notifications?.length || 0}</a>
+      <a class="btn btn-primary" href="profile.html">${icon("user-round")} ${getFirstName(state)}</a>
+    </div>
+  `;
+}
+
+function renderNavigation() {
+  const topbar = qs(".topbar");
+  if (!topbar) return;
+  const navInner = qs(".nav-inner", topbar);
+  const mobileNav = qs(".mobile-nav", topbar);
+  if (!navInner) return;
+  const state = readState();
+  const loggedIn = Boolean(state.session.loggedIn);
+  navInner.innerHTML = loggedIn ? workspaceTopNav() : publicNav();
+  if (mobileNav) {
+    mobileNav.innerHTML = loggedIn
+      ? `<a href="dashboard.html">Dashboard</a><a href="jobs.html">Jobs</a><a href="autopilot.html">Applications</a><a href="vera.html">Vera</a><a href="profile.html">Profile</a>`
+      : `<a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="login" href="login.html">Login</a><a data-nav="register" href="register.html">Create Account</a>`;
+  }
+  createIcons();
+  setActiveNav();
+  qs("[data-workspace-search]")?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const q = String(form.get("q") || "").trim();
+    if (!q) return;
+    const lower = q.toLowerCase();
+    const destination = lower.includes("university") || lower.includes("college") || lower.includes("degree") || lower.includes("scholarship")
+      ? "universities.html"
+      : lower.includes("company") || lower.includes("culture") || lower.includes("review") || lower.includes("maybank") || lower.includes("grab") || lower.includes("cimb")
+        ? "companies.html"
+        : "jobs.html";
+    location.href = `${destination}?q=${encodeURIComponent(q)}`;
+  });
+}
+
 function syncCurrentUser(state) {
   if (!state.session?.currentUserId || !state.auth?.users) return state;
   state.auth.users = state.auth.users.map(user => user.id === state.session.currentUserId
@@ -792,42 +1366,82 @@ function showToast(message, type = "success") {
   setTimeout(() => toast.remove(), 3600);
 }
 
+function showSignupPrompt(reason = "unlock CareerGo personalization") {
+  const existing = qs("[data-signup-prompt]");
+  if (existing) existing.remove();
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.dataset.signupPrompt = "";
+  backdrop.innerHTML = `
+    <div class="modal glass-card">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">CareerGo account</div>
+          <h2>Create an account to ${reason}.</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close>${icon("x")}</button>
+      </div>
+      <p class="section-sub">Public browsing stays open. A CareerGo account unlocks saving, Vera coaching, personalized recommendations, and application tracking.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create Account</a>
+        <a class="btn btn-ghost" href="login.html">${icon("log-in")} Login</a>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  createIcons();
+}
+
+function bindProtectedPrompts(root = document) {
+  qsa("[data-auth-prompt]", root).forEach(item => item.addEventListener("click", event => {
+    event.preventDefault();
+    showSignupPrompt(item.dataset.authPrompt || "continue");
+  }));
+}
+
 function osNav(active = "") {
   const links = [
     ["dashboard", "Dashboard", "layout-dashboard", "dashboard.html"],
-    ["profile", "Career Intelligence", "user-round", "profile.html"],
+    ["profile", "Profile", "user-round", "profile.html"],
     ["jobs", "Jobs", "briefcase", "jobs.html"],
     ["vera", "Vera", "sparkles", "vera.html"],
     ["market", "Market", "trending-up", "market.html"],
-    ["autopilot", "Autopilot", "radar", "autopilot.html"],
-    ["posts", "Posts", "messages-square", "posts.html"]
+    ["autopilot", "Applications", "kanban", "autopilot.html"]
   ];
-  const state = readState();
-  const profile = state.profile;
   return `
-    <aside class="os-sidebar glass-card">
-      <div class="os-user">
-        <img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo">
-        <div><strong>${getUserName(state)}</strong><span>${profile.careerStage || profile.personal.roleType || "Personal Career OS"}</span></div>
-        <button class="sidebar-toggle" id="sidebar-close-btn" aria-label="Close navigation" style="margin-left:auto">${icon("x")}</button>
-      </div>
+    <section class="workspace-nav glass-card" data-tour-target="sidebar">
       <nav class="os-nav" aria-label="Career OS navigation">
         ${links.map(([key, label, ic, href]) => `<a class="${active === key ? "active" : ""}" href="${href}">${icon(ic)} ${label}</a>`).join("")}
         <button class="os-nav-button" type="button" data-logout>${icon("log-out")} Logout</button>
       </nav>
-      <div class="notification-box">
-        <div class="list-card-top"><strong>Notifications</strong><span class="pill gold">${state.notifications.length}</span></div>
-        ${state.notifications.length ? state.notifications.slice(0, 2).map(item => `<p class="muted small"><strong>${item.title}</strong><br>${item.body}</p>`).join("") : `<p class="muted small">Vera will add alerts after onboarding.</p>`}
-      </div>
-    </aside>
+    </section>
   `;
 }
 
-function appShell(active, content) {
-  return `${osNav(active)}<div class="os-main">${content}</div><div class="sidebar-overlay" id="sidebar-overlay"></div>`;
+function osModuleHeader(active, title, subtitle = "") {
+  if (active === "dashboard") return "";
+  return `
+    <div class="os-module-header">
+      <div>
+        <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><strong>${title}</strong></div>
+        ${subtitle ? `<p>${subtitle}</p>` : ""}
+      </div>
+      <a class="btn btn-ghost" href="dashboard.html">${icon("arrow-left")} Back to Dashboard</a>
+    </div>
+  `;
+}
+
+function appShell(active, content, options = {}) {
+  const title = options.title || active.charAt(0).toUpperCase() + active.slice(1);
+  return `${osNav(active)}<div class="os-main">${osModuleHeader(active, title, options.subtitle || "")}${content}</div><div class="sidebar-overlay" id="sidebar-overlay"></div>`;
 }
 
 function initSidebarToggle() {
+  if (!qs(".os-sidebar")) return;
   // Inject hamburger button into topbar nav-actions if on an OS page
   const navActions = qs(".nav-actions");
   if (navActions && !qs("#sidebar-open-btn")) {
@@ -901,9 +1515,53 @@ function renderJobsPage() {
   const root = qs("[data-jobs-page]");
   if (!root) return;
   let state = readState();
+  if (state.session.loggedIn && needsOnboarding(root)) return;
+  if (state.session.loggedIn) {
+    root.innerHTML = `
+      <section class="page-hero os-page-hero">
+        <div class="container">
+          <div class="eyebrow"><span class="spark">*</span> Job workspace</div>
+          <h1>Matches, saved roles, and applications in one calm place.</h1>
+          <p class="page-copy">Review only the strongest roles, move applications through stages, and ask Vera what to do next.</p>
+        </div>
+      </section>
+      <section class="container os-layout">
+        ${appShell("jobs", `
+          <section class="jobs-workspace">
+            <aside class="filters card compact-filter">
+              <h2 class="filter-title">Search jobs</h2>
+              <div class="filter-stack">
+                <div class="field"><i data-lucide="search"></i><input data-job-query placeholder="Role, company, skill"></div>
+                <div class="field"><i data-lucide="layers"></i><select data-job-industry></select></div>
+                <div class="field"><i data-lucide="user-round"></i><select data-job-level></select></div>
+                <div class="field"><i data-lucide="map-pin"></i><select data-job-type></select></div>
+                <label class="range-field"><span>Minimum match <strong data-threshold-label>70%</strong></span><input data-job-threshold type="range" min="60" max="95" value="70"></label>
+                <label class="check-field"><input data-job-compare-mode type="checkbox"> Compare roles</label>
+              </div>
+            </aside>
+            <div class="jobs-main">
+              <div class="tab-row os-tabs">
+                <button class="pill cyan active" data-job-tab="matches">Matches</button>
+                <button class="pill" data-job-tab="saved">Saved</button>
+                <button class="pill" data-job-tab="applied">Applied</button>
+                <button class="pill" data-job-tab="vera">Vera Picks</button>
+                <button class="pill" data-job-tab="tracker">Tracker</button>
+              </div>
+              <div class="jobs-split">
+                <section class="list-stack" data-job-list></section>
+                <section class="detail-panel glass-card" data-job-detail></section>
+              </div>
+            </div>
+          </section>
+        `, { title: "Jobs", subtitle: "Move from discovery to applied, interview, offer, or archive without losing context." })}
+      </section>
+    `;
+    createIcons();
+    initSidebarToggle();
+  }
   let activeId = new URLSearchParams(location.search).get("job") || DATA.jobs[0].id;
   let active = DATA.jobs.find(job => job.id === activeId) || DATA.jobs[0];
-  let activeTab = "matches";
+  let activeTab = location.hash === "#tracker" ? "tracker" : (new URLSearchParams(location.search).get("tab") || "matches");
 
   const listRoot = qs("[data-job-list]");
   const detailRoot = qs("[data-job-detail]");
@@ -919,6 +1577,7 @@ function renderJobsPage() {
   levelSelect.innerHTML = ["All", ...new Set(DATA.jobs.map(j => j.level))].map(x => `<option>${x}</option>`).join("");
   if (typeSelect) typeSelect.innerHTML = ["All", ...new Set(DATA.jobs.map(j => j.type))].map(x => `<option>${x}</option>`).join("");
   queryInput.value = new URLSearchParams(location.search).get("q") || "";
+  if (!state.session.loggedIn) qs('[data-job-tab="community"]')?.remove();
 
   function filteredJobs() {
     const q = queryInput.value.trim().toLowerCase();
@@ -937,9 +1596,69 @@ function renderJobsPage() {
     });
   }
 
+  function jobsForActiveTab() {
+    const base = filteredJobs();
+    if (activeTab === "saved") return DATA.jobs.filter(job => state.savedJobs.includes(job.id) && !state.ignoredJobs.includes(job.id));
+    if (activeTab === "applied") return getTrackedJobs(state)
+      .filter(({ record }) => stageIndex(record.stage) >= stageIndex("applied") && !["archived"].includes(record.stage))
+      .map(({ job }) => job);
+    if (activeTab === "vera") return base
+      .filter(job => job.match >= 80)
+      .sort((a, b) => b.match - a.match)
+      .slice(0, 4);
+    return base;
+  }
+
+  function renderTracker() {
+    const tracked = getTrackedJobs(state);
+    const counts = applicationSummaryCounts(state);
+    listRoot.innerHTML = `
+      <div class="tracker-panel">
+        <div class="section-head compact-section-head">
+          <div><div class="section-kicker">Application tracker</div><h2 class="section-title mini">Know exactly where every role stands.</h2></div>
+          <a class="btn btn-cyan" href="vera.html?topic=application follow up">${icon("sparkles")} Ask Vera</a>
+        </div>
+        <div class="pipeline-strip">
+          ${APPLICATION_STAGES.slice(0, 6).map(stage => `<button class="pipeline-stage" type="button" data-filter-stage="${stage.key}"><span>${stage.label}</span><strong>${counts[stage.key] || 0}</strong></button>`).join("")}
+        </div>
+        <div class="list-stack spacious-list">
+          ${tracked.length ? tracked.map(({ job, record }) => `
+            <article class="list-card application-row ${job.id === active.id ? "active" : ""}" data-job-id="${job.id}">
+              <div class="list-card-top">
+                <div><h3>${job.title}</h3><div class="muted small">${job.company} - ${record.deadline}</div></div>
+                ${applicationStagePill(record.stage)}
+              </div>
+              <p class="muted">${record.nextAction}</p>
+              ${applicationProgress(record)}
+            </article>
+          `).join("") : `<div class="card">No tracked roles yet. Save or apply to a job to start your tracker.</div>`}
+        </div>
+      </div>
+    `;
+    qsa("[data-job-id]", listRoot).forEach(card => card.addEventListener("click", () => {
+      active = DATA.jobs.find(job => job.id === card.dataset.jobId) || active;
+      history.replaceState(null, "", `jobs.html?job=${active.id}#tracker`);
+      renderList();
+      renderDetail();
+    }));
+    qsa("[data-filter-stage]", listRoot).forEach(btn => btn.addEventListener("click", () => {
+      const found = tracked.find(({ record }) => record.stage === btn.dataset.filterStage);
+      if (found) {
+        active = found.job;
+        renderList();
+        renderDetail();
+      }
+    }));
+    createIcons();
+  }
+
   function renderList() {
     state = readState();
     if (thresholdLabel && thresholdInput) thresholdLabel.textContent = `${thresholdInput.value}%`;
+    if (activeTab === "tracker") {
+      renderTracker();
+      return;
+    }
     if (activeTab === "community") {
       listRoot.innerHTML = state.posts.map(post => `
         <article class="list-card">
@@ -958,7 +1677,7 @@ function renderJobsPage() {
       createIcons();
       return;
     }
-    const jobs = filteredJobs();
+    const jobs = jobsForActiveTab();
     listRoot.innerHTML = jobs.map(job => `
       <button class="list-card ${job.id === active.id ? "active" : ""}" data-job-id="${job.id}">
         <div class="list-card-top">
@@ -969,6 +1688,7 @@ function renderJobsPage() {
           <span class="score">${job.match}%</span>
         </div>
         <div class="muted small" style="margin-top:12px">${job.salary} - ${job.type} - ${job.posted}</div>
+        ${state.applicationRecords[job.id] ? `<div class="job-card-status">${applicationStagePill(state.applicationRecords[job.id].stage)}<span class="muted small">${state.applicationRecords[job.id].nextAction}</span></div>` : ""}
         ${compareMode?.checked ? `<label class="check-field inline"><input type="checkbox" data-compare-job="${job.id}" ${state.comparedJobs.includes(job.id) ? "checked" : ""}> Compare</label>` : ""}
         ${pills(job.skills.slice(0, 3), "cyan")}
       </button>
@@ -997,8 +1717,10 @@ function renderJobsPage() {
 
   function renderDetail() {
     state = readState();
+    const loggedIn = Boolean(state.session.loggedIn);
     const saved = state.savedJobs.includes(active.id);
-    const applied = state.applications.includes(active.id);
+    const record = state.applicationRecords?.[active.id];
+    const applied = Boolean(record && stageIndex(record.stage) >= stageIndex("applied"));
     const compared = DATA.jobs.filter(job => state.comparedJobs.includes(job.id));
     detailRoot.innerHTML = `
       <div class="detail-head">
@@ -1007,8 +1729,20 @@ function renderJobsPage() {
           <h2>${active.title}</h2>
           <div class="muted">${active.company} - ${active.location} - ${active.salary}</div>
         </div>
-        <span class="score">${active.match}%</span>
+        <div class="detail-score-stack"><span class="score">${active.match}%</span>${record ? applicationStagePill(record.stage) : ""}</div>
       </div>
+      ${record ? `
+        <div class="detail-section application-control">
+          <div class="section-head compact-section-head"><div><div class="section-kicker">Application progress</div><h3>${record.nextAction}</h3></div><span class="pill gold">${record.deadline}</span></div>
+          ${applicationProgress(record)}
+          <div class="stage-control" aria-label="Application stages">
+            ${APPLICATION_STAGES.map(stage => `<button class="${record.stage === stage.key ? "active" : ""}" type="button" data-stage="${stage.key}">${icon(stage.icon)} ${stage.label}</button>`).join("")}
+          </div>
+          <div class="timeline compact-timeline">
+            ${record.timeline.map(item => `<div class="timeline-item ${item.done ? "done" : ""}"><h3>${item.label}</h3><p class="muted">${item.date}</p></div>`).join("")}
+          </div>
+        </div>
+      ` : ""}
       <div class="detail-section">
         <div class="vera-box">
           <h3>${icon("sparkles")} Vera's read</h3>
@@ -1045,26 +1779,54 @@ function renderJobsPage() {
           </div>
         </div>` : ""}
       <div class="hero-actions">
-        <button class="btn btn-primary" data-apply>${icon(applied ? "check" : "send")} ${applied ? "Applied" : "Apply now"}</button>
-        <button class="btn btn-ghost" data-save>${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save role"}</button>
-        <button class="btn btn-ghost" data-ignore>${icon("thumbs-down")} Not interested</button>
-        <a class="btn btn-cyan" href="vera.html?topic=${encodeURIComponent(active.title)}">${icon("message-circle")} Ask Vera</a>
+        ${loggedIn ? `
+          <button class="btn btn-primary" data-apply>${icon(applied ? "check" : "send")} ${applied ? "Applied" : "Apply now"}</button>
+          <button class="btn btn-ghost" data-save>${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save role"}</button>
+          <button class="btn btn-ghost" data-screen>${icon("scan-search")} Move to screening</button>
+          <button class="btn btn-ghost" data-ignore>${icon("thumbs-down")} Not interested</button>
+          <a class="btn btn-cyan" href="vera.html?topic=${encodeURIComponent(active.title)}">${icon("message-circle")} Ask Vera</a>
+        ` : `
+          <button class="btn btn-primary" data-auth-prompt="save jobs and track applications">${icon("bookmark")} Save role</button>
+          <button class="btn btn-ghost" data-auth-prompt="apply and track progress">${icon("send")} Apply</button>
+          <button class="btn btn-cyan" data-auth-prompt="ask Vera for personalized coaching">${icon("message-circle")} Ask Vera</button>
+        `}
       </div>
     `;
+    if (!loggedIn) {
+      bindProtectedPrompts(detailRoot);
+      createIcons();
+      return;
+    }
     qs("[data-save]", detailRoot).addEventListener("click", () => {
       const next = readState();
       next.savedJobs = next.savedJobs.includes(active.id) ? next.savedJobs.filter(id => id !== active.id) : [...next.savedJobs, active.id];
+      if (!next.applicationRecords) next.applicationRecords = {};
+      if (next.savedJobs.includes(active.id)) next.applicationRecords[active.id] = next.applicationRecords[active.id] || createApplicationRecord(active.id, "saved");
+      if (!next.savedJobs.includes(active.id) && !next.applications.includes(active.id)) delete next.applicationRecords[active.id];
       writeState(next);
       showToast(next.savedJobs.includes(active.id) ? "Role saved to your dashboard." : "Role removed from saved jobs.");
+      renderList();
       renderDetail();
     });
     qs("[data-apply]", detailRoot).addEventListener("click", () => {
-      const next = readState();
-      if (!next.applications.includes(active.id)) next.applications.push(active.id);
-      writeState(next);
+      updateApplicationStage(active.id, "applied");
       showToast("Application added to your tracker.");
+      renderList();
       renderDetail();
     });
+    qs("[data-screen]", detailRoot).addEventListener("click", () => {
+      updateApplicationStage(active.id, "screening");
+      showToast("Application moved to screening.");
+      renderList();
+      renderDetail();
+    });
+    qsa("[data-stage]", detailRoot).forEach(btn => btn.addEventListener("click", () => {
+      const stage = btn.dataset.stage;
+      updateApplicationStage(active.id, stage);
+      showToast(`Moved to ${stageMeta(stage).label}.`);
+      renderList();
+      renderDetail();
+    }));
     qs("[data-ignore]", detailRoot).addEventListener("click", () => {
       const next = readState();
       if (!next.ignoredJobs.includes(active.id)) next.ignoredJobs.push(active.id);
@@ -1082,8 +1844,11 @@ function renderJobsPage() {
     qsa("[data-job-tab]").forEach(item => item.classList.remove("active"));
     btn.classList.add("active");
     activeTab = btn.dataset.jobTab;
+    history.replaceState(null, "", activeTab === "tracker" ? `jobs.html?job=${active.id}#tracker` : `jobs.html?job=${active.id}&tab=${activeTab}`);
     renderList();
+    renderDetail();
   }));
+  qsa("[data-job-tab]").forEach(btn => btn.classList.toggle("active", btn.dataset.jobTab === activeTab));
   [queryInput, industrySelect, levelSelect, typeSelect, thresholdInput, compareMode].filter(Boolean).forEach(el => el.addEventListener("input", renderList));
   renderList();
   renderDetail();
@@ -1093,6 +1858,38 @@ function renderDirectoryPage(kind) {
   const root = qs("[data-directory-page]");
   if (!root) return;
   const state = readState();
+  const loggedIn = Boolean(state.session.loggedIn);
+  if (loggedIn) {
+    const title = kind === "universities" ? "Universities" : "Companies";
+    const singular = kind === "universities" ? "university" : "company";
+    root.innerHTML = `
+      <section class="container os-layout">
+        ${appShell(kind, `
+          <section class="directory-workspace">
+            <aside class="filters card compact-filter">
+              <h2 class="filter-title">Find ${title.toLowerCase()}</h2>
+              <div class="filter-stack">
+                <div class="field"><i data-lucide="search"></i><input data-org-query placeholder="${title}, industry, location"></div>
+                <a class="btn btn-cyan btn-wide" href="vera.html?topic=${singular} research">${icon("sparkles")} Ask Vera</a>
+              </div>
+            </aside>
+            <div class="directory-split">
+              <section class="list-stack" data-org-list></section>
+              <section class="detail-panel glass-card" data-org-detail></section>
+            </div>
+          </section>
+        `, { title, subtitle: `Research ${title.toLowerCase()}, reviews, outcomes, and fit from inside your CareerGo workspace.` })}
+      </section>
+    `;
+    createIcons();
+    initSidebarToggle();
+  } else {
+    qsa('a[href^="vera.html"]', root).forEach(link => {
+      link.setAttribute("href", "#");
+      link.dataset.authPrompt = "ask Vera for personalized research";
+    });
+    bindProtectedPrompts(root);
+  }
   const orgs = orgsFor(kind);
   const params = new URLSearchParams(location.search);
   let active = orgs.find(org => org.id === params.get("org")) || orgs[0];
@@ -1100,6 +1897,7 @@ function renderDirectoryPage(kind) {
   const detailRoot = qs("[data-org-detail]");
   const queryInput = qs("[data-org-query]");
   const typeButtons = qsa("[data-org-type]");
+  if (queryInput) queryInput.value = params.get("q") || "";
 
   function filteredOrgs() {
     const q = queryInput.value.trim().toLowerCase();
@@ -1137,6 +1935,7 @@ function renderDirectoryPage(kind) {
 
   function renderDetail() {
     const currentState = readState();
+    const currentLoggedIn = Boolean(currentState.session.loggedIn);
     const reviews = currentState.reviews.filter(r => r.targetId === active.id);
     const saved = currentState.savedOrgs.includes(active.id);
     detailRoot.innerHTML = `
@@ -1181,8 +1980,13 @@ function renderDirectoryPage(kind) {
         <div class="section-head" style="margin-bottom:14px">
           <h3>Reviews</h3>
           <div class="hero-actions" style="margin-top:0">
-            <button class="btn btn-ghost" data-save-org>${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save"}</button>
-            <button class="btn btn-primary" data-review>${icon("pen-line")} Write review</button>
+            ${currentLoggedIn ? `
+              <button class="btn btn-ghost" data-save-org>${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save"}</button>
+              <button class="btn btn-primary" data-review>${icon("pen-line")} Write review</button>
+            ` : `
+              <button class="btn btn-ghost" data-auth-prompt="save and compare ${active.type.toLowerCase()} research">${icon("bookmark")} Save</button>
+              <button class="btn btn-primary" data-auth-prompt="write trusted reviews">${icon("pen-line")} Write review</button>
+            `}
           </div>
         </div>
         <div>
@@ -1201,6 +2005,11 @@ function renderDirectoryPage(kind) {
         </div>
       </div>
     `;
+    if (!currentLoggedIn) {
+      bindProtectedPrompts(detailRoot);
+      createIcons();
+      return;
+    }
     qs("[data-review]", detailRoot).addEventListener("click", () => openReviewModal(active));
     qs("[data-save-org]", detailRoot).addEventListener("click", () => {
       const next = readState();
@@ -1280,37 +2089,85 @@ function renderDashboard() {
   if (!root) return;
   if (!requireAccount(root, "view your personalized Career OS")) return;
   if (needsOnboarding(root)) return;
+  qs(".page-hero")?.classList.add("is-hidden");
   const state = readState();
   const savedJobs = DATA.jobs.filter(job => state.savedJobs.includes(job.id));
   const applications = DATA.jobs.filter(job => state.applications.includes(job.id));
+  const trackedJobs = getTrackedJobs(state);
+  const counts = applicationSummaryCounts(state);
   const profile = state.profile;
   const intel = profile.intelligence || generateCareerIntelligence(profile);
   const missions = personalizedMissions(profile);
+  const beginnerMissions = starterMissions(profile);
+  const visibleBeginnerMissions = beginnerMissions.slice(0, 3);
   const target = getTargetLabel(profile);
+  const topJobs = DATA.jobs
+    .filter(job => !state.ignoredJobs.includes(job.id))
+    .sort((a, b) => b.match - a.match)
+    .slice(0, 3);
+  const urgentRecord = trackedJobs.find(item => ["interview", "screening"].includes(item.record.stage)) || trackedJobs[0];
   root.innerHTML = appShell("dashboard", `
-    <section class="glass-card dashboard-hero">
+    <section class="glass-card dashboard-hero" data-tour-target="dashboard-hero">
       <div>
-        <div class="eyebrow"><span class="spark">*</span> My Career OS</div>
-        <h1 class="section-title">Good morning, ${getFirstName(state)}. Your next move is shaped around ${profile.careerStage.toLowerCase()}.</h1>
-        <p class="section-sub">${intel.summary} Vera will keep adjusting your roadmap as you update your profile.</p>
+        <div class="eyebrow"><span class="spark">*</span> My Career OS ${state.session.isDemo ? `<span class="demo-badge inline">${icon("monitor-play")} Demo Mode</span>` : ""}</div>
+        <h1 class="section-title">Today, focus on one clear move.</h1>
+        <p class="section-sub">Good morning, ${getFirstName(state)}. CareerGo is tuned for ${profile.careerStage.toLowerCase()} and will stay calm, practical, and updated as your profile changes.</p>
       </div>
       <div class="health-ring" style="--score:${intel.readinessScore}">
         <span>${intel.readinessLevel}</span>
         <small>${intel.confidence} confidence</small>
       </div>
     </section>
-    <section class="metric-strip">
+    <section class="today-panel">
+      <article class="glass-card today-primary" data-tour-target="vera">
+        <div class="section-kicker">Vera says</div>
+        <h2>${intel.immediateActions[0]}</h2>
+        <p>${intel.summary}</p>
+        <div class="hero-actions compact-actions">
+          <a class="btn btn-primary" href="vera.html#plan">${icon("sparkles")} Ask Vera</a>
+          <a class="btn btn-ghost" href="profile.html">${icon("user-round")} Improve profile</a>
+        </div>
+      </article>
+      <article class="glass-card today-side">
+        <div class="section-kicker">Next application action</div>
+        ${urgentRecord ? `
+          <div class="list-card quiet">
+            <div class="list-card-top"><div><h3>${urgentRecord.job.title}</h3><div class="muted small">${urgentRecord.job.company} - ${urgentRecord.job.salary}</div></div>${applicationStagePill(urgentRecord.record.stage)}</div>
+            <p class="muted">${urgentRecord.record.nextAction}</p>
+            ${applicationProgress(urgentRecord.record)}
+          </div>
+        ` : `
+          <p class="muted">Save one role to start your application tracker.</p>
+          <a class="btn btn-cyan" href="jobs.html">${icon("briefcase")} Find matches</a>
+        `}
+      </article>
+    </section>
+    <section class="metric-strip airy" data-tour-target="metrics">
       <a class="metric" href="profile.html" title="Range-based profile readiness, not a fake precision score."><strong>${intel.readinessLevel}</strong><span>Readiness</span></a>
       <a class="metric" href="profile.html" title="${intel.atsReadiness}"><strong>${profile.resume.uploaded || profile.resume.name ? "Review ready" : "No resume"}</strong><span>Resume</span></a>
       <a class="metric" href="jobs.html" title="Roles you saved for later review."><strong>${savedJobs.length}</strong><span>Saved roles</span></a>
       <a class="metric" href="jobs.html" title="Applications currently in your tracker."><strong>${applications.length}</strong><span>Applications</span></a>
     </section>
-    <section class="content-grid">
-      <div class="glass-card">
-        <div class="section-head"><div><div class="section-kicker">Vera next action</div><h2 class="section-title mini">Coach widget</h2></div><a class="btn btn-cyan" href="vera.html">${icon("sparkles")} Open Vera</a></div>
-        <div class="vera-box"><h3>Today, do this first</h3><p class="muted">${intel.immediateActions[0]}</p>${progressBar(intel.readinessScore)}</div>
+    <section class="glass-card application-overview" data-tour-target="applications">
+      <div class="section-head"><div><div class="section-kicker">Application progress</div><h2 class="section-title mini">Every job has a next step.</h2></div><a class="btn btn-primary" href="jobs.html#tracker">${icon("kanban")} Open tracker</a></div>
+      <div class="pipeline-strip">
+        ${APPLICATION_STAGES.slice(0, 6).map(stage => `<div class="pipeline-stage"><span>${stage.label}</span><strong>${counts[stage.key] || 0}</strong></div>`).join("")}
       </div>
-      <div class="glass-card">
+      <div class="list-stack spacious-list">
+        ${(trackedJobs.length ? trackedJobs.slice(0, 3) : topJobs.slice(0, 2).map(job => ({ job, record: createApplicationRecord(job.id, "saved") }))).map(({ job, record }) => `
+          <a class="list-card application-row" href="jobs.html?job=${job.id}#tracker">
+            <div class="list-card-top">
+              <div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.location}</div></div>
+              ${applicationStagePill(record.stage)}
+            </div>
+            <p class="muted">${record.nextAction}</p>
+            ${applicationProgress(record)}
+          </a>
+        `).join("")}
+      </div>
+    </section>
+    <section class="content-grid calm-grid">
+      <div class="glass-card" data-tour-target="intelligence">
         <div class="section-kicker">Career Intelligence</div>
         ${[
           ["Resume", intel.resumeReadiness],
@@ -1319,38 +2176,42 @@ function renderDashboard() {
           ["Market", intel.marketFit]
         ].map(([label, value]) => `<div class="insight-row"><span>${label}</span><strong>${value}</strong></div>`).join("")}
       </div>
-    </section>
-    <section class="glass-card">
-      <div class="section-head"><div><div class="section-kicker">Career futures</div><h2 class="section-title mini">Pick a path with tradeoffs visible.</h2></div><a class="btn btn-ghost" href="market.html">${icon("trending-up")} Explore market</a></div>
-      <div class="grid-3">${intel.recommendedPaths.map((path, index) => `
-        <article class="tool-card">
-          <div class="list-card-top"><h3>${path}</h3><span class="pill cyan">${index === 0 ? "Best next" : "Option"}</span></div>
-          <p>${index === 0 ? target : "Alternative path"}</p><p class="muted small">${intel.longTermOpportunities[index] || "Long-term opportunity"}</p>
-          <div class="warning-box"><p class="muted">${index === 0 ? intel.learningPriority : "Compare effort, income, and lifestyle fit before committing."}</p></div>
-        </article>
-      `).join("")}</div>
-    </section>
-    <section class="glass-card">
-      <div class="section-head"><div><div class="section-kicker">Personalized missions</div><h2 class="section-title mini">${profile.coach.missionFrequency} pace, ${profile.coach.explanationStyle.toLowerCase()}.</h2></div><a class="btn btn-primary" href="vera.html#plan">${icon("route")} Build 90-day plan</a></div>
-      <div class="mission-grid">
-        ${missions.map(mission => `<a class="tool-card" href="${mission.href}"><div class="list-card-top"><h3>${mission.title}</h3><span class="pill gold">+${mission.xp} XP</span></div><p>${mission.body}</p>${progressBar(state.missionProgress[mission.id] || mission.progress)}</a>`).join("")}
+      <div class="glass-card">
+        <div class="section-head"><div><div class="section-kicker">Top matches</div><h2 class="section-title mini">Only the best few.</h2></div><a class="btn btn-ghost" href="jobs.html">${icon("briefcase")} See jobs</a></div>
+        <div class="list-stack">
+          ${topJobs.slice(0, 2).map(job => `<a class="list-card quiet" href="jobs.html?job=${job.id}"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div></a>`).join("")}
+        </div>
       </div>
     </section>
-    <section class="glass-card">
-      <h2 class="section-title mini">Application tracker</h2>
-      <div class="list-stack">
-        ${(applications.length ? applications : DATA.jobs.slice(0, 2)).map((job, index) => `
-          <a class="list-card" href="jobs.html?job=${job.id}">
-            <div class="list-card-top">
-              <div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div>
-              <span class="pill ${index ? "gold" : "green"}">${index ? "Interview prep" : "Follow up"}</span>
-            </div>
-          </a>
-        `).join("")}
+    <section class="glass-card" data-tour-target="missions">
+      <div class="section-head"><div><div class="section-kicker">Personalized missions</div><h2 class="section-title mini">${profile.coach.missionFrequency} pace, ${profile.coach.explanationStyle.toLowerCase()}.</h2></div><a class="btn btn-primary" href="vera.html#plan">${icon("route")} Build 90-day plan</a></div>
+      <div class="mission-grid">
+        ${missions.slice(0, 2).map(mission => `<a class="tool-card" href="${mission.href}"><div class="list-card-top"><h3>${mission.title}</h3><span class="pill gold">+${mission.xp} XP</span></div><p>${mission.body}</p>${progressBar(state.missionProgress[mission.id] || mission.progress)}</a>`).join("")}
+      </div>
+      <div class="section-head mission-head"><div><div class="section-kicker">Beginner mission path</div><h2 class="section-title mini">Use CareerGo without feeling lost.</h2></div><span class="pill cyan">${visibleBeginnerMissions.filter(mission => (state.missionProgress[mission.id] || 0) >= 100).length}/${visibleBeginnerMissions.length} shown</span></div>
+      <div class="starter-mission-grid">
+        ${visibleBeginnerMissions.map(mission => {
+          const progress = state.missionProgress[mission.id] || 0;
+          const done = progress >= 100;
+          return `
+            <article class="tool-card starter-mission ${done ? "complete" : ""}" data-mission-card="${mission.id}">
+              <div class="mission-icon">${icon(done ? "check" : mission.icon)}</div>
+              <h3>${mission.title}</h3>
+              <p>${mission.body}</p>
+              ${progressBar(done ? 100 : progress)}
+              <div class="mission-actions">
+                <a class="btn btn-ghost" href="${mission.href}">Open</a>
+                <button class="btn btn-cyan" type="button" data-complete-mission="${mission.id}">${done ? icon("check") + " Done" : icon("circle-check") + " Mark done"}</button>
+              </div>
+            </article>
+          `;
+        }).join("")}
       </div>
     </section>
   `);
   createIcons();
+  bindMissionActions();
+  initDashboardTour();
 }
 
 function renderVera() {
@@ -1365,6 +2226,7 @@ function renderVera() {
     createIcons();
     return;
   }
+  qs(".page-hero")?.classList.add("is-hidden");
   const initialTopic = new URLSearchParams(location.search).get("topic");
   const messages = state.chat.length ? state.chat : [
     { from: "vera", text: `Welcome back, ${getFirstName(state)}. I checked your ${state.profile.careerStage || "career"} profile. Your best move today is: ${state.profile.intelligence.immediateActions[0]}` },
@@ -1432,7 +2294,9 @@ function renderVera() {
     `;
   }
 
-  root.innerHTML = `
+  root.className = "container os-layout";
+  const veraContent = `
+    <section class="vera-module">
     <aside class="glass-card">
       <div class="eyebrow"><span class="spark">*</span> Coach Vera</div>
       <h2 class="section-title" style="font-size:36px">Your AI career mentor.</h2>
@@ -1446,13 +2310,15 @@ function renderVera() {
         ].map(([key, label]) => `<button class="pill ${activeTab === key ? "cyan active" : ""}" data-vera-tab="${key}">${label}</button>`).join("")}
       </div>
       <div class="detail-section vera-box">
-        <h3>Mission control</h3>
-        <p class="muted">Vera can plan your week, compare companies, improve your resume, prep interviews, or explain market value.</p>
-        <div class="pill-row">${["Plan my week", "Compare companies", "Fix my resume", "Prep interview"].map(x => `<button class="pill gold" data-quick="${x}">${x}</button>`).join("")}</div>
+        <h3>Vera knows</h3>
+        <p class="muted">${state.profile.careerStage || "Your career stage"} - ${getTargetLabel(state.profile)} - ${state.applications.length} active application${state.applications.length === 1 ? "" : "s"}.</p>
+        <div class="pill-row">${["Plan my week", "Compare companies", "Fix my resume", "Prep interview", "Explain application status"].map(x => `<button class="pill gold" data-quick="${x}">${x}</button>`).join("")}</div>
       </div>
     </aside>
     <div data-vera-panel>${tabContent()}</div>
+    </section>
   `;
+  root.innerHTML = appShell("vera", veraContent, { title: "Vera", subtitle: "Ask for coaching while keeping your dashboard, jobs, and profile one click away." });
   renderMessages();
   attachVeraEvents();
 
@@ -1547,8 +2413,9 @@ function renderAuth() {
             </div>
             <p class="muted small">We use this to personalize your career roadmap. You can edit it anytime.</p>
           ` : `
-            <label>Email <input name="email" type="email" required autocomplete="email" placeholder="you@example.com"></label>
-            <label>Password <input name="password" type="password" required autocomplete="current-password"></label>
+            <label>Email <input name="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+            <label>Password <input name="password" type="password" autocomplete="current-password"></label>
+            <p class="muted small">Judges can press Log in with empty fields to open a personalized preview account.</p>
           `}
           <button class="btn btn-primary" type="submit">${icon("rocket")} ${mode === "register" ? "Create account" : "Log in"}</button>
         </form>
@@ -1569,6 +2436,17 @@ function renderAuth() {
     const email = String(form.get("email") || "").trim().toLowerCase();
     const password = String(form.get("password") || "");
     if (mode === "login") {
+      if (!email && !password) {
+        applyDemoAccount(next);
+        writeState(next);
+        showToast("Demo workspace opened.");
+        location.href = "dashboard.html";
+        return;
+      }
+      if (!email || !password) {
+        showToast("Enter both email and password, or leave both empty for the judge preview.", "info");
+        return;
+      }
       const user = next.auth.users.find(item => item.email === email && item.password === password);
       if (!user) {
         showToast("No matching account found on this device.", "info");
@@ -2111,10 +2989,27 @@ function renderAutopilot() {
   if (!requireAccount(root, "use Autopilot")) return;
   if (needsOnboarding(root)) return;
   const state = readState();
+  const tracked = getTrackedJobs(state);
+  const counts = applicationSummaryCounts(state);
   root.innerHTML = appShell("autopilot", `
     <section class="glass-card dashboard-hero">
-      <div><div class="eyebrow"><span class="spark">*</span> Autopilot Proxy</div><h1 class="section-title">Let Vera scan. You stay in control.</h1><p class="section-sub">Rules, radar, scan-only mode, activity log, and application tracker restored from the previous CareerGo.</p></div>
+      <div><div class="eyebrow"><span class="spark">*</span> Applications</div><h1 class="section-title">Track every role from saved to outcome.</h1><p class="section-sub">See status, next action, deadline, Vera advice, and automation rules in one place.</p></div>
       <div class="radar"><span></span></div>
+    </section>
+    <section class="glass-card application-overview">
+      <div class="section-head"><div><div class="section-kicker">Pipeline</div><h2 class="section-title mini">Nothing disappears after you apply.</h2></div><a class="btn btn-primary" href="jobs.html#tracker">${icon("briefcase")} Manage in Jobs</a></div>
+      <div class="pipeline-strip">
+        ${APPLICATION_STAGES.slice(0, 6).map(stage => `<div class="pipeline-stage"><span>${stage.label}</span><strong>${counts[stage.key] || 0}</strong></div>`).join("")}
+      </div>
+      <div class="list-stack spacious-list">
+        ${tracked.length ? tracked.map(({ job, record }) => `
+          <a class="list-card application-row" href="jobs.html?job=${job.id}#tracker">
+            <div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${record.deadline}</div></div>${applicationStagePill(record.stage)}</div>
+            <p class="muted">${record.nextAction}</p>
+            ${applicationProgress(record)}
+          </a>
+        `).join("") : `<div class="card">No applications yet. Save or apply to a job to start tracking progress.</div>`}
+      </div>
     </section>
     <section class="content-grid">
       <form class="glass-card form-grid" data-rules-form>
@@ -2136,7 +3031,7 @@ function renderAutopilot() {
       <div class="section-kicker">Activity log</div>
       <div class="list-stack">${DATA.autopilotEvents.map(event => `<div class="list-card"><div class="list-card-top"><div><h3>${event.title}</h3><div class="muted small">${event.reason}</div></div><span class="pill ${event.type === "skipped" ? "red" : event.type === "saved" ? "gold" : "green"}">${event.status}</span></div></div>`).join("")}</div>
     </section>
-  `);
+  `, { title: "Applications", subtitle: "Track status, follow-ups, deadlines, and Vera's next actions." });
   qs("[data-rules-form]").addEventListener("submit", event => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -2282,7 +3177,7 @@ function renderComparison() {
 }
 
 function init() {
-  setActiveNav();
+  renderNavigation();
   renderFeatured();
   renderJobsPage();
   renderDirectoryPage(document.body.dataset.directory || "");
