@@ -988,11 +988,15 @@ img { max-width: 100%; display: block; }
   text-align: left;
 }
 
-.os-nav a.active,
-.os-nav a:hover,
-.os-nav-button:hover {
+.os-nav a.active {
   color: #fff;
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.45), rgba(34, 211, 238, 0.16));
+}
+
+.os-nav a:hover:not(.active),
+.os-nav-button:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .notification-box {

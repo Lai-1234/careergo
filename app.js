@@ -2201,10 +2201,11 @@ function renderEmployerPortal() {
   const pipeline = ["Saved", "Screen", "Interview", "Offer"];
   const state = readState();
   const employer = state.employerProfile || {};
+  const currentHash = location.hash || "#cockpit";
   root.innerHTML = `
     <aside class="os-sidebar glass-card">
-      <div class="os-user"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><div><strong>Employer OS</strong><span>Talent dashboard</span></div></div>
-      <nav class="os-nav"><a class="active" href="#cockpit">${icon("layout-dashboard")} Cockpit</a><a href="#roles">${icon("briefcase")} Roles</a><a href="#talent">${icon("users")} Talent</a><a href="#pipeline">${icon("kanban")} Pipeline</a><a href="#assistant">${icon("sparkles")} AI Assistant</a></nav>
+      <div class="os-user"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><div><strong>Employer OS</strong><span>Talent dashboard</span></div><button class="sidebar-toggle" id="sidebar-close-btn" aria-label="Close navigation" style="margin-left:auto">${icon("x")}</button></div>
+      <nav class="os-nav" id="employer-os-nav"><a class="${currentHash === '#cockpit' ? 'active' : ''}" href="#cockpit">${icon("layout-dashboard")} Cockpit</a><a class="${currentHash === '#roles' ? 'active' : ''}" href="#roles">${icon("briefcase")} Roles</a><a class="${currentHash === '#talent' ? 'active' : ''}" href="#talent">${icon("users")} Talent</a><a class="${currentHash === '#pipeline' ? 'active' : ''}" href="#pipeline">${icon("kanban")} Pipeline</a><a class="${currentHash === '#assistant' ? 'active' : ''}" href="#assistant">${icon("sparkles")} AI Assistant</a></nav>
     </aside>
     <div class="os-main">
       <section class="glass-card"><div class="eyebrow"><span class="spark">*</span> Hiring cockpit</div><h1 class="section-title">Fit, pipeline, reputation, and action in one place.</h1><div class="metric-strip"><div class="metric"><strong>257</strong><span>Applicants</span></div><div class="metric"><strong>71</strong><span>Qualified</span></div><div class="metric"><strong>21d</strong><span>Time to hire</span></div><div class="metric"><strong>86%</strong><span>Offer acceptance</span></div></div></section>
@@ -2213,8 +2214,19 @@ function renderEmployerPortal() {
       <section class="glass-card" id="pipeline"><div class="section-kicker">Hiring pipeline</div><div class="kanban">${pipeline.map(stage => `<div class="kanban-col"><h3>${stage}</h3>${DATA.candidates.filter(c => c.stage === stage || (stage === "Saved" && c.stage === "Saved")).map(c => `<div class="review-card"><strong>${c.name}</strong><p class="muted small">${c.role} - ${c.fit}% fit</p></div>`).join("") || `<div class="review-card"><p class="muted small">No candidates yet</p></div>`}</div>`).join("")}</div></section>
       <section class="content-grid" id="assistant"><div class="glass-card"><div class="section-kicker">Posts and updates</div>${DATA.communityPosts.slice(0, 2).map(post => `<div class="list-card"><h3>${post.title}</h3><p class="muted">${post.body}</p></div>`).join("")}</div><div class="glass-card vera-box"><h2 class="section-title mini">AI hiring assistant</h2><p class="muted">Vera can summarize candidates, draft outreach, generate interview questions, and explain pipeline bottlenecks.</p><div class="hero-actions"><button class="btn btn-primary">${icon("sparkles")} Draft outreach</button><button class="btn btn-cyan">${icon("list-checks")} Interview questions</button></div></div></section>
     </div>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
   `;
   createIcons();
+  
+  // Wire up nav links to update active state and close drawer on mobile
+  const navLinks = root.querySelectorAll("#employer-os-nav a");
+  navLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      navLinks.forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+      document.body.classList.remove("sidebar-open");
+    });
+  });
 }
 
 function renderEmployers() {
