@@ -184,6 +184,28 @@ img { max-width: 100%; display: block; }
 }
 .btn-wide { width: 100%; }
 
+.open-os-btn {
+  width: auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .open-os-btn {
+    padding: 8px 12px;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .open-os-label {
+    font-size: 0;
+  }
+  .open-os-label::after {
+    content: "Dashboard";
+    font-size: 13px; /* standard font size to replace the 0 font size */
+  }
+}
+
 .container {
   width: min(1220px, calc(100% - 32px));
   margin: 0 auto;
