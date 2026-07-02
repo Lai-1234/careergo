@@ -893,6 +893,36 @@ function generateCareerIntelligence(profile) {
   };
 }
 
+function confidenceProgress(confidence) {
+  const normalized = String(confidence || "Medium").toLowerCase();
+  if (normalized.includes("high")) return 85;
+  if (normalized.includes("low")) return 35;
+  return 60;
+}
+
+function healthRing(intel, includeConfidenceWord = true) {
+  const progress = confidenceProgress(intel.confidence);
+  const subtitle = includeConfidenceWord ? `${intel.confidence} confidence` : intel.confidence;
+  return `
+    <div class="health-ring" style="--progress:${progress}">
+      <svg class="health-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="health-ring-gradient" x1="24" y1="96" x2="96" y2="24" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#a855f7" />
+            <stop offset="100%" stop-color="#22d3ee" />
+          </linearGradient>
+        </defs>
+        <circle class="health-ring-track" cx="60" cy="60" r="50" pathLength="100"></circle>
+        <circle class="health-ring-progress" cx="60" cy="60" r="50" pathLength="100"></circle>
+      </svg>
+      <div class="health-ring-copy">
+        <span>${intel.readinessLevel}</span>
+        <small>${subtitle}</small>
+      </div>
+    </div>
+  `;
+}
+
 function recommendedPathsFor(profile) {
   const stage = profile.careerStage;
   if (stage === "Still studying" || stage === "Looking for internship") return ["Internship pathway", "Portfolio-building path", "Scholarship or university outcome planning"];
@@ -1680,7 +1710,7 @@ function renderJobsPage() {
       <section class="container os-layout">
         ${appShell("jobs", `
           <section class="jobs-workspace">
-            <aside class="filters card compact-filter">
+            <aside class="filters card compact-filter jobs-filter-bar">
               <h2 class="filter-title">Search jobs</h2>
               <div class="filter-stack">
                 <div class="field"><i data-lucide="search"></i><input data-job-query placeholder="Role, company, skill"></div>
@@ -1713,6 +1743,7 @@ function renderJobsPage() {
                 </div>
                 <label class="range-field"><span>Minimum match <strong data-threshold-label>70%</strong></span><input data-job-threshold type="range" min="60" max="95" value="70"></label>
                 <label class="check-field custom-checkbox"><input data-job-compare-mode type="checkbox"> Compare roles</label>
+                <a class="btn btn-cyan btn-wide" href="vera.html?topic=job search">${icon("sparkles")} Ask Vera</a>
               </div>
             </aside>
             <div class="jobs-main">
@@ -1904,6 +1935,7 @@ function renderJobsPage() {
     detailRoot.innerHTML = `
       <div class="detail-head">
         <div>
+          <span class="job-detail-label">Detail</span>
           <span class="pill cyan">${active.industry}</span>
           <h2>${active.title}</h2>
           <div class="muted">${active.company} - ${active.location} - ${active.salary}</div>
@@ -2051,7 +2083,7 @@ function renderDirectoryPage(kind) {
       <section class="container os-layout">
         ${appShell(kind, `
           <section class="directory-workspace">
-            <aside class="filters card compact-filter">
+            <aside class="filters card compact-filter directory-filter-bar">
               <h2 class="filter-title">Find ${title.toLowerCase()}</h2>
               <div class="filter-stack">
                 <div class="field"><i data-lucide="search"></i><input data-org-query placeholder="${title}, industry, location"></div>
@@ -2123,10 +2155,15 @@ function renderDirectoryPage(kind) {
     const currentLoggedIn = Boolean(currentState.session.loggedIn);
     const reviews = currentState.reviews.filter(r => r.targetId === active.id);
     const saved = currentState.savedOrgs.includes(active.id);
+    const isUniversity = active.type === "University";
+    const saveLabel = saved ? "Saved" : `Save ${isUniversity ? "university" : "company"}`;
+    const secondaryLabel = isUniversity ? "Compare programs" : "Contact";
+    const secondaryTopic = isUniversity ? `${active.name} program comparison` : `${active.name} contact strategy`;
     detailRoot.innerHTML = `
       <div class="detail-head">
         <div>
-          <span class="pill ${active.type === "University" ? "cyan" : "gold"}">${active.type}</span>
+          <span class="org-detail-label">${active.type}</span>
+          <span class="pill ${isUniversity ? "cyan" : "gold"}">${active.type}</span>
           <h2>${active.name}</h2>
           <div class="muted">${active.industry} - ${active.location}</div>
         </div>
@@ -2134,7 +2171,7 @@ function renderDirectoryPage(kind) {
       </div>
       <div class="detail-section">
         <p class="muted">${active.summary}</p>
-        ${pills(active.tags, active.type === "University" ? "cyan" : "gold")}
+        ${pills(active.tags, isUniversity ? "cyan" : "gold")}
       </div>
       <div class="detail-section score-grid">
         ${Object.entries(active.scores).map(([label, value]) => `<div class="score-tile"><span>${label}</span><strong>${value.toFixed(1)}</strong></div>`).join("")}
@@ -2164,15 +2201,6 @@ function renderDirectoryPage(kind) {
       <div class="detail-section">
         <div class="section-head" style="margin-bottom:14px">
           <h3>Reviews</h3>
-          <div class="hero-actions" style="margin-top:0">
-            ${currentLoggedIn ? `
-              <button class="btn btn-ghost" data-save-org>${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save"}</button>
-              <button class="btn btn-primary" data-review>${icon("pen-line")} Write review</button>
-            ` : `
-              <button class="btn btn-ghost" data-auth-prompt="save and compare ${active.type.toLowerCase()} research">${icon("bookmark")} Save</button>
-              <button class="btn btn-primary" data-auth-prompt="write trusted reviews">${icon("pen-line")} Write review</button>
-            `}
-          </div>
         </div>
         <div>
           ${(reviews.length ? reviews : currentState.reviews.filter(r => r.targetId === active.id)).map(review => `
@@ -2189,14 +2217,29 @@ function renderDirectoryPage(kind) {
           `).join("") || `<div class="review-card"><p class="muted">No reviews yet. Be the first to help other users research this ${active.type.toLowerCase()}.</p></div>`}
         </div>
       </div>
+      <div class="org-detail-actions">
+        ${currentLoggedIn ? `
+          <div class="org-detail-action-row">
+            <button class="btn btn-ghost" data-save-org>${icon(saved ? "bookmark-check" : "bookmark")} ${saveLabel}</button>
+            <a class="btn btn-primary" href="vera.html?topic=${encodeURIComponent(secondaryTopic)}">${icon(isUniversity ? "graduation-cap" : "send")} ${secondaryLabel}</a>
+          </div>
+          <a class="btn btn-cyan org-detail-action-wide" href="vera.html?topic=${encodeURIComponent(`${active.name} ${active.type.toLowerCase()} research`)}">${icon("message-circle")} Ask Vera</a>
+        ` : `
+          <div class="org-detail-action-row">
+            <button class="btn btn-ghost" data-auth-prompt="save and compare ${active.type.toLowerCase()} research">${icon("bookmark")} ${isUniversity ? "Save university" : "Save company"}</button>
+            <button class="btn btn-primary" data-auth-prompt="${isUniversity ? "compare university programs" : "contact this company"}">${icon(isUniversity ? "graduation-cap" : "send")} ${secondaryLabel}</button>
+          </div>
+          <button class="btn btn-cyan org-detail-action-wide" data-auth-prompt="ask Vera for personalized research">${icon("message-circle")} Ask Vera</button>
+        `}
+      </div>
     `;
     if (!currentLoggedIn) {
       bindProtectedPrompts(detailRoot);
       createIcons();
       return;
     }
-    qs("[data-review]", detailRoot).addEventListener("click", () => openReviewModal(active));
-    qs("[data-save-org]", detailRoot).addEventListener("click", () => {
+    qs("[data-review]", detailRoot)?.addEventListener("click", () => openReviewModal(active));
+    qs("[data-save-org]", detailRoot)?.addEventListener("click", () => {
       const next = readState();
       next.savedOrgs = next.savedOrgs.includes(active.id) ? next.savedOrgs.filter(id => id !== active.id) : [...next.savedOrgs, active.id];
       writeState(next);
@@ -2298,10 +2341,7 @@ function renderDashboard() {
         <h1 class="section-title">Today, focus on one clear move.</h1>
         <p class="section-sub">Good morning, ${getFirstName(state)}. CareerGo is tuned for ${profile.careerStage.toLowerCase()} and will stay calm, practical, and updated as your profile changes.</p>
       </div>
-      <div class="health-ring" style="--score:${intel.readinessScore}">
-        <span>${intel.readinessLevel}</span>
-        <small>${intel.confidence} confidence</small>
-      </div>
+      ${healthRing(intel)}
     </section>
     <section class="today-panel">
       <article class="glass-card today-primary" data-tour-target="vera">
@@ -2565,13 +2605,60 @@ function veraReply(text) {
   return "I would turn that into a decision. First define your goal, then compare the role or organization against growth, salary, culture, and evidence you can show.";
 }
 
+const AUTH_ROLE_KEY = "careergo-auth-role";
+const AUTH_ROLE_CANDIDATE_TYPE = ROLE_TYPES.find(role => role !== "Employer / Recruiter") || "Student";
+const AUTH_ROLE_EMPLOYER_TYPE = "Employer / Recruiter";
+
+function normalizeAuthRole(value) {
+  const role = String(value || "").trim().toLowerCase();
+  if (["employer", "employer-os", "employer os", "employer / recruiter", "recruiter"].includes(role)) return "employer";
+  return "candidate";
+}
+
+function getInitialAuthRole() {
+  const params = new URLSearchParams(location.search);
+  const roleParam = params.get("role") || params.get("workspace") || params.get("os");
+  if (roleParam) return normalizeAuthRole(roleParam);
+  try {
+    return normalizeAuthRole(localStorage.getItem(AUTH_ROLE_KEY));
+  } catch (error) {
+    return "candidate";
+  }
+}
+
+function persistAuthRole(role) {
+  try {
+    localStorage.setItem(AUTH_ROLE_KEY, normalizeAuthRole(role));
+  } catch (error) {
+    /* Selection still works for the current page if storage is unavailable. */
+  }
+}
+
 function renderAuth() {
   const root = qs("[data-auth]");
   if (!root) return;
   const mode = root.dataset.auth;
+  const initialAuthRole = getInitialAuthRole();
   const roleOptions = ROLE_TYPES.map(role => `<option value="${role}">${role}</option>`).join("");
   root.innerHTML = `
     <div class="auth-shell">
+      <aside class="glass-card auth-side">
+        <h2 class="section-title mini">Role entry</h2>
+        <div class="grid-2 auth-role-grid" role="radiogroup" aria-label="Choose workspace role" data-auth-role-group>
+          <div class="tool-card auth-role-card" role="radio" aria-checked="false" tabindex="-1" data-auth-role="candidate">
+            <span class="auth-role-indicator" aria-hidden="true">${icon("check")}</span>
+            <h3>Candidate OS</h3>
+            <p>Resume analysis, career score, missions, Vera, jobs, market value.</p>
+            <a class="auth-role-learn" href="onboarding.html">Learn more ${icon("arrow-right")}</a>
+          </div>
+          <div class="tool-card auth-role-card" role="radio" aria-checked="false" tabindex="-1" data-auth-role="employer">
+            <span class="auth-role-indicator" aria-hidden="true">${icon("check")}</span>
+            <h3>Employer OS</h3>
+            <p>Hiring cockpit, roles, candidate discovery, pipeline, and AI hiring assistant.</p>
+            <a class="auth-role-learn" href="employer-onboarding.html">Learn more ${icon("arrow-right")}</a>
+          </div>
+        </div>
+      </aside>
       <section class="glass-card auth-panel">
         <div class="eyebrow"><span class="spark">*</span> ${mode === "register" ? "Create account" : "Welcome back"}</div>
         <h1 class="section-title">${mode === "register" ? "Begin a career journey that adapts to you." : "Open your CareerGo workspace."}</h1>
@@ -2600,21 +2687,63 @@ function renderAuth() {
           ` : `
             <label>Email <input name="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
             <label>Password <input name="password" type="password" autocomplete="current-password"></label>
-            <p class="muted small">Judges can press Log in with empty fields to open a personalized preview account.</p>
+            <p class="auth-tip">${icon("info")} <span>Judges can press Log in with empty fields to open a personalized preview account.</span></p>
           `}
           <button class="btn btn-primary" type="submit">${icon("rocket")} ${mode === "register" ? "Create account" : "Log in"}</button>
         </form>
       </section>
-      <aside class="glass-card">
-        <h2 class="section-title mini">Role entry</h2>
-        <div class="grid-2">
-          <a class="tool-card" href="onboarding.html"><h3>Candidate OS</h3><p>Resume analysis, career score, missions, Vera, jobs, market value.</p></a>
-          <a class="tool-card" href="employer-onboarding.html"><h3>Employer OS</h3><p>Hiring cockpit, roles, candidate discovery, pipeline, and AI hiring assistant.</p></a>
-        </div>
-      </aside>
     </div>
   `;
-  qs("[data-auth-form]").addEventListener("submit", event => {
+  const formEl = qs("[data-auth-form]");
+  const roleTypeSelect = qs('select[name="roleType"]', formEl);
+  const roleCards = qsa("[data-auth-role]", root);
+  let selectedAuthRole = initialAuthRole;
+
+  function selectAuthRole(role, syncForm = true) {
+    selectedAuthRole = normalizeAuthRole(role);
+    persistAuthRole(selectedAuthRole);
+    roleCards.forEach(card => {
+      const checked = card.dataset.authRole === selectedAuthRole;
+      card.setAttribute("aria-checked", String(checked));
+      card.tabIndex = checked ? 0 : -1;
+      card.classList.toggle("is-selected", checked);
+    });
+    if (syncForm && roleTypeSelect) {
+      roleTypeSelect.value = selectedAuthRole === "employer" ? AUTH_ROLE_EMPLOYER_TYPE : AUTH_ROLE_CANDIDATE_TYPE;
+    }
+  }
+
+  roleCards.forEach((card, index) => {
+    card.addEventListener("click", event => {
+      if (event.target.closest(".auth-role-learn")) return;
+      selectAuthRole(card.dataset.authRole);
+    });
+    card.addEventListener("keydown", event => {
+      if (event.target.closest(".auth-role-learn")) return;
+      const isNext = event.key === "ArrowRight" || event.key === "ArrowDown";
+      const isPrevious = event.key === "ArrowLeft" || event.key === "ArrowUp";
+      if (event.key === " " || event.key === "Enter") {
+        event.preventDefault();
+        selectAuthRole(card.dataset.authRole);
+        card.focus();
+      } else if (isNext || isPrevious) {
+        event.preventDefault();
+        const offset = isNext ? 1 : -1;
+        const nextCard = roleCards[(index + offset + roleCards.length) % roleCards.length];
+        selectAuthRole(nextCard.dataset.authRole);
+        nextCard.focus();
+      }
+    });
+  });
+  qsa(".auth-role-learn", root).forEach(link => {
+    link.addEventListener("click", event => event.stopPropagation());
+  });
+  roleTypeSelect?.addEventListener("change", event => {
+    selectAuthRole(event.currentTarget.value === AUTH_ROLE_EMPLOYER_TYPE ? "employer" : "candidate", false);
+  });
+  selectAuthRole(initialAuthRole);
+
+  formEl.addEventListener("submit", event => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const next = readState();
@@ -2623,9 +2752,10 @@ function renderAuth() {
     if (mode === "login") {
       if (!email && !password) {
         applyDemoAccount(next);
+        next.session = { ...next.session, role: selectedAuthRole };
         writeState(next);
         showToast("Demo workspace opened.");
-        location.href = "dashboard.html";
+        location.href = selectedAuthRole === "employer" ? "employer-app.html" : "dashboard.html";
         return;
       }
       if (!email || !password) {
@@ -2637,11 +2767,11 @@ function renderAuth() {
         showToast("No matching account found on this device.", "info");
         return;
       }
-      next.session = { loggedIn: true, role: user.role, currentUserId: user.id, name: user.fullName };
+      next.session = { loggedIn: true, role: selectedAuthRole, currentUserId: user.id, name: user.fullName };
       if (user.profile) next.profile = normalizeProfile(user.profile);
       writeState(next);
       showToast("Welcome back.");
-      location.href = user.role === "employer" ? "employer-app.html" : next.onboarding.candidateDone ? "dashboard.html" : "onboarding.html";
+      location.href = selectedAuthRole === "employer" ? "employer-app.html" : next.onboarding.candidateDone ? "dashboard.html" : "onboarding.html";
       return;
     }
     const confirm = String(form.get("confirmPassword") || "");
@@ -2950,7 +3080,7 @@ function renderProfile() {
   root.innerHTML = appShell("profile", `
     <section class="glass-card dashboard-hero">
       <div><div class="eyebrow"><span class="spark">*</span> Career Intelligence</div><h1 class="section-title">${getUserName(state)}'s career profile.</h1><p class="section-sub">${intel.summary}</p></div>
-      <div class="health-ring" style="--score:${intel.readinessScore}"><span>${intel.readinessLevel}</span><small>${intel.confidence}</small></div>
+      ${healthRing(intel, false)}
     </section>
     <section class="glass-card">
       <div class="section-kicker">Generated profile</div>
