@@ -1700,15 +1700,15 @@ function renderJobsPage() {
   if (state.session.loggedIn && needsOnboarding(root)) return;
   if (state.session.loggedIn) {
     root.innerHTML = `
-      <section class="page-hero os-page-hero">
-        <div class="container">
-          <div class="eyebrow"><span class="spark">*</span> Job workspace</div>
-          <h1>Matches, saved roles, and applications in one calm place.</h1>
-          <p class="page-copy">Review only the strongest roles, move applications through stages, and ask Vera what to do next.</p>
-        </div>
-      </section>
       <section class="container os-layout">
         ${appShell("jobs", `
+          <section class="glass-card dashboard-hero jobs-hero-card">
+            <div>
+              <div class="eyebrow"><span class="spark">*</span> Job workspace</div>
+              <h1 class="section-title">Matches, saved roles, and applications in one calm place.</h1>
+              <p class="section-sub">Review only the strongest roles, move applications through stages, and ask Vera what to do next.</p>
+            </div>
+          </section>
           <section class="jobs-workspace">
             <aside class="filters card compact-filter jobs-filter-bar">
               <h2 class="filter-title">Search jobs</h2>
@@ -3095,9 +3095,10 @@ function renderProfile() {
         ].map(([label, value]) => `<div class="score-tile"><span>${label}</span><strong>${value}</strong></div>`).join("")}
       </div>
     </section>
-    <form class="os-main" data-profile-form>
-      <section class="content-grid">
-        <div class="glass-card form-grid">
+    <form class="os-main profile-form" data-profile-form>
+      <section class="profile-form-columns">
+        <div class="profile-form-column">
+        <div class="glass-card form-grid profile-card">
           <h2 class="section-title mini">Personal Information</h2>
           <label>Full name <input name="fullName" value="${profile.personal.fullName}"></label>
           <div class="grid-2"><label>Email <input name="email" type="email" value="${profile.personal.email}"></label><label>Phone optional <input name="phone" value="${profile.personal.phone}"></label></div>
@@ -3105,31 +3106,13 @@ function renderProfile() {
           <div class="grid-2"><label>Country <input name="country" value="${profile.personal.country}"></label><label>City / State <input name="cityState" value="${profile.personal.cityState}"></label></div>
           <label>Role type <select name="roleType">${ROLE_TYPES.map(role => `<option value="${role}" ${profile.personal.roleType === role ? "selected" : ""}>${role}</option>`).join("")}</select></label>
         </div>
-        <div class="glass-card form-grid">
-          <h2 class="section-title mini">Career Goals</h2>
-          <label>Career stage <select name="careerStage">${CAREER_STAGES.map(stage => `<option value="${stage}" ${profile.careerStage === stage ? "selected" : ""}>${stage}</option>`).join("")}</select></label>
-          <label>Goals <textarea name="goals">${profile.goals.join(", ")}</textarea></label>
-          <label>Preferred roles <textarea name="roles">${profile.preferences.roles.join(", ")}</textarea></label>
-          <label>Preferred industries <textarea name="industries">${profile.preferences.industries.join(", ")}</textarea></label>
-        </div>
-      </section>
-      <section class="content-grid">
-        <div class="glass-card form-grid">
+        <div class="glass-card form-grid profile-card">
           <h2 class="section-title mini">Education</h2>
           <label>School / university <input name="school" value="${profile.background.school}"></label>
           <div class="grid-2"><label>Education level <input name="educationLevel" value="${profile.background.educationLevel}"></label><label>Course / major <input name="courseMajor" value="${profile.background.courseMajor}"></label></div>
           <div class="grid-2"><label>Expected graduation year <input name="expectedGraduationYear" value="${profile.background.expectedGraduationYear}"></label><label>Academic performance optional <input name="academicPerformance" value="${profile.background.academicPerformance}"></label></div>
         </div>
-        <div class="glass-card form-grid">
-          <h2 class="section-title mini">Experience</h2>
-          <div class="grid-2"><label>Current / last role <input name="currentRole" value="${profile.background.currentRole || profile.background.lastRole}"></label><label>Industry <input name="industry" value="${profile.background.industry}"></label></div>
-          <div class="grid-2"><label>Years of experience <input name="yearsExperience" value="${profile.background.yearsExperience}"></label><label>Management experience <input name="managementExperience" value="${profile.background.managementExperience}"></label></div>
-          <label>Previous roles / work experience <textarea name="previousRoles">${profile.background.previousRoles || profile.skills.workExperience}</textarea></label>
-          <label>Career switch / gap / senior context <textarea name="careerContext">${profile.background.switchConcerns || profile.background.gapReason || profile.background.leadershipExperience}</textarea></label>
-        </div>
-      </section>
-      <section class="content-grid">
-        <div class="glass-card form-grid">
+        <div class="glass-card form-grid profile-card">
           <h2 class="section-title mini">Skills</h2>
           <label>Technical / domain skills <textarea name="technical">${profile.skills.technical.join(", ")}</textarea></label>
           <label>Soft skills <textarea name="soft">${profile.skills.soft.join(", ")}</textarea></label>
@@ -3137,42 +3120,55 @@ function renderProfile() {
           <label>Certifications <textarea name="certifications">${profile.skills.certifications.join(", ")}</textarea></label>
           <label>Languages <input name="languages" value="${profile.skills.languages.join(", ")}"></label>
         </div>
-        <div class="glass-card form-grid">
-          <h2 class="section-title mini">Projects & Links</h2>
-          <label>Projects <textarea name="projects">${profile.skills.projects.join(", ")}</textarea></label>
-          <label>Achievements <textarea name="achievements">${profile.skills.achievements.join(", ")}</textarea></label>
-          <label>Portfolio links <input name="portfolioLinks" value="${profile.skills.portfolioLinks}"></label>
-          <div class="grid-2"><label>LinkedIn <input name="linkedin" value="${profile.skills.linkedin}"></label><label>GitHub <input name="github" value="${profile.skills.github}"></label></div>
-        </div>
-      </section>
-      <section class="content-grid">
-        <div class="glass-card form-grid">
+        <div class="glass-card form-grid profile-card">
           <h2 class="section-title mini">Job Preferences</h2>
           <label>Preferred locations <textarea name="locations">${profile.preferences.locations.join(", ")}</textarea></label>
           <div class="grid-2"><label>Work mode <input name="workMode" value="${profile.preferences.workMode}"></label><label>Employment types <input name="employmentTypes" value="${profile.preferences.employmentTypes.join(", ")}"></label></div>
           <div class="grid-2"><label>Minimum salary optional <input name="minimumSalary" value="${profile.preferences.minimumSalary}"></label><label>Relocate <input name="relocate" value="${profile.preferences.relocate}"></label></div>
           <div class="grid-2"><label>Work culture <input name="workCulture" value="${profile.preferences.workCulture}"></label><label>Risk tolerance <input name="riskTolerance" value="${profile.preferences.riskTolerance}"></label></div>
         </div>
-        <div class="glass-card form-grid">
+        <div class="glass-card form-grid profile-card">
+          <h2 class="section-title mini">Privacy Settings</h2>
+          <label>Profile visibility <select name="profileVisibility"><option>${profile.privacy.profileVisibility}</option><option>Private</option><option>Visible to employers</option><option>Visible for advisory opportunities</option></select></label>
+          <label class="check-field custom-checkbox"><input name="allowEmployerDiscovery" type="checkbox" ${profile.privacy.allowEmployerDiscovery ? "checked" : ""}> Allow employer discovery</label>
+          <label class="check-field custom-checkbox"><input name="allowCoachMemory" type="checkbox" ${profile.privacy.allowCoachMemory ? "checked" : ""}> Allow Vera to remember coaching context</label>
+        </div>
+        </div>
+        <div class="profile-form-column">
+        <div class="glass-card form-grid profile-card">
+          <h2 class="section-title mini">Career Goals</h2>
+          <label>Career stage <select name="careerStage">${CAREER_STAGES.map(stage => `<option value="${stage}" ${profile.careerStage === stage ? "selected" : ""}>${stage}</option>`).join("")}</select></label>
+          <label>Goals <textarea name="goals">${profile.goals.join(", ")}</textarea></label>
+          <label>Preferred roles <textarea name="roles">${profile.preferences.roles.join(", ")}</textarea></label>
+          <label>Preferred industries <textarea name="industries">${profile.preferences.industries.join(", ")}</textarea></label>
+        </div>
+        <div class="glass-card form-grid profile-card">
+          <h2 class="section-title mini">Experience</h2>
+          <div class="grid-2"><label>Current / last role <input name="currentRole" value="${profile.background.currentRole || profile.background.lastRole}"></label><label>Industry <input name="industry" value="${profile.background.industry}"></label></div>
+          <div class="grid-2"><label>Years of experience <input name="yearsExperience" value="${profile.background.yearsExperience}"></label><label>Management experience <input name="managementExperience" value="${profile.background.managementExperience}"></label></div>
+          <label>Previous roles / work experience <textarea name="previousRoles">${profile.background.previousRoles || profile.skills.workExperience}</textarea></label>
+          <label>Career switch / gap / senior context <textarea name="careerContext">${profile.background.switchConcerns || profile.background.gapReason || profile.background.leadershipExperience}</textarea></label>
+        </div>
+        <div class="glass-card form-grid profile-card">
+          <h2 class="section-title mini">Projects & Links</h2>
+          <label>Projects <textarea name="projects">${profile.skills.projects.join(", ")}</textarea></label>
+          <label>Achievements <textarea name="achievements">${profile.skills.achievements.join(", ")}</textarea></label>
+          <label>Portfolio links <input name="portfolioLinks" value="${profile.skills.portfolioLinks}"></label>
+          <div class="grid-2"><label>LinkedIn <input name="linkedin" value="${profile.skills.linkedin}"></label><label>GitHub <input name="github" value="${profile.skills.github}"></label></div>
+        </div>
+        <div class="glass-card form-grid profile-card">
           <h2 class="section-title mini">Resume & Documents</h2>
           <p class="muted">Current resume: ${profile.resume.name || "No resume uploaded yet"}</p>
           <label>Replace resume <input name="resume" type="file" accept=".pdf,.doc,.docx"></label>
           <div class="hero-actions"><button class="btn btn-cyan" type="button" data-analyze>${icon("scan-search")} Refresh analysis</button><button class="btn btn-ghost" type="button" data-export>${icon("download")} Export profile</button></div>
         </div>
-      </section>
-      <section class="content-grid">
-        <div class="glass-card form-grid">
-          <h2 class="section-title mini">Privacy Settings</h2>
-          <label>Profile visibility <select name="profileVisibility"><option>${profile.privacy.profileVisibility}</option><option>Private</option><option>Visible to employers</option><option>Visible for advisory opportunities</option></select></label>
-          <label class="check-field"><input name="allowEmployerDiscovery" type="checkbox" ${profile.privacy.allowEmployerDiscovery ? "checked" : ""}> Allow employer discovery</label>
-          <label class="check-field"><input name="allowCoachMemory" type="checkbox" ${profile.privacy.allowCoachMemory ? "checked" : ""}> Allow Vera to remember coaching context</label>
-        </div>
-        <div class="glass-card form-grid">
+        <div class="glass-card form-grid profile-card">
           <h2 class="section-title mini">AI Coach Preferences</h2>
           <label>Career worry <textarea name="worry">${profile.coach.worry}</textarea></label>
           <label>Support wanted from Vera <textarea name="supportStyle">${profile.coach.supportStyle}</textarea></label>
           <div class="grid-2"><label>Growth preference <input name="growthPreference" value="${profile.coach.growthPreference}"></label><label>Explanation style <input name="explanationStyle" value="${profile.coach.explanationStyle}"></label></div>
           <div class="grid-2"><label>Mission frequency <input name="missionFrequency" value="${profile.coach.missionFrequency}"></label><label>Confidence today <input name="confidenceToday" value="${profile.coach.confidenceToday}"></label></div>
+        </div>
         </div>
       </section>
       <button class="btn btn-primary btn-wide" type="submit">${icon("save")} Save profile and refresh recommendations</button>
