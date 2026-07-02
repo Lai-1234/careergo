@@ -23,12 +23,12 @@
           <a data-nav="jobs" href="jobs.html">Jobs</a>
           <a data-nav="companies" href="companies.html">Companies</a>
           <a data-nav="universities" href="universities.html">Universities</a>
-          <a data-nav="vera" href="vera.html">Vera</a>
-          <a data-nav="employers" href="employers.html">Employers</a>
+          <a data-nav="community" href="community.html">Community</a>
+          <a data-nav="about" href="about.html">About</a>
         </nav>
         <div class="nav-actions">
           <a class="btn btn-ghost" href="login.html"><i data-lucide="log-in"></i> Login</a>
-          <a class="btn btn-primary open-os-btn" href="dashboard.html" aria-label="Job Seeker Dashboard" title="Job Seeker Dashboard"><i data-lucide="rocket"></i> <span class="open-os-label">Job Seeker Dashboard</span></a>
+          <a class="btn btn-primary" href="register.html"><i data-lucide="rocket"></i> Create Account</a>
         </div>
       </div>
       <nav class="mobile-nav" aria-label="Mobile navigation">
@@ -36,37 +36,40 @@
         <a data-nav="jobs" href="jobs.html">Jobs</a>
         <a data-nav="companies" href="companies.html">Companies</a>
         <a data-nav="universities" href="universities.html">Universities</a>
-        <a data-nav="vera" href="vera.html">Vera</a>
+        <a data-nav="community" href="community.html">Community</a>
+        <a data-nav="about" href="about.html">About</a>
       </nav>
     </header>
 
     <main>
       <section class="hero">
         <div class="container hero-content">
-          <div class="eyebrow"><span class="spark">*</span> AI-guided career platform</div>
-          <h1>Design your career like a <span>mission.</span></h1>
-          <p class="hero-copy">CareerGo helps you find jobs, research companies and universities, compare reviews, track applications, and get coached by Vera from day one.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="dashboard.html"><i data-lucide="sparkles"></i> Start with Vera</a>
-            <a class="btn btn-cyan" href="jobs.html"><i data-lucide="briefcase"></i> I'm looking for a job</a>
-            <a class="btn btn-ghost" href="companies.html"><i data-lucide="building-2"></i> I'm hiring</a>
+          <div class="hero-copy-block">
+            <div class="eyebrow"><span class="spark">*</span> AI-guided career platform</div>
+            <h1>Design your career like a <span>mission.</span></h1>
+            <p class="hero-copy">CareerGo helps you find jobs, research companies and universities, compare reviews, track applications, and get coached by Vera from day one.</p>
           </div>
-          <div class="metric-strip">
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="job-seeker.html"><i data-lucide="sparkles"></i> Start with Vera</a>
+            <a class="btn btn-cyan" href="job-seeker.html"><i data-lucide="briefcase"></i> I'm looking for a job</a>
+            <a class="btn btn-ghost" href="employers.html"><i data-lucide="building-2"></i> I'm hiring</a>
+          </div>
+          <form class="search-panel hero-discovery-engine" action="jobs.html">
+            <div class="hero-search-heading">
+              <span><i data-lucide="sparkles"></i> AI Career Discovery Engine</span>
+              <small>Search jobs, companies, universities, or career paths</small>
+            </div>
+            <div class="hero-search-fields">
+              <div class="field"><i data-lucide="search"></i><input name="q" placeholder="Ask for Data Analyst roles, Grab reviews, UX internships..."></div>
+              <button class="btn btn-gold" type="submit"><i data-lucide="arrow-right"></i> Discover</button>
+            </div>
+          </form>
+          <div class="metric-strip hero-metrics">
             <div class="metric"><strong>1,200+</strong><span>Jobs tracked</span></div>
             <div class="metric"><strong>4.4</strong><span>Org rating</span></div>
             <div class="metric"><strong>78%</strong><span>Ready score</span></div>
             <div class="metric"><strong>24/7</strong><span>Vera coach</span></div>
           </div>
-        </div>
-      </section>
-
-      <section class="hero-search">
-        <div class="container">
-          <form class="search-panel" action="jobs.html">
-            <div class="field"><i data-lucide="search"></i><input name="q" placeholder="Search Product Designer, Data Analyst, AI roles..."></div>
-            <div class="field"><i data-lucide="map-pin"></i><input name="location" placeholder="Kuala Lumpur, Selangor, Remote"></div>
-            <button class="btn btn-gold" type="submit"><i data-lucide="arrow-right"></i> Find matches</button>
-          </form>
         </div>
       </section>
 
@@ -100,6 +103,25 @@
               <h3>Coach Vera</h3>
               <p>A warm AI mentor layer that guides next steps across the whole CareerGo website.</p>
             </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="meet-vera">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">Meet Vera</div>
+              <h2>Not a chatbot. A mentor layer across CareerGo.</h2>
+              <p class="section-sub">Vera uses your profile, goals, saved jobs, company research, and application progress to guide your next move with warm, practical coaching.</p>
+            </div>
+            <a class="btn btn-primary" href="job-seeker.html"><i data-lucide="sparkles"></i> Try Vera</a>
+          </div>
+          <div class="grid-4">
+            <div class="card"><div class="feature-icon"><i data-lucide="route"></i></div><h3>Personal roadmap</h3><p>Turns your stage and goals into a clear weekly path.</p></div>
+            <div class="card"><div class="feature-icon"><i data-lucide="message-circle"></i></div><h3>Career questions</h3><p>Explains choices, risks, trade-offs, and next actions.</p></div>
+            <div class="card"><div class="feature-icon"><i data-lucide="briefcase"></i></div><h3>Job decisions</h3><p>Helps compare roles using fit, salary, growth, and evidence.</p></div>
+            <div class="card"><div class="feature-icon"><i data-lucide="list-checks"></i></div><h3>Small missions</h3><p>Gives achievable tasks so users do not feel lost.</p></div>
           </div>
         </div>
       </section>

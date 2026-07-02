@@ -287,9 +287,9 @@ const DATA = {
     { id: "a3", type: "skipped", title: "Data Analyst at Grab", reason: "Below current SQL evidence threshold", status: "Needs skill proof" }
   ],
   candidates: [
-    { id: "c1", name: "Siti Nur", role: "Product Designer", fit: 92, skills: ["Figma", "Research", "Design Systems"], stage: "Screen" },
-    { id: "c2", name: "Daniel Lim", role: "Data Analyst", fit: 88, skills: ["SQL", "Python", "Dashboards"], stage: "Interview" },
-    { id: "c3", name: "Priya Nair", role: "Frontend Developer", fit: 84, skills: ["React", "TypeScript", "Testing"], stage: "Saved" }
+    { id: "c1", name: "Siti Nur", privacy: "Public profile", role: "Product Designer", stage: "Screen", fit: 92, location: "Kuala Lumpur", availability: "2 weeks", salary: "RM 5k - 7k", education: "BA Design, Taylor's", experience: "1 year internship", careerStage: "Fresh Graduate", portfolio: "Strong", skills: ["Figma", "Research", "Design Systems"], reason: "Portfolio shows banking onboarding work and strong research evidence." },
+    { id: "c2", name: "Daniel Lim", privacy: "Anonymized", role: "Data Analyst", stage: "Interview", fit: 88, location: "Petaling Jaya", availability: "Immediate", salary: "RM 4.8k - 6.5k", education: "BSc Statistics, UM", experience: "Graduate projects", careerStage: "Looking for first full-time job", portfolio: "Moderate", skills: ["SQL", "Python", "Dashboards"], reason: "Strong SQL dashboard proof and clear interest in marketplace analytics." },
+    { id: "c3", name: "Priya Nair", privacy: "Public profile", role: "Frontend Developer", stage: "Saved", fit: 84, location: "Remote / Selangor", availability: "1 month", salary: "RM 6k - 8k", education: "Diploma Software Engineering", experience: "2 years freelance", careerStage: "Career Switcher", portfolio: "Strong", skills: ["React", "TypeScript", "Testing"], reason: "Transferable freelance delivery evidence with strong component testing habits." }
   ],
   employerRoles: [
     { id: "er1", title: "Product Design Intern", applicants: 84, qualified: 21, status: "Active" },
@@ -352,9 +352,9 @@ const DASHBOARD_TOUR_STEPS = [
   },
   {
     target: "[data-tour-target='sidebar']",
-    title: "CareerGo navigation",
-    body: "These sections are your operating system: profile intelligence, jobs, Vera, market insights, applications, and professional posts.",
-    mission: "Open one area whenever you want deeper support."
+    title: "Compact workspace rail",
+    body: "The left rail stays icon-only to keep your workspace clean. Hover or tab into it to reveal labels for Career Intelligence, jobs, applications, Vera, research, saved items, and market signals.",
+    mission: "Use the top search for companies, universities, roles, and saved research."
   },
   {
     target: "[data-tour-target='metrics']",
@@ -1176,19 +1176,34 @@ function positionTourCard(card, target) {
     card.style.left = "16px";
     card.style.right = "16px";
     card.style.top = "auto";
-    card.style.bottom = "16px";
+    card.style.bottom = "88px";
     return;
   }
   const rect = target.getBoundingClientRect();
-  const width = Math.min(420, window.innerWidth - 40);
+  const width = Math.min(390, window.innerWidth - 40);
+  const height = Math.min(card.offsetHeight || 310, window.innerHeight - 120);
   card.style.width = `${width}px`;
   card.style.right = "auto";
   card.style.bottom = "auto";
-  const leftCandidate = rect.right + 18;
-  const left = leftCandidate + width < window.innerWidth - 20
-    ? leftCandidate
-    : Math.max(20, rect.left - width - 18);
-  const top = Math.max(92, Math.min(window.innerHeight - 340, rect.top + rect.height / 2 - 170));
+
+  const margin = 22;
+  const isWideTarget = rect.width > window.innerWidth * 0.56;
+  let left;
+  let top;
+
+  if (isWideTarget) {
+    left = window.innerWidth - width - margin;
+    const belowTarget = rect.bottom + margin;
+    top = belowTarget + height < window.innerHeight - margin
+      ? belowTarget
+      : Math.max(96, Math.min(window.innerHeight - height - margin, rect.top + margin));
+  } else {
+    const rightSide = rect.right + margin;
+    const leftSide = rect.left - width - margin;
+    left = rightSide + width < window.innerWidth - margin ? rightSide : Math.max(margin, leftSide);
+    top = Math.max(96, Math.min(window.innerHeight - height - margin, rect.top + rect.height / 2 - height / 2));
+  }
+
   card.style.left = `${left}px`;
   card.style.top = `${top}px`;
 }
@@ -1242,6 +1257,31 @@ function requireAccount(root, purpose = "open this workspace") {
   return false;
 }
 
+function roleLabel(role) {
+  return role === "employer" ? "Employer OS" : "Job Seeker OS";
+}
+
+function requireRole(root, allowedRole = "candidate", purpose = "open this workspace") {
+  const state = readState();
+  if (!requireAccount(root, purpose)) return false;
+  if (state.session.role === allowedRole) return true;
+  root.innerHTML = `
+    <div class="locked-state-wrap">
+      <div class="locked-state glass-card">
+        <div class="eyebrow"><span class="spark">*</span> Role switch needed</div>
+        <h1 class="section-title">You are currently in ${roleLabel(state.session.role)}.</h1>
+        <p class="section-sub">CareerGo keeps job seeker and employer workspaces separate so candidates do not accidentally enter hiring tools, and employers do not land in candidate dashboards.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="${state.session.role === "employer" ? "employer-app.html" : "dashboard.html"}">${icon("layout-dashboard")} Return to ${roleLabel(state.session.role)}</a>
+          <a class="btn btn-ghost" href="login.html">${icon("repeat-2")} Log in as another role</a>
+        </div>
+      </div>
+    </div>
+  `;
+  createIcons();
+  return false;
+}
+
 function needsOnboarding(root) {
   const state = readState();
   if (state.onboarding.candidateDone || state.session.role === "employer") return false;
@@ -1269,6 +1309,29 @@ function bindGlobalActions() {
   }));
 }
 
+function bindAccountMenu() {
+  const toggle = qs("[data-account-menu-toggle]");
+  const menu = qs("[data-account-menu]");
+  if (!toggle || !menu) return;
+  const close = () => {
+    toggle.setAttribute("aria-expanded", "false");
+    menu.hidden = true;
+  };
+  const open = () => {
+    toggle.setAttribute("aria-expanded", "true");
+    menu.hidden = false;
+  };
+  toggle.addEventListener("click", event => {
+    event.stopPropagation();
+    menu.hidden ? open() : close();
+  });
+  menu.addEventListener("click", event => event.stopPropagation());
+  document.addEventListener("click", close);
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") close();
+  });
+}
+
 function publicNav() {
   const page = document.body.dataset.page || "home";
   return `
@@ -1278,7 +1341,9 @@ function publicNav() {
         ["home", "Home", "index.html"],
         ["jobs", "Jobs", "jobs.html"],
         ["companies", "Companies", "companies.html"],
-        ["universities", "Universities", "universities.html"]
+        ["universities", "Universities", "universities.html"],
+        ["community", "Community", "community.html"],
+        ["about", "About", "about.html"]
       ].map(([key, label, href]) => `<a data-nav="${key}" class="${page === key ? "active" : ""}" href="${href}">${label}</a>`).join("")}
     </nav>
     <div class="nav-actions">
@@ -1290,15 +1355,26 @@ function publicNav() {
 
 function workspaceTopNav() {
   const state = readState();
+  const isEmployer = state.session.role === "employer";
   return `
-    <a class="brand" href="dashboard.html"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Workspace</span></span></a>
+    <a class="brand" href="${isEmployer ? "employer-app.html" : "dashboard.html"}"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>${isEmployer ? "Employer OS" : "Workspace"}</span></span></a>
     <form class="workspace-search" role="search" data-workspace-search data-tour-target="workspace-search">
       ${icon("search")}
-      <input name="q" aria-label="Search workspace" placeholder="Search jobs, companies, universities">
+      <input name="q" aria-label="Search workspace" placeholder="${isEmployer ? "Search candidates, roles, applicants" : "Search jobs, companies, universities"}">
     </form>
     <div class="nav-actions">
-      <a class="btn btn-ghost" href="autopilot.html">${icon("bell")} ${state.notifications?.length || 0}</a>
-      <a class="btn btn-primary" href="profile.html">${icon("user-round")} ${getFirstName(state)}</a>
+      <a class="btn btn-ghost" href="${isEmployer ? "employer-app.html#pipeline" : "autopilot.html"}">${icon("bell")} ${state.notifications?.length || 0}</a>
+      <div class="account-menu-wrap">
+        <button class="btn btn-primary account-menu-trigger" type="button" data-account-menu-toggle aria-haspopup="menu" aria-expanded="false">
+          ${icon(isEmployer ? "building-2" : "user-round")} ${getFirstName(state)}
+        </button>
+        <div class="account-menu glass-card" data-account-menu hidden role="menu">
+          <a role="menuitem" href="${isEmployer ? "employer-app.html#company-profile" : "public-profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
+          <a role="menuitem" href="${isEmployer ? "employer-app.html#settings" : "settings.html"}">${icon("settings")} Settings</a>
+          ${isEmployer ? `<a role="menuitem" href="employer-app.html#talent-pool">${icon("bookmark")} Talent Pool</a>` : `<a role="menuitem" href="saved.html">${icon("bookmark")} Saved Items</a>`}
+          <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
+        </div>
+      </div>
     </div>
   `;
 }
@@ -1314,23 +1390,26 @@ function renderNavigation() {
   navInner.innerHTML = loggedIn ? workspaceTopNav() : publicNav();
   if (mobileNav) {
     mobileNav.innerHTML = loggedIn
-      ? `<a href="dashboard.html">Dashboard</a><a href="jobs.html">Jobs</a><a href="autopilot.html">Applications</a><a href="vera.html">Vera</a><a href="profile.html">Profile</a>`
-      : `<a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="login" href="login.html">Login</a><a data-nav="register" href="register.html">Create Account</a>`;
+      ? ""
+      : `<a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="community" href="community.html">Community</a><a data-nav="about" href="about.html">About</a><a data-nav="login" href="login.html">Login</a><a data-nav="register" href="register.html">Create Account</a>`;
   }
   createIcons();
   setActiveNav();
+  bindAccountMenu();
   qs("[data-workspace-search]")?.addEventListener("submit", event => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const q = String(form.get("q") || "").trim();
     if (!q) return;
     const lower = q.toLowerCase();
-    const destination = lower.includes("university") || lower.includes("college") || lower.includes("degree") || lower.includes("scholarship")
+    const destination = state.session.role === "employer"
+      ? "employer-app.html"
+      : lower.includes("university") || lower.includes("college") || lower.includes("degree") || lower.includes("scholarship")
       ? "universities.html"
       : lower.includes("company") || lower.includes("culture") || lower.includes("review") || lower.includes("maybank") || lower.includes("grab") || lower.includes("cimb")
         ? "companies.html"
         : "jobs.html";
-    location.href = `${destination}?q=${encodeURIComponent(q)}`;
+    location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#candidates` : `${destination}?q=${encodeURIComponent(q)}`;
   });
 }
 
@@ -1380,15 +1459,15 @@ function renderSiteFooter() {
           <a href="jobs.html">Jobs</a>
           <a href="companies.html">Companies</a>
           <a href="universities.html">Universities</a>
-          <a href="vera.html">Vera</a>
-          <a href="profile.html">Career Intelligence</a>
+          <a href="community.html">Community</a>
+          <a href="about.html">About</a>
         </nav>
         <nav class="footer-column" aria-label="For employers">
           <h3>For Employers</h3>
-          <a href="employer-app.html#roles">Post a role</a>
-          <a href="employer-app.html#cockpit">Talent dashboard</a>
-          <a href="employer-app.html#pipeline">Pipeline</a>
-          <a href="employer-app.html#assistant">AI Assistant</a>
+          <a href="employers.html">Employer entry</a>
+          <a href="register.html">Create employer account</a>
+          <a href="employer-app.html#candidates">Candidate search</a>
+          <a href="employer-app.html#pipeline">Hiring pipeline</a>
         </nav>
         <nav class="footer-column" aria-label="Company">
           <h3>Company</h3>
@@ -1586,19 +1665,24 @@ function bindProtectedPrompts(root = document) {
 }
 
 function osNav(active = "") {
-  const links = [
+  const primaryLinks = [
     ["dashboard", "Dashboard", "layout-dashboard", "dashboard.html"],
-    ["profile", "Profile", "user-round", "profile.html"],
+    ["intelligence", "Career Intelligence", "brain-circuit", "profile.html"],
     ["jobs", "Jobs", "briefcase", "jobs.html"],
+    ["autopilot", "Applications", "kanban", "autopilot.html"],
     ["vera", "Vera", "sparkles", "vera.html"],
-    ["market", "Market", "trending-up", "market.html"],
-    ["autopilot", "Applications", "kanban", "autopilot.html"]
+    ["research", "Research", "search", "companies.html"],
+    ["saved", "Saved Items", "bookmark", "saved.html"],
+    ["market", "Market Pulse", "trending-up", "market.html"]
   ];
   return `
-    <section class="workspace-nav glass-card" data-tour-target="sidebar">
+    <section class="workspace-nav workspace-rail glass-card" data-tour-target="sidebar">
       <nav class="os-nav" aria-label="Career OS navigation">
-        ${links.map(([key, label, ic, href]) => `<a class="${active === key ? "active" : ""}" href="${href}">${icon(ic)} ${label}</a>`).join("")}
-        <button class="os-nav-button" type="button" data-logout>${icon("log-out")} Logout</button>
+        ${primaryLinks.map(([key, label, ic, href]) => {
+          const isActive = active === key || (key === "research" && ["companies", "universities"].includes(active));
+          return `<a class="${isActive ? "active" : ""}" href="${href}" title="${label}" aria-label="${label}">${icon(ic)} <span>${label}</span></a>`;
+        }).join("")}
+        <button class="os-nav-button" type="button" data-logout title="Logout" aria-label="Logout">${icon("log-out")} <span>Logout</span></button>
       </nav>
     </section>
   `;
@@ -1693,10 +1777,129 @@ function renderFeatured() {
   }
 }
 
+function routeCandidateEntry() {
+  const state = readState();
+  if (!state.session.loggedIn) return false;
+  if (state.session.role === "candidate") {
+    location.href = state.onboarding.candidateDone ? "dashboard.html" : "onboarding.html";
+    return true;
+  }
+  return false;
+}
+
+function renderJobSeekerEntry() {
+  const root = qs("[data-job-seeker-entry]");
+  if (!root) return;
+  if (routeCandidateEntry()) return;
+  const state = readState();
+  if (state.session.loggedIn && state.session.role === "employer") {
+    root.innerHTML = `
+      <section class="container section">
+        <div class="locked-state glass-card">
+          <div class="eyebrow"><span class="spark">*</span> Role switch needed</div>
+          <h1 class="section-title">You are signed in as an employer.</h1>
+          <p class="section-sub">Job seeker onboarding creates a candidate profile. Return to Employer OS or log in with a candidate account.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="employer-app.html">${icon("layout-dashboard")} Employer Dashboard</a><a class="btn btn-ghost" href="login.html">${icon("repeat-2")} Switch role</a></div>
+        </div>
+      </section>
+    `;
+    createIcons();
+    return;
+  }
+  root.innerHTML = `
+    <section class="entry-hero">
+      <div class="container entry-grid">
+        <div>
+          <div class="eyebrow"><span class="spark">*</span> Job Seeker Journey</div>
+          <h1 class="section-title">Build a career profile before you chase job posts.</h1>
+          <p class="section-sub">CareerGo turns your background, goals, skills, and preferences into a Career Intelligence Profile, then Vera guides the next useful step.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create Job Seeker Account</a>
+            <a class="btn btn-ghost" href="login.html">${icon("log-in")} Login</a>
+            <a class="btn btn-cyan" href="jobs.html">${icon("search")} Browse Jobs as Guest</a>
+          </div>
+        </div>
+        <div class="glass-card entry-panel">
+          <h2 class="section-title mini">What unlocks after signup</h2>
+          <div class="entry-list">
+            ${[
+              ["Career Intelligence", "Generate readiness, ATS, market fit, and next-action guidance.", "brain-circuit"],
+              ["Resume and profile", "Upload a resume or build your profile manually.", "file-text"],
+              ["Matched jobs", "See why roles fit, save them, apply, and track every stage.", "briefcase"],
+              ["Company research", "Compare company ratings, reviews, salaries, and open roles.", "building-2"],
+              ["Vera coaching", "Ask Vera for career plans, interview prep, and decision support.", "sparkles"]
+            ].map(([title, body, ic]) => `<div class="locked-stat"><div class="locked-stat-icon">${icon(ic)}</div><div><strong>${title}</strong><p>${body}</p></div></div>`).join("")}
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+  createIcons();
+}
+
+function renderAboutPage() {
+  const root = qs("[data-about]");
+  if (!root) return;
+  root.innerHTML = `
+    <section class="container section">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">About CareerGo</div>
+          <h1 class="section-title">An AI Career Operating System for real career decisions.</h1>
+          <p class="section-sub">CareerGo connects job discovery, company and university research, readiness analysis, application tracking, and Vera's coaching into one product journey.</p>
+        </div>
+      </div>
+      <div class="grid-3">
+        ${[
+          ["For job seekers", "Personalized profiles, roadmaps, jobs, applications, salary signals, and career missions.", "user-round"],
+          ["For employers", "Candidate search, talent pools, job posts, applicants, hiring pipeline, and fit explanations.", "building-2"],
+          ["For education paths", "University research, reviews, graduate outcomes, and pathway guidance.", "graduation-cap"]
+        ].map(([title, body, ic]) => `<article class="card"><div class="feature-icon">${icon(ic)}</div><h3>${title}</h3><p>${body}</p></article>`).join("")}
+      </div>
+    </section>
+  `;
+  createIcons();
+}
+
+function renderCommunityPage() {
+  const root = qs("[data-community]");
+  if (!root) return;
+  root.innerHTML = `
+    <section class="container section">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">Community</div>
+          <h1 class="section-title">Career questions, role stories, and weekly prompts.</h1>
+          <p class="section-sub">Visitors can read public posts. Posting, saving, and personalized Vera follow-ups unlock inside the workspace.</p>
+        </div>
+        <a class="btn btn-primary" href="register.html">${icon("user-plus")} Join CareerGo</a>
+      </div>
+      <div class="grid-3">
+        ${DATA.communityPosts.map(post => `<article class="card"><div class="muted small">${post.author}</div><h3>${post.title}</h3><p>${post.body}</p><span class="pill gold">${post.reactions} reactions</span></article>`).join("")}
+      </div>
+    </section>
+  `;
+  createIcons();
+}
+
 function renderJobsPage() {
   const root = qs("[data-jobs-page]");
   if (!root) return;
   let state = readState();
+  if (state.session.loggedIn && state.session.role === "employer") {
+    root.innerHTML = `
+      <section class="container section">
+        <div class="locked-state glass-card">
+          <div class="eyebrow"><span class="spark">*</span> Employer account</div>
+          <h1 class="section-title">This page is for public job discovery and candidate job tracking.</h1>
+          <p class="section-sub">Your employer workspace has job posts, candidate search, applicants, and hiring pipeline tools.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="employer-app.html">${icon("layout-dashboard")} Open Employer Dashboard</a><a class="btn btn-ghost" href="jobs.html?guest=1">${icon("search")} Browse public jobs</a></div>
+        </div>
+      </section>
+    `;
+    createIcons();
+    return;
+  }
   if (state.session.loggedIn && needsOnboarding(root)) return;
   if (state.session.loggedIn) {
     root.innerHTML = `
@@ -1765,6 +1968,26 @@ function renderJobsPage() {
     `;
     createIcons();
     initSidebarToggle();
+  }
+  if (!state.session.loggedIn) {
+    const layout = qs(".jobs-page-layout", root);
+    if (layout && !qs(".public-discovery-intro", root)) {
+      layout.insertAdjacentHTML("beforebegin", `
+        <section class="container public-discovery-intro">
+          <div class="glass-card public-discovery-card">
+            <div>
+              <div class="section-kicker">Public job discovery</div>
+              <h2 class="section-title mini">Browse opportunities first. Personalize after you are ready.</h2>
+              <p class="section-sub">Guests can search roles, inspect company previews, and understand market demand. Create an account to save, apply, track, ask Vera, and unlock personalized match reasoning.</p>
+            </div>
+            <div class="hero-actions compact-actions">
+              <a class="btn btn-primary" href="job-seeker.html">${icon("user-plus")} Create Job Seeker Account</a>
+              <a class="btn btn-ghost" href="login.html">${icon("log-in")} Login</a>
+            </div>
+          </div>
+        </section>
+      `);
+    }
   }
   let activeId = new URLSearchParams(location.search).get("job") || DATA.jobs[0].id;
   let active = DATA.jobs.find(job => job.id === activeId) || DATA.jobs[0];
@@ -1869,7 +2092,7 @@ function renderJobsPage() {
       renderTracker();
       return;
     }
-    if (activeTab === "community") {
+    if (activeTab === "community" && state.session.loggedIn) {
       listRoot.innerHTML = state.posts.map(post => `
         <article class="list-card">
           <div class="list-card-top"><div><h3>${post.title}</h3><div class="muted small">${post.author}</div></div><span class="pill gold">${post.reactions} likes</span></div>
@@ -1975,6 +2198,17 @@ function renderJobsPage() {
         <p class="muted">${active.description}</p>
         ${pills(active.skills, "cyan")}
       </div>
+      <div class="detail-section content-grid info-card-row">
+        <div class="card">
+          <h3>Company preview</h3>
+          <p class="muted">${(DATA.companies.find(company => active.company.toLowerCase().includes(company.name.toLowerCase().split(" ")[0])) || DATA.companies[0]).summary}</p>
+          <a class="btn btn-ghost" href="companies.html?q=${encodeURIComponent(active.company)}">${icon("building-2")} Research company</a>
+        </div>
+        <div class="card">
+          <h3>Market demand</h3>
+          <p class="muted">${active.industry} roles are showing ${active.match >= 85 ? "strong" : "steady"} demand in CareerGo's sample market pulse. Create a profile for a personalized salary and readiness read.</p>
+        </div>
+      </div>
       <div class="detail-section warning-box job-watchout-card">
         <h3>${icon("alert-triangle")} Watch out</h3>
         <p class="muted">${active.caution}</p>
@@ -2076,6 +2310,20 @@ function renderDirectoryPage(kind) {
   if (!root) return;
   const state = readState();
   const loggedIn = Boolean(state.session.loggedIn);
+  if (loggedIn && state.session.role === "employer" && ["companies", "universities"].includes(kind)) {
+    root.innerHTML = `
+      <section class="container section">
+        <div class="locked-state glass-card">
+          <div class="eyebrow"><span class="spark">*</span> Employer workspace</div>
+          <h1 class="section-title">Company and university research is part of the job seeker workspace.</h1>
+          <p class="section-sub">Employers should use Company Profile, Candidate Search, Talent Pool, Applicants, and Analytics inside Employer OS.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="employer-app.html">${icon("layout-dashboard")} Open Employer OS</a><a class="btn btn-ghost" href="employers.html">${icon("info")} Employer entry</a></div>
+        </div>
+      </section>
+    `;
+    createIcons();
+    return;
+  }
   if (loggedIn) {
     const title = kind === "universities" ? "Universities" : "Companies";
     const singular = kind === "universities" ? "university" : "company";
@@ -2315,7 +2563,7 @@ function openReviewModal(target) {
 function renderDashboard() {
   const root = qs("[data-dashboard]");
   if (!root) return;
-  if (!requireAccount(root, "view your personalized Career OS")) return;
+  if (!requireRole(root, "candidate", "view your personalized Career OS")) return;
   if (needsOnboarding(root)) return;
   qs(".page-hero")?.classList.add("is-hidden");
   const state = readState();
@@ -2329,6 +2577,13 @@ function renderDashboard() {
   const beginnerMissions = starterMissions(profile);
   const visibleBeginnerMissions = beginnerMissions.slice(0, 3);
   const target = getTargetLabel(profile);
+  const savedOrgs = [...DATA.companies, ...DATA.universities].filter(org => state.savedOrgs.includes(org.id));
+  const experienceItems = Array.isArray(profile.experience?.roles) ? profile.experience.roles : Array.isArray(profile.experience?.work) ? profile.experience.work : [];
+  const profileCompletion = Math.min(100, 45
+    + (profile.skills.technical.length ? 15 : 0)
+    + (experienceItems.length ? 15 : 0)
+    + (profile.resume.uploaded || profile.resume.name ? 15 : 0)
+    + (profile.preferences.roles.length ? 10 : 0));
   const topJobs = DATA.jobs
     .filter(job => !state.ignoredJobs.includes(job.id))
     .sort((a, b) => b.match - a.match)
@@ -2407,6 +2662,39 @@ function renderDashboard() {
           ${topJobs.slice(0, 2).map(job => `<a class="list-card quiet" href="jobs.html?job=${job.id}"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div></a>`).join("")}
         </div>
       </div>
+    </section>
+    <section class="career-os-grid">
+      <article class="glass-card">
+        <div class="section-head compact-section-head"><div><div class="section-kicker">Profile completion</div><h2 class="section-title mini">Make matching sharper.</h2></div><span class="score">${profileCompletion}%</span></div>
+        ${progressBar(profileCompletion)}
+        <ul class="check-list compact-list">
+          <li>${profile.resume.uploaded || profile.resume.name ? "Resume evidence is available." : "Upload a resume for ATS and evidence checks."}</li>
+          <li>${profile.skills.technical.length ? "Technical skills are mapped." : "Add technical skills to improve role fit."}</li>
+          <li>${profile.preferences.roles.length ? "Role preferences are set." : "Set preferred roles and industries."}</li>
+        </ul>
+      </article>
+      <article class="glass-card">
+        <div class="section-head compact-section-head"><div><div class="section-kicker">Skill gap tracker</div><h2 class="section-title mini">Bridge skills for ${target}.</h2></div><a class="btn btn-ghost" href="market.html#roadmap">${icon("route")} Roadmap</a></div>
+        ${["Portfolio evidence", "Interview story", "Market salary proof"].map((skill, index) => `<div class="insight-row"><span>${skill}</span><strong>${["Needs proof", "Practice", "Benchmark"][index]}</strong></div>`).join("")}
+      </article>
+      <article class="glass-card">
+        <div class="section-head compact-section-head"><div><div class="section-kicker">Company recommendations</div><h2 class="section-title mini">Research before applying.</h2></div><a class="btn btn-ghost" href="companies.html">${icon("building-2")} Companies</a></div>
+        <div class="list-stack">
+          ${(savedOrgs.length ? savedOrgs : DATA.companies.slice(0, 2)).slice(0, 2).map(org => `<a class="list-card quiet" href="companies.html?org=${org.id}"><div class="list-card-top"><div><h3>${org.name}</h3><div class="muted small">${org.signal}</div></div>${rating(org.rating)}</div></a>`).join("")}
+        </div>
+      </article>
+      <article class="glass-card">
+        <div class="section-head compact-section-head"><div><div class="section-kicker">Market pulse</div><h2 class="section-title mini">Signals worth watching.</h2></div><a class="btn btn-ghost" href="market.html">${icon("trending-up")} Open</a></div>
+        ${DATA.pulse.slice(0, 2).map(item => `<div class="review-card"><strong>${item.title}</strong><p class="muted small">${item.impact}</p></div>`).join("")}
+      </article>
+      <article class="glass-card">
+        <div class="section-head compact-section-head"><div><div class="section-kicker">Upcoming interviews</div><h2 class="section-title mini">Prep with context.</h2></div><a class="btn btn-ghost" href="vera.html#interview">${icon("messages-square")} Practice</a></div>
+        ${trackedJobs.filter(item => item.record.stage === "interview").slice(0, 2).map(({ job, record }) => `<div class="list-card quiet"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company}</div></div><span class="pill gold">${record.deadline}</span></div></div>`).join("") || `<p class="muted">No interviews yet. Vera will surface prep tasks when an application reaches interview stage.</p>`}
+      </article>
+      <article class="glass-card">
+        <div class="section-head compact-section-head"><div><div class="section-kicker">Recent activity</div><h2 class="section-title mini">Your latest signals.</h2></div><span class="pill cyan">${state.notifications.length} notes</span></div>
+        ${state.notifications.slice(0, 3).map(note => `<div class="review-card"><strong>${note.title}</strong><p class="muted small">${note.body}</p></div>`).join("")}
+      </article>
     </section>
     <section class="glass-card" data-tour-target="missions">
       <div class="section-head"><div><div class="section-kicker">Personalized missions</div><h2 class="section-title mini">${profile.coach.missionFrequency} pace, ${profile.coach.explanationStyle.toLowerCase()}.</h2></div><a class="btn btn-primary" href="vera.html#plan">${icon("route")} Build 90-day plan</a></div>
@@ -3077,9 +3365,9 @@ function renderProfile() {
   const state = readState();
   const profile = state.profile;
   const intel = profile.intelligence || generateCareerIntelligence(profile);
-  root.innerHTML = appShell("profile", `
+  root.innerHTML = appShell("intelligence", `
     <section class="glass-card dashboard-hero">
-      <div><div class="eyebrow"><span class="spark">*</span> Career Intelligence</div><h1 class="section-title">${getUserName(state)}'s career profile.</h1><p class="section-sub">${intel.summary}</p></div>
+      <div><div class="eyebrow"><span class="spark">*</span> Private Career Intelligence</div><h1 class="section-title">Resume profile and career data.</h1><p class="section-sub">${intel.summary}</p></div>
       ${healthRing(intel, false)}
     </section>
     <section class="glass-card">
@@ -3251,6 +3539,147 @@ function renderProfile() {
   createIcons();
 }
 
+function renderPublicProfile() {
+  const root = qs("[data-public-profile]");
+  if (!root) return;
+  if (!requireAccount(root, "view your public profile")) return;
+  const state = readState();
+  const profile = state.profile;
+  const name = getUserName(state);
+  const target = getTargetLabel(profile);
+  const locationLabel = [profile.personal.cityState, profile.personal.country].filter(Boolean).join(", ") || "Malaysia";
+  const experienceItems = Array.isArray(profile.experience?.work) ? profile.experience.work : Array.isArray(profile.experience?.roles) ? profile.experience.roles : [];
+  const educationSummary = [profile.background.school, profile.background.courseMajor].filter(Boolean).join(" - ") || "Education details available on request";
+  root.innerHTML = appShell("", `
+    <section class="public-profile-shell">
+      <article class="glass-card public-profile-hero">
+        <div class="public-avatar">${name.split(" ").map(part => part[0]).join("").slice(0, 2).toUpperCase()}</div>
+        <div>
+          <div class="eyebrow"><span class="spark">*</span> Public Profile Preview</div>
+          <h1 class="section-title">${name}</h1>
+          <p class="section-sub">${target} · ${locationLabel}</p>
+          <p class="muted">CareerGo public profiles help employers and collaborators understand your headline, evidence, portfolio, skills, and visibility preferences without exposing private Career Intelligence notes.</p>
+          <div class="hero-actions compact-actions">
+            <button class="btn btn-primary" type="button">${icon("user-plus")} Connect</button>
+            <button class="btn btn-ghost" type="button">${icon("send")} Contact</button>
+            <a class="btn btn-cyan" href="profile.html">${icon("brain-circuit")} Edit career data</a>
+          </div>
+        </div>
+      </article>
+      <section class="content-grid">
+        <article class="glass-card">
+          <div class="section-kicker">About</div>
+          <p class="muted">${profile.coach.worry ? `Currently focused on ${target.toLowerCase()} while working through: ${profile.coach.worry}` : `Exploring ${target} opportunities with a CareerGo profile built around skills, goals, and evidence.`}</p>
+        </article>
+        <article class="glass-card">
+          <div class="section-kicker">Visibility</div>
+          <div class="insight-row"><span>Profile status</span><strong>${profile.privacy.profileVisibility}</strong></div>
+          <div class="insight-row"><span>Employer discovery</span><strong>${profile.privacy.allowEmployerDiscovery ? "Allowed" : "Off"}</strong></div>
+        </article>
+      </section>
+      <section class="content-grid">
+        <article class="glass-card">
+          <div class="section-head compact-section-head"><div><div class="section-kicker">Experience</div><h2 class="section-title mini">Work and project evidence.</h2></div></div>
+          <div class="list-stack">${experienceItems.length ? experienceItems.slice(0, 3).map(item => `<div class="list-card quiet"><h3>${typeof item === "string" ? item : item.title || item.role || "Experience"}</h3><p class="muted small">${typeof item === "string" ? "Added from CareerGo profile" : item.company || item.summary || "Public summary"}</p></div>`).join("") : `<div class="list-card quiet"><h3>Portfolio evidence</h3><p class="muted small">Add experience in Career Intelligence to make this profile stronger.</p></div>`}</div>
+        </article>
+        <article class="glass-card">
+          <div class="section-kicker">Education</div>
+          <h3>${educationSummary}</h3>
+          <p class="muted">${profile.background.educationLevel || "Education level"} ${profile.background.expectedGraduationYear ? `· ${profile.background.expectedGraduationYear}` : ""}</p>
+        </article>
+      </section>
+      <section class="glass-card">
+        <div class="section-head compact-section-head"><div><div class="section-kicker">Skills and portfolio</div><h2 class="section-title mini">Public proof signals.</h2></div><a class="btn btn-ghost" href="settings.html">${icon("shield")} Privacy</a></div>
+        ${pills([...profile.skills.technical, ...profile.skills.soft].slice(0, 12), "cyan")}
+        <div class="grid-3 public-proof-grid">
+          ${[
+            ["Portfolio", profile.skills.portfolioLinks || "Add portfolio link"],
+            ["LinkedIn", profile.skills.linkedin || "Add LinkedIn"],
+            ["GitHub", profile.skills.github || "Add GitHub"]
+          ].map(([label, value]) => `<div class="score-tile"><span>${label}</span><strong>${value}</strong></div>`).join("")}
+        </div>
+      </section>
+      <section class="content-grid">
+        <article class="glass-card"><div class="section-kicker">Achievements</div><p class="muted">${profile.skills.achievements?.length ? profile.skills.achievements.join(", ") : "Add achievements from Career Intelligence to show public proof."}</p></article>
+        <article class="glass-card"><div class="section-kicker">Public posts</div>${DATA.communityPosts.slice(0, 2).map(post => `<div class="review-card"><strong>${post.title}</strong><p class="muted small">${post.body}</p></div>`).join("")}</article>
+      </section>
+    </section>
+  `, { title: "Public Profile", subtitle: "This is the profile others can view. Private readiness analysis stays in Career Intelligence." });
+  createIcons();
+}
+
+function renderSettings() {
+  const root = qs("[data-settings]");
+  if (!root) return;
+  if (!requireAccount(root, "manage account and privacy settings")) return;
+  const state = readState();
+  const profile = state.profile;
+  root.innerHTML = appShell("", `
+    <section class="glass-card dashboard-hero compact-dashboard-hero">
+      <div><div class="eyebrow"><span class="spark">*</span> Settings</div><h1 class="section-title">Account, privacy, and Vera preferences.</h1><p class="section-sub">Control how CareerGo uses your profile, what employers can discover, and how Vera supports you.</p></div>
+    </section>
+    <section class="settings-grid">
+      <form class="glass-card form-grid profile-card" data-settings-form>
+        <h2 class="section-title mini">Privacy</h2>
+        <label>Profile visibility <select name="profileVisibility"><option ${profile.privacy.profileVisibility === "Private" ? "selected" : ""}>Private</option><option ${profile.privacy.profileVisibility === "Visible to employers" ? "selected" : ""}>Visible to employers</option><option ${profile.privacy.profileVisibility === "Visible for advisory opportunities" ? "selected" : ""}>Visible for advisory opportunities</option></select></label>
+        <label class="check-field custom-checkbox"><input name="allowEmployerDiscovery" type="checkbox" ${profile.privacy.allowEmployerDiscovery ? "checked" : ""}> Allow employer discovery</label>
+        <label class="check-field custom-checkbox"><input name="allowCoachMemory" type="checkbox" ${profile.privacy.allowCoachMemory ? "checked" : ""}> Allow Vera to remember coaching context</label>
+        <button class="btn btn-primary" type="submit">${icon("save")} Save settings</button>
+      </form>
+      <form class="glass-card form-grid profile-card" data-coach-settings-form>
+        <h2 class="section-title mini">AI Coach Preferences</h2>
+        <label>Support style <textarea name="supportStyle">${profile.coach.supportStyle}</textarea></label>
+        <label>Explanation style <select name="explanationStyle"><option ${profile.coach.explanationStyle === "Detailed explanations" ? "selected" : ""}>Detailed explanations</option><option ${profile.coach.explanationStyle === "Simple guidance" ? "selected" : ""}>Simple guidance</option></select></label>
+        <label>Mission frequency <select name="missionFrequency"><option ${profile.coach.missionFrequency === "Weekly" ? "selected" : ""}>Weekly</option><option ${profile.coach.missionFrequency === "Twice a week" ? "selected" : ""}>Twice a week</option><option ${profile.coach.missionFrequency === "Monthly" ? "selected" : ""}>Monthly</option></select></label>
+        <button class="btn btn-cyan" type="submit">${icon("sparkles")} Save Vera preferences</button>
+      </form>
+    </section>
+  `, { title: "Settings", subtitle: "Account and privacy controls live here, separate from your public profile and Career Intelligence." });
+  qs("[data-settings-form]")?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = readState();
+    next.profile.privacy.profileVisibility = String(form.get("profileVisibility") || "Private");
+    next.profile.privacy.allowEmployerDiscovery = Boolean(form.get("allowEmployerDiscovery"));
+    next.profile.privacy.allowCoachMemory = Boolean(form.get("allowCoachMemory"));
+    syncCurrentUser(next);
+    writeState(next);
+    showToast("Privacy settings saved.");
+  });
+  qs("[data-coach-settings-form]")?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = readState();
+    next.profile.coach.supportStyle = String(form.get("supportStyle") || "");
+    next.profile.coach.explanationStyle = String(form.get("explanationStyle") || next.profile.coach.explanationStyle);
+    next.profile.coach.missionFrequency = String(form.get("missionFrequency") || next.profile.coach.missionFrequency);
+    syncCurrentUser(next);
+    writeState(next);
+    showToast("Vera preferences saved.");
+  });
+  createIcons();
+}
+
+function renderSavedItems() {
+  const root = qs("[data-saved]");
+  if (!root) return;
+  if (!requireAccount(root, "review your saved items")) return;
+  const state = readState();
+  const savedJobs = DATA.jobs.filter(job => state.savedJobs.includes(job.id));
+  const savedOrgs = [...DATA.companies, ...DATA.universities].filter(org => state.savedOrgs.includes(org.id));
+  root.innerHTML = appShell("saved", `
+    <section class="glass-card dashboard-hero compact-dashboard-hero">
+      <div><div class="eyebrow"><span class="spark">*</span> Saved Items</div><h1 class="section-title">Your saved jobs, research, and posts.</h1><p class="section-sub">Keep career decisions organized without crowding the main dashboard.</p></div>
+    </section>
+    <section class="content-grid">
+      <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved jobs</div><h2 class="section-title mini">${savedJobs.length} roles</h2></div><a class="btn btn-ghost" href="jobs.html">${icon("briefcase")} Jobs</a></div><div class="list-stack">${savedJobs.map(job => `<a class="list-card quiet" href="jobs.html?job=${job.id}"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div></a>`).join("") || `<p class="muted">No saved jobs yet.</p>`}</div></article>
+      <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved research</div><h2 class="section-title mini">${savedOrgs.length} organizations</h2></div><a class="btn btn-ghost" href="companies.html">${icon("search")} Research</a></div><div class="list-stack">${savedOrgs.map(org => `<a class="list-card quiet" href="${org.type === "University" ? "universities.html" : "companies.html"}?org=${org.id}"><div class="list-card-top"><div><h3>${org.name}</h3><div class="muted small">${org.signal}</div></div>${rating(org.rating)}</div></a>`).join("") || `<p class="muted">No saved companies or universities yet.</p>`}</div></article>
+    </section>
+    <section class="glass-card"><div class="section-kicker">Saved posts</div><div class="grid-3">${DATA.communityPosts.slice(0, 3).map(post => `<article class="tool-card"><h3>${post.title}</h3><p>${post.body}</p><span class="pill gold">${post.reactions} reactions</span></article>`).join("")}</div></section>
+  `, { title: "Saved Items", subtitle: "Saved jobs, companies, universities, and posts in one place." });
+  createIcons();
+}
+
 function renderMarket() {
   const root = qs("[data-market]");
   if (!root) return;
@@ -3403,21 +3832,48 @@ function renderPosts() {
 function renderEmployerPortal() {
   const root = qs("[data-employer-app]");
   if (!root) return;
-  if (!requireAccount(root, "open your employer portal")) return;
+  if (!requireRole(root, "employer", "open your employer portal")) return;
   const pipeline = ["Saved", "Screen", "Interview", "Offer"];
   const state = readState();
   const employer = state.employerProfile || {};
   const currentHash = location.hash || "#cockpit";
+  const query = new URLSearchParams(location.search).get("q") || "";
+  const talentPool = DATA.candidates.filter(candidate => ["Saved", "Screen", "Interview"].includes(candidate.stage));
   root.innerHTML = `
-    <aside class="os-sidebar glass-card">
-      <div class="os-user"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><div><strong>Employer OS</strong><span>Talent dashboard</span></div><button class="sidebar-toggle" id="sidebar-close-btn" aria-label="Close navigation" style="margin-left:auto">${icon("x")}</button></div>
-      <nav class="os-nav" id="employer-os-nav"><a class="${currentHash === '#cockpit' ? 'active' : ''}" href="#cockpit">${icon("layout-dashboard")} Cockpit</a><a class="${currentHash === '#roles' ? 'active' : ''}" href="#roles">${icon("briefcase")} Roles</a><a class="${currentHash === '#talent' ? 'active' : ''}" href="#talent">${icon("users")} Talent</a><a class="${currentHash === '#pipeline' ? 'active' : ''}" href="#pipeline">${icon("kanban")} Pipeline</a><a class="${currentHash === '#assistant' ? 'active' : ''}" href="#assistant">${icon("sparkles")} AI Assistant</a></nav>
-    </aside>
+    <section class="workspace-nav glass-card">
+      <nav class="os-nav" id="employer-os-nav" aria-label="Employer OS navigation">
+        ${[
+          ["#cockpit", "Employer Dashboard", "layout-dashboard"],
+          ["#candidates", "Candidate Search", "search"],
+          ["#talent-pool", "Talent Pool", "bookmark"],
+          ["#roles", "Job Posts", "briefcase"],
+          ["#applicants", "Applicants", "users"],
+          ["#pipeline", "Hiring Pipeline", "kanban"],
+          ["#company-profile", "Company Profile", "building-2"],
+          ["#analytics", "Analytics", "bar-chart-3"],
+          ["#settings", "Settings", "settings"]
+        ].map(([href, label, ic]) => `<a class="${currentHash === href ? "active" : ""}" href="${href}">${icon(ic)} ${label}</a>`).join("")}
+        <button class="os-nav-button" type="button" data-logout>${icon("log-out")} Logout</button>
+      </nav>
+    </section>
     <div class="os-main">
       <section class="glass-card"><div class="eyebrow"><span class="spark">*</span> Hiring cockpit</div><h1 class="section-title">Fit, pipeline, reputation, and action in one place.</h1><div class="metric-strip"><div class="metric"><strong>257</strong><span>Applicants</span></div><div class="metric"><strong>71</strong><span>Qualified</span></div><div class="metric"><strong>21d</strong><span>Time to hire</span></div><div class="metric"><strong>86%</strong><span>Offer acceptance</span></div></div></section>
-      <section class="content-grid" id="roles"><div class="glass-card"><div class="section-kicker">Role workspace</div>${DATA.employerRoles.map(role => `<div class="list-card"><div class="list-card-top"><div><h3>${role.title}</h3><div class="muted small">${role.applicants} applicants - ${role.qualified} qualified</div></div><span class="pill ${role.status === "Active" ? "green" : "gold"}">${role.status}</span></div></div>`).join("")}</div><form class="glass-card form-grid"><h2 class="section-title mini">Company profile</h2><label>Company <input value="${employer.company || ""}" placeholder="Company name"></label><label>Brand note <textarea placeholder="Describe your hiring brand and candidate promise">${employer.hiringGoal || ""}</textarea></label><button class="btn btn-primary" type="button">${icon("save")} Save profile</button></form></section>
-      <section class="glass-card" id="talent"><div class="section-head"><div><div class="section-kicker">Talent discovery</div><h2 class="section-title mini">Candidate fit scores</h2></div><button class="btn btn-cyan">${icon("user-plus")} Add candidates</button></div><div class="grid-3">${DATA.candidates.map(candidate => `<article class="tool-card"><div class="list-card-top"><h3>${candidate.name}</h3><span class="score">${candidate.fit}%</span></div><p>${candidate.role}</p>${pills(candidate.skills, "cyan")}<div class="hero-actions"><button class="btn btn-ghost">${icon("bookmark")} Save</button><button class="btn btn-primary">${icon("arrow-right")} Move to ${candidate.stage}</button></div></article>`).join("")}</div></section>
+      <section class="glass-card employer-search" id="candidates">
+        <div class="section-head"><div><div class="section-kicker">Candidate Search</div><h2 class="section-title mini">Find job seekers by fit, skills, stage, and evidence.</h2></div><span class="pill cyan">Privacy-aware</span></div>
+        <div class="candidate-filter-bar">
+          <div class="field"><i data-lucide="search"></i><input data-candidate-query value="${query}" placeholder="Search role, skill, education, location"></div>
+          <div class="field"><i data-lucide="briefcase"></i><input data-candidate-role placeholder="Role interest"></div>
+          <div class="field"><i data-lucide="map-pin"></i><input data-candidate-location placeholder="Location"></div>
+        </div>
+        <div class="candidate-grid" data-candidate-list>
+          ${DATA.candidates.map(candidate => candidateCard(candidate)).join("")}
+        </div>
+      </section>
+      <section class="content-grid" id="talent-pool"><div class="glass-card"><div class="section-kicker">Talent Pool</div>${talentPool.map(candidate => `<div class="list-card"><div class="list-card-top"><div><h3>${safeCandidateName(candidate)}</h3><div class="muted small">${candidate.role} - ${candidate.availability}</div></div><span class="pill gold">${candidate.stage}</span></div></div>`).join("")}</div><div class="glass-card vera-box"><h2 class="section-title mini">Fit explanation</h2><p class="muted">CareerGo explains why a person may fit a role using visible skills, portfolio evidence, career stage, availability, and role interest. Private profile fields stay hidden.</p></div></section>
+      <section class="content-grid" id="roles"><div class="glass-card"><div class="section-kicker">Job Posts</div>${DATA.employerRoles.map(role => `<div class="list-card"><div class="list-card-top"><div><h3>${role.title}</h3><div class="muted small">${role.applicants} applicants - ${role.qualified} qualified</div></div><span class="pill ${role.status === "Active" ? "green" : "gold"}">${role.status}</span></div></div>`).join("")}</div><form class="glass-card form-grid" id="company-profile"><h2 class="section-title mini">Company Profile</h2><label>Company <input value="${employer.company || ""}" placeholder="Company name"></label><label>Brand note <textarea placeholder="Describe your hiring brand and candidate promise">${employer.hiringGoal || ""}</textarea></label><button class="btn btn-primary" type="button">${icon("save")} Save profile</button></form></section>
+      <section class="glass-card" id="applicants"><div class="section-head"><div><div class="section-kicker">Applicants</div><h2 class="section-title mini">Review applicants by fit and pipeline stage.</h2></div><button class="btn btn-cyan">${icon("user-plus")} Invite candidates</button></div><div class="grid-3">${DATA.candidates.map(candidate => candidateCard(candidate, true)).join("")}</div></section>
       <section class="glass-card" id="pipeline"><div class="section-kicker">Hiring pipeline</div><div class="kanban">${pipeline.map(stage => `<div class="kanban-col"><h3>${stage}</h3>${DATA.candidates.filter(c => c.stage === stage || (stage === "Saved" && c.stage === "Saved")).map(c => `<div class="review-card"><strong>${c.name}</strong><p class="muted small">${c.role} - ${c.fit}% fit</p></div>`).join("") || `<div class="review-card"><p class="muted small">No candidates yet</p></div>`}</div>`).join("")}</div></section>
+      <section class="content-grid" id="analytics"><div class="glass-card"><div class="section-kicker">Analytics</div><div class="metric-strip"><div class="metric"><strong>34%</strong><span>Qualified rate</span></div><div class="metric"><strong>11</strong><span>Saved candidates</span></div><div class="metric"><strong>4.2</strong><span>Candidate experience</span></div></div></div><div class="glass-card" id="settings"><div class="section-kicker">Settings</div><h2 class="section-title mini">Hiring preferences</h2><p class="muted">Set screening priorities, privacy rules, interview stages, and notification preferences.</p></div></section>
       <section class="content-grid" id="assistant"><div class="glass-card"><div class="section-kicker">Posts and updates</div>${DATA.communityPosts.slice(0, 2).map(post => `<div class="list-card"><h3>${post.title}</h3><p class="muted">${post.body}</p></div>`).join("")}</div><div class="glass-card vera-box"><h2 class="section-title mini">AI hiring assistant</h2><p class="muted">Vera can summarize candidates, draft outreach, generate interview questions, and explain pipeline bottlenecks.</p><div class="hero-actions"><button class="btn btn-primary">${icon("sparkles")} Draft outreach</button><button class="btn btn-cyan">${icon("list-checks")} Interview questions</button></div></div></section>
     </div>
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -3433,12 +3889,78 @@ function renderEmployerPortal() {
       document.body.classList.remove("sidebar-open");
     });
   });
+  function bindCandidateActions(scope = root) {
+    qsa("[data-save-candidate], [data-invite-candidate]", scope).forEach(button => {
+    button.addEventListener("click", () => showToast(button.dataset.saveCandidate ? "Candidate saved to Talent Pool." : "Invite prepared with role context."));
+    });
+  }
+  bindCandidateActions();
+  const candidateList = qs("[data-candidate-list]", root);
+  const candidateInputs = qsa("[data-candidate-query], [data-candidate-role], [data-candidate-location]", root);
+  function renderCandidateResults() {
+    if (!candidateList) return;
+    const general = String(qs("[data-candidate-query]", root)?.value || "").toLowerCase();
+    const role = String(qs("[data-candidate-role]", root)?.value || "").toLowerCase();
+    const locationValue = String(qs("[data-candidate-location]", root)?.value || "").toLowerCase();
+    const matches = DATA.candidates.filter(candidate => {
+      const hay = [candidate.name, candidate.role, candidate.location, candidate.education, candidate.experience, candidate.careerStage, candidate.portfolio, ...candidate.skills].join(" ").toLowerCase();
+      return hay.includes(general) && candidate.role.toLowerCase().includes(role) && candidate.location.toLowerCase().includes(locationValue);
+    });
+    candidateList.innerHTML = matches.map(candidate => candidateCard(candidate)).join("") || `<div class="card">No candidates match those filters yet.</div>`;
+    createIcons();
+    bindCandidateActions(candidateList);
+  }
+  candidateInputs.forEach(input => input.addEventListener("input", renderCandidateResults));
+}
+
+function safeCandidateName(candidate) {
+  return candidate.privacy === "Anonymized" ? `${candidate.role} candidate` : candidate.name;
+}
+
+function candidateCard(candidate, compact = false) {
+  return `
+    <article class="tool-card candidate-card">
+      <div class="list-card-top"><div><h3>${safeCandidateName(candidate)}</h3><div class="muted small">${candidate.careerStage} - ${candidate.location}</div></div><span class="score">${candidate.fit}%</span></div>
+      <p>${candidate.role}</p>
+      ${pills(candidate.skills, "cyan")}
+      ${compact ? "" : `
+        <div class="candidate-facts">
+          <span>${icon("graduation-cap")} ${candidate.education}</span>
+          <span>${icon("clock")} ${candidate.availability}</span>
+          <span>${icon("folder-open")} ${candidate.portfolio} portfolio</span>
+          <span>${icon("wallet")} ${candidate.salary}</span>
+        </div>
+        <div class="vera-box subtle"><strong>Match reason</strong><p class="muted small">${candidate.reason}</p></div>
+      `}
+      <div class="hero-actions compact-actions">
+        <button class="btn btn-ghost" data-save-candidate="${candidate.id}">${icon("bookmark")} Save</button>
+        <button class="btn btn-primary" data-invite-candidate="${candidate.id}">${icon("send")} Invite</button>
+      </div>
+    </article>
+  `;
 }
 
 function renderEmployers() {
   const root = qs("[data-employers]");
   if (!root) return;
+  const state = readState();
+  if (state.session.loggedIn && state.session.role === "employer") {
+    location.href = "employer-app.html";
+    return;
+  }
   root.innerHTML = `
+    <div class="glass-card employer-entry-card">
+      <div>
+        <div class="eyebrow"><span class="spark">*</span> Employer Journey</div>
+        <h2 class="section-title">Hire based on fit, skills, and career trajectory.</h2>
+        <p class="section-sub">CareerGo helps employers post roles, discover candidates, review talent profiles, manage applicants, and reduce noisy keyword-only screening.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create Employer Account</a>
+        <a class="btn btn-ghost" href="login.html">${icon("log-in")} Login</a>
+        <a class="btn btn-cyan" href="#learn-more">${icon("arrow-down")} Learn More</a>
+      </div>
+    </div>
     <div class="grid-3">
       ${[
         ["Talent discovery", "Search candidates by readiness, skill trajectory, and Vera-verified evidence.", "users"],
@@ -3452,13 +3974,13 @@ function renderEmployers() {
         </div>
       `).join("")}
     </div>
-    <div class="glass-card" style="margin-top:22px">
+    <div class="glass-card" id="learn-more" style="margin-top:22px">
       <div class="section-head">
         <div>
           <div class="section-kicker">Hiring dashboard</div>
           <h2 class="section-title">A cleaner view of fit, pipeline, and reputation.</h2>
         </div>
-        <a class="btn btn-primary" href="employer-app.html">${icon("layout-dashboard")} Open employer portal</a>
+        <a class="btn btn-primary" href="register.html">${icon("layout-dashboard")} Create employer workspace</a>
       </div>
       <div class="metric-strip">
         <div class="metric"><strong>126</strong><span>Candidates</span></div>
@@ -3490,6 +4012,9 @@ function renderComparison() {
 function init() {
   renderNavigation();
   renderFeatured();
+  renderJobSeekerEntry();
+  renderAboutPage();
+  renderCommunityPage();
   renderJobsPage();
   renderDirectoryPage(document.body.dataset.directory || "");
   renderDashboard();
@@ -3498,6 +4023,9 @@ function init() {
   renderCandidateOnboarding();
   renderEmployerOnboarding();
   renderProfile();
+  renderPublicProfile();
+  renderSettings();
+  renderSavedItems();
   renderMarket();
   renderAutopilot();
   renderPosts();
