@@ -1954,7 +1954,7 @@ function renderDirectoryPage(kind) {
       <div class="detail-section score-grid">
         ${Object.entries(active.scores).map(([label, value]) => `<div class="score-tile"><span>${label}</span><strong>${value.toFixed(1)}</strong></div>`).join("")}
       </div>
-      <div class="detail-section content-grid">
+      <div class="detail-section content-grid info-card-row">
         <div class="vera-box">
           <h3>${icon("sparkles")} Vera's research note</h3>
           <p class="muted">${active.signal}. Review themes suggest ${active.scores.growth >= 4.3 ? "strong growth upside" : "steady growth"} with ${active.scores.balance >= 4 ? "healthy balance" : "some balance trade-offs"}. Compare this against your target role, preferred pace, salary expectations, and learning style before deciding.</p>
@@ -1966,7 +1966,7 @@ function renderDirectoryPage(kind) {
           <p class="muted">Open roles / partners: ${active.open}</p>
         </div>
       </div>
-      <div class="detail-section content-grid">
+      <div class="detail-section content-grid info-card-row">
         <div class="card">
           <h3>Highlights</h3>
           <ul class="check-list">${active.highlights.map(x => `<li>${x}</li>`).join("")}</ul>
