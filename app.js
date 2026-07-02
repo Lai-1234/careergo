@@ -1329,6 +1329,158 @@ function createIcons() {
   if (window.lucide) window.lucide.createIcons();
 }
 
+function renderSiteFooter() {
+  const host = qs(".site-shell") || document.body;
+  let footer = qs(".site-footer");
+  if (!footer) {
+    footer = document.createElement("footer");
+    footer.className = "site-footer";
+    host.appendChild(footer);
+  }
+
+  footer.innerHTML = `
+    <div class="footer-wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h2>CareerGo</h2>
+          <p>The AI-guided career platform — find jobs, research companies and universities, and grow with Vera.</p>
+        </div>
+        <nav class="footer-column" aria-label="Product">
+          <h3>Product</h3>
+          <a href="jobs.html">Jobs</a>
+          <a href="companies.html">Companies</a>
+          <a href="universities.html">Universities</a>
+          <a href="vera.html">Vera</a>
+          <a href="profile.html">Career Intelligence</a>
+        </nav>
+        <nav class="footer-column" aria-label="For employers">
+          <h3>For Employers</h3>
+          <a href="employer-app.html#roles">Post a role</a>
+          <a href="employer-app.html#cockpit">Talent dashboard</a>
+          <a href="employer-app.html#pipeline">Pipeline</a>
+          <a href="employer-app.html#assistant">AI Assistant</a>
+        </nav>
+        <nav class="footer-column" aria-label="Company">
+          <h3>Company</h3>
+          <a href="#">About</a>
+          <a href="#">Careers</a>
+          <a href="#">Contact</a>
+          <a href="#">Privacy</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 CareerGo · Career OS</span>
+      </div>
+    </div>
+  `;
+}
+
+function initCustomSelect(select) {
+  const root = select?.closest("[data-custom-select]");
+  if (!root || root.dataset.customSelectReady === "true") return;
+  const trigger = qs("[data-custom-select-trigger]", root);
+  const valueLabel = qs("[data-custom-select-value]", root);
+  const panel = qs("[data-custom-select-panel]", root);
+  if (!trigger || !valueLabel || !panel) return;
+
+  root.dataset.customSelectReady = "true";
+
+  const options = () => [...select.options].map(option => option.value || option.textContent);
+  const optionButtons = () => qsa("[data-custom-select-option]", panel);
+  const selectedIndex = () => Math.max(0, options().indexOf(select.value));
+
+  function sync() {
+    const label = select.value || options()[0] || "";
+    valueLabel.textContent = label;
+    optionButtons().forEach(button => {
+      const active = button.dataset.value === label;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-selected", String(active));
+    });
+  }
+
+  function renderOptions() {
+    panel.innerHTML = options().map((value, index) => `
+      <button class="custom-select-option" type="button" role="option" data-custom-select-option data-value="${value}" tabindex="-1" aria-selected="${value === select.value}">
+        ${value}
+      </button>
+    `).join("");
+    optionButtons().forEach((button, index) => {
+      button.addEventListener("click", () => choose(index));
+      button.addEventListener("keydown", event => handleOptionKey(event, index));
+    });
+    sync();
+  }
+
+  function open(focusIndex = selectedIndex()) {
+    root.classList.add("open");
+    trigger.setAttribute("aria-expanded", "true");
+    panel.hidden = false;
+    optionButtons()[focusIndex]?.focus();
+  }
+
+  function close(returnFocus = false) {
+    root.classList.remove("open");
+    trigger.setAttribute("aria-expanded", "false");
+    panel.hidden = true;
+    if (returnFocus) trigger.focus();
+  }
+
+  function choose(index) {
+    const next = options()[index];
+    if (!next) return;
+    select.value = next;
+    sync();
+    select.dispatchEvent(new Event("input", { bubbles: true }));
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    close(true);
+  }
+
+  function handleTriggerKey(event) {
+    if (["ArrowDown", "Enter", " "].includes(event.key)) {
+      event.preventDefault();
+      open(selectedIndex());
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      open(Math.max(0, selectedIndex() - 1));
+    } else if (event.key === "Escape") {
+      close();
+    }
+  }
+
+  function handleOptionKey(event, index) {
+    const last = optionButtons().length - 1;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      optionButtons()[Math.min(last, index + 1)]?.focus();
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      optionButtons()[Math.max(0, index - 1)]?.focus();
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      optionButtons()[0]?.focus();
+    } else if (event.key === "End") {
+      event.preventDefault();
+      optionButtons()[last]?.focus();
+    } else if (["Enter", " "].includes(event.key)) {
+      event.preventDefault();
+      choose(index);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      close(true);
+    }
+  }
+
+  panel.hidden = true;
+  renderOptions();
+  trigger.addEventListener("click", () => root.classList.contains("open") ? close() : open(selectedIndex()));
+  trigger.addEventListener("keydown", handleTriggerKey);
+  select.addEventListener("change", sync);
+  document.addEventListener("click", event => {
+    if (!root.contains(event.target)) close();
+  });
+}
+
 function orgsFor(type) {
   if (type === "universities") return DATA.universities;
   if (type === "companies") return DATA.companies;
@@ -1532,11 +1684,35 @@ function renderJobsPage() {
               <h2 class="filter-title">Search jobs</h2>
               <div class="filter-stack">
                 <div class="field"><i data-lucide="search"></i><input data-job-query placeholder="Role, company, skill"></div>
-                <div class="field"><i data-lucide="layers"></i><select data-job-industry></select></div>
-                <div class="field"><i data-lucide="user-round"></i><select data-job-level></select></div>
-                <div class="field"><i data-lucide="map-pin"></i><select data-job-type></select></div>
+                <div class="field custom-select-field" data-custom-select="job-industry">
+                  <i data-lucide="layers"></i>
+                  <select class="native-select-proxy" data-job-industry aria-hidden="true" tabindex="-1"></select>
+                  <button class="custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false">
+                    <span data-custom-select-value>All</span>
+                    <i class="custom-select-chevron" data-lucide="chevron-down"></i>
+                  </button>
+                  <div class="custom-select-panel" role="listbox" data-custom-select-panel></div>
+                </div>
+                <div class="field custom-select-field" data-custom-select="job-level">
+                  <i data-lucide="user-round"></i>
+                  <select class="native-select-proxy" data-job-level aria-hidden="true" tabindex="-1"></select>
+                  <button class="custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false">
+                    <span data-custom-select-value>All</span>
+                    <i class="custom-select-chevron" data-lucide="chevron-down"></i>
+                  </button>
+                  <div class="custom-select-panel" role="listbox" data-custom-select-panel></div>
+                </div>
+                <div class="field custom-select-field" data-custom-select="job-type">
+                  <i data-lucide="map-pin"></i>
+                  <select class="native-select-proxy" data-job-type aria-hidden="true" tabindex="-1"></select>
+                  <button class="custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false">
+                    <span data-custom-select-value>All</span>
+                    <i class="custom-select-chevron" data-lucide="chevron-down"></i>
+                  </button>
+                  <div class="custom-select-panel" role="listbox" data-custom-select-panel></div>
+                </div>
                 <label class="range-field"><span>Minimum match <strong data-threshold-label>70%</strong></span><input data-job-threshold type="range" min="60" max="95" value="70"></label>
-                <label class="check-field"><input data-job-compare-mode type="checkbox"> Compare roles</label>
+                <label class="check-field custom-checkbox"><input data-job-compare-mode type="checkbox"> Compare roles</label>
               </div>
             </aside>
             <div class="jobs-main">
@@ -1574,8 +1750,11 @@ function renderJobsPage() {
   const compareMode = qs("[data-job-compare-mode]");
 
   industrySelect.innerHTML = ["All", ...new Set(DATA.jobs.map(j => j.industry))].map(x => `<option>${x}</option>`).join("");
+  initCustomSelect(industrySelect);
   levelSelect.innerHTML = ["All", ...new Set(DATA.jobs.map(j => j.level))].map(x => `<option>${x}</option>`).join("");
+  initCustomSelect(levelSelect);
   if (typeSelect) typeSelect.innerHTML = ["All", ...new Set(DATA.jobs.map(j => j.type))].map(x => `<option>${x}</option>`).join("");
+  initCustomSelect(typeSelect);
   queryInput.value = new URLSearchParams(location.search).get("q") || "";
   if (!state.session.loggedIn) qs('[data-job-tab="community"]')?.remove();
 
@@ -1689,7 +1868,7 @@ function renderJobsPage() {
         </div>
         <div class="muted small" style="margin-top:12px">${job.salary} - ${job.type} - ${job.posted}</div>
         ${state.applicationRecords[job.id] ? `<div class="job-card-status">${applicationStagePill(state.applicationRecords[job.id].stage)}<span class="muted small">${state.applicationRecords[job.id].nextAction}</span></div>` : ""}
-        ${compareMode?.checked ? `<label class="check-field inline"><input type="checkbox" data-compare-job="${job.id}" ${state.comparedJobs.includes(job.id) ? "checked" : ""}> Compare</label>` : ""}
+        ${compareMode?.checked ? `<label class="check-field inline custom-checkbox"><input type="checkbox" data-compare-job="${job.id}" ${state.comparedJobs.includes(job.id) ? "checked" : ""}> Compare</label>` : ""}
         ${pills(job.skills.slice(0, 3), "cyan")}
       </button>
     `).join("") || `<div class="card">No matching roles yet. Try a broader search.</div>`;
@@ -1764,7 +1943,7 @@ function renderJobsPage() {
         <p class="muted">${active.description}</p>
         ${pills(active.skills, "cyan")}
       </div>
-      <div class="detail-section warning-box">
+      <div class="detail-section warning-box job-watchout-card">
         <h3>${icon("alert-triangle")} Watch out</h3>
         <p class="muted">${active.caution}</p>
       </div>
@@ -1778,17 +1957,23 @@ function renderJobsPage() {
             </table>
           </div>
         </div>` : ""}
-      <div class="hero-actions">
+      <div class="job-detail-actions">
         ${loggedIn ? `
-          <button class="btn btn-primary" data-apply>${icon(applied ? "check" : "send")} ${applied ? "Applied" : "Apply now"}</button>
-          <button class="btn btn-ghost" data-save>${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save role"}</button>
-          <button class="btn btn-ghost" data-screen>${icon("scan-search")} Move to screening</button>
-          <button class="btn btn-ghost" data-ignore>${icon("thumbs-down")} Not interested</button>
-          <a class="btn btn-cyan" href="vera.html?topic=${encodeURIComponent(active.title)}">${icon("message-circle")} Ask Vera</a>
+          <div class="job-detail-action-row">
+            <button class="btn btn-ghost" data-save>${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save role"}</button>
+            <button class="btn btn-primary" data-apply>${icon(applied ? "check" : "send")} ${applied ? "Applied" : "Apply now"}</button>
+          </div>
+          <a class="btn btn-cyan job-detail-action-wide" href="vera.html?topic=${encodeURIComponent(active.title)}">${icon("message-circle")} Ask Vera</a>
+          <div class="job-detail-secondary-actions">
+            <button class="btn btn-ghost" data-screen>${icon("scan-search")} Move to screening</button>
+            <button class="btn btn-ghost" data-ignore>${icon("thumbs-down")} Not interested</button>
+          </div>
         ` : `
-          <button class="btn btn-primary" data-auth-prompt="save jobs and track applications">${icon("bookmark")} Save role</button>
-          <button class="btn btn-ghost" data-auth-prompt="apply and track progress">${icon("send")} Apply</button>
-          <button class="btn btn-cyan" data-auth-prompt="ask Vera for personalized coaching">${icon("message-circle")} Ask Vera</button>
+          <div class="job-detail-action-row">
+            <button class="btn btn-primary" data-auth-prompt="save jobs and track applications">${icon("bookmark")} Save role</button>
+            <button class="btn btn-ghost" data-auth-prompt="apply and track progress">${icon("send")} Apply</button>
+          </div>
+          <button class="btn btn-cyan job-detail-action-wide" data-auth-prompt="ask Vera for personalized coaching">${icon("message-circle")} Ask Vera</button>
         `}
       </div>
     `;
@@ -3193,6 +3378,7 @@ function init() {
   renderEmployerPortal();
   renderEmployers();
   renderComparison();
+  renderSiteFooter();
   bindGlobalActions();
   createIcons();
   initSidebarToggle();

@@ -32,11 +32,35 @@
         <h2 class="filter-title">Search jobs</h2>
         <div class="filter-stack">
           <div class="field"><i data-lucide="search"></i><input data-job-query placeholder="Role, company, skill"></div>
-          <div class="field"><i data-lucide="layers"></i><select data-job-industry></select></div>
-          <div class="field"><i data-lucide="user-round"></i><select data-job-level></select></div>
-          <div class="field"><i data-lucide="map-pin"></i><select data-job-type></select></div>
+          <div class="field custom-select-field" data-custom-select="job-industry">
+            <i data-lucide="layers"></i>
+            <select class="native-select-proxy" data-job-industry aria-hidden="true" tabindex="-1"></select>
+            <button class="custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false">
+              <span data-custom-select-value>All</span>
+              <i class="custom-select-chevron" data-lucide="chevron-down"></i>
+            </button>
+            <div class="custom-select-panel" role="listbox" data-custom-select-panel></div>
+          </div>
+          <div class="field custom-select-field" data-custom-select="job-level">
+            <i data-lucide="user-round"></i>
+            <select class="native-select-proxy" data-job-level aria-hidden="true" tabindex="-1"></select>
+            <button class="custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false">
+              <span data-custom-select-value>All</span>
+              <i class="custom-select-chevron" data-lucide="chevron-down"></i>
+            </button>
+            <div class="custom-select-panel" role="listbox" data-custom-select-panel></div>
+          </div>
+          <div class="field custom-select-field" data-custom-select="job-type">
+            <i data-lucide="map-pin"></i>
+            <select class="native-select-proxy" data-job-type aria-hidden="true" tabindex="-1"></select>
+            <button class="custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false">
+              <span data-custom-select-value>All</span>
+              <i class="custom-select-chevron" data-lucide="chevron-down"></i>
+            </button>
+            <div class="custom-select-panel" role="listbox" data-custom-select-panel></div>
+          </div>
           <label class="range-field"><span>Minimum match <strong data-threshold-label>70%</strong></span><input data-job-threshold type="range" min="60" max="95" value="70"></label>
-          <label class="check-field"><input data-job-compare-mode type="checkbox"> Compare roles</label>
+          <label class="check-field custom-checkbox"><input data-job-compare-mode type="checkbox"> Compare roles</label>
           <a class="btn btn-cyan btn-wide" href="vera.html?topic=job search"><i data-lucide="sparkles"></i> Ask Vera</a>
         </div>
       </aside>
