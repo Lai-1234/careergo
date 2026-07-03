@@ -117,6 +117,27 @@ const DATA = {
       tags: ["Stable", "Graduate friendly", "Large teams"],
       summary: "Malaysia's largest financial group with strong graduate programs, structured teams, and broad digital transformation work.",
       scores: { culture: 4.2, growth: 4.3, pay: 4.1, balance: 4.0 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      workMode: "Onsite / Hybrid",
+      hiringDifficulty: "Medium",
+      averageRequirements: { education: "Diploma/Degree depending on role", cgpa: "Usually 3.0+ preferred for graduate programs", experience: "Fresh graduate to 2 years for junior roles", commonSkills: ["Communication", "Excel", "Teamwork", "Problem solving"], techSkills: ["SQL", "Excel/VBA", "Basic data analysis"], englishRequirement: "Good written and spoken English", portfolio: "Not required for most roles", internshipPreferred: "Advantageous but not mandatory", certifications: "Professional banking/finance certifications advantageous" },
+      hiringProcess: { steps: ["Application review", "Online assessment", "HR interview", "Manager interview", "Final interview (graduate programs)"], avgResponseTime: "2-4 weeks", difficulty: "Medium", assessmentNote: "Online assessment and assessment centre for graduate programs" },
+      salaryBenefits: { freshGradSalary: "RM 3.2k - 4.5k / month", internshipAllowance: "RM 800 - 1.2k / month", bonus: "Annual performance bonus", medical: "Comprehensive medical coverage", training: "Structured graduate training program", flexibleWork: "Hybrid for eligible roles", leave: "Standard + study leave for certifications" },
+      careerGrowth: { trainingQuality: "Strong structured training", promotionPath: "Clear grade-based progression", graduateProgram: "Available (Maybank Management Trainee)", mentorship: "Assigned mentors for new joiners", internalTransfer: "Common across departments", learningOpportunities: "Internal academy and certification support" },
+      workCulture: { pace: "Steady, structured", teamStyle: "Large teams, defined roles", workLifeBalance: "Balanced, standard hours", managementStyle: "Hierarchical, process-driven", collaboration: "Cross-department coordination common", overtimeSignal: "Occasional during reporting periods", reviewThemes: "Stable, good for early career, slower pace" },
+      veraNote: "Maybank is strong for fresh graduates who want a structured early-career path, stable environment, and broad banking exposure. Watch for slower approval processes and large-company hierarchy.",
+      companyReviews: [
+        { id: "cr-mb-1", title: "Solid first job with real structure", author: "Graduate Trainee", role: "Management Trainee", date: "May 2026", rating: 4.6, body: "The rotation program gave me exposure to multiple departments. Approvals can be slow but the learning is real." },
+        { id: "cr-mb-2", title: "Good stability, steady pace", author: "Data Analyst", role: "Data Analyst", date: "Mar 2026", rating: 4.3, body: "Good work-life balance and supportive team, though systems can feel dated." }
+      ],
+      roles: [
+        { id: "mb-mt", title: "Management Trainee", department: "Graduate Program", salaryRange: "RM 3.5k - 5k / month", employmentType: "Full-time (Rotational)", location: "Kuala Lumpur", workMode: "Onsite / Hybrid", experienceLevel: "Fresh graduate", educationRequirement: "Degree in any discipline", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Leadership potential", "Communication", "Adaptability"], preferredSkills: ["Prior internship experience", "Extracurricular leadership roles"], tools: ["Excel", "PowerPoint"], responsibilities: ["Rotate across business units", "Complete structured training modules", "Take on project assignments", "Build cross-functional experience"], hiringProcess: "Online assessment, assessment centre, panel interview", careerPath: "Management Trainee -> Executive -> Manager (post-rotation placement)", benefits: ["Structured mentorship", "Rotational exposure", "Fast-track promotion potential"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Highly competitive intake", "Placement after rotation is not guaranteed to be your first choice"] },
+        { id: "mb-da", title: "Data Analyst", department: "Analytics", salaryRange: "RM 4k - 7k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Statistics, Computer Science, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["SQL", "Data visualization", "Analytical thinking"], preferredSkills: ["Python/R", "Dashboarding tools (Power BI/Tableau)", "Statistics"], tools: ["Excel", "SQL", "Power BI / Tableau"], responsibilities: ["Analyze business data and trends", "Build dashboards and reports", "Support data-driven decision making", "Work with stakeholders to define metrics"], hiringProcess: "Online assessment (SQL/case study), interview with hiring manager", careerPath: "Data Analyst -> Senior Analyst -> Analytics Manager / Data Scientist", benefits: ["Medical coverage", "Training allowance", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study round can be competitive", "Requires strong attention to detail"] },
+        { id: "mb-fe", title: "Finance Executive", department: "Finance", salaryRange: "RM 3.5k - 6k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Finance, Accounting, or related field", cgpaRequirement: "3.2+ preferred", requiredSkills: ["Financial reporting", "Attention to detail", "Excel proficiency"], preferredSkills: ["Accounting software", "Basic taxation knowledge", "ACCA/CPA progress"], tools: ["Excel", "SAP/accounting ERP", "PowerPoint"], responsibilities: ["Support financial reporting and reconciliation", "Assist with budgeting and forecasting", "Ensure compliance with financial policies", "Prepare month-end reports"], hiringProcess: "Online assessment, interview with finance manager", careerPath: "Finance Executive -> Senior Executive -> Finance Manager", benefits: ["Medical coverage", "Study support for professional certification", "Performance bonus"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Month-end periods can be demanding", "High attention to detail required"] },
+        { id: "mb-coa", title: "Customer Operations Associate", department: "Customer Operations", salaryRange: "RM 2.8k - 4k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Diploma/Degree in any discipline", cgpaRequirement: "Not strictly required", requiredSkills: ["Communication", "Problem solving", "Patience"], preferredSkills: ["CRM tools experience", "Multilingual ability", "Process improvement mindset"], tools: ["CRM/ticketing systems", "Excel"], responsibilities: ["Handle customer inquiries and issues", "Maintain service quality standards", "Escalate complex cases appropriately", "Support process improvement initiatives"], hiringProcess: "Interview with operations manager, situational assessment", careerPath: "Associate -> Senior Associate -> Team Lead", benefits: ["Medical coverage", "Shift allowance (if applicable)", "Performance incentives"], status: "Open", hiringDifficulty: "Easy", watchouts: ["May involve shift work", "High interaction volume during peak periods"] }
+      ],
       highlights: ["Strong training and rotation programs", "Good brand value for early career", "Structured promotion paths"],
       watchouts: ["Large-company pace can feel slower", "Some teams report layered approvals"]
     },
@@ -135,6 +156,27 @@ const DATA = {
       tags: ["Fast paced", "Regional exposure", "Tech"],
       summary: "Regional technology company with strong product, data, and operations teams across Southeast Asia.",
       scores: { culture: 4.0, growth: 4.5, pay: 4.2, balance: 3.6 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      workMode: "Hybrid",
+      hiringDifficulty: "Hard",
+      averageRequirements: { education: "Degree in Computer Science, Engineering, Business, or related field", cgpa: "3.2+ preferred for competitive roles", experience: "Fresh graduate to 3 years", commonSkills: ["Problem solving", "Communication", "Ownership mindset", "Fast learning"], techSkills: ["SQL", "Python/Java", "Data analysis", "Cloud basics"], englishRequirement: "Strong written and spoken English", portfolio: "Helpful for tech/product roles", internshipPreferred: "Strongly preferred", certifications: "Not required, skills-based hiring" },
+      hiringProcess: { steps: ["Application review", "Online assessment", "Technical/case interview", "Hiring manager interview", "Final panel"], avgResponseTime: "2-3 weeks", difficulty: "Hard", assessmentNote: "Technical assessment for engineering and analytics roles" },
+      salaryBenefits: { freshGradSalary: "RM 4.5k - 6.5k / month", internshipAllowance: "RM 1.5k - 2.5k / month", bonus: "Performance bonus + equity for some roles", medical: "Comprehensive medical + wellness benefits", training: "GrabAcademy learning platform", flexibleWork: "Hybrid, flexible hours", leave: "Generous annual and wellness leave" },
+      careerGrowth: { trainingQuality: "Strong, fast-paced learning", promotionPath: "Merit-based, can be fast for high performers", graduateProgram: "Available for select functions", mentorship: "Informal but accessible", internalTransfer: "Common across regional offices", learningOpportunities: "High exposure to cross-functional projects" },
+      workCulture: { pace: "Fast, high-growth", teamStyle: "Small, agile squads", workLifeBalance: "Can be demanding during launches", managementStyle: "Flat, ownership-driven", collaboration: "High cross-functional collaboration", overtimeSignal: "Common during major launches", reviewThemes: "High growth, high expectations, competitive" },
+      veraNote: "Grab is a strong choice for graduates who want fast growth and regional exposure in tech/product roles. Expect a competitive hiring process and periods of high workload around major launches.",
+      companyReviews: [
+        { id: "cr-gr-1", title: "Fast learning curve, real ownership", author: "Software Engineer", role: "Software Engineer", date: "Jun 2026", rating: 4.2, body: "You get real ownership early, but expect crunch during major launches." },
+        { id: "cr-gr-2", title: "Great for career growth", author: "Business Analyst", role: "Business Analyst", date: "Apr 2026", rating: 4.0, body: "Learned more in a year here than in my previous role, but it's intense." }
+      ],
+      roles: [
+        { id: "gr-se", title: "Software Engineer", department: "Technology", salaryRange: "RM 5k - 10k / month", employmentType: "Full-time", location: "Petaling Jaya", workMode: "Hybrid", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Diploma/Degree in Computer Science or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Programming fundamentals", "Data structures & algorithms", "Problem solving"], preferredSkills: ["Git", "REST APIs", "Agile methodology"], tools: ["Java/Python/JavaScript", "SQL", "Cloud basics (AWS/Azure)"], responsibilities: ["Build and maintain product features", "Write clean, tested code", "Collaborate with cross-functional teams", "Participate in code reviews"], hiringProcess: "Online assessment, technical interview, hiring manager interview", careerPath: "Software Engineer -> Senior Engineer -> Tech Lead / Engineering Manager", benefits: ["Medical coverage", "Performance bonus", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Technical assessment can be challenging for freshers", "Fast-paced delivery expectations"] },
+        { id: "gr-da", title: "Data Analyst", department: "Analytics", salaryRange: "RM 4.5k - 8k / month", employmentType: "Full-time", location: "Petaling Jaya", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Statistics, Computer Science, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["SQL", "Data visualization", "Analytical thinking"], preferredSkills: ["Python/R", "Dashboarding tools (Power BI/Tableau)", "Statistics"], tools: ["Excel", "SQL", "Power BI / Tableau"], responsibilities: ["Analyze business data and trends", "Build dashboards and reports", "Support data-driven decision making", "Work with stakeholders to define metrics"], hiringProcess: "Online assessment (SQL/case study), interview with hiring manager", careerPath: "Data Analyst -> Senior Analyst -> Analytics Manager / Data Scientist", benefits: ["Medical coverage", "Training allowance", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study round can be competitive", "Requires strong attention to detail"] },
+        { id: "gr-pmi", title: "Product Manager Intern", department: "Product", salaryRange: "RM 2.5k - 3.5k / month", employmentType: "Internship", location: "Petaling Jaya", workMode: "Hybrid", experienceLevel: "Internship", educationRequirement: "Penultimate/final year student in any discipline", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Analytical thinking", "Communication", "Curiosity about products"], preferredSkills: ["Prior product/UX exposure", "Basic data analysis", "Wireframing tools"], tools: ["Figma basics", "Analytics dashboards", "Project tracking tools"], responsibilities: ["Support product research and user feedback analysis", "Assist in feature specification", "Coordinate with design and engineering teams", "Present findings to stakeholders"], hiringProcess: "Case study interview, team fit interview", careerPath: "Intern -> Associate Product Manager (return offer possible)", benefits: ["Internship allowance", "Mentorship", "Potential return offer"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Highly competitive intern intake", "Fixed-term, return offer not guaranteed"] },
+        { id: "gr-ba", title: "Business Analyst", department: "Strategy & Operations", salaryRange: "RM 4k - 7k / month", employmentType: "Full-time", location: "Petaling Jaya", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Business, Economics, or related field", cgpaRequirement: "3.2+ preferred", requiredSkills: ["Analytical thinking", "Communication", "Stakeholder management"], preferredSkills: ["Excel modeling", "Process mapping", "Presentation skills"], tools: ["Excel", "PowerPoint", "SQL basics"], responsibilities: ["Support business process analysis", "Prepare reports and presentations", "Coordinate with cross-functional teams", "Identify improvement opportunities"], hiringProcess: "Case study interview, panel interview", careerPath: "Business Analyst -> Senior Analyst -> Manager", benefits: ["Medical coverage", "Performance bonus", "Structured training"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study rounds can be competitive", "Cross-team coordination can be demanding"] }
+      ],
       highlights: ["High-growth projects", "Strong data culture", "Regional career mobility"],
       watchouts: ["Workload can spike", "Competition for roles is high"]
     },
@@ -153,6 +195,26 @@ const DATA = {
       tags: ["Banking", "Mentorship", "ASEAN"],
       summary: "ASEAN banking group with opportunities in digital banking, analytics, product, and customer experience.",
       scores: { culture: 3.9, growth: 4.0, pay: 3.9, balance: 3.8 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      workMode: "Onsite / Hybrid",
+      hiringDifficulty: "Medium",
+      averageRequirements: { education: "Diploma/Degree depending on role", cgpa: "3.0+ preferred for graduate programs", experience: "Fresh graduate to 2 years", commonSkills: ["Communication", "Excel", "Analytical thinking", "Teamwork"], techSkills: ["SQL basics", "Excel", "Digital banking tools"], englishRequirement: "Good written and spoken English", portfolio: "Not required for most roles", internshipPreferred: "Advantageous", certifications: "Banking/finance certifications advantageous" },
+      hiringProcess: { steps: ["Application review", "Online assessment", "HR interview", "Manager interview"], avgResponseTime: "2-4 weeks", difficulty: "Medium", assessmentNote: "Online assessment for graduate programs" },
+      salaryBenefits: { freshGradSalary: "RM 3k - 4.5k / month", internshipAllowance: "RM 700 - 1.1k / month", bonus: "Annual performance bonus", medical: "Comprehensive medical coverage", training: "Structured onboarding and mentorship", flexibleWork: "Hybrid for eligible roles", leave: "Standard annual leave" },
+      careerGrowth: { trainingQuality: "Good structured training", promotionPath: "Grade-based progression", graduateProgram: "Available (CIMB Complete)", mentorship: "Assigned mentors in graduate program", internalTransfer: "Available across ASEAN offices", learningOpportunities: "Internal training academy" },
+      workCulture: { pace: "Steady", teamStyle: "Structured, department-based", workLifeBalance: "Balanced", managementStyle: "Process-oriented, varies by division", collaboration: "Regional coordination", overtimeSignal: "Occasional during reporting periods", reviewThemes: "Good mentorship, process speed varies by team" },
+      veraNote: "CIMB offers a solid entry point into banking with good mentorship for first roles. Innovation speed and process efficiency can vary noticeably between divisions.",
+      companyReviews: [
+        { id: "cr-cb-1", title: "Good mentorship for first job", author: "Graduate Trainee", role: "Management Trainee", date: "Feb 2026", rating: 4.1, body: "My manager was very supportive. Some systems and processes feel outdated though." }
+      ],
+      roles: [
+        { id: "cb-mt", title: "Management Trainee", department: "Graduate Program", salaryRange: "RM 3.5k - 5k / month", employmentType: "Full-time (Rotational)", location: "Kuala Lumpur", workMode: "Onsite / Hybrid", experienceLevel: "Fresh graduate", educationRequirement: "Degree in any discipline", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Leadership potential", "Communication", "Adaptability"], preferredSkills: ["Prior internship experience", "Extracurricular leadership roles"], tools: ["Excel", "PowerPoint"], responsibilities: ["Rotate across business units", "Complete structured training modules", "Take on project assignments", "Build cross-functional experience"], hiringProcess: "Online assessment, assessment centre, panel interview", careerPath: "Management Trainee -> Executive -> Manager (post-rotation placement)", benefits: ["Structured mentorship", "Rotational exposure", "Fast-track promotion potential"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Highly competitive intake", "Placement after rotation is not guaranteed to be your first choice"] },
+        { id: "cb-fe", title: "Finance Executive", department: "Finance", salaryRange: "RM 3.5k - 6k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Finance, Accounting, or related field", cgpaRequirement: "3.2+ preferred", requiredSkills: ["Financial reporting", "Attention to detail", "Excel proficiency"], preferredSkills: ["Accounting software", "Basic taxation knowledge", "ACCA/CPA progress"], tools: ["Excel", "SAP/accounting ERP", "PowerPoint"], responsibilities: ["Support financial reporting and reconciliation", "Assist with budgeting and forecasting", "Ensure compliance with financial policies", "Prepare month-end reports"], hiringProcess: "Online assessment, interview with finance manager", careerPath: "Finance Executive -> Senior Executive -> Finance Manager", benefits: ["Medical coverage", "Study support for professional certification", "Performance bonus"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Month-end periods can be demanding", "High attention to detail required"] },
+        { id: "cb-da", title: "Data Analyst", department: "Analytics", salaryRange: "RM 4k - 7k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Statistics, Computer Science, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["SQL", "Data visualization", "Analytical thinking"], preferredSkills: ["Python/R", "Dashboarding tools (Power BI/Tableau)", "Statistics"], tools: ["Excel", "SQL", "Power BI / Tableau"], responsibilities: ["Analyze business data and trends", "Build dashboards and reports", "Support data-driven decision making", "Work with stakeholders to define metrics"], hiringProcess: "Online assessment (SQL/case study), interview with hiring manager", careerPath: "Data Analyst -> Senior Analyst -> Analytics Manager / Data Scientist", benefits: ["Medical coverage", "Training allowance", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study round can be competitive", "Requires strong attention to detail"] },
+        { id: "cb-hr", title: "HR Executive", department: "Human Resources", salaryRange: "RM 3k - 5k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Human Resources, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Communication", "Organization", "Confidentiality"], preferredSkills: ["HRIS systems", "Employment law basics", "Recruitment experience"], tools: ["HRIS/payroll systems", "Excel", "Applicant tracking systems"], responsibilities: ["Support recruitment and onboarding", "Maintain employee records", "Assist with HR programs and events", "Support employee relations matters"], hiringProcess: "Interview with HR manager, panel discussion", careerPath: "HR Executive -> Senior Executive -> HR Business Partner", benefits: ["Medical coverage", "Training and development programs", "Flexible work arrangement"], status: "Open", hiringDifficulty: "Easy", watchouts: ["Handles sensitive/confidential matters", "Can involve cross-department coordination"] }
+      ],
       highlights: ["Good exposure to financial services", "Established graduate structure", "Regional network"],
       watchouts: ["Processes vary by division", "Innovation speed depends on team"]
     },
@@ -171,8 +233,256 @@ const DATA = {
       tags: ["AI", "Enterprise", "Energy"],
       summary: "Digital arm focused on enterprise technology, data, AI, and transformation across the energy sector.",
       scores: { culture: 4.1, growth: 4.4, pay: 4.3, balance: 3.9 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      workMode: "Hybrid",
+      hiringDifficulty: "Medium",
+      averageRequirements: { education: "Degree in Computer Science, IT, Engineering, or related field", cgpa: "3.2+ preferred", experience: "Fresh graduate to 3 years", commonSkills: ["Problem solving", "Communication", "Analytical thinking"], techSkills: ["SQL", "Python", "Cloud platforms", "Cybersecurity basics"], englishRequirement: "Good written and spoken English", portfolio: "Helpful for technical roles", internshipPreferred: "Advantageous", certifications: "Cloud/security certifications advantageous" },
+      hiringProcess: { steps: ["Application review", "Online assessment", "Technical interview", "Hiring manager interview"], avgResponseTime: "2-3 weeks", difficulty: "Medium", assessmentNote: "Technical assessment for engineering and security roles" },
+      salaryBenefits: { freshGradSalary: "RM 4k - 5.5k / month", internshipAllowance: "RM 1.2k - 1.8k / month", bonus: "Performance bonus", medical: "Comprehensive medical benefits", training: "Structured technical upskilling programs", flexibleWork: "Hybrid work arrangement", leave: "Standard + wellness leave" },
+      careerGrowth: { trainingQuality: "Strong technical training", promotionPath: "Merit-based progression", graduateProgram: "Available for technical tracks", mentorship: "Assigned technical mentors", internalTransfer: "Available across enterprise tech teams", learningOpportunities: "Exposure to enterprise-scale systems" },
+      workCulture: { pace: "Steady to moderate", teamStyle: "Cross-functional enterprise teams", workLifeBalance: "Balanced", managementStyle: "Structured, stakeholder-heavy", collaboration: "High, across business and tech teams", overtimeSignal: "Occasional during major rollouts", reviewThemes: "Good technical learning, complex stakeholder environment" },
+      veraNote: "Petronas Digital is a good fit for graduates seeking enterprise-scale technical exposure with stable benefits. Expect a complex stakeholder environment and a learning curve around domain knowledge.",
+      companyReviews: [
+        { id: "cr-pd-1", title: "Great technical exposure", author: "Software Engineer", role: "Software Engineer", date: "Apr 2026", rating: 4.4, body: "Good mix of enterprise systems and modern tech stack. Stakeholder alignment takes time to learn." }
+      ],
+      roles: [
+        { id: "pd-se", title: "Software Engineer", department: "Technology", salaryRange: "RM 5k - 9k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Diploma/Degree in Computer Science or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Programming fundamentals", "Data structures & algorithms", "Problem solving"], preferredSkills: ["Git", "REST APIs", "Agile methodology"], tools: ["Java/Python/JavaScript", "SQL", "Cloud basics (AWS/Azure)"], responsibilities: ["Build and maintain product features", "Write clean, tested code", "Collaborate with cross-functional teams", "Participate in code reviews"], hiringProcess: "Online assessment, technical interview, hiring manager interview", careerPath: "Software Engineer -> Senior Engineer -> Tech Lead / Engineering Manager", benefits: ["Medical coverage", "Performance bonus", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Technical assessment can be challenging for freshers", "Fast-paced delivery expectations"] },
+        { id: "pd-cyb", title: "Cybersecurity Analyst", department: "IT Security", salaryRange: "RM 5k - 9k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Cybersecurity, Computer Science, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Network security fundamentals", "Risk assessment", "Analytical thinking"], preferredSkills: ["Security certifications (CEH/Security+)", "Incident response", "Scripting"], tools: ["SIEM tools", "Firewalls", "Vulnerability scanners"], responsibilities: ["Monitor systems for security threats", "Support incident response", "Conduct risk assessments", "Maintain security documentation"], hiringProcess: "Technical assessment, panel interview", careerPath: "Cybersecurity Analyst -> Senior Analyst -> Security Lead", benefits: ["Medical coverage", "Certification sponsorship", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["On-call responsibilities may apply", "Requires continuous upskilling"] },
+        { id: "pd-da", title: "Data Analyst", department: "Analytics", salaryRange: "RM 4.5k - 8k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Statistics, Computer Science, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["SQL", "Data visualization", "Analytical thinking"], preferredSkills: ["Python/R", "Dashboarding tools (Power BI/Tableau)", "Statistics"], tools: ["Excel", "SQL", "Power BI / Tableau"], responsibilities: ["Analyze business data and trends", "Build dashboards and reports", "Support data-driven decision making", "Work with stakeholders to define metrics"], hiringProcess: "Online assessment (SQL/case study), interview with hiring manager", careerPath: "Data Analyst -> Senior Analyst -> Analytics Manager / Data Scientist", benefits: ["Medical coverage", "Training allowance", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study round can be competitive", "Requires strong attention to detail"] },
+        { id: "pd-ba", title: "Business Analyst", department: "Strategy & Operations", salaryRange: "RM 4.5k - 7.5k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Business, Economics, or related field", cgpaRequirement: "3.2+ preferred", requiredSkills: ["Analytical thinking", "Communication", "Stakeholder management"], preferredSkills: ["Excel modeling", "Process mapping", "Presentation skills"], tools: ["Excel", "PowerPoint", "SQL basics"], responsibilities: ["Support business process analysis", "Prepare reports and presentations", "Coordinate with cross-functional teams", "Identify improvement opportunities"], hiringProcess: "Case study interview, panel interview", careerPath: "Business Analyst -> Senior Analyst -> Manager", benefits: ["Medical coverage", "Performance bonus", "Structured training"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study rounds can be competitive", "Cross-team coordination can be demanding"] }
+      ],
       highlights: ["High-impact enterprise problems", "Good technical learning curve", "Stable benefits"],
       watchouts: ["Complex stakeholder environment", "Domain learning takes time"]
+    },
+    {
+      id: "airasia",
+      name: "AirAsia",
+      type: "Company",
+      industry: "Aviation & Travel Tech",
+      location: "Sepang",
+      size: "10,000+ employees",
+      rating: 4.0,
+      reviews: 512,
+      open: 10,
+      signal: "Dynamic travel/aviation exposure",
+      salary: "RM 3k - 9k / month",
+      tags: ["Fast-paced", "Travel perks", "Dynamic"],
+      summary: "Leading Southeast Asian low-cost airline and travel tech group with fast-moving marketing, operations, and digital teams.",
+      scores: { culture: 3.9, growth: 3.9, pay: 3.7, balance: 3.6 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      workMode: "Onsite / Hybrid",
+      hiringDifficulty: "Easy",
+      averageRequirements: { education: "Diploma/Degree in any discipline", cgpa: "Not strictly required for operations roles", experience: "Fresh graduate to 2 years", commonSkills: ["Communication", "Adaptability", "Customer focus"], techSkills: ["Excel", "CRM/booking systems basics"], englishRequirement: "Good spoken and written English", portfolio: "Helpful for marketing roles", internshipPreferred: "Advantageous", certifications: "Not typically required" },
+      hiringProcess: { steps: ["Application review", "HR interview", "Department interview"], avgResponseTime: "1-3 weeks", difficulty: "Easy", assessmentNote: "Assessment mainly for marketing/analyst roles" },
+      salaryBenefits: { freshGradSalary: "RM 2.8k - 4k / month", internshipAllowance: "RM 700 - 1k / month", bonus: "Performance-linked bonus", medical: "Medical coverage + travel benefits", training: "On-the-job training", flexibleWork: "Hybrid for office-based roles", leave: "Standard + staff travel perks" },
+      careerGrowth: { trainingQuality: "Practical, on-the-job focus", promotionPath: "Available but pace varies by department", graduateProgram: "Limited structured program", mentorship: "Informal", internalTransfer: "Possible across departments", learningOpportunities: "Exposure to fast-moving travel/aviation industry" },
+      workCulture: { pace: "Fast, dynamic", teamStyle: "Lean teams", workLifeBalance: "Can vary by department", managementStyle: "Informal, results-driven", collaboration: "Cross-department coordination common", overtimeSignal: "Occasional during peak travel seasons", reviewThemes: "Dynamic industry exposure, staff travel perks valued" },
+      veraNote: "AirAsia suits graduates who want fast-paced exposure to the travel/aviation industry and don't mind a leaner, less structured environment. Staff travel perks are a notable plus.",
+      companyReviews: [
+        { id: "cr-aa-1", title: "Dynamic but rewarding", author: "Marketing Executive", role: "Marketing Executive", date: "Mar 2026", rating: 4.0, body: "Fast-paced and creative freedom, plus the travel perks are great." }
+      ],
+      roles: [
+        { id: "aa-me", title: "Marketing Executive", department: "Marketing", salaryRange: "RM 3k - 5k / month", employmentType: "Full-time", location: "Sepang", workMode: "Hybrid", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Marketing, Communications, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Communication", "Content creation", "Creativity"], preferredSkills: ["Social media management", "Basic design tools", "Campaign analytics"], tools: ["Canva/Adobe basics", "Social media platforms", "Excel"], responsibilities: ["Support marketing campaigns", "Create content for digital channels", "Track campaign performance", "Coordinate with agencies/vendors"], hiringProcess: "Portfolio/case review, interview with hiring manager", careerPath: "Marketing Executive -> Senior Executive -> Marketing Manager", benefits: ["Medical coverage", "Performance bonus", "Flexible work arrangement"], status: "Open", hiringDifficulty: "Easy", watchouts: ["Fast-paced campaign deadlines", "Creative feedback cycles can be demanding"] },
+        { id: "aa-coa", title: "Customer Operations Associate", department: "Customer Operations", salaryRange: "RM 2.8k - 4k / month", employmentType: "Full-time", location: "Sepang", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Diploma/Degree in any discipline", cgpaRequirement: "Not strictly required", requiredSkills: ["Communication", "Problem solving", "Patience"], preferredSkills: ["CRM tools experience", "Multilingual ability", "Process improvement mindset"], tools: ["CRM/ticketing systems", "Excel"], responsibilities: ["Handle customer inquiries and issues", "Maintain service quality standards", "Escalate complex cases appropriately", "Support process improvement initiatives"], hiringProcess: "Interview with operations manager, situational assessment", careerPath: "Associate -> Senior Associate -> Team Lead", benefits: ["Medical coverage", "Staff travel perks", "Performance incentives"], status: "Open", hiringDifficulty: "Easy", watchouts: ["May involve shift work", "High interaction volume during peak periods"] },
+        { id: "aa-ba", title: "Business Analyst", department: "Strategy & Operations", salaryRange: "RM 3.5k - 6k / month", employmentType: "Full-time", location: "Sepang", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Business, Economics, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Analytical thinking", "Communication", "Stakeholder management"], preferredSkills: ["Excel modeling", "Process mapping", "Presentation skills"], tools: ["Excel", "PowerPoint", "SQL basics"], responsibilities: ["Support business process analysis", "Prepare reports and presentations", "Coordinate with cross-functional teams", "Identify improvement opportunities"], hiringProcess: "Case study interview, panel interview", careerPath: "Business Analyst -> Senior Analyst -> Manager", benefits: ["Medical coverage", "Staff travel perks", "Structured training"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study rounds can be competitive", "Cross-team coordination can be demanding"] },
+        { id: "aa-hr", title: "HR Executive", department: "Human Resources", salaryRange: "RM 3k - 5k / month", employmentType: "Full-time", location: "Sepang", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Human Resources, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Communication", "Organization", "Confidentiality"], preferredSkills: ["HRIS systems", "Employment law basics", "Recruitment experience"], tools: ["HRIS/payroll systems", "Excel", "Applicant tracking systems"], responsibilities: ["Support recruitment and onboarding", "Maintain employee records", "Assist with HR programs and events", "Support employee relations matters"], hiringProcess: "Interview with HR manager, panel discussion", careerPath: "HR Executive -> Senior Executive -> HR Business Partner", benefits: ["Medical coverage", "Staff travel perks", "Flexible work arrangement"], status: "Open", hiringDifficulty: "Easy", watchouts: ["Handles sensitive/confidential matters", "Can involve cross-department coordination"] }
+      ],
+      highlights: ["Dynamic travel industry exposure", "Staff travel perks", "Fast decision-making culture"],
+      watchouts: ["Less structured than banks/MNCs", "Balance can vary by department"]
+    },
+    {
+      id: "shopee",
+      name: "Shopee",
+      type: "Company",
+      industry: "E-commerce",
+      location: "Kuala Lumpur",
+      size: "5,000+ employees",
+      rating: 4.0,
+      reviews: 678,
+      open: 15,
+      signal: "High-growth e-commerce exposure",
+      salary: "RM 4.5k - 14k / month",
+      tags: ["Fast paced", "E-commerce", "Regional"],
+      summary: "Leading Southeast Asian e-commerce platform with fast-paced product, marketing, and operations teams.",
+      scores: { culture: 3.8, growth: 4.4, pay: 4.1, balance: 3.4 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      workMode: "Onsite / Hybrid",
+      hiringDifficulty: "Hard",
+      averageRequirements: { education: "Degree in Computer Science, Business, Marketing, or related field", cgpa: "3.3+ preferred for competitive roles", experience: "Fresh graduate to 3 years", commonSkills: ["Fast learning", "Ownership", "Communication", "Data-driven thinking"], techSkills: ["SQL", "Python/Java", "E-commerce analytics tools"], englishRequirement: "Strong written and spoken English", portfolio: "Helpful for product/marketing roles", internshipPreferred: "Strongly preferred", certifications: "Not required, skills-based" },
+      hiringProcess: { steps: ["Application review", "Online assessment", "Case/technical interview", "Hiring manager interview", "Final interview"], avgResponseTime: "2-3 weeks", difficulty: "Hard", assessmentNote: "Case study and technical assessment rounds" },
+      salaryBenefits: { freshGradSalary: "RM 4.5k - 6.5k / month", internshipAllowance: "RM 1.5k - 2.2k / month", bonus: "Performance bonus", medical: "Comprehensive medical benefits", training: "Structured onboarding and rotational exposure", flexibleWork: "Hybrid, fast-paced office culture", leave: "Standard annual leave" },
+      careerGrowth: { trainingQuality: "Strong, fast-paced", promotionPath: "Merit-based, can be rapid", graduateProgram: "Available (Shopee graduate tracks)", mentorship: "Structured buddy system", internalTransfer: "Common across regional teams", learningOpportunities: "High exposure to e-commerce scale challenges" },
+      workCulture: { pace: "Very fast", teamStyle: "Lean, high-accountability teams", workLifeBalance: "Demanding, especially during campaigns", managementStyle: "Results-driven, data-heavy", collaboration: "High, cross-regional", overtimeSignal: "Common during major sales campaigns", reviewThemes: "High growth, intense pace, competitive culture" },
+      veraNote: "Shopee offers strong growth and e-commerce exposure for graduates who thrive in a fast, competitive environment. Expect intense workload spikes around major sales campaigns.",
+      companyReviews: [
+        { id: "cr-sp-1", title: "Steep learning curve, high reward", author: "Business Analyst", role: "Business Analyst", date: "May 2026", rating: 3.9, body: "Campaign periods are intense but you learn fast and get real ownership." }
+      ],
+      roles: [
+        { id: "sp-se", title: "Software Engineer", department: "Technology", salaryRange: "RM 5.5k - 10k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Diploma/Degree in Computer Science or related field", cgpaRequirement: "3.2+ preferred", requiredSkills: ["Programming fundamentals", "Data structures & algorithms", "Problem solving"], preferredSkills: ["Git", "REST APIs", "Agile methodology"], tools: ["Java/Python/JavaScript", "SQL", "Cloud basics (AWS/Azure)"], responsibilities: ["Build and maintain product features", "Write clean, tested code", "Collaborate with cross-functional teams", "Participate in code reviews"], hiringProcess: "Online assessment, technical interview, hiring manager interview", careerPath: "Software Engineer -> Senior Engineer -> Tech Lead / Engineering Manager", benefits: ["Medical coverage", "Performance bonus", "Hybrid work options"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Technical assessment can be challenging for freshers", "Fast-paced delivery expectations"] },
+        { id: "sp-me", title: "Marketing Executive", department: "Marketing", salaryRange: "RM 3.5k - 6k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Marketing, Communications, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Communication", "Content creation", "Creativity"], preferredSkills: ["Social media management", "Basic design tools", "Campaign analytics"], tools: ["Canva/Adobe basics", "Social media platforms", "Excel"], responsibilities: ["Support marketing campaigns", "Create content for digital channels", "Track campaign performance", "Coordinate with agencies/vendors"], hiringProcess: "Portfolio/case review, interview with hiring manager", careerPath: "Marketing Executive -> Senior Executive -> Marketing Manager", benefits: ["Medical coverage", "Performance bonus", "Flexible work arrangement"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Fast-paced campaign deadlines", "Creative feedback cycles can be demanding"] },
+        { id: "sp-ba", title: "Business Analyst", department: "Strategy & Operations", salaryRange: "RM 4.5k - 8k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Business, Economics, or related field", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Analytical thinking", "Communication", "Stakeholder management"], preferredSkills: ["Excel modeling", "Process mapping", "Presentation skills"], tools: ["Excel", "PowerPoint", "SQL basics"], responsibilities: ["Support business process analysis", "Prepare reports and presentations", "Coordinate with cross-functional teams", "Identify improvement opportunities"], hiringProcess: "Case study interview, panel interview", careerPath: "Business Analyst -> Senior Analyst -> Manager", benefits: ["Medical coverage", "Performance bonus", "Structured training"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Case study rounds can be competitive", "Cross-team coordination can be demanding"] },
+        { id: "sp-pmi", title: "Product Manager Intern", department: "Product", salaryRange: "RM 2.5k - 3.5k / month", employmentType: "Internship", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Internship", educationRequirement: "Penultimate/final year student in any discipline", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Analytical thinking", "Communication", "Curiosity about products"], preferredSkills: ["Prior product/UX exposure", "Basic data analysis", "Wireframing tools"], tools: ["Figma basics", "Analytics dashboards", "Project tracking tools"], responsibilities: ["Support product research and user feedback analysis", "Assist in feature specification", "Coordinate with design and engineering teams", "Present findings to stakeholders"], hiringProcess: "Case study interview, team fit interview", careerPath: "Intern -> Associate Product Manager (return offer possible)", benefits: ["Internship allowance", "Mentorship", "Potential return offer"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Highly competitive intern intake", "Fixed-term, return offer not guaranteed"] }
+      ],
+      highlights: ["High-growth projects", "Strong data-driven culture", "Regional career mobility"],
+      watchouts: ["Intense pace during campaigns", "Competition for roles is high"]
+    },
+    {
+      id: "maxis",
+      name: "Maxis",
+      type: "Company",
+      industry: "Telecommunications",
+      location: "Kuala Lumpur",
+      size: "3,000+ employees",
+      rating: 4.1,
+      reviews: 389,
+      open: 8,
+      signal: "Balanced growth with good perks",
+      salary: "RM 3.5k - 12k / month",
+      tags: ["Telco", "Balanced", "Digital services"],
+      summary: "Leading Malaysian telecommunications provider with growing digital services, data, and customer experience teams.",
+      scores: { culture: 4.0, growth: 3.9, pay: 3.9, balance: 4.0 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      workMode: "Hybrid",
+      hiringDifficulty: "Medium",
+      averageRequirements: { education: "Degree in Engineering, IT, Business, or related field", cgpa: "3.0+ preferred", experience: "Fresh graduate to 2 years", commonSkills: ["Communication", "Problem solving", "Customer focus"], techSkills: ["Excel", "Basic data analysis", "Telco/network basics for tech roles"], englishRequirement: "Good written and spoken English", portfolio: "Helpful for marketing/design roles", internshipPreferred: "Advantageous", certifications: "Not typically required" },
+      hiringProcess: { steps: ["Application review", "Online assessment", "HR interview", "Department interview"], avgResponseTime: "2-3 weeks", difficulty: "Medium", assessmentNote: "Assessment for technical and analytics roles" },
+      salaryBenefits: { freshGradSalary: "RM 3.2k - 4.8k / month", internshipAllowance: "RM 900 - 1.3k / month", bonus: "Performance bonus", medical: "Comprehensive medical + telco perks", training: "Structured onboarding programs", flexibleWork: "Hybrid work arrangement", leave: "Standard annual leave" },
+      careerGrowth: { trainingQuality: "Good structured training", promotionPath: "Merit-based", graduateProgram: "Available for select functions", mentorship: "Assigned mentors for new joiners", internalTransfer: "Available across departments", learningOpportunities: "Exposure to telco and digital services" },
+      workCulture: { pace: "Moderate", teamStyle: "Cross-functional teams", workLifeBalance: "Balanced", managementStyle: "Structured, collaborative", collaboration: "Cross-department coordination", overtimeSignal: "Occasional during product launches", reviewThemes: "Balanced pace, good perks, steady growth" },
+      veraNote: "Maxis is a solid choice for graduates seeking steady growth in the telco/digital space with good work-life balance and employee perks.",
+      companyReviews: [
+        { id: "cr-mx-1", title: "Balanced and supportive", author: "Data Analyst", role: "Data Analyst", date: "Jan 2026", rating: 4.1, body: "Good work-life balance and supportive managers, growth pace could be faster." }
+      ],
+      roles: [
+        { id: "mx-se", title: "Software Engineer", department: "Technology", salaryRange: "RM 4.5k - 8k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Diploma/Degree in Computer Science or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Programming fundamentals", "Data structures & algorithms", "Problem solving"], preferredSkills: ["Git", "REST APIs", "Agile methodology"], tools: ["Java/Python/JavaScript", "SQL", "Cloud basics (AWS/Azure)"], responsibilities: ["Build and maintain product features", "Write clean, tested code", "Collaborate with cross-functional teams", "Participate in code reviews"], hiringProcess: "Online assessment, technical interview, hiring manager interview", careerPath: "Software Engineer -> Senior Engineer -> Tech Lead / Engineering Manager", benefits: ["Medical coverage", "Performance bonus", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Technical assessment can be challenging for freshers", "Fast-paced delivery expectations"] },
+        { id: "mx-me", title: "Marketing Executive", department: "Marketing", salaryRange: "RM 3.2k - 5.5k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Marketing, Communications, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Communication", "Content creation", "Creativity"], preferredSkills: ["Social media management", "Basic design tools", "Campaign analytics"], tools: ["Canva/Adobe basics", "Social media platforms", "Excel"], responsibilities: ["Support marketing campaigns", "Create content for digital channels", "Track campaign performance", "Coordinate with agencies/vendors"], hiringProcess: "Portfolio/case review, interview with hiring manager", careerPath: "Marketing Executive -> Senior Executive -> Marketing Manager", benefits: ["Medical coverage", "Performance bonus", "Flexible work arrangement"], status: "Open", hiringDifficulty: "Easy", watchouts: ["Fast-paced campaign deadlines", "Creative feedback cycles can be demanding"] },
+        { id: "mx-coa", title: "Customer Operations Associate", department: "Customer Operations", salaryRange: "RM 2.8k - 4.2k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Diploma/Degree in any discipline", cgpaRequirement: "Not strictly required", requiredSkills: ["Communication", "Problem solving", "Patience"], preferredSkills: ["CRM tools experience", "Multilingual ability", "Process improvement mindset"], tools: ["CRM/ticketing systems", "Excel"], responsibilities: ["Handle customer inquiries and issues", "Maintain service quality standards", "Escalate complex cases appropriately", "Support process improvement initiatives"], hiringProcess: "Interview with operations manager, situational assessment", careerPath: "Associate -> Senior Associate -> Team Lead", benefits: ["Medical coverage", "Telco perks", "Performance incentives"], status: "Open", hiringDifficulty: "Easy", watchouts: ["May involve shift work", "High interaction volume during peak periods"] },
+        { id: "mx-da", title: "Data Analyst", department: "Analytics", salaryRange: "RM 4k - 7k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Statistics, Computer Science, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["SQL", "Data visualization", "Analytical thinking"], preferredSkills: ["Python/R", "Dashboarding tools (Power BI/Tableau)", "Statistics"], tools: ["Excel", "SQL", "Power BI / Tableau"], responsibilities: ["Analyze business data and trends", "Build dashboards and reports", "Support data-driven decision making", "Work with stakeholders to define metrics"], hiringProcess: "Online assessment (SQL/case study), interview with hiring manager", careerPath: "Data Analyst -> Senior Analyst -> Analytics Manager / Data Scientist", benefits: ["Medical coverage", "Training allowance", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study round can be competitive", "Requires strong attention to detail"] }
+      ],
+      highlights: ["Good work-life balance", "Steady growth path", "Attractive employee perks"],
+      watchouts: ["Growth pace can feel moderate", "Legacy systems in some teams"]
+    },
+    {
+      id: "deloitte",
+      name: "Deloitte",
+      type: "Company",
+      industry: "Professional Services",
+      location: "Kuala Lumpur",
+      size: "5,000+ employees",
+      rating: 4.1,
+      reviews: 356,
+      open: 11,
+      signal: "Strong brand and structured training",
+      salary: "RM 3.5k - 13k / month",
+      tags: ["Consulting", "Big Four", "Structured training"],
+      summary: "Global professional services firm offering audit, tax, consulting, and advisory career paths with strong structured training.",
+      scores: { culture: 4.0, growth: 4.2, pay: 3.9, balance: 3.5 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      workMode: "Onsite / Hybrid",
+      hiringDifficulty: "Hard",
+      averageRequirements: { education: "Degree in Accounting, Business, Finance, or related field", cgpa: "3.3+ preferred", experience: "Fresh graduate to 2 years", commonSkills: ["Analytical thinking", "Communication", "Client management"], techSkills: ["Excel", "PowerPoint", "Basic data analysis tools"], englishRequirement: "Strong written and spoken English", portfolio: "Not typically required", internshipPreferred: "Strongly preferred", certifications: "ACCA/CPA progress advantageous" },
+      hiringProcess: { steps: ["Application review", "Online assessment", "Case interview", "Partner/manager interview"], avgResponseTime: "3-5 weeks", difficulty: "Hard", assessmentNote: "Case study and numerical reasoning assessments" },
+      salaryBenefits: { freshGradSalary: "RM 3.5k - 5k / month", internshipAllowance: "RM 1k - 1.5k / month", bonus: "Performance bonus", medical: "Comprehensive medical benefits", training: "Structured professional development and exam support", flexibleWork: "Hybrid, client-dependent", leave: "Standard + exam leave" },
+      careerGrowth: { trainingQuality: "Excellent, structured professional development", promotionPath: "Clear up-or-out consulting track", graduateProgram: "Available (Deloitte graduate program)", mentorship: "Formal mentorship/coaching", internalTransfer: "Available across service lines", learningOpportunities: "High exposure to varied client projects" },
+      workCulture: { pace: "Fast, project-based", teamStyle: "Project teams, client-facing", workLifeBalance: "Can be demanding during busy season", managementStyle: "Structured, up-or-out culture", collaboration: "High, client and team collaboration", overtimeSignal: "Common during audit/busy season", reviewThemes: "Strong brand and training, demanding hours during peak periods" },
+      veraNote: "Deloitte offers strong brand value and structured professional development for graduates entering consulting or finance careers. Expect demanding hours during busy season and an up-or-out progression culture.",
+      companyReviews: [
+        { id: "cr-dt-1", title: "Great training, tough hours", author: "Business Analyst", role: "Business Analyst", date: "Feb 2026", rating: 4.0, body: "The professional development is excellent, but busy season hours are long." }
+      ],
+      roles: [
+        { id: "dt-ba", title: "Business Analyst", department: "Consulting", salaryRange: "RM 3.8k - 6.5k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Business, Economics, or related field", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Analytical thinking", "Communication", "Stakeholder management"], preferredSkills: ["Excel modeling", "Process mapping", "Presentation skills"], tools: ["Excel", "PowerPoint", "SQL basics"], responsibilities: ["Support client engagements", "Prepare reports and presentations", "Coordinate with project teams", "Identify improvement opportunities"], hiringProcess: "Case study interview, partner interview", careerPath: "Business Analyst -> Senior Consultant -> Manager", benefits: ["Medical coverage", "Performance bonus", "Structured training"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Case study rounds can be competitive", "Client deadlines can be demanding"] },
+        { id: "dt-fe", title: "Finance Executive", department: "Finance Advisory", salaryRange: "RM 3.5k - 6k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Finance, Accounting, or related field", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Financial reporting", "Attention to detail", "Excel proficiency"], preferredSkills: ["Accounting software", "Basic taxation knowledge", "ACCA/CPA progress"], tools: ["Excel", "Audit/accounting software", "PowerPoint"], responsibilities: ["Support audit/advisory engagements", "Assist with financial analysis", "Ensure compliance with standards", "Prepare client deliverables"], hiringProcess: "Online assessment, interview with manager", careerPath: "Finance Executive -> Senior Associate -> Manager", benefits: ["Medical coverage", "Study support for professional certification", "Performance bonus"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Busy season hours can be long", "High attention to detail required"] },
+        { id: "dt-hr", title: "HR Executive", department: "Human Resources", salaryRange: "RM 3k - 5k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Human Resources, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Communication", "Organization", "Confidentiality"], preferredSkills: ["HRIS systems", "Employment law basics", "Recruitment experience"], tools: ["HRIS/payroll systems", "Excel", "Applicant tracking systems"], responsibilities: ["Support recruitment and onboarding", "Maintain employee records", "Assist with HR programs and events", "Support employee relations matters"], hiringProcess: "Interview with HR manager, panel discussion", careerPath: "HR Executive -> Senior Executive -> HR Business Partner", benefits: ["Medical coverage", "Training and development programs", "Flexible work arrangement"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Handles sensitive/confidential matters", "Can involve cross-department coordination"] },
+        { id: "dt-mt", title: "Management Trainee", department: "Graduate Program", salaryRange: "RM 3.5k - 5.5k / month", employmentType: "Full-time (Rotational)", location: "Kuala Lumpur", workMode: "Onsite / Hybrid", experienceLevel: "Fresh graduate", educationRequirement: "Degree in any discipline", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Leadership potential", "Communication", "Adaptability"], preferredSkills: ["Prior internship experience", "Extracurricular leadership roles"], tools: ["Excel", "PowerPoint"], responsibilities: ["Rotate across service lines", "Complete structured training modules", "Take on client project assignments", "Build cross-functional experience"], hiringProcess: "Online assessment, assessment centre, partner interview", careerPath: "Management Trainee -> Senior Associate -> Manager (post-rotation placement)", benefits: ["Structured mentorship", "Rotational exposure", "Fast-track promotion potential"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Highly competitive intake", "Placement after rotation is not guaranteed to be your first choice"] }
+      ],
+      highlights: ["Excellent structured training", "Strong brand value", "Broad client exposure"],
+      watchouts: ["Busy season hours can be long", "Up-or-out progression pressure"]
+    },
+    {
+      id: "pwc",
+      name: "PwC",
+      type: "Company",
+      industry: "Professional Services",
+      location: "Kuala Lumpur",
+      size: "5,000+ employees",
+      rating: 4.0,
+      reviews: 331,
+      open: 10,
+      signal: "Strong brand, Big Four training",
+      salary: "RM 3.5k - 13k / month",
+      tags: ["Audit", "Big Four", "Structured training"],
+      summary: "Global professional services firm offering audit, tax, and consulting career paths with strong structured training and client exposure.",
+      scores: { culture: 3.9, growth: 4.1, pay: 3.9, balance: 3.5 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      workMode: "Onsite / Hybrid",
+      hiringDifficulty: "Hard",
+      averageRequirements: { education: "Degree in Accounting, Finance, Business, or related field", cgpa: "3.3+ preferred", experience: "Fresh graduate to 2 years", commonSkills: ["Analytical thinking", "Attention to detail", "Client management"], techSkills: ["Excel", "Audit/accounting software", "Data analysis basics"], englishRequirement: "Strong written and spoken English", portfolio: "Not typically required", internshipPreferred: "Strongly preferred", certifications: "ACCA/CPA progress advantageous" },
+      hiringProcess: { steps: ["Application review", "Online assessment", "Case interview", "Partner/manager interview"], avgResponseTime: "3-5 weeks", difficulty: "Hard", assessmentNote: "Case study and numerical/verbal reasoning assessments" },
+      salaryBenefits: { freshGradSalary: "RM 3.5k - 5k / month", internshipAllowance: "RM 1k - 1.5k / month", bonus: "Performance bonus", medical: "Comprehensive medical benefits", training: "Structured professional development and exam support", flexibleWork: "Hybrid, client-dependent", leave: "Standard + exam leave" },
+      careerGrowth: { trainingQuality: "Excellent, structured professional development", promotionPath: "Clear up-or-out consulting/audit track", graduateProgram: "Available (PwC graduate program)", mentorship: "Formal mentorship/coaching", internalTransfer: "Available across service lines", learningOpportunities: "High exposure to varied client projects" },
+      workCulture: { pace: "Fast, project-based", teamStyle: "Project teams, client-facing", workLifeBalance: "Can be demanding during busy season", managementStyle: "Structured, up-or-out culture", collaboration: "High, client and team collaboration", overtimeSignal: "Common during audit/busy season", reviewThemes: "Strong brand and training, demanding hours during peak periods" },
+      veraNote: "PwC is a strong pick for graduates targeting audit, tax, or consulting careers with excellent structured training. Busy season hours can be intense, consistent with the broader Big Four experience.",
+      companyReviews: [
+        { id: "cr-pw-1", title: "Excellent brand and training", author: "Finance Executive", role: "Finance Executive", date: "Apr 2026", rating: 4.1, body: "Great place to build a professional foundation, but expect long hours during audit season." }
+      ],
+      roles: [
+        { id: "pw-fe", title: "Finance Executive", department: "Audit", salaryRange: "RM 3.5k - 6k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Finance, Accounting, or related field", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Financial reporting", "Attention to detail", "Excel proficiency"], preferredSkills: ["Accounting software", "Basic taxation knowledge", "ACCA/CPA progress"], tools: ["Excel", "Audit/accounting software", "PowerPoint"], responsibilities: ["Support audit engagements", "Assist with financial statement review", "Ensure compliance with standards", "Prepare client deliverables"], hiringProcess: "Online assessment, interview with manager", careerPath: "Finance Executive -> Senior Associate -> Manager", benefits: ["Medical coverage", "Study support for professional certification", "Performance bonus"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Busy season hours can be long", "High attention to detail required"] },
+        { id: "pw-ba", title: "Business Analyst", department: "Consulting", salaryRange: "RM 3.8k - 6.5k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Business, Economics, or related field", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Analytical thinking", "Communication", "Stakeholder management"], preferredSkills: ["Excel modeling", "Process mapping", "Presentation skills"], tools: ["Excel", "PowerPoint", "SQL basics"], responsibilities: ["Support client engagements", "Prepare reports and presentations", "Coordinate with project teams", "Identify improvement opportunities"], hiringProcess: "Case study interview, partner interview", careerPath: "Business Analyst -> Senior Consultant -> Manager", benefits: ["Medical coverage", "Performance bonus", "Structured training"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Case study rounds can be competitive", "Client deadlines can be demanding"] },
+        { id: "pw-hr", title: "HR Executive", department: "Human Resources", salaryRange: "RM 3k - 5k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Human Resources, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Communication", "Organization", "Confidentiality"], preferredSkills: ["HRIS systems", "Employment law basics", "Recruitment experience"], tools: ["HRIS/payroll systems", "Excel", "Applicant tracking systems"], responsibilities: ["Support recruitment and onboarding", "Maintain employee records", "Assist with HR programs and events", "Support employee relations matters"], hiringProcess: "Interview with HR manager, panel discussion", careerPath: "HR Executive -> Senior Executive -> HR Business Partner", benefits: ["Medical coverage", "Training and development programs", "Flexible work arrangement"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Handles sensitive/confidential matters", "Can involve cross-department coordination"] },
+        { id: "pw-da", title: "Data Analyst", department: "Analytics", salaryRange: "RM 4k - 7k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Statistics, Computer Science, Business, or related field", cgpaRequirement: "3.2+ preferred", requiredSkills: ["SQL", "Data visualization", "Analytical thinking"], preferredSkills: ["Python/R", "Dashboarding tools (Power BI/Tableau)", "Statistics"], tools: ["Excel", "SQL", "Power BI / Tableau"], responsibilities: ["Analyze client and business data", "Build dashboards and reports", "Support data-driven decision making", "Work with stakeholders to define metrics"], hiringProcess: "Online assessment (SQL/case study), interview with hiring manager", careerPath: "Data Analyst -> Senior Analyst -> Analytics Manager", benefits: ["Medical coverage", "Training allowance", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study round can be competitive", "Requires strong attention to detail"] }
+      ],
+      highlights: ["Excellent structured training", "Strong brand value", "Broad client exposure"],
+      watchouts: ["Busy season hours can be long", "Up-or-out progression pressure"]
+    },
+    {
+      id: "tnb",
+      name: "TNB",
+      type: "Company",
+      industry: "Utilities & Energy",
+      location: "Kuala Lumpur",
+      size: "10,000+ employees",
+      rating: 3.9,
+      reviews: 298,
+      open: 6,
+      signal: "Stable, government-linked employment",
+      salary: "RM 2.6k - 9k / month",
+      tags: ["Stable", "Government-linked", "National infrastructure"],
+      summary: "National electricity utility company offering stable careers across engineering, IT, and corporate functions with national-scale infrastructure projects.",
+      scores: { culture: 3.8, growth: 3.6, pay: 3.7, balance: 3.9 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      workMode: "Onsite",
+      hiringDifficulty: "Medium",
+      averageRequirements: { education: "Degree in Engineering, IT, Business, or related field", cgpa: "3.0+ preferred", experience: "Fresh graduate to 2 years", commonSkills: ["Communication", "Problem solving", "Reliability"], techSkills: ["Excel", "SQL basics", "Network/security fundamentals for IT roles"], englishRequirement: "Good written and spoken English", portfolio: "Not typically required", internshipPreferred: "Advantageous", certifications: "Engineering/security certifications advantageous" },
+      hiringProcess: { steps: ["Application review", "Online assessment", "HR interview", "Technical interview"], avgResponseTime: "3-5 weeks", difficulty: "Medium", assessmentNote: "Technical assessment for engineering and IT roles" },
+      salaryBenefits: { freshGradSalary: "RM 3k - 4.3k / month", internshipAllowance: "RM 800 - 1.2k / month", bonus: "Performance bonus", medical: "Comprehensive medical benefits", training: "Structured onboarding and technical training", flexibleWork: "Mostly onsite, limited hybrid", leave: "Standard annual leave" },
+      careerGrowth: { trainingQuality: "Good structured technical training", promotionPath: "Grade-based, steady", graduateProgram: "Available for engineering tracks", mentorship: "Assigned mentors", internalTransfer: "Available across divisions", learningOpportunities: "Exposure to national utility infrastructure projects" },
+      workCulture: { pace: "Steady", teamStyle: "Structured, department-based", workLifeBalance: "Balanced", managementStyle: "Hierarchical, process-driven", collaboration: "Cross-department coordination", overtimeSignal: "Occasional during infrastructure projects", reviewThemes: "Stable, government-linked pace, meaningful national-scale work" },
+      veraNote: "TNB suits graduates who want stable, government-linked employment with exposure to national infrastructure and utility-scale projects. Expect a slower, more hierarchical pace than private tech companies.",
+      companyReviews: [
+        { id: "cr-tnb-1", title: "Stable and meaningful work", author: "Cybersecurity Analyst", role: "Cybersecurity Analyst", date: "Mar 2026", rating: 4.0, body: "Good stability and meaningful national-scale projects, though pace and processes are slower." }
+      ],
+      roles: [
+        { id: "tnb-cyb", title: "Cybersecurity Analyst", department: "IT Security", salaryRange: "RM 4k - 7k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Junior", educationRequirement: "Degree in Cybersecurity, Computer Science, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Network security fundamentals", "Risk assessment", "Analytical thinking"], preferredSkills: ["Security certifications (CEH/Security+)", "Incident response", "Scripting"], tools: ["SIEM tools", "Firewalls", "Vulnerability scanners"], responsibilities: ["Monitor systems for security threats", "Support incident response", "Conduct risk assessments", "Maintain security documentation"], hiringProcess: "Technical assessment, panel interview", careerPath: "Cybersecurity Analyst -> Senior Analyst -> Security Lead", benefits: ["Medical coverage", "Certification sponsorship", "Stable employment"], status: "Open", hiringDifficulty: "Medium", watchouts: ["On-call responsibilities may apply", "Requires continuous upskilling"] },
+        { id: "tnb-da", title: "Data Analyst", department: "Analytics", salaryRange: "RM 3.8k - 6.5k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Junior", educationRequirement: "Degree in Statistics, Computer Science, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["SQL", "Data visualization", "Analytical thinking"], preferredSkills: ["Python/R", "Dashboarding tools (Power BI/Tableau)", "Statistics"], tools: ["Excel", "SQL", "Power BI / Tableau"], responsibilities: ["Analyze operational and business data", "Build dashboards and reports", "Support data-driven decision making", "Work with stakeholders to define metrics"], hiringProcess: "Online assessment (SQL/case study), interview with hiring manager", careerPath: "Data Analyst -> Senior Analyst -> Analytics Manager", benefits: ["Medical coverage", "Training allowance", "Stable employment"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study round can be competitive", "Requires strong attention to detail"] },
+        { id: "tnb-mt", title: "Management Trainee", department: "Graduate Program", salaryRange: "RM 3.2k - 4.8k / month", employmentType: "Full-time (Rotational)", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate", educationRequirement: "Degree in any discipline", cgpaRequirement: "3.0+ preferred", requiredSkills: ["Leadership potential", "Communication", "Adaptability"], preferredSkills: ["Prior internship experience", "Extracurricular leadership roles"], tools: ["Excel", "PowerPoint"], responsibilities: ["Rotate across business units", "Complete structured training modules", "Take on project assignments", "Build cross-functional experience"], hiringProcess: "Online assessment, assessment centre, panel interview", careerPath: "Management Trainee -> Executive -> Manager (post-rotation placement)", benefits: ["Structured mentorship", "Rotational exposure", "Stable employment"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Placement after rotation is not guaranteed to be your first choice", "Slower pace than private sector"] },
+        { id: "tnb-coa", title: "Customer Operations Associate", department: "Customer Operations", salaryRange: "RM 2.6k - 3.8k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Diploma/Degree in any discipline", cgpaRequirement: "Not strictly required", requiredSkills: ["Communication", "Problem solving", "Patience"], preferredSkills: ["CRM tools experience", "Multilingual ability", "Process improvement mindset"], tools: ["CRM/ticketing systems", "Excel"], responsibilities: ["Handle customer inquiries and issues", "Maintain service quality standards", "Escalate complex cases appropriately", "Support process improvement initiatives"], hiringProcess: "Interview with operations manager, situational assessment", careerPath: "Associate -> Senior Associate -> Team Lead", benefits: ["Medical coverage", "Stable employment", "Performance incentives"], status: "Open", hiringDifficulty: "Easy", watchouts: ["May involve shift work", "High interaction volume during peak periods"] }
+      ],
+      highlights: ["Stable, government-linked employment", "Meaningful national-scale projects", "Good job security"],
+      watchouts: ["Slower pace than private tech companies", "Hierarchical approval processes"]
     }
   ],
   universities: [
@@ -186,11 +496,37 @@ const DATA = {
       rating: 4.5,
       reviews: 652,
       open: 24,
+      partnerCount: 85,
       signal: "Strong employer recognition",
       salary: "86% employed in 6 months",
       tags: ["Research", "Strong alumni", "Public"],
       summary: "Top public university with strong research profile, employer recognition, and broad alumni network.",
-      scores: { culture: 4.2, growth: 4.5, pay: 4.2, balance: 4.0 },
+      scores: { growth: 4.5 },
+      academics: { employabilityRate: 86, acceptanceRate: 35, tuitionRange: "RM 6k - 12k / year" },
+      topPrograms: ["Medicine", "Computer Science", "Law"],
+      strongPrograms: [
+        { name: "Medicine", why: "Established teaching hospital, strong clinical exposure, and a highly ranked medical faculty.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Computer Science", why: "Strong research output, industry collaboration, and consistent graduate demand.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Law", why: "Long-established law faculty with strong bar exam pass rates and legal industry ties.", careerOutcome: "High", industryRelevance: "High" }
+      ],
+      programs: [
+        { id: "um-med", name: "Medicine", overview: "A 5-year MBBS program combining pre-clinical foundations with hospital-based clinical training at UM's teaching hospital.", level: "Direct Degree (MBBS)", duration: "5 years", estimatedTuition: "RM 45,000 - RM 60,000 total", suitableForSPM: true, spmPathway: "Direct entry with excellent SPM results, or via STPM/Matriculation", entryRequirement: "5 credits including Biology, Chemistry, Physics/Maths; strong SPM/STPM results required", careerPaths: ["Medical Officer", "Doctor (post-housemanship)", "Clinical Researcher", "Public Health Officer"], mainSubjects: ["Anatomy", "Physiology", "Pharmacology", "Clinical Medicine", "Surgery"], mainSkills: ["Clinical diagnosis", "Patient care", "Medical research", "Communication"], internshipAvailability: "Compulsory clinical postings", industryExposure: "Clinical postings at University Malaya Medical Centre and partner hospitals from Year 3 onward.", industryRelevance: "High", employabilityOutcome: "Very high demand; graduates proceed to compulsory housemanship with strong placement rates.", accreditation: "Recognized by the Malaysian Medical Council (MMC) and Malaysian Qualifications Agency (MQA).", scholarshipAvailability: "JPA and university merit scholarships available (highly competitive).", programStrength: "Strong", watchouts: ["Extremely competitive entry", "Long study duration"] },
+        { id: "um-law", name: "Law", overview: "A 4-year LLB program covering Malaysian civil law, common law principles, and legal practice skills.", level: "Direct Degree (LLB)", duration: "4 years", estimatedTuition: "RM 30,000 - RM 40,000 total", suitableForSPM: true, spmPathway: "STPM / Matriculation / Foundation in Law required before degree", entryRequirement: "5 credits in SPM plus qualifying STPM/Matriculation/Foundation results", careerPaths: ["Legal Associate", "Corporate Counsel", "Legal Consultant", "Compliance Officer"], mainSubjects: ["Contract Law", "Constitutional Law", "Criminal Law", "Law of Torts", "Legal Research Methods"], mainSkills: ["Legal research", "Case analysis", "Writing", "Argumentation"], internshipAvailability: "Available via legal clinics and chambering", industryExposure: "Legal clinics, moot court competitions, and chambering placements with law firms.", industryRelevance: "High", employabilityOutcome: "Strong outcomes for graduates who complete the Bar/CLP and secure chambering.", accreditation: "Recognized by the Malaysian Bar and MQA.", scholarshipAvailability: "Limited merit-based scholarships available.", programStrength: "Strong", watchouts: ["Requires further Bar/CLP after graduation"] },
+        { id: "um-cs", name: "Computer Science", overview: "A research-linked computer science degree covering software engineering, data systems, and emerging technologies.", level: "Foundation/Matriculation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 24,000 - RM 32,000 total", suitableForSPM: true, spmPathway: "Foundation in Science or Matriculation in Computer Science", entryRequirement: "5 credits in SPM including Mathematics", careerPaths: ["Software Developer", "Data Analyst", "Cybersecurity Analyst", "AI/ML Engineer"], mainSubjects: ["Data Structures", "Database Systems", "Software Engineering", "Computer Networks", "Artificial Intelligence"], mainSkills: ["Programming", "Databases", "Web development", "Algorithms"], internshipAvailability: "Available (industry-linked)", industryExposure: "Industry-linked capstone projects and internships with tech and GLC employers.", industryRelevance: "High", employabilityOutcome: "High demand for software, data, and cybersecurity roles.", accreditation: "MQA accredited; aligned with industry computing standards.", scholarshipAvailability: "Merit-based scholarships and Yayasan-sponsored places available.", programStrength: "Strong", watchouts: ["Highly competitive intake"] },
+        { id: "um-acc", name: "Accounting", overview: "An accounting degree covering financial reporting, auditing, and taxation with a pathway to professional certification.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 20,000 - RM 28,000 total", suitableForSPM: true, spmPathway: "Foundation in Accountancy or Matriculation", entryRequirement: "5 credits in SPM including Mathematics", careerPaths: ["Accountant", "Auditor", "Tax Consultant", "Finance Analyst"], mainSubjects: ["Financial Accounting", "Auditing", "Taxation", "Corporate Finance", "Business Law"], mainSkills: ["Financial reporting", "Auditing", "Taxation", "Excel/ERP tools"], internshipAvailability: "Available", industryExposure: "Internships with accounting firms and financial institutions.", industryRelevance: "High", employabilityOutcome: "Steady demand; strongest outcomes for graduates who pursue ACCA/CPA/MIA certification.", accreditation: "MQA accredited; recognized pathway toward MIA membership.", scholarshipAvailability: "University merit scholarships and firm-sponsored scholarships (e.g. Big Four) available.", programStrength: "Good", watchouts: ["Requires professional certification (e.g. ACCA/CPA) for full progression"] }
+      ],
+      spmPathway: { foundation: "SPM -> Foundation in Science/Law/Accountancy -> Degree", diploma: "SPM -> Diploma (limited programs) -> Degree Year 2 with credit transfer", degree: "SPM -> STPM/Matriculation/A-Level/Foundation -> Direct Degree (Medicine and Law require STPM/Matriculation or Foundation)", englishRequirement: "Minimum Band 2 MUET or equivalent (varies by faculty)", scholarship: "JPA, Yayasan, and university merit scholarships available (limited slots)", nextIntake: "September 2026" },
+      outcomeInsights: { commonSkills: ["Research", "Critical thinking", "Communication", "Discipline-specific technical skills"], internshipNote: "Most faculties require or offer structured internships in the final year.", industryLinks: "Strong ties with government-linked companies, banks, and healthcare institutions.", careerReadiness: "High" },
+      reviewBreakdown: { careerSupport: 4.2, teachingQuality: 4.5, facilities: 4.0 },
+      studentReviews: [
+        { id: "sr-um-1", title: "Strong name and alumni reach", author: "Computer Science Graduate", program: "Computer Science", date: "May 2026", rating: 4.4, body: "The reputation opens doors, but you still need to build your own portfolio early." },
+        { id: "sr-um-2", title: "Excellent clinical exposure", author: "Medicine Student, Year 4", program: "Medicine", date: "Mar 2026", rating: 4.6, body: "Teaching hospital access from early years gives real clinical experience most other unis can't match." }
+      ],
+      topEmployers: [
+        { name: "Maybank", count: 210, companyId: "maybank" },
+        { name: "Petronas Digital", count: 95, companyId: "petronas" },
+        { name: "PwC", count: 60 }
+      ],
       highlights: ["Strong employer brand", "Large alumni network", "Wide program selection"],
       watchouts: ["Competitive environment", "Administrative processes can be slow"]
     },
@@ -204,11 +540,37 @@ const DATA = {
       rating: 4.4,
       reviews: 489,
       open: 16,
+      partnerCount: 60,
       signal: "Industry-linked projects",
       salary: "83% employed in 6 months",
       tags: ["Industry projects", "Design", "Business"],
       summary: "Private university known for industry-linked learning, business, hospitality, design, and graduate employability programs.",
-      scores: { culture: 4.4, growth: 4.3, pay: 4.0, balance: 4.1 },
+      scores: { growth: 4.3 },
+      academics: { employabilityRate: 83, acceptanceRate: 68, tuitionRange: "RM 35k - 55k / year" },
+      topPrograms: ["Hospitality", "Business", "Design"],
+      strongPrograms: [
+        { name: "Hospitality", why: "Award-winning hospitality school with strong hotel and F&B industry placements.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Business", why: "Strong industry-linked curriculum and consistent graduate employability.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Design", why: "Well-equipped studios and a strong creative industry portfolio culture.", careerOutcome: "Medium", industryRelevance: "Medium" }
+      ],
+      programs: [
+        { id: "taylors-hosp", name: "Hospitality", overview: "An award-winning hospitality program combining hotel operations, F&B management, and event planning with compulsory industry placement.", level: "Diploma + Degree / Direct Degree", duration: "3 years degree (or 1 year Diploma top-up)", estimatedTuition: "RM 90,000 - RM 110,000 total", suitableForSPM: true, spmPathway: "Diploma in Culinary Arts / Hotel Management, or Foundation route", entryRequirement: "3 credits in SPM including English", careerPaths: ["Hotel Manager", "Event Manager", "F&B Manager", "Guest Relations Executive"], mainSubjects: ["Hotel Operations", "Food & Beverage Management", "Event Management", "Tourism Marketing", "Hospitality Law"], mainSkills: ["Guest service", "Operations management", "Event planning", "Communication"], internshipAvailability: "Compulsory industry placement (local & overseas)", industryExposure: "Compulsory local and overseas industry placements with partner hotels and resorts.", industryRelevance: "High", employabilityOutcome: "High demand in hotel, F&B, and event management roles across Asia.", accreditation: "Recognized by MQA; industry-endorsed curriculum.", scholarshipAvailability: "Taylor's merit scholarships and hospitality-industry sponsorships available.", programStrength: "Strong", watchouts: ["High tuition cost", "Shift-based industry placements"] },
+        { id: "taylors-biz", name: "Business", overview: "A business degree with an industry-linked curriculum spanning marketing, finance, and management.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 75,000 - RM 95,000 total", suitableForSPM: true, spmPathway: "Foundation in Business or Diploma in Business Studies", entryRequirement: "5 credits in SPM including Mathematics and English", careerPaths: ["Marketing Executive", "Business Analyst", "Finance Executive", "Management Trainee"], mainSubjects: ["Marketing Principles", "Financial Management", "Organizational Behavior", "Business Analytics", "Strategic Management"], mainSkills: ["Business strategy", "Finance basics", "Marketing", "Communication"], internshipAvailability: "Available", industryExposure: "Industry consulting projects and internship placements with partner companies.", industryRelevance: "High", employabilityOutcome: "Consistent graduate employability across marketing, finance, and management trainee roles.", accreditation: "MQA accredited.", scholarshipAvailability: "Merit-based scholarships available.", programStrength: "Strong", watchouts: ["Competitive graduate job market"] },
+        { id: "taylors-design", name: "Design", overview: "A design degree building a strong creative portfolio across UI/UX, graphic, and product design disciplines.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 80,000 - RM 100,000 total", suitableForSPM: true, spmPathway: "Foundation in Design or Diploma in Design", entryRequirement: "3 credits in SPM; portfolio may be required", careerPaths: ["UI/UX Designer", "Graphic Designer", "Product Designer", "Brand Designer"], mainSubjects: ["Visual Communication", "Typography", "User Experience Design", "Design Thinking", "Digital Media"], mainSkills: ["Visual design", "Design tools (Figma/Adobe)", "User research", "Prototyping"], internshipAvailability: "Available", industryExposure: "Studio-based projects with design agencies and industry critique sessions.", industryRelevance: "Medium", employabilityOutcome: "Outcomes depend heavily on portfolio quality; strong for graduates with a polished portfolio.", accreditation: "MQA accredited.", scholarshipAvailability: "Design talent scholarships available (portfolio-based).", programStrength: "Strong", watchouts: ["Portfolio quality matters more than grades for hiring"] },
+        { id: "taylors-acc", name: "Accounting", overview: "An accounting program with strong industry linkages and a clear pathway to professional certification.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 70,000 - RM 90,000 total", suitableForSPM: true, spmPathway: "Foundation in Business/Accounting", entryRequirement: "5 credits in SPM including Mathematics", careerPaths: ["Accountant", "Auditor", "Tax Consultant", "Finance Analyst"], mainSubjects: ["Financial Accounting", "Management Accounting", "Auditing", "Taxation", "Corporate Reporting"], mainSkills: ["Financial reporting", "Auditing", "Taxation", "Excel/ERP tools"], internshipAvailability: "Available", industryExposure: "Internships with accounting and audit firms.", industryRelevance: "High", employabilityOutcome: "Steady demand; best outcomes with ACCA/CPA follow-through.", accreditation: "MQA accredited; recognized pathway toward MIA membership.", scholarshipAvailability: "Merit-based scholarships available.", programStrength: "Good", watchouts: ["Requires professional certification for full progression"] }
+      ],
+      spmPathway: { foundation: "SPM -> Foundation -> Degree", diploma: "SPM -> Diploma -> Degree Year 2 (credit transfer available for select programs)", degree: "Usually requires Foundation, STPM, A-Level, Diploma, or equivalent", englishRequirement: "Minimum Band 3 MUET or IELTS 5.5 (varies by program)", scholarship: "Taylor's merit scholarships and industry-sponsored scholarships available", nextIntake: "February / August 2026" },
+      outcomeInsights: { commonSkills: ["Communication", "Teamwork", "Practical/technical skills", "Project experience"], internshipNote: "Structured industry placements built into most programs.", industryLinks: "Strong hospitality, business, and design industry partnerships.", careerReadiness: "High" },
+      reviewBreakdown: { careerSupport: 4.5, teachingQuality: 4.3, facilities: 4.4 },
+      studentReviews: [
+        { id: "sr-tay-1", title: "Helpful career office and practical projects", author: "Final Year Student", program: "Business", date: "May 2026", rating: 4.5, body: "The employer projects helped me explain my work better during interviews." },
+        { id: "sr-tay-2", title: "Hospitality placements are excellent", author: "Hospitality Graduate", program: "Hospitality", date: "Feb 2026", rating: 4.6, body: "Got placed at a 5-star hotel during my internship and received a job offer before graduating." }
+      ],
+      topEmployers: [
+        { name: "Grab", count: 120, companyId: "grab" },
+        { name: "CIMB", count: 70, companyId: "cimb" },
+        { name: "Marriott International", count: 45 }
+      ],
       highlights: ["Industry-connected coursework", "Strong student support", "Modern facilities"],
       watchouts: ["Higher tuition cost", "Program quality varies by faculty"]
     },
@@ -222,11 +584,36 @@ const DATA = {
       rating: 4.3,
       reviews: 376,
       open: 11,
+      partnerCount: 45,
       signal: "International curriculum",
       salary: "82% employed in 6 months",
       tags: ["International", "Research", "Business"],
       summary: "International university campus with strong research links, global curriculum, and business/engineering pathways.",
-      scores: { culture: 4.1, growth: 4.3, pay: 4.0, balance: 3.9 },
+      scores: { growth: 4.3 },
+      academics: { employabilityRate: 82, acceptanceRate: 58, tuitionRange: "RM 45k - 65k / year" },
+      topPrograms: ["Engineering", "Data Analytics", "Business"],
+      strongPrograms: [
+        { name: "Engineering", why: "Internationally recognized engineering accreditation and strong research links.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Data Analytics", why: "Global curriculum with a strong quantitative and analytics focus.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Business", why: "Dual accreditation and international exchange opportunities.", careerOutcome: "Medium", industryRelevance: "High" }
+      ],
+      programs: [
+        { id: "monash-eng", name: "Engineering", overview: "An internationally accredited engineering degree with a strong research foundation and industrial training component.", level: "Foundation + Degree", duration: "1 year Foundation + 4 years degree", estimatedTuition: "RM 100,000 - RM 130,000 total", suitableForSPM: true, spmPathway: "Foundation in Engineering or Matriculation", entryRequirement: "5 credits in SPM including Mathematics and Physics", careerPaths: ["Mechanical Engineer", "Project Engineer", "Maintenance Engineer", "Automation Engineer"], mainSubjects: ["Engineering Mathematics", "Mechanics of Materials", "Thermodynamics", "Control Systems", "Engineering Design"], mainSkills: ["Engineering mathematics", "CAD design", "Project management", "Problem solving"], internshipAvailability: "Available (industrial training semester)", industryExposure: "Industrial training semester with multinational engineering employers.", industryRelevance: "High", employabilityOutcome: "High demand, especially for graduates with completed industrial training.", accreditation: "Accredited by the Board of Engineers Malaysia (BEM) and Engineering Accreditation Council (EAC).", scholarshipAvailability: "Monash merit scholarships and need-based bursaries available.", programStrength: "Strong", watchouts: ["Longer duration than most degrees", "High tuition"] },
+        { id: "monash-data", name: "Data Analytics", overview: "A quantitative analytics degree with a global curriculum covering statistics, data engineering, and business intelligence.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 95,000 - RM 115,000 total", suitableForSPM: true, spmPathway: "Foundation in Business or Science", entryRequirement: "5 credits in SPM including Mathematics", careerPaths: ["Data Analyst", "Business Intelligence Analyst", "Data Scientist", "Insights Consultant"], mainSubjects: ["Statistics", "Data Mining", "Business Intelligence", "Machine Learning Basics", "Data Visualization"], mainSkills: ["SQL", "Data visualization", "Statistics", "Python/R"], internshipAvailability: "Available", industryExposure: "Analytics projects with industry partners and international exchange opportunities.", industryRelevance: "High", employabilityOutcome: "High demand for data analyst and BI roles across banking, tech, and consulting.", accreditation: "MQA accredited; internationally benchmarked curriculum.", scholarshipAvailability: "Merit scholarships available.", programStrength: "Strong", watchouts: ["Requires strong quantitative aptitude"] },
+        { id: "monash-biz", name: "Business", overview: "A dual-accredited business degree with international exchange opportunities and a broad management curriculum.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 90,000 - RM 110,000 total", suitableForSPM: true, spmPathway: "Foundation in Business or Diploma", entryRequirement: "5 credits in SPM", careerPaths: ["Marketing Executive", "Business Analyst", "Finance Executive", "Management Trainee"], mainSubjects: ["Microeconomics", "Marketing Management", "Corporate Finance", "Business Law", "International Business"], mainSkills: ["Business strategy", "Finance basics", "Marketing", "Communication"], internshipAvailability: "Available", industryExposure: "Case competitions and internship placements with multinational employers.", industryRelevance: "High", employabilityOutcome: "Solid outcomes across marketing, finance, and management trainee tracks.", accreditation: "MQA accredited; Australian dual-accreditation via Monash's global curriculum.", scholarshipAvailability: "Merit scholarships and international exchange bursaries available.", programStrength: "Good", watchouts: ["Large cohort sizes in some units"] },
+        { id: "monash-acc", name: "Accounting", overview: "An accounting degree aligned with international standards and a pathway to professional certification.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 90,000 - RM 105,000 total", suitableForSPM: true, spmPathway: "Foundation in Business/Accounting", entryRequirement: "5 credits in SPM including Mathematics", careerPaths: ["Accountant", "Auditor", "Tax Consultant", "Finance Analyst"], mainSubjects: ["Financial Accounting", "Management Accounting", "Auditing", "Taxation", "Corporate Governance"], mainSkills: ["Financial reporting", "Auditing", "Taxation", "Excel/ERP tools"], internshipAvailability: "Available", industryExposure: "Internships with accounting and financial services firms.", industryRelevance: "Medium", employabilityOutcome: "Steady demand; strongest with ACCA/CPA follow-through.", accreditation: "MQA accredited; recognized pathway toward MIA/CPA Australia.", scholarshipAvailability: "Merit scholarships available.", programStrength: "Good", watchouts: ["Requires professional certification for full progression"] }
+      ],
+      spmPathway: { foundation: "SPM -> Foundation -> Degree", diploma: "Limited diploma pathways; most students enter via Foundation/A-Level", degree: "Usually requires Foundation, STPM, A-Level, or equivalent", englishRequirement: "IELTS 6.0 or equivalent (international curriculum)", scholarship: "Monash merit scholarships and need-based bursaries available", nextIntake: "March 2026" },
+      outcomeInsights: { commonSkills: ["Analytical thinking", "Research", "Global perspective", "Technical skills"], internshipNote: "Industrial training semester built into engineering and analytics programs.", industryLinks: "Strong links with multinational engineering and analytics employers.", careerReadiness: "High" },
+      reviewBreakdown: { careerSupport: 4.0, teachingQuality: 4.4, facilities: 4.2 },
+      studentReviews: [
+        { id: "sr-mon-1", title: "Strong name and international recognition", author: "Engineering Graduate", program: "Engineering", date: "Apr 2026", rating: 4.3, body: "The engineering accreditation made my qualification recognized when I applied for jobs overseas." }
+      ],
+      topEmployers: [
+        { name: "Petronas Digital", count: 55, companyId: "petronas" },
+        { name: "Grab", count: 40, companyId: "grab" },
+        { name: "Deloitte", count: 38 }
+      ],
       highlights: ["International recognition", "Research-led teaching", "Good transfer pathways"],
       watchouts: ["Higher academic intensity", "Cost can be significant"]
     },
@@ -240,13 +627,124 @@ const DATA = {
       rating: 4.1,
       reviews: 318,
       open: 14,
+      partnerCount: 70,
       signal: "Technology career focus",
       salary: "80% employed in 6 months",
       tags: ["Technology", "Computing", "Employability"],
       summary: "Technology-oriented university with strong computing, business IT, and digital career pathways.",
-      scores: { culture: 4.0, growth: 4.2, pay: 3.9, balance: 3.8 },
+      scores: { growth: 4.2 },
+      academics: { employabilityRate: 80, acceptanceRate: 72, tuitionRange: "RM 30k - 42k / year" },
+      topPrograms: ["Computer Science", "Cybersecurity", "Data Analytics"],
+      strongPrograms: [
+        { name: "Computer Science", why: "Strong industry certifications embedded in the curriculum and consistent graduate hiring.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Cybersecurity", why: "Dedicated security labs and growing industry demand for graduates.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Data Analytics", why: "Curriculum closely aligned with in-demand analytics tooling and techniques.", careerOutcome: "High", industryRelevance: "High" }
+      ],
+      programs: [
+        { id: "apu-cs", name: "Computer Science", overview: "A technology-focused computer science degree with embedded industry certifications and strong graduate hiring pipelines.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 55,000 - RM 70,000 total", suitableForSPM: true, spmPathway: "Foundation in Computing or Diploma in IT", entryRequirement: "5 credits in SPM including Mathematics", careerPaths: ["Software Developer", "Data Analyst", "Cybersecurity Analyst", "AI/ML Engineer"], mainSubjects: ["Data Structures", "Software Engineering", "Mobile App Development", "Cloud Computing", "Artificial Intelligence"], mainSkills: ["Programming", "Databases", "Web development", "Algorithms"], internshipAvailability: "Available (industry-linked)", industryExposure: "Industry-linked internships and hackathons with tech employers across Southeast Asia.", industryRelevance: "High", employabilityOutcome: "Very high demand; strong recruiter presence on campus.", accreditation: "MQA accredited; aligned with global tech certifications.", scholarshipAvailability: "APU merit scholarships and tech-industry sponsorships available.", programStrength: "Strong", watchouts: ["Fast-changing curriculum requires continuous self-learning"] },
+        { id: "apu-cyber", name: "Cybersecurity", overview: "A cybersecurity degree with dedicated security labs covering network defense, ethical hacking, and risk management.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 58,000 - RM 72,000 total", suitableForSPM: true, spmPathway: "Foundation in Computing or Diploma in IT", entryRequirement: "5 credits in SPM including Mathematics", careerPaths: ["Cybersecurity Analyst", "Penetration Tester", "SOC Analyst", "Security Consultant"], mainSubjects: ["Network Security", "Ethical Hacking", "Digital Forensics", "Risk Management", "Security Governance"], mainSkills: ["Network security", "Ethical hacking", "Risk assessment", "Security tools"], internshipAvailability: "Available", industryExposure: "Security labs, capture-the-flag competitions, and industry-linked internships.", industryRelevance: "High", employabilityOutcome: "High and growing demand for cybersecurity analysts and SOC roles.", accreditation: "MQA accredited; aligned with CEH/security industry certifications.", scholarshipAvailability: "Tech-industry sponsored scholarships available.", programStrength: "Strong", watchouts: ["Requires continuous certification (e.g. CEH) to stay competitive"] },
+        { id: "apu-data", name: "Data Analytics", overview: "A data analytics degree focused on in-demand analytics tooling, statistics, and business intelligence techniques.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 56,000 - RM 70,000 total", suitableForSPM: true, spmPathway: "Foundation in Computing", entryRequirement: "5 credits in SPM including Mathematics", careerPaths: ["Data Analyst", "Business Intelligence Analyst", "Data Scientist", "Insights Consultant"], mainSubjects: ["Statistics", "Data Mining", "Big Data Technologies", "Data Visualization", "Machine Learning Basics"], mainSkills: ["SQL", "Data visualization", "Statistics", "Python/R"], internshipAvailability: "Available", industryExposure: "Analytics internships and industry capstone projects.", industryRelevance: "High", employabilityOutcome: "High demand for data analyst and BI roles.", accreditation: "MQA accredited.", scholarshipAvailability: "Merit-based scholarships available.", programStrength: "Strong", watchouts: ["Requires strong quantitative aptitude"] },
+        { id: "apu-biz", name: "Business", overview: "A business degree with a technology-oriented curriculum covering digital business and management fundamentals.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 48,000 - RM 60,000 total", suitableForSPM: true, spmPathway: "Foundation in Business", entryRequirement: "5 credits in SPM", careerPaths: ["Marketing Executive", "Business Analyst", "Finance Executive", "Management Trainee"], mainSubjects: ["Marketing Principles", "Digital Business", "Financial Management", "Organizational Behavior", "Entrepreneurship"], mainSkills: ["Business strategy", "Finance basics", "Marketing", "Communication"], internshipAvailability: "Available", industryExposure: "Internship placements with technology and digital-first companies.", industryRelevance: "Medium", employabilityOutcome: "Moderate demand; less industry focus than APU's tech programs.", accreditation: "MQA accredited.", scholarshipAvailability: "Merit-based scholarships available.", programStrength: "Good", watchouts: ["Less industry focus than the tech programs"] }
+      ],
+      spmPathway: { foundation: "SPM -> Foundation in Computing -> Degree", diploma: "SPM -> Diploma in IT/Computing -> Degree Year 2 with credit transfer", degree: "Usually requires Foundation, STPM, A-Level, Diploma, or equivalent", englishRequirement: "Minimum Band 2 MUET or equivalent", scholarship: "APU merit scholarships and tech-industry sponsored scholarships available", nextIntake: "January 2026" },
+      outcomeInsights: { commonSkills: ["Programming", "Problem solving", "Technical certifications", "Teamwork"], internshipNote: "Strong industry-linked internship placements, especially in tech roles.", industryLinks: "Deep ties with tech and digital employers across Southeast Asia.", careerReadiness: "High" },
+      reviewBreakdown: { careerSupport: 4.1, teachingQuality: 4.0, facilities: 4.2 },
+      studentReviews: [
+        { id: "sr-apu-1", title: "Great for landing a tech job fast", author: "Computer Science Graduate", program: "Computer Science", date: "Jun 2026", rating: 4.2, body: "Recruiters actively come to campus. I had two job offers before graduating." }
+      ],
+      topEmployers: [
+        { name: "Grab", count: 65, companyId: "grab" },
+        { name: "CIMB", count: 30, companyId: "cimb" },
+        { name: "Accenture", count: 25 }
+      ],
       highlights: ["Strong computing focus", "Career-oriented programs", "Diverse student community"],
       watchouts: ["Fast academic pace", "Campus location may affect commute"]
+    },
+    {
+      id: "sunway",
+      name: "Sunway University",
+      type: "University",
+      industry: "Private University",
+      location: "Bandar Sunway",
+      size: "7,500 students",
+      rating: 4.3,
+      reviews: 295,
+      open: 12,
+      partnerCount: 50,
+      signal: "Strong business and hospitality reputation",
+      salary: "81% employed in 6 months",
+      tags: ["Business", "Hospitality", "Twinning programs"],
+      summary: "Private university known for business, hospitality, design, and strong twinning/pathway programs to overseas universities.",
+      scores: { growth: 4.2 },
+      academics: { employabilityRate: 81, acceptanceRate: 64, tuitionRange: "RM 38k - 58k / year" },
+      topPrograms: ["Business", "Hospitality", "Design"],
+      strongPrograms: [
+        { name: "Business", why: "Well-regarded business school with strong twinning pathways to overseas partner universities.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Hospitality", why: "Strong hotel and event management industry placements.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Design", why: "Creative facilities and growing design industry partnerships.", careerOutcome: "Medium", industryRelevance: "Medium" }
+      ],
+      programs: [
+        { id: "sunway-biz", name: "Business", overview: "A business degree with strong twinning pathways to overseas partner universities and a practical management curriculum.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 85,000 - RM 105,000 total", suitableForSPM: true, spmPathway: "Foundation in Arts/Business or Diploma in Business", entryRequirement: "5 credits in SPM including Mathematics and English", careerPaths: ["Marketing Executive", "Business Analyst", "Finance Executive", "Management Trainee"], mainSubjects: ["Marketing Principles", "Financial Management", "Business Ethics", "Organizational Behavior", "International Business"], mainSkills: ["Business strategy", "Finance basics", "Marketing", "Communication"], internshipAvailability: "Available", industryExposure: "Internships and industry guest lectures across the Sunway Group ecosystem.", industryRelevance: "High", employabilityOutcome: "Consistent demand across marketing, finance, and management trainee roles.", accreditation: "MQA accredited; twinning pathway accredited by partner overseas universities.", scholarshipAvailability: "Sunway merit scholarships and need-based bursaries available.", programStrength: "Strong", watchouts: ["Competitive graduate job market"] },
+        { id: "sunway-hosp", name: "Hospitality", overview: "A hospitality degree with strong hotel and event management industry placements.", level: "Diploma + Degree / Direct Degree", duration: "3 years (or 1 year Diploma top-up)", estimatedTuition: "RM 80,000 - RM 100,000 total", suitableForSPM: true, spmPathway: "Diploma in Hotel Management or Foundation route", entryRequirement: "3 credits in SPM including English", careerPaths: ["Hotel Manager", "Event Manager", "F&B Manager", "Guest Relations Executive"], mainSubjects: ["Hotel Operations", "Event Management", "Food & Beverage Management", "Tourism Marketing", "Service Quality Management"], mainSkills: ["Guest service", "Operations management", "Event planning", "Communication"], internshipAvailability: "Compulsory industry placement", industryExposure: "Compulsory industry placement with hotel and event partners.", industryRelevance: "High", employabilityOutcome: "High demand in hospitality and event management roles.", accreditation: "MQA accredited; industry-endorsed curriculum.", scholarshipAvailability: "Hospitality-industry sponsored scholarships available.", programStrength: "Strong", watchouts: ["Shift-based industry placements"] },
+        { id: "sunway-design", name: "Design", overview: "A design degree with creative studio facilities and growing industry design partnerships.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 78,000 - RM 96,000 total", suitableForSPM: true, spmPathway: "Foundation in Design", entryRequirement: "3 credits in SPM; portfolio may be required", careerPaths: ["UI/UX Designer", "Graphic Designer", "Product Designer", "Brand Designer"], mainSubjects: ["Visual Communication", "Typography", "User Experience Design", "Branding", "Digital Media"], mainSkills: ["Visual design", "Design tools (Figma/Adobe)", "User research", "Prototyping"], internshipAvailability: "Available", industryExposure: "Studio critique sessions and design agency internships.", industryRelevance: "Medium", employabilityOutcome: "Outcomes depend on portfolio quality; growing demand in digital design roles.", accreditation: "MQA accredited.", scholarshipAvailability: "Design talent scholarships available (portfolio-based).", programStrength: "Good", watchouts: ["Portfolio quality matters more than grades for hiring"] },
+        { id: "sunway-acc", name: "Accounting", overview: "An accounting degree with a practical curriculum and consistent internship placement support.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 75,000 - RM 92,000 total", suitableForSPM: true, spmPathway: "Foundation in Business/Accounting", entryRequirement: "5 credits in SPM including Mathematics", careerPaths: ["Accountant", "Auditor", "Tax Consultant", "Finance Analyst"], mainSubjects: ["Financial Accounting", "Management Accounting", "Auditing", "Taxation", "Business Law"], mainSkills: ["Financial reporting", "Auditing", "Taxation", "Excel/ERP tools"], internshipAvailability: "Available", industryExposure: "Internships with accounting and financial services firms.", industryRelevance: "Medium", employabilityOutcome: "Steady demand; strongest with ACCA/CPA follow-through.", accreditation: "MQA accredited; recognized pathway toward MIA membership.", scholarshipAvailability: "Merit-based scholarships available.", programStrength: "Good", watchouts: ["Requires professional certification for full progression"] }
+      ],
+      spmPathway: { foundation: "SPM -> Foundation -> Degree", diploma: "SPM -> Diploma -> Degree Year 2 (selected programs)", degree: "Usually requires Foundation, STPM, A-Level, Diploma, or equivalent", englishRequirement: "Minimum Band 3 MUET or IELTS 5.5", scholarship: "Sunway merit scholarships and need-based bursaries available", nextIntake: "February / August 2026" },
+      outcomeInsights: { commonSkills: ["Communication", "Teamwork", "Business acumen", "Project experience"], internshipNote: "Structured internships across business and hospitality programs.", industryLinks: "Strong ties with the wider Sunway Group ecosystem and business/hospitality employers.", careerReadiness: "Medium" },
+      reviewBreakdown: { careerSupport: 4.1, teachingQuality: 4.2, facilities: 4.3 },
+      studentReviews: [
+        { id: "sr-sun-1", title: "Great campus and pathway options", author: "Business Student, Year 3", program: "Business", date: "Apr 2026", rating: 4.3, body: "The twinning pathway to an overseas partner university was a big reason I chose Sunway." }
+      ],
+      topEmployers: [
+        { name: "CIMB", count: 50, companyId: "cimb" },
+        { name: "Grab", count: 35, companyId: "grab" },
+        { name: "Sunway Group", count: 80 }
+      ],
+      highlights: ["Strong twinning/pathway options to overseas universities", "Vibrant integrated campus township", "Good industry placement support"],
+      watchouts: ["Tuition can be high for twinning programs", "Large integrated campus can feel crowded"]
+    },
+    {
+      id: "ucsi",
+      name: "UCSI University",
+      type: "University",
+      industry: "Private University",
+      location: "Cheras, Kuala Lumpur",
+      size: "15,000 students",
+      rating: 4.2,
+      reviews: 341,
+      open: 13,
+      partnerCount: 55,
+      signal: "Strong health sciences and engineering focus",
+      salary: "79% employed in 6 months",
+      tags: ["Medicine", "Engineering", "Music"],
+      summary: "Private university recognized for health sciences, engineering, music, and actuarial studies with strong industry links.",
+      scores: { growth: 4.1 },
+      academics: { employabilityRate: 79, acceptanceRate: 66, tuitionRange: "RM 40k - 62k / year" },
+      topPrograms: ["Medicine", "Engineering", "Business"],
+      strongPrograms: [
+        { name: "Medicine", why: "Well-established health sciences faculty with strong clinical training partnerships.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Engineering", why: "Strong industry-recognized engineering accreditation and labs.", careerOutcome: "High", industryRelevance: "High" },
+        { name: "Business", why: "Practical curriculum with consistent internship placement support.", careerOutcome: "Medium", industryRelevance: "Medium" }
+      ],
+      programs: [
+        { id: "ucsi-med", name: "Medicine", overview: "A 5-year MBBS program with strong clinical training partnerships across UCSI's affiliated hospitals.", level: "Direct Degree (MBBS)", duration: "5 years", estimatedTuition: "RM 400,000 - RM 480,000 total", suitableForSPM: true, spmPathway: "Foundation in Science or A-Level/STPM required before degree", entryRequirement: "5 credits including Biology, Chemistry, Physics/Maths; strong results required", careerPaths: ["Medical Officer", "Doctor (post-housemanship)", "Clinical Researcher", "Public Health Officer"], mainSubjects: ["Anatomy", "Physiology", "Pharmacology", "Clinical Medicine", "Community Health"], mainSkills: ["Clinical diagnosis", "Patient care", "Medical research", "Communication"], internshipAvailability: "Compulsory clinical postings", industryExposure: "Clinical postings at affiliated teaching hospitals from Year 3 onward.", industryRelevance: "High", employabilityOutcome: "High demand; graduates proceed to compulsory housemanship.", accreditation: "Recognized by the Malaysian Medical Council (MMC) and MQA.", scholarshipAvailability: "Limited merit scholarships available (high tuition offsets availability).", programStrength: "Strong", watchouts: ["Very high tuition cost", "Long study duration"] },
+        { id: "ucsi-eng", name: "Engineering", overview: "An accredited engineering degree with strong labs and industry-recognized curriculum.", level: "Foundation + Degree", duration: "1 year Foundation + 4 years degree", estimatedTuition: "RM 90,000 - RM 115,000 total", suitableForSPM: true, spmPathway: "Foundation in Engineering", entryRequirement: "5 credits in SPM including Mathematics and Physics", careerPaths: ["Mechanical Engineer", "Project Engineer", "Maintenance Engineer", "Automation Engineer"], mainSubjects: ["Engineering Mathematics", "Mechanics of Materials", "Thermodynamics", "Control Systems", "Engineering Design"], mainSkills: ["Engineering mathematics", "CAD design", "Project management", "Problem solving"], internshipAvailability: "Available (industrial training semester)", industryExposure: "Industrial training semester with engineering and manufacturing employers.", industryRelevance: "High", employabilityOutcome: "High demand, especially for graduates with completed industrial training.", accreditation: "Accredited by the Board of Engineers Malaysia (BEM) and Engineering Accreditation Council (EAC).", scholarshipAvailability: "UCSI merit scholarships and need-based bursaries available.", programStrength: "Strong", watchouts: ["Longer duration than most degrees"] },
+        { id: "ucsi-biz", name: "Business", overview: "A business degree with a practical curriculum and consistent internship placement support.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 70,000 - RM 90,000 total", suitableForSPM: true, spmPathway: "Foundation in Business", entryRequirement: "5 credits in SPM", careerPaths: ["Marketing Executive", "Business Analyst", "Finance Executive", "Management Trainee"], mainSubjects: ["Marketing Principles", "Financial Management", "Organizational Behavior", "Business Analytics", "Entrepreneurship"], mainSkills: ["Business strategy", "Finance basics", "Marketing", "Communication"], internshipAvailability: "Available", industryExposure: "Internship placements with regional employers.", industryRelevance: "Medium", employabilityOutcome: "Moderate, steady demand across marketing, finance, and management trainee roles.", accreditation: "MQA accredited.", scholarshipAvailability: "Merit-based scholarships available.", programStrength: "Good", watchouts: ["Competitive graduate job market"] },
+        { id: "ucsi-data", name: "Data Analytics", overview: "A data analytics degree covering statistics, data visualization, and business intelligence tooling.", level: "Foundation + Degree", duration: "1 year Foundation + 3 years degree", estimatedTuition: "RM 65,000 - RM 82,000 total", suitableForSPM: true, spmPathway: "Foundation in Computing or Science", entryRequirement: "5 credits in SPM including Mathematics", careerPaths: ["Data Analyst", "Business Intelligence Analyst", "Data Scientist", "Insights Consultant"], mainSubjects: ["Statistics", "Data Mining", "Business Intelligence", "Data Visualization", "Machine Learning Basics"], mainSkills: ["SQL", "Data visualization", "Statistics", "Python/R"], internshipAvailability: "Available", industryExposure: "Analytics internships with industry partners.", industryRelevance: "High", employabilityOutcome: "High demand for data analyst and BI roles.", accreditation: "MQA accredited.", scholarshipAvailability: "Merit-based scholarships available.", programStrength: "Good", watchouts: ["Requires strong quantitative aptitude"] }
+      ],
+      spmPathway: { foundation: "SPM -> Foundation -> Degree", diploma: "SPM -> Diploma -> Degree Year 2 (selected programs)", degree: "Usually requires Foundation, STPM, A-Level, Diploma, or equivalent (Medicine requires strong Science results)", englishRequirement: "Minimum Band 3 MUET or IELTS 5.5", scholarship: "UCSI merit scholarships and need-based bursaries available", nextIntake: "January / May 2026" },
+      outcomeInsights: { commonSkills: ["Technical skills", "Research", "Communication", "Problem solving"], internshipNote: "Clinical postings and industrial training built into health science and engineering programs.", industryLinks: "Strong ties with healthcare providers and engineering employers.", careerReadiness: "Medium" },
+      reviewBreakdown: { careerSupport: 3.9, teachingQuality: 4.1, facilities: 4.0 },
+      studentReviews: [
+        { id: "sr-ucsi-1", title: "Solid engineering labs and facilities", author: "Engineering Student, Year 2", program: "Engineering", date: "Mar 2026", rating: 4.0, body: "The labs are well-equipped and lecturers have real industry experience." }
+      ],
+      topEmployers: [
+        { name: "Petronas Digital", count: 40, companyId: "petronas" },
+        { name: "Maybank", count: 30, companyId: "maybank" },
+        { name: "IHH Healthcare", count: 55 }
+      ],
+      highlights: ["Strong health sciences and engineering facilities", "Diverse international student community", "Good scholarship availability"],
+      watchouts: ["Medicine program tuition is very high", "Campus spread across multiple buildings"]
     }
   ],
   reviews: [
@@ -409,6 +907,10 @@ function readState() {
     applicationRecords: {},
     ignoredJobs: [],
     comparedJobs: [],
+    comparedUniversities: [],
+    comparedPrograms: [],
+    comparedCompanies: [],
+    comparedRoles: [],
     savedOrgs: [],
     missionProgress: {},
     planProgress: {},
@@ -552,6 +1054,10 @@ function normalizeState(state) {
     applicationRecords: normalizeApplicationRecords(state),
     ignoredJobs: Array.isArray(state.ignoredJobs) ? state.ignoredJobs : [],
     comparedJobs: Array.isArray(state.comparedJobs) ? state.comparedJobs : [],
+    comparedUniversities: Array.isArray(state.comparedUniversities) ? state.comparedUniversities : [],
+    comparedPrograms: Array.isArray(state.comparedPrograms) ? state.comparedPrograms : [],
+    comparedCompanies: Array.isArray(state.comparedCompanies) ? state.comparedCompanies : [],
+    comparedRoles: Array.isArray(state.comparedRoles) ? state.comparedRoles : [],
     savedOrgs: Array.isArray(state.savedOrgs) ? state.savedOrgs : [],
     planProgress: state.planProgress && typeof state.planProgress === "object" ? state.planProgress : {},
     marketPlan: state.marketPlan && typeof state.marketPlan === "object" ? state.marketPlan : null,
@@ -1626,6 +2132,10 @@ function rating(value) {
   return `<span class="rating">${icon("star")} ${Number(value).toFixed(1)}</span>`;
 }
 
+function ratingText(value) {
+  return `<span class="rating-text">${Number(value).toFixed(1)}/5</span>`;
+}
+
 function pills(items, extra = "") {
   return `<div class="pill-row">${items.map(item => `<span class="pill ${extra}">${item}</span>`).join("")}</div>`;
 }
@@ -2695,31 +3205,7 @@ function renderDirectoryPage(kind) {
     createIcons();
     return;
   }
-  if (loggedIn) {
-    const title = kind === "universities" ? "Universities" : "Companies";
-    const singular = kind === "universities" ? "university" : "company";
-    root.innerHTML = `
-      <section class="container os-layout">
-        ${appShell(kind, `
-          <section class="directory-workspace">
-            <aside class="filters card compact-filter directory-filter-bar">
-              <h2 class="filter-title">Find ${title.toLowerCase()}</h2>
-              <div class="filter-stack">
-                <div class="field"><i data-lucide="search"></i><input data-org-query placeholder="${title}, industry, location"></div>
-                <a class="btn btn-cyan btn-wide" href="vera.html?topic=${singular} research">${icon("sparkles")} Ask Vera</a>
-              </div>
-            </aside>
-            <div class="directory-split">
-              <section class="list-stack" data-org-list></section>
-              <section class="detail-panel glass-card" data-org-detail></section>
-            </div>
-          </section>
-        `, { title, subtitle: `Research ${title.toLowerCase()}, reviews, outcomes, and fit from inside your CareerGo workspace.` })}
-      </section>
-    `;
-    createIcons();
-    initSidebarToggle();
-  } else {
+  if (!loggedIn) {
     qsa('a[href^="vera.html"]', root).forEach(link => {
       link.setAttribute("href", "#");
       link.dataset.authPrompt = "ask Vera for personalized research";
@@ -2738,31 +3224,94 @@ function renderDirectoryPage(kind) {
   function filteredOrgs() {
     const q = queryInput.value.trim().toLowerCase();
     const selectedType = qs("[data-org-type].active")?.dataset.orgType || "All";
-    return orgsFor(kind === "all" ? selectedType.toLowerCase() : kind).filter(org => {
-      const hay = [org.name, org.industry, org.location, ...org.tags].join(" ").toLowerCase();
+    const pool = orgsFor(kind === "all" ? selectedType.toLowerCase() : kind);
+    if (!q && kind === "universities") {
+      return [...pool].sort((a, b) => (b.rating - a.rating) || (b.academics.employabilityRate - a.academics.employabilityRate));
+    }
+    if (!q && kind === "companies") {
+      return [...pool].sort((a, b) => (b.rating - a.rating) || (b.open - a.open));
+    }
+    return pool.filter(org => {
+      const programNames = (org.programs || []).map(p => p.name);
+      const strongNames = (org.strongPrograms || []).map(p => p.name);
+      const careerFields = (org.programs || []).flatMap(p => p.careerPaths || []);
+      const roleNames = (org.roles || []).map(r => r.title);
+      const roleDepartments = (org.roles || []).map(r => r.department);
+      const roleSkills = (org.roles || []).flatMap(r => r.requiredSkills || []);
+      const derivedTerms = [org.workMode || "", org.freshGraduateFriendly ? "fresh graduate friendly" : "", org.internshipAvailable ? "internship" : ""];
+      const hay = [org.name, org.industry, org.location, ...org.tags, ...programNames, ...strongNames, ...careerFields, ...roleNames, ...roleDepartments, ...roleSkills, ...derivedTerms].join(" ").toLowerCase();
       return hay.includes(q);
     });
   }
 
   function renderList() {
+    const state = readState();
+    const q = queryInput.value.trim();
     const items = filteredOrgs();
-    listRoot.innerHTML = items.map(org => `
+    const isUni = kind === "universities";
+    const isDashboardKind = kind === "universities" || kind === "companies";
+    const compareStateKey = isUni ? "comparedUniversities" : "comparedCompanies";
+    const headingRoot = qs("[data-org-list-heading]");
+    if (headingRoot) {
+      if (isDashboardKind && !q) {
+        const heading = isUni ? "Recommended universities" : "Recommended companies";
+        const subtitle = isUni ? "Based on rating, employability, program strength, and career outcomes." : "Based on ratings, open roles, salary signals, growth, and review themes.";
+        headingRoot.innerHTML = `<div class="org-list-heading"><h3>${heading}</h3><p class="muted small">${subtitle}</p></div>`;
+      } else if (isDashboardKind && items.length === 0) {
+        const heading = isUni ? "No universities found" : "No companies found";
+        const subtitle = isUni ? "Try searching by program, location, university name, or career field." : "Try searching by company, role, industry, location, or skill.";
+        headingRoot.innerHTML = `<div class="org-list-empty"><h3>${heading}</h3><p class="muted small">${subtitle}</p></div>`;
+      } else {
+        headingRoot.innerHTML = "";
+      }
+    }
+    listRoot.innerHTML = items.map(org => {
+      const metricLine = isUni
+        ? `${icon("trending-up")} ${org.academics.employabilityRate}% employability - ${org.academics.tuitionRange}`
+        : `${icon("briefcase")} ${org.open} open roles - ${org.salary}`;
+      return `
       <button class="list-card ${org.id === active.id ? "active" : ""}" data-org-id="${org.id}">
         <div class="list-card-top">
           <div>
             <h3>${org.name}</h3>
             <div class="muted small">${org.industry} - ${org.location}</div>
           </div>
-          ${rating(org.rating)}
+          ${isDashboardKind ? ratingText(org.rating) : rating(org.rating)}
         </div>
-        ${pills(org.tags.slice(0, 3), "gold")}
+        ${pills(org.tags.slice(0, isDashboardKind ? 2 : 3), "gold")}
+        ${isDashboardKind ? `
+          <div class="list-card-metric muted small">${metricLine}</div>
+          <label class="check-field inline custom-checkbox list-card-compare"><input type="checkbox" data-compare-org="${org.id}" ${state[compareStateKey].includes(org.id) ? "checked" : ""}> Compare</label>
+        ` : ""}
       </button>
-    `).join("");
+    `;
+    }).join("");
     qsa("[data-org-id]", listRoot).forEach(btn => {
       btn.addEventListener("click", () => {
         active = [...DATA.companies, ...DATA.universities].find(org => org.id === btn.dataset.orgId);
         history.replaceState(null, "", `${kind === "universities" ? "universities" : "companies"}.html?org=${active.id}`);
         renderList();
+        renderDetail();
+      });
+    });
+    qsa("[data-compare-org]", listRoot).forEach(input => {
+      input.addEventListener("click", event => event.stopPropagation());
+      input.addEventListener("change", () => {
+        const next = readState();
+        const stateKey = isUni ? "comparedUniversities" : "comparedCompanies";
+        const label = isUni ? "universities" : "companies";
+        if (input.checked) {
+          if (next[stateKey].length >= 3 && !next[stateKey].includes(input.dataset.compareOrg)) {
+            input.checked = false;
+            showToast(`You can compare up to 3 ${label}.`, "info");
+            return;
+          }
+          next[stateKey] = [...new Set([...next[stateKey], input.dataset.compareOrg])];
+        } else {
+          next[stateKey] = next[stateKey].filter(id => id !== input.dataset.compareOrg);
+        }
+        writeState(next);
+        renderCompareBar(label);
         renderDetail();
       });
     });
@@ -2775,38 +3324,218 @@ function renderDirectoryPage(kind) {
     const reviews = currentState.reviews.filter(r => r.targetId === active.id);
     const saved = currentState.savedOrgs.includes(active.id);
     const isUniversity = active.type === "University";
-    const saveLabel = saved ? "Saved" : `Save ${isUniversity ? "university" : "company"}`;
-    const secondaryLabel = isUniversity ? "Compare programs" : "Contact";
-    const secondaryTopic = isUniversity ? `${active.name} program comparison` : `${active.name} contact strategy`;
-    detailRoot.innerHTML = `
+    const bodyContent = `
       <div class="detail-head">
         <div>
-          <span class="org-detail-label">${active.type}</span>
-          <span class="pill ${isUniversity ? "cyan" : "gold"}">${active.type}</span>
-          <h2>${active.name}</h2>
           <div class="muted">${active.industry} - ${active.location}</div>
         </div>
-        <div>${rating(active.rating)}<div class="muted small">${active.reviews + reviews.length} reviews</div></div>
+        <div><div class="muted small">${ratingText(active.rating)} - ${active.reviews + reviews.length} reviews</div></div>
       </div>
-      <div class="detail-section">
-        <p class="muted">${active.summary}</p>
-        ${pills(active.tags, isUniversity ? "cyan" : "gold")}
+      <div class="detail-section" ${isUniversity ? "" : 'id="cd-overview"'}>
+        ${isUniversity ? "" : `<p class="muted small" style="margin:0 0 4px">${active.size}</p>`}
+        <p class="muted" style="margin:0 0 8px">${active.summary}</p>
+        ${isUniversity ? `<p class="muted small" style="margin:0 0 8px"><strong>Known for:</strong> ${active.strongPrograms.map(p => p.name).join(", ")}</p>` : ""}
+        ${pills(active.tags.slice(0, isUniversity ? 2 : active.tags.length), isUniversity ? "cyan" : "gold")}
+        ${isUniversity ? `<div style="margin-top:8px"><span class="muted small">Top programs</span> ${pills(active.topPrograms, "cyan")}</div>` : ""}
       </div>
-      <div class="detail-section score-grid">
-        ${Object.entries(active.scores).map(([label, value]) => `<div class="score-tile"><span>${label}</span><strong>${value.toFixed(1)}</strong></div>`).join("")}
-      </div>
-      <div class="detail-section content-grid info-card-row">
-        <div class="vera-box">
-          <h3>${icon("sparkles")} Vera's research note</h3>
-          <p class="muted">${active.signal}. Review themes suggest ${active.scores.growth >= 4.3 ? "strong growth upside" : "steady growth"} with ${active.scores.balance >= 4 ? "healthy balance" : "some balance trade-offs"}. Compare this against your target role, preferred pace, salary expectations, and learning style before deciding.</p>
+      ${isUniversity ? `
+        <div class="detail-section score-grid score-grid-6">
+          <div class="score-tile"><span>Employability rate</span><strong>${active.academics.employabilityRate}%</strong></div>
+          <div class="score-tile"><span>Acceptance rate</span><strong>${active.academics.acceptanceRate}%</strong></div>
+          <div class="score-tile"><span>Avg tuition</span><strong class="long">${active.academics.tuitionRange}</strong></div>
+          <div class="score-tile"><span>Reviews</span><strong>${active.reviews + reviews.length}</strong></div>
+          <div class="score-tile"><span>Student size</span><strong class="long">${active.size}</strong></div>
+          <div class="score-tile"><span>Partner employers</span><strong>${active.partnerCount}</strong></div>
         </div>
-        <div class="card">
-          <h3>Background</h3>
-          <p class="muted">Size: ${active.size}</p>
-          <p class="muted">${active.type === "University" ? "Outcome" : "Salary"}: ${active.salary}</p>
-          <p class="muted">Open roles / partners: ${active.open}</p>
+        <div class="detail-section">
+          <div class="vera-box">
+            <h3>${icon("sparkles")} Vera's research note</h3>
+            <p class="muted">${active.signal}. ${active.academics.employabilityRate}% of graduates are employed within 6 months, and the acceptance rate is around ${active.academics.acceptanceRate}%. Compare this against your target field, budget, and preferred campus culture before deciding.</p>
+          </div>
         </div>
-      </div>
+        <div class="detail-section">
+          <div class="card">
+            <h3>${icon("star")} Strong programs</h3>
+            <div class="strong-program-grid">
+              ${active.strongPrograms.map(p => `
+                <div class="strong-program-item">
+                  <h4>${p.name}</h4>
+                  <p class="muted small">${p.why}</p>
+                  <div class="strong-program-labels">
+                    <span class="pill green">Career outcome: ${p.careerOutcome}</span>
+                    <span class="pill cyan">Industry relevance: ${p.industryRelevance}</span>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="section-head" style="margin-bottom:14px"><h3>Popular programs</h3></div>
+          <div class="program-list">
+            ${active.programs.map(p => {
+              const compositeId = `${active.id}__${p.id}`;
+              const compared = currentState.comparedPrograms.includes(compositeId);
+              const searchQuery = queryInput.value.trim().toLowerCase();
+              const isMatch = Boolean(searchQuery) && p.name.toLowerCase().includes(searchQuery);
+              return `
+              <div class="program-row ${isMatch ? "program-row-highlight" : ""}" data-program-row="${p.id}">
+                <div class="program-row-main">
+                  <h4>${p.name}</h4>
+                  <div class="muted small">Level: ${p.level} - Duration: ${p.duration} - ${p.estimatedTuition}</div>
+                </div>
+                <span class="pill ${p.programStrength === "Strong" ? "green" : "gold"}">${p.programStrength}</span>
+                <div class="program-row-actions">
+                  <button class="btn btn-ghost" type="button" data-program-details="${compositeId}">${icon("file-text")} See details</button>
+                  <button class="btn ${compared ? "btn-cyan" : "btn-ghost"}" type="button" data-compare-program="${compositeId}">${icon("scale")} ${compared ? "Added to compare" : "Compare program"}</button>
+                </div>
+              </div>
+            `;
+            }).join("")}
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="card">
+            <h3>${icon("route")} SPM entry pathway</h3>
+            <p class="muted"><strong>Foundation route:</strong> ${active.spmPathway.foundation}</p>
+            <p class="muted"><strong>Diploma route:</strong> ${active.spmPathway.diploma}</p>
+            <p class="muted"><strong>Degree route:</strong> ${active.spmPathway.degree}</p>
+            <div class="pill-row">
+              <span class="pill">English requirement: ${active.spmPathway.englishRequirement}</span>
+              <span class="pill">Scholarship: ${active.spmPathway.scholarship}</span>
+              <span class="pill">Next intake: ${active.spmPathway.nextIntake}</span>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="card">
+            <h3>${icon("briefcase")} Career outcomes by program</h3>
+            <div class="career-outcome-grid">
+              ${active.programs.map(p => `
+                <div>
+                  <h4>${p.name}</h4>
+                  <ul class="check-list">${p.careerPaths.map(c => `<li>${c}</li>`).join("")}</ul>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="card">
+            <h3>${icon("lightbulb")} Outcome insights</h3>
+            <p class="muted"><strong>Common graduate skills:</strong> ${active.outcomeInsights.commonSkills.join(", ")}</p>
+            <p class="muted"><strong>Internship opportunities:</strong> ${active.outcomeInsights.internshipNote}</p>
+            <p class="muted"><strong>Industry links:</strong> ${active.outcomeInsights.industryLinks}</p>
+            <span class="pill green">Career readiness: ${active.outcomeInsights.careerReadiness}</span>
+          </div>
+        </div>
+      ` : `
+        <div class="detail-section">
+          <div class="vera-box">
+            <h3>${icon("sparkles")} Vera's research note</h3>
+            <p class="muted">${active.veraNote}</p>
+          </div>
+        </div>
+        <div class="detail-section score-grid score-grid-6">
+          <div class="score-tile"><span>Overall rating</span><strong>${active.rating.toFixed(1)}</strong></div>
+          <div class="score-tile"><span>Culture</span><strong>${active.scores.culture.toFixed(1)}</strong></div>
+          <div class="score-tile"><span>Growth</span><strong>${active.scores.growth.toFixed(1)}</strong></div>
+          <div class="score-tile"><span>Pay</span><strong>${active.scores.pay.toFixed(1)}</strong></div>
+          <div class="score-tile"><span>Work-life balance</span><strong>${active.scores.balance.toFixed(1)}</strong></div>
+          <div class="score-tile"><span>Hiring difficulty</span><strong class="long">${active.hiringDifficulty}</strong></div>
+        </div>
+        <div class="detail-section" id="cd-jobs">
+          <div class="section-head" style="margin-bottom:14px"><h3>Common roles</h3></div>
+          <div class="program-list">
+            ${active.roles.map(r => {
+              const compositeId = `${active.id}__${r.id}`;
+              const compared = currentState.comparedRoles.includes(compositeId);
+              const searchQuery = queryInput.value.trim().toLowerCase();
+              const isMatch = Boolean(searchQuery) && r.title.toLowerCase().includes(searchQuery);
+              return `
+              <div class="program-row ${isMatch ? "program-row-highlight" : ""}" data-role-row="${r.id}">
+                <div class="program-row-main">
+                  <h4>${r.title}</h4>
+                  <div class="muted small">${r.department} - ${r.salaryRange} - ${r.experienceLevel}</div>
+                </div>
+                <span class="pill ${r.status === "Open" ? "green" : "gold"}">${r.status}</span>
+                <div class="program-row-actions">
+                  <button class="btn btn-ghost" type="button" data-role-details="${compositeId}">${icon("file-text")} See details</button>
+                  <button class="btn ${compared ? "btn-cyan" : "btn-ghost"}" type="button" data-compare-role="${compositeId}">${icon("scale")} ${compared ? "Added to compare" : "Compare role"}</button>
+                </div>
+              </div>
+            `;
+            }).join("")}
+          </div>
+        </div>
+        <div class="detail-section" id="cd-requirements">
+          <div class="card">
+            <h3>${icon("graduation-cap")} Average requirements</h3>
+            <div class="requirements-grid">
+              <p class="muted"><strong>Education:</strong> ${active.averageRequirements.education}</p>
+              <p class="muted"><strong>CGPA:</strong> ${active.averageRequirements.cgpa}</p>
+              <p class="muted"><strong>Experience:</strong> ${active.averageRequirements.experience}</p>
+              <p class="muted"><strong>English:</strong> ${active.averageRequirements.englishRequirement}</p>
+              <p class="muted"><strong>Portfolio:</strong> ${active.averageRequirements.portfolio}</p>
+              <p class="muted"><strong>Internship experience:</strong> ${active.averageRequirements.internshipPreferred}</p>
+              <p class="muted"><strong>Certifications:</strong> ${active.averageRequirements.certifications}</p>
+            </div>
+            <div style="margin-top:10px"><span class="muted small">Common skills</span> ${pills(active.averageRequirements.commonSkills, "cyan")}</div>
+            <div style="margin-top:10px"><span class="muted small">Tech / tools</span> ${pills(active.averageRequirements.techSkills, "cyan")}</div>
+          </div>
+        </div>
+        <div class="detail-section" id="cd-hiring">
+          <div class="card">
+            <h3>${icon("list-checks")} Hiring process</h3>
+            <div class="hiring-steps">${active.hiringProcess.steps.map((s, i) => `<div class="hiring-step"><span class="hiring-step-index">${i + 1}</span><span>${s}</span></div>`).join("")}</div>
+            <p class="muted" style="margin-top:10px"><strong>Average response time:</strong> ${active.hiringProcess.avgResponseTime}</p>
+            <p class="muted"><strong>Hiring difficulty:</strong> ${active.hiringProcess.difficulty}</p>
+            <p class="muted"><strong>Assessment:</strong> ${active.hiringProcess.assessmentNote}</p>
+          </div>
+        </div>
+        <div class="detail-section" id="cd-salary">
+          <div class="card">
+            <h3>${icon("wallet")} Salary and benefits</h3>
+            <div class="requirements-grid">
+              <p class="muted"><strong>Average salary range:</strong> ${active.salary}</p>
+              <p class="muted"><strong>Fresh graduate salary:</strong> ${active.salaryBenefits.freshGradSalary}</p>
+              <p class="muted"><strong>Internship allowance:</strong> ${active.salaryBenefits.internshipAllowance}</p>
+              <p class="muted"><strong>Bonus / incentives:</strong> ${active.salaryBenefits.bonus}</p>
+              <p class="muted"><strong>Medical benefits:</strong> ${active.salaryBenefits.medical}</p>
+              <p class="muted"><strong>Training:</strong> ${active.salaryBenefits.training}</p>
+              <p class="muted"><strong>Flexible work:</strong> ${active.salaryBenefits.flexibleWork}</p>
+              <p class="muted"><strong>Leave benefits:</strong> ${active.salaryBenefits.leave}</p>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="card">
+            <h3>${icon("trending-up")} Career growth</h3>
+            <div class="requirements-grid">
+              <p class="muted"><strong>Training quality:</strong> ${active.careerGrowth.trainingQuality}</p>
+              <p class="muted"><strong>Promotion path:</strong> ${active.careerGrowth.promotionPath}</p>
+              <p class="muted"><strong>Graduate program:</strong> ${active.careerGrowth.graduateProgram}</p>
+              <p class="muted"><strong>Mentorship:</strong> ${active.careerGrowth.mentorship}</p>
+              <p class="muted"><strong>Internal transfer:</strong> ${active.careerGrowth.internalTransfer}</p>
+              <p class="muted"><strong>Learning opportunities:</strong> ${active.careerGrowth.learningOpportunities}</p>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section" id="cd-culture">
+          <div class="card">
+            <h3>${icon("users")} Work culture</h3>
+            <div class="requirements-grid">
+              <p class="muted"><strong>Pace:</strong> ${active.workCulture.pace}</p>
+              <p class="muted"><strong>Team style:</strong> ${active.workCulture.teamStyle}</p>
+              <p class="muted"><strong>Work-life balance:</strong> ${active.workCulture.workLifeBalance}</p>
+              <p class="muted"><strong>Management style:</strong> ${active.workCulture.managementStyle}</p>
+              <p class="muted"><strong>Collaboration:</strong> ${active.workCulture.collaboration}</p>
+              <p class="muted"><strong>Overtime signal:</strong> ${active.workCulture.overtimeSignal}</p>
+              <p class="muted"><strong>Review themes:</strong> ${active.workCulture.reviewThemes}</p>
+            </div>
+          </div>
+        </div>
+      `}
       <div class="detail-section content-grid info-card-row">
         <div class="card">
           <h3>Highlights</h3>
@@ -2817,41 +3546,121 @@ function renderDirectoryPage(kind) {
           <ul class="check-list">${active.watchouts.map(x => `<li>${x}</li>`).join("")}</ul>
         </div>
       </div>
-      <div class="detail-section">
+      ${isUniversity ? `
+        <div class="detail-section">
+          <div class="card">
+            <h3>${icon("users")} Top employers of alumni</h3>
+            <ul class="check-list">${active.topEmployers.map(emp => `<li>${emp.companyId ? `<a href="companies.html?org=${emp.companyId}">${emp.name}</a>` : emp.name} - ${emp.count} graduates</li>`).join("")}</ul>
+          </div>
+        </div>
+      ` : ""}
+      <div class="detail-section" ${isUniversity ? "" : 'id="cd-reviews"'}>
         <div class="section-head" style="margin-bottom:14px">
-          <h3>Reviews</h3>
+          <h3>${isUniversity ? "Student reviews" : "Employee reviews"}</h3>
+        </div>
+        <div class="score-grid review-breakdown-row">
+          ${isUniversity ? `
+            <div class="score-tile"><span>Overall</span><strong>${active.rating.toFixed(1)}</strong></div>
+            <div class="score-tile"><span>Career support</span><strong>${active.reviewBreakdown.careerSupport.toFixed(1)}</strong></div>
+            <div class="score-tile"><span>Teaching quality</span><strong>${active.reviewBreakdown.teachingQuality.toFixed(1)}</strong></div>
+            <div class="score-tile"><span>Facilities</span><strong>${active.reviewBreakdown.facilities.toFixed(1)}</strong></div>
+          ` : `
+            <div class="score-tile"><span>Overall</span><strong>${active.rating.toFixed(1)}</strong></div>
+            <div class="score-tile"><span>Culture</span><strong>${active.scores.culture.toFixed(1)}</strong></div>
+            <div class="score-tile"><span>Growth</span><strong>${active.scores.growth.toFixed(1)}</strong></div>
+            <div class="score-tile"><span>Pay</span><strong>${active.scores.pay.toFixed(1)}</strong></div>
+            <div class="score-tile"><span>Balance</span><strong>${active.scores.balance.toFixed(1)}</strong></div>
+          `}
         </div>
         <div>
-          ${(reviews.length ? reviews : currentState.reviews.filter(r => r.targetId === active.id)).map(review => `
+          ${(isUniversity ? [...reviews, ...active.studentReviews] : [...reviews, ...active.companyReviews]).map(review => `
             <div class="review-card">
               <div class="review-head">
                 <div>
                   <h4>${review.title}</h4>
-                  <div class="muted small">${review.author} - ${review.date}</div>
+                  <div class="muted small">${review.author}${(review.program || review.role) ? ` - ${review.program || review.role}` : ""} - ${review.date}</div>
                 </div>
-                ${rating(review.rating)}
+                ${ratingText(review.rating)}
               </div>
               <p class="muted">${review.body}</p>
             </div>
           `).join("") || `<div class="review-card"><p class="muted">No reviews yet. Be the first to help other users research this ${active.type.toLowerCase()}.</p></div>`}
         </div>
       </div>
-      <div class="org-detail-actions">
-        ${currentLoggedIn ? `
-          <div class="org-detail-action-row">
-            <button class="btn btn-ghost" data-save-org>${icon(saved ? "bookmark-check" : "bookmark")} ${saveLabel}</button>
-            <a class="btn btn-primary" href="vera.html?topic=${encodeURIComponent(secondaryTopic)}">${icon(isUniversity ? "graduation-cap" : "send")} ${secondaryLabel}</a>
-          </div>
-          <a class="btn btn-cyan org-detail-action-wide" href="vera.html?topic=${encodeURIComponent(`${active.name} ${active.type.toLowerCase()} research`)}">${icon("message-circle")} Ask Vera</a>
-        ` : `
-          <div class="org-detail-action-row">
-            <button class="btn btn-ghost" data-auth-prompt="save and compare ${active.type.toLowerCase()} research">${icon("bookmark")} ${isUniversity ? "Save university" : "Save company"}</button>
-            <button class="btn btn-primary" data-auth-prompt="${isUniversity ? "compare university programs" : "contact this company"}">${icon(isUniversity ? "graduation-cap" : "send")} ${secondaryLabel}</button>
-          </div>
-          <button class="btn btn-cyan org-detail-action-wide" data-auth-prompt="ask Vera for personalized research">${icon("message-circle")} Ask Vera</button>
-        `}
+    `;
+    const titleActions = currentLoggedIn ? `
+      <div class="university-title-actions">
+        <button class="btn btn-ghost" data-save-org>${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save"}</button>
+        <button class="btn btn-ghost" data-review>${icon("edit-3")} Review</button>
+        ${isUniversity ? "" : `<a class="btn btn-ghost" href="vera.html?topic=${encodeURIComponent(`${active.name} contact strategy`)}">${icon("send")} Contact</a>`}
+        <a class="btn btn-cyan" href="vera.html?topic=${encodeURIComponent(`${active.name} ${isUniversity ? "university" : "company"} research`)}">${icon("message-circle")} Ask Vera</a>
+      </div>
+    ` : `
+      <div class="university-title-actions">
+        <button class="btn btn-ghost" data-auth-prompt="save and compare ${isUniversity ? "university" : "company"} research">${icon("bookmark")} Save</button>
+        <button class="btn btn-ghost" data-auth-prompt="write a review">${icon("edit-3")} Review</button>
+        ${isUniversity ? "" : `<button class="btn btn-ghost" data-auth-prompt="contact this company">${icon("send")} Contact</button>`}
+        <button class="btn btn-cyan" data-auth-prompt="ask Vera for personalized research">${icon("message-circle")} Ask Vera</button>
       </div>
     `;
+    const detailTabs = isUniversity ? "" : `
+      <nav class="company-detail-tabs" data-detail-nav>
+        <a href="#cd-overview" data-jump="cd-overview">Overview</a>
+        <a href="#cd-jobs" data-jump="cd-jobs">Jobs</a>
+        <a href="#cd-requirements" data-jump="cd-requirements">Requirements</a>
+        <a href="#cd-hiring" data-jump="cd-hiring">Hiring</a>
+        <a href="#cd-salary" data-jump="cd-salary">Salary</a>
+        <a href="#cd-culture" data-jump="cd-culture">Culture</a>
+        <a href="#cd-reviews" data-jump="cd-reviews">Reviews</a>
+      </nav>
+    `;
+    detailRoot.innerHTML = `<div class="fixed-university-title"><div class="university-title-row"><h2>${active.name}</h2>${titleActions}</div>${detailTabs}</div><div class="university-detail-scroll">${bodyContent}</div>`;
+    qsa("[data-compare-program]", detailRoot).forEach(btn => {
+      btn.addEventListener("click", () => {
+        const compositeId = btn.dataset.compareProgram;
+        const next = readState();
+        const already = next.comparedPrograms.includes(compositeId);
+        if (!already && next.comparedPrograms.length >= 3) {
+          showToast("You can compare up to 3 programs.", "info");
+          return;
+        }
+        next.comparedPrograms = already ? next.comparedPrograms.filter(x => x !== compositeId) : [...next.comparedPrograms, compositeId];
+        writeState(next);
+        renderCompareBar("programs");
+        renderDetail();
+      });
+    });
+    qsa("[data-program-details]", detailRoot).forEach(btn => {
+      btn.addEventListener("click", () => openProgramDetailModal(btn.dataset.programDetails));
+    });
+    qsa("[data-compare-role]", detailRoot).forEach(btn => {
+      btn.addEventListener("click", () => {
+        const compositeId = btn.dataset.compareRole;
+        const next = readState();
+        const already = next.comparedRoles.includes(compositeId);
+        if (!already && next.comparedRoles.length >= 3) {
+          showToast("You can compare up to 3 roles.", "info");
+          return;
+        }
+        next.comparedRoles = already ? next.comparedRoles.filter(x => x !== compositeId) : [...next.comparedRoles, compositeId];
+        writeState(next);
+        renderCompareBar("roles");
+        renderDetail();
+      });
+    });
+    qsa("[data-role-details]", detailRoot).forEach(btn => {
+      btn.addEventListener("click", () => openRoleDetailModal(btn.dataset.roleDetails));
+    });
+    qs("[data-detail-nav]", detailRoot)?.addEventListener("click", event => {
+      const link = event.target.closest("[data-jump]");
+      if (!link) return;
+      event.preventDefault();
+      const target = qs(`#${link.dataset.jump}`, detailRoot);
+      const scrollContainer = qs(".university-detail-scroll", detailRoot);
+      if (!target || !scrollContainer) return;
+      const offset = target.getBoundingClientRect().top - scrollContainer.getBoundingClientRect().top + scrollContainer.scrollTop;
+      scrollContainer.scrollTo({ top: offset, behavior: "smooth" });
+    });
     if (!currentLoggedIn) {
       bindProtectedPrompts(detailRoot);
       createIcons();
@@ -2880,6 +3689,433 @@ function renderDirectoryPage(kind) {
   queryInput.addEventListener("input", renderList);
   renderList();
   renderDetail();
+  if (kind === "universities" || kind === "companies") {
+    renderCompareBar(kind === "universities" ? "universities" : "companies");
+    renderCompareBar(kind === "universities" ? "programs" : "roles");
+    document.addEventListener("careergo:compare-refresh", () => {
+      renderList();
+      renderDetail();
+    });
+    const filterToggle = qs("[data-filter-toggle]");
+    const filterPanel = qs("[data-filter-panel]");
+    if (filterToggle && filterPanel) {
+      filterToggle.addEventListener("click", () => {
+        filterPanel.hidden = !filterPanel.hidden;
+        filterToggle.classList.toggle("active", !filterPanel.hidden);
+      });
+      qsa(".filter-chip", filterPanel).forEach(chip => {
+        chip.addEventListener("click", () => chip.classList.toggle("active"));
+      });
+      qs("[data-filter-clear]", filterPanel)?.addEventListener("click", () => {
+        qsa(".filter-chip", filterPanel).forEach(chip => chip.classList.remove("active"));
+      });
+    }
+  }
+}
+
+const COMPARE_BAR_CONFIG = {
+  universities: {
+    stateKey: "comparedUniversities", attr: "data-university-compare-bar", label: "universities", secondary: false,
+    openModal: () => openUniversityCompareModal(),
+    labelFor: id => DATA.universities.find(u => u.id === id)?.name || id
+  },
+  programs: {
+    stateKey: "comparedPrograms", attr: "data-program-compare-bar", label: "programs", secondary: true,
+    openModal: () => openProgramCompareModal(),
+    labelFor: compositeId => {
+      const [uniId, progId] = compositeId.split("__");
+      const uni = DATA.universities.find(u => u.id === uniId);
+      const program = uni?.programs.find(p => p.id === progId);
+      return program && uni ? `${program.name} (${uni.name})` : compositeId;
+    }
+  },
+  companies: {
+    stateKey: "comparedCompanies", attr: "data-company-compare-bar", label: "companies", secondary: false,
+    openModal: () => openCompanyCompareModal(),
+    labelFor: id => DATA.companies.find(c => c.id === id)?.name || id
+  },
+  roles: {
+    stateKey: "comparedRoles", attr: "data-role-compare-bar", label: "roles", secondary: true,
+    openModal: () => openRoleCompareModal(),
+    labelFor: compositeId => {
+      const [companyId, roleId] = compositeId.split("__");
+      const company = DATA.companies.find(c => c.id === companyId);
+      const role = company?.roles.find(r => r.id === roleId);
+      return role && company ? `${role.title} (${company.name})` : compositeId;
+    }
+  }
+};
+
+function renderCompareBar(kind) {
+  const config = COMPARE_BAR_CONFIG[kind];
+  const state = readState();
+  const ids = state[config.stateKey];
+  let bar = qs(`[${config.attr}]`);
+  if (!ids.length) {
+    bar?.remove();
+    return;
+  }
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.className = config.secondary ? "compare-bar compare-bar-programs" : "compare-bar";
+    bar.setAttribute(config.attr, "");
+    document.body.appendChild(bar);
+  }
+  const labels = ids.map(config.labelFor);
+  bar.innerHTML = `
+    <div class="compare-bar-inner">
+      <div>
+        <strong>Comparing ${ids.length} ${config.label}</strong>
+        <div class="muted small">${labels.join(", ")}</div>
+      </div>
+      <div class="compare-bar-actions">
+        <button class="btn btn-cyan" type="button" data-compare-view>${icon("scale")} View comparison</button>
+        <button class="btn btn-ghost" type="button" data-compare-clear>${icon("x")} Clear</button>
+      </div>
+    </div>
+  `;
+  qs("[data-compare-view]", bar).addEventListener("click", () => config.openModal());
+  qs("[data-compare-clear]", bar).addEventListener("click", () => {
+    const next = readState();
+    next[config.stateKey] = [];
+    writeState(next);
+    renderCompareBar(kind);
+    document.dispatchEvent(new Event("careergo:compare-refresh"));
+  });
+  createIcons();
+}
+
+function openUniversityCompareModal() {
+  const state = readState();
+  const unis = DATA.universities.filter(u => state.comparedUniversities.includes(u.id));
+  if (!unis.length) return;
+  const rows = [
+    ["Rating", u => u.rating.toFixed(1)],
+    ["Reviews", u => u.reviews],
+    ["Public/private", u => u.industry],
+    ["Location", u => u.location],
+    ["Employability rate", u => `${u.academics.employabilityRate}%`],
+    ["Acceptance rate", u => `${u.academics.acceptanceRate}%`],
+    ["Average tuition", u => u.academics.tuitionRange],
+    ["Student size", u => u.size],
+    ["Strong programs", u => u.strongPrograms.map(p => p.name).join(", ")],
+    ["Popular programs", u => u.programs.map(p => p.name).join(", ")],
+    ["SPM pathway", u => u.spmPathway.foundation],
+    ["Scholarship availability", u => u.spmPathway.scholarship],
+    ["Internship opportunities", u => u.outcomeInsights.internshipNote],
+    ["Industry links", u => u.outcomeInsights.industryLinks],
+    ["Top employers / alumni", u => u.topEmployers.map(e => e.name).join(", ")],
+    ["Highlights", u => u.highlights.join("; ")],
+    ["Watchouts", u => u.watchouts.join("; ")]
+  ];
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card compare-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Compare universities</div>
+          <h2>${unis.map(u => u.name).join(" vs ")}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close>${icon("x")}</button>
+      </div>
+      <div class="table-wrap">
+        <table class="comparison-table compare-modal-table">
+          <thead><tr><th>Aspect</th>${unis.map(u => `<th>${u.name}</th>`).join("")}</tr></thead>
+          <tbody>${rows.map(([label, fn]) => `<tr><td><strong>${label}</strong></td>${unis.map(u => `<td>${fn(u)}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => { if (event.target === backdrop) backdrop.remove(); });
+  createIcons();
+}
+
+function openProgramDetailModal(compositeId) {
+  const [uniId, progId] = compositeId.split("__");
+  const uni = DATA.universities.find(u => u.id === uniId);
+  const program = uni?.programs.find(p => p.id === progId);
+  if (!uni || !program) return;
+  const compared = readState().comparedPrograms.includes(compositeId);
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card program-detail-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">${uni.name}</div>
+          <h2>${program.name}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close>${icon("x")}</button>
+      </div>
+      <div class="program-detail-body">
+        <div class="program-detail-section"><h3>Overview</h3><p class="muted">${program.overview}</p></div>
+        <div class="program-detail-section"><h3>Level</h3><p class="muted">${program.level}</p></div>
+        <div class="program-detail-section"><h3>Duration</h3><p class="muted">${program.duration}</p></div>
+        <div class="program-detail-section"><h3>Estimated tuition</h3><p class="muted">${program.estimatedTuition}</p></div>
+        <div class="program-detail-section"><h3>Suitable for SPM graduates</h3><p class="muted">${program.suitableForSPM ? "Yes" : "No"}</p></div>
+        <div class="program-detail-section"><h3>SPM pathway</h3><p class="muted">${program.spmPathway}</p></div>
+        <div class="program-detail-section"><h3>Entry requirements</h3><p class="muted">${program.entryRequirement}</p></div>
+        <div class="program-detail-section"><h3>Main subjects / skills learned</h3><ul class="check-list">${[...program.mainSubjects, ...program.mainSkills].map(x => `<li>${x}</li>`).join("")}</ul></div>
+        <div class="program-detail-section"><h3>Career paths</h3><ul class="check-list">${program.careerPaths.map(c => `<li>${c}</li>`).join("")}</ul></div>
+        <div class="program-detail-section"><h3>Internship / industry exposure</h3><p class="muted">${program.internshipAvailability}. ${program.industryExposure}</p></div>
+        <div class="program-detail-section"><h3>Program strength</h3><p class="muted">${program.programStrength} - ${program.employabilityOutcome}</p></div>
+        <div class="program-detail-section"><h3>Accreditation</h3><p class="muted">${program.accreditation}</p></div>
+        <div class="program-detail-section"><h3>Scholarship availability</h3><p class="muted">${program.scholarshipAvailability}</p></div>
+        <div class="program-detail-section"><h3>Watchouts</h3><ul class="check-list">${program.watchouts.map(w => `<li>${w}</li>`).join("")}</ul></div>
+      </div>
+      <div class="hero-actions" style="margin-top:16px">
+        <button class="btn ${compared ? "btn-cyan" : "btn-ghost"}" type="button" data-compare-program="${compositeId}">${icon("scale")} ${compared ? "Added to compare" : "Compare program"}</button>
+        <button class="btn btn-ghost" type="button" data-close>Close</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => { if (event.target === backdrop) backdrop.remove(); });
+  qs("[data-compare-program]", backdrop).addEventListener("click", event => {
+    const btn = event.currentTarget;
+    const next = readState();
+    const already = next.comparedPrograms.includes(compositeId);
+    if (!already && next.comparedPrograms.length >= 3) {
+      showToast("You can compare up to 3 programs.", "info");
+      return;
+    }
+    next.comparedPrograms = already ? next.comparedPrograms.filter(x => x !== compositeId) : [...next.comparedPrograms, compositeId];
+    writeState(next);
+    renderCompareBar("programs");
+    document.dispatchEvent(new Event("careergo:compare-refresh"));
+    const nowCompared = !already;
+    btn.classList.toggle("btn-cyan", nowCompared);
+    btn.classList.toggle("btn-ghost", !nowCompared);
+    btn.innerHTML = `${icon("scale")} ${nowCompared ? "Added to compare" : "Compare program"}`;
+    createIcons();
+  });
+  createIcons();
+}
+
+function openProgramCompareModal() {
+  const state = readState();
+  const items = state.comparedPrograms.map(compositeId => {
+    const [uniId, progId] = compositeId.split("__");
+    const uni = DATA.universities.find(u => u.id === uniId);
+    const program = uni?.programs.find(p => p.id === progId);
+    return uni && program ? { uni, program } : null;
+  }).filter(Boolean);
+  if (!items.length) return;
+  const rows = [
+    ["University name", item => item.uni.name],
+    ["Program name", item => item.program.name],
+    ["Program strength", item => item.program.programStrength],
+    ["Level", item => item.program.level],
+    ["Duration", item => item.program.duration],
+    ["Estimated tuition", item => item.program.estimatedTuition],
+    ["Suitable for SPM graduates", item => item.program.suitableForSPM ? "Yes" : "No"],
+    ["SPM pathway", item => item.program.spmPathway],
+    ["Entry requirements", item => item.program.entryRequirement],
+    ["Main subjects / skills learned", item => [...item.program.mainSubjects, ...item.program.mainSkills].join(", ")],
+    ["Internship availability", item => item.program.internshipAvailability],
+    ["Industry exposure", item => item.program.industryExposure],
+    ["Industry relevance", item => item.program.industryRelevance],
+    ["Career paths", item => item.program.careerPaths.join(", ")],
+    ["Employability / career outcome label", item => item.program.employabilityOutcome],
+    ["Professional recognition / accreditation", item => item.program.accreditation],
+    ["Scholarship availability", item => item.program.scholarshipAvailability],
+    ["Watchouts", item => item.program.watchouts.join("; ")]
+  ];
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card compare-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Compare programs</div>
+          <h2>${items.map(item => `${item.program.name} (${item.uni.name})`).join(" vs ")}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close>${icon("x")}</button>
+      </div>
+      <div class="table-wrap">
+        <table class="comparison-table compare-modal-table">
+          <thead><tr><th>Aspect</th>${items.map(item => `<th>${item.program.name}<br><span class="muted small">${item.uni.name}</span></th>`).join("")}</tr></thead>
+          <tbody>${rows.map(([label, fn]) => `<tr><td><strong>${label}</strong></td>${items.map(item => `<td>${fn(item)}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => { if (event.target === backdrop) backdrop.remove(); });
+  createIcons();
+}
+
+function openCompanyCompareModal() {
+  const state = readState();
+  const companies = DATA.companies.filter(c => state.comparedCompanies.includes(c.id));
+  if (!companies.length) return;
+  const rows = [
+    ["Rating", c => c.rating.toFixed(1)],
+    ["Industry", c => c.industry],
+    ["Location", c => c.location],
+    ["Culture", c => c.scores.culture.toFixed(1)],
+    ["Growth", c => c.scores.growth.toFixed(1)],
+    ["Pay", c => c.scores.pay.toFixed(1)],
+    ["Work-life balance", c => c.scores.balance.toFixed(1)],
+    ["Open vacancies", c => c.open],
+    ["Average salary range", c => c.salary],
+    ["Fresh graduate friendly", c => c.freshGraduateFriendly ? "Yes" : "No"],
+    ["Internship availability", c => c.internshipAvailable ? "Yes" : "No"],
+    ["Remote/hybrid", c => c.workMode],
+    ["Hiring difficulty", c => c.hiringDifficulty],
+    ["Average requirements", c => `${c.averageRequirements.education}; CGPA ${c.averageRequirements.cgpa}`],
+    ["Common roles", c => c.roles.map(r => r.title).join(", ")],
+    ["Benefits", c => c.salaryBenefits.medical],
+    ["Training / graduate program", c => c.careerGrowth.graduateProgram],
+    ["Career growth", c => c.careerGrowth.promotionPath],
+    ["Highlights", c => c.highlights.join("; ")],
+    ["Watchouts", c => c.watchouts.join("; ")]
+  ];
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card compare-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Compare companies</div>
+          <h2>${companies.map(c => c.name).join(" vs ")}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close>${icon("x")}</button>
+      </div>
+      <div class="table-wrap">
+        <table class="comparison-table compare-modal-table">
+          <thead><tr><th>Aspect</th>${companies.map(c => `<th>${c.name}</th>`).join("")}</tr></thead>
+          <tbody>${rows.map(([label, fn]) => `<tr><td><strong>${label}</strong></td>${companies.map(c => `<td>${fn(c)}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => { if (event.target === backdrop) backdrop.remove(); });
+  createIcons();
+}
+
+function openRoleDetailModal(compositeId) {
+  const [companyId, roleId] = compositeId.split("__");
+  const company = DATA.companies.find(c => c.id === companyId);
+  const role = company?.roles.find(r => r.id === roleId);
+  if (!company || !role) return;
+  const compared = readState().comparedRoles.includes(compositeId);
+  const overview = `${role.title} role in the ${role.department} team at ${company.name}. ${role.responsibilities[0]}`;
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card program-detail-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">${company.name}</div>
+          <h2>${role.title}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close>${icon("x")}</button>
+      </div>
+      <div class="program-detail-body">
+        <div class="program-detail-section"><h3>Overview</h3><p class="muted">${overview}</p></div>
+        <div class="program-detail-section"><h3>Salary range</h3><p class="muted">${role.salaryRange}</p></div>
+        <div class="program-detail-section"><h3>Employment type</h3><p class="muted">${role.employmentType}</p></div>
+        <div class="program-detail-section"><h3>Location</h3><p class="muted">${role.location}</p></div>
+        <div class="program-detail-section"><h3>Work mode</h3><p class="muted">${role.workMode}</p></div>
+        <div class="program-detail-section"><h3>Experience level</h3><p class="muted">${role.experienceLevel}</p></div>
+        <div class="program-detail-section"><h3>Education requirement</h3><p class="muted">${role.educationRequirement} (CGPA: ${role.cgpaRequirement})</p></div>
+        <div class="program-detail-section"><h3>Skills required</h3><ul class="check-list">${role.requiredSkills.map(s => `<li>${s}</li>`).join("")}</ul></div>
+        <div class="program-detail-section"><h3>Preferred skills</h3><ul class="check-list">${role.preferredSkills.map(s => `<li>${s}</li>`).join("")}</ul></div>
+        <div class="program-detail-section"><h3>Responsibilities</h3><ul class="check-list">${role.responsibilities.map(r => `<li>${r}</li>`).join("")}</ul></div>
+        <div class="program-detail-section"><h3>Hiring process</h3><p class="muted">${role.hiringProcess}</p></div>
+        <div class="program-detail-section"><h3>Career path</h3><p class="muted">${role.careerPath}</p></div>
+        <div class="program-detail-section"><h3>Watchouts</h3><ul class="check-list">${role.watchouts.map(w => `<li>${w}</li>`).join("")}</ul></div>
+      </div>
+      <div class="hero-actions" style="margin-top:16px">
+        <button class="btn ${compared ? "btn-cyan" : "btn-ghost"}" type="button" data-compare-role="${compositeId}">${icon("scale")} ${compared ? "Added to compare" : "Compare role"}</button>
+        <button class="btn btn-ghost" type="button" data-close>Close</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => { if (event.target === backdrop) backdrop.remove(); });
+  qs("[data-compare-role]", backdrop).addEventListener("click", event => {
+    const btn = event.currentTarget;
+    const next = readState();
+    const already = next.comparedRoles.includes(compositeId);
+    if (!already && next.comparedRoles.length >= 3) {
+      showToast("You can compare up to 3 roles.", "info");
+      return;
+    }
+    next.comparedRoles = already ? next.comparedRoles.filter(x => x !== compositeId) : [...next.comparedRoles, compositeId];
+    writeState(next);
+    renderCompareBar("roles");
+    document.dispatchEvent(new Event("careergo:compare-refresh"));
+    const nowCompared = !already;
+    btn.classList.toggle("btn-cyan", nowCompared);
+    btn.classList.toggle("btn-ghost", !nowCompared);
+    btn.innerHTML = `${icon("scale")} ${nowCompared ? "Added to compare" : "Compare role"}`;
+    createIcons();
+  });
+  createIcons();
+}
+
+function openRoleCompareModal() {
+  const state = readState();
+  const items = state.comparedRoles.map(compositeId => {
+    const [companyId, roleId] = compositeId.split("__");
+    const company = DATA.companies.find(c => c.id === companyId);
+    const role = company?.roles.find(r => r.id === roleId);
+    return company && role ? { company, role } : null;
+  }).filter(Boolean);
+  if (!items.length) return;
+  const rows = [
+    ["Company", item => item.company.name],
+    ["Role", item => item.role.title],
+    ["Department", item => item.role.department],
+    ["Salary range", item => item.role.salaryRange],
+    ["Employment type", item => item.role.employmentType],
+    ["Experience level", item => item.role.experienceLevel],
+    ["Education requirement", item => item.role.educationRequirement],
+    ["CGPA requirement", item => item.role.cgpaRequirement],
+    ["Required skills", item => item.role.requiredSkills.join(", ")],
+    ["Preferred skills", item => item.role.preferredSkills.join(", ")],
+    ["Tools / technologies", item => item.role.tools.join(", ")],
+    ["Work mode", item => item.role.workMode],
+    ["Location", item => item.role.location],
+    ["Hiring difficulty", item => item.role.hiringDifficulty],
+    ["Application process", item => item.role.hiringProcess],
+    ["Career path", item => item.role.careerPath],
+    ["Benefits", item => item.role.benefits.join(", ")],
+    ["Watchouts", item => item.role.watchouts.join("; ")]
+  ];
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card compare-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Compare roles</div>
+          <h2>${items.map(item => `${item.role.title} (${item.company.name})`).join(" vs ")}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close>${icon("x")}</button>
+      </div>
+      <div class="table-wrap">
+        <table class="comparison-table compare-modal-table">
+          <thead><tr><th>Aspect</th>${items.map(item => `<th>${item.role.title}<br><span class="muted small">${item.company.name}</span></th>`).join("")}</tr></thead>
+          <tbody>${rows.map(([label, fn]) => `<tr><td><strong>${label}</strong></td>${items.map(item => `<td>${fn(item)}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => { if (event.target === backdrop) backdrop.remove(); });
+  createIcons();
 }
 
 function openReviewModal(target) {

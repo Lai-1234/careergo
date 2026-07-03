@@ -8,16 +8,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900;1000&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
 </head>
 <body data-page="companies" data-directory="companies">
   <header class="topbar">
     <div class="nav-inner">
       <a class="brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
-      <nav class="nav-links"><a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="vera" href="vera.html">Vera</a><a data-nav="employers" href="employers.html">Employers</a></nav>
-      <div class="nav-actions"><a class="btn btn-ghost" href="universities.html"><i data-lucide="graduation-cap"></i> Universities</a><a class="btn btn-primary open-os-btn" href="dashboard.html" aria-label="Job Seeker Dashboard" title="Job Seeker Dashboard"><i data-lucide="rocket"></i> <span class="open-os-label">Job Seeker Dashboard</span></a></div>
+      <nav class="nav-links"><a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html" class="active">Companies</a><a data-nav="universities" href="universities.html">Universities</a></nav>
+      <div class="nav-actions"><a class="btn btn-ghost" href="login.html">Login</a><a class="btn btn-primary" href="register.html">Create Account</a></div>
     </div>
-    <nav class="mobile-nav"><a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="vera" href="vera.html">Vera</a></nav>
+    <nav class="mobile-nav"><a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html" class="active">Companies</a><a data-nav="universities" href="universities.html">Universities</a></nav>
   </header>
   <main data-directory-page>
     <section class="page-hero">
@@ -27,16 +27,43 @@
         <p class="page-copy">Read ratings, background, salary signals, review themes, highlights, and watchouts. Users can also write reviews to help others.</p>
       </div>
     </section>
-    <section class="container layout directory-page-layout">
-      <aside class="filters card directory-filter-bar">
-        <h2 class="filter-title">Find companies</h2>
-        <div class="filter-stack">
-          <div class="field"><i data-lucide="search"></i><input data-org-query placeholder="Company, industry, location"></div>
-          <a class="btn btn-cyan btn-wide" href="vera.html?topic=company research"><i data-lucide="sparkles"></i> Ask Vera</a>
-        </div>
-      </aside>
+    <section class="container universities-content">
       <div class="content-grid directory-split">
-        <section class="list-stack" data-org-list></section>
+        <aside class="org-list-column">
+          <div class="university-search-sticky filters compact-filter directory-filter-bar">
+            <h2 class="filter-title">Find companies</h2>
+            <div class="university-search-row">
+              <div class="field"><i data-lucide="search"></i><input data-org-query placeholder="Company, industry, role, location"></div>
+              <a class="btn btn-cyan" href="vera.html?topic=company research"><i data-lucide="sparkles"></i> Ask Vera</a>
+            </div>
+            <div class="university-filter-row">
+              <button class="btn btn-ghost" type="button" data-filter-toggle><i data-lucide="sliders-horizontal"></i> Filter</button>
+            </div>
+            <div class="filter-popover" data-filter-panel hidden>
+              <div class="filter-popover-head">
+                <span>Filters</span>
+                <button class="filter-popover-clear" type="button" data-filter-clear>Clear filters</button>
+              </div>
+              <div class="filter-chip-row">
+                <span class="filter-chip">Industry</span>
+                <span class="filter-chip">Location</span>
+                <span class="filter-chip">Open Vacancies</span>
+                <span class="filter-chip">Salary Range</span>
+                <span class="filter-chip">Graduate Friendly</span>
+                <span class="filter-chip">Internship Available</span>
+                <span class="filter-chip">Remote/Hybrid/Onsite</span>
+                <span class="filter-chip">Company Size</span>
+                <span class="filter-chip">Rating</span>
+                <span class="filter-chip">Work-Life Balance</span>
+                <span class="filter-chip">Hiring Difficulty</span>
+              </div>
+            </div>
+          </div>
+          <div class="university-list-scroll">
+            <div data-org-list-heading></div>
+            <section class="list-stack" data-org-list></section>
+          </div>
+        </aside>
         <section class="detail-panel glass-card" data-org-detail></section>
       </div>
     </section>

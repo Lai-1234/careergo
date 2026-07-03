@@ -7755,3 +7755,653 @@ body[data-page="jobs"] .pill.red {
 .market-worth-card .progress span {
   background: linear-gradient(90deg, #0ea5e9, #2563eb) !important;
 }
+
+/* ── Universities page — original visual style restored, independent scroll, fixed title bar ─ */
+
+/* Left panel search row: search input + compact Ask Vera button, side by side */
+body[data-page="universities"] .filter-title,
+body[data-page="companies"] .filter-title {
+  font-size: 15px;
+}
+body[data-page="universities"] .university-search-row,
+body[data-page="companies"] .university-search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+body[data-page="universities"] .university-search-row .field,
+body[data-page="companies"] .university-search-row .field {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 44px;
+  min-height: 44px;
+}
+body[data-page="universities"] .university-search-row .field input,
+body[data-page="companies"] .university-search-row .field input {
+  font-size: 14px;
+}
+body[data-page="universities"] .university-search-row .btn,
+body[data-page="companies"] .university-search-row .btn {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 110px;
+  max-width: 130px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: 14px;
+}
+body[data-page="universities"] .university-search-row .btn svg,
+body[data-page="companies"] .university-search-row .btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Filter button + popover (replaces the always-visible filter chip row) */
+body[data-page="universities"] .university-filter-row,
+body[data-page="companies"] .university-filter-row {
+  margin-top: 10px;
+}
+body[data-page="universities"] [data-filter-toggle],
+body[data-page="companies"] [data-filter-toggle] {
+  height: 38px;
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+body[data-page="universities"] [data-filter-toggle] svg,
+body[data-page="companies"] [data-filter-toggle] svg {
+  width: 14px;
+  height: 14px;
+}
+body[data-page="universities"] [data-filter-toggle].active,
+body[data-page="companies"] [data-filter-toggle].active {
+  background: linear-gradient(135deg, var(--purple), var(--magenta));
+}
+body[data-page="universities"] .filter-popover,
+body[data-page="companies"] .filter-popover {
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(72, 32, 120, 0.35);
+}
+body[data-page="universities"] .filter-popover-head,
+body[data-page="companies"] .filter-popover-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+body[data-page="universities"] .filter-popover-clear,
+body[data-page="companies"] .filter-popover-clear {
+  border: 0;
+  background: none;
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+body[data-page="universities"] .filter-chip-row,
+body[data-page="companies"] .filter-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+body[data-page="universities"] .filter-chip,
+body[data-page="companies"] .filter-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+body[data-page="universities"] .filter-chip.active,
+body[data-page="companies"] .filter-chip.active {
+  color: #fff;
+  border-color: rgba(34, 211, 238, 0.55);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.42), rgba(34, 211, 238, 0.18));
+}
+
+/* University cards — compact */
+body[data-page="universities"] .list-stack,
+body[data-page="companies"] .list-stack {
+  gap: 10px;
+}
+body[data-page="universities"] .list-card,
+body[data-page="companies"] .list-card {
+  padding: 15px;
+}
+body[data-page="universities"] .list-card h3,
+body[data-page="companies"] .list-card h3 {
+  font-size: 17px;
+}
+body[data-page="universities"] .list-card .muted.small,
+body[data-page="companies"] .list-card .muted.small {
+  font-size: 13px;
+}
+body[data-page="universities"] .list-card .pill,
+body[data-page="companies"] .list-card .pill {
+  font-size: 11px;
+}
+body[data-page="universities"] .list-card.active,
+body[data-page="companies"] .list-card.active {
+  border-left: 3px solid var(--cyan);
+}
+body[data-page="universities"] .list-card-metric,
+body[data-page="companies"] .list-card-metric {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+body[data-page="universities"] .list-card-compare.check-field,
+body[data-page="companies"] .list-card-compare.check-field {
+  min-height: 38px;
+  margin-top: 6px;
+  font-size: 13px;
+}
+body[data-page="universities"] .org-list-heading,
+body[data-page="companies"] .org-list-heading,
+body[data-page="universities"] .org-list-empty,
+body[data-page="companies"] .org-list-empty {
+  margin-bottom: 14px;
+}
+body[data-page="universities"] .org-list-heading h3,
+body[data-page="companies"] .org-list-heading h3,
+body[data-page="universities"] .org-list-empty h3,
+body[data-page="companies"] .org-list-empty h3 {
+  margin: 0 0 4px;
+  font-size: 17px;
+}
+body[data-page="universities"] .org-list-heading p,
+body[data-page="companies"] .org-list-heading p,
+body[data-page="universities"] .org-list-empty p,
+body[data-page="companies"] .org-list-empty p {
+  font-size: 13px;
+}
+
+/* Stat grid — 6 compact tiles instead of 4; long values (tuition, student size) get a smaller value font so they don't dominate the tile */
+body[data-page="universities"] .score-grid-6,
+body[data-page="companies"] .score-grid-6 {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+body[data-page="universities"] .score-grid-6 .score-tile,
+body[data-page="companies"] .score-grid-6 .score-tile {
+  padding: 14px 16px;
+  min-height: 82px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+body[data-page="universities"] .score-grid-6 .score-tile span,
+body[data-page="companies"] .score-grid-6 .score-tile span {
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+body[data-page="universities"] .score-grid-6 .score-tile strong,
+body[data-page="companies"] .score-grid-6 .score-tile strong {
+  margin-top: 6px;
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 800;
+}
+body[data-page="universities"] .score-grid-6 .score-tile strong.long,
+body[data-page="companies"] .score-grid-6 .score-tile strong.long {
+  font-size: 14px;
+  line-height: 1.25;
+}
+body[data-page="universities"] .detail-panel .detail-section,
+body[data-page="companies"] .detail-panel .detail-section {
+  margin-top: 16px;
+}
+
+/* Company detail — tab bar, part of the fixed header (row 2, below name/actions) */
+body[data-page="companies"] .company-detail-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 6px;
+  scrollbar-width: none;
+}
+body[data-page="companies"] .company-detail-tabs::-webkit-scrollbar {
+  display: none;
+}
+body[data-page="companies"] .company-detail-tabs a {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+body[data-page="companies"] .company-detail-tabs a:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Average requirements / Salary / Career growth / Work culture — compact two-column layout */
+body[data-page="companies"] .requirements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 4px 20px;
+}
+body[data-page="companies"] .requirements-grid p {
+  margin: 0;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Hiring process — numbered step list */
+body[data-page="companies"] .hiring-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+body[data-page="companies"] .hiring-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+body[data-page="companies"] .hiring-step-index {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+body[data-page="universities"] .detail-panel .detail-section h3,
+body[data-page="companies"] .detail-panel .detail-section h3 {
+  font-size: 18px;
+}
+body[data-page="universities"] .detail-panel .muted:not(.small),
+body[data-page="companies"] .detail-panel .muted:not(.small) {
+  font-size: 14px;
+}
+body[data-page="universities"] .detail-panel .muted.small,
+body[data-page="companies"] .detail-panel .muted.small {
+  font-size: 12px;
+}
+body[data-page="universities"] .detail-panel .rating-text,
+body[data-page="companies"] .detail-panel .rating-text {
+  font-size: 14px;
+}
+
+/* Strong programs, popular programs, career outcomes — new content types, matched to original card scale */
+body[data-page="universities"] .strong-program-grid,
+body[data-page="companies"] .strong-program-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+body[data-page="universities"] .strong-program-item,
+body[data-page="companies"] .strong-program-item {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+}
+body[data-page="universities"] .strong-program-item h4,
+body[data-page="companies"] .strong-program-item h4 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+body[data-page="universities"] .strong-program-labels,
+body[data-page="companies"] .strong-program-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+body[data-page="universities"] .program-list,
+body[data-page="companies"] .program-list {
+  display: grid;
+  gap: 8px;
+}
+body[data-page="universities"] .program-row,
+body[data-page="companies"] .program-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+}
+body[data-page="universities"] .program-row-highlight,
+body[data-page="companies"] .program-row-highlight {
+  border-color: rgba(34, 211, 238, 0.55);
+  background: rgba(34, 211, 238, 0.08);
+}
+body[data-page="universities"] .program-row-main,
+body[data-page="companies"] .program-row-main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+body[data-page="universities"] .program-row-main h4,
+body[data-page="companies"] .program-row-main h4 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+body[data-page="universities"] .program-row-main .muted,
+body[data-page="companies"] .program-row-main .muted {
+  font-size: 13px;
+}
+body[data-page="universities"] .program-row-actions,
+body[data-page="companies"] .program-row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+body[data-page="universities"] .program-row-actions .btn,
+body[data-page="companies"] .program-row-actions .btn {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+body[data-page="universities"] .career-outcome-grid,
+body[data-page="companies"] .career-outcome-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+body[data-page="universities"] .career-outcome-grid h4,
+body[data-page="companies"] .career-outcome-grid h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+body[data-page="universities"] .review-breakdown-row,
+body[data-page="companies"] .review-breakdown-row {
+  margin-bottom: 14px;
+}
+body[data-page="universities"] .review-card,
+body[data-page="companies"] .review-card {
+  padding: 14px;
+  border-radius: 14px;
+}
+body[data-page="universities"] .review-card + .review-card,
+body[data-page="companies"] .review-card + .review-card {
+  margin-top: 10px;
+}
+body[data-page="universities"] .review-head h4,
+body[data-page="companies"] .review-head h4 {
+  font-size: 15px;
+}
+body[data-page="universities"] .rating-text,
+body[data-page="companies"] .rating-text {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Left panel: search/filter fixed at top, list scrolls below it */
+body[data-page="universities"] .universities-content,
+body[data-page="companies"] .universities-content {
+  padding: 18px 0 24px;
+}
+body[data-page="universities"] .university-search-sticky,
+body[data-page="companies"] .university-search-sticky {
+  flex-shrink: 0;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+body[data-page="universities"] .university-search-sticky .filter-title,
+body[data-page="companies"] .university-search-sticky .filter-title {
+  margin: 0 0 8px;
+}
+body[data-page="universities"] .university-list-scroll,
+body[data-page="companies"] .university-list-scroll {
+  padding: 14px 16px;
+}
+body[data-page="universities"] .university-list-scroll [data-org-list-heading],
+body[data-page="companies"] .university-list-scroll [data-org-list-heading] {
+  margin-bottom: 4px;
+}
+
+/* Fixed university name bar + scrollable detail content below it (opaque — fixes the transparency bug) */
+body[data-page="universities"] .directory-split > .detail-panel,
+body[data-page="companies"] .directory-split > .detail-panel {
+  padding: 0;
+}
+body[data-page="universities"] .fixed-university-title,
+body[data-page="companies"] .fixed-university-title {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 20px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: var(--radius) var(--radius) 0 0;
+  z-index: 20;
+}
+body[data-page="universities"] .university-title-row,
+body[data-page="companies"] .university-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 36px;
+}
+body[data-page="universities"] .fixed-university-title h2,
+body[data-page="companies"] .fixed-university-title h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body[data-page="universities"] .university-title-actions,
+body[data-page="companies"] .university-title-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+body[data-page="universities"] .university-title-actions .btn,
+body[data-page="companies"] .university-title-actions .btn {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+body[data-page="universities"] .university-detail-scroll,
+body[data-page="companies"] .university-detail-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+body[data-page="universities"] .university-detail-scroll::-webkit-scrollbar,
+body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+body[data-page="universities"] .university-detail-scroll::-webkit-scrollbar-track,
+body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+body[data-page="universities"] .university-detail-scroll::-webkit-scrollbar-thumb,
+body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+@media (min-width: 1021px) {
+  body[data-page="universities"] .directory-split,
+  body[data-page="companies"] .directory-split {
+    grid-template-columns: 420px minmax(0, 1fr);
+    align-items: stretch;
+  }
+  body[data-page="universities"] .org-list-column,
+  body[data-page="companies"] .org-list-column,
+  body[data-page="universities"] .directory-split > .detail-panel,
+  body[data-page="companies"] .directory-split > .detail-panel {
+    height: 88vh;
+    max-height: calc(100vh - 100px);
+  }
+  body[data-page="universities"] .org-list-column,
+  body[data-page="companies"] .org-list-column {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.055);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.14);
+  }
+  body[data-page="universities"] .university-list-scroll,
+  body[data-page="companies"] .university-list-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  }
+  body[data-page="universities"] .university-list-scroll::-webkit-scrollbar,
+  body[data-page="companies"] .university-list-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  body[data-page="universities"] .university-list-scroll::-webkit-scrollbar-track,
+  body[data-page="companies"] .university-list-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  body[data-page="universities"] .university-list-scroll::-webkit-scrollbar-thumb,
+  body[data-page="companies"] .university-list-scroll::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+  body[data-page="universities"] .directory-split > .detail-panel,
+  body[data-page="companies"] .directory-split > .detail-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}
+
+/* Program details modal */
+.program-detail-modal {
+  width: min(80vw, 1100px);
+  max-width: calc(100vw - 32px);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.program-detail-body h3 {
+  margin: 18px 0 6px;
+  font-size: 15px;
+}
+.program-detail-body h3:first-child {
+  margin-top: 0;
+}
+.program-detail-body p,
+.program-detail-body ul {
+  margin: 0;
+}
+.program-detail-section {
+  break-inside: avoid;
+  margin-bottom: 16px;
+}
+@media (min-width: 900px) {
+  .program-detail-body {
+    column-count: 2;
+    column-gap: 32px;
+  }
+}
+@media (max-width: 640px) {
+  .program-detail-modal {
+    width: calc(100vw - 16px);
+    max-height: 92vh;
+  }
+  .program-detail-body {
+    column-count: 1;
+  }
+}
+
+/* University/program compare — floating bars + comparison modals */
+.compare-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(880px, calc(100% - 32px));
+  padding: 14px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 18px;
+  background: rgba(20, 6, 48, 0.95);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+}
+.compare-bar.compare-bar-programs {
+  bottom: 96px;
+}
+.compare-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.compare-bar-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.compare-modal {
+  max-width: min(1100px, calc(100vw - 32px));
+  width: 100%;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+.compare-modal-table {
+  min-width: 720px;
+}
+@media (max-width: 640px) {
+  .compare-bar-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
