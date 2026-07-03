@@ -1409,6 +1409,13 @@ img { max-width: 100%; display: block; }
 
 .table-wrap {
   overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-wrap::-webkit-scrollbar {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
