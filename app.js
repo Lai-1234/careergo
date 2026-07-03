@@ -1669,20 +1669,20 @@ function osNav(active = "") {
     ["dashboard", "Dashboard", "layout-dashboard", "dashboard.html"],
     ["intelligence", "Career Intelligence", "brain-circuit", "profile.html"],
     ["jobs", "Jobs", "briefcase", "jobs.html"],
-    ["autopilot", "Applications", "kanban", "autopilot.html"],
     ["vera", "Vera", "sparkles", "vera.html"],
-    ["research", "Research", "search", "companies.html"],
-    ["saved", "Saved Items", "bookmark", "saved.html"],
-    ["market", "Market Pulse", "trending-up", "market.html"]
+    ["market", "Market", "trending-up", "market.html"],
+    ["autopilot", "Applications", "kanban", "autopilot.html"],
+    ["search", "Search", "search", "companies.html"],
+    ["saved", "Saved", "bookmark", "saved.html"]
   ];
   return `
     <section class="workspace-nav workspace-rail glass-card" data-tour-target="sidebar">
       <nav class="os-nav" aria-label="Career OS navigation">
         ${primaryLinks.map(([key, label, ic, href]) => {
-          const isActive = active === key || (key === "research" && ["companies", "universities"].includes(active));
-          return `<a class="${isActive ? "active" : ""}" href="${href}" title="${label}" aria-label="${label}">${icon(ic)} <span>${label}</span></a>`;
+          const isActive = active === key || (key === "search" && ["companies", "universities"].includes(active));
+          return `<a class="rail-item ${isActive ? "active" : ""}" href="${href}" aria-label="${label}" data-label="${label}">${icon(ic)} <span class="rail-label">${label}</span></a>`;
         }).join("")}
-        <button class="os-nav-button" type="button" data-logout title="Logout" aria-label="Logout">${icon("log-out")} <span>Logout</span></button>
+        <button class="os-nav-button rail-item" type="button" data-logout aria-label="Logout" data-label="Logout">${icon("log-out")} <span class="rail-label">Logout</span></button>
       </nav>
     </section>
   `;
@@ -1735,6 +1735,25 @@ function initSidebarToggle() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeSidebar();
   }, { once: false });
+}
+
+function initWorkspaceRailTooltips() {
+  qsa(".workspace-rail .rail-item").forEach(item => {
+    if (item.dataset.railTooltipReady === "true") return;
+    item.dataset.railTooltipReady = "true";
+    let tooltipTimer;
+    item.addEventListener("mouseenter", () => {
+      const rail = item.closest(".workspace-rail");
+      if (!rail || rail.getBoundingClientRect().width > 90) return;
+      item.classList.add("show-rail-tooltip");
+      window.clearTimeout(tooltipTimer);
+      tooltipTimer = window.setTimeout(() => item.classList.remove("show-rail-tooltip"), 220);
+    });
+    item.addEventListener("mouseleave", () => {
+      window.clearTimeout(tooltipTimer);
+      item.classList.remove("show-rail-tooltip");
+    });
+  });
 }
 
 function setActiveNav() {
@@ -4036,6 +4055,7 @@ function init() {
   bindGlobalActions();
   createIcons();
   initSidebarToggle();
+  initWorkspaceRailTooltips();
 }
 
 document.addEventListener("DOMContentLoaded", init);
