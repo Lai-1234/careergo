@@ -65,10 +65,10 @@
             </div>
           </form>
           <div class="metric-strip hero-metrics">
-            <div class="metric"><strong>1,200+</strong><span>Jobs tracked</span></div>
-            <div class="metric"><strong>4.4</strong><span>Org rating</span></div>
-            <div class="metric"><strong>78%</strong><span>Ready score</span></div>
-            <div class="metric"><strong>24/7</strong><span>Vera coach</span></div>
+            <div class="metric"><strong data-count-to="1200" data-count-duration="1500" data-count-suffix="+">1,200+</strong><span>Jobs tracked</span></div>
+            <div class="metric"><strong data-count-to="4.4" data-count-duration="1200" data-count-decimals="1">4.4</strong><span>Org rating</span></div>
+            <div class="metric"><strong data-count-to="78" data-count-duration="1300" data-count-suffix="%">78%</strong><span>Ready score</span></div>
+            <div class="metric"><strong data-count-static>24/7</strong><span>Vera coach</span></div>
           </div>
         </div>
       </section>
@@ -153,7 +153,9 @@
             </div>
             <a class="btn btn-ghost" href="jobs.html">View all jobs</a>
           </div>
-          <div class="grid-3" data-featured-jobs></div>
+          <div class="featured-carousel" data-featured-carousel>
+            <div class="featured-carousel-track" data-featured-jobs></div>
+          </div>
         </div>
       </section>
 
@@ -167,12 +169,14 @@
             </div>
             <a class="btn btn-cyan" href="companies.html">Open research hub</a>
           </div>
-          <div class="grid-4" data-featured-orgs></div>
+          <div class="research-marquee" data-research-marquee>
+            <div class="research-marquee-track" data-featured-orgs></div>
+          </div>
         </div>
       </section>
 
       <section class="section">
-        <div class="container glass-card">
+        <div class="container glass-card comparison-card" data-comparison-card>
           <div class="section-head">
             <div>
               <div class="section-kicker">Compare fast</div>

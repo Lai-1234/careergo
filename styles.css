@@ -736,6 +736,17 @@ img { max-width: 100%; display: block; }
   background: rgba(255, 255, 255, 0.07);
 }
 
+.hero-metrics[data-countup-ready] .metric {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.hero-metrics[data-countup-ready] .metric.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .metric strong {
   display: block;
   font-size: 32px;
@@ -961,6 +972,109 @@ img { max-width: 100%; display: block; }
 
 .list-card.quiet {
   box-shadow: none;
+}
+
+.featured-carousel {
+  position: relative;
+  overflow: hidden;
+}
+
+.featured-carousel::before,
+.featured-carousel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: clamp(52px, 9vw, 120px);
+  pointer-events: none;
+}
+
+.featured-carousel::before {
+  left: 0;
+  background: linear-gradient(to right, #230066, rgba(35, 0, 102, 0));
+}
+
+.featured-carousel::after {
+  right: 0;
+  background: linear-gradient(to left, #230066, rgba(35, 0, 102, 0));
+}
+
+.featured-carousel-track {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+}
+
+.featured-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.featured-carousel-track.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.featured-job-card {
+  flex: 0 0 min(380px, calc(100vw - 64px));
+}
+
+.research-marquee {
+  position: relative;
+  overflow: hidden;
+}
+
+.research-marquee::before,
+.research-marquee::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: clamp(52px, 9vw, 120px);
+  pointer-events: none;
+}
+
+.research-marquee::before {
+  left: 0;
+  background: linear-gradient(to right, #230066, rgba(35, 0, 102, 0));
+}
+
+.research-marquee::after {
+  right: 0;
+  background: linear-gradient(to left, #230066, rgba(35, 0, 102, 0));
+}
+
+.research-marquee-track {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+}
+
+.research-marquee-track::-webkit-scrollbar {
+  display: none;
+}
+
+.research-marquee-track.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.featured-org-card {
+  flex: 0 0 min(420px, calc(100vw - 64px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featured-carousel-track,
+  .research-marquee-track {
+    scroll-behavior: auto;
+  }
 }
 
 .list-card-top {
@@ -1219,8 +1333,96 @@ img { max-width: 100%; display: block; }
   text-transform: uppercase;
 }
 
+.comparison-table tbody tr {
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.comparison-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+  transform: translateX(4px);
+}
+
+.comparison-reveal-title,
+.comparison-reveal-header,
+.comparison-reveal-row {
+  opacity: 0;
+}
+
+.comparison-reveal-title {
+  transform: translateY(10px);
+  transition: opacity 400ms ease, transform 400ms ease;
+}
+
+.comparison-animated .comparison-reveal-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.comparison-reveal-header {
+  transition: opacity 300ms ease;
+}
+
+.comparison-reveal-header.is-visible {
+  opacity: 1;
+}
+
+.comparison-reveal-row {
+  transform: translateX(-20px);
+  transition: opacity 420ms ease, transform 420ms ease, background 0.2s ease;
+}
+
+.comparison-reveal-row.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.comparison-reveal-row.is-visible:hover {
+  transform: translateX(4px);
+}
+
+.comparison-score {
+  display: inline-grid;
+  gap: 6px;
+  min-width: 72px;
+}
+
+.comparison-score-number {
+  font-variant-numeric: tabular-nums;
+}
+
+.comparison-score-bar {
+  display: block;
+  width: 60px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.comparison-score-bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+}
+
 .table-wrap {
   overflow-x: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comparison-reveal-title,
+  .comparison-reveal-header,
+  .comparison-reveal-row {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .comparison-table tbody tr:hover {
+    transform: none;
+  }
 }
 
 .dash-grid {
@@ -5171,4 +5373,182 @@ body[data-page="vera"] .vera-box {
     background: rgba(255, 255, 255, 0.05) !important;
     border-radius: 12px;
   }
+}
+
+/* Final layout guard: expanded sidebar overlays content instead of reflowing it. */
+.os-layout:has(.workspace-rail),
+.os-layout:has(.workspace-rail:hover),
+.os-layout:has(.workspace-rail:focus-within) {
+  padding-left: 116px !important;
+  transition: none !important;
+}
+
+.workspace-rail.glass-card {
+  position: fixed !important;
+  z-index: 120;
+}
+
+@media (max-width: 1020px) {
+  .os-layout:has(.workspace-rail),
+  .os-layout:has(.workspace-rail:hover),
+  .os-layout:has(.workspace-rail:focus-within) {
+    padding-left: 0 !important;
+  }
+}
+
+/* Public Jobs filter dropdowns must overlay job cards and details. */
+body[data-page="jobs"] .jobs-workspace .compact-filter.jobs-filter-bar {
+  position: relative;
+  z-index: 9000;
+  overflow: visible !important;
+  isolation: isolate;
+}
+
+body[data-page="jobs"] .jobs-workspace .compact-filter.jobs-filter-bar:has(.custom-select-field.open) {
+  z-index: 9000;
+}
+
+body[data-page="jobs"] .jobs-workspace .custom-select-field {
+  position: relative;
+  z-index: 9001;
+  overflow: visible !important;
+}
+
+body[data-page="jobs"] .jobs-workspace .custom-select-field.open {
+  z-index: 9998;
+}
+
+body[data-page="jobs"] .jobs-workspace .custom-select-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: auto;
+  z-index: 9999;
+  display: grid;
+  width: max-content;
+  min-width: max(100%, 180px);
+  max-width: 260px;
+  max-height: none;
+  overflow-x: hidden;
+  overflow-y: visible;
+  background-color: #1a1030;
+  background-image: none;
+  opacity: 1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  backdrop-filter: none;
+}
+
+body[data-page="jobs"] .jobs-workspace .custom-select-panel[hidden] {
+  display: none;
+}
+
+body[data-page="jobs"] .jobs-workspace .custom-select-option {
+  width: 100%;
+  min-width: 0;
+  color: #fff;
+  background-color: #1a1030;
+  background-image: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+body[data-page="jobs"] .jobs-workspace .jobs-main,
+body[data-page="jobs"] .jobs-workspace .jobs-split,
+body[data-page="jobs"] .jobs-workspace .jobs-split > .list-stack,
+body[data-page="jobs"] .jobs-workspace .jobs-split > .detail-panel {
+  z-index: 0;
+}
+
+/* Logged-in dashboard Jobs and public home/jobs share the same filter overlay rules. */
+body[data-page="jobs"] .os-layout .jobs-workspace .compact-filter.jobs-filter-bar,
+body[data-page="jobs"] .jobs-page-layout .jobs-workspace .compact-filter.jobs-filter-bar {
+  z-index: 9000;
+}
+
+/* Public home/jobs uses .jobs-page-layout, while dashboard/jobs uses .jobs-workspace. */
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .jobs-filter-bar {
+  position: relative;
+  z-index: 9000;
+  overflow: visible !important;
+}
+
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .jobs-filter-bar:has(.custom-select-field.open) {
+  z-index: 9000;
+}
+
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .custom-select-field {
+  position: relative;
+  z-index: 9001;
+  overflow: visible !important;
+}
+
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .custom-select-field.open {
+  z-index: 9998;
+}
+
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .custom-select-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: auto;
+  z-index: 9999;
+  display: grid;
+  width: max-content;
+  min-width: max(100%, 180px);
+  max-width: 260px;
+  max-height: none;
+  overflow-x: hidden;
+  overflow-y: visible;
+  background-color: #1a1030;
+  background-image: none;
+  opacity: 1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  backdrop-filter: none;
+}
+
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .custom-select-panel[hidden] {
+  display: none;
+}
+
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .custom-select-option {
+  width: 100%;
+  color: #fff;
+  background-color: #1a1030;
+  background-image: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) :is(.jobs-main, .jobs-split, .detail-panel, [data-job-list], [data-job-detail]) {
+  z-index: 0;
+}
+
+/* Public home/jobs: keep the discovery card and search filters visually connected. */
+body[data-page="jobs"] .jobs-page-layout {
+  gap: clamp(1.75rem, 4vw, 2.25rem) !important;
+}
+
+body[data-page="jobs"] .jobs-page-layout > .public-discovery-intro {
+  margin: 0 !important;
+}
+
+body[data-page="jobs"] .jobs-page-layout > .public-discovery-intro + .jobs-filter-bar {
+  margin-top: clamp(-7rem, -8vw, -4.5rem) !important;
+}
+
+body[data-page="jobs"] .jobs-page-layout > .jobs-filter-bar {
+  margin-bottom: 0 !important;
+}
+
+body[data-page="jobs"] .jobs-page-layout > .jobs-split {
+  margin-top: clamp(3rem, 5vw, 4rem) !important;
+  position: relative;
+  z-index: 1;
+}
+
+body[data-page="jobs"] .jobs-page-layout > .jobs-split > .detail-panel {
+  top: clamp(13rem, 18vh, 15rem);
+  max-height: calc(100vh - clamp(14rem, 20vh, 16rem));
 }

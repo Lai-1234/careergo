@@ -1522,6 +1522,14 @@ function initCustomSelect(select) {
   }
 
   function open(focusIndex = selectedIndex()) {
+    const group = root.closest(".filter-stack") || root.parentElement;
+    qsa("[data-custom-select].open", group).forEach(item => {
+      if (item === root) return;
+      item.classList.remove("open");
+      qs("[data-custom-select-trigger]", item)?.setAttribute("aria-expanded", "false");
+      const itemPanel = qs("[data-custom-select-panel]", item);
+      if (itemPanel) itemPanel.hidden = true;
+    });
     root.classList.add("open");
     trigger.setAttribute("aria-expanded", "true");
     panel.hidden = false;
@@ -1582,7 +1590,10 @@ function initCustomSelect(select) {
 
   panel.hidden = true;
   renderOptions();
-  trigger.addEventListener("click", () => root.classList.contains("open") ? close() : open(selectedIndex()));
+  trigger.addEventListener("click", event => {
+    event.stopPropagation();
+    root.classList.contains("open") ? close() : open(selectedIndex());
+  });
   trigger.addEventListener("keydown", handleTriggerKey);
   select.addEventListener("change", sync);
   document.addEventListener("click", event => {
@@ -1766,8 +1777,8 @@ function setActiveNav() {
 function renderFeatured() {
   const jobRoot = qs("[data-featured-jobs]");
   if (jobRoot) {
-    jobRoot.innerHTML = DATA.jobs.slice(0, 3).map(job => `
-      <a class="list-card" href="jobs.html?job=${job.id}">
+    const cards = DATA.jobs.map(job => `
+      <a class="list-card featured-job-card" href="jobs.html?job=${job.id}">
         <div class="list-card-top">
           <div>
             <h3>${job.title}</h3>
@@ -1778,11 +1789,13 @@ function renderFeatured() {
         ${pills(job.skills.slice(0, 3), "cyan")}
       </a>
     `).join("");
+    jobRoot.innerHTML = cards + cards;
   }
   const orgRoot = qs("[data-featured-orgs]");
   if (orgRoot) {
-    orgRoot.innerHTML = [...DATA.companies, ...DATA.universities].slice(0, 4).map(org => `
-      <a class="list-card" href="${org.type === "University" ? "universities.html" : "companies.html"}?org=${org.id}">
+    const orgs = [...DATA.companies, ...DATA.universities];
+    const cards = orgs.map(org => `
+      <a class="list-card featured-org-card" href="${org.type === "University" ? "universities.html" : "companies.html"}?org=${org.id}">
         <div class="list-card-top">
           <div>
             <h3>${org.name}</h3>
@@ -1793,7 +1806,323 @@ function renderFeatured() {
         ${pills(org.tags.slice(0, 3), "gold")}
       </a>
     `).join("");
+    orgRoot.innerHTML = cards + cards;
   }
+}
+
+function initFeaturedRolesCarousel() {
+  const carousel = qs("[data-featured-carousel]");
+  if (!carousel || carousel.dataset.carouselReady === "true") return;
+  const track = qs("[data-featured-jobs]", carousel);
+  if (!track) return;
+  carousel.dataset.carouselReady = "true";
+
+  const prev = qs("[data-featured-prev]", carousel);
+  const next = qs("[data-featured-next]", carousel);
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let autoFrame = 0;
+  let lastTime = 0;
+  let paused = reducedMotion.matches;
+  let resumeTimer = 0;
+  let virtualScroll = track.scrollLeft;
+  const speed = 34;
+  const loopWidth = () => {
+    const duplicateStart = track.children[Math.floor(track.children.length / 2)];
+    return duplicateStart ? duplicateStart.offsetLeft : track.scrollWidth / 2;
+  };
+  const normalizeScroll = () => {
+    const width = loopWidth();
+    if (!width) return;
+    if (virtualScroll >= width) virtualScroll -= width;
+    if (virtualScroll < 0) virtualScroll += width;
+    track.scrollLeft = virtualScroll;
+  };
+  const pauseForInteraction = () => {
+    paused = true;
+    window.clearTimeout(resumeTimer);
+  };
+  const resumeSoon = () => {
+    window.clearTimeout(resumeTimer);
+    if (reducedMotion.matches) return;
+    resumeTimer = window.setTimeout(() => {
+      paused = false;
+      lastTime = performance.now();
+    }, 2400);
+  };
+  const getStep = () => {
+    const card = qs(".featured-job-card", track);
+    if (!card) return track.clientWidth;
+    const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "0");
+    return card.getBoundingClientRect().width + gap;
+  };
+  const updateState = () => {
+    carousel.classList.toggle("is-at-start", track.scrollLeft <= 2);
+  };
+  const scrollByCard = direction => {
+    pauseForInteraction();
+    virtualScroll = track.scrollLeft + getStep() * direction;
+    normalizeScroll();
+    track.scrollTo({ left: virtualScroll, behavior: "smooth" });
+    resumeSoon();
+  };
+  const tick = now => {
+    if (!lastTime) lastTime = now;
+    const delta = now - lastTime;
+    lastTime = now;
+    if (!paused && track.scrollWidth > track.clientWidth) {
+      virtualScroll += (speed * delta) / 1000;
+      normalizeScroll();
+    }
+    autoFrame = requestAnimationFrame(tick);
+  };
+
+  prev?.addEventListener("click", () => scrollByCard(-1));
+  next?.addEventListener("click", () => scrollByCard(1));
+  track.addEventListener("scroll", updateState, { passive: true });
+  window.addEventListener("resize", updateState);
+
+  track.addEventListener("wheel", event => {
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    if (track.scrollWidth <= track.clientWidth) return;
+    event.preventDefault();
+    pauseForInteraction();
+    virtualScroll = track.scrollLeft + event.deltaY;
+    normalizeScroll();
+    resumeSoon();
+  }, { passive: false });
+
+  let isDragging = false;
+  let suppressClick = false;
+  let dragStartX = 0;
+  let dragStartScroll = 0;
+  track.addEventListener("pointerdown", event => {
+    if (event.pointerType === "touch") return;
+    pauseForInteraction();
+    isDragging = true;
+    suppressClick = false;
+    dragStartX = event.clientX;
+    dragStartScroll = track.scrollLeft;
+    virtualScroll = track.scrollLeft;
+    track.classList.add("is-dragging");
+    track.setPointerCapture?.(event.pointerId);
+  });
+  track.addEventListener("pointermove", event => {
+    if (!isDragging) return;
+    event.preventDefault();
+    if (Math.abs(event.clientX - dragStartX) > 6) suppressClick = true;
+    virtualScroll = dragStartScroll - (event.clientX - dragStartX);
+    normalizeScroll();
+  });
+  track.addEventListener("pointerup", event => {
+    isDragging = false;
+    track.classList.remove("is-dragging");
+    track.releasePointerCapture?.(event.pointerId);
+    resumeSoon();
+  });
+  track.addEventListener("pointercancel", () => {
+    isDragging = false;
+    track.classList.remove("is-dragging");
+    resumeSoon();
+  });
+  track.addEventListener("click", event => {
+    if (!suppressClick) return;
+    event.preventDefault();
+    event.stopPropagation();
+    suppressClick = false;
+  }, true);
+  reducedMotion.addEventListener?.("change", event => {
+    paused = event.matches;
+    if (!event.matches) lastTime = performance.now();
+  });
+
+  updateState();
+  autoFrame = requestAnimationFrame(tick);
+}
+
+function initResearchMarquee() {
+  const marquee = qs("[data-research-marquee]");
+  if (!marquee || marquee.dataset.marqueeReady === "true") return;
+  const track = qs("[data-featured-orgs]", marquee);
+  if (!track) return;
+  marquee.dataset.marqueeReady = "true";
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let animationFrame = 0;
+  let lastTime = 0;
+  let paused = reducedMotion.matches;
+  let resumeTimer = 0;
+  let isDragging = false;
+  let suppressClick = false;
+  let dragStartX = 0;
+  let dragStartScroll = 0;
+  let virtualScroll = track.scrollLeft;
+  const speed = 36;
+
+  const loopWidth = () => {
+    const duplicateStart = track.children[Math.floor(track.children.length / 2)];
+    return duplicateStart ? duplicateStart.offsetLeft : track.scrollWidth / 2;
+  };
+  const normalizeScroll = () => {
+    const width = loopWidth();
+    if (!width) return;
+    if (virtualScroll >= width) virtualScroll -= width;
+    if (virtualScroll < 0) virtualScroll += width;
+    track.scrollLeft = virtualScroll;
+  };
+  const pause = () => {
+    paused = true;
+    marquee.dataset.marqueePaused = "true";
+    window.clearTimeout(resumeTimer);
+  };
+  const resumeSoon = () => {
+    window.clearTimeout(resumeTimer);
+    if (reducedMotion.matches) return;
+    resumeTimer = window.setTimeout(() => {
+      paused = false;
+      marquee.dataset.marqueePaused = "false";
+      lastTime = performance.now();
+    }, 3000);
+  };
+  const tick = now => {
+    if (!lastTime) lastTime = now;
+    const delta = now - lastTime;
+    lastTime = now;
+    if (!paused && track.scrollWidth > track.clientWidth) {
+      virtualScroll += (speed * delta) / 1000;
+      normalizeScroll();
+    }
+    animationFrame = requestAnimationFrame(tick);
+  };
+
+  marquee.addEventListener("mouseenter", pause);
+  marquee.addEventListener("mouseleave", () => {
+    if (!reducedMotion.matches) {
+      paused = false;
+      marquee.dataset.marqueePaused = "false";
+      lastTime = performance.now();
+    }
+  });
+  marquee.addEventListener("touchstart", pause, { passive: true });
+  marquee.addEventListener("touchend", resumeSoon, { passive: true });
+
+  track.addEventListener("wheel", event => {
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    if (track.scrollWidth <= track.clientWidth) return;
+    event.preventDefault();
+    pause();
+    virtualScroll = track.scrollLeft + event.deltaY;
+    normalizeScroll();
+    resumeSoon();
+  }, { passive: false });
+
+  track.addEventListener("scroll", () => {
+    if (!isDragging) return;
+    virtualScroll = track.scrollLeft;
+    normalizeScroll();
+  }, { passive: true });
+
+  track.addEventListener("pointerdown", event => {
+    if (event.pointerType === "touch") return;
+    pause();
+    isDragging = true;
+    suppressClick = false;
+    dragStartX = event.clientX;
+    dragStartScroll = track.scrollLeft;
+    virtualScroll = track.scrollLeft;
+    track.classList.add("is-dragging");
+    track.setPointerCapture?.(event.pointerId);
+  });
+  track.addEventListener("pointermove", event => {
+    if (!isDragging) return;
+    event.preventDefault();
+    if (Math.abs(event.clientX - dragStartX) > 6) suppressClick = true;
+    virtualScroll = dragStartScroll - (event.clientX - dragStartX);
+    normalizeScroll();
+  });
+  track.addEventListener("pointerup", event => {
+    isDragging = false;
+    track.classList.remove("is-dragging");
+    track.releasePointerCapture?.(event.pointerId);
+    resumeSoon();
+  });
+  track.addEventListener("pointercancel", () => {
+    isDragging = false;
+    track.classList.remove("is-dragging");
+    resumeSoon();
+  });
+  track.addEventListener("click", event => {
+    if (!suppressClick) return;
+    event.preventDefault();
+    event.stopPropagation();
+    suppressClick = false;
+  }, true);
+
+  reducedMotion.addEventListener?.("change", event => {
+    paused = event.matches;
+    marquee.dataset.marqueePaused = String(paused);
+    if (!event.matches) lastTime = performance.now();
+  });
+
+  marquee.dataset.marqueePaused = String(paused);
+  animationFrame = requestAnimationFrame(tick);
+}
+
+function initHomeMetricCountUp() {
+  const root = qs(".hero-metrics");
+  if (!root || root.dataset.countupInitialized) return;
+  root.dataset.countupInitialized = "true";
+  root.dataset.countupReady = "true";
+
+  const cards = qsa(".metric", root);
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+  const formatValue = (value, decimals) => decimals > 0
+    ? value.toFixed(decimals)
+    : Math.round(value).toLocaleString();
+
+  function animateCounter(el) {
+    const target = Number(el.dataset.countTo || 0);
+    const duration = Number(el.dataset.countDuration || 1400);
+    const decimals = Number(el.dataset.countDecimals || 0);
+    const suffix = el.dataset.countSuffix || "";
+    const startedAt = performance.now();
+
+    function tick(now) {
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const eased = easeOut(progress);
+      const value = target * eased;
+      el.textContent = `${formatValue(value, decimals)}${suffix}`;
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        el.textContent = `${formatValue(target, decimals)}${suffix}`;
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  function run() {
+    cards.forEach((card, index) => {
+      window.setTimeout(() => {
+        card.classList.add("is-visible");
+        const counter = qs("strong[data-count-to]", card);
+        if (counter) animateCounter(counter);
+      }, index * 100);
+    });
+  }
+
+  if (!("IntersectionObserver" in window)) {
+    run();
+    return;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    run();
+    observer.disconnect();
+  }, { threshold: 0.25, rootMargin: "0px 0px -10% 0px" });
+
+  observer.observe(root);
 }
 
 function routeCandidateEntry() {
@@ -1994,8 +2323,8 @@ function renderJobsPage() {
   if (!state.session.loggedIn) {
     const layout = qs(".jobs-page-layout", root);
     if (layout && !qs(".public-discovery-intro", root)) {
-      layout.insertAdjacentHTML("beforebegin", `
-        <section class="container public-discovery-intro">
+      layout.insertAdjacentHTML("afterbegin", `
+        <section class="public-discovery-intro">
           <div class="glass-card public-discovery-card">
             <div>
               <div class="section-kicker">Public job discovery</div>
@@ -4019,16 +4348,88 @@ function renderComparison() {
   const root = qs("[data-comparison]");
   if (!root) return;
   const orgs = [...DATA.companies, ...DATA.universities].slice(0, 5);
+  const animatedScore = value => `
+    <span class="comparison-score" data-comparison-score="${value.toFixed(1)}">
+      <span class="comparison-score-number">${value.toFixed(1)}</span>
+      <span class="comparison-score-bar" aria-hidden="true"><span></span></span>
+    </span>
+  `;
   root.innerHTML = `
     <div class="table-wrap">
-      <table class="comparison-table">
+      <table class="comparison-table" data-comparison-table>
         <thead><tr><th>Name</th><th>Type</th><th>Rating</th><th>Growth</th><th>Pay / Outcome</th><th>Best signal</th></tr></thead>
         <tbody>
-          ${orgs.map(org => `<tr><td><strong>${org.name}</strong></td><td>${org.type}</td><td>${org.rating.toFixed(1)}</td><td>${org.scores.growth.toFixed(1)}</td><td>${org.salary}</td><td>${org.signal}</td></tr>`).join("")}
+          ${orgs.map(org => `<tr><td><strong>${org.name}</strong></td><td>${org.type}</td><td>${animatedScore(org.rating)}</td><td>${animatedScore(org.scores.growth)}</td><td>${org.salary}</td><td>${org.signal}</td></tr>`).join("")}
         </tbody>
       </table>
     </div>
   `;
+}
+
+function initComparisonTableAnimation() {
+  const card = qs("[data-comparison-card]");
+  if (!card || card.dataset.comparisonAnimationReady === "true") return;
+  const table = qs("[data-comparison-table]", card);
+  if (!table) return;
+  card.dataset.comparisonAnimationReady = "true";
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const titleBlock = qs(".section-head", card);
+  const header = qs("thead tr", table);
+  const rows = qsa("tbody tr", table);
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+
+  if (reducedMotion) {
+    card.classList.add("comparison-animated");
+    qsa("[data-comparison-score]", table).forEach(score => {
+      const target = Number(score.dataset.comparisonScore || 0);
+      qs(".comparison-score-number", score).textContent = target.toFixed(1);
+      qs(".comparison-score-bar span", score).style.width = `${Math.min(100, (target / 5) * 100)}%`;
+    });
+    return;
+  }
+
+  titleBlock?.classList.add("comparison-reveal-title");
+  header?.classList.add("comparison-reveal-header");
+  rows.forEach(row => row.classList.add("comparison-reveal-row"));
+  qsa("[data-comparison-score]", table).forEach(score => {
+    qs(".comparison-score-number", score).textContent = "0.0";
+  });
+
+  function animateScore(score) {
+    const number = qs(".comparison-score-number", score);
+    const bar = qs(".comparison-score-bar span", score);
+    const target = Number(score.dataset.comparisonScore || 0);
+    const startedAt = performance.now();
+    const duration = 800;
+
+    function tick(now) {
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const value = target * easeOut(progress);
+      number.textContent = value.toFixed(1);
+      bar.style.width = `${Math.min(100, (value / 5) * 100)}%`;
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    card.classList.add("comparison-animated");
+
+    window.setTimeout(() => header?.classList.add("is-visible"), 250);
+    rows.forEach((row, index) => {
+      window.setTimeout(() => {
+        row.classList.add("is-visible");
+        qsa("[data-comparison-score]", row).forEach(animateScore);
+      }, 420 + index * 100);
+    });
+
+    observer.disconnect();
+  }, { threshold: 0.3 });
+
+  observer.observe(card);
 }
 
 function init() {
@@ -4055,6 +4456,10 @@ function init() {
   renderEmployers();
   renderComparison();
   renderSiteFooter();
+  initFeaturedRolesCarousel();
+  initResearchMarquee();
+  initHomeMetricCountUp();
+  initComparisonTableAnimation();
   bindGlobalActions();
   createIcons();
   initSidebarToggle();
