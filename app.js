@@ -1829,6 +1829,9 @@ function renderJobSeekerEntry() {
     <section class="entry-hero">
       <div class="container entry-grid">
         <div>
+          <div class="page-back-actions">
+            <a class="btn btn-ghost" href="index.html">${icon("arrow-left")} Back to Home</a>
+          </div>
           <div class="eyebrow"><span class="spark">*</span> Job Seeker Journey</div>
           <h1 class="section-title">Build a career profile before you chase job posts.</h1>
           <p class="section-sub">CareerGo turns your background, goals, skills, and preferences into a Career Intelligence Profile, then Vera guides the next useful step.</p>
@@ -3974,13 +3977,13 @@ function renderEmployers() {
         <h2 class="section-title">Hire based on fit, skills, and career trajectory.</h2>
         <p class="section-sub">CareerGo helps employers post roles, discover candidates, review talent profiles, manage applicants, and reduce noisy keyword-only screening.</p>
       </div>
-      <div class="hero-actions">
+      <div class="hero-actions employer-entry-actions">
         <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create Employer Account</a>
         <a class="btn btn-ghost" href="login.html">${icon("log-in")} Login</a>
         <a class="btn btn-cyan" href="#learn-more">${icon("arrow-down")} Learn More</a>
       </div>
     </div>
-    <div class="grid-3">
+    <div class="grid-3 employer-feature-grid">
       ${[
         ["Talent discovery", "Search candidates by readiness, skill trajectory, and Vera-verified evidence.", "users"],
         ["Company reputation", "Understand reviews, culture signals, candidate concerns, and hiring conversion.", "building-2"],
@@ -3993,8 +3996,8 @@ function renderEmployers() {
         </div>
       `).join("")}
     </div>
-    <div class="glass-card" id="learn-more" style="margin-top:22px">
-      <div class="section-head">
+    <div class="glass-card employer-dashboard-card" id="learn-more">
+      <div class="section-head employer-dashboard-head">
         <div>
           <div class="section-kicker">Hiring dashboard</div>
           <h2 class="section-title">A cleaner view of fit, pipeline, and reputation.</h2>

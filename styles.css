@@ -398,6 +398,19 @@ img { max-width: 100%; display: block; }
   white-space: nowrap;
 }
 
+.page-back-actions {
+  display: flex;
+  margin-bottom: 1.5rem;
+}
+
+.page-back-actions .btn {
+  width: auto;
+}
+
+.page-back-actions + .eyebrow {
+  margin-bottom: 1.5rem;
+}
+
 .hero-search {
   position: relative;
   z-index: 4;
@@ -2477,24 +2490,25 @@ body[data-page="jobs"] .workspace-nav:not(.workspace-rail) {
 }
 
 .entry-hero {
-  padding: clamp(56px, 8vh, 96px) 0;
+  padding: clamp(4rem, 7vh, 5.5rem) 0 clamp(3rem, 6vw, 5rem);
 }
 
 .entry-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(360px, 0.75fr);
-  gap: 28px;
+  gap: clamp(2rem, 4vw, 3.25rem);
   align-items: center;
 }
 
 .entry-panel {
   display: grid;
-  gap: 18px;
+  gap: 1.35rem;
+  padding: clamp(1.75rem, 3vw, 2.5rem);
 }
 
 .entry-list {
   display: grid;
-  gap: 14px;
+  gap: 1rem;
 }
 
 .public-discovery-intro {
@@ -2513,6 +2527,65 @@ body[data-page="jobs"] .workspace-nav:not(.workspace-rail) {
 .public-discovery-card .section-sub,
 .employer-entry-card .section-sub {
   margin-bottom: 0;
+}
+
+.employer-entry-card {
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4rem);
+}
+
+.employer-entry-card > div:first-child {
+  max-width: 650px;
+}
+
+.employer-entry-actions {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: 1fr;
+  align-content: center;
+  justify-items: stretch;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-left: clamp(1.25rem, 3vw, 2rem);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.employer-entry-actions .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.employer-feature-grid {
+  margin-top: 1.5rem;
+}
+
+.employer-feature-grid .card {
+  border-radius: 18px;
+}
+
+.employer-dashboard-card {
+  margin-top: 1.5rem;
+}
+
+.employer-dashboard-head {
+  align-items: center;
+}
+
+.employer-dashboard-head .btn {
+  align-self: center;
+}
+
+.employer-dashboard-card .metric-strip {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.employer-dashboard-card .metric {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  min-height: 88px;
+  padding: 1rem;
 }
 
 .employer-search {
@@ -3813,6 +3886,14 @@ input[type="checkbox"] {
   .hero-search-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+  .employer-entry-actions {
+    width: 100%;
+    padding-left: 0;
+    border-left: 0;
+  }
+  .employer-dashboard-card .metric-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .jobs-split > .detail-panel {
     position: static;
