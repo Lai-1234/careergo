@@ -5534,28 +5534,56 @@ body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) :is(.jobs-main, .
 
 /* Public home/jobs: keep the discovery card and search filters visually connected. */
 body[data-page="jobs"] .jobs-page-layout {
-  gap: clamp(1.75rem, 4vw, 2.25rem) !important;
+  gap: clamp(1rem, 2vw, 1.35rem) !important;
 }
 
 body[data-page="jobs"] .jobs-page-layout > .public-discovery-intro {
   margin: 0 !important;
 }
 
+body[data-page="jobs"] .jobs-page-layout > .public-discovery-intro .public-discovery-card {
+  padding-block: clamp(1.5rem, 3vw, 2rem);
+}
+
 body[data-page="jobs"] .jobs-page-layout > .public-discovery-intro + .jobs-filter-bar {
-  margin-top: clamp(-7rem, -8vw, -4.5rem) !important;
+  margin-top: clamp(-5rem, -6vw, -3.5rem) !important;
 }
 
 body[data-page="jobs"] .jobs-page-layout > .jobs-filter-bar {
   margin-bottom: 0 !important;
+  position: relative;
+  z-index: 1 !important;
+}
+
+body[data-page="jobs"] .jobs-page-layout > .jobs-filter-bar:has(.custom-select-field.open) {
+  z-index: 10000 !important;
 }
 
 body[data-page="jobs"] .jobs-page-layout > .jobs-split {
-  margin-top: clamp(3rem, 5vw, 4rem) !important;
+  margin-top: clamp(4.25rem, 6.5vw, 5.5rem) !important;
   position: relative;
-  z-index: 1;
+  z-index: 2;
+}
+
+body[data-page="jobs"] .jobs-page-layout > .jobs-split > section:first-child {
+  display: grid;
+  gap: 1rem;
+}
+
+body[data-page="jobs"] .jobs-page-layout > .jobs-split > section:first-child > .tab-row {
+  margin-bottom: 0 !important;
+  position: relative;
+  z-index: 3;
 }
 
 body[data-page="jobs"] .jobs-page-layout > .jobs-split > .detail-panel {
+  margin-top: calc(38px + 1rem);
   top: clamp(13rem, 18vh, 15rem);
   max-height: calc(100vh - clamp(14rem, 20vh, 16rem));
+}
+
+@media (max-width: 1020px) {
+  body[data-page="jobs"] .jobs-page-layout > .jobs-split > .detail-panel {
+    margin-top: 0;
+  }
 }

@@ -2420,17 +2420,19 @@ function renderJobsPage() {
       </div>
     `;
     qsa("[data-job-id]", listRoot).forEach(card => card.addEventListener("click", () => {
+      const previousJobId = active.id;
       active = DATA.jobs.find(job => job.id === card.dataset.jobId) || active;
       history.replaceState(null, "", `jobs.html?job=${active.id}#tracker`);
       renderList();
-      renderDetail();
+      renderDetail({ resetScroll: active.id !== previousJobId });
     }));
     qsa("[data-filter-stage]", listRoot).forEach(btn => btn.addEventListener("click", () => {
       const found = tracked.find(({ record }) => record.stage === btn.dataset.filterStage);
       if (found) {
+        const previousJobId = active.id;
         active = found.job;
         renderList();
-        renderDetail();
+        renderDetail({ resetScroll: active.id !== previousJobId });
       }
     }));
     createIcons();
@@ -2479,10 +2481,11 @@ function renderJobsPage() {
     `).join("") || `<div class="card">No matching roles yet. Try a broader search.</div>`;
     qsa("[data-job-id]", listRoot).forEach(btn => {
       btn.addEventListener("click", () => {
+        const previousJobId = active.id;
         active = DATA.jobs.find(job => job.id === btn.dataset.jobId);
         history.replaceState(null, "", `jobs.html?job=${active.id}`);
         renderList();
-        renderDetail();
+        renderDetail({ resetScroll: active.id !== previousJobId });
       });
     });
     qsa("[data-compare-job]", listRoot).forEach(input => {
@@ -2499,7 +2502,7 @@ function renderJobsPage() {
     createIcons();
   }
 
-  function renderDetail() {
+  function renderDetail({ resetScroll = false } = {}) {
     state = readState();
     const loggedIn = Boolean(state.session.loggedIn);
     const saved = state.savedJobs.includes(active.id);
@@ -2594,6 +2597,7 @@ function renderJobsPage() {
         `}
       </div>
     `;
+    if (resetScroll) detailRoot.scrollTop = 0;
     if (!loggedIn) {
       bindProtectedPrompts(detailRoot);
       createIcons();
@@ -2635,9 +2639,10 @@ function renderJobsPage() {
       writeState(next);
       showToast("Vera will learn from that preference.", "info");
       const jobs = filteredJobs();
+      const previousJobId = active.id;
       active = jobs[0] || DATA.jobs.find(job => !next.ignoredJobs.includes(job.id)) || DATA.jobs[0];
       renderList();
-      renderDetail();
+      renderDetail({ resetScroll: active.id !== previousJobId });
     });
     createIcons();
   }
