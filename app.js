@@ -411,10 +411,13 @@ function readState() {
     comparedJobs: [],
     savedOrgs: [],
     missionProgress: {},
+    planProgress: {},
+    marketPlan: null,
     guidedTour: { dashboard: { status: "new", step: 0 } },
     reviews: DATA.reviews,
     chat: [],
     notifications: [],
+    interviewCoach: { role: "", type: "Behavioral", focus: "Leadership", started: false, answer: "", feedback: null, sessions: [] },
     autopilotRules: { salary: "", location: "", threshold: 75, scanOnly: true, exclude: "" },
     posts: DATA.communityPosts
   };
@@ -550,6 +553,18 @@ function normalizeState(state) {
     ignoredJobs: Array.isArray(state.ignoredJobs) ? state.ignoredJobs : [],
     comparedJobs: Array.isArray(state.comparedJobs) ? state.comparedJobs : [],
     savedOrgs: Array.isArray(state.savedOrgs) ? state.savedOrgs : [],
+    planProgress: state.planProgress && typeof state.planProgress === "object" ? state.planProgress : {},
+    marketPlan: state.marketPlan && typeof state.marketPlan === "object" ? state.marketPlan : null,
+    interviewCoach: {
+      role: "",
+      type: "Behavioral",
+      focus: "Leadership",
+      started: false,
+      answer: "",
+      feedback: null,
+      sessions: [],
+      ...(state.interviewCoach || {})
+    },
     posts: Array.isArray(state.posts) ? state.posts : DATA.communityPosts
   });
 }
@@ -3127,14 +3142,80 @@ function renderVera() {
       `;
     }
     if (activeTab === "interview") {
+      const coach = readState().interviewCoach || {};
+      const targetRole = coach.role || DATA.jobs.find(job => state.applications.includes(job.id))?.title || DATA.jobs[0]?.title || getTargetLabel(state.profile);
+      const typeOptions = ["Behavioral", "Case Study", "Portfolio Review", "Technical"];
+      const focusOptions = ["Leadership", "Design Process", "Stakeholder Management", "Metrics", "Career Switch"];
+      const questionBank = {
+        "Behavioral|Leadership": `Tell me about a time you had to lead without authority while moving a ${targetRole} project forward.`,
+        "Behavioral|Stakeholder Management": `Describe a moment when stakeholders disagreed with your recommendation. How did you align them and what changed?`,
+        "Case Study|Design Process": `Walk me through how you would diagnose and improve a confusing onboarding journey for a product with falling activation.`,
+        "Case Study|Metrics": `A feature shipped but engagement dropped after launch. How would you investigate the problem and decide the next move?`,
+        "Portfolio Review|Design Process": `Choose one project from your portfolio and explain the constraints, trade-offs, impact, and what you would improve now.`,
+        "Technical|Metrics": `How would you define success metrics for a product experiment, and how would you avoid misleading conclusions?`,
+        "Behavioral|Career Switch": `Explain your career switch story in a way that makes your transferable skills feel like an advantage, not a risk.`
+      };
+      const question = questionBank[`${coach.type}|${coach.focus}`] || `For a ${targetRole} interview, tell me about a project where you handled ambiguity, made a trade-off, and created measurable impact.`;
+      const feedback = coach.feedback;
+      const avgScore = coach.sessions?.length
+        ? Math.round(coach.sessions.reduce((sum, item) => sum + item.score, 0) / coach.sessions.length)
+        : 0;
       return `
-        <section class="glass-card">
-          <div class="section-head"><div><div class="section-kicker">Interview coach</div><h2 class="section-title mini">Practice with structured feedback.</h2></div><span class="pill green">Live session</span></div>
-          <div class="content-grid">
-            <div class="tool-card"><h3>Question</h3><p class="muted">Walk me through a project where you had ambiguity, conflicting feedback, and a measurable product outcome.</p>${pills(["Product design", "Behavioral", "Case-study"], "cyan")}</div>
-            <form class="tool-card" data-interview-form><h3>Your answer</h3><textarea class="input-area" name="answer" placeholder="Type your STAR answer..."></textarea><button class="btn btn-primary" type="submit">${icon("scan-text")} Get feedback</button></form>
+        <section class="glass-card interview-coach">
+          <div class="section-head">
+            <div><div class="section-kicker">Interview coach</div><h2 class="section-title mini">Practice with structured feedback.</h2><p class="section-sub">Vera scores your answer for structure, specificity, relevance, and confidence signals.</p></div>
+            <span class="pill green">${coach.started ? "Live session" : "Setup"}</span>
           </div>
-          <div class="detail-section" data-interview-feedback></div>
+          <div class="interview-control-grid">
+            <div class="tool-card interview-setup-card">
+              <h3>Practice setup</h3>
+              <label>Preparing for <input data-interview-role value="${targetRole}" placeholder="Role or company interview"></label>
+              <div class="chat-presets-label">Interview type</div>
+              <div class="pill-row">${typeOptions.map(type => `<button class="pill ${coach.type === type ? "cyan active" : ""}" type="button" data-interview-type="${type}">${type}</button>`).join("")}</div>
+              <div class="chat-presets-label">Focus area</div>
+              <div class="pill-row">${focusOptions.map(focus => `<button class="pill ${coach.focus === focus ? "gold active" : ""}" type="button" data-interview-focus="${focus}">${focus}</button>`).join("")}</div>
+              <div class="hero-actions compact-actions">
+                <button class="btn btn-primary" type="button" data-interview-start>${icon("play")} ${coach.started ? "Regenerate question" : "Start practice"}</button>
+                <button class="btn btn-ghost" type="button" data-interview-reset>${icon("rotate-ccw")} Reset</button>
+              </div>
+            </div>
+            <div class="tool-card interview-stats-card">
+              <h3>Session tracker</h3>
+              <div class="score-grid compact">
+                <div class="score-tile"><span>Sessions</span><strong>${coach.sessions?.length || 0}</strong></div>
+                <div class="score-tile"><span>Avg score</span><strong>${avgScore || "--"}${avgScore ? "%" : ""}</strong></div>
+                <div class="score-tile"><span>Type</span><strong>${coach.type}</strong></div>
+                <div class="score-tile"><span>Focus</span><strong>${coach.focus}</strong></div>
+              </div>
+              <div class="interview-history">${(coach.sessions || []).slice(-5).map((item, index) => `<span style="height:${Math.max(18, item.score)}%"><em>${item.score}</em></span>`).join("") || `<p class="muted small">No scored answers yet. Start one practice round.</p>`}</div>
+            </div>
+          </div>
+          <div class="interview-practice-grid">
+            <div class="tool-card interview-question-card">
+              <div class="list-card-top"><h3>Question</h3><span class="pill cyan">${coach.type}</span></div>
+              <p>${coach.started ? question : "Choose a setup, then start practice to generate a role-specific question."}</p>
+              ${pills([targetRole, coach.focus, "Vera feedback"], "cyan")}
+            </div>
+            <form class="tool-card interview-answer-card" data-interview-form>
+              <h3>Your answer</h3>
+              <textarea class="input-area" name="answer" placeholder="Type your STAR answer with context, action, trade-off, and result..." ${coach.started ? "" : "disabled"}>${coach.answer || ""}</textarea>
+              <div class="hero-actions compact-actions">
+                <button class="btn btn-primary" type="submit" ${coach.started ? "" : "disabled"}>${icon("scan-text")} Get feedback</button>
+                <button class="btn btn-ghost" type="button" data-interview-fill ${coach.started ? "" : "disabled"}>${icon("wand-sparkles")} Use sample structure</button>
+              </div>
+            </form>
+          </div>
+          <div class="detail-section" data-interview-feedback>
+            ${feedback ? `
+              <div class="score-grid">
+                ${feedback.dimensions.map(item => `<div class="score-tile"><span>${item.label}</span><strong>${item.value}%</strong></div>`).join("")}
+              </div>
+              <div class="interview-feedback-grid">
+                <div class="vera-box detail-section"><h3>Vera feedback</h3><p class="muted">${feedback.summary}</p><ul class="interview-note-list">${feedback.notes.map(note => `<li>${note}</li>`).join("")}</ul></div>
+                <div class="vera-box detail-section"><h3>Model structure</h3><p class="muted">${feedback.model}</p></div>
+              </div>
+            ` : ""}
+          </div>
         </section>
       `;
     }
@@ -3179,21 +3260,100 @@ function renderVera() {
             <div class="pill-row">${draftAnswers.map(text => `<button class="pill gold" type="button" data-chat-fill="${text}">${text}</button>`).join("")}</div>
           </div>
           <form class="chat-input" data-chat-form>
-            <div class="field"><input name="message" placeholder="Ask Vera what to do next..."></div>
+            <div class="chat-composer-field"><textarea name="message" rows="1" placeholder="Ask Vera what to do next..."></textarea></div>
             <button class="btn btn-primary" type="submit">${icon("send")} Send</button>
           </form>
         </section>
       `;
     }
+    const planProgress = readState().planProgress || {};
+    const planPhases = [
+      {
+        id: "baseline",
+        title: "Days 1-30",
+        theme: "Baseline and target clarity",
+        body: "Set your profile baseline, choose one target path, and build a clean evidence map.",
+        outcome: "A focused target role, ATS baseline, and one clear proof gap.",
+        tasks: [
+          ["baseline-profile", "Update Career Intelligence profile and resume baseline", "profile.html"],
+          ["baseline-target", `Choose one target path: ${getTargetLabel(state.profile)}`, "jobs.html"],
+          ["baseline-research", "Compare 3 companies or universities before applying", "companies.html"]
+        ]
+      },
+      {
+        id: "proof",
+        title: "Days 31-60",
+        theme: "Proof-building sprint",
+        body: "Close your top two gaps with visible proof: one strategy artifact and one metrics story.",
+        outcome: "A portfolio-ready project story that proves judgment, impact, and trade-offs.",
+        tasks: [
+          ["proof-strategy", "Write one product strategy memo from a past project", "profile.html"],
+          ["proof-metrics", "Add before/after metrics to one case study", "profile.html"],
+          ["proof-skill", "Complete one high-value skill sprint from Vera's roadmap", "vera.html#skills"]
+        ]
+      },
+      {
+        id: "apply",
+        title: "Days 61-90",
+        theme: "Apply, interview, decide",
+        body: "Apply selectively, practice high-signal interview stories, and use research before accepting.",
+        outcome: "Five high-fit applications, stronger interview stories, and a decision framework.",
+        tasks: [
+          ["apply-roles", "Apply to 5 roles above your match threshold", "jobs.html"],
+          ["apply-interview", "Practice 3 interview answers with Vera feedback", "vera.html#interview"],
+          ["apply-decision", "Compare offers or shortlists using growth, pay, and culture", "companies.html"]
+        ]
+      }
+    ];
+    const allPlanTasks = planPhases.flatMap(phase => phase.tasks);
+    const completedPlanTasks = allPlanTasks.filter(([id]) => planProgress[id]).length;
+    const planPercent = Math.round((completedPlanTasks / allPlanTasks.length) * 100);
+    const nextTask = allPlanTasks.find(([id]) => !planProgress[id]);
     return `
-      <section class="glass-card">
-        <div class="section-head"><div><div class="section-kicker">90-day plan</div><h2 class="section-title mini">A mentor-led path from day one.</h2></div><button class="btn btn-primary" data-plan>${icon("sparkles")} Generate plan</button></div>
-        <div class="timeline">
-          ${[
-            ["Days 1-30", "Set profile baseline, upload resume, benchmark ATS, and choose one target path."],
-            ["Days 31-60", "Close top two gaps with proof: product strategy memo and metrics story."],
-            ["Days 61-90", "Apply to five high-fit roles, practice interviews, and use company research before accepting."]
-          ].map(([title, body]) => `<article class="timeline-item"><h3>${title}</h3><p class="muted">${body}</p></article>`).join("")}
+      <section class="glass-card vera-plan">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">90-day plan</div>
+            <h2 class="section-title mini">A mentor-led path from day one.</h2>
+            <p class="section-sub">Personalized around ${state.profile.careerStage || "your current stage"}, ${getTargetLabel(state.profile)}, and your saved application signals.</p>
+          </div>
+          <button class="btn btn-primary" data-plan>${icon("sparkles")} Regenerate plan</button>
+        </div>
+        <div class="plan-summary-grid">
+          <article class="plan-summary-card"><span>Progress</span><strong>${planPercent}%</strong>${progressBar(planPercent)}</article>
+          <article class="plan-summary-card"><span>Target</span><strong>${getTargetLabel(state.profile)}</strong><p class="muted small">${state.profile.preferences.workMode || "Hybrid"} work - ${state.profile.preferences.ambitionLevel || "steady growth"}</p></article>
+          <article class="plan-summary-card"><span>Next action</span><strong>${nextTask ? nextTask[1] : "Plan complete"}</strong><p class="muted small">${completedPlanTasks}/${allPlanTasks.length} tasks done</p></article>
+        </div>
+        <div class="plan-phase-grid">
+          ${planPhases.map(phase => {
+            const done = phase.tasks.filter(([id]) => planProgress[id]).length;
+            const percent = Math.round((done / phase.tasks.length) * 100);
+            return `
+              <article class="timeline-item plan-phase-card">
+                <div class="list-card-top">
+                  <div><h3>${phase.title}</h3><span class="muted small">${phase.theme}</span></div>
+                  <span class="pill ${percent === 100 ? "green" : "cyan"}">${done}/${phase.tasks.length}</span>
+                </div>
+                <p class="muted">${phase.body}</p>
+                ${progressBar(percent)}
+                <div class="plan-task-list">
+                  ${phase.tasks.map(([id, label, href]) => `
+                    <div class="plan-task ${planProgress[id] ? "complete" : ""}">
+                      <button type="button" class="plan-task-check" data-plan-task="${id}" aria-label="${planProgress[id] ? "Mark incomplete" : "Mark complete"}">${icon(planProgress[id] ? "check" : "circle")}</button>
+                      <span>${label}</span>
+                      <a href="${href}" aria-label="Open related page">${icon("arrow-up-right")}</a>
+                    </div>
+                  `).join("")}
+                </div>
+                <div class="plan-outcome"><strong>Outcome</strong><span>${phase.outcome}</span></div>
+              </article>
+            `;
+          }).join("")}
+        </div>
+        <div class="plan-command-row">
+          <button class="btn btn-cyan" type="button" data-plan-jump="chat">${icon("message-circle")} Ask Vera about this plan</button>
+          <button class="btn btn-ghost" type="button" data-plan-jump="skills">${icon("list-checks")} Open skill roadmap</button>
+          <button class="btn btn-ghost" type="button" data-plan-jump="interview">${icon("messages-square")} Practice interview</button>
         </div>
       </section>
     `;
@@ -3246,12 +3406,85 @@ function renderVera() {
     qsa("[data-quick]").forEach(btn => btn.addEventListener("click", () => sendVera(btn.dataset.quick)));
     qsa("[data-chat-preset]").forEach(btn => btn.addEventListener("click", () => sendVera(btn.dataset.chatPreset)));
     qsa("[data-chat-fill]").forEach(btn => btn.addEventListener("click", () => {
-      const input = qs("[data-chat-form] input[name='message']");
+      const input = qs("[data-chat-form] [name='message']");
       if (!input) return;
       input.value = btn.dataset.chatFill || "";
       input.focus();
     }));
-    qs("[data-plan]")?.addEventListener("click", () => showToast("Vera generated a 90-day plan from your profile and target role."));
+    qs("[data-chat-form] textarea[name='message']")?.addEventListener("input", event => {
+      const input = event.currentTarget;
+      input.style.height = "auto";
+      input.style.height = `${Math.min(input.scrollHeight, 132)}px`;
+    });
+    qs("[data-chat-form] textarea[name='message']")?.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        event.currentTarget.form.requestSubmit();
+      }
+    });
+    qs("[data-plan]")?.addEventListener("click", () => {
+      const next = readState();
+      next.planProgress = {};
+      next.chat = [
+        ...next.chat,
+        { from: "vera", text: "I regenerated your 90-day plan. Start with the first incomplete task, then use each phase outcome as your proof checklist." }
+      ];
+      writeState(next);
+      showToast("Vera regenerated your 90-day plan.");
+      renderVera();
+    });
+    qsa("[data-plan-task]").forEach(btn => btn.addEventListener("click", () => {
+      const taskId = btn.dataset.planTask;
+      const next = readState();
+      next.planProgress = { ...(next.planProgress || {}), [taskId]: !next.planProgress?.[taskId] };
+      writeState(next);
+      showToast(next.planProgress[taskId] ? "Plan task marked complete." : "Plan task reopened.");
+      renderVera();
+    }));
+    qsa("[data-plan-jump]").forEach(btn => btn.addEventListener("click", () => {
+      activeTab = btn.dataset.planJump;
+      location.hash = activeTab;
+      if (activeTab === "chat") sendVera("Help me work through my 90-day plan");
+      else renderVera();
+    }));
+    qs("[data-interview-role]")?.addEventListener("change", event => {
+      const next = readState();
+      next.interviewCoach = { ...(next.interviewCoach || {}), role: event.currentTarget.value.trim() };
+      writeState(next);
+    });
+    qsa("[data-interview-type]").forEach(btn => btn.addEventListener("click", () => {
+      const next = readState();
+      next.interviewCoach = { ...(next.interviewCoach || {}), type: btn.dataset.interviewType, started: false, feedback: null };
+      writeState(next);
+      renderVera();
+    }));
+    qsa("[data-interview-focus]").forEach(btn => btn.addEventListener("click", () => {
+      const next = readState();
+      next.interviewCoach = { ...(next.interviewCoach || {}), focus: btn.dataset.interviewFocus, started: false, feedback: null };
+      writeState(next);
+      renderVera();
+    }));
+    qs("[data-interview-start]")?.addEventListener("click", () => {
+      const next = readState();
+      const role = qs("[data-interview-role]")?.value.trim();
+      next.interviewCoach = { ...(next.interviewCoach || {}), role, started: true, answer: "", feedback: null };
+      writeState(next);
+      showToast("Interview question generated.");
+      renderVera();
+    });
+    qs("[data-interview-reset]")?.addEventListener("click", () => {
+      const next = readState();
+      next.interviewCoach = { role: "", type: "Behavioral", focus: "Leadership", started: false, answer: "", feedback: null, sessions: next.interviewCoach?.sessions || [] };
+      writeState(next);
+      showToast("Interview setup reset.");
+      renderVera();
+    });
+    qs("[data-interview-fill]")?.addEventListener("click", () => {
+      const input = qs("[data-interview-form] textarea[name='answer']");
+      if (!input) return;
+      input.value = "Situation: The project had unclear goals and competing stakeholder priorities. Task: I needed to align the team around one measurable outcome. Action: I mapped the user journey, compared two solution paths, explained the trade-off, and tested the preferred direction. Result: We improved the target metric and I documented what I would do differently next time.";
+      input.focus();
+    });
     qs("[data-chat-form]")?.addEventListener("submit", event => {
       event.preventDefault();
       const input = event.currentTarget.message;
@@ -3263,19 +3496,43 @@ function renderVera() {
     qs("[data-interview-form]")?.addEventListener("submit", event => {
       event.preventDefault();
       const answer = event.currentTarget.answer.value.trim();
-      const score = answer.length > 120 ? 82 : 64;
-      qs("[data-interview-feedback]").innerHTML = `
-        <div class="score-grid">
-          ${[
-            ["Structure", score],
-            ["Specificity", Math.max(58, score - 8)],
-            ["Impact", Math.max(56, score - 12)],
-            ["Confidence", Math.min(90, score + 4)]
-          ].map(([label, value]) => `<div class="score-tile"><span>${label}</span><strong>${value}%</strong></div>`).join("")}
-        </div>
-        <div class="vera-box detail-section"><h3>Vera feedback</h3><p class="muted">Your answer needs a sharper metric and one clearer trade-off. Add what changed after your decision, then close with the result.</p></div>
-      `;
-      createIcons();
+      if (!answer) return;
+      const hasMetric = /\d|%|rm|kpi|metric|increase|decrease|improve|reduced|growth/i.test(answer);
+      const hasTradeoff = /trade[- ]?off|instead|chose|because|priorit/i.test(answer);
+      const hasStructure = /situation|task|action|result|context|outcome/i.test(answer);
+      const base = answer.length > 180 ? 76 : answer.length > 90 ? 66 : 56;
+      const structure = Math.min(94, base + (hasStructure ? 12 : 0));
+      const specificity = Math.min(92, base + (hasMetric ? 14 : 2));
+      const relevance = Math.min(90, base + (hasTradeoff ? 12 : 4));
+      const confidence = Math.min(93, Math.round((structure + specificity + relevance) / 3) + 3);
+      const total = Math.round((structure + specificity + relevance + confidence) / 4);
+      const next = readState();
+      next.interviewCoach = {
+        ...(next.interviewCoach || {}),
+        answer,
+        feedback: {
+          score: total,
+          dimensions: [
+            { label: "Structure", value: structure },
+            { label: "Specificity", value: specificity },
+            { label: "Role relevance", value: relevance },
+            { label: "Confidence", value: confidence }
+          ],
+          summary: total >= 82
+            ? "Strong answer. Keep the structure, then make the final result even more concrete."
+            : "Good start. Add clearer STAR structure, one measurable result, and one trade-off so the interviewer can see your judgment.",
+          notes: [
+            hasStructure ? "Your answer has a usable structure." : "Add a clearer Situation, Action, Result sequence.",
+            hasMetric ? "You included measurable evidence." : "Add one number, signal, or before/after outcome.",
+            hasTradeoff ? "The trade-off gives your answer stronger seniority." : "Name one option you rejected and why."
+          ],
+          model: "A stronger version: I started with the business problem, named the constraint, compared two paths, chose one based on user impact and delivery risk, measured the result, and closed with what I learned."
+        },
+        sessions: [...(next.interviewCoach?.sessions || []), { score: total, date: nowStamp() }].slice(-8)
+      };
+      writeState(next);
+      showToast(`Interview feedback ready: ${total}%.`);
+      renderVera();
     });
     createIcons();
   }
@@ -3284,6 +3541,7 @@ function renderVera() {
 
 function veraReply(text) {
   const t = text.toLowerCase();
+  if (t.includes("90-day") || t.includes("90 day")) return "For the 90-day plan, treat each phase as an evidence sprint. First lock your target and baseline, then build proof for the top gap, then apply selectively and prepare decision-quality interview stories.";
   if (t.includes("7-day") || t.includes("7 day") || t.includes("job search plan")) return "Here is your 7-day plan: Day 1 choose one target role, Day 2 polish one proof-heavy case study, Day 3 compare three companies, Day 4 save five roles, Day 5 apply to the best two, Day 6 practice one interview story, Day 7 review what got responses and adjust your filters.";
   if (t.includes("active application") || t.includes("application status") || t.includes("follow up")) return "For your active application, do three things: prepare a 60-second fit story, map the job requirements to two concrete projects, and send a short follow-up if there has been no update after five working days.";
   if (t.includes("skill gap") || t.includes("close first") || t.includes("gap should")) return "Close the proof gap first, not the certificate gap. For your target path, the strongest next proof is a product strategy memo with a metric, a trade-off, and one stakeholder decision.";
@@ -4093,39 +4351,205 @@ function renderMarket() {
   if (needsOnboarding(root)) return;
   const state = readState();
   const target = getTargetLabel(state.profile).toLowerCase();
-  const current = DATA.marketRoles.find(role => target.includes(role.role.toLowerCase()) || role.role.toLowerCase().includes(target)) || DATA.marketRoles[0];
+  const roleFromHash = decodeURIComponent((location.hash || "").replace("#role=", ""));
+  const current = DATA.marketRoles.find(role => role.role === roleFromHash)
+    || DATA.marketRoles.find(role => target.includes(role.role.toLowerCase()) || role.role.toLowerCase().includes(target))
+    || DATA.marketRoles[0];
   const intel = state.profile.intelligence || generateCareerIntelligence(state.profile);
+  const targetWorth = Math.round(current.fair * 1.15);
+  const gap = Math.max(0, current.fair - current.current);
+  const breakdown = [
+    ["Experience", 28000, "Years, project scope, delivery ownership"],
+    ["Core skills", 18000, current.skills.slice(0, 2).join(", ")],
+    ["Industry premium", 12000, "High-demand sectors and domain signal"],
+    ["Location", 8000, state.profile.personal.cityState || "Malaysia"],
+    ["Leadership proof", 15000, "Stakeholder and decision evidence"],
+    ["Market demand", 11000, `${current.demand} demand, ${current.trend} trend`]
+  ];
+  const maxBreakdown = Math.max(...breakdown.map(item => item[1]));
+  const scenarios = [
+    ["Current profile", [], current.current],
+    ["Close proof gap", ["Case study", "Metrics"], Math.round(current.current * 1.08)],
+    ["Add strategy signal", ["Product strategy", "Roadmap"], Math.round(current.current * 1.18)],
+    ["AI-ready path", ["AI literacy", "Workflow design"], current.potential]
+  ];
+  const locations = [
+    ["Kuala Lumpur", money(current.fair), "42%", "Medium"],
+    ["Petaling Jaya", money(Math.round(current.fair * 0.96)), "38%", "Medium"],
+    ["Singapore remote", money(Math.round(current.fair * 1.42)), "61%", "High"],
+    ["Penang", money(Math.round(current.fair * 0.88)), "29%", "Low"]
+  ];
+  const emergingRoles = [
+    ["AI Product Manager", "+31%", "Very high"],
+    ["Product Analytics Specialist", "+24%", "High"],
+    ["AI UX Designer", "+28%", "High"],
+    ["Growth Product Designer", "+19%", "High"]
+  ];
+  const marketPlan = state.marketPlan?.role === current.role ? state.marketPlan : null;
+  const marketPlanTasks = marketPlan?.tasks || [];
+  const marketPlanDone = marketPlanTasks.filter(task => task.done).length;
+  const marketPlanPercent = marketPlanTasks.length ? Math.round((marketPlanDone / marketPlanTasks.length) * 100) : 0;
   root.innerHTML = appShell("market", `
-    <section class="glass-card">
-      <div class="eyebrow"><span class="spark">*</span> Market Intelligence</div>
-      <h1 class="section-title">Know your worth and the market direction.</h1>
-      <p class="section-sub">${intel.salaryPositioning}. CareerGo uses ranges and direction signals here, not fake exact pay promises.</p>
+    <section class="glass-card dashboard-hero market-hero">
+      <div>
+        <div class="eyebrow"><span class="spark">*</span> Market Intelligence</div>
+        <h1 class="section-title">Know your worth and the market direction.</h1>
+        <p class="section-sub">${intel.salaryPositioning}. CareerGo uses ranges and direction signals here, not fake exact pay promises.</p>
+      </div>
+      <div class="market-hero-meter">
+        <span>Fair value gap</span>
+        <strong>${gap ? money(gap) : "On track"}</strong>
+        ${progressBar(Math.min(100, Math.round((current.current / current.potential) * 100)))}
+      </div>
     </section>
-    <section class="score-grid">
-      <div class="score-tile"><span>Current worth</span><strong>${money(current.current)}</strong></div>
-      <div class="score-tile"><span>Fair value</span><strong>${money(current.fair)}</strong></div>
-      <div class="score-tile"><span>Potential</span><strong>${money(current.potential)}</strong></div>
-      <div class="score-tile"><span>Demand</span><strong>${current.demand}</strong></div>
+    <section class="market-worth-grid">
+      ${[
+        ["Current worth", money(current.current), "Your current estimated profile value"],
+        ["Target worth", money(targetWorth), "Reachable with stronger proof"],
+        ["Potential worth", money(current.potential), "Upper range for this path"],
+        ["Market demand", current.demand, `${current.trend} hiring trend`]
+      ].map(([label, value, body]) => `<article class="market-worth-card"><span>${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}
+    </section>
+    <section class="glass-card market-workbench">
+      <div class="section-head compact-section-head">
+        <div><div class="section-kicker">Career value explorer</div><h2 class="section-title mini">${current.role}</h2></div>
+        <span class="pill green">${current.trend}</span>
+      </div>
+      <div class="market-role-tabs">
+        ${DATA.marketRoles.map(role => `<button class="pill ${role.role === current.role ? "cyan active" : ""}" type="button" data-market-role="${role.role}">${role.role}</button>`).join("")}
+      </div>
+      <div class="market-detail-grid">
+        <div class="market-breakdown">
+          <h3>Worth breakdown</h3>
+          ${breakdown.map(([label, value, note]) => `
+            <div class="market-breakdown-row">
+              <div><strong>${label}</strong><span>${note}</span></div>
+              <div class="market-breakdown-bar"><i style="width:${Math.round((value / maxBreakdown) * 100)}%"></i></div>
+              <b>+${money(value)}</b>
+            </div>
+          `).join("")}
+        </div>
+        <div class="market-role-card">
+          <h3>Role signals</h3>
+          <div class="score-grid compact">
+            <div class="score-tile"><span>Fair value</span><strong>${money(current.fair)}</strong></div>
+            <div class="score-tile"><span>Potential</span><strong>${money(current.potential)}</strong></div>
+            <div class="score-tile"><span>Demand</span><strong>${current.demand}</strong></div>
+            <div class="score-tile"><span>Trend</span><strong>${current.trend}</strong></div>
+          </div>
+          ${pills(current.skills, "cyan")}
+          <div class="plan-outcome"><strong>Vera read</strong><span>The fastest salary lift is proving ${current.skills[0]} through a project with measurable impact and a clear trade-off.</span></div>
+        </div>
+      </div>
+    </section>
+    <section class="glass-card market-simulator">
+      <div class="section-head compact-section-head"><div><div class="section-kicker">Growth simulator</div><h2 class="section-title mini">What changes your value?</h2></div><button class="btn btn-cyan" type="button" data-market-plan>${icon("route")} Build value plan</button></div>
+      <div class="market-scenario-grid">
+        ${scenarios.map(([title, skills, value], index) => `<article class="market-scenario-card ${index === scenarios.length - 1 ? "highlight" : ""}"><span>Scenario ${index + 1}</span><strong>${money(value)}</strong><p>${title}</p>${skills.length ? pills(skills, index === scenarios.length - 1 ? "gold" : "cyan") : `<div class="muted small">Current evidence</div>`}</article>`).join("")}
+      </div>
+      ${marketPlan ? `
+        <div class="market-value-plan">
+          <div class="section-head compact-section-head">
+            <div>
+              <div class="section-kicker">Value plan active</div>
+              <h2 class="section-title mini">${marketPlan.title}</h2>
+              <p class="section-sub">${marketPlan.summary}</p>
+            </div>
+            <span class="pill ${marketPlanPercent === 100 ? "green" : "cyan"}">${marketPlanPercent}% complete</span>
+          </div>
+          <div class="plan-summary-grid">
+            <article class="plan-summary-card"><span>Value target</span><strong>${money(marketPlan.targetValue)}</strong><p class="muted small">Current: ${money(current.current)}</p></article>
+            <article class="plan-summary-card"><span>Expected lift</span><strong>+${money(marketPlan.expectedLift)}</strong><p class="muted small">From proof, strategy, and AI readiness</p></article>
+            <article class="plan-summary-card"><span>Progress</span><strong>${marketPlanDone}/${marketPlanTasks.length}</strong>${progressBar(marketPlanPercent)}</article>
+          </div>
+          <div class="plan-task-list">
+            ${marketPlanTasks.map(task => `
+              <div class="plan-task ${task.done ? "complete" : ""}">
+                <button type="button" class="plan-task-check" data-market-task="${task.id}" aria-label="${task.done ? "Mark incomplete" : "Mark complete"}">${icon(task.done ? "check" : "circle")}</button>
+                <span><strong>${task.title}</strong><small>${task.body}</small></span>
+                <a href="${task.href}" aria-label="Open related page">${icon("arrow-up-right")}</a>
+              </div>
+            `).join("")}
+          </div>
+          <div class="plan-command-row">
+            <a class="btn btn-cyan" href="vera.html#chat">${icon("message-circle")} Discuss with Vera</a>
+            <a class="btn btn-ghost" href="profile.html">${icon("brain-circuit")} Update proof</a>
+            <button class="btn btn-ghost" type="button" data-market-plan-reset>${icon("rotate-ccw")} Reset value plan</button>
+          </div>
+        </div>
+      ` : ""}
+    </section>
+    <section class="market-signal-grid">
+      <article class="glass-card">
+        <div class="section-kicker">Market pulse</div>
+        <div class="list-stack">${DATA.pulse.map(signal => `<div class="list-card quiet"><h3>${signal.title}</h3><p class="muted">${signal.body}</p><span class="pill gold">${signal.impact}</span></div>`).join("")}</div>
+      </article>
+      <article class="glass-card">
+        <div class="section-kicker">Emerging roles</div>
+        <div class="list-stack">${emergingRoles.map(([role, trend, demand]) => `<div class="list-card quiet"><div class="list-card-top"><h3>${role}</h3><span class="pill green">${trend}</span></div><p class="muted small">${demand} demand in adjacent markets</p></div>`).join("")}</div>
+      </article>
     </section>
     <section class="content-grid">
-      <div class="glass-card">
-        <div class="section-kicker">Career value explorer</div>
-        ${DATA.marketRoles.map(role => `<div class="list-card"><div class="list-card-top"><div><h3>${role.role}</h3><div class="muted small">${role.demand} demand - ${role.trend}</div></div><span class="pill green">${money(role.fair)}</span></div>${pills(role.skills, "cyan")}</div>`).join("")}
-      </div>
-      <div class="glass-card">
-        <div class="section-kicker">Growth simulator</div>
-        ${[
-          ["Add product strategy case study", "+RM8k", 65],
-          ["Add SQL dashboard proof", "+RM6k", 45],
-          ["Add AI product workflow", "+RM12k", 72]
-        ].map(([title, lift, value]) => `<div class="tool-card"><div class="list-card-top"><h3>${title}</h3><span class="pill gold">${lift}</span></div>${progressBar(value)}</div>`).join("")}
-      </div>
-    </section>
-    <section class="glass-card">
-      <div class="section-kicker">Market pulse</div>
-      <div class="grid-3">${DATA.pulse.map(signal => `<article class="tool-card"><h3>${signal.title}</h3><p>${signal.body}</p><p class="muted small">${signal.impact}</p></article>`).join("")}</div>
+      <article class="glass-card">
+        <div class="section-kicker">Location opportunity</div>
+        <div class="table-wrap"><table class="comparison-table"><thead><tr><th>Location</th><th>Avg salary</th><th>Remote %</th><th>Competition</th></tr></thead><tbody>${locations.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+      </article>
+      <article class="glass-card">
+        <div class="section-kicker">AI market insights</div>
+        <div class="chat-insight-list">
+          ${[
+            `Your profile is closest to ${current.role}; build proof for ${current.skills[0]} first.`,
+            `Roles above ${money(targetWorth)} need stronger business impact and stakeholder evidence.`,
+            "Remote and Singapore-linked roles improve upside, but competition rises sharply."
+          ].map(item => `<div class="chat-insight"><strong>${icon("lightbulb")} Insight</strong><span>${item}</span></div>`).join("")}
+        </div>
+      </article>
     </section>
   `);
+  qsa("[data-market-role]").forEach(btn => btn.addEventListener("click", () => {
+    location.hash = `role=${encodeURIComponent(btn.dataset.marketRole)}`;
+    renderMarket();
+  }));
+  qs("[data-market-plan]")?.addEventListener("click", () => {
+    const next = readState();
+    const expectedLift = Math.max(8000, Math.round(current.fair * 0.14));
+    next.marketPlan = {
+      role: current.role,
+      title: `${current.role} value lift plan`,
+      summary: `A 30-day plan to move from ${money(current.current)} toward ${money(Math.min(current.potential, current.current + expectedLift))} by proving ${current.skills[0]}, measurable impact, and market-ready positioning.`,
+      targetValue: Math.min(current.potential, current.current + expectedLift),
+      expectedLift,
+      createdAt: nowStamp(),
+      tasks: [
+        { id: "market-proof", title: `Prove ${current.skills[0]}`, body: "Add one project story with context, trade-off, metric, and result.", href: "profile.html", done: false },
+        { id: "market-benchmark", title: "Benchmark 5 roles", body: "Compare salary range, demand, competition, and required proof.", href: "jobs.html", done: false },
+        { id: "market-signal", title: "Add one market signal", body: `Build evidence around ${current.skills[1] || "a high-demand skill"} using a concrete artifact.`, href: "vera.html#skills", done: false },
+        { id: "market-story", title: "Practice value story", body: "Prepare a 60-second answer explaining why your market value has increased.", href: "vera.html#interview", done: false }
+      ]
+    };
+    next.chat = [
+      ...next.chat,
+      { from: "vera", text: `I built a value plan for ${current.role}. Start with ${current.skills[0]}, benchmark five roles, then prove the lift with one measurable project story.` }
+    ];
+    writeState(next);
+    showToast("Vera built your market value plan.");
+    renderMarket();
+  });
+  qsa("[data-market-task]").forEach(btn => btn.addEventListener("click", () => {
+    const next = readState();
+    if (!next.marketPlan?.tasks) return;
+    next.marketPlan.tasks = next.marketPlan.tasks.map(task => task.id === btn.dataset.marketTask ? { ...task, done: !task.done } : task);
+    writeState(next);
+    showToast("Market value plan updated.");
+    renderMarket();
+  }));
+  qs("[data-market-plan-reset]")?.addEventListener("click", () => {
+    const next = readState();
+    next.marketPlan = null;
+    writeState(next);
+    showToast("Market value plan reset.");
+    renderMarket();
+  });
   createIcons();
 }
 
@@ -4137,25 +4561,85 @@ function renderAutopilot() {
   const state = readState();
   const tracked = getTrackedJobs(state);
   const counts = applicationSummaryCounts(state);
+  const activeStage = (location.hash || "").replace("#stage=", "") || "all";
+  const filteredTracked = activeStage === "all" ? tracked : tracked.filter(({ record }) => record.stage === activeStage);
+  const activeId = new URLSearchParams(location.search).get("app") || new URLSearchParams(location.search).get("job") || filteredTracked[0]?.job.id || tracked[0]?.job.id;
+  const activeItem = tracked.find(({ job }) => job.id === activeId) || filteredTracked[0] || tracked[0];
+  const dueSoon = tracked.filter(({ record }) => /today|tomorrow|next 3 days/i.test(record.deadline)).length;
+  const activeApps = tracked.filter(({ record }) => !["archived", "rejected"].includes(record.stage)).length;
+  const interviewCount = counts.interview || 0;
+  const suggestedJobs = DATA.jobs.filter(job => !state.applicationRecords?.[job.id] && !state.ignoredJobs.includes(job.id)).slice(0, 3);
   root.innerHTML = appShell("autopilot", `
     <section class="glass-card dashboard-hero">
       <div><div class="eyebrow"><span class="spark">*</span> Applications</div><h1 class="section-title">Track every role from saved to outcome.</h1><p class="section-sub">See status, next action, deadline, Vera advice, and automation rules in one place.</p></div>
       <div class="radar"><span></span></div>
     </section>
     <section class="glass-card application-overview">
-      <div class="section-head"><div><div class="section-kicker">Pipeline</div><h2 class="section-title mini">Nothing disappears after you apply.</h2></div><a class="btn btn-primary" href="jobs.html#tracker">${icon("briefcase")} Manage in Jobs</a></div>
-      <div class="pipeline-strip">
-        ${APPLICATION_STAGES.slice(0, 6).map(stage => `<div class="pipeline-stage"><span>${stage.label}</span><strong>${counts[stage.key] || 0}</strong></div>`).join("")}
+      <div class="section-head">
+        <div><div class="section-kicker">Application command center</div><h2 class="section-title mini">Nothing disappears after you apply.</h2></div>
+        <div class="hero-actions compact-actions"><a class="btn btn-primary" href="jobs.html#tracker">${icon("briefcase")} Manage in Jobs</a><button class="btn btn-cyan" type="button" data-add-best-role>${icon("plus")} Track best match</button></div>
       </div>
-      <div class="list-stack spacious-list">
-        ${tracked.length ? tracked.map(({ job, record }) => `
-          <a class="list-card application-row" href="jobs.html?job=${job.id}#tracker">
-            <div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${record.deadline}</div></div>${applicationStagePill(record.stage)}</div>
-            <p class="muted">${record.nextAction}</p>
-            ${applicationProgress(record)}
-          </a>
-        `).join("") : `<div class="card">No applications yet. Save or apply to a job to start tracking progress.</div>`}
+      <div class="application-kpi-grid">
+        ${[
+          ["Active", activeApps, "Live roles in your search", "kanban"],
+          ["Due soon", dueSoon, "Needs action now", "clock"],
+          ["Interviews", interviewCount, "Prep with Vera", "messages-square"],
+          ["Tracked", tracked.length, "Saved to outcome", "list-checks"]
+        ].map(([label, value, body, ic]) => `<article class="application-kpi-card">${icon(ic)}<span>${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}
       </div>
+      <div class="pipeline-strip application-stage-filter">
+        <button class="pipeline-stage ${activeStage === "all" ? "active" : ""}" type="button" data-app-filter="all"><span>All</span><strong>${tracked.length}</strong></button>
+        ${APPLICATION_STAGES.slice(0, 6).map(stage => `<button class="pipeline-stage ${activeStage === stage.key ? "active" : ""}" type="button" data-app-filter="${stage.key}"><span>${stage.label}</span><strong>${counts[stage.key] || 0}</strong></button>`).join("")}
+      </div>
+        <div class="applications-workspace">
+        <div class="applications-list list-stack spacious-list" data-application-list>
+          ${filteredTracked.length ? filteredTracked.map(({ job, record }) => `
+            <article class="list-card application-row ${activeItem?.job.id === job.id ? "active" : ""}" data-application-select="${job.id}">
+              <div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div>
+              <div class="application-row-meta">${applicationStagePill(record.stage)}<span class="pill gold">${record.deadline}</span></div>
+              <p class="muted">${record.nextAction}</p>
+              ${applicationProgress(record)}
+            </article>
+          `).join("") : `<div class="card">No applications match this stage yet.</div>`}
+        </div>
+        <aside class="glass-card application-detail-card" data-application-detail>
+          ${activeItem ? `
+            <div class="detail-head"><div><h2>${activeItem.job.title}</h2><div class="muted">${activeItem.job.company} - ${activeItem.job.location}</div></div>${applicationStagePill(activeItem.record.stage)}</div>
+            <div class="score-grid compact">
+              <div class="score-tile"><span>Match</span><strong>${activeItem.job.match}%</strong></div>
+              <div class="score-tile"><span>Deadline</span><strong>${activeItem.record.deadline}</strong></div>
+              <div class="score-tile"><span>Mode</span><strong>${activeItem.job.type}</strong></div>
+              <div class="score-tile"><span>Salary</span><strong>${activeItem.job.salary}</strong></div>
+            </div>
+            <div class="application-stage-actions">
+              ${APPLICATION_STAGES.slice(0, 6).map(stage => `<button class="${activeItem.record.stage === stage.key ? "active" : ""}" type="button" data-app-stage="${stage.key}" data-app-id="${activeItem.job.id}">${icon(stage.icon)} ${stage.label}</button>`).join("")}
+            </div>
+            <div class="detail-section compact-timeline">
+              ${activeItem.record.timeline.map(item => `<div class="timeline-item ${item.done ? "complete" : ""}"><h3>${item.label}</h3><p class="muted small">${item.date}</p></div>`).join("")}
+            </div>
+            <form class="application-note-form" data-application-note="${activeItem.job.id}">
+              <label>Vera note <textarea name="note">${activeItem.record.note || ""}</textarea></label>
+              <button class="btn btn-ghost" type="submit">${icon("save")} Save note</button>
+            </form>
+            <div class="plan-outcome"><strong>Next action</strong><span>${activeItem.record.nextAction}</span></div>
+            <div class="plan-command-row">
+              <button class="btn btn-cyan" type="button" data-app-vera="${activeItem.job.id}">${icon("sparkles")} Ask Vera</button>
+              <a class="btn btn-ghost" href="jobs.html?job=${activeItem.job.id}#tracker">${icon("external-link")} Open job</a>
+              <button class="btn btn-ghost" type="button" data-app-stage="archived" data-app-id="${activeItem.job.id}">${icon("archive")} Archive</button>
+              <button class="btn btn-ghost" type="button" data-back-app-list>${icon("arrow-up")} Back to list</button>
+            </div>
+          ` : `
+            <h2 class="section-title mini">Start tracking applications.</h2>
+            <p class="muted">Save or apply to a role, then CareerGo will show timeline, next action, and Vera coaching here.</p>
+          `}
+        </aside>
+      </div>
+      ${suggestedJobs.length ? `
+        <div class="application-suggestion-strip">
+          <div><div class="section-kicker">Suggested to track</div><h3>High-fit roles not in your pipeline yet.</h3></div>
+          <div class="application-suggestion-list">${suggestedJobs.map(job => `<button class="pill cyan" type="button" data-track-role="${job.id}">${icon("plus")} ${job.title} · ${job.match}%</button>`).join("")}</div>
+        </div>
+      ` : ""}
     </section>
     <section class="content-grid">
       <form class="glass-card form-grid" data-rules-form>
@@ -4178,6 +4662,65 @@ function renderAutopilot() {
       <div class="list-stack">${DATA.autopilotEvents.map(event => `<div class="list-card"><div class="list-card-top"><div><h3>${event.title}</h3><div class="muted small">${event.reason}</div></div><span class="pill ${event.type === "skipped" ? "red" : event.type === "saved" ? "gold" : "green"}">${event.status}</span></div></div>`).join("")}</div>
     </section>
   `, { title: "Applications", subtitle: "Track status, follow-ups, deadlines, and Vera's next actions." });
+  qsa("[data-app-filter]").forEach(btn => btn.addEventListener("click", () => {
+    location.hash = `stage=${btn.dataset.appFilter}`;
+    renderAutopilot();
+  }));
+  qsa("[data-application-select]").forEach(card => card.addEventListener("click", () => {
+    const url = new URL(location.href);
+    url.searchParams.set("app", card.dataset.applicationSelect);
+    history.replaceState(null, "", `${url.pathname}${url.search}${location.hash}`);
+    renderAutopilot();
+    window.setTimeout(() => qs("[data-application-detail]")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+  }));
+  qs("[data-back-app-list]")?.addEventListener("click", () => {
+    qs("[data-application-list]")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  qsa("[data-app-stage]").forEach(btn => btn.addEventListener("click", () => {
+    updateApplicationStage(btn.dataset.appId, btn.dataset.appStage);
+    showToast(`Application moved to ${stageMeta(btn.dataset.appStage).label}.`);
+    renderAutopilot();
+  }));
+  qsa("[data-application-note]").forEach(form => form.addEventListener("submit", event => {
+    event.preventDefault();
+    const jobId = form.dataset.applicationNote;
+    const next = readState();
+    const record = next.applicationRecords?.[jobId];
+    if (!record) return;
+    next.applicationRecords = {
+      ...(next.applicationRecords || {}),
+      [jobId]: { ...record, note: form.note.value.trim(), updatedAt: nowStamp() }
+    };
+    writeState(syncCurrentUser(next));
+    showToast("Application note saved.");
+    renderAutopilot();
+  }));
+  qsa("[data-app-vera]").forEach(btn => btn.addEventListener("click", () => {
+    const next = readState();
+    const job = DATA.jobs.find(item => item.id === btn.dataset.appVera);
+    if (!job) return;
+    next.chat = [
+      ...next.chat,
+      { from: "user", text: `Help me with my ${job.title} application at ${job.company}` },
+      { from: "vera", text: `For ${job.title} at ${job.company}, prepare proof for ${job.skills.slice(0, 2).join(" and ")}. Your next move is to connect one project outcome to the role requirements and decide the follow-up timing.` }
+    ];
+    writeState(next);
+    showToast("Vera added application coaching to chat.");
+  }));
+  qsa("[data-track-role]").forEach(btn => btn.addEventListener("click", () => {
+    updateApplicationStage(btn.dataset.trackRole, "saved");
+    showToast("Role added to Applications.");
+    renderAutopilot();
+  }));
+  qs("[data-add-best-role]")?.addEventListener("click", () => {
+    const best = DATA.jobs
+      .filter(job => !readState().applicationRecords?.[job.id])
+      .sort((a, b) => b.match - a.match)[0];
+    if (!best) return showToast("All recommended roles are already tracked.");
+    updateApplicationStage(best.id, "saved");
+    showToast(`${best.title} added to Applications.`);
+    renderAutopilot();
+  });
   qs("[data-rules-form]").addEventListener("submit", event => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
