@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CareerGo - Your Career OS</title>
+  <title>CareerGo - AI Career Operating System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900;1000&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="enterprise.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body data-page="home">
@@ -15,175 +16,192 @@
     <header class="topbar">
       <div class="nav-inner">
         <a class="brand" href="index.html">
-          <img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo">
+          <img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo">
           <span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span>
         </a>
         <nav class="nav-links" aria-label="Main navigation">
-          <a data-nav="home" href="index.html">Home</a>
           <a data-nav="jobs" href="jobs.html">Jobs</a>
           <a data-nav="companies" href="companies.html">Companies</a>
           <a data-nav="universities" href="universities.html">Universities</a>
           <a data-nav="community" href="community.html">Community</a>
-          <a data-nav="about" href="about.html">About</a>
         </nav>
         <div class="nav-actions">
-          <a class="btn btn-ghost" href="login.html"><i data-lucide="log-in"></i> Login</a>
-          <a class="btn btn-primary" href="register.html"><i data-lucide="rocket"></i> Create Account</a>
+          <a class="btn btn-ghost" href="login.html">Login</a>
+          <a class="btn btn-primary" href="register.html">Create account</a>
         </div>
       </div>
       <nav class="mobile-nav" aria-label="Mobile navigation">
-        <a data-nav="home" href="index.html">Home</a>
         <a data-nav="jobs" href="jobs.html">Jobs</a>
         <a data-nav="companies" href="companies.html">Companies</a>
         <a data-nav="universities" href="universities.html">Universities</a>
         <a data-nav="community" href="community.html">Community</a>
-        <a data-nav="about" href="about.html">About</a>
       </nav>
     </header>
 
-    <main>
-      <section class="hero">
-        <div class="container hero-content">
-          <div class="hero-copy-block">
-            <div class="eyebrow"><span class="spark">*</span> AI-guided career platform</div>
-            <h1>Design your career like a <span>mission.</span></h1>
-            <p class="hero-copy">CareerGo helps you find jobs, research companies and universities, compare reviews, track applications, and get coached by Vera from day one.</p>
+    <main class="home-main">
+      <section class="home-hero">
+        <div class="home-container home-hero-inner">
+          <div class="home-badge"><span></span>The AI-Powered Career Operating System</div>
+          <h1>Design your career <em>with confidence.</em></h1>
+          <p>From your first internship to your next leadership role, CareerGo gives you the intelligence, coaching, and clarity to navigate every step of your professional journey.</p>
+          <div class="home-hero-actions">
+            <a class="home-btn home-btn-primary" href="register.html">Create account <i data-lucide="arrow-right"></i></a>
+            <a class="home-btn home-btn-secondary" href="jobs.html">Explore careers</a>
           </div>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="job-seeker.html"><i data-lucide="sparkles"></i> Start with Vera</a>
-            <a class="btn btn-cyan" href="job-seeker.html"><i data-lucide="briefcase"></i> I'm looking for a job</a>
-            <a class="btn btn-ghost" href="employers.html"><i data-lucide="building-2"></i> I'm hiring</a>
-          </div>
-          <form class="search-panel hero-discovery-engine" action="jobs.html">
-            <div class="hero-search-heading">
-              <span><i data-lucide="sparkles"></i> AI Career Discovery Engine</span>
-              <small>Search jobs, companies, universities, or career paths</small>
-            </div>
-            <div class="hero-search-fields">
-              <div class="field"><i data-lucide="search"></i><input name="q" placeholder="Ask for Data Analyst roles, Grab reviews, UX internships..."></div>
-              <button class="btn btn-gold" type="submit"><i data-lucide="arrow-right"></i> Discover</button>
-            </div>
+          <form class="home-search" action="jobs.html">
+            <i data-lucide="sparkles"></i>
+            <input name="q" aria-label="Search CareerGo" placeholder="Search careers, jobs, companies...">
+            <button type="submit"><i data-lucide="search"></i> Search</button>
           </form>
-          <div class="metric-strip hero-metrics">
-            <div class="metric"><strong data-count-to="1200" data-count-duration="1500" data-count-suffix="+">1,200+</strong><span>Jobs tracked</span></div>
-            <div class="metric"><strong data-count-to="4.4" data-count-duration="1200" data-count-decimals="1">4.4</strong><span>Org rating</span></div>
-            <div class="metric"><strong data-count-to="78" data-count-duration="1300" data-count-suffix="%">78%</strong><span>Ready score</span></div>
-            <div class="metric"><strong data-count-static>24/7</strong><span>Vera coach</span></div>
+          <div class="home-search-prompts" aria-label="Suggested searches">
+            <span>Try</span>
+            <a href="jobs.html?q=graduate%20product%20roles%20in%20Singapore">graduate product roles in Singapore</a>
+            <a href="jobs.html?q=switch%20from%20finance%20to%20design">switch from finance to design</a>
+            <a href="market.html?role=senior%20PM">senior PM comp benchmarks</a>
           </div>
         </div>
       </section>
 
-      <section class="section">
-        <div class="container">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">Why it is useful</div>
-              <h2>Not another job board. A full career decision system.</h2>
-              <p class="section-sub">The website is built around real actions: discover roles, inspect organizations, ask Vera, save options, apply, and track progress.</p>
+      <section class="home-preview-section" aria-label="CareerGo workspace preview">
+        <div class="home-container">
+          <div class="home-preview-wrap">
+            <div class="home-float-card left"><i data-lucide="shield-check"></i><strong>Verified data</strong><span>Cleaner signals</span></div>
+            <div class="home-float-card right"><i data-lucide="trending-up"></i><strong>+18% MoM</strong><span>Role demand</span></div>
+            <div class="home-browser">
+              <div class="home-browser-top">
+                <span></span><span></span><span></span>
+                <small>careergo.app / dashboard</small>
+              </div>
+              <div class="home-browser-grid">
+                <article class="home-preview-card coach">
+                  <div class="home-card-head"><span><i data-lucide="brain-circuit"></i> Career Coach</span><small>AI</small></div>
+                  <p>“Based on your progress, focus on two skills this quarter: <strong>systems design</strong> and <strong>stakeholder communication</strong>.”</p>
+                  <div class="home-pill-row"><span>Personalized</span><span>Weekly plan</span></div>
+                </article>
+                <article class="home-preview-card">
+                  <div class="home-card-head"><span><i data-lucide="chart-line"></i> Market Pulse — Product</span><strong>+18%</strong></div>
+                  <div class="home-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                  <div class="home-range"><span>Mon</span><span>Sun</span></div>
+                </article>
+                <article class="home-preview-card">
+                  <div class="home-card-head"><span><i data-lucide="scale"></i> Fair Pay Engine</span></div>
+                  <strong class="home-salary">$128k - $164k</strong>
+                  <p>Senior PM · SF · 5-7 yrs</p>
+                  <div class="home-paybar"><span></span></div>
+                  <div class="home-range"><span>Below</span><strong>You: 68th %ile</strong><span>Top</span></div>
+                </article>
+                <article class="home-preview-card tracker">
+                  <div class="home-card-head"><span><i data-lucide="clipboard-list"></i> Application Tracker</span><small>4 active</small></div>
+                  <div class="home-application"><span>S</span><strong>Stripe<small>Product Manager</small></strong><em>Interview</em></div>
+                  <div class="home-application"><span>N</span><strong>Notion<small>Senior PM, Growth</small></strong><em>Offer</em></div>
+                  <div class="home-application"><span>L</span><strong>Linear<small>PM, Platform</small></strong><em>Applied</em></div>
+                </article>
+                <article class="home-preview-card next">
+                  <div class="home-card-head"><span><i data-lucide="compass"></i> Next best step</span></div>
+                  <p>Book a mock interview with your AI coach — <strong>30 min.</strong></p>
+                  <a href="vera.html">Start session <i data-lucide="arrow-up-right"></i></a>
+                </article>
+              </div>
             </div>
-          </div>
-          <div class="grid-4">
-            <a class="card" href="jobs.html">
-              <div class="feature-icon"><i data-lucide="briefcase"></i></div>
-              <h3>Job matching</h3>
-              <p>Filter real role options, inspect fit, save roles, and apply with Vera's preparation advice.</p>
-            </a>
-            <a class="card" href="companies.html">
-              <div class="feature-icon"><i data-lucide="building-2"></i></div>
-              <h3>Company research</h3>
-              <p>Check ratings, background, culture, salary signals, watchouts, and employee reviews.</p>
-            </a>
-            <a class="card" href="universities.html">
-              <div class="feature-icon"><i data-lucide="graduation-cap"></i></div>
-              <h3>University reviews</h3>
-              <p>Compare employability, student reviews, program strengths, and graduate outcomes.</p>
-            </a>
-            <a class="card" href="vera.html">
-              <div class="feature-icon"><i data-lucide="sparkles"></i></div>
-              <h3>Coach Vera</h3>
-              <p>A warm AI mentor layer that guides next steps across the whole CareerGo website.</p>
-            </a>
           </div>
         </div>
       </section>
 
-      <section class="section" id="meet-vera">
-        <div class="container">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">Meet Vera</div>
-              <h2>Not a chatbot. A mentor layer across CareerGo.</h2>
-              <p class="section-sub">Vera uses your profile, goals, saved jobs, company research, and application progress to guide your next move with warm, practical coaching.</p>
-            </div>
-            <a class="btn btn-primary" href="job-seeker.html"><i data-lucide="sparkles"></i> Try Vera</a>
-          </div>
-          <div class="grid-4">
-            <div class="card"><div class="feature-icon"><i data-lucide="route"></i></div><h3>Personal roadmap</h3><p>Turns your stage and goals into a clear weekly path.</p></div>
-            <div class="card"><div class="feature-icon"><i data-lucide="message-circle"></i></div><h3>Career questions</h3><p>Explains choices, risks, trade-offs, and next actions.</p></div>
-            <div class="card"><div class="feature-icon"><i data-lucide="briefcase"></i></div><h3>Job decisions</h3><p>Helps compare roles using fit, salary, growth, and evidence.</p></div>
-            <div class="card"><div class="feature-icon"><i data-lucide="list-checks"></i></div><h3>Small missions</h3><p>Gives achievable tasks so users do not feel lost.</p></div>
+      <section class="home-metrics">
+        <div class="home-container home-metrics-grid">
+          <div><strong data-count-to="900" data-count-duration="1200" data-count-suffix="+">900+</strong><span>Leading companies</span></div>
+          <div><strong data-count-to="27880" data-count-duration="1400" data-count-suffix="+">27,880+</strong><span>Live roles</span></div>
+          <div><strong data-count-to="52" data-count-duration="1000">52</strong><span>Sectors</span></div>
+          <div><strong data-count-to="120000" data-count-duration="1500" data-count-suffix="+">120k+</strong><span>Careers guided</span></div>
+        </div>
+      </section>
+
+      <section class="home-logo-band">
+        <div class="home-container">
+          <p>Trusted by candidates and teams at leading companies</p>
+          <div class="home-logo-row">
+            <span>Nestle</span><span>Maybank</span><span>Petronas</span><span>Grab</span><span>Shopee</span><span>AirAsia</span><span>DBS</span><span>Stan. Chart.</span>
           </div>
         </div>
       </section>
 
-      <section class="section">
-        <div class="container">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">Career OS modules</div>
-              <h2>The restored operating system behind the brand.</h2>
-              <p class="section-sub">Open the full workspace for onboarding, career intelligence, market value, Autopilot, posts, and employer hiring workflows.</p>
-            </div>
+      <section class="home-product-section">
+        <div class="home-container">
+          <div class="home-section-head">
+            <span>Product</span>
+            <h2>Everything you need for a career — in one system.</h2>
+            <p>CareerGo unifies research, coaching, and tracking into a single, calm workspace.</p>
           </div>
-          <div class="grid-4">
-            <a class="card" href="onboarding.html"><div class="feature-icon"><i data-lucide="scan-search"></i></div><h3>Onboarding</h3><p>Resume upload, goal setup, skill baseline, and AI readiness analysis.</p></a>
-            <a class="card" href="profile.html"><div class="feature-icon"><i data-lucide="user-round"></i></div><h3>Career intelligence</h3><p>Editable profile, ATS score, score breakdown, gaps, projects, and resume export.</p></a>
-            <a class="card" href="market.html"><div class="feature-icon"><i data-lucide="trending-up"></i></div><h3>Market value</h3><p>Fair Pay Engine, role explorer, salary lift simulator, and market pulse.</p></a>
-            <a class="card" href="autopilot.html"><div class="feature-icon"><i data-lucide="radar"></i></div><h3>Autopilot</h3><p>Rules, opportunity radar, scan-only mode, activity log, and application tracker.</p></a>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="container">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">Featured roles</div>
-              <h2>Start with high-fit openings.</h2>
-            </div>
-            <a class="btn btn-ghost" href="jobs.html">View all jobs</a>
-          </div>
-          <div class="featured-carousel" data-featured-carousel>
-            <div class="featured-carousel-track" data-featured-jobs></div>
+          <div class="home-feature-matrix">
+            <a href="profile.html"><i data-lucide="brain-circuit"></i><h3>Career Intelligence</h3><p>AI models that read the market and map opportunities against your goals.</p></a>
+            <a href="vera.html"><i data-lucide="compass"></i><h3>AI Career Coach</h3><p>A private coach that plans your next move — weekly, quarterly, long-term.</p></a>
+            <a href="market.html"><i data-lucide="activity"></i><h3>Career Simulation</h3><p>Model your future: switch industries, roles, and salaries before you commit.</p></a>
+            <a href="companies.html"><i data-lucide="building-2"></i><h3>Company Research</h3><p>Deep, structured research on culture, comp bands, and hiring signals.</p></a>
+            <a href="universities.html"><i data-lucide="graduation-cap"></i><h3>University Research</h3><p>Compare programs, outcomes, and career pathways with data — not brochures.</p></a>
+            <a href="market.html"><i data-lucide="scale"></i><h3>Fair Pay Engine</h3><p>Know what you're worth. Live benchmarks by role, level, and geography.</p></a>
+            <a href="market.html"><i data-lucide="chart-line"></i><h3>Career Market Pulse</h3><p>Real-time hiring demand, skill trends, and role velocity across sectors.</p></a>
+            <a href="autopilot.html"><i data-lucide="clipboard-list"></i><h3>Application Tracker</h3><p>One quiet inbox for every application, interview, and offer.</p></a>
           </div>
         </div>
       </section>
 
-      <section class="section">
-        <div class="container">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">Research before applying</div>
-              <h2>Know the company or university before you commit.</h2>
-              <p class="section-sub">CareerGo combines background information, ratings, reviews, and Vera's interpretation so users can make better decisions.</p>
-            </div>
-            <a class="btn btn-cyan" href="companies.html">Open research hub</a>
+      <section class="home-stage-section">
+        <div class="home-container">
+          <div class="home-section-head">
+            <span>For every stage</span>
+            <h2>One companion for the whole career.</h2>
+            <p>From your first classroom decision to your next boardroom, CareerGo is there.</p>
           </div>
-          <div class="research-marquee" data-research-marquee>
-            <div class="research-marquee-track" data-featured-orgs></div>
+          <div class="home-stage-line">
+            <article><i data-lucide="graduation-cap"></i><span>Stage 1</span><strong>Student</strong><p>Discover paths early.</p></article>
+            <article><i data-lucide="sparkles"></i><span>Stage 2</span><strong>Graduate</strong><p>Land the right first role.</p></article>
+            <article><i data-lucide="compass"></i><span>Stage 3</span><strong>Professional</strong><p>Grow with intention.</p></article>
+            <article><i data-lucide="users"></i><span>Stage 4</span><strong>Leadership</strong><p>Lead teams and outcomes.</p></article>
+            <article><i data-lucide="activity"></i><span>Stage 5</span><strong>Career Switch</strong><p>Pivot with confidence.</p></article>
+            <article><i data-lucide="trending-up"></i><span>Stage 6</span><strong>Long-term Growth</strong><p>Design a career, not just jobs.</p></article>
           </div>
         </div>
       </section>
 
-      <section class="section">
-        <div class="container glass-card comparison-card" data-comparison-card>
-          <div class="section-head">
+      <section class="home-why-section">
+        <div class="home-container">
+          <div class="home-section-head">
+            <span>Why CareerGo</span>
+            <h2>Beyond the job board.</h2>
+            <p>Job boards help you apply. CareerGo helps you decide, grow, and lead.</p>
+          </div>
+          <div class="home-compare">
+            <article>
+              <div><span>Traditional job boards</span><em>Yesterday</em></div>
+              <p><i data-lucide="x"></i> Endless listings, no direction</p>
+              <p><i data-lucide="x"></i> Opaque salary information</p>
+              <p><i data-lucide="x"></i> One-off transactions</p>
+              <p><i data-lucide="x"></i> Generic advice</p>
+              <p><i data-lucide="x"></i> Fragmented tools</p>
+            </article>
+            <article class="positive">
+              <div><span>CareerGo</span><em>Today</em></div>
+              <p><i data-lucide="check"></i> AI-guided career pathways</p>
+              <p><i data-lucide="check"></i> Live, fair pay benchmarks</p>
+              <p><i data-lucide="check"></i> A lifelong career companion</p>
+              <p><i data-lucide="check"></i> Personalized coaching</p>
+              <p><i data-lucide="check"></i> One unified operating system</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-cta-section">
+        <div class="home-container">
+          <div class="home-cta-panel">
+            <span><i data-lucide="sparkles"></i> Your career, intelligently guided</span>
+            <h2>Ready to build your career?</h2>
+            <p>Join the operating system professionals trust for every stage of their career.</p>
             <div>
-              <div class="section-kicker">Compare fast</div>
-              <h2>Companies and universities side by side.</h2>
+              <a href="register.html">Create your CareerGo account <i data-lucide="arrow-right"></i></a>
+              <a href="community.html">Talk to our team</a>
             </div>
           </div>
-          <div data-comparison></div>
         </div>
       </section>
     </main>

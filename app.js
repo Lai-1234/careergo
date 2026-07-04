@@ -1365,15 +1365,13 @@ function bindAccountMenu() {
 function publicNav() {
   const page = document.body.dataset.page || "home";
   return `
-    <a class="brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
     <nav class="nav-links" aria-label="Public navigation">
       ${[
-        ["home", "Home", "index.html"],
         ["jobs", "Jobs", "jobs.html"],
         ["companies", "Companies", "companies.html"],
         ["universities", "Universities", "universities.html"],
-        ["community", "Community", "community.html"],
-        ["about", "About", "about.html"]
+        ["community", "Community", "community.html"]
       ].map(([key, label, href]) => `<a data-nav="${key}" class="${page === key ? "active" : ""}" href="${href}">${label}</a>`).join("")}
     </nav>
     <div class="nav-actions">
@@ -1388,7 +1386,7 @@ function workspaceTopNav() {
   const isEmployer = state.session.role === "employer";
   const notifications = Array.isArray(state.notifications) ? state.notifications : [];
   return `
-    <a class="brand" href="${isEmployer ? "employer-app.html" : "dashboard.html"}"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>${isEmployer ? "Employer OS" : "Workspace"}</span></span></a>
+    <a class="brand" href="${isEmployer ? "employer-app.html" : "dashboard.html"}"><img class="brand-logo" src="assets/careergo-logo-enterprise.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>${isEmployer ? "Employer OS" : "Workspace"}</span></span></a>
     <form class="workspace-search" role="search" data-workspace-search data-tour-target="workspace-search">
       ${icon("search")}
       <input name="q" aria-label="Search workspace" placeholder="${isEmployer ? "Search candidates, roles, applicants" : "Search jobs, companies, universities"}">
@@ -1456,7 +1454,7 @@ function renderNavigation() {
   if (mobileNav) {
     mobileNav.innerHTML = loggedIn
       ? ""
-      : `<a data-nav="home" href="index.html">Home</a><a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="community" href="community.html">Community</a><a data-nav="about" href="about.html">About</a><a data-nav="login" href="login.html">Login</a><a data-nav="register" href="register.html">Create Account</a>`;
+      : `<a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="community" href="community.html">Community</a><a data-nav="login" href="login.html">Login</a><a data-nav="register" href="register.html">Create Account</a>`;
   }
   createIcons();
   setActiveNav();
@@ -1554,6 +1552,52 @@ function renderSiteFooter() {
     footer = document.createElement("footer");
     footer.className = "site-footer";
     host.appendChild(footer);
+  }
+
+  if (document.body.dataset.page === "home") {
+    footer.innerHTML = `
+      <div class="footer-wrap">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo">
+            <p>The AI-powered Career Operating System. Guiding careers from first step to lifelong growth.</p>
+          </div>
+          <nav class="footer-column" aria-label="Product">
+            <h3>Product</h3>
+            <a href="profile.html">Career Intelligence</a>
+            <a href="vera.html">AI Coach</a>
+            <a href="market.html">Simulation</a>
+            <a href="market.html">Fair Pay</a>
+          </nav>
+          <nav class="footer-column" aria-label="Explore">
+            <h3>Explore</h3>
+            <a href="jobs.html">Jobs</a>
+            <a href="companies.html">Companies</a>
+            <a href="universities.html">Universities</a>
+            <a href="community.html">Community</a>
+          </nav>
+          <nav class="footer-column" aria-label="Company">
+            <h3>Company</h3>
+            <a href="about.html">About</a>
+            <a href="employers.html">Careers</a>
+            <a href="community.html">Press</a>
+            <a href="about.html">Contact</a>
+          </nav>
+          <nav class="footer-column" aria-label="Legal">
+            <h3>Legal</h3>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Security</a>
+            <a href="#">Cookies</a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 CareerGo. All rights reserved.</span>
+          <span>Designed for every stage of your career.</span>
+        </div>
+      </div>
+    `;
+    return;
   }
 
   footer.innerHTML = `
