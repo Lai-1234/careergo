@@ -1551,6 +1551,75 @@ img { max-width: 100%; display: block; }
   min-width: 0;
 }
 
+.career-session-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.36fr);
+  gap: 18px;
+  min-height: 440px;
+  padding: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.career-session-grid .message-list {
+  min-height: 380px;
+  padding: 0;
+}
+
+.chat-context-panel {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(168, 85, 247, 0.14)),
+    rgba(255, 255, 255, 0.055);
+}
+
+.chat-context-panel h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.chat-insight-list {
+  display: grid;
+  gap: 10px;
+}
+
+.chat-insight {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.chat-insight strong {
+  font-size: 13px;
+}
+
+.chat-insight span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.chat-presets {
+  display: grid;
+  gap: 10px;
+  padding: 0 20px 18px;
+}
+
+.chat-presets-label {
+  color: var(--soft);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -5174,6 +5243,74 @@ body[data-page="vera"] .vera-module {
   gap: 26px;
 }
 
+body[data-page="vera"] .os-main {
+  max-width: 1160px;
+}
+
+body[data-page="vera"] .vera-module {
+  grid-template-columns: 1fr;
+}
+
+body[data-page="vera"] .vera-module > aside.glass-card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.78fr);
+  align-items: center;
+  gap: clamp(20px, 3vw, 34px);
+}
+
+body[data-page="vera"] .vera-module > aside.glass-card > .detail-section {
+  margin-top: 0;
+}
+
+body[data-page="vera"] .vera-module > aside.glass-card > .section-sub {
+  margin-bottom: 0;
+}
+
+body[data-page="vera"] .vera-module > aside.glass-card > .pill-row {
+  align-self: start;
+}
+
+body[data-page="vera"] .vera-module > aside.glass-card > :not(.detail-section) {
+  grid-column: 1;
+}
+
+body[data-page="vera"] .vera-module > aside.glass-card > .detail-section {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+}
+
+body[data-page="vera"] .vera-module [data-vera-panel] {
+  display: grid;
+}
+
+body[data-page="vera"] .chat-window {
+  position: sticky;
+  top: 112px;
+  height: calc(100vh - 136px);
+  min-height: 560px;
+  max-height: 820px;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  overflow: hidden;
+}
+
+body[data-page="vera"] .chat-window .career-session-grid {
+  min-height: 0;
+  overflow: hidden;
+}
+
+body[data-page="vera"] .chat-window .message-list,
+body[data-page="vera"] .chat-window .chat-context-panel {
+  min-height: 0;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+body[data-page="vera"] .chat-window .message-list::-webkit-scrollbar,
+body[data-page="vera"] .chat-window .chat-context-panel::-webkit-scrollbar {
+  display: none;
+}
+
 body[data-page="vera"] .vera-module > .glass-card {
   padding: 30px;
 }
@@ -5203,6 +5340,58 @@ body[data-page="vera"] .vera-box {
   background:
     linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(168, 85, 247, 0.14)),
     rgba(255, 255, 255, 0.055);
+}
+
+body[data-page="autopilot"] .os-main > .content-grid {
+  grid-template-columns: 1fr;
+}
+
+body[data-page="autopilot"] .os-main > .content-grid > .glass-card {
+  width: 100%;
+}
+
+body[data-page="autopilot"] .os-main > .content-grid > .glass-card:not(form) {
+  display: grid;
+  gap: 18px;
+}
+
+body[data-page="autopilot"] .os-main > .content-grid > .glass-card:not(form) .hero-actions {
+  margin-top: 0;
+}
+
+@media (max-width: 860px) {
+  .career-session-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .career-session-grid .message-list {
+    min-height: 320px;
+  }
+
+  body[data-page="vera"] .chat-window {
+    position: static;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  body[data-page="vera"] .chat-window .career-session-grid {
+    overflow: visible;
+  }
+
+  body[data-page="vera"] .vera-module > aside.glass-card {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="vera"] .vera-module > aside.glass-card > .detail-section,
+  body[data-page="vera"] .vera-module > aside.glass-card > :not(.detail-section) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  body[data-page="vera"] .vera-module > aside.glass-card > .detail-section {
+    margin-top: 8px;
+  }
 }
 
 /* Collapsed sidebar icon rail polish */

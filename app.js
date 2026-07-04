@@ -3108,6 +3108,7 @@ function renderVera() {
   function renderMessages() {
     const target = qs("[data-message-list]");
     if (target) target.innerHTML = readState().chat.map(msg => `<div class="message ${msg.from === "vera" ? "vera" : "user"}">${msg.text}</div>`).join("");
+    if (target) target.scrollTop = target.scrollHeight;
   }
 
   function tabContent() {
@@ -3138,10 +3139,45 @@ function renderVera() {
       `;
     }
     if (activeTab === "chat") {
+      const chatPresets = [
+        "Build me a 7-day job search plan",
+        "What should I do about my active application?",
+        "Which skill gap should I close first?",
+        "Compare my saved roles by career impact"
+      ];
+      const draftAnswers = [
+        "I want to switch into Product Analyst. What should I do first?",
+        "Help me prepare for a case-study interview this week.",
+        "Review my next application strategy before I apply."
+      ];
+      const savedCount = state.savedJobs.length;
+      const appliedCount = state.applications.length;
       return `
         <section class="chat-window glass-card">
           <div class="detail-head"><div><h2>Career session</h2><div class="muted">Vera uses your jobs, reviews, profile, market, and goals as context.</div></div><span class="pill green">Online</span></div>
-          <div class="message-list" data-message-list></div>
+          <div class="career-session-grid">
+            <div class="message-list" data-message-list></div>
+            <aside class="chat-context-panel">
+              <div>
+                <div class="section-kicker">Session context</div>
+                <h3>Vera is reading your current journey.</h3>
+                <p class="muted small">${state.profile.careerStage || "Career planning"} - ${getTargetLabel(state.profile)} - ${savedCount} saved role${savedCount === 1 ? "" : "s"} - ${appliedCount} active application${appliedCount === 1 ? "" : "s"}.</p>
+              </div>
+              <div class="chat-insight-list">
+                ${[
+                  ["Best next move", state.profile.intelligence.immediateActions[0] || "Choose one target role and build proof around it."],
+                  ["Application focus", appliedCount ? "Follow up, prepare role evidence, and practice interview stories." : "Save or apply to one high-fit role so Vera can track momentum."],
+                  ["Research habit", "Compare culture, growth, salary signal, and watchouts before committing."]
+                ].map(([title, body]) => `<div class="chat-insight"><strong>${title}</strong><span>${body}</span></div>`).join("")}
+              </div>
+            </aside>
+          </div>
+          <div class="chat-presets">
+            <div class="chat-presets-label">Quick prompts</div>
+            <div class="pill-row">${chatPresets.map(text => `<button class="pill cyan" type="button" data-chat-preset="${text}">${text}</button>`).join("")}</div>
+            <div class="chat-presets-label">Draft into chat box</div>
+            <div class="pill-row">${draftAnswers.map(text => `<button class="pill gold" type="button" data-chat-fill="${text}">${text}</button>`).join("")}</div>
+          </div>
           <form class="chat-input" data-chat-form>
             <div class="field"><input name="message" placeholder="Ask Vera what to do next..."></div>
             <button class="btn btn-primary" type="submit">${icon("send")} Send</button>
@@ -3208,6 +3244,13 @@ function renderVera() {
       renderVera();
     }));
     qsa("[data-quick]").forEach(btn => btn.addEventListener("click", () => sendVera(btn.dataset.quick)));
+    qsa("[data-chat-preset]").forEach(btn => btn.addEventListener("click", () => sendVera(btn.dataset.chatPreset)));
+    qsa("[data-chat-fill]").forEach(btn => btn.addEventListener("click", () => {
+      const input = qs("[data-chat-form] input[name='message']");
+      if (!input) return;
+      input.value = btn.dataset.chatFill || "";
+      input.focus();
+    }));
     qs("[data-plan]")?.addEventListener("click", () => showToast("Vera generated a 90-day plan from your profile and target role."));
     qs("[data-chat-form]")?.addEventListener("submit", event => {
       event.preventDefault();
@@ -3241,6 +3284,13 @@ function renderVera() {
 
 function veraReply(text) {
   const t = text.toLowerCase();
+  if (t.includes("7-day") || t.includes("7 day") || t.includes("job search plan")) return "Here is your 7-day plan: Day 1 choose one target role, Day 2 polish one proof-heavy case study, Day 3 compare three companies, Day 4 save five roles, Day 5 apply to the best two, Day 6 practice one interview story, Day 7 review what got responses and adjust your filters.";
+  if (t.includes("active application") || t.includes("application status") || t.includes("follow up")) return "For your active application, do three things: prepare a 60-second fit story, map the job requirements to two concrete projects, and send a short follow-up if there has been no update after five working days.";
+  if (t.includes("skill gap") || t.includes("close first") || t.includes("gap should")) return "Close the proof gap first, not the certificate gap. For your target path, the strongest next proof is a product strategy memo with a metric, a trade-off, and one stakeholder decision.";
+  if (t.includes("saved roles") || t.includes("career impact")) return "Compare saved roles by four signals: match score, promotion runway, learning curve, and company proof value. Pick the role that gives you the strongest future story, not only the easiest application.";
+  if (t.includes("product analyst") || t.includes("switch into")) return "For a Product Analyst switch, start with SQL plus product metrics. Build one dashboard around activation, retention, or conversion, then write a short insight memo that explains what decision the data would change.";
+  if (t.includes("case-study") || t.includes("case study")) return "For a case-study interview, structure your answer as context, constraints, options, decision, result, and reflection. The missing piece most candidates skip is the trade-off: say what you chose not to do and why.";
+  if (t.includes("application strategy") || t.includes("before i apply")) return "Before applying, write one evidence sentence: 'I fit this role because I have done X, improved Y, and can prove it with Z.' If you cannot write that sentence, improve the role evidence first.";
   if (t.includes("company") || t.includes("compare")) return "Start with growth, balance, salary, and review themes. Maybank is safer and structured; Grab is faster and more intense; CIMB is a good mentorship middle path.";
   if (t.includes("resume") || t.includes("portfolio")) return "Your next portfolio update should prove product strategy. Add one case study with problem, trade-offs, metric, and stakeholder story.";
   if (t.includes("interview")) return "Prepare one STAR story for ambiguity, one for conflict, and one for measurable design impact. I would practice the case-study walkthrough first.";
