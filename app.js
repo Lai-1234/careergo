@@ -923,8 +923,8 @@ function healthRing(intel, includeConfidenceWord = true) {
       <svg class="health-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
         <defs>
           <linearGradient id="health-ring-gradient" x1="24" y1="96" x2="96" y2="24" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#2563eb" />
-            <stop offset="100%" stop-color="#0ea5e9" />
+            <stop offset="0%" stop-color="#283618" />
+            <stop offset="100%" stop-color="#606C38" />
           </linearGradient>
         </defs>
         <circle class="health-ring-track" cx="60" cy="60" r="50" pathLength="100"></circle>
@@ -1371,6 +1371,7 @@ function publicNav() {
 function workspaceTopNav() {
   const state = readState();
   const isEmployer = state.session.role === "employer";
+  const notifications = Array.isArray(state.notifications) ? state.notifications : [];
   return `
     <a class="brand" href="${isEmployer ? "employer-app.html" : "dashboard.html"}"><img class="brand-logo" src="assets/careergo-logo.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>${isEmployer ? "Employer OS" : "Workspace"}</span></span></a>
     <form class="workspace-search" role="search" data-workspace-search data-tour-target="workspace-search">
@@ -1378,7 +1379,41 @@ function workspaceTopNav() {
       <input name="q" aria-label="Search workspace" placeholder="${isEmployer ? "Search candidates, roles, applicants" : "Search jobs, companies, universities"}">
     </form>
     <div class="nav-actions">
-      <a class="btn btn-ghost" href="${isEmployer ? "employer-app.html#pipeline" : "autopilot.html"}">${icon("bell")} ${state.notifications?.length || 0}</a>
+      <div class="notification-menu-wrap">
+        <button class="btn btn-ghost notification-trigger" type="button" data-notification-toggle aria-haspopup="dialog" aria-expanded="false" aria-label="Open notifications">
+          ${icon("bell")} <strong>${notifications.length}</strong>
+        </button>
+        <div class="notification-menu glass-card" data-notification-menu hidden role="dialog" aria-label="Notifications">
+          <div class="notification-menu-head">
+            <div>
+              <span class="section-kicker">Notifications</span>
+              <strong>${notifications.length ? `${notifications.length} active` : "All clear"}</strong>
+            </div>
+            ${notifications.length ? `<button class="notification-clear" type="button" data-clear-notifications>Clear all</button>` : ""}
+          </div>
+          <div class="notification-menu-list">
+            ${notifications.length ? notifications.slice(0, 5).map(note => `
+              <article class="notification-item">
+                <span class="notification-icon">${icon(note.icon || "sparkles")}</span>
+                <span class="notification-copy">
+                  <strong>${note.title}</strong>
+                  <small>${note.body}</small>
+                </span>
+                <button class="notification-dismiss" type="button" data-dismiss-notification="${note.id}" aria-label="Dismiss ${note.title}">${icon("x")}</button>
+              </article>
+            `).join("") : `
+              <div class="notification-empty">
+                ${icon("check-circle")}
+                <strong>No new updates</strong>
+                <small>CareerGo will surface tasks, role changes, and Vera recommendations here.</small>
+              </div>
+            `}
+          </div>
+          <a class="notification-footer" href="${isEmployer ? "employer-app.html#pipeline" : "autopilot.html"}">
+            ${icon(isEmployer ? "kanban-square" : "list-checks")} Open action center
+          </a>
+        </div>
+      </div>
       <div class="account-menu-wrap">
         <button class="btn btn-primary account-menu-trigger" type="button" data-account-menu-toggle aria-haspopup="menu" aria-expanded="false">
           ${icon(isEmployer ? "building-2" : "user-round")} ${getFirstName(state)}
@@ -1411,6 +1446,7 @@ function renderNavigation() {
   createIcons();
   setActiveNav();
   bindAccountMenu();
+  bindNotificationMenu();
   qs("[data-workspace-search]")?.addEventListener("submit", event => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -1425,6 +1461,49 @@ function renderNavigation() {
         ? "companies.html"
         : "jobs.html";
     location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#candidates` : `${destination}?q=${encodeURIComponent(q)}`;
+  });
+}
+
+function bindNotificationMenu() {
+  const toggle = qs("[data-notification-toggle]");
+  const menu = qs("[data-notification-menu]");
+  if (!toggle || !menu) return;
+  const close = () => {
+    menu.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+  };
+  const open = () => {
+    menu.hidden = false;
+    toggle.setAttribute("aria-expanded", "true");
+  };
+  toggle.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    menu.hidden ? open() : close();
+  });
+  menu.addEventListener("click", event => event.stopPropagation());
+  qsa("[data-dismiss-notification]", menu).forEach(button => {
+    button.addEventListener("click", event => {
+      event.preventDefault();
+      const id = button.dataset.dismissNotification;
+      const state = readState();
+      state.notifications = (state.notifications || []).filter(note => note.id !== id);
+      writeState(syncCurrentUser(state));
+      renderNavigation();
+      showToast("Notification dismissed.");
+    });
+  });
+  qs("[data-clear-notifications]", menu)?.addEventListener("click", event => {
+    event.preventDefault();
+    const state = readState();
+    state.notifications = [];
+    writeState(syncCurrentUser(state));
+    renderNavigation();
+    showToast("Notifications cleared.");
+  });
+  document.addEventListener("click", close);
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") close();
   });
 }
 
@@ -2358,6 +2437,7 @@ function renderJobsPage() {
   let activeId = new URLSearchParams(location.search).get("job") || DATA.jobs[0].id;
   let active = DATA.jobs.find(job => job.id === activeId) || DATA.jobs[0];
   let activeTab = location.hash === "#tracker" ? "tracker" : (new URLSearchParams(location.search).get("tab") || "matches");
+  let contactOpen = false;
 
   const listRoot = qs("[data-job-list]");
   const detailRoot = qs("[data-job-detail]");
@@ -2598,7 +2678,36 @@ function renderJobsPage() {
             <button class="btn btn-ghost" data-save>${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save role"}</button>
             <button class="btn btn-primary" data-apply>${icon(applied ? "check" : "send")} ${applied ? "Applied" : "Apply now"}</button>
           </div>
-          <a class="btn btn-cyan job-detail-action-wide" href="vera.html?topic=${encodeURIComponent(active.title)}">${icon("message-circle")} Ask Vera</a>
+          <div class="job-detail-action-row">
+            <button class="btn btn-cyan" type="button" data-contact-job>${icon("messages-square")} Contact hiring team</button>
+            <a class="btn btn-cyan" href="vera.html?topic=${encodeURIComponent(active.title)}">${icon("message-circle")} Ask Vera</a>
+          </div>
+          ${contactOpen ? `
+            <form class="job-contact-card" data-job-contact-form>
+              <div>
+                <div class="section-kicker">Contact about this role</div>
+                <h3>Ask ${active.company} about ${active.title}</h3>
+                <p class="muted small">Send a concise question about role status, hiring timeline, requirements, or interview process.</p>
+              </div>
+              <div class="job-contact-grid">
+                <label>Question type
+                  <select name="topic">
+                    <option>Hiring timeline</option>
+                    <option>Role requirements</option>
+                    <option>Interview process</option>
+                    <option>Work mode and team fit</option>
+                  </select>
+                </label>
+                <label>Your question
+                  <textarea name="message" rows="3">Hi ${active.company} team, I am interested in the ${active.title} role. Could you share the current hiring status and next steps?</textarea>
+                </label>
+              </div>
+              <div class="job-contact-actions">
+                <button class="btn btn-primary" type="submit">${icon("send")} Send inquiry</button>
+                <button class="btn btn-ghost" type="button" data-contact-cancel>${icon("x")} Cancel</button>
+              </div>
+            </form>
+          ` : ""}
           <div class="job-detail-secondary-actions">
             <button class="btn btn-ghost" data-screen>${icon("scan-search")} Move to screening</button>
             <button class="btn btn-ghost" data-ignore>${icon("thumbs-down")} Not interested</button>
@@ -2609,6 +2718,7 @@ function renderJobsPage() {
             <button class="btn btn-ghost" data-auth-prompt="apply and track progress">${icon("send")} Apply</button>
           </div>
           <button class="btn btn-cyan job-detail-action-wide" data-auth-prompt="ask Vera for personalized coaching">${icon("message-circle")} Ask Vera</button>
+          <button class="btn btn-ghost job-detail-action-wide" data-auth-prompt="contact hiring teams about jobs">${icon("messages-square")} Contact hiring team</button>
         `}
       </div>
     `;
@@ -2633,6 +2743,34 @@ function renderJobsPage() {
       updateApplicationStage(active.id, "applied");
       showToast("Application added to your tracker.");
       renderList();
+      renderDetail();
+    });
+    qs("[data-contact-job]", detailRoot)?.addEventListener("click", () => {
+      contactOpen = !contactOpen;
+      renderDetail();
+    });
+    qs("[data-contact-cancel]", detailRoot)?.addEventListener("click", () => {
+      contactOpen = false;
+      renderDetail();
+    });
+    qs("[data-job-contact-form]", detailRoot)?.addEventListener("submit", event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const topic = String(form.get("topic") || "Role inquiry");
+      const next = readState();
+      next.notifications = [
+        {
+          id: `n-contact-${active.id}-${Date.now()}`,
+          title: "Job inquiry prepared",
+          body: `${topic} question for ${active.title} at ${active.company} was added to your follow-up queue.`,
+          icon: "messages-square"
+        },
+        ...(next.notifications || [])
+      ].slice(0, 5);
+      writeState(syncCurrentUser(next));
+      contactOpen = false;
+      showToast("Inquiry prepared for follow-up.");
+      renderNavigation();
       renderDetail();
     });
     qs("[data-screen]", detailRoot).addEventListener("click", () => {
@@ -3122,8 +3260,20 @@ function renderVera() {
 
   function renderMessages() {
     const target = qs("[data-message-list]");
-    if (target) target.innerHTML = readState().chat.map(msg => `<div class="message ${msg.from === "vera" ? "vera" : "user"}">${msg.text}</div>`).join("");
+    if (target) target.innerHTML = readState().chat.map(msg => {
+      const isVera = msg.from === "vera";
+      return `
+        <div class="message ${isVera ? "vera" : "user"}">
+          <span class="message-avatar">${icon(isVera ? "sparkles" : "user-round")}</span>
+          <div class="message-bubble">
+            <strong>${isVera ? "Vera" : getFirstName(readState())}</strong>
+            <p>${msg.text}</p>
+          </div>
+        </div>
+      `;
+    }).join("");
     if (target) target.scrollTop = target.scrollHeight;
+    createIcons();
   }
 
   function tabContent() {
