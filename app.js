@@ -748,6 +748,19 @@ function applyDemoAccount(state) {
   return state;
 }
 
+function startDemoDashboard() {
+  const next = applyDemoAccount(readState());
+  writeState(next);
+  location.href = "dashboard.html";
+}
+
+function ensureDemoDashboardSession() {
+  if (document.body.dataset.page !== "dashboard") return;
+  const state = readState();
+  if (state.session.loggedIn && state.session.role === "candidate" && state.onboarding.candidateDone) return;
+  writeState(applyDemoAccount(state));
+}
+
 function splitList(value) {
   return String(value || "").split(",").map(item => item.trim()).filter(Boolean);
 }
@@ -923,8 +936,8 @@ function healthRing(intel, includeConfidenceWord = true) {
       <svg class="health-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
         <defs>
           <linearGradient id="health-ring-gradient" x1="24" y1="96" x2="96" y2="24" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#283618" />
-            <stop offset="100%" stop-color="#606C38" />
+            <stop offset="0%" stop-color="#1B3A34" />
+            <stop offset="100%" stop-color="#2FAE7A" />
           </linearGradient>
         </defs>
         <circle class="health-ring-track" cx="60" cy="60" r="50" pathLength="100"></circle>
@@ -1233,6 +1246,7 @@ function requireAccount(root, purpose = "open this workspace") {
         <h1 class="section-title">Create your account to ${purpose}.</h1>
         <p class="section-sub">CareerGo personalizes your roadmap, Vera’s coaching style, job matching, and dashboard from your own career situation.</p>
         <div class="hero-actions">
+          <button class="btn btn-primary" type="button" data-enter-demo>${icon("monitor-play")} Enter demo dashboard</button>
           <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create account</a>
           <a class="btn btn-ghost" href="login.html">${icon("log-in")} Log in</a>
         </div>
@@ -1268,6 +1282,7 @@ function requireAccount(root, purpose = "open this workspace") {
       </div>
     </div>
   `;
+  qs("[data-enter-demo]", root)?.addEventListener("click", startDemoDashboard);
   createIcons();
   return false;
 }
@@ -1699,6 +1714,15 @@ function orgsFor(type) {
   if (type === "universities") return DATA.universities;
   if (type === "companies") return DATA.companies;
   return [...DATA.companies, ...DATA.universities];
+}
+
+function orgForJob(job) {
+  const hay = `${job.company} ${job.title}`.toLowerCase();
+  return [...DATA.companies, ...DATA.universities].find(org => {
+    const name = org.name.toLowerCase();
+    const first = name.split(/\s+/)[0];
+    return hay.includes(name) || hay.includes(first);
+  }) || DATA.companies[0];
 }
 
 function rating(value) {
@@ -2604,6 +2628,10 @@ function renderJobsPage() {
     const record = state.applicationRecords?.[active.id];
     const applied = Boolean(record && stageIndex(record.stage) >= stageIndex("applied"));
     const compared = DATA.jobs.filter(job => state.comparedJobs.includes(job.id));
+    const hiringOrg = orgForJob(active);
+    const orgReviews = (state.reviews || []).filter(review => review.targetId === hiringOrg.id);
+    const featuredReview = orgReviews[0] || DATA.reviews.find(review => review.targetId === hiringOrg.id);
+    const orgHref = `${hiringOrg.type === "University" ? "universities" : "companies"}.html?org=${hiringOrg.id}`;
     detailRoot.innerHTML = `
       <div class="detail-head">
         <div>
@@ -2648,11 +2676,30 @@ function renderJobsPage() {
         ${pills(active.skills, "cyan")}
       </div>
       <div class="detail-section content-grid info-card-row">
-        <div class="card">
-          <h3>Company preview</h3>
-          <p class="muted">${(DATA.companies.find(company => active.company.toLowerCase().includes(company.name.toLowerCase().split(" ")[0])) || DATA.companies[0]).summary}</p>
-          <a class="btn btn-ghost" href="companies.html?q=${encodeURIComponent(active.company)}">${icon("building-2")} Research company</a>
-        </div>
+        <a class="card company-review-preview" href="${orgHref}">
+          <div class="company-review-head">
+            <div>
+              <span class="section-kicker">Hiring company</span>
+              <h3>${hiringOrg.name}</h3>
+              <p class="muted small">${hiringOrg.industry} - ${hiringOrg.location}</p>
+            </div>
+            <div class="company-rating-stack">
+              ${rating(hiringOrg.rating)}
+              <span>${hiringOrg.reviews + orgReviews.length} reviews</span>
+            </div>
+          </div>
+          <p class="muted">${hiringOrg.summary}</p>
+          <div class="company-score-strip">
+            ${Object.entries(hiringOrg.scores).slice(0, 4).map(([label, value]) => `<span><strong>${value.toFixed(1)}</strong>${label}</span>`).join("")}
+          </div>
+          ${featuredReview ? `
+            <div class="company-review-quote">
+              <strong>${featuredReview.title}</strong>
+              <span>${featuredReview.body}</span>
+            </div>
+          ` : ""}
+          <span class="company-review-link">${icon("building-2")} View company details</span>
+        </a>
         <div class="card">
           <h3>Market demand</h3>
           <p class="muted">${active.industry} roles are showing ${active.match >= 85 ? "strong" : "steady"} demand in CareerGo's sample market pulse. Create a profile for a personalized salary and readiness read.</p>
@@ -3792,6 +3839,7 @@ function renderAuth() {
             <p class="auth-tip">${icon("info")} <span>Judges can press Log in with empty fields to open a personalized preview account.</span></p>
           `}
           <button class="btn btn-primary" type="submit">${icon("rocket")} ${mode === "register" ? "Create account" : "Log in"}</button>
+          <button class="btn btn-cyan" type="button" data-enter-demo>${icon("monitor-play")} Open demo user dashboard</button>
         </form>
       </section>
     </div>
@@ -3909,6 +3957,7 @@ function renderAuth() {
     showToast("Account created. Let's personalize CareerGo.");
     location.href = authRole === "employer" ? "employer-onboarding.html" : "onboarding.html";
   });
+  qs("[data-enter-demo]", root)?.addEventListener("click", startDemoDashboard);
   createIcons();
 }
 
@@ -5096,9 +5145,12 @@ function renderComparison() {
   const root = qs("[data-comparison]");
   if (!root) return;
   const orgs = [...DATA.companies, ...DATA.universities].slice(0, 5);
-  const animatedScore = value => `
-    <span class="comparison-score" data-comparison-score="${value.toFixed(1)}">
-      <span class="comparison-score-number">${value.toFixed(1)}</span>
+  const animatedScore = (value, type = "rating") => `
+    <span class="comparison-score ${type}" data-comparison-score="${value.toFixed(1)}">
+      <span class="comparison-score-main">
+        ${icon(type === "growth" ? "trending-up" : "star")}
+        <span class="comparison-score-number">${value.toFixed(1)}</span>
+      </span>
       <span class="comparison-score-bar" aria-hidden="true"><span></span></span>
     </span>
   `;
@@ -5107,7 +5159,7 @@ function renderComparison() {
       <table class="comparison-table" data-comparison-table>
         <thead><tr><th>Name</th><th>Type</th><th>Rating</th><th>Growth</th><th>Pay / Outcome</th><th>Best signal</th></tr></thead>
         <tbody>
-          ${orgs.map(org => `<tr><td><strong>${org.name}</strong></td><td>${org.type}</td><td>${animatedScore(org.rating)}</td><td>${animatedScore(org.scores.growth)}</td><td>${org.salary}</td><td>${org.signal}</td></tr>`).join("")}
+          ${orgs.map(org => `<tr><td><strong>${org.name}</strong></td><td>${org.type}</td><td>${animatedScore(org.rating, "rating")}</td><td>${animatedScore(org.scores.growth, "growth")}</td><td>${org.salary}</td><td>${org.signal}</td></tr>`).join("")}
         </tbody>
       </table>
     </div>
@@ -5181,6 +5233,7 @@ function initComparisonTableAnimation() {
 }
 
 function init() {
+  ensureDemoDashboardSession();
   renderNavigation();
   renderFeatured();
   renderJobSeekerEntry();
