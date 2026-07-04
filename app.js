@@ -923,8 +923,8 @@ function healthRing(intel, includeConfidenceWord = true) {
       <svg class="health-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
         <defs>
           <linearGradient id="health-ring-gradient" x1="24" y1="96" x2="96" y2="24" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#a855f7" />
-            <stop offset="100%" stop-color="#22d3ee" />
+            <stop offset="0%" stop-color="#2563eb" />
+            <stop offset="100%" stop-color="#0ea5e9" />
           </linearGradient>
         </defs>
         <circle class="health-ring-track" cx="60" cy="60" r="50" pathLength="100"></circle>

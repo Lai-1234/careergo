@@ -1,23 +1,23 @@
 :root {
-  --bg: #150039;
-  --bg-2: #230066;
-  --bg-3: #31008f;
-  --panel: rgba(32, 8, 87, 0.82);
-  --panel-2: rgba(255, 255, 255, 0.08);
-  --line: rgba(255, 255, 255, 0.14);
-  --line-strong: rgba(255, 255, 255, 0.24);
-  --text: #ffffff;
-  --muted: #c8bdf4;
-  --soft: #9b8be7;
-  --purple: #7c3aed;
-  --purple-2: #a855f7;
-  --magenta: #d946ef;
-  --cyan: #22d3ee;
-  --blue: #2f7bff;
-  --gold: #ffd84d;
-  --green: #28d6a3;
-  --red: #fb7185;
-  --dark: #0a001d;
+  --bg: #f8fafc;
+  --bg-2: #eef5ff;
+  --bg-3: #e0ecff;
+  --panel: rgba(255, 255, 255, 0.92);
+  --panel-2: rgba(241, 245, 249, 0.86);
+  --line: rgba(15, 23, 42, 0.10);
+  --line-strong: rgba(15, 23, 42, 0.18);
+  --text: #0f172a;
+  --muted: #475569;
+  --soft: #64748b;
+  --purple: #2563eb;
+  --purple-2: #3b82f6;
+  --magenta: #0ea5e9;
+  --cyan: #38bdf8;
+  --blue: #2563eb;
+  --gold: #f59e0b;
+  --green: #10b981;
+  --red: #f43f5e;
+  --dark: #0f172a;
   --radius: 22px;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
   --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -31,9 +31,9 @@ body {
   font-family: var(--font);
   color: var(--text);
   background:
-    radial-gradient(circle at 18% 12%, rgba(217, 70, 239, 0.35), transparent 28%),
-    radial-gradient(circle at 82% 8%, rgba(34, 211, 238, 0.18), transparent 28%),
-    linear-gradient(135deg, #12002f 0%, #240061 48%, #130031 100%);
+    radial-gradient(circle at 18% 12%, rgba(59, 130, 246, 0.12), transparent 28%),
+    radial-gradient(circle at 82% 8%, rgba(20, 184, 166, 0.10), transparent 28%),
+    linear-gradient(135deg, #ffffff 0%, #f8fafc 48%, #eef5ff 100%);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
@@ -238,8 +238,8 @@ img { max-width: 100%; display: block; }
 
 .btn:hover { transform: translateY(-1px); }
 .btn-primary {
-  background: linear-gradient(135deg, #8b5cf6, #d946ef);
-  box-shadow: 0 14px 36px rgba(168, 85, 247, 0.35);
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  box-shadow: 0 14px 36px rgba(37, 99, 235, 0.22);
 }
 .btn-cyan {
   color: #081326;
@@ -317,7 +317,7 @@ img { max-width: 100%; display: block; }
   right: 0;
   bottom: 0;
   height: 160px;
-  background: linear-gradient(180deg, transparent, #130031);
+  background: linear-gradient(180deg, transparent, #f8fafc);
 }
 
 .hero-content {
@@ -416,7 +416,7 @@ img { max-width: 100%; display: block; }
   z-index: 4;
   margin-top: clamp(-3.5rem, -5vh, -2.5rem);
   padding-bottom: clamp(1.75rem, 4vh, 3rem);
-  background: linear-gradient(180deg, #130031 0%, rgba(19, 0, 49, 0.86) 48%, rgba(35, 0, 102, 0) 100%);
+  background: linear-gradient(180deg, #f8fafc 0%, rgba(248, 250, 252, 0.90) 48%, rgba(248, 250, 252, 0) 100%);
 }
 
 .search-panel {
@@ -704,7 +704,7 @@ img { max-width: 100%; display: block; }
   height: 46px;
   margin-bottom: 18px;
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.32), rgba(34, 211, 238, 0.2));
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.32), rgba(34, 211, 238, 0.2));
   color: var(--gold);
 }
 
@@ -768,7 +768,7 @@ img { max-width: 100%; display: block; }
   border-bottom: 1px solid var(--line);
   background:
     radial-gradient(circle at 80% 20%, rgba(34, 211, 238, 0.18), transparent 26%),
-    radial-gradient(circle at 20% 0%, rgba(217, 70, 239, 0.22), transparent 28%);
+    radial-gradient(circle at 20% 0%, rgba(14, 165, 233, 0.22), transparent 28%);
 }
 
 .page-hero h1 {
@@ -992,12 +992,12 @@ img { max-width: 100%; display: block; }
 
 .featured-carousel::before {
   left: 0;
-  background: linear-gradient(to right, #230066, rgba(35, 0, 102, 0));
+  background: linear-gradient(to right, #f8fafc, rgba(248, 250, 252, 0));
 }
 
 .featured-carousel::after {
   right: 0;
-  background: linear-gradient(to left, #230066, rgba(35, 0, 102, 0));
+  background: linear-gradient(to left, #f8fafc, rgba(248, 250, 252, 0));
 }
 
 .featured-carousel-track {
@@ -1040,12 +1040,12 @@ img { max-width: 100%; display: block; }
 
 .research-marquee::before {
   left: 0;
-  background: linear-gradient(to right, #230066, rgba(35, 0, 102, 0));
+  background: linear-gradient(to right, #f8fafc, rgba(248, 250, 252, 0));
 }
 
 .research-marquee::after {
   right: 0;
-  background: linear-gradient(to left, #230066, rgba(35, 0, 102, 0));
+  background: linear-gradient(to left, #f8fafc, rgba(248, 250, 252, 0));
 }
 
 .research-marquee-track {
@@ -1211,7 +1211,7 @@ img { max-width: 100%; display: block; }
 .check-list li {
   display: flex;
   gap: 9px;
-  color: #eee8ff;
+  color: #334155;
   line-height: 1.55;
 }
 
@@ -1246,8 +1246,8 @@ img { max-width: 100%; display: block; }
 }
 
 .vera-box {
-  border: 1px solid rgba(168, 85, 247, 0.32);
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.22), rgba(34, 211, 238, 0.1));
+  border: 1px solid rgba(37, 99, 235, 0.32);
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.95), rgba(224, 242, 254, 0.72));
 }
 
 .rating {
@@ -1562,7 +1562,7 @@ img { max-width: 100%; display: block; }
   border: 1px solid var(--line-strong);
   border-radius: 20px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(168, 85, 247, 0.08)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(37, 99, 235, 0.08)),
     rgba(255, 255, 255, 0.07);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
@@ -1617,7 +1617,7 @@ img { max-width: 100%; display: block; }
   border: 1px solid var(--line);
   border-radius: 18px;
   background:
-    linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(168, 85, 247, 0.14)),
+    linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(37, 99, 235, 0.14)),
     rgba(255, 255, 255, 0.055);
 }
 
@@ -1852,7 +1852,7 @@ img { max-width: 100%; display: block; }
   padding: clamp(20px, 2.7vw, 28px);
   background:
     radial-gradient(circle at 96% 12%, rgba(255, 216, 77, 0.12), transparent 34%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(168, 85, 247, 0.09)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(37, 99, 235, 0.09)),
     rgba(255, 255, 255, 0.06);
 }
 
@@ -1942,7 +1942,7 @@ img { max-width: 100%; display: block; }
 
 .interview-setup-card .pill.active {
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(168, 85, 247, 0.18);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
 }
 
 .interview-history {
@@ -2060,7 +2060,7 @@ img { max-width: 100%; display: block; }
 }
 
 .market-hero-meter strong {
-  color: #fff;
+  color: #0f172a;
   font-size: 28px;
 }
 
@@ -2085,7 +2085,7 @@ img { max-width: 100%; display: block; }
 
 .market-worth-card strong,
 .market-scenario-card strong {
-  color: #fff;
+  color: #0f172a;
   font-size: clamp(24px, 3vw, 34px);
   line-height: 1.05;
 }
@@ -2171,7 +2171,7 @@ img { max-width: 100%; display: block; }
 .market-scenario-card.highlight {
   border-color: rgba(255, 216, 77, 0.42);
   background:
-    linear-gradient(135deg, rgba(255, 216, 77, 0.12), rgba(168, 85, 247, 0.14)),
+    linear-gradient(135deg, rgba(255, 216, 77, 0.12), rgba(37, 99, 235, 0.14)),
     rgba(255, 255, 255, 0.07);
 }
 
@@ -2235,7 +2235,7 @@ img { max-width: 100%; display: block; }
   width: min(640px, calc(100vw - 40px));
   padding: 2.5rem;
   border-radius: 20px;
-  box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.2), 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 42px rgba(168, 85, 247, 0.12);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2), 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 42px rgba(37, 99, 235, 0.12);
   animation: modalIn 0.2s ease-out both;
 }
 
@@ -2338,10 +2338,10 @@ img { max-width: 100%; display: block; }
 
 .site-footer {
   margin-top: clamp(2rem, 5vw, 4rem);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
   background:
-    radial-gradient(circle at 12% 0%, rgba(124, 58, 237, 0.16), transparent 30%),
-    #0a0518;
+    radial-gradient(circle at 12% 0%, rgba(37, 99, 235, 0.08), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
 }
 
 .footer-wrap,
@@ -2382,7 +2382,7 @@ img { max-width: 100%; display: block; }
 
 .footer-column h3 {
   margin: 0 0 0.25rem;
-  color: #9d8ec4;
+  color: #2563eb;
   font-size: 12px;
   font-weight: 1000;
   letter-spacing: 0.16em;
@@ -2396,20 +2396,20 @@ img { max-width: 100%; display: block; }
 }
 
 .footer-column a:hover {
-  color: #fff;
+  color: #1d4ed8;
   transform: translateX(2px);
 }
 
 .footer-bottom {
   margin-top: clamp(2rem, 5vw, 3rem);
   padding-top: 1.25rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: #9d8ec4;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  color: #64748b;
   font-size: 13px;
   font-weight: 800;
 }
 
-.footer-inner strong { color: #fff; }
+.footer-inner strong { color: #0f172a; }
 
 .grid-2 {
   display: grid;
@@ -2501,7 +2501,7 @@ img { max-width: 100%; display: block; }
   border-radius: 4px;
 }
 
-/* Hamburger toggle — hidden on desktop, shown on tablet/mobile */
+/* Hamburger toggle 鈥?hidden on desktop, shown on tablet/mobile */
 .sidebar-toggle {
   display: none;
   align-items: center;
@@ -2520,7 +2520,7 @@ img { max-width: 100%; display: block; }
   background: rgba(255, 255, 255, 0.16);
 }
 
-/* Off-canvas overlay — hidden until .sidebar-open on body */
+/* Off-canvas overlay 鈥?hidden until .sidebar-open on body */
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -2877,7 +2877,7 @@ img { max-width: 100%; display: block; }
 
   .workspace-rail .os-nav a.active {
     color: #fff;
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.18), rgba(34, 211, 238, 0.1));
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(34, 211, 238, 0.1));
     box-shadow: inset 2px 0 0 rgba(34, 211, 238, 0.7);
   }
 
@@ -2967,7 +2967,7 @@ img { max-width: 100%; display: block; }
   border-radius: 32px;
   color: #fff;
   background: linear-gradient(135deg, var(--purple), var(--magenta));
-  box-shadow: 0 18px 46px rgba(168, 85, 247, 0.3);
+  box-shadow: 0 18px 46px rgba(37, 99, 235, 0.3);
   font-size: 34px;
   font-weight: 1000;
 }
@@ -3117,7 +3117,7 @@ img { max-width: 100%; display: block; }
 
   .workspace-rail .os-nav a.active {
     color: #fff;
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.24), rgba(34, 211, 238, 0.12));
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.24), rgba(34, 211, 238, 0.12));
     box-shadow: inset 3px 0 0 rgba(34, 211, 238, 0.72);
   }
 
@@ -3832,7 +3832,7 @@ body[data-page="jobs"] .workspace-nav:not(.workspace-rail) {
 
 .application-control .progress span {
   border-radius: 999px;
-  box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
 }
 
 .application-control .stage-control {
@@ -3913,7 +3913,7 @@ body[data-page="jobs"] .workspace-nav:not(.workspace-rail) {
 
 .application-stage-filter .pipeline-stage.active {
   border-color: rgba(34, 211, 238, 0.58);
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.14), rgba(168, 85, 247, 0.16));
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.14), rgba(37, 99, 235, 0.16));
 }
 
 .applications-workspace {
@@ -3971,7 +3971,7 @@ body[data-page="jobs"] .workspace-nav:not(.workspace-rail) {
 .application-stage-actions button.active {
   color: #fff;
   border-color: rgba(34, 211, 238, 0.58);
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.18), rgba(168, 85, 247, 0.18));
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.18), rgba(37, 99, 235, 0.18));
 }
 
 .application-note-form {
@@ -4044,7 +4044,7 @@ body[data-page="jobs"] .workspace-nav:not(.workspace-rail) {
   position: relative;
   z-index: 130;
   outline: 2px solid rgba(34, 211, 238, 0.9);
-  box-shadow: 0 0 0 8px rgba(34, 211, 238, 0.12), 0 28px 90px rgba(168, 85, 247, 0.36);
+  box-shadow: 0 0 0 8px rgba(34, 211, 238, 0.12), 0 28px 90px rgba(37, 99, 235, 0.36);
 }
 
 .tour-card {
@@ -4144,7 +4144,7 @@ body[data-page="jobs"] .workspace-nav:not(.workspace-rail) {
   display: grid;
   place-items: center;
   background:
-    radial-gradient(circle at 36% 28%, rgba(168, 85, 247, 0.16), transparent 32%),
+    radial-gradient(circle at 36% 28%, rgba(37, 99, 235, 0.16), transparent 32%),
     radial-gradient(circle at center, rgba(18, 0, 49, 0.98) 57%, rgba(18, 0, 49, 0.76) 72%, transparent 73%);
   box-shadow: 0 18px 60px rgba(34, 211, 238, 0.14), inset 0 0 28px rgba(255, 255, 255, 0.04);
 }
@@ -4324,7 +4324,7 @@ body[data-page="jobs"] .workspace-nav:not(.workspace-rail) {
 }
 
 .custom-checkbox:hover input[type="checkbox"] {
-  border-color: rgba(168, 85, 247, 0.78);
+  border-color: rgba(37, 99, 235, 0.78);
   background: rgba(147, 51, 234, 0.14);
 }
 
@@ -4345,8 +4345,8 @@ body[data-page="jobs"] .workspace-nav:not(.workspace-rail) {
 
 .custom-checkbox input[type="checkbox"]:checked {
   border-color: transparent;
-  background: linear-gradient(135deg, #a855f7, #ec4899);
-  box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
 }
 
 .custom-checkbox input[type="checkbox"]:checked::after {
@@ -4441,10 +4441,10 @@ input[type="checkbox"] {
   gap: 0.65rem;
   margin: 0.25rem 0 0;
   padding: 0.75rem 1rem;
-  border-left: 3px solid #818cf8;
+  border-left: 3px solid #2563eb;
   border-radius: 8px;
-  color: #ddd4ff;
-  background: rgba(99, 102, 241, 0.1);
+  color: #334155;
+  background: rgba(239, 246, 255, 0.92);
   font-size: 0.875rem;
   font-weight: 800;
   line-height: 1.45;
@@ -4455,7 +4455,7 @@ input[type="checkbox"] {
   width: 18px;
   height: 18px;
   margin-top: 1px;
-  color: #a5b4fc;
+  color: #2563eb;
 }
 
 .auth-side {
@@ -4473,7 +4473,7 @@ input[type="checkbox"] {
   flex-direction: column;
   min-height: 44px;
   cursor: pointer;
-  opacity: 0.7;
+  opacity: 1;
   border-width: 2px;
   transition: all 0.2s ease;
 }
@@ -4491,11 +4491,11 @@ input[type="checkbox"] {
   width: 24px;
   height: 24px;
   margin: 0;
-  border: 2px solid rgba(221, 212, 255, 0.42);
+  border: 2px solid rgba(37, 99, 235, 0.12);
   border-radius: 50%;
-  color: #16002f;
-  background: rgba(255, 255, 255, 0.08);
-  opacity: 0.8;
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.82);
+  opacity: 1;
   transition: all 0.2s ease;
 }
 
@@ -4508,14 +4508,14 @@ input[type="checkbox"] {
 
 .auth-role-card.is-selected {
   opacity: 1;
-  border-color: #a855f7;
-  background: rgba(168, 85, 247, 0.1);
-  box-shadow: 0 12px 30px rgba(168, 85, 247, 0.2);
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.1);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.2);
 }
 
 .auth-role-card.is-selected .auth-role-indicator {
-  border-color: #a855f7;
-  background: #a855f7;
+  border-color: #2563eb;
+  background: #2563eb;
   opacity: 1;
 }
 
@@ -4524,7 +4524,7 @@ input[type="checkbox"] {
 }
 
 .auth-role-card:focus-visible {
-  outline: 3px solid rgba(168, 85, 247, 0.55);
+  outline: 3px solid rgba(37, 99, 235, 0.55);
   outline-offset: 3px;
 }
 
@@ -4533,7 +4533,7 @@ input[type="checkbox"] {
   align-items: center;
   gap: 0.35rem;
   margin-top: 1rem;
-  color: #ddd4ff;
+  color: #2563eb;
   font-size: 0.875rem;
   font-weight: 900;
 }
@@ -4546,14 +4546,14 @@ input[type="checkbox"] {
 
 .auth-role-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(168, 85, 247, 0.48);
-  background: rgba(255, 255, 255, 0.075);
-  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
+  border-color: rgba(37, 99, 235, 0.48);
+  background: rgba(239, 246, 255, 0.86);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
 }
 
 .auth-role-card.is-selected:hover {
-  border-color: #a855f7;
-  background: rgba(168, 85, 247, 0.1);
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.1);
 }
 
 .auth-role-card:hover .auth-role-learn svg,
@@ -4631,7 +4631,7 @@ input[type="checkbox"] {
   background: rgba(34, 211, 238, 0.15);
 }
 
-/* ── Account Required — two-column desktop wrapper ─────────────────── */
+/* 鈹€鈹€ Account Required 鈥?two-column desktop wrapper 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€ */
 .locked-state-wrap {
   display: flex;
   align-items: stretch;
@@ -4642,7 +4642,7 @@ input[type="checkbox"] {
   grid-column: 1 / -1;
 }
 
-/* ── Auth card (left column) ─────────────────────────────────────────── */
+/* 鈹€鈹€ Auth card (left column) 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€ */
 .locked-state {
   flex: 0 0 auto;
   width: 100%;
@@ -4655,7 +4655,7 @@ input[type="checkbox"] {
   gap: 1.5rem;
 }
 
-/* Scoped heading — never let it dominate the narrow card */
+/* Scoped heading 鈥?never let it dominate the narrow card */
 .locked-state .section-title {
   font-size: clamp(1.5rem, 4vw, 2.25rem);
   line-height: 1.25;
@@ -4664,13 +4664,13 @@ input[type="checkbox"] {
   margin: 0;
 }
 
-/* Eyebrow badge — remove its default bottom margin so gap handles it */
+/* Eyebrow badge 鈥?remove its default bottom margin so gap handles it */
 .locked-state .eyebrow,
 .locked-panel .eyebrow {
   margin-bottom: 0;
 }
 
-/* Body text — legible at desktop, scales down on mobile */
+/* Body text 鈥?legible at desktop, scales down on mobile */
 .locked-state .section-sub {
   font-size: clamp(0.875rem, 2.2vw, 1rem);
   line-height: 1.65;
@@ -4678,7 +4678,7 @@ input[type="checkbox"] {
   max-width: 100%;
 }
 
-/* Button group — always stacked vertically, consistent gap */
+/* Button group 鈥?always stacked vertically, consistent gap */
 .locked-state .hero-actions {
   display: flex;
   flex-direction: column;
@@ -4693,7 +4693,7 @@ input[type="checkbox"] {
   flex: unset;
 }
 
-/* ── Benefits panel (right column) ──────────────────────────────────── */
+/* 鈹€鈹€ Benefits panel (right column) 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€ */
 .locked-panel {
   flex: 1 1 0;
   min-width: 0;
@@ -4723,7 +4723,7 @@ input[type="checkbox"] {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.28), rgba(34, 211, 238, 0.18));
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.28), rgba(34, 211, 238, 0.18));
   color: var(--gold);
 }
 
@@ -4954,7 +4954,7 @@ input[type="checkbox"] {
   }
   /* Hamburger visible on tablet/mobile */
   .sidebar-toggle { display: flex; }
-  /* Inject toggle into topbar — it sits in .nav-actions area */
+  /* Inject toggle into topbar 鈥?it sits in .nav-actions area */
   .filters { position: static; }
   .jobs-filter-bar {
     align-items: stretch;
@@ -5439,7 +5439,7 @@ input[type="checkbox"] {
   .message { max-width: 92%; }
 }
 
-/* ── Account Required — mobile (<480px) ──────────────────────────── */
+/* 鈹€鈹€ Account Required 鈥?mobile (<480px) 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€ */
 @media (max-width: 480px) {
   .locked-state-wrap {
     margin: 24px auto 48px;
@@ -5642,7 +5642,7 @@ input[type="checkbox"] {
 
   .workspace-rail .os-nav a.active {
     color: #fff;
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(34, 211, 238, 0.11));
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(34, 211, 238, 0.11));
     box-shadow: inset 2px 0 0 rgba(34, 211, 238, 0.74);
   }
 
@@ -5935,7 +5935,7 @@ input[type="checkbox"] {
   bottom: 10px;
   width: 3px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #a855f7, #22d3ee);
+  background: linear-gradient(180deg, #2563eb, #22d3ee);
 }
 
 .workspace-rail .rail-item:hover:not(.active),
@@ -6064,13 +6064,13 @@ body[data-page="vera"] .timeline-item {
 }
 
 body[data-page="vera"] .timeline-item::before {
-  background: linear-gradient(180deg, #22d3ee, #d946ef);
+  background: linear-gradient(180deg, #22d3ee, #0ea5e9);
 }
 
 body[data-page="vera"] .vera-box {
   border-color: rgba(34, 211, 238, 0.22);
   background:
-    linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(168, 85, 247, 0.14)),
+    linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(37, 99, 235, 0.14)),
     rgba(255, 255, 255, 0.055);
 }
 
@@ -6261,9 +6261,9 @@ body[data-page="autopilot"] .applications-list {
     justify-content: center;
     color: #fff;
     background:
-      radial-gradient(circle, rgba(168, 85, 247, 0.42) 0 52%, rgba(34, 211, 238, 0.22) 53% 70%, transparent 71%);
+      radial-gradient(circle, rgba(37, 99, 235, 0.42) 0 52%, rgba(34, 211, 238, 0.22) 53% 70%, transparent 71%);
     border-radius: 50%;
-    box-shadow: 0 0 18px rgba(168, 85, 247, 0.34);
+    box-shadow: 0 0 18px rgba(37, 99, 235, 0.34);
   }
 
   .workspace-rail:not(:hover):not(:focus-within) .rail-item.active::before {
@@ -6575,4 +6575,1183 @@ body[data-page="jobs"] .jobs-page-layout > .jobs-split > .detail-panel {
   body[data-page="jobs"] .jobs-page-layout > .jobs-split > .detail-panel {
     margin-top: 0;
   }
+}
+
+/* Professional commercial theme override */
+body {
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(37, 99, 235, 0.14), transparent 28%),
+    radial-gradient(circle at 88% 8%, rgba(14, 165, 233, 0.10), transparent 28%),
+    linear-gradient(135deg, #07111f 0%, #0f1f33 48%, #07111f 100%) !important;
+}
+
+.topbar {
+  border-bottom-color: rgba(226, 232, 240, 0.12);
+  background: rgba(7, 17, 31, 0.88) !important;
+}
+
+.brand-logo {
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.28);
+}
+
+.brand-text span,
+.nav-links a,
+.mobile-nav a,
+.muted,
+.section-sub,
+.page-copy,
+.hero-copy,
+.card p,
+.tool-card p,
+.chat-insight span,
+.market-worth-card p,
+.market-scenario-card p {
+  color: #b8c4d4 !important;
+}
+
+.nav-links a:hover,
+.nav-links a.active,
+.mobile-nav a.active {
+  color: #fff;
+  background: rgba(59, 130, 246, 0.14) !important;
+}
+
+.hero::before {
+  background:
+    linear-gradient(90deg, rgba(7, 17, 31, 0.98), rgba(15, 31, 51, 0.70), rgba(7, 17, 31, 0.96)),
+    url("assets/careergo-logo.png") right 8% center / min(48vw, 640px) no-repeat !important;
+}
+
+.hero::after,
+.hero-search {
+  background: linear-gradient(180deg, transparent, #07111f) !important;
+}
+
+.page-hero {
+  border-bottom-color: rgba(226, 232, 240, 0.12);
+  background:
+    radial-gradient(circle at 84% 18%, rgba(56, 189, 248, 0.12), transparent 24%),
+    linear-gradient(135deg, rgba(15, 31, 51, 0.82), rgba(7, 17, 31, 0.22)) !important;
+}
+
+.hero h1 span,
+.page-hero h1 span,
+.spark {
+  color: #38bdf8 !important;
+}
+
+.eyebrow {
+  border-color: rgba(148, 163, 184, 0.24);
+  color: #dbeafe;
+  background: rgba(15, 31, 51, 0.72) !important;
+}
+
+.card,
+.glass-card,
+.tool-card,
+.list-card,
+.filters,
+.detail-panel,
+.search-panel,
+.hero-discovery-engine,
+.field,
+.workspace-search,
+.custom-select-panel,
+.account-menu,
+.locked-state,
+.locked-panel,
+.modal,
+.score-tile,
+.metric,
+.pipeline-stage,
+.plan-summary-card,
+.market-worth-card,
+.market-scenario-card,
+.chat-context-panel,
+.chat-composer-field,
+.application-kpi-card,
+.market-value-plan {
+  border-color: rgba(226, 232, 240, 0.14) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(148, 163, 184, 0.035)),
+    rgba(15, 31, 51, 0.78) !important;
+  box-shadow: 0 18px 48px rgba(2, 8, 23, 0.22) !important;
+}
+
+.list-card:hover,
+.list-card.active,
+.pipeline-stage.active,
+.application-stage-actions button.active {
+  border-color: rgba(56, 189, 248, 0.42) !important;
+  background:
+    linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(56, 189, 248, 0.08)),
+    rgba(15, 31, 51, 0.86) !important;
+}
+
+.btn-primary,
+.open-os-btn,
+.account-menu-trigger {
+  color: #fff !important;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9) !important;
+  box-shadow: 0 14px 32px rgba(37, 99, 235, 0.22) !important;
+}
+
+.btn-cyan {
+  color: #061623 !important;
+  background: linear-gradient(135deg, #38bdf8, #7dd3fc) !important;
+  box-shadow: 0 14px 32px rgba(14, 165, 233, 0.18) !important;
+}
+
+.btn-gold,
+.cta-gold {
+  color: #111827 !important;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+  box-shadow: 0 14px 28px rgba(245, 158, 11, 0.16) !important;
+}
+
+.btn-ghost {
+  border-color: rgba(226, 232, 240, 0.18) !important;
+  background: rgba(15, 31, 51, 0.58) !important;
+}
+
+.pill {
+  color: #dbeafe;
+  background: rgba(59, 130, 246, 0.13) !important;
+}
+
+.pill.cyan {
+  color: #bae6fd !important;
+  background: rgba(14, 165, 233, 0.16) !important;
+}
+
+.pill.gold {
+  color: #fde68a !important;
+  background: rgba(245, 158, 11, 0.16) !important;
+}
+
+.pill.green {
+  color: #bbf7d0 !important;
+  background: rgba(16, 185, 129, 0.16) !important;
+}
+
+.pill.red {
+  color: #fecdd3 !important;
+  background: rgba(244, 63, 94, 0.16) !important;
+}
+
+.progress span,
+.market-breakdown-bar i,
+.streak-bar-fill {
+  background: linear-gradient(90deg, #38bdf8, #2563eb) !important;
+}
+
+.feature-icon,
+.public-avatar {
+  color: #38bdf8 !important;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(14, 165, 233, 0.10)) !important;
+}
+
+.dashboard-hero,
+.market-hero,
+.os-module-header,
+.compact-dashboard-hero {
+  background:
+    linear-gradient(135deg, #0f1f33 0%, #07111f 62%, #132b45 100%) !important;
+}
+
+.workspace-rail.glass-card,
+.workspace-rail.glass-card:hover,
+.workspace-rail.glass-card:focus-within {
+  background: #07111f !important;
+  box-shadow: 0 18px 48px rgba(2, 8, 23, 0.30) !important;
+}
+
+.workspace-rail .rail-item.active,
+.workspace-rail:hover .rail-item.active,
+.workspace-rail:focus-within .rail-item.active {
+  background: rgba(37, 99, 235, 0.16) !important;
+}
+
+.workspace-rail .rail-item.active::before {
+  background: linear-gradient(180deg, #38bdf8, #2563eb) !important;
+}
+
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .custom-select-panel,
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .custom-select-option,
+.jobs-workspace .custom-select-panel,
+.jobs-workspace .custom-select-option {
+  color: #f8fafc !important;
+  background-color: #0f1f33 !important;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border-color: rgba(226, 232, 240, 0.12) !important;
+}
+
+.topbar::before,
+.workspace-shell::before,
+.workspace-shell::after,
+.dashboard-hero::before,
+.market-hero::before,
+.compact-dashboard-hero::before {
+  opacity: 0.55 !important;
+}
+
+.hero-actions .btn-primary,
+.search-button,
+.compare-btn,
+.stage-action,
+.plan-command-button,
+.market-plan-action,
+.interview-action-button,
+.chat-send,
+.application-detail-action.primary {
+  color: #fff !important;
+  background: linear-gradient(135deg, #2563eb, #0284c7) !important;
+  border-color: rgba(125, 211, 252, 0.24) !important;
+  box-shadow: 0 16px 34px rgba(37, 99, 235, 0.20) !important;
+}
+
+.message.user {
+  color: #fff !important;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9) !important;
+  box-shadow: 0 14px 34px rgba(37, 99, 235, 0.20) !important;
+}
+
+.message.assistant,
+.interview-feedback-card,
+.market-plan-task,
+.plan-task-card,
+.timeline-item,
+.compact-timeline .timeline-item {
+  border-color: rgba(226, 232, 240, 0.13) !important;
+  background: rgba(30, 46, 70, 0.72) !important;
+}
+
+.chat-chip,
+.quick-prompt,
+.draft-prompt,
+.market-signal,
+.market-location-row,
+.scenario-pill,
+.application-command-card,
+.application-detail-note,
+.value-step-card {
+  border-color: rgba(226, 232, 240, 0.12) !important;
+  background: rgba(15, 31, 51, 0.68) !important;
+}
+
+.chat-chip:hover,
+.quick-prompt:hover,
+.draft-prompt:hover,
+.stage-action:hover,
+.application-detail-action:hover,
+.market-plan-task:hover,
+.plan-task-card:hover {
+  border-color: rgba(56, 189, 248, 0.36) !important;
+  background: rgba(37, 99, 235, 0.13) !important;
+}
+
+.pill.active,
+.tab.active,
+.tab-row button.active,
+.custom-select-option.active,
+.interview-setup-card .pill.active,
+.application-filter.active,
+.market-role-tab.active {
+  color: #fff !important;
+  border-color: rgba(56, 189, 248, 0.38) !important;
+  background: rgba(37, 99, 235, 0.20) !important;
+}
+
+.score-badge,
+.match-badge,
+.application-match,
+.market-growth-badge {
+  color: #042f2e !important;
+  background: linear-gradient(135deg, #5eead4, #38bdf8) !important;
+  box-shadow: 0 12px 28px rgba(14, 165, 233, 0.18) !important;
+}
+
+.comparison-score-bar span,
+.health-ring-progress {
+  background: linear-gradient(90deg, #38bdf8, #2563eb) !important;
+  stroke: #38bdf8 !important;
+}
+
+.timeline-item::before,
+.compact-timeline .timeline-item::before,
+body[data-page="vera"] .timeline-item::before {
+  background: linear-gradient(180deg, #38bdf8, #2563eb) !important;
+}
+
+.radar,
+.health-ring {
+  border-color: rgba(56, 189, 248, 0.18) !important;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.14), transparent 38%),
+    rgba(15, 31, 51, 0.76) !important;
+  box-shadow: 0 20px 54px rgba(2, 8, 23, 0.28) !important;
+}
+
+.radar span {
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.42)) !important;
+}
+
+input,
+select,
+textarea {
+  color: #f8fafc !important;
+  border-color: rgba(226, 232, 240, 0.14) !important;
+  background: rgba(15, 31, 51, 0.72) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.field:focus-within,
+.chat-composer-field:focus-within {
+  border-color: rgba(56, 189, 248, 0.48) !important;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.36) !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.42) !important;
+}
+
+/* Bright professional commercial theme override */
+html {
+  background: #f8fafc;
+}
+
+body {
+  color: #0f172a !important;
+  background:
+    radial-gradient(circle at 8% -8%, rgba(59, 130, 246, 0.12), transparent 32%),
+    radial-gradient(circle at 92% 0%, rgba(20, 184, 166, 0.10), transparent 30%),
+    linear-gradient(135deg, #ffffff 0%, #f8fafc 44%, #eef5ff 100%) !important;
+}
+
+.site-shell,
+.os-layout,
+.workspace-shell,
+.jobs-workspace,
+.jobs-page-layout,
+.companies-page,
+.page-main {
+  color: #0f172a !important;
+}
+
+.topbar {
+  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06) !important;
+}
+
+.topbar::before,
+.workspace-shell::before,
+.workspace-shell::after,
+.dashboard-hero::before,
+.market-hero::before,
+.compact-dashboard-hero::before {
+  opacity: 0.20 !important;
+}
+
+.brand-text strong,
+h1,
+h2,
+h3,
+h4,
+.section-title,
+.page-hero h1,
+.hero h1,
+.card h3,
+.tool-card h3,
+.metric strong,
+.score-tile strong,
+.application-kpi-card strong,
+.market-worth-card strong,
+.market-scenario-card strong {
+  color: #0f172a !important;
+}
+
+.brand-text span,
+.nav-links a,
+.mobile-nav a,
+.muted,
+.section-sub,
+.page-copy,
+.hero-copy,
+.card p,
+.tool-card p,
+.chat-insight span,
+.market-worth-card p,
+.market-scenario-card p,
+.detail-panel p,
+.list-card p,
+.application-detail-note,
+.value-step-card p {
+  color: #475569 !important;
+}
+
+.nav-links a:hover,
+.nav-links a.active,
+.mobile-nav a.active,
+.workspace-rail .rail-item:hover:not(.active),
+.workspace-rail .rail-item:focus-visible:not(.active) {
+  color: #1d4ed8 !important;
+  background: rgba(37, 99, 235, 0.08) !important;
+}
+
+.hero::before {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(239, 246, 255, 0.78), rgba(248, 250, 252, 0.94)),
+    url("assets/careergo-logo.png") right 8% center / min(46vw, 620px) no-repeat !important;
+}
+
+.hero::after,
+.hero-search {
+  background: linear-gradient(180deg, transparent, #f8fafc) !important;
+}
+
+.page-hero,
+.dashboard-hero,
+.market-hero,
+.os-module-header,
+.compact-dashboard-hero {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(14, 165, 233, 0.12), transparent 26%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(239, 246, 255, 0.82)) !important;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.07) !important;
+}
+
+.hero h1 span,
+.page-hero h1 span,
+.spark {
+  color: #2563eb !important;
+}
+
+.eyebrow {
+  border-color: rgba(37, 99, 235, 0.16) !important;
+  color: #1d4ed8 !important;
+  background: rgba(239, 246, 255, 0.92) !important;
+}
+
+.card,
+.glass-card,
+.tool-card,
+.list-card,
+.filters,
+.detail-panel,
+.search-panel,
+.hero-discovery-engine,
+.field,
+.workspace-search,
+.custom-select-panel,
+.account-menu,
+.locked-state,
+.locked-panel,
+.modal,
+.score-tile,
+.metric,
+.pipeline-stage,
+.plan-summary-card,
+.market-worth-card,
+.market-scenario-card,
+.chat-context-panel,
+.chat-composer-field,
+.application-kpi-card,
+.market-value-plan,
+.message.assistant,
+.interview-feedback-card,
+.market-plan-task,
+.plan-task-card,
+.timeline-item,
+.compact-timeline .timeline-item,
+.chat-chip,
+.quick-prompt,
+.draft-prompt,
+.market-signal,
+.market-location-row,
+.scenario-pill,
+.application-command-card,
+.application-detail-note,
+.value-step-card {
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.88)),
+    #ffffff !important;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.07) !important;
+}
+
+.list-card:hover,
+.list-card.active,
+.pipeline-stage.active,
+.application-stage-actions button.active,
+.chat-chip:hover,
+.quick-prompt:hover,
+.draft-prompt:hover,
+.stage-action:hover,
+.application-detail-action:hover,
+.market-plan-task:hover,
+.plan-task-card:hover {
+  border-color: rgba(37, 99, 235, 0.28) !important;
+  background:
+    linear-gradient(135deg, rgba(239, 246, 255, 0.98), rgba(224, 242, 254, 0.78)),
+    #ffffff !important;
+  box-shadow: 0 20px 48px rgba(37, 99, 235, 0.10) !important;
+}
+
+.btn-primary,
+.open-os-btn,
+.account-menu-trigger,
+.hero-actions .btn-primary,
+.search-button,
+.compare-btn,
+.stage-action,
+.plan-command-button,
+.market-plan-action,
+.interview-action-button,
+.chat-send,
+.application-detail-action.primary {
+  color: #fff !important;
+  border-color: rgba(37, 99, 235, 0.16) !important;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9) !important;
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.20) !important;
+}
+
+.btn-cyan {
+  color: #083344 !important;
+  background: linear-gradient(135deg, #67e8f9, #bae6fd) !important;
+  box-shadow: 0 14px 28px rgba(14, 165, 233, 0.14) !important;
+}
+
+.btn-gold,
+.cta-gold {
+  color: #422006 !important;
+  background: linear-gradient(135deg, #fde68a, #fbbf24) !important;
+  box-shadow: 0 14px 28px rgba(245, 158, 11, 0.14) !important;
+}
+
+.btn-ghost {
+  color: #334155 !important;
+  border-color: rgba(15, 23, 42, 0.10) !important;
+  background: rgba(255, 255, 255, 0.76) !important;
+}
+
+.message.user {
+  color: #fff !important;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9) !important;
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.18) !important;
+}
+
+.pill {
+  color: #1e40af !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  background: rgba(219, 234, 254, 0.82) !important;
+}
+
+.pill.cyan,
+.score-badge,
+.match-badge,
+.application-match,
+.market-growth-badge {
+  color: #0f766e !important;
+  background: rgba(204, 251, 241, 0.86) !important;
+}
+
+.pill.gold {
+  color: #92400e !important;
+  background: rgba(254, 243, 199, 0.90) !important;
+}
+
+.pill.green {
+  color: #047857 !important;
+  background: rgba(209, 250, 229, 0.88) !important;
+}
+
+.pill.red {
+  color: #be123c !important;
+  background: rgba(255, 228, 230, 0.90) !important;
+}
+
+.pill.active,
+.tab.active,
+.tab-row button.active,
+.custom-select-option.active,
+.interview-setup-card .pill.active,
+.application-filter.active,
+.market-role-tab.active {
+  color: #1d4ed8 !important;
+  border-color: rgba(37, 99, 235, 0.26) !important;
+  background: rgba(219, 234, 254, 0.96) !important;
+}
+
+.progress span,
+.market-breakdown-bar i,
+.streak-bar-fill,
+.comparison-score-bar span,
+.timeline-item::before,
+.compact-timeline .timeline-item::before,
+body[data-page="vera"] .timeline-item::before {
+  background: linear-gradient(90deg, #0ea5e9, #2563eb) !important;
+}
+
+.feature-icon,
+.public-avatar {
+  color: #1d4ed8 !important;
+  background: linear-gradient(135deg, rgba(219, 234, 254, 0.95), rgba(224, 242, 254, 0.86)) !important;
+}
+
+.workspace-rail.glass-card,
+.workspace-rail.glass-card:hover,
+.workspace-rail.glass-card:focus-within {
+  background: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08) !important;
+}
+
+.workspace-rail .rail-item,
+.workspace-rail .os-nav-button,
+.workspace-rail .rail-label {
+  color: #475569 !important;
+}
+
+.workspace-rail .rail-item.active,
+.workspace-rail:hover .rail-item.active,
+.workspace-rail:focus-within .rail-item.active,
+.workspace-rail:hover .os-nav a.rail-item.active,
+.workspace-rail:focus-within .os-nav a.rail-item.active {
+  color: #1d4ed8 !important;
+  background: rgba(219, 234, 254, 0.95) !important;
+}
+
+.workspace-rail .rail-item.active::before {
+  background: linear-gradient(180deg, #0ea5e9, #2563eb) !important;
+}
+
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .custom-select-panel,
+body[data-page="jobs"] :is(.jobs-workspace, .jobs-page-layout) .custom-select-option,
+.jobs-workspace .custom-select-panel,
+.jobs-workspace .custom-select-option {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+}
+
+.comparison-table th,
+.comparison-table td,
+.job-card-status,
+.application-stage-actions button {
+  color: #334155 !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.radar,
+.health-ring {
+  color: #0f172a !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.12), transparent 38%),
+    #ffffff !important;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08) !important;
+}
+
+.radar span {
+  background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.36)) !important;
+}
+
+.health-ring-progress {
+  stroke: #2563eb !important;
+}
+
+input,
+select,
+textarea {
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.10) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.field:focus-within,
+.chat-composer-field:focus-within {
+  border-color: rgba(37, 99, 235, 0.34) !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.42) !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 0.42) !important;
+}
+
+.featured-carousel::before,
+.research-marquee::before {
+  background: linear-gradient(to right, #f8fafc 0%, rgba(248, 250, 252, 0.92) 34%, rgba(248, 250, 252, 0) 100%) !important;
+}
+
+.featured-carousel::after,
+.research-marquee::after {
+  background: linear-gradient(to left, #f8fafc 0%, rgba(248, 250, 252, 0.92) 34%, rgba(248, 250, 252, 0) 100%) !important;
+}
+
+.hero::after,
+.public-discovery-intro::after,
+.page-hero::after {
+  background: linear-gradient(180deg, transparent, #f8fafc) !important;
+}
+
+/* Bright theme readability fixes */
+body[data-page="jobs"] :is(.detail-panel, .list-card, .application-control, .vera-box, .warning-box, .score-tile, .timeline-item) {
+  color: #0f172a !important;
+}
+
+body[data-page="jobs"] :is(.detail-panel, .list-card, .application-control, .vera-box, .warning-box, .score-tile, .timeline-item) :is(p, li, span, small, div, .muted, .small) {
+  color: #334155 !important;
+}
+
+body[data-page="jobs"] :is(.detail-panel, .list-card, .application-control, .vera-box, .warning-box, .score-tile, .timeline-item) :is(h2, h3, h4, strong) {
+  color: #0f172a !important;
+}
+
+body[data-page="jobs"] .check-list li {
+  color: #334155 !important;
+  font-weight: 750;
+}
+
+body[data-page="jobs"] .check-list li::before {
+  background: #10b981 !important;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+}
+
+body[data-page="jobs"] .vera-box {
+  border-color: rgba(37, 99, 235, 0.16) !important;
+  background:
+    linear-gradient(135deg, rgba(239, 246, 255, 0.98), rgba(236, 253, 245, 0.72)),
+    #ffffff !important;
+}
+
+body[data-page="jobs"] .application-control {
+  border-color: rgba(14, 165, 233, 0.20) !important;
+  background: rgba(240, 249, 255, 0.88) !important;
+}
+
+body[data-page="jobs"] .warning-box {
+  border-color: rgba(245, 158, 11, 0.22) !important;
+  background: rgba(255, 251, 235, 0.92) !important;
+}
+
+body[data-page="jobs"] .score-tile {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+body[data-page="jobs"] .score-tile span,
+body[data-page="jobs"] .section-kicker,
+body[data-page="jobs"] .job-detail-label {
+  color: #475569 !important;
+}
+
+body[data-page="jobs"] .stage-control button {
+  color: #334155 !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+}
+
+body[data-page="jobs"] .stage-control button.active {
+  color: #1d4ed8 !important;
+  border-color: rgba(37, 99, 235, 0.28) !important;
+  background: rgba(219, 234, 254, 0.96) !important;
+}
+
+body[data-page="jobs"] .score {
+  color: #06202a !important;
+  background: linear-gradient(135deg, #67e8f9, #2dd4bf) !important;
+}
+
+body[data-page="jobs"] .pill {
+  color: #1e40af !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+  background: rgba(219, 234, 254, 0.88) !important;
+}
+
+body[data-page="jobs"] .pill.cyan {
+  color: #0f766e !important;
+  background: rgba(204, 251, 241, 0.90) !important;
+}
+
+body[data-page="jobs"] .pill.gold {
+  color: #92400e !important;
+  background: rgba(254, 243, 199, 0.94) !important;
+}
+
+body[data-page="jobs"] .pill.green {
+  color: #047857 !important;
+  background: rgba(209, 250, 229, 0.92) !important;
+}
+
+body[data-page="jobs"] .pill.red {
+  color: #be123c !important;
+  background: rgba(255, 228, 230, 0.94) !important;
+}
+
+.site-footer {
+  color: #0f172a !important;
+  border-top-color: rgba(15, 23, 42, 0.08) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(37, 99, 235, 0.08), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
+}
+
+.footer-brand h2,
+.footer-inner strong {
+  color: #0f172a !important;
+}
+
+.footer-brand p,
+.footer-column a,
+.footer-bottom {
+  color: #475569 !important;
+}
+
+.footer-column h3 {
+  color: #2563eb !important;
+}
+
+.footer-column a:hover {
+  color: #1d4ed8 !important;
+}
+
+.footer-bottom {
+  border-top-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Auth screen bright theme readability fixes */
+.auth-shell :is(.auth-panel, .auth-side, .auth-role-card) {
+  color: #0f172a !important;
+}
+
+.auth-shell :is(.section-sub, .auth-role-card p, label, .muted, .small) {
+  color: #475569 !important;
+}
+
+.auth-shell :is(.section-title, .auth-role-card h3, label) {
+  color: #0f172a !important;
+}
+
+.auth-role-card {
+  opacity: 1 !important;
+  border-color: rgba(15, 23, 42, 0.10) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+}
+
+.auth-role-card.is-selected {
+  border-color: rgba(37, 99, 235, 0.32) !important;
+  background: rgba(239, 246, 255, 0.96) !important;
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12) !important;
+}
+
+.auth-role-card .auth-role-indicator {
+  border-color: rgba(37, 99, 235, 0.14) !important;
+  color: #0f172a !important;
+  background: #ffffff !important;
+}
+
+.auth-role-card.is-selected .auth-role-indicator {
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+  background: #2563eb !important;
+}
+
+.auth-role-learn,
+.auth-role-learn svg {
+  color: #2563eb !important;
+}
+
+.auth-role-learn:hover,
+.auth-role-learn:focus-visible {
+  color: #1d4ed8 !important;
+}
+
+.auth-tip {
+  color: #334155 !important;
+  border-left-color: #2563eb !important;
+  background: rgba(239, 246, 255, 0.94) !important;
+}
+
+.auth-tip span {
+  color: #334155 !important;
+}
+
+.auth-tip svg {
+  color: #2563eb !important;
+}
+
+.auth-shell input::placeholder {
+  color: #64748b !important;
+  opacity: 1;
+}
+
+/* Bright theme visibility pass */
+.tour-backdrop {
+  background: rgba(15, 23, 42, 0.30) !important;
+}
+
+.tour-highlight {
+  outline-color: rgba(37, 99, 235, 0.72) !important;
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.10), 0 24px 70px rgba(15, 23, 42, 0.18) !important;
+}
+
+.tour-card {
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.10) !important;
+  background: #ffffff !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18) !important;
+}
+
+.tour-card h2,
+.tour-card strong {
+  color: #0f172a !important;
+}
+
+.tour-card p {
+  color: #475569 !important;
+}
+
+.tour-progress {
+  color: #0ea5e9 !important;
+}
+
+.tour-dots i {
+  background: rgba(15, 23, 42, 0.16) !important;
+}
+
+.tour-dots i.active {
+  background: #0ea5e9 !important;
+}
+
+.tour-mission {
+  color: #92400e !important;
+  border-color: rgba(245, 158, 11, 0.22) !important;
+  background: rgba(255, 251, 235, 0.96) !important;
+}
+
+.tour-mission svg {
+  color: #f59e0b !important;
+}
+
+.breadcrumb,
+.breadcrumb strong {
+  color: #334155 !important;
+}
+
+.breadcrumb a {
+  color: #1d4ed8 !important;
+}
+
+.breadcrumb a:hover {
+  color: #0f172a !important;
+}
+
+.section-kicker {
+  color: #0284c7 !important;
+}
+
+.warning-box .section-kicker,
+.market-role-card .section-kicker,
+.market-value-plan .section-kicker {
+  color: #b45309 !important;
+}
+
+.warning-box,
+.market-role-card .warning-box {
+  color: #0f172a !important;
+  border-color: rgba(245, 158, 11, 0.24) !important;
+  background: rgba(255, 251, 235, 0.96) !important;
+}
+
+.warning-box :is(p, span, small, div, .muted) {
+  color: #334155 !important;
+}
+
+.warning-box :is(h2, h3, strong) {
+  color: #0f172a !important;
+}
+
+.custom-checkbox {
+  color: #334155 !important;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  border-color: rgba(37, 99, 235, 0.22) !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.10) !important;
+}
+
+.custom-checkbox:hover input[type="checkbox"] {
+  border-color: rgba(37, 99, 235, 0.46) !important;
+  background: rgba(239, 246, 255, 0.96) !important;
+}
+
+.custom-checkbox input[type="checkbox"]:focus-visible {
+  outline-color: rgba(37, 99, 235, 0.48) !important;
+}
+
+.custom-checkbox input[type="checkbox"]:checked {
+  border-color: transparent !important;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9) !important;
+}
+
+.health-ring {
+  background:
+    radial-gradient(circle at 42% 32%, rgba(14, 165, 233, 0.12), transparent 36%),
+    radial-gradient(circle at center, #ffffff 58%, rgba(239, 246, 255, 0.92) 72%, transparent 73%) !important;
+  box-shadow: 0 20px 54px rgba(37, 99, 235, 0.12) !important;
+}
+
+.health-ring-track {
+  stroke: rgba(148, 163, 184, 0.20) !important;
+}
+
+.health-ring-copy span,
+.health-ring-copy strong {
+  color: #0f172a !important;
+}
+
+.health-ring-copy small {
+  color: #475569 !important;
+}
+
+.radar {
+  border: 1px solid rgba(14, 165, 233, 0.16) !important;
+  background:
+    repeating-radial-gradient(circle, rgba(14, 165, 233, 0.18) 0 2px, transparent 2px 30px),
+    radial-gradient(circle, rgba(224, 242, 254, 0.96), #ffffff) !important;
+}
+
+.radar span {
+  height: 3px !important;
+  background: linear-gradient(90deg, rgba(2, 132, 199, 0.95), rgba(14, 165, 233, 0.26), transparent) !important;
+  box-shadow: 0 0 14px rgba(14, 165, 233, 0.42);
+}
+
+.market-breakdown-row,
+.market-role-card,
+.market-signal,
+.market-location-row {
+  color: #0f172a !important;
+}
+
+.market-breakdown-row :is(p, span, small, .muted),
+.market-role-card :is(p, span, small, .muted),
+.market-signal :is(p, span, small, .muted),
+.market-location-row :is(p, span, small, .muted) {
+  color: #475569 !important;
+}
+
+.market-breakdown-row b,
+.market-breakdown-row strong,
+.market-role-card strong,
+.market-role-card h3 {
+  color: #0f172a !important;
+}
+
+/* Dashboard and market visual refinement */
+.demo-badge,
+.demo-badge.inline {
+  color: #0f766e !important;
+  border-color: rgba(20, 184, 166, 0.28) !important;
+  background: rgba(204, 251, 241, 0.88) !important;
+}
+
+.demo-badge svg {
+  color: #0f766e !important;
+}
+
+.market-hero-meter,
+.market-worth-card,
+.market-scenario-card {
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.10) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.90)),
+    #ffffff !important;
+}
+
+.market-hero-meter span,
+.market-worth-card span,
+.market-scenario-card span {
+  color: #475569 !important;
+}
+
+.market-hero-meter strong,
+.market-worth-card strong,
+.market-scenario-card strong {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+.market-worth-card .progress span,
+.market-worth-card .progress,
+.market-breakdown-bar,
+.progress {
+  background-color: rgba(226, 232, 240, 0.92) !important;
+}
+
+.health-ring {
+  filter: none !important;
+}
+
+.health-ring-copy span,
+.health-ring-copy strong {
+  color: #0f172a !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+}
+
+.health-ring-copy small {
+  color: #475569 !important;
+  text-shadow: none !important;
+}
+
+.health-ring-progress {
+  stroke: #2563eb !important;
+}
+
+.dashboard-hero .hero-actions {
+  align-items: center;
+}
+
+.tour-restart-btn {
+  min-width: 150px;
+  justify-content: center;
+  white-space: nowrap;
+  text-align: center;
+  line-height: 1.15;
+}
+
+.tour-restart-btn svg {
+  flex: 0 0 auto;
+}
+
+.progress span,
+.market-breakdown-bar i,
+.market-worth-card .progress span {
+  background: linear-gradient(90deg, #0ea5e9, #2563eb) !important;
 }
