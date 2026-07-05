@@ -1679,7 +1679,7 @@ function initCustomSelect(select) {
     sync();
   }
 
-  function open(focusIndex = selectedIndex()) {
+  function open(focusIndex = selectedIndex(), focusOption = true) {
     const group = root.closest(".filter-stack") || root.parentElement;
     qsa("[data-custom-select].open", group).forEach(item => {
       if (item === root) return;
@@ -1691,7 +1691,7 @@ function initCustomSelect(select) {
     root.classList.add("open");
     trigger.setAttribute("aria-expanded", "true");
     panel.hidden = false;
-    optionButtons()[focusIndex]?.focus();
+    if (focusOption) optionButtons()[focusIndex]?.focus();
   }
 
   function close(returnFocus = false) {
@@ -1750,7 +1750,7 @@ function initCustomSelect(select) {
   renderOptions();
   trigger.addEventListener("click", event => {
     event.stopPropagation();
-    root.classList.contains("open") ? close() : open(selectedIndex());
+    root.classList.contains("open") ? close() : open(selectedIndex(), false);
   });
   trigger.addEventListener("keydown", handleTriggerKey);
   select.addEventListener("change", sync);
