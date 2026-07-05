@@ -52,8 +52,8 @@ img { max-width: 100%; display: block; }
   position: sticky;
   top: 0;
   z-index: 50;
-  border-bottom: 1px solid var(--line);
-  background: rgba(14, 0, 38, 0.82);
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
   backdrop-filter: blur(18px);
 }
 
@@ -86,6 +86,7 @@ img { max-width: 100%; display: block; }
   display: block;
   font-size: 19px;
   letter-spacing: -0.02em;
+  color: #1a202c;
 }
 
 .brand-text span {
@@ -94,7 +95,7 @@ img { max-width: 100%; display: block; }
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.2em;
-  color: var(--muted);
+  color: #94a3b8;
 }
 
 .nav-links {
@@ -106,7 +107,7 @@ img { max-width: 100%; display: block; }
 .nav-links a {
   padding: 10px 12px;
   border-radius: 999px;
-  color: var(--muted);
+  color: #64748b;
   font-size: 14px;
   font-weight: 800;
   transition: 160ms ease;
@@ -115,8 +116,8 @@ img { max-width: 100%; display: block; }
 
 .nav-links a:hover,
 .nav-links a.active {
-  color: #FAF7F2;
-  background: rgba(255, 255, 255, 0.1);
+  color: #1a202c;
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .nav-actions {
@@ -210,15 +211,15 @@ img { max-width: 100%; display: block; }
   flex: 0 0 auto;
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--muted);
+  background: rgba(0, 0, 0, 0.05);
+  color: #64748b;
   font-size: 12px;
   font-weight: 800;
 }
 
 .mobile-nav a.active {
-  background: linear-gradient(135deg, var(--purple), var(--magenta));
-  color: #FAF7F2;
+  background: linear-gradient(135deg, #1B3A34, #2FAE7A);
+  color: #ffffff;
 }
 
 .btn {
@@ -230,14 +231,15 @@ img { max-width: 100%; display: block; }
   padding: 11px 16px;
   border: 0;
   border-radius: 14px;
-  color: #FAF7F2;
-  background: rgba(255, 255, 255, 0.1);
+  color: #1a202c;
+  background: rgba(0, 0, 0, 0.05);
   font-weight: 900;
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
 .btn:hover { transform: translateY(-1px); }
 .btn-primary {
+  color: #ffffff;
   background: linear-gradient(135deg, #1B3A34, #2FAE7A);
   box-shadow: 0 14px 36px rgba(27, 58, 52, 0.22);
 }
@@ -252,8 +254,9 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 14px 36px rgba(47, 174, 122, 0.24);
 }
 .btn-ghost {
-  border: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid #d1d5db;
+  background: rgba(0, 0, 0, 0.03);
+  color: #64748b;
 }
 .btn-wide { width: 100%; }
 
@@ -6587,14 +6590,15 @@ body {
 }
 
 .topbar {
-  border-bottom-color: rgba(251, 191, 36, 0.12);
-  background: rgba(7, 17, 31, 0.88) !important;
+  border-bottom-color: #e5e7eb;
+  background: #ffffff !important;
 }
 
 .brand-logo {
   box-shadow: 0 12px 28px rgba(27, 58, 52, 0.28);
 }
 
+.brand-text strong,
 .brand-text span,
 .nav-links a,
 .mobile-nav a,
@@ -6613,7 +6617,7 @@ body {
 .nav-links a:hover,
 .nav-links a.active,
 .mobile-nav a.active {
-  color: #FAF7F2;
+  color: #ffffff;
   background: rgba(27, 58, 52, 0.14) !important;
 }
 

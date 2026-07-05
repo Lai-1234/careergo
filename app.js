@@ -1386,7 +1386,7 @@ function workspaceTopNav() {
   const isEmployer = state.session.role === "employer";
   const notifications = Array.isArray(state.notifications) ? state.notifications : [];
   return `
-    <a class="brand" href="${isEmployer ? "employer-app.html" : "dashboard.html"}"><img class="brand-logo" src="assets/careergo-logo-enterprise.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>${isEmployer ? "Employer OS" : "Workspace"}</span></span></a>
+    <a class="brand" href="${isEmployer ? "employer-app.html" : "dashboard.html"}"><img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>${isEmployer ? "Employer OS" : "Workspace"}</span></span></a>
     <form class="workspace-search" role="search" data-workspace-search data-tour-target="workspace-search">
       ${icon("search")}
       <input name="q" aria-label="Search workspace" placeholder="${isEmployer ? "Search candidates, roles, applicants" : "Search jobs, companies, universities"}">
@@ -1545,6 +1545,15 @@ function createIcons() {
   if (window.lucide) window.lucide.createIcons();
 }
 
+function ensureBrandFonts() {
+  if (document.getElementById("careergo-brand-fonts")) return;
+  const link = document.createElement("link");
+  link.id = "careergo-brand-fonts";
+  link.rel = "stylesheet";
+  link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900;1000&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap";
+  document.head.appendChild(link);
+}
+
 function renderSiteFooter() {
   const host = qs(".site-shell") || document.body;
   let footer = qs(".site-footer");
@@ -1559,44 +1568,38 @@ function renderSiteFooter() {
       <div class="footer-wrap">
         <div class="footer-grid">
           <div class="footer-brand">
-            <img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo">
-            <p>The AI-powered Career Operating System. Guiding careers from first step to lifelong growth.</p>
+            <h2>CareerGo</h2>
+            <p>The AI-guided career platform &mdash; find jobs, research companies and universities, and grow with Vera.</p>
           </div>
           <nav class="footer-column" aria-label="Product">
             <h3>Product</h3>
-            <a href="profile.html">Career Intelligence</a>
-            <a href="vera.html">AI Coach</a>
-            <a href="market.html">Simulation</a>
-            <a href="market.html">Fair Pay</a>
-          </nav>
-          <nav class="footer-column" aria-label="Explore">
-            <h3>Explore</h3>
             <a href="jobs.html">Jobs</a>
             <a href="companies.html">Companies</a>
             <a href="universities.html">Universities</a>
             <a href="community.html">Community</a>
+            <a href="about.html">About</a>
+          </nav>
+          <nav class="footer-column" aria-label="For employers">
+            <h3>For Employers</h3>
+            <a href="employers.html">Employer entry</a>
+            <a href="register.html">Create employer account</a>
+            <a href="employer-app.html#candidates">Candidate search</a>
+            <a href="employer-app.html#pipeline">Hiring pipeline</a>
           </nav>
           <nav class="footer-column" aria-label="Company">
             <h3>Company</h3>
             <a href="about.html">About</a>
             <a href="employers.html">Careers</a>
-            <a href="community.html">Press</a>
             <a href="about.html">Contact</a>
-          </nav>
-          <nav class="footer-column" aria-label="Legal">
-            <h3>Legal</h3>
             <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Security</a>
-            <a href="#">Cookies</a>
           </nav>
         </div>
         <div class="footer-bottom">
           <span>© 2026 CareerGo. All rights reserved.</span>
-          <span>Designed for every stage of your career.</span>
         </div>
       </div>
     `;
+    footer.querySelector(".footer-bottom").innerHTML = `<span>&copy; 2026 CareerGo &bull; Career OS</span>`;
     return;
   }
 
@@ -1635,6 +1638,8 @@ function renderSiteFooter() {
       </div>
     </div>
   `;
+  footer.querySelector(".footer-brand p").innerHTML = `The AI-guided career platform &mdash; find jobs, research companies and universities, and grow with Vera.`;
+  footer.querySelector(".footer-bottom").innerHTML = `<span>&copy; 2026 CareerGo &bull; Career OS</span>`;
 }
 
 function initCustomSelect(select) {
@@ -1927,6 +1932,36 @@ function initWorkspaceRailTooltips() {
       item.classList.remove("show-rail-tooltip");
     });
   });
+}
+
+function initWorkspaceRailScrollSync() {
+  if (document.body.dataset.workspaceRailScrollSyncReady === "true") return;
+  document.body.dataset.workspaceRailScrollSyncReady = "true";
+
+  const media = window.matchMedia("(min-width: 1021px)");
+  let ticking = false;
+
+  function sync() {
+    ticking = false;
+    qsa(".workspace-rail").forEach(rail => {
+      if (!media.matches) {
+        rail.style.removeProperty("--rail-scroll-y");
+        return;
+      }
+      rail.style.setProperty("--rail-scroll-y", `${Math.max(0, window.scrollY || 0)}px`);
+    });
+  }
+
+  function requestSync() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(sync);
+  }
+
+  window.addEventListener("scroll", requestSync, { passive: true });
+  window.addEventListener("resize", requestSync);
+  media.addEventListener?.("change", requestSync);
+  sync();
 }
 
 function setActiveNav() {
@@ -2406,6 +2441,76 @@ function initGlobalNumberAnimations() {
     if (mutations.some(mutation => mutation.addedNodes.length)) queueScan();
   });
   mutationObserver.observe(document.body, { childList: true, subtree: true });
+}
+
+function initGlobalInteractionAnimations() {
+  if (document.body.dataset.globalInteractionAnimationsReady === "true") return;
+  document.body.dataset.globalInteractionAnimationsReady = "true";
+  document.body.classList.add("interaction-motion-ready");
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const interactiveSelector = [
+    "button",
+    "a.btn",
+    "[role='button']",
+    ".btn",
+    ".home-btn",
+    ".pill",
+    ".pipeline-stage",
+    ".application-stage-actions button",
+    ".tab-row button",
+    ".custom-select-trigger",
+    ".custom-select-option",
+    ".rail-item",
+    ".os-nav-button",
+    ".account-menu-trigger",
+    ".notification-trigger",
+    ".plan-task-check",
+    ".market-plan-task a",
+    ".plan-task a",
+    ".list-card[href]",
+    "button[data-job-tab]",
+    "button[data-vera-tab]",
+    "button[data-market-role]"
+  ].join(",");
+
+  function animatePress(target) {
+    if (reducedMotion.matches) return;
+    target.classList.add("is-pressed");
+    window.setTimeout(() => target.classList.remove("is-pressed"), 180);
+  }
+
+  function addRipple(target, event) {
+    if (reducedMotion.matches || target.dataset.noRipple === "true") return;
+    const rect = target.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const ripple = document.createElement("span");
+    const size = Math.max(rect.width, rect.height);
+    ripple.className = "interaction-ripple";
+    ripple.style.width = `${size}px`;
+    ripple.style.height = `${size}px`;
+    ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
+    ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
+    target.appendChild(ripple);
+    ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+  }
+
+  document.addEventListener("mousedown", event => {
+    if (event.button !== 0) return;
+    const target = event.target.closest(interactiveSelector);
+    if (!target || target.disabled || target.getAttribute("aria-disabled") === "true") return;
+    animatePress(target);
+    if (target.matches("button, a.btn, [role='button'], .btn, .home-btn, .pipeline-stage, .application-stage-actions button, .tab-row button, .pill")) {
+      addRipple(target, event);
+    }
+  }, { passive: true });
+
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const target = event.target.closest(interactiveSelector);
+    if (!target || target.disabled || target.getAttribute("aria-disabled") === "true") return;
+    animatePress(target);
+  });
 }
 
 function initHomeStageAnimation() {
@@ -5468,6 +5573,7 @@ function initComparisonTableAnimation() {
 }
 
 function init() {
+  ensureBrandFonts();
   ensureDemoDashboardSession();
   renderNavigation();
   renderFeatured();
@@ -5496,12 +5602,14 @@ function init() {
   initResearchMarquee();
   initHomeMetricCountUp();
   initGlobalNumberAnimations();
+  initGlobalInteractionAnimations();
   initHomeStageAnimation();
   initComparisonTableAnimation();
   bindGlobalActions();
   createIcons();
   initSidebarToggle();
   initWorkspaceRailTooltips();
+  initWorkspaceRailScrollSync();
 }
 
 document.addEventListener("DOMContentLoaded", init);
