@@ -1429,7 +1429,7 @@ function workspaceTopNav() {
       </div>
       <div class="account-menu-wrap">
         <button class="btn btn-primary account-menu-trigger" type="button" data-account-menu-toggle aria-haspopup="menu" aria-expanded="false">
-          ${icon(isEmployer ? "building-2" : "user-round")} ${getFirstName(state)}
+          <span class="account-avatar-icon">${icon(isEmployer ? "building-2" : "user-round")}</span><span>${getFirstName(state)}</span>
         </button>
         <div class="account-menu glass-card" data-account-menu hidden role="menu">
           <a role="menuitem" href="${isEmployer ? "employer-app.html#company-profile" : "public-profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
@@ -3385,9 +3385,11 @@ function renderDashboard() {
         <div class="section-head compact-section-head"><div><div class="section-kicker">Upcoming interviews</div><h2 class="section-title mini">Prep with context.</h2></div><a class="btn btn-ghost" href="vera.html#interview">${icon("messages-square")} Practice</a></div>
         ${trackedJobs.filter(item => item.record.stage === "interview").slice(0, 2).map(({ job, record }) => `<div class="list-card quiet"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company}</div></div><span class="pill gold">${record.deadline}</span></div></div>`).join("") || `<p class="muted">No interviews yet. Vera will surface prep tasks when an application reaches interview stage.</p>`}
       </article>
-      <article class="glass-card">
-        <div class="section-head compact-section-head"><div><div class="section-kicker">Recent activity</div><h2 class="section-title mini">Your latest signals.</h2></div><span class="pill cyan">${state.notifications.length} notes</span></div>
-        ${state.notifications.slice(0, 3).map(note => `<div class="review-card"><strong>${note.title}</strong><p class="muted small">${note.body}</p></div>`).join("")}
+      <article class="glass-card recent-activity-card">
+        <div class="section-head compact-section-head recent-activity-head"><div><div class="section-kicker">Recent activity</div><h2 class="section-title mini">Your latest signals.</h2></div><span class="activity-count"><strong>${state.notifications.length}</strong><span>notes</span></span></div>
+        <div class="activity-note-list">
+          ${state.notifications.slice(0, 3).map((note, index) => `<div class="activity-note"><span class="activity-note-mark">${index + 1}</span><div><strong>${note.title}</strong><p class="muted small">${note.body}</p></div></div>`).join("")}
+        </div>
       </article>
     </section>
     <section class="glass-card" data-tour-target="missions">
@@ -4367,11 +4369,11 @@ function renderProfile() {
   const profile = state.profile;
   const intel = profile.intelligence || generateCareerIntelligence(profile);
   root.innerHTML = appShell("intelligence", `
-    <section class="glass-card dashboard-hero">
+    <section class="glass-card dashboard-hero profile-intel-hero">
       <div><div class="eyebrow"><span class="spark">*</span> Private Career Intelligence</div><h1 class="section-title">Resume profile and career data.</h1><p class="section-sub">${intel.summary}</p></div>
       ${healthRing(intel, false)}
     </section>
-    <section class="glass-card">
+    <section class="glass-card generated-profile-card">
       <div class="section-kicker">Generated profile</div>
       <div class="grid-3">
         ${[
@@ -4384,7 +4386,7 @@ function renderProfile() {
         ].map(([label, value]) => `<div class="score-tile"><span>${label}</span><strong>${value}</strong></div>`).join("")}
       </div>
     </section>
-    <form class="os-main profile-form" data-profile-form>
+    <form class="profile-form" data-profile-form>
       <section class="profile-form-columns">
         <div class="profile-form-column">
         <div class="glass-card form-grid profile-card">

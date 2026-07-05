@@ -4378,14 +4378,823 @@ body[data-page="universities"] .org-detail-action-wide {
 
   body[data-page="companies"] .directory-filter-bar .field,
   body[data-page="companies"] .directory-filter-bar .btn-wide,
-  body[data-page="universities"] .directory-filter-bar .field,
-  body[data-page="universities"] .directory-filter-bar .btn-wide {
+body[data-page="universities"] .directory-filter-bar .field,
+body[data-page="universities"] .directory-filter-bar .btn-wide {
     width: 100% !important;
     max-width: none !important;
   }
 
   body[data-page="companies"] .org-detail-actions,
   body[data-page="universities"] .org-detail-actions {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Workspace dashboard rail alignment: keep the rail close to the content column. */
+@media (min-width: 1021px) {
+  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail),
+  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail:hover),
+  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail:focus-within) {
+    width: min(1280px, calc(100% - 56px)) !important;
+    padding-left: 112px !important;
+    grid-template-columns: 76px minmax(0, 1fr) !important;
+    gap: 22px !important;
+  }
+
+  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card {
+    left: calc((100vw - min(1280px, calc(100vw - 56px))) / 2 + 4px) !important;
+    top: calc(var(--cg-topbar) + 34px) !important;
+    bottom: 28px !important;
+    width: 76px !important;
+    max-height: calc(100vh - var(--cg-topbar) - 62px);
+  }
+
+  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card:hover,
+  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card:focus-within {
+    width: 218px !important;
+  }
+}
+
+/* Workspace rail non-overlap: reserve room for the expanded fixed navigation. */
+@media (min-width: 1021px) {
+  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail),
+  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail:hover),
+  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail:focus-within) {
+    width: min(calc(var(--cg-wide) + var(--cg-rail-open) + 28px), calc(100% - 56px)) !important;
+    padding-left: 0 !important;
+    grid-template-columns: var(--cg-rail-open) minmax(0, var(--cg-wide)) !important;
+    gap: 28px !important;
+    justify-content: center !important;
+  }
+
+  body:not([data-page="home"]):not([data-page="jobs"]) .os-main {
+    grid-column: 2 !important;
+  }
+
+  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card {
+    position: fixed !important;
+    left: calc((100vw - min(calc(var(--cg-wide) + var(--cg-rail-open) + 28px), calc(100vw - 56px))) / 2) !important;
+    top: calc(var(--cg-topbar) + 28px) !important;
+    bottom: 28px !important;
+    width: var(--cg-rail) !important;
+    max-height: calc(100vh - var(--cg-topbar) - 56px) !important;
+    justify-self: start !important;
+  }
+
+  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card:hover,
+  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card:focus-within {
+    width: var(--cg-rail-open) !important;
+  }
+}
+
+/* Jobs workspace uses the same fixed left rail placement as Career Intelligence. */
+@media (min-width: 1021px) {
+  body[data-page="jobs"] .os-layout:has(.workspace-rail),
+  body[data-page="jobs"] .os-layout:has(.workspace-rail:hover),
+  body[data-page="jobs"] .os-layout:has(.workspace-rail:focus-within) {
+    width: min(calc(var(--cg-wide) + var(--cg-rail-open) + 28px), calc(100% - 56px)) !important;
+    padding-left: 0 !important;
+    grid-template-columns: var(--cg-rail-open) minmax(0, var(--cg-wide)) !important;
+    gap: 28px !important;
+    justify-content: center !important;
+  }
+
+  body[data-page="jobs"] .os-main {
+    grid-column: 2 !important;
+  }
+
+  body[data-page="jobs"] .workspace-rail.glass-card {
+    position: fixed !important;
+    left: calc((100vw - min(calc(var(--cg-wide) + var(--cg-rail-open) + 28px), calc(100vw - 56px))) / 2) !important;
+    top: calc(var(--cg-topbar) + 28px) !important;
+    bottom: 28px !important;
+    width: var(--cg-rail) !important;
+    max-height: calc(100vh - var(--cg-topbar) - 56px) !important;
+    justify-self: start !important;
+  }
+
+  body[data-page="jobs"] .workspace-rail.glass-card:hover,
+  body[data-page="jobs"] .workspace-rail.glass-card:focus-within {
+    width: var(--cg-rail-open) !important;
+  }
+}
+
+/* Dashboard recent activity: make the small note count and notes easier to scan. */
+.recent-activity-card {
+  display: grid !important;
+  align-content: start !important;
+  gap: 18px !important;
+}
+
+.recent-activity-head {
+  align-items: start !important;
+  margin-bottom: 0 !important;
+}
+
+.recent-activity-head > div {
+  min-width: 0;
+}
+
+.recent-activity-head .section-title.mini {
+  max-width: 330px !important;
+}
+
+.activity-count {
+  flex: 0 0 auto;
+  min-width: 74px;
+  min-height: 60px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1px;
+  padding: 8px 14px;
+  border: 1px solid rgba(31, 95, 91, 0.16);
+  border-radius: 999px;
+  color: var(--cg-primary);
+  background: linear-gradient(135deg, #eff7f4, #f8fcfa);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  line-height: 1;
+  text-align: center;
+}
+
+.activity-count strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.activity-count span {
+  color: var(--cg-primary) !important;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.activity-note-list {
+  display: grid;
+  gap: 10px;
+}
+
+.activity-note {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  border: 1px solid rgba(31, 95, 91, 0.10);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(31, 95, 91, 0.045), rgba(123, 174, 158, 0.08)),
+    #fff;
+}
+
+.activity-note-mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff !important;
+  background: var(--cg-primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.activity-note strong {
+  display: block;
+  margin: 1px 0 5px;
+  color: var(--cg-heading) !important;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.activity-note p {
+  margin: 0 !important;
+  color: var(--cg-primary) !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+@media (max-width: 560px) {
+  .recent-activity-head {
+    align-items: center !important;
+    gap: 16px !important;
+  }
+
+  .activity-count {
+    min-width: 64px;
+    min-height: 52px;
+    padding-inline: 12px;
+  }
+
+  .activity-note {
+    grid-template-columns: 30px minmax(0, 1fr);
+    padding: 12px;
+  }
+
+  .activity-note-mark {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Career Intelligence page polish */
+body[data-page="profile"] .os-main {
+  gap: 28px !important;
+}
+
+body[data-page="profile"] .os-module-header {
+  min-height: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 14px 18px !important;
+  border-radius: 18px !important;
+}
+
+body[data-page="profile"] .os-module-header .breadcrumb {
+  margin: 0 !important;
+}
+
+body[data-page="profile"] .os-module-header .btn {
+  min-height: 44px !important;
+  padding-inline: 16px !important;
+}
+
+body[data-page="profile"] .profile-intel-hero {
+  min-height: 0 !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  padding: clamp(28px, 4vw, 44px) !important;
+}
+
+body[data-page="profile"] .profile-intel-hero .section-title {
+  max-width: 580px !important;
+  font-size: clamp(38px, 4.2vw, 64px) !important;
+}
+
+body[data-page="profile"] .profile-intel-hero .section-sub {
+  max-width: 560px !important;
+  font-size: 16px !important;
+}
+
+body[data-page="profile"] .profile-intel-hero .health-ring {
+  transform: scale(0.9) !important;
+}
+
+body[data-page="profile"] .generated-profile-card {
+  display: grid !important;
+  gap: 16px !important;
+}
+
+body[data-page="profile"] .generated-profile-card .grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body[data-page="profile"] .generated-profile-card .score-tile {
+  min-height: 142px !important;
+  display: grid !important;
+  align-content: start !important;
+  gap: 10px !important;
+  padding: 20px !important;
+}
+
+body[data-page="profile"] .generated-profile-card .score-tile strong {
+  margin: 0 !important;
+  font-size: clamp(24px, 2.3vw, 34px) !important;
+  line-height: 1.08 !important;
+  overflow-wrap: anywhere;
+}
+
+body[data-page="profile"] .profile-form {
+  display: grid !important;
+  gap: 24px !important;
+}
+
+body[data-page="profile"] .profile-form-columns {
+  grid-template-columns: minmax(440px, 0.95fr) minmax(520px, 1.05fr) !important;
+  gap: 24px !important;
+}
+
+body[data-page="profile"] .profile-form-column {
+  gap: 24px !important;
+}
+
+body[data-page="profile"] .profile-card {
+  padding: 24px !important;
+  border-radius: 18px !important;
+}
+
+body[data-page="profile"] .profile-card .section-title.mini {
+  font-size: clamp(24px, 2.1vw, 34px) !important;
+  line-height: 1.08 !important;
+}
+
+body[data-page="profile"] .profile-card .grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+body[data-page="profile"] .profile-card input,
+body[data-page="profile"] .profile-card select,
+body[data-page="profile"] .profile-card textarea {
+  min-height: 50px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 12px 14px !important;
+  border-radius: 14px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.45 !important;
+}
+
+body[data-page="profile"] .profile-card textarea {
+  min-height: 96px !important;
+}
+
+body[data-page="profile"] .profile-card label {
+  min-width: 0;
+}
+
+body[data-page="profile"] .profile-form > .btn-wide {
+  position: sticky;
+  bottom: 18px;
+  z-index: 30;
+  width: min(560px, 100%) !important;
+  justify-self: end;
+  min-height: 54px !important;
+}
+
+@media (max-width: 1180px) {
+  body[data-page="profile"] .profile-form-columns,
+  body[data-page="profile"] .generated-profile-card .grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-page="profile"] .profile-form > .btn-wide {
+    justify-self: stretch;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-page="profile"] .os-module-header,
+  body[data-page="profile"] .profile-intel-hero {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-page="profile"] .profile-intel-hero .health-ring {
+    margin: 0 auto !important;
+    transform: scale(0.76) !important;
+  }
+
+  body[data-page="profile"] .profile-card .grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Topbar action contrast and profile save CTA polish */
+.topbar .notification-trigger {
+  min-width: 102px !important;
+  min-height: 54px !important;
+  gap: 12px !important;
+  color: #e8f7f1 !important;
+  border: 1px solid rgba(232, 247, 241, 0.18) !important;
+  border-radius: 18px !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.045)),
+    rgba(255, 255, 255, 0.06) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 14px 30px rgba(0, 0, 0, 0.18) !important;
+}
+
+.topbar .notification-trigger svg {
+  width: 21px !important;
+  height: 21px !important;
+  color: #d9eee8 !important;
+  stroke-width: 2.35 !important;
+  opacity: 1 !important;
+}
+
+.topbar .notification-trigger strong {
+  min-width: 24px !important;
+  height: 24px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border-radius: 999px !important;
+  color: #0d1f22 !important;
+  background: #2fae7a !important;
+  box-shadow: 0 0 0 4px rgba(47, 174, 122, 0.14) !important;
+  font-size: 13px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+}
+
+.topbar .notification-trigger:hover,
+.topbar .notification-trigger[aria-expanded="true"] {
+  color: #ffffff !important;
+  border-color: rgba(47, 174, 122, 0.45) !important;
+  background:
+    linear-gradient(135deg, rgba(47, 174, 122, 0.24), rgba(255, 255, 255, 0.08)),
+    rgba(255, 255, 255, 0.08) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 18px 36px rgba(0, 0, 0, 0.22) !important;
+}
+
+.topbar .account-menu-trigger,
+.nav-actions .account-menu-trigger {
+  min-width: 140px !important;
+  min-height: 58px !important;
+  gap: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #10201f !important;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(180deg, #ffffff, #f7fbfa) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 16px 34px rgba(0, 0, 0, 0.18) !important;
+  text-shadow: none !important;
+}
+
+.topbar .account-menu-trigger :is(span, strong, i),
+.nav-actions .account-menu-trigger :is(span, strong, i) {
+  color: #10201f !important;
+  text-shadow: none !important;
+}
+
+.topbar .account-avatar-icon,
+.nav-actions .account-avatar-icon {
+  width: 32px !important;
+  height: 32px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  flex: 0 0 32px !important;
+  border-radius: 50% !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #1f5f5b, #2fae7a) !important;
+  box-shadow: 0 8px 18px rgba(31, 95, 91, 0.22) !important;
+}
+
+.topbar .account-avatar-icon svg,
+.nav-actions .account-avatar-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  color: #ffffff !important;
+  stroke-width: 2.35 !important;
+}
+
+.topbar .account-menu-trigger svg,
+.nav-actions .account-menu-trigger svg {
+  color: #1f5f5b !important;
+}
+
+.topbar .account-avatar-icon svg,
+.nav-actions .account-avatar-icon svg {
+  color: #ffffff !important;
+}
+
+.topbar .account-menu-trigger:hover,
+.topbar .account-menu-trigger[aria-expanded="true"],
+.nav-actions .account-menu-trigger:hover,
+.nav-actions .account-menu-trigger[aria-expanded="true"] {
+  color: #10201f !important;
+  border-color: rgba(47, 174, 122, 0.55) !important;
+  background:
+    linear-gradient(180deg, #ffffff, #eff7f4) !important;
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 20px 42px rgba(0, 0, 0, 0.22) !important;
+}
+
+body[data-page="profile"] .profile-form > .btn-wide {
+  width: min(860px, 100%) !important;
+  max-width: 860px !important;
+  justify-self: center !important;
+  min-height: 64px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 0 30px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 18px !important;
+  color: #ffffff !important;
+  background:
+    linear-gradient(135deg, #123c35 0%, #1f5f5b 55%, #2fae7a 130%) !important;
+  box-shadow:
+    0 18px 44px rgba(31, 95, 91, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+.topbar .account-menu-trigger .account-avatar-icon,
+.nav-actions .account-menu-trigger .account-avatar-icon,
+.topbar .account-menu-trigger .account-avatar-icon svg,
+.nav-actions .account-menu-trigger .account-avatar-icon svg {
+  color: #ffffff !important;
+  stroke: currentColor !important;
+}
+
+body[data-page="profile"] .profile-form > .btn-wide svg {
+  width: 22px !important;
+  height: 22px !important;
+  color: #ffffff !important;
+  stroke-width: 2.4 !important;
+}
+
+body[data-page="profile"] .profile-form > .btn-wide:hover,
+body[data-page="profile"] .profile-form > .btn-wide:focus-visible {
+  border-color: rgba(47, 174, 122, 0.62) !important;
+  background:
+    linear-gradient(135deg, #1f5f5b 0%, #2fae7a 100%) !important;
+  transform: translateY(-2px);
+  box-shadow:
+    0 24px 54px rgba(31, 95, 91, 0.3),
+    0 0 0 5px rgba(47, 174, 122, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+@media (max-width: 760px) {
+  .topbar .notification-trigger {
+    min-width: 56px !important;
+  }
+
+  .topbar .account-menu-trigger,
+  .nav-actions .account-menu-trigger {
+    min-width: 104px !important;
+  }
+
+  body[data-page="profile"] .profile-form > .btn-wide {
+    min-height: 58px !important;
+    padding-inline: 18px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* Vera 90-day plan readability: deepen the light green text. */
+body[data-page="vera"] .vera-plan .plan-phase-card .muted,
+body[data-page="vera"] .vera-plan .plan-phase-card .small,
+body[data-page="vera"] .vera-plan .plan-phase-card > p,
+body[data-page="vera"] .vera-plan .plan-task span,
+body[data-page="vera"] .vera-plan .plan-outcome span {
+  color: #1f5f5b !important;
+  opacity: 1 !important;
+}
+
+body[data-page="vera"] .vera-plan .plan-phase-card .list-card-top span.muted.small {
+  color: #0f5a4f !important;
+  font-weight: 800 !important;
+}
+
+body[data-page="vera"] .vera-plan .plan-phase-card > p,
+body[data-page="vera"] .vera-plan .plan-outcome span {
+  font-weight: 650 !important;
+}
+
+body[data-page="vera"] .vera-plan .plan-task span {
+  color: #0f6b5b !important;
+  font-weight: 760 !important;
+}
+
+body[data-page="vera"] .vera-plan .plan-task.complete span {
+  color: #1f5f5b !important;
+}
+
+/* Expanded workspace rail icon contrast */
+.workspace-rail:hover .rail-item svg,
+.workspace-rail:focus-within .rail-item svg,
+.workspace-rail:hover .os-nav-button svg,
+.workspace-rail:focus-within .os-nav-button svg {
+  color: #1f5f5b !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+}
+
+.workspace-rail:hover .rail-item.active svg,
+.workspace-rail:focus-within .rail-item.active svg,
+.workspace-rail:hover .rail-item:hover svg,
+.workspace-rail:focus-within .rail-item:focus-visible svg,
+.workspace-rail:hover .os-nav-button:hover svg,
+.workspace-rail:focus-within .os-nav-button:focus-visible svg {
+  color: #123c35 !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+}
+
+/* Market role signals: keep metrics and Vera note inside the card. */
+body[data-page="market"] .market-role-card {
+  min-width: 0 !important;
+  overflow: visible !important;
+  align-content: start !important;
+  gap: 16px !important;
+  padding: 28px !important;
+}
+
+body[data-page="market"] .market-role-card h3 {
+  margin-bottom: 2px !important;
+  color: #10201f !important;
+  font-size: clamp(28px, 3vw, 42px) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.035em !important;
+}
+
+body[data-page="market"] .market-role-card .score-grid.compact {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+body[data-page="market"] .market-role-card .score-tile {
+  min-width: 0 !important;
+  min-height: 112px !important;
+  padding: 18px 20px !important;
+  overflow: visible !important;
+  align-content: center !important;
+  gap: 8px !important;
+  border-color: rgba(31, 95, 91, 0.12) !important;
+  border-radius: 18px !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(247, 251, 250, 0.88)),
+    #ffffff !important;
+  box-shadow: 0 10px 26px rgba(31, 95, 91, 0.06) !important;
+}
+
+body[data-page="market"] .market-role-card .score-tile span {
+  color: #1f5f5b !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.12em !important;
+}
+
+body[data-page="market"] .market-role-card .score-tile strong {
+  max-width: 100% !important;
+  color: #10201f !important;
+  font-size: clamp(22px, 2.25vw, 34px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.03em !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  text-wrap: nowrap;
+}
+
+body[data-page="market"] .market-role-card .pill-row,
+body[data-page="market"] .market-role-card > div:has(.pill) {
+  max-width: 100% !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+}
+
+body[data-page="market"] .market-role-card .pill {
+  max-width: 100% !important;
+  min-height: 34px !important;
+  padding-inline: 14px !important;
+  color: #0f5a4f !important;
+  border-color: rgba(31, 95, 91, 0.18) !important;
+  background: #eff7f4 !important;
+  white-space: normal !important;
+  line-height: 1.2 !important;
+}
+
+body[data-page="market"] .market-role-card .plan-outcome {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  padding: 20px 22px !important;
+  border-radius: 18px !important;
+  border-left: 4px solid #f0ad1f !important;
+  background:
+    linear-gradient(135deg, rgba(251, 191, 36, 0.20), rgba(255, 247, 228, 0.92)),
+    #fff8e8 !important;
+}
+
+body[data-page="market"] .market-role-card .plan-outcome strong {
+  color: #10201f !important;
+  font-size: 12px !important;
+  letter-spacing: 0.14em !important;
+}
+
+body[data-page="market"] .market-role-card .plan-outcome span {
+  max-width: 100% !important;
+  color: #10201f !important;
+  font-size: 15px !important;
+  line-height: 1.55 !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* Applications stage filter active state contrast */
+body[data-page="autopilot"] .application-stage-filter .pipeline-stage.active,
+body[data-page="autopilot"] .application-stage-filter .pipeline-stage.active :is(span, strong) {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+body[data-page="autopilot"] .application-stage-filter .pipeline-stage.active {
+  border-color: rgba(31, 95, 91, 0.42) !important;
+  background: linear-gradient(135deg, #1f5f5b, #1b3a34) !important;
+}
+
+/* Keep Logout anchored at the bottom of the expanded workspace rail. */
+@media (min-width: 1021px) {
+  .workspace-rail .os-nav {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .workspace-rail .os-nav-button,
+  .workspace-rail:hover .os-nav-button,
+  .workspace-rail:focus-within .os-nav-button {
+    margin: auto 0.75rem 0 !important;
+  }
+
+  .workspace-rail .os-nav > button[data-logout],
+  .workspace-rail:hover .os-nav > button[data-logout],
+  .workspace-rail:focus-within .os-nav > button[data-logout] {
+    margin-top: auto !important;
+    margin-bottom: 0 !important;
+    align-self: stretch !important;
+  }
+}
+
+/* Workspace rail icon alignment: compact rail centers icons, expanded rail aligns rows. */
+@media (min-width: 1021px) {
+  .workspace-rail:not(:hover):not(:focus-within) .rail-item,
+  .workspace-rail:not(:hover):not(:focus-within) .os-nav-button {
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    margin-inline: auto !important;
+    padding: 0 !important;
+    display: grid !important;
+    place-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    border-radius: 16px !important;
+  }
+
+  .workspace-rail:not(:hover):not(:focus-within) .rail-item svg,
+  .workspace-rail:not(:hover):not(:focus-within) .os-nav-button svg {
+    width: 23px !important;
+    height: 23px !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+  }
+
+  .workspace-rail:hover .rail-item,
+  .workspace-rail:focus-within .rail-item,
+  .workspace-rail:hover .os-nav-button,
+  .workspace-rail:focus-within .os-nav-button {
+    box-sizing: border-box !important;
+    width: calc(100% - 1.5rem) !important;
+    max-width: none !important;
+    min-height: 52px !important;
+    margin-inline: 0.75rem !important;
+    padding: 0 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 14px !important;
+  }
+
+  .workspace-rail:hover .rail-item svg,
+  .workspace-rail:focus-within .rail-item svg,
+  .workspace-rail:hover .os-nav-button svg,
+  .workspace-rail:focus-within .os-nav-button svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .workspace-rail:not(:hover):not(:focus-within) .rail-label {
+    position: absolute !important;
+    width: 1px !important;
+    max-width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-page="market"] .market-role-card .score-grid.compact {
     grid-template-columns: 1fr !important;
   }
 }
