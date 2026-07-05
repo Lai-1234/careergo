@@ -2230,36 +2230,45 @@ function initResearchMarquee() {
 }
 
 function initHomeMetricCountUp() {
-  const root = qs(".hero-metrics");
+  const root = qs(".home-metrics");
   if (!root || root.dataset.countupInitialized) return;
   root.dataset.countupInitialized = "true";
   root.dataset.countupReady = "true";
 
-  const cards = qsa(".metric", root);
+  const cards = qsa(".home-metrics-grid > div", root);
   const easeOut = t => 1 - Math.pow(1 - t, 3);
-  const formatValue = (value, decimals) => decimals > 0
-    ? value.toFixed(decimals)
-    : Math.round(value).toLocaleString();
+  const formatValue = (value, decimals, format) => {
+    if (format === "compact") {
+      if (value >= 100000) return `${Math.round(value / 1000)}k`;
+      if (value >= 1000) return `${Math.round(value / 100) / 10}k`;
+    }
+    return decimals > 0
+      ? value.toFixed(decimals)
+      : Math.round(value).toLocaleString();
+  };
 
   function animateCounter(el) {
     const target = Number(el.dataset.countTo || 0);
     const duration = Number(el.dataset.countDuration || 1400);
     const decimals = Number(el.dataset.countDecimals || 0);
     const suffix = el.dataset.countSuffix || "";
+    const format = el.dataset.countFormat || (el.textContent.toLowerCase().includes("k") ? "compact" : "standard");
     const startedAt = performance.now();
 
     function tick(now) {
       const progress = Math.min((now - startedAt) / duration, 1);
       const eased = easeOut(progress);
       const value = target * eased;
-      el.textContent = `${formatValue(value, decimals)}${suffix}`;
+      el.textContent = `${formatValue(value, decimals, format)}${suffix}`;
       if (progress < 1) {
         requestAnimationFrame(tick);
       } else {
-        el.textContent = `${formatValue(target, decimals)}${suffix}`;
+        el.textContent = `${formatValue(target, decimals, format)}${suffix}`;
+        el.classList.add("count-complete");
       }
     }
 
+    el.classList.remove("count-complete");
     requestAnimationFrame(tick);
   }
 
@@ -2282,7 +2291,28 @@ function initHomeMetricCountUp() {
     if (!entries.some(entry => entry.isIntersecting)) return;
     run();
     observer.disconnect();
-  }, { threshold: 0.25, rootMargin: "0px 0px -10% 0px" });
+  }, { threshold: 0.1, rootMargin: "0px 0px 1200px 0px" });
+
+  observer.observe(root);
+}
+
+function initHomeStageAnimation() {
+  const root = qs(".home-stage-section");
+  if (!root || root.dataset.stageAnimationReady === "true") return;
+  root.dataset.stageAnimationReady = "true";
+
+  const reveal = () => root.classList.add("is-visible");
+
+  if (!("IntersectionObserver" in window)) {
+    reveal();
+    return;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    reveal();
+    observer.disconnect();
+  }, { threshold: 0.01, rootMargin: "0px 0px 10000px 0px" });
 
   observer.observe(root);
 }
@@ -2517,6 +2547,30 @@ function renderJobsPage() {
   const thresholdLabel = qs("[data-threshold-label]");
   const compareMode = qs("[data-job-compare-mode]");
 
+  function syncJobDetailView({ resetScroll = false, reveal = false } = {}) {
+    if (!detailRoot) return;
+    if (resetScroll) {
+      detailRoot.scrollTop = 0;
+      detailRoot.scrollTo?.({ top: 0, left: 0, behavior: "auto" });
+    }
+    if (!reveal) return;
+    window.requestAnimationFrame(() => {
+      if (resetScroll) {
+        detailRoot.scrollTop = 0;
+        detailRoot.scrollTo?.({ top: 0, left: 0, behavior: "auto" });
+      }
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const topbar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--cg-topbar")) || 72;
+      const offset = topbar + 18;
+      const rect = detailRoot.getBoundingClientRect();
+      const targetTop = Math.max(0, window.scrollY + rect.top - offset);
+      window.scrollTo({
+        top: targetTop,
+        behavior: reducedMotion ? "auto" : "smooth"
+      });
+    });
+  }
+
   industrySelect.innerHTML = ["All", ...new Set(DATA.jobs.map(j => j.industry))].map(x => `<option>${x}</option>`).join("");
   initCustomSelect(industrySelect);
   levelSelect.innerHTML = ["All", ...new Set(DATA.jobs.map(j => j.level))].map(x => `<option>${x}</option>`).join("");
@@ -2587,7 +2641,7 @@ function renderJobsPage() {
       active = DATA.jobs.find(job => job.id === card.dataset.jobId) || active;
       history.replaceState(null, "", `jobs.html?job=${active.id}#tracker`);
       renderList();
-      renderDetail({ resetScroll: active.id !== previousJobId });
+      renderDetail({ resetScroll: active.id !== previousJobId, reveal: true });
     }));
     qsa("[data-filter-stage]", listRoot).forEach(btn => btn.addEventListener("click", () => {
       const found = tracked.find(({ record }) => record.stage === btn.dataset.filterStage);
@@ -2595,7 +2649,7 @@ function renderJobsPage() {
         const previousJobId = active.id;
         active = found.job;
         renderList();
-        renderDetail({ resetScroll: active.id !== previousJobId });
+        renderDetail({ resetScroll: active.id !== previousJobId, reveal: true });
       }
     }));
     createIcons();
@@ -2648,7 +2702,7 @@ function renderJobsPage() {
         active = DATA.jobs.find(job => job.id === btn.dataset.jobId);
         history.replaceState(null, "", `jobs.html?job=${active.id}`);
         renderList();
-        renderDetail({ resetScroll: active.id !== previousJobId });
+        renderDetail({ resetScroll: active.id !== previousJobId, reveal: true });
       });
     });
     qsa("[data-compare-job]", listRoot).forEach(input => {
@@ -2665,7 +2719,7 @@ function renderJobsPage() {
     createIcons();
   }
 
-  function renderDetail({ resetScroll = false } = {}) {
+  function renderDetail({ resetScroll = false, reveal = false } = {}) {
     state = readState();
     const loggedIn = Boolean(state.session.loggedIn);
     const saved = state.savedJobs.includes(active.id);
@@ -2744,9 +2798,22 @@ function renderJobsPage() {
           ` : ""}
           <span class="company-review-link">${icon("building-2")} View company details</span>
         </a>
-        <div class="card">
-          <h3>Market demand</h3>
-          <p class="muted">${active.industry} roles are showing ${active.match >= 85 ? "strong" : "steady"} demand in CareerGo's sample market pulse. Create a profile for a personalized salary and readiness read.</p>
+        <div class="card market-demand-card">
+          <div class="market-demand-head">
+            <div>
+              <span class="section-kicker">Market signal</span>
+              <h3>Market demand</h3>
+            </div>
+            <span class="pill cyan">${active.match >= 85 ? "Strong" : "Steady"}</span>
+          </div>
+          <p class="muted">${active.industry} roles are showing ${active.match >= 85 ? "strong" : "steady"} demand in CareerGo's sample market pulse.</p>
+          <div class="market-demand-meter" aria-label="${active.match >= 85 ? "Strong" : "Steady"} demand"><span style="width:${Math.min(96, Math.max(58, active.match))}%"></span></div>
+          <div class="market-demand-grid">
+            <span><strong>${active.industry}</strong>Sector</span>
+            <span><strong>${active.type}</strong>Work mode</span>
+            <span><strong>${active.match}%</strong>Readiness</span>
+          </div>
+          <p class="muted small">Create a profile for a personalized salary and readiness read.</p>
         </div>
       </div>
       <div class="detail-section warning-box job-watchout-card">
@@ -2813,7 +2880,7 @@ function renderJobsPage() {
         `}
       </div>
     `;
-    if (resetScroll) detailRoot.scrollTop = 0;
+    syncJobDetailView({ resetScroll, reveal });
     if (!loggedIn) {
       bindProtectedPrompts(detailRoot);
       createIcons();
@@ -2886,7 +2953,7 @@ function renderJobsPage() {
       const previousJobId = active.id;
       active = jobs[0] || DATA.jobs.find(job => !next.ignoredJobs.includes(job.id)) || DATA.jobs[0];
       renderList();
-      renderDetail({ resetScroll: active.id !== previousJobId });
+      renderDetail({ resetScroll: active.id !== previousJobId, reveal: true });
     });
     createIcons();
   }
@@ -2964,6 +3031,30 @@ function renderDirectoryPage(kind) {
   const typeButtons = qsa("[data-org-type]");
   if (queryInput) queryInput.value = params.get("q") || "";
 
+  function syncOrgDetailView({ resetScroll = false, reveal = false } = {}) {
+    if (!detailRoot) return;
+    if (resetScroll) {
+      detailRoot.scrollTop = 0;
+      detailRoot.scrollTo?.({ top: 0, left: 0, behavior: "auto" });
+    }
+    if (!reveal) return;
+    window.requestAnimationFrame(() => {
+      if (resetScroll) {
+        detailRoot.scrollTop = 0;
+        detailRoot.scrollTo?.({ top: 0, left: 0, behavior: "auto" });
+      }
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const topbar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--cg-topbar")) || 72;
+      const offset = topbar + 18;
+      const rect = detailRoot.getBoundingClientRect();
+      const targetTop = Math.max(0, window.scrollY + rect.top - offset);
+      window.scrollTo({
+        top: targetTop,
+        behavior: reducedMotion ? "auto" : "smooth"
+      });
+    });
+  }
+
   function filteredOrgs() {
     const q = queryInput.value.trim().toLowerCase();
     const selectedType = qs("[data-org-type].active")?.dataset.orgType || "All";
@@ -2989,16 +3080,17 @@ function renderDirectoryPage(kind) {
     `).join("");
     qsa("[data-org-id]", listRoot).forEach(btn => {
       btn.addEventListener("click", () => {
+        const previousOrgId = active.id;
         active = [...DATA.companies, ...DATA.universities].find(org => org.id === btn.dataset.orgId);
         history.replaceState(null, "", `${kind === "universities" ? "universities" : "companies"}.html?org=${active.id}`);
         renderList();
-        renderDetail();
+        renderDetail({ resetScroll: active.id !== previousOrgId, reveal: true });
       });
     });
     createIcons();
   }
 
-  function renderDetail() {
+  function renderDetail({ resetScroll = false, reveal = false } = {}) {
     const currentState = readState();
     const currentLoggedIn = Boolean(currentState.session.loggedIn);
     const reviews = currentState.reviews.filter(r => r.targetId === active.id);
@@ -3081,6 +3173,7 @@ function renderDirectoryPage(kind) {
         `}
       </div>
     `;
+    syncOrgDetailView({ resetScroll, reveal });
     if (!currentLoggedIn) {
       bindProtectedPrompts(detailRoot);
       createIcons();
@@ -3101,9 +3194,10 @@ function renderDirectoryPage(kind) {
     btn.addEventListener("click", () => {
       typeButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      const previousOrgId = active.id;
       active = filteredOrgs()[0] || active;
       renderList();
-      renderDetail();
+      renderDetail({ resetScroll: active.id !== previousOrgId, reveal: true });
     });
   });
   queryInput.addEventListener("input", renderList);
@@ -5304,6 +5398,7 @@ function init() {
   initFeaturedRolesCarousel();
   initResearchMarquee();
   initHomeMetricCountUp();
+  initHomeStageAnimation();
   initComparisonTableAnimation();
   bindGlobalActions();
   createIcons();
