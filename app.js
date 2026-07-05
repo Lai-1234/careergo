@@ -1770,7 +1770,7 @@ function orgForJob(job) {
 }
 
 function rating(value) {
-  return `<span class="rating">${icon("star")} ${Number(value).toFixed(1)}</span>`;
+  return `<span class="rating" data-no-number-animation>${icon("star")} ${Number(value).toFixed(1)}</span>`;
 }
 
 function pills(items, extra = "") {
@@ -2294,6 +2294,118 @@ function initHomeMetricCountUp() {
   }, { threshold: 0.1, rootMargin: "0px 0px 1200px 0px" });
 
   observer.observe(root);
+}
+
+function initGlobalNumberAnimations() {
+  if (document.body.dataset.globalNumberAnimationsReady === "true") return;
+  document.body.dataset.globalNumberAnimationsReady = "true";
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const selector = "strong, b, span, td, th, small";
+  const animated = new WeakSet();
+  const formatNumber = (value, config) => {
+    const rounded = config.decimals > 0 ? value.toFixed(config.decimals) : Math.round(value).toString();
+    const [whole, fraction] = rounded.split(".");
+    const wholeText = config.useGrouping ? Number(whole).toLocaleString("en-MY") : whole;
+    return `${config.prefix}${wholeText}${fraction ? `.${fraction}` : ""}${config.suffix}`;
+  };
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+
+  function parseNumericText(text) {
+    const trimmed = text.trim();
+    if (!trimmed || trimmed.length > 18) return null;
+    const match = trimmed.match(/^([+\-]?\s*(?:RM\s*)?)(\d[\d,]*(?:\.\d+)?)(\s*(?:%|[dkmw])?|\s*\/\s*\d[\d,]*)$/i);
+    if (!match) return null;
+    const rawNumber = match[2];
+    const value = Number(rawNumber.replace(/,/g, ""));
+    if (!Number.isFinite(value)) return null;
+    return {
+      original: trimmed,
+      value,
+      prefix: match[1].replace(/\s+/g, ""),
+      suffix: match[3].replace(/\s+/g, ""),
+      decimals: rawNumber.includes(".") ? rawNumber.split(".")[1].length : 0,
+      useGrouping: rawNumber.includes(",") || value >= 1000
+    };
+  }
+
+  function shouldSkip(el) {
+    if (animated.has(el)) return true;
+    if (el.children.length) return true;
+    if (el.closest("input, textarea, select, option, script, style, [data-no-number-animation], [data-comparison-score], .rating, .application-overview, .application-kpi-grid, .application-stage-filter, .home-metrics")) return true;
+    return false;
+  }
+
+  function animateNumber(el, config) {
+    animated.add(el);
+    el.dataset.numberAnimated = "true";
+    if (reducedMotion.matches || config.value === 0) {
+      el.textContent = config.original;
+      el.classList.add("number-counted");
+      return;
+    }
+
+    const duration = Math.min(1450, Math.max(720, 620 + String(Math.round(config.value)).length * 90));
+    const startedAt = performance.now();
+    el.classList.add("number-counting");
+
+    function tick(now) {
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const value = config.value * easeOut(progress);
+      el.textContent = progress < 1 ? formatNumber(value, config) : config.original;
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        el.classList.remove("number-counting");
+        el.classList.add("number-counted");
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  const observer = "IntersectionObserver" in window
+    ? new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const config = entry.target.__numberAnimationConfig;
+        if (config) animateNumber(entry.target, config);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px 160px 0px" })
+    : null;
+
+  function prepare(el) {
+    if (shouldSkip(el)) return;
+    const config = parseNumericText(el.textContent);
+    if (!config) return;
+    el.__numberAnimationConfig = config;
+    if (observer) observer.observe(el);
+    else animateNumber(el, config);
+  }
+
+  function scan(root = document.body) {
+    if (root.nodeType !== Node.ELEMENT_NODE) return;
+    if (root.matches?.(selector)) prepare(root);
+    root.querySelectorAll?.(selector).forEach(prepare);
+  }
+
+  let scanQueued = false;
+  function queueScan() {
+    if (scanQueued) return;
+    scanQueued = true;
+    requestAnimationFrame(() => {
+      scanQueued = false;
+      scan();
+    });
+  }
+
+  scan();
+
+  const mutationObserver = new MutationObserver(mutations => {
+    if (mutations.some(mutation => mutation.addedNodes.length)) queueScan();
+  });
+  mutationObserver.observe(document.body, { childList: true, subtree: true });
 }
 
 function initHomeStageAnimation() {
@@ -4760,10 +4872,10 @@ function renderMarket() {
       <div class="market-detail-grid">
         <div class="market-breakdown">
           <h3>Worth breakdown</h3>
-          ${breakdown.map(([label, value, note]) => `
-            <div class="market-breakdown-row">
+          ${breakdown.map(([label, value, note], index) => `
+            <div class="market-breakdown-row" style="--row-index:${index}; --breakdown-target:${Math.round((value / maxBreakdown) * 100)}%;">
               <div><strong>${label}</strong><span>${note}</span></div>
-              <div class="market-breakdown-bar"><i style="width:${Math.round((value / maxBreakdown) * 100)}%"></i></div>
+              <div class="market-breakdown-bar"><i></i></div>
               <b>+${money(value)}</b>
             </div>
           `).join("")}
@@ -4913,7 +5025,7 @@ function renderAutopilot() {
       <div><div class="eyebrow"><span class="spark">*</span> Applications</div><h1 class="section-title">Track every role from saved to outcome.</h1><p class="section-sub">See status, next action, deadline, Vera advice, and automation rules in one place.</p></div>
       <div class="radar"><span></span></div>
     </section>
-    <section class="glass-card application-overview">
+    <section class="glass-card application-overview" data-no-number-animation>
       <div class="section-head">
         <div><div class="section-kicker">Application command center</div><h2 class="section-title mini">Nothing disappears after you apply.</h2></div>
         <div class="hero-actions compact-actions"><a class="btn btn-primary" href="jobs.html#tracker">${icon("briefcase")} Manage in Jobs</a><button class="btn btn-cyan" type="button" data-add-best-role>${icon("plus")} Track best match</button></div>
@@ -4958,7 +5070,7 @@ function renderAutopilot() {
             </div>
             <form class="application-note-form" data-application-note="${activeItem.job.id}">
               <label>Vera note <textarea name="note">${activeItem.record.note || ""}</textarea></label>
-              <button class="btn btn-ghost" type="submit">${icon("save")} Save note</button>
+              <button class="btn btn-ghost note-save-button" type="submit">${icon("save")} Save note</button>
             </form>
             <div class="plan-outcome"><strong>Next action</strong><span>${activeItem.record.nextAction}</span></div>
             <div class="plan-command-row">
@@ -5333,26 +5445,10 @@ function initComparisonTableAnimation() {
   header?.classList.add("comparison-reveal-header");
   rows.forEach(row => row.classList.add("comparison-reveal-row"));
   qsa("[data-comparison-score]", table).forEach(score => {
-    qs(".comparison-score-number", score).textContent = "0.0";
-  });
-
-  function animateScore(score) {
-    const number = qs(".comparison-score-number", score);
-    const bar = qs(".comparison-score-bar span", score);
     const target = Number(score.dataset.comparisonScore || 0);
-    const startedAt = performance.now();
-    const duration = 800;
-
-    function tick(now) {
-      const progress = Math.min((now - startedAt) / duration, 1);
-      const value = target * easeOut(progress);
-      number.textContent = value.toFixed(1);
-      bar.style.width = `${Math.min(100, (value / 5) * 100)}%`;
-      if (progress < 1) requestAnimationFrame(tick);
-    }
-
-    requestAnimationFrame(tick);
-  }
+    qs(".comparison-score-number", score).textContent = target.toFixed(1);
+    qs(".comparison-score-bar span", score).style.width = `${Math.min(100, (target / 5) * 100)}%`;
+  });
 
   const observer = new IntersectionObserver(entries => {
     if (!entries.some(entry => entry.isIntersecting)) return;
@@ -5362,7 +5458,6 @@ function initComparisonTableAnimation() {
     rows.forEach((row, index) => {
       window.setTimeout(() => {
         row.classList.add("is-visible");
-        qsa("[data-comparison-score]", row).forEach(animateScore);
       }, 420 + index * 100);
     });
 
@@ -5400,6 +5495,7 @@ function init() {
   initFeaturedRolesCarousel();
   initResearchMarquee();
   initHomeMetricCountUp();
+  initGlobalNumberAnimations();
   initHomeStageAnimation();
   initComparisonTableAnimation();
   bindGlobalActions();
