@@ -4216,6 +4216,159 @@ body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack > .btn-wid
   }
 }
 
+/* Home metrics contrast lock */
+html body[data-page="home"] .home-metrics,
+html body[data-page="home"] section.home-metrics {
+  background: linear-gradient(90deg, #06382d, #0b6d65) !important;
+}
+
+html body[data-page="home"] .home-metrics .home-metrics-grid > div,
+html body[data-page="home"] .home-metrics .home-metrics-grid > div *,
+html body[data-page="home"] .home-metrics strong,
+html body[data-page="home"] .home-metrics span {
+  color: #fffaf2 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+html body[data-page="home"] .home-metrics span {
+  color: rgba(255, 250, 242, 0.78) !important;
+}
+
+/* Home back-to-top position lock - final */
+html body[data-page="home"] .home-back-top {
+  position: fixed !important;
+  top: auto !important;
+  right: max(28px, env(safe-area-inset-right)) !important;
+  bottom: max(32px, env(safe-area-inset-bottom)) !important;
+  left: auto !important;
+  z-index: 120 !important;
+  color: #fffaf2 !important;
+  background: linear-gradient(135deg, #06382d, #0b6d65) !important;
+}
+
+html body[data-page="home"] .home-back-top svg {
+  color: #fffaf2 !important;
+}
+
+@media (max-width: 640px) {
+  html body[data-page="home"] .home-back-top {
+    right: max(16px, env(safe-area-inset-right)) !important;
+    bottom: max(18px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* Public top navigation sizing lock - match compact header reference */
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) {
+  min-height: 92px !important;
+  height: 92px !important;
+  border-bottom: 0 !important;
+  background: #ffffff !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-inner {
+  width: min(1840px, calc(100% - 96px)) !important;
+  min-height: 92px !important;
+  height: 92px !important;
+  grid-template-columns: minmax(160px, 1fr) auto minmax(300px, 1fr) !important;
+  gap: clamp(32px, 4vw, 76px) !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .brand-logo {
+  width: 118px !important;
+  max-height: 54px !important;
+  height: auto !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .brand-text {
+  display: none !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links {
+  gap: clamp(46px, 5.2vw, 86px) !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links a,
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn-ghost {
+  color: #53668a !important;
+  font-size: 20px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  background: transparent !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links a:hover,
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links a.active,
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn-ghost:hover {
+  color: #123c34 !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions {
+  gap: 34px !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn-primary {
+  min-height: 64px !important;
+  padding: 0 36px !important;
+  border-radius: 999px !important;
+  color: #fffaf2 !important;
+  background: #103b34 !important;
+  border-color: #103b34 !important;
+  box-shadow: 0 18px 36px rgba(16, 59, 52, 0.16) !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn-primary:hover {
+  background: #0a2f2a !important;
+  border-color: #0a2f2a !important;
+}
+
+@media (max-width: 900px) {
+  html body .topbar:has(.nav-links):not(:has(.workspace-search)) {
+    height: auto !important;
+    min-height: 72px !important;
+  }
+
+  html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-inner {
+    width: min(100% - 32px, 1840px) !important;
+    height: 72px !important;
+    min-height: 72px !important;
+    display: flex !important;
+  }
+
+  html body .topbar:has(.nav-links):not(:has(.workspace-search)) .brand-logo {
+    width: 104px !important;
+    max-height: 46px !important;
+  }
+}
+
+html body[data-page="home"] .home-back-top {
+  position: fixed !important;
+  top: auto !important;
+  right: max(28px, env(safe-area-inset-right)) !important;
+  bottom: max(32px, env(safe-area-inset-bottom)) !important;
+  left: auto !important;
+  z-index: 120 !important;
+  color: #fffaf2 !important;
+  background: linear-gradient(135deg, #06382d, #0b6d65) !important;
+}
+
+html body[data-page="home"] .home-back-top svg {
+  color: #fffaf2 !important;
+}
+
+@media (max-width: 640px) {
+  html body[data-page="home"] .home-back-top {
+    right: max(16px, env(safe-area-inset-right)) !important;
+    bottom: max(18px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
 /* Global footer readability lock. Keep all page footers light with dark text. */
 body .site-footer {
   color: #10201f !important;
@@ -7284,5 +7437,129 @@ body[data-page="jobs"] .jobs-filter-bar .custom-select-trigger [data-custom-sele
 
   html body:not([data-page="home"]) .workspace-rail .os-nav > button[data-logout] {
     margin-top: 18px !important;
+  }
+}
+
+/* Home metrics contrast lock - final */
+html body[data-page="home"] .home-metrics,
+html body[data-page="home"] section.home-metrics {
+  background: linear-gradient(90deg, #06382d, #0b6d65) !important;
+}
+
+html body[data-page="home"] .home-metrics .home-metrics-grid > div,
+html body[data-page="home"] .home-metrics .home-metrics-grid > div *,
+html body[data-page="home"] .home-metrics strong,
+html body[data-page="home"] .home-metrics span {
+  color: #fffaf2 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+html body[data-page="home"] .home-metrics span {
+  color: rgba(255, 250, 242, 0.78) !important;
+}
+/* Home back-to-top position lock - actual final */
+html body[data-page="home"] .home-back-top {
+  position: fixed !important;
+  top: auto !important;
+  right: max(28px, env(safe-area-inset-right)) !important;
+  bottom: max(32px, env(safe-area-inset-bottom)) !important;
+  left: auto !important;
+  z-index: 120 !important;
+  color: #fffaf2 !important;
+  background: linear-gradient(135deg, #06382d, #0b6d65) !important;
+}
+
+html body[data-page="home"] .home-back-top svg {
+  color: #fffaf2 !important;
+}
+
+@media (max-width: 640px) {
+  html body[data-page="home"] .home-back-top {
+    right: max(16px, env(safe-area-inset-right)) !important;
+    bottom: max(18px, env(safe-area-inset-bottom)) !important;
+  }
+}
+/* Public top navigation sizing lock - actual final */
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) {
+  min-height: 92px !important;
+  height: 92px !important;
+  border-bottom: 0 !important;
+  background: #ffffff !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-inner {
+  width: min(1840px, calc(100% - 96px)) !important;
+  min-height: 92px !important;
+  height: 92px !important;
+  grid-template-columns: minmax(160px, 1fr) auto minmax(300px, 1fr) !important;
+  gap: clamp(32px, 4vw, 76px) !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .brand-logo {
+  width: 118px !important;
+  max-height: 54px !important;
+  height: auto !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .brand-text {
+  display: none !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links {
+  gap: clamp(46px, 5.2vw, 86px) !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links a,
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn-ghost {
+  color: #53668a !important;
+  font-size: 20px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  background: transparent !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links a:hover,
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links a.active,
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn-ghost:hover {
+  color: #123c34 !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions {
+  gap: 34px !important;
+}
+
+html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn-primary {
+  min-height: 64px !important;
+  padding: 0 36px !important;
+  border-radius: 999px !important;
+  color: #fffaf2 !important;
+  background: #103b34 !important;
+  border-color: #103b34 !important;
+  box-shadow: 0 18px 36px rgba(16, 59, 52, 0.16) !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+@media (max-width: 900px) {
+  html body .topbar:has(.nav-links):not(:has(.workspace-search)) {
+    height: auto !important;
+    min-height: 72px !important;
+  }
+
+  html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-inner {
+    width: min(100% - 32px, 1840px) !important;
+    height: 72px !important;
+    min-height: 72px !important;
+    display: flex !important;
+  }
+
+  html body .topbar:has(.nav-links):not(:has(.workspace-search)) .brand-logo {
+    width: 104px !important;
+    max-height: 46px !important;
   }
 }

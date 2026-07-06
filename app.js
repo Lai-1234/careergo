@@ -1851,6 +1851,7 @@ function osNav(active = "") {
     ["market", "Market", "trending-up", "market.html"],
     ["autopilot", "Applications", "kanban", "autopilot.html"],
     ["search", "Search", "search", "companies.html"],
+    ["posts", "Feed", "rss", "posts.html"],
     ["saved", "Saved", "bookmark", "saved.html"]
   ];
   return `
@@ -3500,139 +3501,230 @@ function renderDashboard() {
     .sort((a, b) => b.match - a.match)
     .slice(0, 3);
   const urgentRecord = trackedJobs.find(item => ["interview", "screening"].includes(item.record.stage)) || trackedJobs[0];
+  const focusTitle = intel.immediateActions[0] || `Strengthen your ${target} proof today.`;
+  const focusDetail = intel.summary || "Vera is using your profile, saved roles, and application signals to keep the next step focused.";
+  const activeApps = trackedJobs.length || applications.length;
+  const interviewCount = trackedJobs.filter(item => item.record.stage === "interview").length || counts.interview || 0;
+  const offerCount = counts.offer || 0;
+  const kpis = [
+    ["Profile strength", `${profileCompletion}%`, profileCompletion, "3 items to complete", "user-round"],
+    ["Career worth", "RM142k", 62, "+RM8.4k this quarter", "wallet"],
+    ["Roadmap", `${Math.round(intel.readinessScore || 44)}%`, intel.readinessScore || 44, "Week 7 / 16 - on track", "target"],
+    ["Applications", `${activeApps} active`, Math.min(100, activeApps * 16), `${interviewCount} interviewing - ${offerCount} offer stage`, "briefcase-business"]
+  ];
+  const dailyTasks = [
+    {
+      mission: missions[0] || beginnerMissions[0],
+      priority: "High",
+      meta: "Interview - 30 min",
+      title: urgentRecord ? `Prep for ${urgentRecord.job.company} ${urgentRecord.job.title}` : "Sharpen one interview story",
+      body: urgentRecord ? urgentRecord.record.nextAction : "Turn one project into a clear problem, decision, result story.",
+      progress: 68
+    },
+    {
+      mission: missions[1] || beginnerMissions[1],
+      priority: "Medium",
+      meta: "Learning - 20 min",
+      title: `Close one ${target} skill gap`,
+      body: intel.learningPriority,
+      progress: 60
+    },
+    {
+      mission: beginnerMissions[0],
+      priority: "High",
+      meta: "Application - 5 min",
+      title: urgentRecord ? `Move ${urgentRecord.job.company} forward` : "Save one role that fits your roadmap",
+      body: urgentRecord ? urgentRecord.record.nextAction : "CareerGo needs one current role signal to tune recommendations.",
+      progress: 42
+    },
+    {
+      mission: beginnerMissions[1],
+      priority: "Low",
+      meta: "Networking - 10 min",
+      title: "Reach out to one warm contact",
+      body: "Use one company insight to write a specific, low-pressure note.",
+      progress: 26
+    }
+  ];
+  const applicationCards = (trackedJobs.length
+    ? trackedJobs.slice(0, 2)
+    : topJobs.slice(0, 2).map(job => ({ job, record: createApplicationRecord(job.id, "saved") })));
+  const longArcCards = [
+    ["Career Simulation", "See where your career could be in 5 years", "compass", "profile.html"],
+    ["Fair Pay", "Your market value increased 6% this month", "chart-line", "market.html"],
+    ["Career Planning", "Continue your 3-year roadmap", "target", "market.html#roadmap"],
+    ["Company Research", `${savedOrgs.length || 12} new insights on companies you follow`, "building-2", "companies.html"]
+  ];
   root.innerHTML = appShell("dashboard", `
-    <section class="glass-card dashboard-hero" data-tour-target="dashboard-hero">
-      <div>
-        <div class="eyebrow"><span class="spark">*</span> My Career OS ${state.session.isDemo ? `<span class="demo-badge inline">${icon("monitor-play")} Demo Mode</span>` : ""}</div>
-        <h1 class="section-title">Today, focus on one clear move.</h1>
-        <p class="section-sub">Good morning, ${getFirstName(state)}. CareerGo is tuned for ${profile.careerStage.toLowerCase()} and will stay calm, practical, and updated as your profile changes.</p>
-      </div>
-      ${healthRing(intel)}
-    </section>
-    <section class="today-panel">
-      <article class="glass-card today-primary" data-tour-target="vera">
-        <div class="section-kicker">Vera says</div>
-        <h2>${intel.immediateActions[0]}</h2>
-        <p>${intel.summary}</p>
-        <div class="hero-actions compact-actions">
-          <a class="btn btn-primary" href="vera.html#plan">${icon("sparkles")} Ask Vera</a>
-          <a class="btn btn-ghost" href="profile.html">${icon("user-round")} Improve profile</a>
+    <section class="cg-dashboard" data-tour-target="dashboard-hero">
+      <header class="cg-dash-hero">
+        <div>
+          <div class="cg-overline">${icon("calendar-days")} Today - Week 7 of your ${target} transition ${state.session.isDemo ? `<span class="demo-badge inline">${icon("monitor-play")} Demo Mode</span>` : ""}</div>
+          <h1>Good morning, ${getFirstName(state)}.</h1>
+          <p>You are making steady progress - ahead of 72% of candidates on the same path.</p>
         </div>
-      </article>
-      <article class="glass-card today-side">
-        <div class="section-kicker">Next application action</div>
-        ${urgentRecord ? `
-          <div class="list-card quiet">
-            <div class="list-card-top"><div><h3>${urgentRecord.job.title}</h3><div class="muted small">${urgentRecord.job.company} - ${urgentRecord.job.salary}</div></div>${applicationStagePill(urgentRecord.record.stage)}</div>
-            <p class="muted">${urgentRecord.record.nextAction}</p>
-            ${applicationProgress(urgentRecord.record)}
-          </div>
-        ` : `
-          <p class="muted">Save one role to start your application tracker.</p>
-          <a class="btn btn-cyan" href="jobs.html">${icon("briefcase")} Find matches</a>
-        `}
-      </article>
-    </section>
-    <section class="metric-strip airy" data-tour-target="metrics">
-      <a class="metric" href="profile.html" title="Range-based profile readiness, not a fake precision score."><strong>${intel.readinessLevel}</strong><span>Readiness</span></a>
-      <a class="metric" href="profile.html" title="${intel.atsReadiness}"><strong>${profile.resume.uploaded || profile.resume.name ? "Review ready" : "No resume"}</strong><span>Resume</span></a>
-      <a class="metric" href="jobs.html" title="Roles you saved for later review."><strong>${savedJobs.length}</strong><span>Saved roles</span></a>
-      <a class="metric" href="jobs.html" title="Applications currently in your tracker."><strong>${applications.length}</strong><span>Applications</span></a>
-    </section>
-    <section class="glass-card application-overview" data-tour-target="applications">
-      <div class="section-head"><div><div class="section-kicker">Application progress</div><h2 class="section-title mini">Every job has a next step.</h2></div><a class="btn btn-primary" href="jobs.html#tracker">${icon("kanban")} Open tracker</a></div>
-      <div class="pipeline-strip">
-        ${APPLICATION_STAGES.slice(0, 6).map(stage => `<div class="pipeline-stage"><span>${stage.label}</span><strong>${counts[stage.key] || 0}</strong></div>`).join("")}
-      </div>
-      <div class="list-stack spacious-list">
-        ${(trackedJobs.length ? trackedJobs.slice(0, 3) : topJobs.slice(0, 2).map(job => ({ job, record: createApplicationRecord(job.id, "saved") }))).map(({ job, record }) => `
-          <a class="list-card application-row" href="jobs.html?job=${job.id}#tracker">
-            <div class="list-card-top">
-              <div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.location}</div></div>
-              ${applicationStagePill(record.stage)}
-            </div>
-            <p class="muted">${record.nextAction}</p>
-            ${applicationProgress(record)}
+        <span class="cg-vera-status"><i></i> Vera is online - learning your patterns</span>
+      </header>
+
+      <section class="cg-kpi-grid" data-tour-target="metrics">
+        ${kpis.map(([label, value, progress, detail, ic], index) => `
+          <a class="cg-kpi-card tone-${index + 1}" href="${index === 3 ? "jobs.html#tracker" : index === 1 ? "market.html" : "profile.html"}">
+            <span class="cg-card-icon">${icon(ic)}</span>
+            <span class="cg-kpi-label">${label}</span>
+            <strong>${value}</strong>
+            <small>${detail}</small>
+            ${index === 3 ? `<span class="cg-mini-bars"><i></i><i></i><i></i></span>` : progressBar(progress)}
           </a>
         `).join("")}
-      </div>
-    </section>
-    <section class="content-grid calm-grid">
-      <div class="glass-card" data-tour-target="intelligence">
-        <div class="section-kicker">Career Intelligence</div>
-        ${[
-          ["Resume", intel.resumeReadiness],
-          ["ATS", intel.atsReadiness],
-          ["Skills", intel.skillCompetitiveness],
-          ["Market", intel.marketFit]
-        ].map(([label, value]) => `<div class="insight-row"><span>${label}</span><strong>${value}</strong></div>`).join("")}
-      </div>
-      <div class="glass-card">
-        <div class="section-head"><div><div class="section-kicker">Top matches</div><h2 class="section-title mini">Only the best few.</h2></div><a class="btn btn-ghost" href="jobs.html">${icon("briefcase")} See jobs</a></div>
-        <div class="list-stack">
-          ${topJobs.slice(0, 2).map(job => `<a class="list-card quiet" href="jobs.html?job=${job.id}"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div></a>`).join("")}
+      </section>
+
+      <section class="cg-focus-grid">
+        <article class="cg-focus-card" data-tour-target="vera">
+          <div class="cg-focus-meta">
+            <span>${icon("sparkles")} Today's focus - by Vera</span>
+            <span>${icon("clock")} 45 min - Deep work</span>
+          </div>
+          <h2>${focusTitle}</h2>
+          <p>${focusDetail}</p>
+          <div class="cg-action-row">
+            <a class="btn btn-primary" href="vera.html#plan">Start with Vera ${icon("arrow-up-right")}</a>
+            <a class="btn btn-ghost" href="profile.html">Snooze</a>
+            <span class="cg-confidence">${icon("gauge")} Confidence: ${intel.confidence}</span>
+          </div>
+        </article>
+        <article class="cg-autopilot-card">
+          <div class="cg-section-line">
+            <div>
+              <span class="cg-overline">${icon("bot")} Autopilot</span>
+              <h2>Vera worked while you slept.</h2>
+            </div>
+            <span class="cg-pill">High confidence</span>
+          </div>
+          <div class="cg-activity-list">
+            ${[
+              ["search", "Scanned 128 new jobs across your target companies", "03:12"],
+              ["check-circle-2", `Saved ${savedJobs.length || 6} that match your roadmap`, "03:41"],
+              ["send", "Drafted 2 outreach notes to hiring managers", "05:04"],
+              ["badge-dollar-sign", "Refreshed your Fair Pay benchmark (+6%)", "05:22"]
+            ].map(([ic, text, time]) => `<div class="cg-activity-item"><span>${icon(ic)}</span><p>${text}</p><time>${time}</time></div>`).join("")}
+          </div>
+          <div class="cg-action-row compact-actions">
+            <a class="btn btn-primary" href="autopilot.html">Review 8 items ${icon("chevron-right")}</a>
+            <a class="btn btn-ghost" href="vera.html">Tune</a>
+          </div>
+        </article>
+      </section>
+
+      <section class="cg-task-section glass-card" data-tour-target="missions">
+        <div class="cg-section-line">
+          <div>
+            <span class="cg-overline">Today's tasks</span>
+            <h2>Four small moves</h2>
+          </div>
+          <span class="cg-streak">${icon("flame")} Streak - 12 days</span>
         </div>
-      </div>
-    </section>
-    <section class="career-os-grid">
-      <article class="glass-card">
-        <div class="section-head compact-section-head"><div><div class="section-kicker">Profile completion</div><h2 class="section-title mini">Make matching sharper.</h2></div><span class="score">${profileCompletion}%</span></div>
-        ${progressBar(profileCompletion)}
-        <ul class="check-list compact-list">
-          <li>${profile.resume.uploaded || profile.resume.name ? "Resume evidence is available." : "Upload a resume for ATS and evidence checks."}</li>
-          <li>${profile.skills.technical.length ? "Technical skills are mapped." : "Add technical skills to improve role fit."}</li>
-          <li>${profile.preferences.roles.length ? "Role preferences are set." : "Set preferred roles and industries."}</li>
-        </ul>
-      </article>
-      <article class="glass-card">
-        <div class="section-head compact-section-head"><div><div class="section-kicker">Skill gap tracker</div><h2 class="section-title mini">Bridge skills for ${target}.</h2></div><a class="btn btn-ghost" href="market.html#roadmap">${icon("route")} Roadmap</a></div>
-        ${["Portfolio evidence", "Interview story", "Market salary proof"].map((skill, index) => `<div class="insight-row"><span>${skill}</span><strong>${["Needs proof", "Practice", "Benchmark"][index]}</strong></div>`).join("")}
-      </article>
-      <article class="glass-card">
-        <div class="section-head compact-section-head"><div><div class="section-kicker">Company recommendations</div><h2 class="section-title mini">Research before applying.</h2></div><a class="btn btn-ghost" href="companies.html">${icon("building-2")} Companies</a></div>
-        <div class="list-stack">
-          ${(savedOrgs.length ? savedOrgs : DATA.companies.slice(0, 2)).slice(0, 2).map(org => `<a class="list-card quiet" href="companies.html?org=${org.id}"><div class="list-card-top"><div><h3>${org.name}</h3><div class="muted small">${org.signal}</div></div>${rating(org.rating)}</div></a>`).join("")}
+        <div class="cg-task-grid">
+          ${dailyTasks.map((task, index) => {
+            const mission = task.mission || visibleBeginnerMissions[index % Math.max(1, visibleBeginnerMissions.length)];
+            const progress = mission ? (state.missionProgress[mission.id] || 0) : 0;
+            const done = progress >= 100;
+            return `
+              <article class="cg-task-card ${done ? "complete" : ""}" data-mission-card="${mission?.id || ""}">
+                <span class="cg-check"></span>
+                <div>
+                  <div class="cg-task-meta"><span>${task.priority}</span><span>${task.meta}</span></div>
+                  <h3>${task.title}</h3>
+                  <p>${icon("sparkles")} ${task.body}</p>
+                  ${progressBar(done ? 100 : task.progress)}
+                </div>
+                ${mission ? `<button class="btn btn-ghost" type="button" data-complete-mission="${mission.id}">${done ? "Done" : "Start"} ${icon("arrow-up-right")}</button>` : `<a class="btn btn-ghost" href="vera.html#plan">Start ${icon("arrow-up-right")}</a>`}
+              </article>
+            `;
+          }).join("")}
         </div>
-      </article>
-      <article class="glass-card">
-        <div class="section-head compact-section-head"><div><div class="section-kicker">Market pulse</div><h2 class="section-title mini">Signals worth watching.</h2></div><a class="btn btn-ghost" href="market.html">${icon("trending-up")} Open</a></div>
-        ${DATA.pulse.slice(0, 2).map(item => `<div class="review-card"><strong>${item.title}</strong><p class="muted small">${item.impact}</p></div>`).join("")}
-      </article>
-      <article class="glass-card">
-        <div class="section-head compact-section-head"><div><div class="section-kicker">Upcoming interviews</div><h2 class="section-title mini">Prep with context.</h2></div><a class="btn btn-ghost" href="vera.html#interview">${icon("messages-square")} Practice</a></div>
-        ${trackedJobs.filter(item => item.record.stage === "interview").slice(0, 2).map(({ job, record }) => `<div class="list-card quiet"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company}</div></div><span class="pill gold">${record.deadline}</span></div></div>`).join("") || `<p class="muted">No interviews yet. Vera will surface prep tasks when an application reaches interview stage.</p>`}
-      </article>
-      <article class="glass-card recent-activity-card">
-        <div class="section-head compact-section-head recent-activity-head"><div><div class="section-kicker">Recent activity</div><h2 class="section-title mini">Your latest signals.</h2></div><span class="activity-count"><strong>${state.notifications.length}</strong><span>notes</span></span></div>
-        <div class="activity-note-list">
-          ${state.notifications.slice(0, 3).map((note, index) => `<div class="activity-note"><span class="activity-note-mark">${index + 1}</span><div><strong>${note.title}</strong><p class="muted small">${note.body}</p></div></div>`).join("")}
+      </section>
+
+      <section class="cg-applications" data-tour-target="applications">
+        <div class="cg-section-line">
+          <div>
+            <span class="cg-overline">Active applications</span>
+            <h2>Where each application stands</h2>
+          </div>
+          <a href="jobs.html#tracker">Open Pipeline ${icon("chevron-right")}</a>
         </div>
-      </article>
-    </section>
-    <section class="glass-card" data-tour-target="missions">
-      <div class="section-head"><div><div class="section-kicker">Personalized missions</div><h2 class="section-title mini">${profile.coach.missionFrequency} pace, ${profile.coach.explanationStyle.toLowerCase()}.</h2></div><a class="btn btn-primary" href="vera.html#plan">${icon("route")} Build 90-day plan</a></div>
-      <div class="mission-grid">
-        ${missions.slice(0, 2).map(mission => `<a class="tool-card" href="${mission.href}"><div class="list-card-top"><h3>${mission.title}</h3><span class="pill gold">+${mission.xp} XP</span></div><p>${mission.body}</p>${progressBar(state.missionProgress[mission.id] || mission.progress)}</a>`).join("")}
-      </div>
-      <div class="section-head mission-head"><div><div class="section-kicker">Beginner mission path</div><h2 class="section-title mini">Use CareerGo without feeling lost.</h2></div><span class="pill cyan">${visibleBeginnerMissions.filter(mission => (state.missionProgress[mission.id] || 0) >= 100).length}/${visibleBeginnerMissions.length} shown</span></div>
-      <div class="starter-mission-grid">
-        ${visibleBeginnerMissions.map(mission => {
-          const progress = state.missionProgress[mission.id] || 0;
-          const done = progress >= 100;
-          return `
-            <article class="tool-card starter-mission ${done ? "complete" : ""}" data-mission-card="${mission.id}">
-              <div class="mission-icon">${icon(done ? "check" : mission.icon)}</div>
-              <h3>${mission.title}</h3>
-              <p>${mission.body}</p>
-              ${progressBar(done ? 100 : progress)}
-              <div class="mission-actions">
-                <a class="btn btn-ghost" href="${mission.href}">Open</a>
-                <button class="btn btn-cyan" type="button" data-complete-mission="${mission.id}">${done ? icon("check") + " Done" : icon("circle-check") + " Mark done"}</button>
+        <div class="cg-application-grid">
+          ${applicationCards.map(({ job, record }) => `
+            <article class="cg-application-card">
+              <div class="cg-job-head">
+                <span class="cg-company-mark">${job.company.charAt(0)}</span>
+                <div><small>${job.company}</small><h3>${job.title}</h3></div>
+                ${applicationStagePill(record.stage)}
+              </div>
+              <div class="cg-stage-track"><i></i><i></i><i></i><i></i></div>
+              <div class="cg-stage-labels"><span>Applied</span><span>Screen</span><span>Interview</span><span>Offer</span></div>
+              <p class="cg-application-meta">${icon("calendar")} ${record.deadline || "Due in 2 days"} ${icon("clock")} ${record.nextAction}</p>
+              <div class="cg-note">${icon("sparkles")} ${record.nextAction}</div>
+              <div class="cg-action-row">
+                <a class="btn btn-primary" href="jobs.html?job=${job.id}#tracker">Continue ${icon("arrow-up-right")}</a>
+                <a class="btn btn-ghost" href="jobs.html?job=${job.id}">Details</a>
               </div>
             </article>
-          `;
-        }).join("")}
-      </div>
+          `).join("")}
+        </div>
+        <div class="cg-insight-band">
+          <span>${icon("trending-up")} Interview readiness +18% this month</span>
+          <span>${icon("sparkles")} Ahead of 72% of candidates on your path</span>
+          <span>${icon("zap")} One project separates you from median ${target}</span>
+        </div>
+      </section>
+
+      <section class="cg-roles-section">
+        <div class="cg-section-line">
+          <div>
+            <span class="cg-overline">For you</span>
+            <h2>Roles picked by Vera</h2>
+          </div>
+          <a href="jobs.html">See all ${DATA.jobs.length} ${icon("chevron-right")}</a>
+        </div>
+        <div class="cg-role-grid">
+          ${topJobs.map(job => `
+            <article class="cg-role-card">
+              <div class="cg-job-head">
+                <span class="cg-company-mark">${job.company.charAt(0)}</span>
+                <div><small>${job.company}</small><h3>${job.title}</h3></div>
+                <span class="cg-match"><strong>${job.match}</strong><small>Match</small></span>
+              </div>
+              <p class="cg-role-meta">${icon("badge-dollar-sign")} ${job.salary} ${icon("map-pin")} ${job.location} <span>${job.type}</span></p>
+              <ul>
+                ${job.why.slice(0, 3).map(reason => `<li>${reason}</li>`).join("")}
+              </ul>
+              <div class="cg-action-row">
+                <a class="btn btn-primary" href="jobs.html?job=${job.id}">Quick apply</a>
+                <a class="btn btn-ghost" href="jobs.html?job=${job.id}">Save</a>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="cg-long-arc" data-tour-target="intelligence">
+        <div>
+          <span class="cg-overline">For the long arc</span>
+          <h2>Long-term growth</h2>
+        </div>
+        <div class="cg-long-grid">
+          ${longArcCards.map(([title, body, ic, href], index) => `
+            <a class="cg-long-card tone-${index + 1}" href="${href}">
+              <span class="cg-card-icon">${icon(ic)}</span>
+              <span class="cg-open-icon">${icon("arrow-up-right")}</span>
+              <h3>${title}</h3>
+              <p>${body}</p>
+            </a>
+          `).join("")}
+        </div>
+      </section>
+
+      <a class="cg-ask-vera" href="vera.html">${icon("message-circle")} Ask Vera</a>
     </section>
   `);
   createIcons();
@@ -4891,7 +4983,7 @@ function renderSavedItems() {
     <section class="glass-card dashboard-hero compact-dashboard-hero">
       <div><div class="eyebrow"><span class="spark">*</span> Saved Items</div><h1 class="section-title">Your saved jobs, research, and posts.</h1><p class="section-sub">Keep career decisions organized without crowding the main dashboard.</p></div>
     </section>
-    <section class="content-grid">
+    <section class="saved-items-stack">
       <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved jobs</div><h2 class="section-title mini">${savedJobs.length} roles</h2></div><a class="btn btn-ghost" href="jobs.html">${icon("briefcase")} Jobs</a></div><div class="list-stack">${savedJobs.map(job => `<a class="list-card quiet" href="jobs.html?job=${job.id}"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div></a>`).join("") || `<p class="muted">No saved jobs yet.</p>`}</div></article>
       <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved research</div><h2 class="section-title mini">${savedOrgs.length} organizations</h2></div><a class="btn btn-ghost" href="companies.html">${icon("search")} Research</a></div><div class="list-stack">${savedOrgs.map(org => `<a class="list-card quiet" href="${org.type === "University" ? "universities.html" : "companies.html"}?org=${org.id}"><div class="list-card-top"><div><h3>${org.name}</h3><div class="muted small">${org.signal}</div></div>${rating(org.rating)}</div></a>`).join("") || `<p class="muted">No saved companies or universities yet.</p>`}</div></article>
     </section>
@@ -5125,9 +5217,27 @@ function renderAutopilot() {
   const activeApps = tracked.filter(({ record }) => !["archived", "rejected"].includes(record.stage)).length;
   const interviewCount = counts.interview || 0;
   const suggestedJobs = DATA.jobs.filter(job => !state.applicationRecords?.[job.id] && !state.ignoredJobs.includes(job.id)).slice(0, 3);
+  const recruitmentSteps = [
+    { key: "saved", label: "Shortlist", detail: "Company research and fit check", icon: "bookmark" },
+    { key: "applied", label: "Application sent", detail: "Resume and profile submitted", icon: "send" },
+    { key: "screening", label: "Recruiter screen", detail: "HR/recruiter review or phone call", icon: "scan-search" },
+    { key: "interview", label: "Interview loop", detail: "Case, portfolio, technical, or team interview", icon: "messages-square" },
+    { key: "offer", label: "Offer decision", detail: "Offer, negotiation, or final outcome", icon: "badge-check" }
+  ];
+  const recruitmentStepIndex = stage => {
+    if (stage === "rejected" || stage === "archived") return recruitmentSteps.length - 1;
+    return Math.max(0, recruitmentSteps.findIndex(step => step.key === stage));
+  };
+  const recruitmentProgress = record => Math.round(((recruitmentStepIndex(record.stage) + 1) / recruitmentSteps.length) * 100);
+  const recruitmentStatusText = record => {
+    if (record.stage === "offer") return "Offer stage - compare package, growth, and fit.";
+    if (record.stage === "rejected") return "Closed - capture feedback and improve the next application.";
+    if (record.stage === "archived") return "Archived - no current action needed.";
+    return `${recruitmentSteps[recruitmentStepIndex(record.stage)]?.label || "In progress"} - ${record.nextAction}`;
+  };
   root.innerHTML = appShell("autopilot", `
     <section class="glass-card dashboard-hero">
-      <div><div class="eyebrow"><span class="spark">*</span> Applications</div><h1 class="section-title">Track every role from saved to outcome.</h1><p class="section-sub">See status, next action, deadline, Vera advice, and automation rules in one place.</p></div>
+      <div><div class="eyebrow"><span class="spark">*</span> Company hiring process</div><h1 class="section-title">Know exactly where every recruitment process stands.</h1><p class="section-sub">Track each company's hiring stage, next action, deadline, Vera advice, and notes from shortlist to offer.</p></div>
       <div class="radar"><span></span></div>
     </section>
     <section class="glass-card application-overview" data-no-number-animation>
@@ -5154,6 +5264,9 @@ function renderAutopilot() {
               <div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div>
               <div class="application-row-meta">${applicationStagePill(record.stage)}<span class="pill gold">${record.deadline}</span></div>
               <p class="muted">${record.nextAction}</p>
+              <div class="recruitment-mini-flow" aria-label="${job.company} recruitment progress">
+                ${recruitmentSteps.map((step, index) => `<span class="${index <= recruitmentStepIndex(record.stage) ? "done" : ""} ${index === recruitmentStepIndex(record.stage) ? "current" : ""}" title="${step.label}"></span>`).join("")}
+              </div>
               ${applicationProgress(record)}
             </article>
           `).join("") : `<div class="card">No applications match this stage yet.</div>`}
@@ -5161,6 +5274,22 @@ function renderAutopilot() {
         <aside class="glass-card application-detail-card" data-application-detail>
           ${activeItem ? `
             <div class="detail-head"><div><h2>${activeItem.job.title}</h2><div class="muted">${activeItem.job.company} - ${activeItem.job.location}</div></div>${applicationStagePill(activeItem.record.stage)}</div>
+            <section class="recruitment-status-card">
+              <div>
+                <span class="section-kicker">Current recruitment progress</span>
+                <h3>${recruitmentSteps[recruitmentStepIndex(activeItem.record.stage)]?.label || "In progress"}</h3>
+                <p>${recruitmentStatusText(activeItem.record)}</p>
+              </div>
+              <strong>${recruitmentProgress(activeItem.record)}%</strong>
+            </section>
+            <section class="recruitment-process-map">
+              ${recruitmentSteps.map((step, index) => `
+                <article class="${index <= recruitmentStepIndex(activeItem.record.stage) ? "done" : ""} ${index === recruitmentStepIndex(activeItem.record.stage) ? "current" : ""}">
+                  <span>${icon(step.icon)}</span>
+                  <div><h3>${step.label}</h3><p>${step.detail}</p></div>
+                </article>
+              `).join("")}
+            </section>
             <div class="score-grid compact">
               <div class="score-tile"><span>Match</span><strong>${activeItem.job.match}%</strong></div>
               <div class="score-tile"><span>Deadline</span><strong>${activeItem.record.deadline}</strong></div>
@@ -5197,7 +5326,7 @@ function renderAutopilot() {
         </div>
       ` : ""}
     </section>
-    <section class="content-grid">
+    <section class="application-automation-stack">
       <form class="glass-card form-grid" data-rules-form>
         <h2 class="section-title mini">Rules panel</h2>
         <label>Minimum salary <input name="salary" type="number" value="${state.autopilotRules.salary}"></label>
@@ -5301,36 +5430,242 @@ function renderPosts() {
   if (!root) return;
   if (!requireAccount(root, "join the professional feed")) return;
   const state = readState();
+  qs(".page-hero")?.classList.add("is-hidden");
+  const activeTab = (location.hash || "#for-you").replace("#", "");
+  const feedTabs = [
+    ["for-you", "For you"],
+    ["following", "Following"],
+    ["milestones", "Milestones"],
+    ["discussions", "Discussions"],
+    ["hiring", "Hiring"]
+  ];
+  const trendItems = [
+    { id: "pm-transitions", title: "PM transitions", count: "1.2k posts today", keywords: ["pm", "product", "transition", "switch"] },
+    { id: "ai-product-roles", title: "AI product roles", count: "840 posts today", keywords: ["ai", "product", "role"] },
+    { id: "interview-teardowns", title: "Interview teardowns", count: "612 posts today", keywords: ["interview", "teardown", "framework"] },
+    { id: "fair-pay-reports", title: "Fair Pay reports", count: "298 posts today", keywords: ["pay", "salary", "worth", "market"] }
+  ];
+  const activeTrend = activeTab.startsWith("trend-") ? activeTab.replace("trend-", "") : "";
+  const followingList = Array.isArray(state.followingFeed) ? state.followingFeed : [];
+  const enrichedPosts = state.posts.map((post, index) => ({
+    category: ["discussion", "milestone", "hiring", "discussion", "milestone"][index % 5],
+    time: ["2h", "4h", "Yesterday", "2d"][index % 4],
+    baseComments: Number.isFinite(Number(post.comments)) ? Number(post.comments) : 32 + index * 7,
+    commentsList: Array.isArray(post.commentsList) ? post.commentsList : [],
+    commentsOpen: Boolean(post.commentsOpen),
+    saved: Boolean(post.saved),
+    liked: Boolean(post.liked),
+    ...post
+  }));
+  const filteredPosts = enrichedPosts.filter(post => {
+    if (activeTrend) {
+      const trend = trendItems.find(item => item.id === activeTrend);
+      const hay = `${post.author} ${post.title} ${post.body}`.toLowerCase();
+      return trend ? trend.keywords.some(keyword => hay.includes(keyword)) : true;
+    }
+    if (activeTab === "following") return ["Nadia, UX Intern", "Priya Menon", "Jason, Data Analyst"].includes(post.author);
+    if (activeTab === "milestones") return post.category === "milestone" || /learned|progress|project|portfolio/i.test(post.title);
+    if (activeTab === "discussions") return post.category === "discussion";
+    if (activeTab === "hiring") return post.category === "hiring" || /job|role|apply|interview/i.test(`${post.title} ${post.body}`);
+    return true;
+  });
+  const feedPosts = filteredPosts.length ? filteredPosts : enrichedPosts;
+  const profileInitial = getFirstName(state).charAt(0).toUpperCase() || "A";
+  const postInitials = value => String(value || "CG")
+    .split(/[,\s]/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(part => part[0])
+    .join("")
+    .toUpperCase();
+  const commentSeed = post => [
+    { author: "Vera", body: "Strong framing. Try adding one metric or user signal to make the lesson interview-ready.", time: "1h" },
+    { author: "CareerGo member", body: "This is exactly how I started turning class projects into portfolio stories.", time: "34m" }
+  ].slice(0, Math.min(2, Math.max(0, post.baseComments ? 2 : 0)));
+  const classifyPost = (title, body) => {
+    const text = `${title} ${body}`.toLowerCase();
+    if (/hiring|job|role|apply|recruiter/.test(text)) return "hiring";
+    if (/milestone|launched|finished|completed|progress|offer/.test(text)) return "milestone";
+    return "discussion";
+  };
   root.innerHTML = appShell("posts", `
-    <section class="glass-card">
-      <div class="eyebrow"><span class="spark">*</span> Professional feed</div>
-      <h1 class="section-title">Share progress and learn from career stories.</h1>
-      <p class="section-sub">Candidate posts, reactions, bookmarks, and AI drafting support restore the community workflow.</p>
-    </section>
-    <section class="content-grid">
-      <form class="glass-card form-grid" data-post-form>
-        <h2 class="section-title mini">Create update</h2>
-        <label>Title <input name="title" placeholder="What did you learn?"></label>
-        <label>Post <textarea name="body" placeholder="Share a career lesson, interview story, or project update."></textarea></label>
-        <button class="btn btn-primary" type="submit">${icon("send")} Publish</button>
-      </form>
-      <div class="glass-card list-stack">
-        ${state.posts.map(post => `<article class="list-card"><div class="list-card-top"><div><h3>${post.title}</h3><div class="muted small">${post.author}</div></div><span class="pill gold">${post.reactions} reactions</span></div><p class="muted">${post.body}</p></article>`).join("")}
-      </div>
+    <section class="cg-feed-shell">
+      <main class="cg-feed-main">
+        <header class="cg-feed-hero">
+          <span class="cg-overline">Feed</span>
+          <h1>Learn from people building careers like yours.</h1>
+        </header>
+
+        <form class="cg-feed-composer" data-post-form>
+          <span class="cg-feed-avatar">${profileInitial}</span>
+          <input name="title" aria-label="Post title" placeholder="Milestone, lesson, or question title">
+          <textarea name="body" aria-label="Post body" placeholder="Share a milestone, lesson, or question..."></textarea>
+          <input data-post-media name="media" type="file" accept="image/*,.pdf,.doc,.docx" hidden>
+          <button class="btn btn-ghost" type="button" data-media-post>${icon("image")} Media</button>
+          <button class="btn btn-primary" type="submit">${icon("plus")} Post</button>
+          <div class="cg-media-preview" data-media-preview hidden></div>
+        </form>
+
+        ${activeTrend ? `<div class="cg-active-trend"><span>${icon("flame")} ${trendItems.find(item => item.id === activeTrend)?.title || "Trending"}</span><a href="#for-you" data-feed-tab-link>Clear</a></div>` : ""}
+
+        <nav class="cg-feed-tabs" aria-label="Feed filters">
+          ${feedTabs.map(([key, label]) => `<a class="${activeTab === key ? "active" : ""}" href="#${key}" data-feed-tab-link>${label}</a>`).join("")}
+        </nav>
+
+        <section class="cg-feed-list" aria-label="Career feed">
+          ${feedPosts.map(post => `
+            <article class="cg-feed-post">
+              <div class="cg-feed-post-head">
+                <span class="cg-feed-avatar">${postInitials(post.author)}</span>
+                <div>
+                  <h2>${post.author || "CareerGo member"}</h2>
+                  <p>${post.title}</p>
+                </div>
+                <time>${post.time}</time>
+              </div>
+              <span class="cg-feed-tag">${post.category === "milestone" ? "Milestone" : post.category === "hiring" ? "Hiring" : "Discussion"}</span>
+              <p class="cg-feed-body">${post.body}</p>
+              ${post.mediaName ? `<div class="cg-post-media">${icon("paperclip")} <span>${post.mediaName}</span></div>` : ""}
+              <div class="cg-feed-actions">
+                <button type="button" data-like-post="${post.id}" class="${post.liked ? "active" : ""}">${icon("heart")} ${post.reactions || 0}</button>
+                <button type="button" data-comment-toggle="${post.id}" class="${post.commentsOpen ? "active" : ""}">${icon("message-circle")} ${(post.baseComments || 0) + post.commentsList.length}</button>
+                <button type="button" data-save-post="${post.id}" class="${post.saved ? "active" : ""}">${icon("bookmark")} ${post.saved ? "Saved" : "Save"}</button>
+                <button type="button" data-share-post="${post.id}">${icon("send")} Share</button>
+              </div>
+              <section class="cg-feed-comments ${post.commentsOpen ? "open" : ""}" aria-label="Comments">
+                <div class="cg-comment-list">
+                  ${[...commentSeed(post), ...post.commentsList].map(comment => `
+                    <article class="cg-comment">
+                      <span class="cg-comment-avatar">${postInitials(comment.author)}</span>
+                      <div>
+                        <strong>${comment.author}</strong>
+                        <p>${comment.body}</p>
+                        <small>${comment.time}</small>
+                      </div>
+                    </article>
+                  `).join("")}
+                </div>
+                <form class="cg-comment-form" data-comment-form="${post.id}">
+                  <span class="cg-comment-avatar">${profileInitial}</span>
+                  <input name="comment" placeholder="Add a thoughtful reply...">
+                  <button type="submit">${icon("send")}</button>
+                </form>
+              </section>
+            </article>
+          `).join("")}
+        </section>
+      </main>
+
+      <aside class="cg-feed-aside">
+        <section>
+          <span class="cg-overline">Trending</span>
+          ${trendItems.map(item => `<a class="cg-trend ${activeTrend === item.id ? "active" : ""}" href="#trend-${item.id}" data-feed-tab-link><strong>${item.title}</strong><span>${item.count}</span></a>`).join("")}
+        </section>
+        <section>
+          <span class="cg-overline">Suggested to follow</span>
+          ${[
+            ["Notion", "Company - hiring 8 roles", "building-2"],
+            ["IIM Bangalore", "University", "graduation-cap"],
+            ["Ravi Iyer", "Head of Product - Vercel", "users-round"]
+          ].map(([name, sub, ic]) => {
+            const isFollowing = followingList.includes(name);
+            return `<div class="cg-follow-card ${isFollowing ? "following" : ""}"><span>${icon(ic)}</span><div><strong>${name}</strong><small>${sub}</small></div><button type="button" data-follow="${name}" ${isFollowing ? "disabled" : ""}>${isFollowing ? "Following" : "Follow"}</button></div>`;
+          }).join("")}
+        </section>
+      </aside>
     </section>
   `);
+  const mediaInput = qs("[data-post-media]", root);
+  const mediaPreview = qs("[data-media-preview]", root);
   qs("[data-post-form]").addEventListener("submit", event => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const title = String(form.get("title")).trim();
     const body = String(form.get("body")).trim();
-    if (!title || !body) return;
+    if (!body) return showToast("Write a short lesson, milestone, or question first.", "note");
     const next = readState();
-    next.posts.unshift({ id: `post-${Date.now()}`, author: getUserName(next), title, body, reactions: 0 });
+    const mediaName = mediaInput?.files?.[0]?.name || "";
+    next.posts.unshift({ id: `post-${Date.now()}`, author: getUserName(next), title: title || "Career update", body, reactions: 0, comments: 0, commentsList: [], category: classifyPost(title, body), liked: false, saved: false, commentsOpen: true, mediaName });
     writeState(next);
     showToast("Post published.");
     renderPosts();
   });
+  qs("[data-media-post]", root)?.addEventListener("click", () => mediaInput?.click());
+  mediaInput?.addEventListener("change", () => {
+    const file = mediaInput.files?.[0];
+    if (!mediaPreview) return;
+    if (!file) {
+      mediaPreview.hidden = true;
+      mediaPreview.innerHTML = "";
+      return;
+    }
+    mediaPreview.hidden = false;
+    mediaPreview.innerHTML = `${icon("paperclip")} <span>${file.name}</span><button type="button" data-clear-media>${icon("x")}</button>`;
+    createIcons();
+    qs("[data-clear-media]", mediaPreview)?.addEventListener("click", () => {
+      mediaInput.value = "";
+      mediaPreview.hidden = true;
+      mediaPreview.innerHTML = "";
+    });
+  });
+  qsa("[data-feed-tab-link]", root).forEach(link => link.addEventListener("click", () => window.setTimeout(renderPosts, 0)));
+  qsa("[data-like-post]", root).forEach(button => button.addEventListener("click", () => {
+    const next = readState();
+    const post = next.posts.find(item => item.id === button.dataset.likePost);
+    if (!post) return;
+    post.liked = !post.liked;
+    post.reactions = Math.max(0, (post.reactions || 0) + (post.liked ? 1 : -1));
+    writeState(next);
+    renderPosts();
+  }));
+  qsa("[data-save-post]", root).forEach(button => button.addEventListener("click", () => {
+    const next = readState();
+    const post = next.posts.find(item => item.id === button.dataset.savePost);
+    if (!post) return;
+    post.saved = !post.saved;
+    writeState(next);
+    showToast(post.saved ? "Post saved." : "Post removed from saved.");
+    renderPosts();
+  }));
+  qsa("[data-comment-toggle]", root).forEach(button => button.addEventListener("click", () => {
+    const next = readState();
+    const post = next.posts.find(item => item.id === button.dataset.commentToggle);
+    if (!post) return;
+    post.commentsOpen = !post.commentsOpen;
+    writeState(next);
+    renderPosts();
+  }));
+  qsa("[data-comment-form]", root).forEach(form => form.addEventListener("submit", event => {
+    event.preventDefault();
+    const comment = String(new FormData(form).get("comment") || "").trim();
+    if (!comment) return;
+    const next = readState();
+    const post = next.posts.find(item => item.id === form.dataset.commentForm);
+    if (!post) return;
+    post.commentsList = Array.isArray(post.commentsList) ? post.commentsList : [];
+    post.commentsList.push({ author: getUserName(next), body: comment, time: "Just now" });
+    post.commentsOpen = true;
+    writeState(next);
+    showToast("Reply added.");
+    renderPosts();
+  }));
+  qsa("[data-share-post]", root).forEach(button => button.addEventListener("click", async () => {
+    const shareUrl = `${location.origin}${location.pathname}#post-${button.dataset.sharePost}`;
+    try {
+      await navigator.clipboard?.writeText(shareUrl);
+      showToast("Share link copied.");
+    } catch {
+      showToast("Share link ready.");
+    }
+  }));
+  qsa("[data-follow]", root).forEach(button => button.addEventListener("click", () => {
+    const next = readState();
+    next.followingFeed = Array.isArray(next.followingFeed) ? next.followingFeed : [];
+    if (!next.followingFeed.includes(button.dataset.follow)) next.followingFeed.push(button.dataset.follow);
+    writeState(next);
+    showToast(`${button.dataset.follow} added to your feed.`);
+    renderPosts();
+  }));
   createIcons();
 }
 
@@ -5572,6 +5907,18 @@ function initComparisonTableAnimation() {
   observer.observe(card);
 }
 
+function initHomeBackTop() {
+  const button = qs("[data-home-back-top]");
+  if (!button || button.dataset.backTopReady === "true") return;
+  button.dataset.backTopReady = "true";
+  const sync = () => {
+    button.classList.toggle("is-visible", window.scrollY > 520);
+  };
+  button.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  window.addEventListener("scroll", sync, { passive: true });
+  sync();
+}
+
 function init() {
   ensureBrandFonts();
   ensureDemoDashboardSession();
@@ -5605,6 +5952,7 @@ function init() {
   initGlobalInteractionAnimations();
   initHomeStageAnimation();
   initComparisonTableAnimation();
+  initHomeBackTop();
   bindGlobalActions();
   createIcons();
   initSidebarToggle();
