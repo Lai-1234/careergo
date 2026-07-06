@@ -2707,6 +2707,221 @@ function renderJobsPage() {
   if (state.session.loggedIn && needsOnboarding(root)) return;
   if (state.session.loggedIn) {
     const topPick = DATA.jobs.find(job => job.id === "job-ai-product") || DATA.jobs[0];
+    const marketPulse = [
+      ["In your market", "Hiring +34%", "AI Product roles", "RM 145k / year", "67% remote-friendly", "312 new openings", "teal"],
+      ["Missing from your profile", "Hiring +62%", "Prompt engineering", "RM 9,500 / month", "82% remote-friendly", "48 new openings", "blue"],
+      ["Matches your background", "Hiring +21%", "Design-first PMs", "RM 132k / year", "54% remote-friendly", "96 new openings", "gold"],
+      ["Your region", "Hiring +12%", "KL fintech product hubs", "RM 128k / year", "38% remote-friendly", "204 new openings", "rose"]
+    ];
+    const collections = [
+      ["12 companies", "Fast-growing AI companies hiring PMs in Malaysia", "12 teams where the AI stack IS the product. Weighted by funding velocity, headcount growth in KL/Penang, and open PM roles.", "Because your last 4 saved roles were AI-native.", "large"],
+      ["8 companies", "Startups with strong work-life balance", "Async-first Malaysian teams. Median 34h weeks, no on-call PM culture, hybrid-friendly.", "Matches your working-style profile.", ""],
+      ["17 roles", "Roles you could apply to today", "No upskilling required - your current skills already cover 85%+ of the job spec.", "Skill overlap >= 85%.", "small"]
+    ];
+    const featuredCompanies = [
+      ["Setel", "Fintech - KL", "Hiring - Verified", "4 open roles", "AI-native squad; matches your saved roles."],
+      ["Carsome", "Marketplace - KL", "Fast growing", "3 open roles", "3 alumni from your uni joined PM here."],
+      ["StoreHub", "SaaS - KL", "Remote-first", "2 open roles", "Async culture; matches your working style."],
+      ["Aerodyne", "AI - KL", "Top culture", "5 open roles", "AI-native org; roadmap-aligned."]
+    ];
+    const universities = [
+      ["Universiti Malaya (UM)", "KL", "94% employment - 6 mo", "Your alma mater - 312 PM alumni active."],
+      ["Sunway University", "Selangor", "91% employment - 6 mo", "Fintech partnerships you follow."],
+      ["Asia School of Business", "KL", "MIT-linked - Exec Ed", "Matches your 3-yr Head of Product plan."],
+      ["APU Malaysia", "KL", "AI programme partners", "AI product cert closes your top gap."]
+    ];
+    const roleDirections = [
+      ["AI Product Manager", "One step above your current level", "91% match", "RM 145k / yr", "+34%", "Your SQL + design background is exactly what AI product teams in KL are hiring for."],
+      ["Design Engineer", "Leans into your design background", "78% match", "RM 118k / yr", "+22%", "Rare hybrid role - few Malaysian designers code, few engineers design."],
+      ["Founding PM (Seed startup)", "Fits your risk profile", "72% match", "RM 130k + equity / yr", "+12%", "You've saved 3 seed-stage KL startups this month."]
+    ];
+    const programs = [
+      ["Reforge - AI Product Management", "6-week online sprint", "Est. +18% market value", "Cost: USD 2,000 (~RM 9,400)", "6 weeks - part-time", "Closes your top skill gap: LLM product design."],
+      ["Asia School of Business - Exec Ed", "Product leadership - MIT-linked", "Est. +12% market value", "Cost: RM 12,000", "5 weekends", "Matches your 3-year plan toward Head of Product."],
+      ["Stanford Online - AI Product Certificate", "Self-paced certificate", "Asked for by 4 employers you follow", "Cost: USD 1,750 (~RM 8,200)", "8 weeks - self-paced", "Setel, Carsome, and 2 others list this as a plus."]
+    ];
+    const mentors = [
+      ["Aisyah R.", "4y journey", "Designer -> PM at Setel", "Started with a design background just like you.", "82% path overlap"],
+      ["Rohan S.", "3y journey", "Design Eng -> AI PM at StoreHub", "Made the AI PM jump using a similar skill stack.", "76% path overlap"],
+      ["Meera K.", "6y journey", "Product designer -> Head of Product", "Long-term direction if you follow the 3-yr roadmap.", "68% path overlap"],
+      ["Daniel L.", "5y journey", "PM -> Founding PM at KL seed startup", "Took the founding PM leap you're considering.", "71% path overlap"]
+    ];
+    root.innerHTML = `
+      <section class="cg-discover cg-discover-v2">
+        <header class="cg-discover-hero">
+          <div class="cg-discover-kicker"><span>${icon("sparkles")} Discover</span><small>${icon("map-pin")} Malaysia - Kuala Lumpur - Tuned for your Product Management journey</small></div>
+          <h1>A discovery hub for <em>your next career move.</em></h1>
+          <p>Curated highlights on this page. Dedicated explorers when you want to go deeper - companies, universities, career paths, programmes, mentors.</p>
+          <form class="cg-discover-search" action="vera.html">
+            ${icon("search")}
+            <input name="topic" aria-label="Ask Vera about Discover" placeholder="Search companies, jobs, universities, industries, salaries...">
+            <button type="button" class="cg-search-chip">Opportunities only</button>
+            <button type="button">${icon("sliders-horizontal")} Filters</button>
+            <button type="submit">${icon("sparkles")} Ask Vera</button>
+          </form>
+          <p class="cg-discover-network-note">Looking for people, mentors or recruiters? Head to Network.</p>
+        </header>
+
+        <section class="cg-discover-question-grid" aria-label="Start with a question">
+          <div class="cg-section-kicker">Start with a question</div>
+          ${[
+            ["What roles fit me?", "14 matched", "compass"],
+            ["Which companies match my style?", "22 curated", "building-2"],
+            ["Where could my career go next?", "6 directions", "rocket"],
+            ["Which industries are growing in Malaysia?", "4 hot right now", "trending-up"],
+            ["What could accelerate my goals?", "9 programs", "graduation-cap"],
+            ["Who inspires this path?", "12 mentors", "users-round"]
+          ].map(([title, sub, ic]) => `
+            <a class="cg-question-card" href="#${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}">
+              <span>${icon(ic)}</span>
+              <strong>${title}</strong>
+              <small>${sub}</small>
+              <i>${icon("arrow-up-right")}</i>
+            </a>
+          `).join("")}
+        </section>
+
+        <section class="cg-discover-feature">
+          <div class="cg-section-kicker">Vera's top pick this week</div>
+          <h2>The single move most likely to move your career forward.</h2>
+          <article class="cg-top-pick-card">
+            <div class="cg-top-pick-main">
+              <div class="cg-pill-row"><span class="dark">${icon("sparkles")} Vera found this</span><span>${icon("flame")} 91% roadmap match</span><small>Posted 2 days ago - 34 applicants</small></div>
+              <h3>Senior Product Manager, AI Platform</h3>
+              <p class="cg-role-line">${icon("building-2")} Setel (PETRONAS Digital) - ${icon("map-pin")} Kuala Lumpur - Hybrid</p>
+              <p class="cg-salary"><span>Estimated annual salary (Malaysia)</span> RM 140,000 - RM 168,000 <small>/ year</small></p>
+              <div class="cg-why-card">
+                <span>${icon("sparkles")} Why Vera recommends this</span>
+                <p>${icon("check-circle-2")} You completed SQL for PM this month.</p>
+                <p>${icon("check-circle-2")} Your roadmap targets AI Product Management.</p>
+                <p>${icon("check-circle-2")} You saved 3 AI-native startups recently.</p>
+              </div>
+              <div class="cg-action-row">
+                <a class="btn btn-primary" href="jobs.html?job=${topPick.id}">Explore role ${icon("arrow-up-right")}</a>
+                <button class="btn btn-ghost" type="button">${icon("bookmark")} Save</button>
+                <a class="btn btn-ghost" href="vera.html?topic=Tell me more about this role">Ask Vera more</a>
+              </div>
+            </div>
+            <aside class="cg-top-pick-side">
+              <div><span>Career match</span><strong>91%</strong><small>based on your roadmap</small></div>
+              <div><span>${icon("target")} Skills you already have</span><p><b>Product discovery</b><b>User research</b><b>SQL for PM</b><b>Design systems</b></p><span>${icon("lightbulb")} Skills to strengthen</span><p><em>LLM product design</em><em>Prompt evaluation</em></p></div>
+              <div class="mini"><span>Interview difficulty</span><strong>Medium</strong><small>3 rounds - case study</small></div>
+              <div class="mini"><span>Success odds after roadmap</span><strong>76%</strong><small>if you finish Grow plan</small></div>
+              <div class="mini"><span>Applicant strength</span><strong>Top 22%</strong><small>vs. this role</small></div>
+              <div class="mini"><span>Company hiring trend</span><strong>+18%</strong><small>PM headcount, 6 mo</small></div>
+            </aside>
+          </article>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-section-kicker">Market pulse - Malaysia</div>
+          <h2>Quick intelligence on what's heating up around you.</h2>
+          <div class="cg-market-grid">
+            ${marketPulse.map(([tag, trend, title, salary, remote, openings, tone], index) => `
+              <article class="cg-market-card tone-${tone}">
+                <div><span>${icon("zap")} ${tag}</span><small>${icon("trending-up")} ${trend}</small></div>
+                <h3>${title}</h3><a href="vera.html?topic=${encodeURIComponent(title)}" aria-label="Explore ${title}">${icon("arrow-up-right")}</a>
+                <div class="cg-bars">${Array.from({ length: 12 }, (_, i) => `<i style="height:${14 + ((i + index) % 8) * 5}px"></i>`).join("")}</div>
+                <dl><dt>Avg. salary (MY)</dt><dd>${salary}</dd><dt>Remote share</dt><dd>${remote}</dd><dt>Openings</dt><dd>${openings}</dd></dl>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-section-kicker">Curated by Vera</div>
+          <h2>Collections built around your next step, not tags.</h2>
+          <div class="cg-collection-grid">
+            ${collections.map(([count, title, copy, why, size]) => `
+              <article class="cg-collection-card ${size}"><span>${count}</span><i>${icon("arrow-up-right")}</i><h3>${title}</h3><p>${copy}</p><footer><b>${icon("sparkles")} Why this</b> ${why}</footer></article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-discover-section-head">
+            <div><div class="cg-section-kicker">Featured companies</div><h2>Four teams Vera thinks you should know this week.</h2></div>
+            <a class="cg-discover-link-btn" href="companies.html">Explore 1,240 companies ${icon("arrow-right")}</a>
+          </div>
+          <div class="cg-featured-org-grid">
+            ${featuredCompanies.map(([name, sub, tag, roles, why]) => `
+              <article class="cg-featured-org-card">
+                <header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${sub}</p></div></header>
+                <b>${tag}</b><strong>${roles}</strong>
+                <footer>${icon("sparkles")} ${why}</footer>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-discover-section-head">
+            <div><div class="cg-section-kicker">Featured universities</div><h2>Institutions treated like career opportunities.</h2></div>
+            <a class="cg-discover-link-btn" href="universities.html">Browse all universities ${icon("arrow-right")}</a>
+          </div>
+          <div class="cg-featured-org-grid">
+            ${universities.map(([name, sub, tag, why]) => `
+              <article class="cg-featured-org-card university">
+                <header><span>${icon("graduation-cap")}</span><div><h3>${name}</h3><p>${icon("map-pin")} ${sub}</p></div></header>
+                <b>${tag}</b>
+                <footer>${icon("sparkles")} ${why}</footer>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-discover-section-head">
+            <div><div class="cg-section-kicker">Where your career could go next</div><h2>Top three directions Vera has mapped for you.</h2></div>
+            <a class="cg-discover-link-btn" href="vera.html?topic=career paths">Explore all career paths ${icon("arrow-right")}</a>
+          </div>
+          <div class="cg-direction-grid">
+            ${roleDirections.map(([title, sub, match, salary, demand, why]) => `
+              <article class="cg-direction-card">
+                <span>${match}</span>
+                <h3>${title}</h3>
+                <p>${sub}</p>
+                <dl><dt>Estimated salary</dt><dd>${salary}<small>MY - median</small></dd><dt>Market demand</dt><dd>${demand}<small>last 30 days</small></dd></dl>
+                <footer>${icon("sparkles")} Why - ${why}</footer>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-discover-section-head">
+            <div><div class="cg-section-kicker">Programmes that could accelerate you</div><h2>Three high-ROI programmes for your next step.</h2></div>
+            <a class="cg-discover-link-btn" href="vera.html?topic=programmes">Explore all programmes ${icon("arrow-right")}</a>
+          </div>
+          <div class="cg-program-card-grid">
+            ${programs.map(([name, sub, tag, cost, duration, why]) => `
+              <article class="cg-program-card">
+                <header><div><h3>${name}</h3><p>${sub}</p></div><b>${tag}</b></header>
+                <dl><dd>${cost}</dd><dd>${duration}</dd></dl>
+                <footer>${icon("sparkles")} ${why}</footer>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-discover-section-head">
+            <div><div class="cg-section-kicker">Who inspires this path</div><h2>Mentors whose journeys rhyme with yours.</h2></div>
+            <a class="cg-discover-link-btn" href="posts.html#messages">Browse all mentors ${icon("arrow-right")}</a>
+          </div>
+          <div class="cg-mentor-grid">
+            ${mentors.map(([name, years, path, why, overlap]) => `
+              <article class="cg-mentor-card"><header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${years}</p></div></header><strong>${path}</strong><p>${icon("sparkles")} ${why}</p><footer><small>${icon("lightbulb")} ${overlap}</small><a href="vera.html?topic=${encodeURIComponent(`Show me a path like ${name}`)}">See path -></a></footer></article>
+            `).join("")}
+          </div>
+        </section>
+      </section>
+    `;
+    createIcons();
+    return;
+  }
+  if (state.session.loggedIn) {
+    const topPick = DATA.jobs.find(job => job.id === "job-ai-product") || DATA.jobs[0];
     const roleDirections = [
       ["AI Product Manager", "One step above your current level", "91% match", "RM 145k / yr", "▲ 34%", "High", "Medium", "Common", "91%", "Your SQL + design background is exactly what AI product teams in KL are hiring for."],
       ["Design Engineer", "Leans into your design background", "78% match", "RM 118k / yr", "▲ 22%", "High", "Low", "Common", "78%", "Rare hybrid role - few Malaysian designers code, few engineers design."],
@@ -6716,7 +6931,40 @@ function renderPosts() {
   ];
   const activeTrend = activeTab.startsWith("trend-") ? activeTab.replace("trend-", "") : "";
   const followingList = Array.isArray(state.followingFeed) ? state.followingFeed : [];
-  const enrichedPosts = state.posts.map((post, index) => ({
+  const referenceFeedPosts = [
+    {
+      id: "feed-priya-menon-discussion",
+      author: "Priya Menon",
+      title: "Sr. PM - Stripe",
+      body: "The best PM interview prep isn't more frameworks - it's writing three teardowns of products you love. Interviewers can feel the difference between a memorized answer and a real point of view.",
+      reactions: 214,
+      comments: 32,
+      category: "discussion",
+      time: "2h"
+    },
+    {
+      id: "feed-rohan-milestone",
+      author: "Rohan S.",
+      title: "Design Eng - StoreHub",
+      body: "I stopped describing my portfolio as screens and started explaining constraints, tradeoffs, and what changed after testing. That shift changed the interview.",
+      reactions: 138,
+      comments: 18,
+      category: "milestone",
+      time: "4h"
+    },
+    {
+      id: "feed-aisha-hiring",
+      author: "Aisha Rahman",
+      title: "Recruiter - Grab Malaysia",
+      body: "Warm intros help, but the strongest PM applications this week came with one short artifact: a teardown, dashboard, or strategy memo tied to the role.",
+      reactions: 96,
+      comments: 21,
+      category: "hiring",
+      time: "Yesterday"
+    }
+  ];
+  const userPosts = (state.posts || []).filter(post => !referenceFeedPosts.some(reference => reference.id === post.id));
+  const enrichedPosts = [...referenceFeedPosts, ...userPosts].map((post, index) => ({
     category: ["discussion", "milestone", "hiring", "discussion", "milestone"][index % 5],
     time: ["2h", "4h", "Yesterday", "2d"][index % 4],
     baseComments: Number.isFinite(Number(post.comments)) ? Number(post.comments) : 32 + index * 7,
