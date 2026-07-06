@@ -1385,6 +1385,81 @@ function workspaceTopNav() {
   const state = readState();
   const isEmployer = state.session.role === "employer";
   const notifications = Array.isArray(state.notifications) ? state.notifications : [];
+  const page = document.body.dataset.page || "";
+  if (!isEmployer) {
+    const workspaceLinks = [
+      ["dashboard", "Today", "dashboard.html"],
+      ["jobs", "Discover", "jobs.html"],
+      ["profile", "Grow", "profile.html"],
+      ["market", "Worth", "market.html"],
+      ["autopilot", "Pipeline", "autopilot.html"],
+      ["posts", "Feed", "posts.html"]
+    ];
+    const isWorkspaceTabActive = key => {
+      if (key === "jobs") return ["jobs", "companies", "universities"].includes(page);
+      if (key === "profile") return ["profile", "public-profile", "settings"].includes(page);
+      if (key === "posts") return ["posts", "saved"].includes(page);
+      return page === key;
+    };
+    const initials = String(getFirstName(state) || "A").slice(0, 2).toUpperCase();
+    return `
+      <a class="brand cg-top-brand" href="dashboard.html"><span class="cg-brand-mark">${icon("sparkles")}</span><span class="brand-text"><strong>CareerGo</strong></span></a>
+      <nav class="nav-links cg-workspace-tabs" aria-label="CareerGo workspace">
+        ${workspaceLinks.map(([key, label, href]) => `<a data-nav="${key}" class="${isWorkspaceTabActive(key) ? "active" : ""}" href="${href}">${label}</a>`).join("")}
+      </nav>
+      <form class="workspace-search cg-vera-search" role="search" data-workspace-search data-tour-target="workspace-search">
+        ${icon("search")}
+        <input name="q" aria-label="Ask Vera" placeholder="Ask Vera anything...">
+        <kbd>⌘ K</kbd>
+      </form>
+      <div class="nav-actions cg-user-actions">
+        <div class="notification-menu-wrap">
+          <button class="btn btn-ghost notification-trigger" type="button" data-notification-toggle aria-haspopup="dialog" aria-expanded="false" aria-label="Open notifications">
+            ${icon("bell")} ${notifications.length ? `<strong>${notifications.length}</strong>` : ""}
+          </button>
+          <div class="notification-menu glass-card" data-notification-menu hidden role="dialog" aria-label="Notifications">
+            <div class="notification-menu-head">
+              <div>
+                <span class="section-kicker">Notifications</span>
+                <strong>${notifications.length ? `${notifications.length} active` : "All clear"}</strong>
+              </div>
+              ${notifications.length ? `<button class="notification-clear" type="button" data-clear-notifications>Clear all</button>` : ""}
+            </div>
+            <div class="notification-menu-list">
+              ${notifications.length ? notifications.slice(0, 5).map(note => `
+                <article class="notification-item">
+                  <span class="notification-icon">${icon(note.icon || "sparkles")}</span>
+                  <span class="notification-copy">
+                    <strong>${note.title}</strong>
+                    <small>${note.body}</small>
+                  </span>
+                  <button class="notification-dismiss" type="button" data-dismiss-notification="${note.id}" aria-label="Dismiss ${note.title}">${icon("x")}</button>
+                </article>
+              `).join("") : `
+                <div class="notification-empty">
+                  ${icon("check-circle")}
+                  <strong>No new updates</strong>
+                  <small>CareerGo will surface tasks, role changes, and Vera recommendations here.</small>
+                </div>
+              `}
+            </div>
+            <a class="notification-footer" href="autopilot.html">${icon("list-checks")} Open action center</a>
+          </div>
+        </div>
+        <div class="account-menu-wrap">
+          <button class="btn btn-primary account-menu-trigger cg-avatar-trigger" type="button" data-account-menu-toggle aria-haspopup="menu" aria-expanded="false">
+            <span>${initials}</span>
+          </button>
+          <div class="account-menu glass-card" data-account-menu hidden role="menu">
+            <a role="menuitem" href="profile.html">${icon("user-round")} Profile</a>
+            <a role="menuitem" href="settings.html">${icon("settings")} Settings</a>
+            <a role="menuitem" href="posts.html#saved">${icon("bookmark")} Saved Items</a>
+            <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
   return `
     <a class="brand" href="${isEmployer ? "employer-app.html" : "dashboard.html"}"><img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>${isEmployer ? "Employer OS" : "Workspace"}</span></span></a>
     <form class="workspace-search" role="search" data-workspace-search data-tour-target="workspace-search">
@@ -1432,9 +1507,9 @@ function workspaceTopNav() {
           <span class="account-avatar-icon">${icon(isEmployer ? "building-2" : "user-round")}</span><span>${getFirstName(state)}</span>
         </button>
         <div class="account-menu glass-card" data-account-menu hidden role="menu">
-          <a role="menuitem" href="${isEmployer ? "employer-app.html#company-profile" : "public-profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
+          <a role="menuitem" href="${isEmployer ? "employer-app.html#company-profile" : "profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
           <a role="menuitem" href="${isEmployer ? "employer-app.html#settings" : "settings.html"}">${icon("settings")} Settings</a>
-          ${isEmployer ? `<a role="menuitem" href="employer-app.html#talent-pool">${icon("bookmark")} Talent Pool</a>` : `<a role="menuitem" href="saved.html">${icon("bookmark")} Saved Items</a>`}
+          ${isEmployer ? `<a role="menuitem" href="employer-app.html#talent-pool">${icon("bookmark")} Talent Pool</a>` : `<a role="menuitem" href="posts.html#saved">${icon("bookmark")} Saved Items</a>`}
           <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
         </div>
       </div>
@@ -1465,6 +1540,10 @@ function renderNavigation() {
     const form = new FormData(event.currentTarget);
     const q = String(form.get("q") || "").trim();
     if (!q) return;
+    if (event.currentTarget.classList.contains("cg-vera-search")) {
+      location.href = `vera.html?topic=${encodeURIComponent(q)}`;
+      return;
+    }
     const lower = q.toLowerCase();
     const destination = state.session.role === "employer"
       ? "employer-app.html"
@@ -1842,47 +1921,8 @@ function bindProtectedPrompts(root = document) {
   }));
 }
 
-function osNav(active = "") {
-  const primaryLinks = [
-    ["dashboard", "Dashboard", "layout-dashboard", "dashboard.html"],
-    ["intelligence", "Career Intelligence", "brain-circuit", "profile.html"],
-    ["jobs", "Jobs", "briefcase", "jobs.html"],
-    ["vera", "Vera", "sparkles", "vera.html"],
-    ["market", "Market", "trending-up", "market.html"],
-    ["autopilot", "Applications", "kanban", "autopilot.html"],
-    ["search", "Search", "search", "companies.html"],
-    ["posts", "Feed", "rss", "posts.html"],
-    ["saved", "Saved", "bookmark", "saved.html"]
-  ];
-  return `
-    <section class="workspace-nav workspace-rail glass-card" data-tour-target="sidebar">
-      <nav class="os-nav" aria-label="Career OS navigation">
-        ${primaryLinks.map(([key, label, ic, href]) => {
-          const isActive = active === key || (key === "search" && ["companies", "universities"].includes(active));
-          return `<a class="rail-item ${isActive ? "active" : ""}" href="${href}" aria-label="${label}" data-label="${label}">${icon(ic)} <span class="rail-label">${label}</span></a>`;
-        }).join("")}
-        <button class="os-nav-button rail-item" type="button" data-logout aria-label="Logout" data-label="Logout">${icon("log-out")} <span class="rail-label">Logout</span></button>
-      </nav>
-    </section>
-  `;
-}
-
-function osModuleHeader(active, title, subtitle = "") {
-  if (active === "dashboard") return "";
-  return `
-    <div class="os-module-header">
-      <div>
-        <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><strong>${title}</strong></div>
-        ${subtitle ? `<p>${subtitle}</p>` : ""}
-      </div>
-      <a class="btn btn-ghost" href="dashboard.html">${icon("arrow-left")} Back to Dashboard</a>
-    </div>
-  `;
-}
-
 function appShell(active, content, options = {}) {
-  const title = options.title || active.charAt(0).toUpperCase() + active.slice(1);
-  return `${osNav(active)}<div class="os-main">${osModuleHeader(active, title, options.subtitle || "")}${content}</div><div class="sidebar-overlay" id="sidebar-overlay"></div>`;
+  return `<div class="os-main">${content}</div>`;
 }
 
 function initSidebarToggle() {
@@ -2662,6 +2702,179 @@ function renderJobsPage() {
     return;
   }
   if (state.session.loggedIn && needsOnboarding(root)) return;
+  if (state.session.loggedIn) {
+    const topPick = DATA.jobs.find(job => job.id === "job-ai-product") || DATA.jobs[0];
+    const roleDirections = [
+      ["AI Product Manager", "One step above your current level", "91% match", "RM 145k / yr", "▲ 34%", "High", "Medium", "Common", "91%", "Your SQL + design background is exactly what AI product teams in KL are hiring for."],
+      ["Design Engineer", "Leans into your design background", "78% match", "RM 118k / yr", "▲ 22%", "High", "Low", "Common", "78%", "Rare hybrid role - few Malaysian designers code, few engineers design."],
+      ["Founding PM (Seed startup)", "Fits your risk profile", "72% match", "RM 130k + equity / yr", "▲ 12%", "Very high", "High", "Sometimes", "72%", "You've saved 3 seed-stage KL startups this month."],
+      ["Head of Product (Seed)", "3-year direction from your current roadmap", "64% match", "RM 200k / yr", "▲ 18%", "High", "High", "Sometimes", "64%", "Reachable within 3 years if you complete the Grow plan and lead 1 launch."]
+    ];
+    const marketPulse = [
+      ["In your market", "Hiring +34%", "AI Product roles", "RM 145k / year", "67% remote-friendly", "312 new openings", "teal"],
+      ["Missing from your profile", "Hiring +62%", "Prompt engineering", "RM 9,500 / month", "82% remote-friendly", "48 new openings", "blue"],
+      ["Matches your background", "Hiring +21%", "Design-first PMs", "RM 132k / year", "54% remote-friendly", "96 new openings", "gold"],
+      ["Your region", "Hiring +12%", "KL fintech product hubs", "RM 128k / year", "38% remote-friendly", "204 new openings", "rose"]
+    ];
+    const companies = [
+      ["Setel", "Fintech · PETRONAS Digital", "4 open roles", "RM 9k-14k / mo expected", "Hybrid (KL)", "Interview: Medium", "↑ 22% headcount", "Matches your fintech interest and hires PMs from design."],
+      ["Carsome", "Marketplace · Series E", "3 open roles", "RM 10k-15k / mo expected", "Hybrid (KL)", "Interview: Medium-high", "↑ 14% headcount", "3 people from your university joined PM here in the last year."],
+      ["StoreHub", "SaaS for SMB · Craft-led", "2 open roles", "RM 8k-12k / mo expected", "Remote-friendly", "Interview: Medium", "↑ 18% headcount", "Async-first culture, close to your working-style profile."],
+      ["Aerodyne", "Drone + AI · Global HQ in KL", "5 open roles", "RM 11k-16k / mo expected", "Hybrid", "Interview: High", "↑ 27% headcount", "AI-native org - matches your saved roles pattern."]
+    ];
+    const programs = [
+      ["Reforge - AI Product Management", "6-week online sprint", "Est. +18% market value", "Cost: USD 2,000 (~RM 9,400)", "Duration: 6 weeks · part-time", "Closes your top skill gap: LLM product design."],
+      ["Asia School of Business - Exec Ed", "Product leadership · MIT-linked", "Est. +12% market value", "Cost: RM 12,000", "Duration: 5 weekends", "Matches your 3-year plan toward Head of Product."],
+      ["Stanford Online - AI Product Certificate", "Self-paced certificate", "Asked for by 4 employers you follow", "Cost: USD 1,750 (~RM 8,200)", "Duration: 8 weeks · self-paced", "Setel, Carsome, and 2 others list this as a plus."],
+      ["MBA - Universiti Malaya (Weekend)", "Part-time MBA", "Closes the credential gap for senior roles", "Cost: RM 38,000", "Duration: 2 years", "Only if you target Director-level within 5 years."]
+    ];
+    const mentors = [
+      ["Aisyah R.", "4y journey", "Designer → PM at Setel", "Started with a design background just like you.", "82% path overlap"],
+      ["Rohan S.", "3y journey", "Design Eng → AI PM at StoreHub", "Made the AI PM jump using a similar skill stack.", "76% path overlap"],
+      ["Meera K.", "6y journey", "Product designer → Head of Product", "Long-term direction if you follow the 3-yr roadmap.", "68% path overlap"]
+    ];
+    root.innerHTML = `
+      <section class="cg-discover">
+        <header class="cg-discover-hero">
+          <div class="cg-discover-kicker"><span>${icon("sparkles")} Discover</span><small>${icon("map-pin")} Malaysia · Kuala Lumpur · Tuned for your Product Management journey</small></div>
+          <h1>What should you explore next, <em>and why should you care?</em></h1>
+          <p>Vera reads your roadmap, your skills, and the Malaysian market - then explains why each opportunity matters for the next step in your career.</p>
+          <form class="cg-discover-search" action="vera.html">
+            ${icon("search")}
+            <input name="topic" aria-label="Ask Vera about Discover" placeholder="Try 'PM roles in KL paying above RM10k' or 'remote design-led startups hiring in Malaysia'">
+            <button type="button">${icon("sliders-horizontal")} Filters</button>
+            <button type="submit">${icon("sparkles")} Ask Vera</button>
+          </form>
+        </header>
+
+        <section class="cg-discover-question-grid" aria-label="Start with a question">
+          <div class="cg-section-kicker">Start with a question</div>
+          ${[
+            ["What roles fit me?", "14 matched", "compass"],
+            ["Which companies match my style?", "22 curated", "building-2"],
+            ["Where could my career go next?", "6 directions", "rocket"],
+            ["Which industries are growing in Malaysia?", "4 hot right now", "trending-up"],
+            ["What could accelerate my goals?", "9 programs", "graduation-cap"],
+            ["Who inspires this path?", "12 mentors", "users-round"]
+          ].map(([title, sub, ic]) => `
+            <a class="cg-question-card" href="#${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}">
+              <span>${icon(ic)}</span>
+              <strong>${title}</strong>
+              <small>${sub}</small>
+              <i>${icon("arrow-up-right")}</i>
+            </a>
+          `).join("")}
+        </section>
+
+        <section class="cg-discover-feature">
+          <div class="cg-section-kicker">Vera's top pick this week</div>
+          <h2>The single move most likely to move your career forward.</h2>
+          <article class="cg-top-pick-card">
+            <div class="cg-top-pick-main">
+              <div class="cg-pill-row"><span class="dark">${icon("sparkles")} Vera found this</span><span>${icon("flame")} 91% roadmap match</span><small>Posted 2 days ago · 34 applicants</small></div>
+              <h3>Senior Product Manager, AI Platform</h3>
+              <p class="cg-role-line">${icon("building-2")} Setel (PETRONAS Digital) · ${icon("map-pin")} Kuala Lumpur · Hybrid</p>
+              <p class="cg-salary"><span>Estimated annual salary (Malaysia)</span> RM 140,000 - RM 168,000 <small>/ year</small></p>
+              <div class="cg-why-card">
+                <span>${icon("sparkles")} Why Vera recommends this</span>
+                <p>${icon("check-circle-2")} You completed SQL for PM this month.</p>
+                <p>${icon("check-circle-2")} Your roadmap targets AI Product Management.</p>
+                <p>${icon("check-circle-2")} You saved 3 AI-native startups recently.</p>
+              </div>
+              <div class="cg-action-row">
+                <a class="btn btn-primary" href="jobs.html?job=${topPick.id}">Explore role ${icon("arrow-up-right")}</a>
+                <button class="btn btn-ghost" type="button">${icon("bookmark")} Save</button>
+                <a class="btn btn-ghost" href="vera.html?topic=Tell me more about this role">Ask Vera more</a>
+              </div>
+            </div>
+            <aside class="cg-top-pick-side">
+              <div><span>Career match</span><strong>91%</strong><small>based on your roadmap</small></div>
+              <div><span>${icon("target")} Skills you already have</span><p><b>Product discovery</b><b>User research</b><b>SQL for PM</b><b>Design systems</b></p><span>${icon("lightbulb")} Skills to strengthen</span><p><em>LLM product design</em><em>Prompt evaluation</em></p></div>
+              <div class="mini"><span>Interview difficulty</span><strong>Medium</strong><small>3 rounds · case study</small></div>
+              <div class="mini"><span>Success odds after roadmap</span><strong>76%</strong><small>if you finish Grow plan</small></div>
+              <div class="mini"><span>Applicant strength</span><strong>Top 22%</strong><small>vs. this role</small></div>
+              <div class="mini"><span>Company hiring trend</span><strong>↑ 18%</strong><small>PM headcount, 6 mo</small></div>
+            </aside>
+          </article>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-section-kicker">Market pulse · Malaysia</div>
+          <h2>Quick intelligence on what's heating up around you.</h2>
+          <div class="cg-market-grid">
+            ${marketPulse.map(([tag, trend, title, salary, remote, openings, tone], index) => `
+              <article class="cg-market-card tone-${tone}">
+                <div><span>${icon("zap")} ${tag}</span><small>${icon("trending-up")} ${trend}</small></div>
+                <h3>${title}</h3>
+                <div class="cg-bars">${Array.from({ length: 12 }, (_, i) => `<i style="height:${14 + ((i + index) % 8) * 5}px"></i>`).join("")}</div>
+                <dl><dt>Avg. salary (MY)</dt><dd>${salary}</dd><dt>Remote share</dt><dd>${remote}</dd><dt>Openings</dt><dd>${openings}</dd></dl>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-section-kicker">Curated by Vera</div>
+          <h2>Collections built around your next step, not tags.</h2>
+          <div class="cg-collection-grid">
+            <article class="cg-collection-card large"><span>12 companies</span><i>${icon("arrow-up-right")}</i><h3>Fast-growing AI companies hiring PMs in Malaysia</h3><p>12 teams where the AI stack IS the product. Weighted by funding velocity, headcount growth in KL/Penang, and open PM roles.</p><footer><b>${icon("sparkles")} Why this</b> Because your last 4 saved roles were AI-native.</footer></article>
+            <article class="cg-collection-card"><span>8 companies</span><i>${icon("arrow-up-right")}</i><h3>Startups with strong work-life balance</h3><p>Async-first Malaysian teams. Median 34h weeks, no on-call PM culture, hybrid-friendly.</p><footer><b>${icon("sparkles")} Why this</b> Matches your working-style profile.</footer></article>
+            <article class="cg-collection-card"><span>17 roles</span><i>${icon("arrow-up-right")}</i><h3>Roles you could apply to today</h3><p>No upskilling required - your current skills already cover 85%+ of the job spec.</p><footer><b>${icon("sparkles")} Why this</b> Skill overlap ≥ 85%.</footer></article>
+          </div>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-section-kicker">Where your career could go next</div>
+          <h2>Career directions, not job titles.</h2>
+          <div class="cg-direction-grid">
+            ${roleDirections.map(([title, sub, match, salary, demand, growth, competition, remote, careerMatch, why]) => `
+              <article class="cg-direction-card">
+                <span>${match}</span>
+                <h3>${title}</h3>
+                <p>${sub}</p>
+                <dl>
+                  <dt>Estimated salary</dt><dd>${salary}<small>Malaysia · median</small></dd>
+                  <dt>Market demand</dt><dd>${demand}<small>last 30 days</small></dd>
+                  <dt>Growth potential</dt><dd>${growth}</dd>
+                  <dt>Competition</dt><dd>${competition}</dd>
+                  <dt>Remote options</dt><dd>${remote}</dd>
+                  <dt>Career match</dt><dd>${careerMatch}</dd>
+                </dl>
+                <footer>${icon("sparkles")} Why you're seeing this - ${why}</footer>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-discover-two-col">
+          <article class="cg-list-panel">
+            <header><div><h2>${icon("building-2")} Companies matching your working style</h2><p>Malaysia · async-friendly · craft-led · design-forward</p></div><a href="#companies">See all</a></header>
+            ${companies.map(([name, sub, open, salary, mode, interview, growth, why]) => `
+              <div class="cg-list-row"><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${sub}</p><dl><dd>${salary}</dd><dd>${mode}</dd><dd>${interview}</dd><dd>${growth}</dd></dl><small>${icon("sparkles")} ${why}</small></div><b>${icon("briefcase-business")} ${open}</b></div>
+            `).join("")}
+          </article>
+          <article class="cg-list-panel">
+            <header><div><h2>${icon("graduation-cap")} Programs that could accelerate your goals</h2><p>Weighted by Malaysian employer demand + your roadmap</p></div><a href="#programs">See all</a></header>
+            ${programs.map(([name, sub, tag, cost, duration, why]) => `
+              <div class="cg-program-row"><div><h3>${name}</h3><p>${sub}</p><dl><dd>${cost}</dd><dd>${duration}</dd></dl><small>${icon("sparkles")} ${why}</small></div><b>${tag}</b></div>
+            `).join("")}
+          </article>
+        </section>
+
+        <section class="cg-discover-section">
+          <div class="cg-section-kicker">Who inspires this path</div>
+          <h2>People whose career journeys rhyme with yours.</h2>
+          <div class="cg-mentor-grid">
+            ${mentors.map(([name, years, path, why, overlap]) => `
+              <article class="cg-mentor-card"><header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${years}</p></div></header><strong>${path}</strong><p>${icon("sparkles")} ${why}</p><footer><small>${icon("lightbulb")} ${overlap}</small><a href="vera.html?topic=${encodeURIComponent(`Show me a path like ${name}`)}">See path →</a></footer></article>
+            `).join("")}
+          </div>
+        </section>
+      </section>
+    `;
+    createIcons();
+    return;
+  }
   if (state.session.loggedIn) {
     root.innerHTML = `
       <section class="container os-layout">
@@ -4677,6 +4890,219 @@ function renderProfile() {
   const state = readState();
   const profile = state.profile;
   const intel = profile.intelligence || generateCareerIntelligence(profile);
+  const growthStats = [
+    ["Interview readiness", "68%", "74%", "+6"],
+    ["Skill percentile", "Top 42%", "Top 31%", "▲ 11"],
+    ["Matching jobs", "118", "153", "+35"],
+    ["Estimated pay", "RM 7,800", "RM 8,900", "+RM 1,100"]
+  ];
+  const skillGraph = [
+    ["Product strategy", "Strong", "Near target - one artifact away from proof.", "Top 30%", 78, "strong"],
+    ["Data fluency", "Needs work", "Closing this unlocks 40+ PM roles in KL.", "Largest hiring blocker", 58, "needs"],
+    ["Written communication", "Strong", "Ship one public essay to lock it in.", "Top 18%", 86, "strong"],
+    ["Technical depth", "Growing", "2 more shipped projects to reach target.", "Bottom 45%", 46, "growing"],
+    ["User research", "On track", "One study away from target.", "Top 38%", 74, "track"]
+  ];
+  const milestones = [
+    ["Milestone 1", "Interview foundation", "Warm up SQL, storytelling, and metric intuition.", "Ends Fri", "+8% readiness · +40 role matches", 62, "In progress"],
+    ["Milestone 2", "Data confidence", "Ship 2 dashboards. Own a metric end-to-end.", "~2 weeks", "Closes largest skill gap · +RM 1.3k pay band", 0, ""],
+    ["Milestone 3", "Portfolio proof", "One public case study Vera helps you write.", "~3 weeks", "Lifts interview callback rate ~2.3x", 0, ""],
+    ["Milestone 4", "Application sprint", "5 applications · 2 warm intros via Vera.", "~4 weeks", "Median offer RM 10.2k · 3 expected interviews", 0, ""]
+  ];
+  const moves = [
+    ["Practice", "3h · Beginner", "SQL for Product Managers", "DataLemur", "Chosen because: 78% of your saved PM roles list SQL as required.", [["Interview readiness", "+8%"], ["New matching jobs", "+31"], ["Skill gap closed", "Data fluency"]]],
+    ["Course", "6h · Intermediate", "Product Strategy sprint", "Reforge", "Chosen because: Completes Milestone 1 and matches your Grab & Setel targets.", [["Interview readiness", "+11%"], ["Pay band shift", "+RM 900"], ["Milestone", "Closes M1"]]],
+    ["Essay pack", "45m · Any", "Write a crisp problem statement", "Vera curated", "Chosen because: Your written comms is your strongest signal - publish once to lock Top 18%.", [["Callback rate", "x1.4"], ["Portfolio proof", "+1 artifact"], ["Milestone", "Feeds M3"]]]
+  ];
+  const practiceItems = [
+    ["Mock interview", "15 min", "15-min PM mock - marketplace pricing", "Product thinking", "+4% readiness"],
+    ["Case study", "25 min", "Design a driver-incentive experiment", "Experiment design", "+3% readiness"],
+    ["Behavioral", "20 min", "3 STAR stories - conflict & prioritization", "Communication", "+2% readiness"],
+    ["SQL drill", "30 min", "Joins, window functions, cohort query", "SQL fluency", "+7% readiness"]
+  ];
+  const readinessRows = [
+    ["Communication", 82, "teal"],
+    ["Product thinking", 75, "teal"],
+    ["Behavioral", 68, "teal"],
+    ["SQL", 54, "amber"],
+    ["Execution", 79, "teal"]
+  ];
+  const coachingCards = [
+    ["Grab", "Marketplace thinking", "Product metrics", "Experiment design", "teal"],
+    ["Google", "Product sense", "Leadership", "Analytical thinking", "blue"],
+    ["Maybank", "Stakeholder management", "Digital transformation", "Business strategy", "gold"]
+  ];
+  root.innerHTML = appShell("intelligence", `
+    <section class="cg-grow">
+      <header class="cg-grow-hero">
+        <span class="cg-section-kicker">Grow</span>
+        <h1>Your next move, <em>coached by Vera.</em></h1>
+        <p>I watch what the market rewards for the roles you're chasing, then coach you toward the smallest move with the biggest career return.</p>
+      </header>
+
+      <section class="cg-grow-stats">
+        <div class="cg-section-kicker">${icon("trending-up")} You're improving · last 14 days</div>
+        <div class="cg-grow-stat-grid">
+          ${growthStats.map(([label, oldValue, value, delta]) => `
+            <article>
+              <span>${label}</span>
+              <strong><s>${oldValue}</s> ${value}</strong>
+              <small>↗ ${delta}</small>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="cg-grow-coach-grid">
+        <article class="cg-grow-coach">
+          <div class="cg-grow-coach-head"><span>${icon("sparkles")} Coach Vera</span><b>online</b></div>
+          <div class="cg-chat-bubble">I noticed something. You've saved 4 Product Manager roles this week - 3 of them explicitly ask for SQL fluency in the JD. That's your largest hiring blocker right now.</div>
+          <div class="cg-chat-question">How much would closing that gap actually change?</div>
+          <div class="cg-chat-bubble">For your KL PM targets: unlocks ~40 more roles, lifts interview readiness by 8%, and shifts your median offer band from RM 8.9k to RM 10.2k. 30 focused minutes today gets you 60% of the way.</div>
+          <div class="cg-grow-move">
+            <span>Vera's suggested move today</span>
+            <h3>30-min SQL warm-up - joins & aggregates</h3>
+            <dl><dt>Readiness</dt><dd>+8%</dd><dt>New matches</dt><dd>+40 roles</dd><dt>Pay band</dt><dd>+RM 1.3k</dd></dl>
+          </div>
+          <form class="cg-grow-chat" action="vera.html">
+            <input name="topic" placeholder="Ask Vera anything about your career...">
+            <button type="submit">${icon("send")}</button>
+          </form>
+        </article>
+
+        <article class="cg-skill-graph">
+          <header><h2>${icon("brain-circuit")} Your skill graph</h2><small>vs. PM archetype · KL market</small></header>
+          ${skillGraph.map(([skill, status, note, rank, value, tone]) => `
+            <div class="cg-skill-row tone-${tone}">
+              <div><strong>${skill}</strong><span>${status}</span></div>
+              <i><b style="width:${value}%"></b></i>
+              <footer><small>${note}</small><small>${rank}</small></footer>
+            </div>
+          `).join("")}
+        </article>
+      </section>
+
+      <section class="cg-grow-journey">
+        <header>
+          <div>
+            <span class="cg-section-kicker">Your growth journey · Product Manager, KL</span>
+            <h2>Four milestones to your next offer.</h2>
+          </div>
+          <button class="btn btn-ghost" type="button">${icon("target")} Adjust goals</button>
+        </header>
+        <div class="cg-grow-progress"><i></i><span>18% overall · est. offer by mid-August</span><b>${icon("flame")} 6-day streak</b></div>
+        <div class="cg-milestone-list">
+          ${milestones.map(([label, title, body, time, result, progress, stateLabel], index) => `
+            <article class="cg-milestone-card">
+              <span class="cg-timeline-dot">${index === 0 ? icon("target") : ""}</span>
+              <time>${time}</time>
+              <small>${label}</small>
+              <h3>${title}</h3>
+              <p>${body}</p>
+              <b>${icon("trophy")} ${result}</b>
+              ${progress ? `<div class="cg-milestone-progress"><span>${stateLabel}</span><i><em style="width:${progress}%"></em></i><strong>${progress}%</strong></div>` : ""}
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="cg-interview-coach">
+        <div class="cg-grow-section-head">
+          <div><span class="cg-section-kicker">Interview coach · powered by Vera</span><h2>Walk into every interview <em>already prepared.</em></h2></div>
+          <span class="cg-soft-pill">${icon("shield-check")} Adaptive to each company</span>
+        </div>
+        <div class="cg-interview-top">
+          <article class="cg-upcoming-interview">
+            <small>${icon("calendar-clock")} Upcoming interview</small>
+            <header><div><h3>Product Manager</h3><p>${icon("building-2")} Grab Malaysia · Round 2 · Hiring Manager + Case</p></div><time>Tuesday, 9 Jul · 10:00 AM<span>3 days remaining</span></time></header>
+            <div class="cg-interview-kpis">
+              <div><span>Interview readiness</span><strong>74%</strong></div>
+              <div><span>Difficulty</span><strong>High</strong></div>
+              <div><span>Your confidence</span><strong>Medium</strong></div>
+            </div>
+            <footer><p>Closing SQL + metric gaps this week is expected to lift readiness to 81% by interview day.</p><a class="btn btn-primary" href="vera.html#interview">Start today's plan ${icon("arrow-right")}</a></footer>
+          </article>
+          <article class="cg-vera-focus">
+            <small>${icon("sparkles")} Vera's focus for Grab</small>
+            <p>I compared Grab's PM interview style with your current profile. Today's highest-impact prep is SQL and product metrics - your weakest areas and the two topics Grab tests in almost every PM loop.</p>
+            <ul>
+              <li>Grab often opens with a marketplace pricing prompt - practice one today.</li>
+              <li>Expect a live SQL round: joins + one window function.</li>
+              <li>Behavioral panel favours "conflict + prioritization" STAR stories.</li>
+            </ul>
+          </article>
+        </div>
+        <div class="cg-practice-grid">
+          <article class="cg-practice-panel">
+            <header><h3>${icon("play")} Today's interview practice</h3><span>~90 min total</span></header>
+            <div class="cg-practice-cards">
+              ${practiceItems.map(([kind, time, title, focus, lift]) => `
+                <div class="cg-practice-card"><header><span>${kind}</span><small>${icon("clock")} ${time}</small></header><h4>${title}</h4><p>${focus}<b>${lift}</b></p><a class="btn btn-primary" href="vera.html#interview">${icon("play")} Start practice</a></div>
+              `).join("")}
+            </div>
+          </article>
+          <article class="cg-readiness-card">
+            <header><h3>${icon("target")} Readiness breakdown</h3><strong>74%</strong></header>
+            ${readinessRows.map(([label, value, tone]) => `<div class="cg-ready-row tone-${tone}"><div><span>${label}</span><b>${value}%</b></div><i><em style="width:${value}%"></em></i></div>`).join("")}
+            <p>SQL is your biggest interview blocker. Bringing it to 70% is projected to lift overall readiness to ~81%.</p>
+          </article>
+        </div>
+        <div class="cg-interview-history-grid">
+          <article class="cg-mock-history">
+            <h3>${icon("history")} Mock interview history</h3>
+            <div class="cg-history-bars">${[58, 67, 76].map((score, index) => `<div><i style="height:${score + 20}px"></i><strong>${score}%</strong><span>Attempt ${index + 1}</span></div>`).join("")}</div>
+            <p><span>Latest feedback</span>"Strong framing. Tighten prioritization + numbers."</p>
+          </article>
+          <article class="cg-company-coaching">
+            <header><h3>${icon("building-2")} Company-specific coaching</h3><small>Vera tunes prep to each loop</small></header>
+            <div>${coachingCards.map(([company, a, b, c, tone]) => `<section class="tone-${tone}"><span>Focus areas</span><h4>${company}</h4><ul><li>${a}</li><li>${b}</li><li>${c}</li></ul></section>`).join("")}</div>
+          </article>
+        </div>
+        <article class="cg-interview-checklist">
+          <header><span>${icon("clipboard-check")} Interview in 3 days · Grab PM</span><div><i><em style="width:67%"></em></i><b>4/6 · 67% ready</b></div></header>
+          <div>
+            ${[
+              ["Resume tailored to Grab PM JD", true],
+              ["Company research completed", true],
+              ["STAR stories prepared (5)", true],
+              ["Mock interview completed", true],
+              ["Questions for interviewer prepared", false],
+              ["Portfolio case rehearsed out loud", false]
+            ].map(([item, done]) => `<p class="${done ? "done" : ""}">${icon(done ? "check-circle-2" : "circle")} ${item}</p>`).join("")}
+          </div>
+          <footer><span>Finish the last two to reach <strong>81%</strong> ready.</span><a class="btn btn-ghost" href="vera.html#interview">Continue preparation ${icon("arrow-right")}</a></footer>
+        </article>
+      </section>
+
+      <section class="cg-grow-section">
+        <div class="cg-grow-section-head"><div><span class="cg-section-kicker">Chosen for you · this week</span><h2>The three moves with the biggest return.</h2></div><a href="vera.html#skills">Browse all</a></div>
+        <div class="cg-move-grid">
+          ${moves.map(([kind, time, title, source, why, metrics]) => `
+            <article class="cg-move-card">
+              <header><span>${kind}</span><small>${icon("clock")} ${time}</small></header>
+              <h3>${title}</h3>
+              <p>${icon("book-open")} ${source}</p>
+              <div class="cg-move-why">${icon("lightbulb")} ${why}</div>
+              <dl>${metrics.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+              <button class="btn btn-primary" type="button">${icon("play")} Start</button>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="cg-grow-win">
+        <span>${icon("award")}</span>
+        <div>
+          <small>Nice work this week</small>
+          <h2>You just moved into the <em>Top 31%</em> of PM candidates in KL.</h2>
+          <p>Interview readiness climbed 6 points and you unlocked 23 additional matching roles. Keep the streak alive - Milestone 2 is one focused week away.</p>
+          <div><b>${icon("zap")} +6% readiness</b><b>${icon("briefcase-business")} +23 matching jobs</b><b>${icon("flame")} 6-day streak</b></div>
+        </div>
+      </section>
+    </section>
+  `);
+  createIcons();
+  return;
   root.innerHTML = appShell("intelligence", `
     <section class="glass-card dashboard-hero profile-intel-hero">
       <div><div class="eyebrow"><span class="spark">*</span> Private Career Intelligence</div><h1 class="section-title">Resume profile and career data.</h1><p class="section-sub">${intel.summary}</p></div>
@@ -4998,6 +5424,212 @@ function renderMarket() {
   if (!requireAccount(root, "view your market intelligence")) return;
   if (needsOnboarding(root)) return;
   const state = readState();
+  if (state.session.loggedIn) {
+    const valueDrivers = [
+      ["target", "Product Analytics", "Unlocks senior PM roles at Grab, Setel, Carsome.", "+RM 1,300", "Effort - 12 hrs - 3 weeks"],
+      ["zap", "SQL fluency", "Removes your #1 interview blocker in KL fintechs.", "+RM 900", "Effort - 8 hrs - 2 weeks"],
+      ["briefcase-business", "Portfolio case study", "Recruiter response rate lifts ~2.1x when linked.", "+RM 700", "Effort - 6 hrs - 1 weekend"],
+      ["rocket", "Leadership experience", "Lead one cross-team initiative this quarter.", "+RM 500", "Effort - Ongoing"]
+    ];
+    const memory = [
+      ["Last month", "RM 8,450", "Before you started the SQL sprint"],
+      ["Last week", "RM 8,780", "Resume rewrite lifted recruiter reply rate"],
+      ["Yesterday", "RM 8,900", "Two Grab recruiters viewed your profile"],
+      ["Today", "RM 8,950", "Portfolio milestone shipped this morning"]
+    ];
+    const scenarios = [
+      ["compass", "Stay on current path", "No new skills, no move", 50, "RM 8,900", "muted"],
+      ["target", "Complete Vera's roadmap", "Ship SQL + Analytics in 6 mo.", 58, "RM 10,200", "teal"],
+      ["wallet-cards", "Switch industry - fintech", "Setel, BigPay, Boost", 64, "RM 11,400", "teal"],
+      ["globe-2", "Remote international (APAC)", "USD-linked, remote MY", 90, "RM 16,000", "dark"],
+      ["map-pin", "Relocate to Singapore", "PM - SG cost adjusted", 100, "RM 18,000", "dark"]
+    ];
+    const learningRoi = [
+      ["graduation-cap", "SQL for Product Managers", "Vera + DataCamp", "8 hrs", "+RM 900 / mo", "★★★★★", "Removes your #1 interview blocker. Payback in first offer."],
+      ["graduation-cap", "Portfolio case study - Grab clone", "Coached by Vera", "6 hrs", "+RM 600 / mo", "★★★★☆", "Recruiters shortlist 2.1x more when a case study is linked."],
+      ["graduation-cap", "Product Analytics with Mixpanel", "Mixpanel Academy", "14 hrs", "+RM 1,300 / mo", "★★★★★", "Unlocks senior PM bands across Malaysian fintech."]
+    ];
+    const observations = [
+      ["trending-up", "You're now above 68% of Product Managers in Kuala Lumpur at your years of experience."],
+      ["layers", "Publishing one portfolio case study moved your value more than your last two certifications combined."],
+      ["eye", "Two recruiters viewed your profile in the last 24 hours - your interview probability quietly rose 4%."]
+    ];
+    const ripple = [
+      ["Grow", "Product Analytics sprint becomes today's mission.", ""],
+      ["Worth", "Career Value rises to ~RM 10,200 in 6 months.", "active"],
+      ["Pipeline", "+14% interview odds at Stripe - unlocks 3 senior PM roles.", ""],
+      ["Today", "Vera pins the sprint at the top of tomorrow's brief.", ""]
+    ];
+    const benchmarks = [
+      ["Vs. PMs in KL", "-RM 900 / mo", "Below median for your years", "warn"],
+      ["Vs. top-tier co. (Grab, Shopee)", "+22% ceiling", "You're within reach with roadmap", "good"],
+      ["Vs. peers w/ your skills", "on par", "Skills match archetype cleanly", ""],
+      ["Fair pay confidence", "High", "234 verified data points", ""]
+    ];
+    root.innerHTML = appShell("market", `
+      <section class="cg-worth">
+        <section class="cg-worth-hero">
+          <span class="cg-section-kicker">${icon("sparkles")} Your career value - Malaysia</span>
+          <span class="cg-worth-pill">${icon("flame")} Vera believes you're underpriced</span>
+          <div class="cg-worth-hero-grid">
+            <div>
+              <h1><span>RM</span>8,950</h1>
+              <p>Your Career Value climbed overnight because two Grab recruiters opened your profile and your SQL sprint is 40% through. You're closer to your six-month goal than you were last Monday.</p>
+              <div class="cg-worth-meta"><span>72% confidence</span><span>Based on 6,431 verified MY offers</span><span>Refreshes each time you ship</span></div>
+            </div>
+            <div class="cg-worth-side">
+              <span>/ month</span>
+              <b>${icon("trending-up")} +RM 50 since yesterday</b>
+              <dl><dt>In 6 months</dt><dd>RM 10,200</dd><dt>Potential gain</dt><dd>+RM 1,300</dd><dt>Confidence</dt><dd>87%</dd></dl>
+            </div>
+          </div>
+          <article class="cg-worth-vera-note">
+            <span>${icon("sparkles")}</span>
+            <p><strong>Vera</strong> - you've grown +13% since October. Two things are still capping you: Product Analytics and SQL fluency. If you finish both this month, I expect your value to sit near RM 10,200-RM 10,500 - that assumes you keep pace on the roadmap in Grow.</p>
+            <small>Prediction - 72% confidence - widens as you complete milestones</small>
+          </article>
+          <div class="cg-worth-range">
+            <div><span>RM 5k</span><span>Product Manager - Malaysia - monthly base</span><span>RM 18k</span></div>
+            <i><em></em><b></b><strong></strong></i>
+            <div><span>You today - RM 8,950</span><span>Vera's 6-month target - RM 10,200</span></div>
+          </div>
+        </section>
+
+        <section class="cg-worth-action">
+          <header><span>${icon("sparkles")} Vera - highest-value action today</span><small>1 of 47 possible moves</small></header>
+          <div>
+            <article>
+              <h2>Complete the Product Analytics sprint.</h2>
+              <p>Of every roadmap step, portfolio push and referral request open to you, this one moves your Career Value the most for the least effort. It also unlocks the Stripe and Grab interview rubrics in Pipeline.</p>
+              <div class="cg-worth-chips"><span>${icon("trending-up")} +RM 1,300 / month expected</span><span>${icon("clock")} 12 hrs over 3 weeks</span><span>${icon("target")} 92% probability of completion</span></div>
+              <div class="cg-worth-actions"><a class="btn btn-primary" href="profile.html">${icon("sparkles")} Start in Grow</a><a class="btn btn-ghost" href="vera.html#chat">Why this one? ${icon("arrow-right")}</a></div>
+            </article>
+            <aside>
+              <span>Why Vera picked this</span>
+              <p>${icon("check")} Highest RM-per-hour of any action open to you.</p>
+              <p>${icon("check")} Solves the #1 blocker Grab flagged in your last screen.</p>
+              <p>${icon("check")} Everything else - negotiation, referrals - compounds after this.</p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="cg-worth-section">
+          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Top value drivers</span><h2>What gives you the biggest return.</h2><p>Ranked by expected monthly pay lift, weighted by how likely you are to complete it.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-driver-grid">
+            ${valueDrivers.map(([ic, title, body, lift, effort]) => `
+              <article>
+                <span>${icon(ic)}</span>
+                <div><h3>${title}</h3><p>${body}</p><small>${effort}</small></div>
+                <strong>${lift}</strong>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-worth-memory">
+          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Vera remembers</span><h2>You've grown +13% since October.</h2><p>Small changes compound. Here's the story your Career Value has been telling.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-memory-grid">
+            ${memory.map(([label, value, body], index) => `<article class="${index === memory.length - 1 ? "active" : ""}"><span>${icon("history")} ${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}
+          </div>
+          <p class="cg-worth-note">${icon("activity")} Vera keeps a running record of every skill you finish, every project you ship, and every recruiter reply. Momentum is the strongest signal in your prediction - you've had 11 positive events in the last 30 days.</p>
+        </section>
+
+        <section class="cg-worth-section">
+          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Career value scenarios</span><h2>Five futures. One decision at a time.</h2><p>Each row is a realistic path based on your archetype. Explore before you commit.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-scenarios">
+            ${scenarios.map(([ic, title, body, width, value, tone]) => `
+              <article class="tone-${tone}">
+                <span>${icon(ic)}</span>
+                <div><h3>${title}</h3><p>${body}</p></div>
+                <i><em style="width:${width}%"></em></i>
+                <strong>${value}<small>/mo</small></strong>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-worth-negotiation">
+          <article>
+            <span class="cg-section-kicker">${icon("scale")} Salary negotiation - Grab Malaysia</span>
+            <h2>Vera thinks you can ask for <em>RM 10,300.</em></h2>
+            <div class="cg-worth-offer-grid">
+              ${[["Expected offer", "RM 9,200"], ["Fair market value", "RM 10,100"], ["Suggested ask", "RM 10,300"], ["Confidence", "72%"]].map(([label, value], index) => `<div class="${index === 2 ? "active" : ""}"><span>${label}</span><strong>${value}</strong></div>`).join("")}
+            </div>
+            <div class="cg-worth-slider"><i><em></em><b></b></i><div><span>Lowball - RM 8,400</span><span>Fair - RM 10,100</span><span>Ambitious - RM 11,500</span></div></div>
+            <a class="btn btn-primary" href="vera.html#chat">${icon("sparkles")} Generate negotiation points</a>
+          </article>
+          <aside>
+            <span class="cg-section-kicker">Vera's talking points</span>
+            <h3>Why RM 10,300 is defensible</h3>
+            ${[
+              "Your SQL + Analytics combo is present in only 34% of KL PMs at your level.",
+              "Median fintech PM base in KL is RM 10,100 - you sit above the archetype floor.",
+              "You've shipped 2 revenue features; Grab weights this heavily in banding.",
+              "Two active offers in your pipeline strengthen your BATNA."
+            ].map(point => `<p>${icon("check")} ${point}</p>`).join("")}
+          </aside>
+        </section>
+
+        <section class="cg-worth-section">
+          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Learning ROI</span><h2>Every hour, priced in Ringgit.</h2><p>Vera picks the smallest inputs with the largest impact on your Career Value.</p></div><a href="vera.html#skills">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-roi-grid">
+            ${learningRoi.map(([ic, title, source, time, lift, stars, why]) => `
+              <article>
+                <span>${icon(ic)}</span>
+                <h3>${title}</h3>
+                <p>${source}</p>
+                <dl><dt>Time</dt><dd>${time}</dd><dt>Lift</dt><dd>${lift}</dd><dt>ROI</dt><dd>${stars}</dd></dl>
+                <p><strong>Why</strong> - ${why}</p>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-worth-section">
+          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Vera noticed</span><h2>Patterns you probably missed.</h2><p>Small observations that most dashboards would never surface.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-observations">
+            ${observations.map(([ic, body]) => `<article><span>${icon(ic)}</span><p>${body}</p></article>`).join("")}
+          </div>
+        </section>
+
+        <section class="cg-worth-ripple">
+          <span class="cg-section-kicker">${icon("zap")} How today's action ripples through CareerGo</span>
+          <h2>One move. Four pages moved with it.</h2>
+          <div>${ripple.map(([label, body, active]) => `<article class="${active}"><span>${label}</span><p>${body}</p></article>`).join("")}</div>
+        </section>
+
+        <section class="cg-worth-timeline">
+          <span class="cg-section-kicker">${icon("badge-check")} Career value timeline</span>
+          <h2>Every milestone, priced.</h2>
+          <p>Vera projects how each roadmap action lifts your monthly Career Value.</p>
+          <div class="cg-worth-chart">
+            <svg viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true">
+              <defs><linearGradient id="worthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0b6d65" stop-opacity=".28"/><stop offset="100%" stop-color="#0b6d65" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0 278 L290 232 L570 198 L850 142 L1200 82 L1200 360 L0 360 Z" fill="url(#worthFill)"/>
+              <polyline points="0,278 290,232 570,198 850,142 1200,82" fill="none" stroke="#0b5d58" stroke-width="5"/>
+            </svg>
+            ${[
+              ["0%", "8.9k", "Today", "where you are"],
+              ["24%", "RM 9.7k", "Week 3", "Complete SQL sprint"],
+              ["47%", "RM 10.3k", "Week 6", "Publish portfolio case"],
+              ["70%", "RM 11.2k", "Month 3", "First PM interview cycle"],
+              ["98%", "RM 12.1k", "Month 6", "Fintech switch ready"]
+            ].map(([left, value, label, body]) => `<div class="cg-worth-point" style="left:${left}"><strong>${value}</strong><span>${label}</span><small>${body}</small></div>`).join("")}
+          </div>
+        </section>
+
+        <section class="cg-worth-section">
+          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Market benchmarks</span><h2>How you compare in Malaysia.</h2><p>Live Fair Pay data from KL, Penang, Johor, and remote Malaysia postings.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-benchmarks">
+            ${benchmarks.map(([label, value, body, tone]) => `<article class="tone-${tone}"><span>${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}
+          </div>
+          <p class="cg-worth-note">${icon("info")} Career Value blends your live skill graph, roadmap velocity, and 6,400+ verified Malaysian offers. It updates every time you complete a roadmap step, ship a project, or receive an offer.</p>
+        </section>
+      </section>
+    `);
+    createIcons();
+    return;
+  }
   const target = getTargetLabel(state.profile).toLowerCase();
   const roleFromHash = decodeURIComponent((location.hash || "").replace("#role=", ""));
   const current = DATA.marketRoles.find(role => role.role === roleFromHash)
@@ -5207,6 +5839,207 @@ function renderAutopilot() {
   if (!requireAccount(root, "use Autopilot")) return;
   if (needsOnboarding(root)) return;
   const state = readState();
+  if (state.session.loggedIn) {
+    const impactTasks = [
+      ["Reply to Grab recruiter", "Grab responds within 48h - silence past today drops your callback rate by 31%.", "+14% interview odds", "5 min", "Draft reply"],
+      ["Finish Airtable take-home", "Deadline is Friday EOD. Late submissions are rejected 82% of the time.", "Keeps offer alive", "2 hrs", "Open brief"],
+      ["Prep for Stripe Round 2", "Tue 2:30 PM. Your product-sense score is 68 - Vera has 3 targeted drills.", "+21% pass rate", "45 min", "Start drill"],
+      ["Ask Priya for a Notion referral", "Referrals get 4.2x more responses at Notion. Priya opened your last DM.", "Unlocks 1 warm intro", "3 min", "Compose ask"]
+    ];
+    const pipelineColumns = [
+      ["Saved", "3", [
+        ["Setel", "PM - Loyalty - Kuala Lu...", "Health - Warm", 74, "Strong archetype match", "Your resume matches 88% - apply before Fri.", "Apply this week"],
+        ["Carsome", "Senior PM - KL - hybrid", "Health - Warm", 61, "Competitive posting", "", "Tailor resume"]
+      ]],
+      ["Applied", "5", [
+        ["Grab Malaysia", "PM - Payments - KL", "Health - Healthy", 92, "Recruiter engaged", "Recruiter viewed your profile yesterday.", "Reply today"],
+        ["Shopee MY", "PM - Growth - KL", "Health - Slowing", 58, "Applied 4d ago", "Shopee usually replies within 7 days.", "Wait 3 more days"],
+        ["BigPay", "Product Lead - KL - hyb...", "Health - Cold", 38, "No activity in 12d", "Silent past their typical 10-day window.", "Archive or nudge"]
+      ]],
+      ["Interviewing", "3", [
+        ["Stripe", "PM - APAC - Remote MY", "Health - Healthy", 88, "Round 2 - Tue 2:30", "Most candidates fail on Round 2 case.", "Prep product sense"],
+        ["Airtable", "PM - Platform - Remote", "Health - Warm", 71, "Take-home due Fri", "Take-home weighting is 60% of decision.", "Submit by EOD"]
+      ]],
+      ["Offer", "1", [
+        ["Aerodyne", "Senior PM - Cyberjaya", "Health - Healthy", 95, "RM 1,400 below Fair Pay", "Counter with RM 10,300 - 72% acceptance.", "Negotiate on Mon"]
+      ]]
+    ];
+    const memory = [
+      ["Last month", "1 conversation", "0 interviews - 0 offers"],
+      ["3 weeks ago", "4 conversations", "1 recruiter reply"],
+      ["Last week", "8 conversations", "3 interviews booked"],
+      ["Today", "12 conversations", "2 offers within reach"]
+    ];
+    const relationships = [
+      ["Grab Malaysia", "Aisha Rahman - Talent Lead", 88, "Opened your note 2h ago", "Viewed profile - Warm intro exists", "Reply probability 88% - Best time: Today, before 6 PM", "Draft reply"],
+      ["Stripe APAC", "Priya Menon - PM Manager", 74, "Rated your intro 4.5/5 last Thu", "Round 2 scheduled - flagged strong storytelling", "Reply probability 71% - Best time: Send thank-you after Tue interview", "Compose note"],
+      ["Notion", "Priya Wong - 2nd-degree connection", 42, "Opened your last DM - no reply", "Referral available - has posted about hiring", "Reply probability 38% - Best time: Nudge with a soft ask this week", "Ask for referral"]
+    ];
+    const calendar = [
+      ["Tue", "07", "Stripe - Round 2", "Product sense - with Priya Menon", "2:30 PM", "video"],
+      ["Wed", "08", "Grab MY - recruiter chat", "30 min - intro call", "11:00 AM", "message-square"],
+      ["Fri", "10", "Airtable - take-home due", "Case: pricing for platform tier", "EOD", "file-text"],
+      ["Mon", "13", "Aerodyne - offer discussion", "Bring Fair Pay data - negotiation", "4:00 PM", "handshake"]
+    ];
+    const followUps = [
+      ["Grab Malaysia", "Reply to Aisha - she opened your last note 2h ago.", "Draft with Vera", "send"],
+      ["Notion", "Ask Priya for a warm referral (2nd-degree connection).", "Compose ask", "message-square"],
+      ["Aerodyne", "Negotiate offer up to RM 10,300 - 72% accept rate.", "Generate script", "handshake"],
+      ["Stripe", "Thank-you note to Priya after Round 2.", "Send now", "check-circle"]
+    ];
+    const signals = [
+      "Your interview probability rose 4% overnight because two recruiters viewed your profile yesterday.",
+      "Applications sent on Tuesday morning get replies 1.8x faster than the rest of the week for your archetype.",
+      "Every offer in your pipeline is at a Malaysian company that pays above your current Fair Pay range."
+    ];
+    root.innerHTML = appShell("autopilot", `
+      <section class="cg-pipeline">
+        <header class="cg-pipeline-hero">
+          <span class="cg-pipeline-pill">${icon("radio")} Pipeline - live</span>
+          <h1>Your job search is <em>accelerating.</em><br>One move today changes the week.</h1>
+          <p>Vera is tracking 12 relationships, 3 recruiters who opened your profile this week, and 2 offers within striking distance. Predicted first offer: <strong>28 Nov - 64% confidence.</strong></p>
+          <a class="btn btn-primary" href="jobs.html">${icon("plus")} Add application</a>
+        </header>
+
+        <section class="cg-pipeline-one-move">
+          <header><span>${icon("flame")} The one move today</span><small>Beats the next-best action by 2.3x</small></header>
+          <div>
+            <article>
+              <h2>Reply to Aisha at <em>Grab</em> before 6 PM.</h2>
+              <p>She opened your last note 2 hours ago and rated your intro 4.5/5. Grab's recruiters typically ghost after 48h of silence - you have roughly 9 hours of goodwill left.</p>
+              <div><span>${icon("trending-up")} +14% interview odds</span><span>${icon("clock")} 5 min</span><span>${icon("target")} 88% reply probability</span></div>
+              <footer><a class="btn btn-primary" href="vera.html#chat">${icon("sparkles")} Draft with Vera</a><a class="btn btn-ghost" href="vera.html#chat">Why this one? ${icon("arrow-right")}</a></footer>
+            </article>
+            <aside>
+              <span>Why Vera picked this</span>
+              <p>${icon("check-circle-2")} Warmest signal in your pipeline right now.</p>
+              <p>${icon("check-circle-2")} Grab is your highest Career Value employer - RM 10.3k band.</p>
+              <p>${icon("check-circle-2")} Every hour of delay costs ~1.5% callback rate.</p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="cg-pipeline-impact">
+          <header><div><span class="cg-section-kicker">${icon("briefcase-business")} Vera - today's highest impact</span><h2>Do these four things and your week shifts.</h2></div><small>${icon("clock")} ~3 hr total</small></header>
+          ${impactTasks.map(([title, body, lift, time, action], index) => `
+            <article>
+              <span>${index + 1}</span>
+              <div><h3>${title}</h3><p>${body}</p><small><b>${icon("trending-up")} ${lift}</b><b>${icon("clock")} ${time}</b></small></div>
+              <a href="vera.html#chat">${icon("sparkles")} ${action}</a>
+            </article>
+          `).join("")}
+        </section>
+
+        <section class="cg-pipeline-kpis">
+          ${[
+            ["Active applications", "12", "+3 this week", "file-text"],
+            ["Expected interviews", "5", "Next 3 weeks", "video"],
+            ["Expected offers", "2", "Confidence 64%", "trophy"],
+            ["If you apply to 5 more matches", "3 offers", "Vera can queue them", "zap"]
+          ].map(([label, value, body, ic], index) => `<article class="${index === 3 ? "dark" : ""}"><span>${label}${icon(ic)}</span><strong>${value}</strong><p>${body}</p>${index === 3 ? `<a href="jobs.html">Queue matches ${icon("arrow-right")}</a>` : ""}</article>`).join("")}
+        </section>
+
+        <section class="cg-pipeline-memory">
+          <span class="cg-section-kicker">${icon("history")} Vera remembers</span>
+          <h2>Four weeks ago you had one conversation. Today you have twelve.</h2>
+          <p>Momentum is the strongest signal in your forecast. Here's how it's been building.</p>
+          <div>${memory.map(([label, value, body], index) => `<article class="${index === memory.length - 1 ? "active" : ""}"><span>${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}</div>
+          <footer>Vera - your offer probability is up <strong>+12%</strong> this week, mostly because your resume quality score jumped and Grab's recruiter engaged. If you keep this pace, expect <strong>2 offers by 28 Nov</strong> (64% confidence, widens as more evidence comes in).</footer>
+        </section>
+
+        <section class="cg-pipeline-board-section">
+          <div class="cg-pipeline-board-head"><h2>Live pipeline</h2><span>Auto-scored by Vera - updated 3 min ago</span></div>
+          <div class="cg-pipeline-board">
+            ${pipelineColumns.map(([stage, count, cards]) => `
+              <article class="cg-pipeline-column">
+                <header><h3>${stage} <b>${count}</b></h3><button type="button">+</button></header>
+                ${cards.map(([name, role, health, score, note, vera, next], cardIndex) => `
+                  <section>
+                    <div><span>${icon("building-2")}</span><h4>${name}</h4><p>${role}</p></div>
+                    <small>${health} <b>${score}%</b></small>
+                    <i><em style="width:${score}%"></em></i>
+                    <p>${note}</p>
+                    ${vera ? `<blockquote>${icon("sparkles")} ${vera}</blockquote>` : ""}
+                    <footer><span>Next - ${next}</span><a href="vera.html#chat">Do it ${icon("chevron-right")}</a></footer>
+                  </section>
+                `).join("")}
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-pipeline-relationships">
+          <span class="cg-section-kicker">${icon("heart")} Relationships, not applications</span>
+          <h2>Who to nurture. When to reach out.</h2>
+          <p>Vera watches recruiter behaviour across your pipeline and tells you exactly when a warm signal is worth acting on.</p>
+          ${relationships.map(([company, person, strength, signal, context, probability, action], index) => `
+            <article>
+              <div><h3>${company}</h3><p>${person}</p><i><em style="width:${strength}%"></em></i><small>Strength ${strength}</small></div>
+              <div><p>${icon("eye")} ${signal}</p><p>${context}</p><p>${probability}</p></div>
+              <a href="vera.html#chat">${icon("sparkles")} ${action}</a>
+            </article>
+          `).join("")}
+        </section>
+
+        <section class="cg-pipeline-interview">
+          <span class="cg-section-kicker">${icon("target")} Interview journey - Stripe</span>
+          <h2>You're 2 steps from an offer.</h2>
+          <small>Est. decision - 18 days</small>
+          <div class="cg-pipeline-steps">
+            ${["Recruiter chat", "Behavioral", "Product case", "Technical", "Team match", "Offer"].map((label, index) => `<article class="${index < 2 ? "done" : index === 2 ? "current" : ""}"><b>${index < 2 ? icon("check") : index + 1}</b><i></i><span>${label}</span>${index === 2 ? "<small>You are here</small>" : ""}</article>`).join("")}
+          </div>
+          <div class="cg-pipeline-feedback">
+            <article class="active"><span>Recruiter chat</span><p>Priya rated your intro 4.5/5 - flagged strong storytelling.</p></article>
+            <article><span>Behavioral</span><p>STAR structure landed. Weak area: conflict resolution.</p></article>
+            <article><span>Product case (next)</span><p>Vera has 3 targeted drills based on Stripe's rubric.</p></article>
+          </div>
+        </section>
+
+        <section class="cg-pipeline-calendar-grid">
+          <article class="cg-pipeline-calendar">
+            <header><h2>${icon("calendar")} This week's calendar</h2><span>Synced with Google</span></header>
+            ${calendar.map(([day, date, title, body, time, ic]) => `<section><time><span>${day}</span><strong>${date}</strong></time><div><h3>${title}</h3><p>${body}</p></div><small>${icon(ic)} ${time}</small></section>`).join("")}
+          </article>
+          <article class="cg-pipeline-followups">
+            <header><h2>${icon("briefcase")} Vera's follow-up desk</h2><span>4 drafts ready</span></header>
+            ${followUps.map(([name, body, action, ic]) => `<section><div><h3>${name}</h3><p>${body}</p></div><span>${icon(ic)}</span><a href="vera.html#chat">${icon("sparkles")} ${action}</a></section>`).join("")}
+          </article>
+        </section>
+
+        <section class="cg-pipeline-signals">
+          <span class="cg-section-kicker">${icon("sparkles")} Vera noticed</span>
+          <h2>Signals you would have missed.</h2>
+          <div>${signals.map(signal => `<article><span>${icon("trending-up")}</span><p>${signal}</p></article>`).join("")}</div>
+        </section>
+
+        <section class="cg-pipeline-ripple">
+          <span class="cg-section-kicker">${icon("zap")} How one action ripples through CareerGo</span>
+          <h2>Finish SQL in Grow. Watch every other page shift.</h2>
+          <div>
+            <article><span>Grow</span><p>SQL sprint becomes today's mission - 4 days of drills queued.</p></article>
+            <article><span>Worth</span><p>Career Value rises +RM 900 / month within 3 weeks.</p></article>
+            <article class="active"><span>Pipeline</span><p>+21% pass rate at Stripe Round 2 - unlocks Setel + BigPay.</p></article>
+            <article><span>Today</span><p>Interview readiness moves from 68 -> 79 by Friday.</p></article>
+          </div>
+        </section>
+
+        <section class="cg-pipeline-review">
+          <article>
+            <span class="cg-section-kicker">${icon("chart-no-axes-column-increasing")} Week in review</span>
+            <h2>Your job search is <em>accelerating.</em></h2>
+            <p>Offer probability rose <strong>+12%</strong> this week. Vera credits your improved resume and faster recruiter replies.</p>
+            <a class="btn btn-primary" href="vera.html#chat">${icon("sparkles")} Plan next week with Vera</a>
+          </article>
+          <div>
+            ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "↑ 12%"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening"]].map(([label, value]) => `<section><span>${label}</span><strong>${value}</strong></section>`).join("")}
+          </div>
+          <footer>${icon("info")} Recommended focus next week - <strong>Practice SQL interviews.</strong> Vera has a 4-day plan queued in Grow. <a href="profile.html">Open plan ${icon("arrow-right")}</a></footer>
+        </section>
+      </section>
+    `);
+    createIcons();
+    return;
+  }
   const tracked = getTrackedJobs(state);
   const counts = applicationSummaryCounts(state);
   const activeStage = (location.hash || "").replace("#stage=", "") || "all";
@@ -5488,15 +6321,103 @@ function renderPosts() {
     if (/milestone|launched|finished|completed|progress|offer/.test(text)) return "milestone";
     return "discussion";
   };
+  const orgCard = org => {
+    const isSaved = state.savedOrgs.includes(org.id);
+    return `
+      <article class="cg-feed-post cg-feed-org-card">
+        <div class="cg-feed-post-head">
+          <span class="cg-feed-avatar">${postInitials(org.name)}</span>
+          <div>
+            <h2>${org.name}</h2>
+            <p>${org.type} - ${org.location}</p>
+          </div>
+          <span class="cg-feed-tag">${org.open} open</span>
+        </div>
+        <p class="cg-feed-body">${org.summary}</p>
+        <div class="cg-feed-org-meta">
+          <span>${icon("star")} ${org.rating} rating</span>
+          <span>${icon("message-square")} ${org.reviews} reviews</span>
+          <span>${icon("briefcase")} ${org.signal}</span>
+        </div>
+        <div class="cg-feed-actions">
+          <button type="button" data-feed-save-org="${org.id}" class="${isSaved ? "active" : ""}">${icon("bookmark")} ${isSaved ? "Saved" : "Save"}</button>
+          <button type="button" data-feed-org-chat="${org.id}">${icon("sparkles")} Ask Vera</button>
+        </div>
+      </article>
+    `;
+  };
+  const savedJobCard = job => `
+    <article class="cg-feed-post cg-feed-org-card">
+      <div class="cg-feed-post-head">
+        <span class="cg-feed-avatar">${postInitials(job.company)}</span>
+        <div>
+          <h2>${job.title}</h2>
+          <p>${job.company} - ${job.location}</p>
+        </div>
+        <span class="cg-feed-tag">${job.match}% match</span>
+      </div>
+      <p class="cg-feed-body">${job.description}</p>
+      <div class="cg-feed-org-meta">
+        <span>${icon("badge-dollar-sign")} ${job.salary}</span>
+        <span>${icon("map-pin")} ${job.type}</span>
+        <span>${icon("sparkles")} ${job.why[0]}</span>
+      </div>
+      <div class="cg-feed-actions">
+        <a href="jobs.html?job=${job.id}">${icon("briefcase")} Open role</a>
+        <button type="button" data-feed-unsave-job="${job.id}">${icon("bookmark-x")} Remove</button>
+      </div>
+    </article>
+  `;
+  const savedJobs = DATA.jobs.filter(job => state.savedJobs.includes(job.id));
+  const savedOrgs = [...DATA.companies, ...DATA.universities].filter(org => state.savedOrgs.includes(org.id));
+  const isDirectoryTab = ["companies", "universities", "saved"].includes(activeTab);
+  const feedTitle = activeTab === "companies"
+    ? "Companies people are watching."
+    : activeTab === "universities"
+      ? "Universities shaping career paths."
+      : activeTab === "saved"
+        ? "Everything you saved for later."
+        : "Learn from people building careers like yours.";
+  const directoryContent = activeTab === "companies"
+    ? DATA.companies.map(orgCard).join("")
+    : activeTab === "universities"
+      ? DATA.universities.map(orgCard).join("")
+      : activeTab === "saved"
+        ? [
+          ...savedJobs.map(savedJobCard),
+          ...savedOrgs.map(orgCard),
+          ...enrichedPosts.filter(post => post.saved).map(post => `
+            <article class="cg-feed-post">
+              <div class="cg-feed-post-head">
+                <span class="cg-feed-avatar">${postInitials(post.author)}</span>
+                <div><h2>${post.author || "CareerGo member"}</h2><p>${post.title}</p></div>
+                <time>${post.time}</time>
+              </div>
+              <span class="cg-feed-tag">Saved post</span>
+              <p class="cg-feed-body">${post.body}</p>
+            </article>
+          `)
+        ].join("") || `<article class="cg-feed-post"><h2>Nothing saved yet.</h2><p class="cg-feed-body">Save companies, universities, jobs, or posts and they will stay here inside Feed.</p></article>`
+        : "";
   root.innerHTML = appShell("posts", `
     <section class="cg-feed-shell">
+      <aside class="cg-feed-left" aria-label="Feed sections">
+        ${[
+          ["for-you", "For you", "sparkles"],
+          ["following", "Following", "users-round"],
+          ["companies", "Companies", "building-2"],
+          ["universities", "Universities", "graduation-cap"],
+          ["trend-pm-transitions", "Trending", "flame"],
+          ["saved", "Saved", "bookmark"]
+        ].map(([key, label, ic]) => `<a class="${activeTab === key || (key === "for-you" && !activeTrend && activeTab === "for-you") ? "active" : ""}" href="#${key}" data-feed-tab-link>${icon(ic)} <span>${label}</span></a>`).join("")}
+      </aside>
       <main class="cg-feed-main">
         <header class="cg-feed-hero">
-          <span class="cg-overline">Feed</span>
-          <h1>Learn from people building careers like yours.</h1>
+          <span class="cg-overline">${isDirectoryTab ? activeTab : "Feed"}</span>
+          <h1>${feedTitle}</h1>
         </header>
 
-        <form class="cg-feed-composer" data-post-form>
+        ${isDirectoryTab ? "" : `<form class="cg-feed-composer" data-post-form>
           <span class="cg-feed-avatar">${profileInitial}</span>
           <input name="title" aria-label="Post title" placeholder="Milestone, lesson, or question title">
           <textarea name="body" aria-label="Post body" placeholder="Share a milestone, lesson, or question..."></textarea>
@@ -5504,16 +6425,16 @@ function renderPosts() {
           <button class="btn btn-ghost" type="button" data-media-post>${icon("image")} Media</button>
           <button class="btn btn-primary" type="submit">${icon("plus")} Post</button>
           <div class="cg-media-preview" data-media-preview hidden></div>
-        </form>
+        </form>`}
 
         ${activeTrend ? `<div class="cg-active-trend"><span>${icon("flame")} ${trendItems.find(item => item.id === activeTrend)?.title || "Trending"}</span><a href="#for-you" data-feed-tab-link>Clear</a></div>` : ""}
 
-        <nav class="cg-feed-tabs" aria-label="Feed filters">
+        ${isDirectoryTab ? "" : `<nav class="cg-feed-tabs" aria-label="Feed filters">
           ${feedTabs.map(([key, label]) => `<a class="${activeTab === key ? "active" : ""}" href="#${key}" data-feed-tab-link>${label}</a>`).join("")}
-        </nav>
+        </nav>`}
 
         <section class="cg-feed-list" aria-label="Career feed">
-          ${feedPosts.map(post => `
+          ${isDirectoryTab ? directoryContent : feedPosts.map(post => `
             <article class="cg-feed-post">
               <div class="cg-feed-post-head">
                 <span class="cg-feed-avatar">${postInitials(post.author)}</span>
@@ -5577,7 +6498,7 @@ function renderPosts() {
   `);
   const mediaInput = qs("[data-post-media]", root);
   const mediaPreview = qs("[data-media-preview]", root);
-  qs("[data-post-form]").addEventListener("submit", event => {
+  qs("[data-post-form]")?.addEventListener("submit", event => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const title = String(form.get("title")).trim();
@@ -5657,6 +6578,37 @@ function renderPosts() {
     } catch {
       showToast("Share link ready.");
     }
+  }));
+  qsa("[data-feed-save-org]", root).forEach(button => button.addEventListener("click", () => {
+    const next = readState();
+    const id = button.dataset.feedSaveOrg;
+    next.savedOrgs = next.savedOrgs.includes(id)
+      ? next.savedOrgs.filter(item => item !== id)
+      : [...next.savedOrgs, id];
+    writeState(syncCurrentUser(next));
+    showToast(next.savedOrgs.includes(id) ? "Saved inside Feed." : "Removed from saved.");
+    renderPosts();
+  }));
+  qsa("[data-feed-unsave-job]", root).forEach(button => button.addEventListener("click", () => {
+    const next = readState();
+    const id = button.dataset.feedUnsaveJob;
+    next.savedJobs = next.savedJobs.filter(item => item !== id);
+    if (!next.applications.includes(id)) delete next.applicationRecords[id];
+    writeState(syncCurrentUser(next));
+    showToast("Removed from saved roles.");
+    renderPosts();
+  }));
+  qsa("[data-feed-org-chat]", root).forEach(button => button.addEventListener("click", () => {
+    const org = [...DATA.companies, ...DATA.universities].find(item => item.id === button.dataset.feedOrgChat);
+    if (!org) return;
+    const next = readState();
+    next.chat = [
+      ...next.chat,
+      { from: "user", text: `Help me evaluate ${org.name}` },
+      { from: "vera", text: `${org.name} looks strongest for ${org.signal.toLowerCase()}. Compare culture, growth, pay, and whether its watchouts match your tolerance before making it a priority.` }
+    ];
+    writeState(next);
+    showToast("Vera added this research note to chat.");
   }));
   qsa("[data-follow]", root).forEach(button => button.addEventListener("click", () => {
     const next = readState();
