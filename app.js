@@ -1397,7 +1397,7 @@ function workspaceTopNav() {
     ];
     const isWorkspaceTabActive = key => {
       if (key === "jobs") return ["jobs", "companies", "universities"].includes(page);
-      if (key === "profile") return ["profile", "public-profile", "settings"].includes(page);
+      if (key === "profile") return ["profile", "public-profile", "settings", "edit-career-data"].includes(page);
       if (key === "posts") return ["posts", "saved"].includes(page);
       return page === key;
     };
@@ -1413,6 +1413,9 @@ function workspaceTopNav() {
         <kbd>⌘ K</kbd>
       </form>
       <div class="nav-actions cg-user-actions">
+        <a class="btn btn-ghost cg-message-trigger" href="posts.html#messages" aria-label="Open messages">
+          ${icon("message-circle")}
+        </a>
         <div class="notification-menu-wrap">
           <button class="btn btn-ghost notification-trigger" type="button" data-notification-toggle aria-haspopup="dialog" aria-expanded="false" aria-label="Open notifications">
             ${icon("bell")} ${notifications.length ? `<strong>${notifications.length}</strong>` : ""}
@@ -1451,7 +1454,7 @@ function workspaceTopNav() {
             <span>${initials}</span>
           </button>
           <div class="account-menu glass-card" data-account-menu hidden role="menu">
-            <a role="menuitem" href="profile.html">${icon("user-round")} Profile</a>
+            <a role="menuitem" href="public-profile.html">${icon("user-round")} Profile</a>
             <a role="menuitem" href="settings.html">${icon("settings")} Settings</a>
             <a role="menuitem" href="posts.html#saved">${icon("bookmark")} Saved Items</a>
             <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
@@ -1507,7 +1510,7 @@ function workspaceTopNav() {
           <span class="account-avatar-icon">${icon(isEmployer ? "building-2" : "user-round")}</span><span>${getFirstName(state)}</span>
         </button>
         <div class="account-menu glass-card" data-account-menu hidden role="menu">
-          <a role="menuitem" href="${isEmployer ? "employer-app.html#company-profile" : "profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
+          <a role="menuitem" href="${isEmployer ? "employer-app.html#company-profile" : "public-profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
           <a role="menuitem" href="${isEmployer ? "employer-app.html#settings" : "settings.html"}">${icon("settings")} Settings</a>
           ${isEmployer ? `<a role="menuitem" href="employer-app.html#talent-pool">${icon("bookmark")} Talent Pool</a>` : `<a role="menuitem" href="posts.html#saved">${icon("bookmark")} Saved Items</a>`}
           <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
@@ -5287,6 +5290,92 @@ function renderPublicProfile() {
   const target = getTargetLabel(profile);
   const locationLabel = [profile.personal.cityState, profile.personal.country].filter(Boolean).join(", ") || "Malaysia";
   const experienceItems = Array.isArray(profile.experience?.work) ? profile.experience.work : Array.isArray(profile.experience?.roles) ? profile.experience.roles : [];
+  const initials = name.split(" ").map(part => part[0]).join("").slice(0, 2).toUpperCase() || "AR";
+  const cgEducationSummary = [profile.background.school, profile.background.courseMajor].filter(Boolean).join(" - ") || "Universiti Malaya - Product Management path";
+  const skillList = [...(profile.skills.technical || []), ...(profile.skills.soft || [])].filter(Boolean);
+  const proofCards = [
+    ["Portfolio readiness", "74%", "2 public artifacts live", "target"],
+    ["Employer visibility", profile.privacy.allowEmployerDiscovery ? "On" : "Off", profile.privacy.profileVisibility || "Private", "eye"],
+    ["Profile strength", "82%", "3 items to complete", "sparkles"],
+    ["Career focus", target, locationLabel, "map-pin"]
+  ];
+  root.innerHTML = appShell("", `
+    <section class="cg-user-profile">
+      <header class="cg-user-profile-hero">
+        <div class="cg-user-avatar-xl">${initials}</div>
+        <div>
+          <span class="cg-section-kicker">Profile</span>
+          <h1>${name}</h1>
+          <p>${target} - ${locationLabel}</p>
+          <div class="cg-profile-pill-row">
+            <span>${icon("badge-check")} ${profile.privacy.profileVisibility || "Private"}</span>
+            <span>${icon("briefcase-business")} ${state.applications.length || 6} active applications</span>
+            <span>${icon("trending-up")} Ahead of 72% of candidates</span>
+          </div>
+        </div>
+        <div class="cg-profile-actions">
+          <a class="btn btn-primary" href="edit-career-data.html">${icon("pencil")} Edit career data</a>
+          <a class="btn btn-ghost" href="settings.html">${icon("settings")} Settings</a>
+        </div>
+      </header>
+
+      <section class="cg-profile-score-grid">
+        ${proofCards.map(([label, value, note, ic]) => `
+          <article>
+            <span>${icon(ic)} ${label}</span>
+            <strong>${value}</strong>
+            <small>${note}</small>
+          </article>
+        `).join("")}
+      </section>
+
+      <section class="cg-profile-layout">
+        <article class="cg-profile-card cg-profile-about">
+          <span class="cg-section-kicker">About</span>
+          <h2>Career story</h2>
+          <p>${profile.coach.worry ? `Focused on ${target.toLowerCase()} while turning ${profile.coach.worry.toLowerCase()} into visible proof.` : `Building a focused ${target.toLowerCase()} profile around product judgment, metrics, and clear portfolio evidence.`}</p>
+          <div class="cg-profile-links">
+            <a href="${profile.skills.linkedin || "#"}">${icon("linkedin")} LinkedIn</a>
+            <a href="${profile.skills.github || "#"}">${icon("github")} GitHub</a>
+            <a href="${profile.skills.portfolioLinks || "#"}">${icon("folder-open")} Portfolio</a>
+          </div>
+        </article>
+
+        <article class="cg-profile-card">
+          <span class="cg-section-kicker">Proof</span>
+          <h2>Skills employers can read quickly.</h2>
+          <div class="cg-profile-skill-cloud">
+            ${(skillList.length ? skillList : ["Product discovery", "SQL for PM", "User research", "Design systems", "Stakeholder management"]).slice(0, 12).map(skill => `<span>${skill}</span>`).join("")}
+          </div>
+        </article>
+      </section>
+
+      <section class="cg-profile-layout">
+        <article class="cg-profile-card">
+          <span class="cg-section-kicker">Experience</span>
+          <h2>Work and project evidence.</h2>
+          <div class="cg-profile-timeline">
+            ${(experienceItems.length ? experienceItems.slice(0, 4) : ["GrabFood teardown - portfolio case", "SQL dashboard project", "Product strategy memo"]).map((item, index) => `
+              <div>
+                <i>${index + 1}</i>
+                <strong>${typeof item === "string" ? item : item.title || item.role || "Experience"}</strong>
+                <span>${typeof item === "string" ? "CareerGo proof item" : item.company || item.summary || "Public profile evidence"}</span>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+
+        <article class="cg-profile-card">
+          <span class="cg-section-kicker">Education</span>
+          <h2>${cgEducationSummary}</h2>
+          <p>${profile.background.educationLevel || "Degree"} ${profile.background.expectedGraduationYear ? `- ${profile.background.expectedGraduationYear}` : "- Malaysia"}</p>
+          <div class="cg-profile-note">${icon("sparkles")} Vera keeps private readiness notes hidden from this public profile.</div>
+        </article>
+      </section>
+    </section>
+  `);
+  createIcons();
+  return;
   const educationSummary = [profile.background.school, profile.background.courseMajor].filter(Boolean).join(" - ") || "Education details available on request";
   root.innerHTML = appShell("", `
     <section class="public-profile-shell">
@@ -5300,7 +5389,7 @@ function renderPublicProfile() {
           <div class="hero-actions compact-actions">
             <button class="btn btn-primary" type="button">${icon("user-plus")} Connect</button>
             <button class="btn btn-ghost" type="button">${icon("send")} Contact</button>
-            <a class="btn btn-cyan" href="profile.html">${icon("brain-circuit")} Edit career data</a>
+            <a class="btn btn-cyan" href="edit-career-data.html">${icon("brain-circuit")} Edit career data</a>
           </div>
         </div>
       </article>
@@ -5352,6 +5441,109 @@ function renderSettings() {
   if (!requireAccount(root, "manage account and privacy settings")) return;
   const state = readState();
   const profile = state.profile;
+  const cgSettingsTiles = [
+    ["Account", getUserName(state), state.session.email || profile.personal.email || "careergo member", "user-round"],
+    ["Privacy", profile.privacy.profileVisibility || "Private", profile.privacy.allowEmployerDiscovery ? "Employer discovery on" : "Employer discovery off", "shield"],
+    ["Vera memory", profile.privacy.allowCoachMemory ? "Enabled" : "Paused", "Used for coaching context", "sparkles"],
+    ["Notifications", "Digest + reminders", "Interview and roadmap nudges", "bell"]
+  ];
+  root.innerHTML = appShell("", `
+    <section class="cg-settings-page">
+      <header class="cg-settings-hero">
+        <div>
+          <span class="cg-section-kicker">Settings</span>
+          <h1>Account, privacy, and Vera preferences.</h1>
+          <p>Control how CareerGo uses your profile, what employers can discover, and how Vera supports your next move.</p>
+        </div>
+        <a class="btn btn-primary" href="public-profile.html">${icon("user-round")} View profile</a>
+      </header>
+
+      <section class="cg-settings-tile-grid">
+        ${cgSettingsTiles.map(([label, value, note, ic]) => `
+          <article>
+            <span>${icon(ic)}</span>
+            <small>${label}</small>
+            <strong>${value}</strong>
+            <p>${note}</p>
+          </article>
+        `).join("")}
+      </section>
+
+      <section class="cg-settings-layout">
+        <form class="cg-settings-card" data-settings-form>
+          <header><span class="cg-section-kicker">Privacy</span><h2>Profile visibility</h2></header>
+          <label>Profile visibility
+            <select name="profileVisibility">
+              <option ${profile.privacy.profileVisibility === "Private" ? "selected" : ""}>Private</option>
+              <option ${profile.privacy.profileVisibility === "Visible to employers" ? "selected" : ""}>Visible to employers</option>
+              <option ${profile.privacy.profileVisibility === "Visible for advisory opportunities" ? "selected" : ""}>Visible for advisory opportunities</option>
+            </select>
+          </label>
+          <label class="cg-toggle-row"><span><strong>Allow employer discovery</strong><small>Let matching employers find your public proof.</small></span><input name="allowEmployerDiscovery" type="checkbox" ${profile.privacy.allowEmployerDiscovery ? "checked" : ""}></label>
+          <label class="cg-toggle-row"><span><strong>Allow Vera memory</strong><small>Use your recent actions to personalize coaching.</small></span><input name="allowCoachMemory" type="checkbox" ${profile.privacy.allowCoachMemory ? "checked" : ""}></label>
+          <button class="btn btn-primary" type="submit">${icon("save")} Save privacy</button>
+        </form>
+
+        <form class="cg-settings-card" data-coach-settings-form>
+          <header><span class="cg-section-kicker">Vera</span><h2>Coach preferences</h2></header>
+          <label>Support style
+            <textarea name="supportStyle">${profile.coach.supportStyle || ""}</textarea>
+          </label>
+          <label>Explanation style
+            <select name="explanationStyle">
+              <option ${profile.coach.explanationStyle === "Detailed explanations" ? "selected" : ""}>Detailed explanations</option>
+              <option ${profile.coach.explanationStyle === "Simple guidance" ? "selected" : ""}>Simple guidance</option>
+              <option ${profile.coach.explanationStyle === "Direct missions" ? "selected" : ""}>Direct missions</option>
+            </select>
+          </label>
+          <label>Mission frequency
+            <select name="missionFrequency">
+              <option ${profile.coach.missionFrequency === "Weekly" ? "selected" : ""}>Weekly</option>
+              <option ${profile.coach.missionFrequency === "Twice a week" ? "selected" : ""}>Twice a week</option>
+              <option ${profile.coach.missionFrequency === "Monthly" ? "selected" : ""}>Monthly</option>
+            </select>
+          </label>
+          <button class="btn btn-ghost" type="submit">${icon("sparkles")} Save Vera preferences</button>
+        </form>
+      </section>
+
+      <section class="cg-settings-card cg-settings-wide">
+        <header><span class="cg-section-kicker">Account</span><h2>Connected profile data</h2></header>
+        <div class="cg-settings-data-row">
+          <span>${icon("mail")} ${state.session.email || profile.personal.email || "No email added"}</span>
+          <span>${icon("map-pin")} ${profile.personal.cityState || "Kuala Lumpur"}</span>
+          <span>${icon("briefcase")} ${getTargetLabel(profile)}</span>
+          <a href="edit-career-data.html">${icon("arrow-up-right")} Edit career data</a>
+        </div>
+      </section>
+    </section>
+  `);
+  qs("[data-settings-form]")?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = readState();
+    next.profile.privacy.profileVisibility = String(form.get("profileVisibility") || "Private");
+    next.profile.privacy.allowEmployerDiscovery = Boolean(form.get("allowEmployerDiscovery"));
+    next.profile.privacy.allowCoachMemory = Boolean(form.get("allowCoachMemory"));
+    syncCurrentUser(next);
+    writeState(next);
+    showToast("Privacy settings saved.");
+    renderSettings();
+  });
+  qs("[data-coach-settings-form]")?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = readState();
+    next.profile.coach.supportStyle = String(form.get("supportStyle") || "");
+    next.profile.coach.explanationStyle = String(form.get("explanationStyle") || next.profile.coach.explanationStyle);
+    next.profile.coach.missionFrequency = String(form.get("missionFrequency") || next.profile.coach.missionFrequency);
+    syncCurrentUser(next);
+    writeState(next);
+    showToast("Vera preferences saved.");
+    renderSettings();
+  });
+  createIcons();
+  return;
   root.innerHTML = appShell("", `
     <section class="glass-card dashboard-hero compact-dashboard-hero">
       <div><div class="eyebrow"><span class="spark">*</span> Settings</div><h1 class="section-title">Account, privacy, and Vera preferences.</h1><p class="section-sub">Control how CareerGo uses your profile, what employers can discover, and how Vera supports you.</p></div>
@@ -5394,6 +5586,244 @@ function renderSettings() {
     syncCurrentUser(next);
     writeState(next);
     showToast("Vera preferences saved.");
+  });
+  createIcons();
+}
+
+function renderEditCareerData() {
+  const root = qs("[data-edit-career-data]");
+  if (!root) return;
+  if (!requireAccount(root, "edit your career data")) return;
+  const state = readState();
+  const profile = state.profile;
+  const htmlValue = value => String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const listValue = value => htmlValue(Array.isArray(value) ? value.join(", ") : value);
+  const option = (value, current) => `<option value="${htmlValue(value)}" ${value === current ? "selected" : ""}>${htmlValue(value)}</option>`;
+  const targetLabel = htmlValue(getTargetLabel(profile));
+  const skillCount = [
+    ...(profile.skills.technical || []),
+    ...(profile.skills.soft || []),
+    ...(profile.skills.tools || [])
+  ].filter(Boolean).length;
+
+  root.innerHTML = appShell("", `
+    <section class="cg-edit-career">
+      <header class="cg-edit-hero">
+        <div>
+          <span class="cg-section-kicker">${icon("pencil")} Edit career data</span>
+          <h1>Keep your CareerGo profile accurate.</h1>
+          <p>Update the account, education, skills, goals, and work preferences Vera uses across Today, Discover, Grow, Worth, Pipeline, and Feed.</p>
+          <div class="cg-edit-hero-meta">
+            <span>${icon("briefcase-business")} ${targetLabel}</span>
+            <span>${icon("sparkles")} ${skillCount || 8} profile signals</span>
+            <span>${icon("map-pin")} ${htmlValue(profile.personal.cityState || "Kuala Lumpur")}</span>
+          </div>
+        </div>
+        <div class="cg-edit-hero-actions">
+          <a class="btn btn-ghost" href="public-profile.html">${icon("user-round")} View profile</a>
+          <button class="btn btn-primary" type="submit" form="career-data-form">${icon("save")} Save changes</button>
+        </div>
+      </header>
+
+      <form class="cg-edit-form" id="career-data-form" data-career-data-form>
+        <aside class="cg-edit-summary">
+          <span class="cg-section-kicker">Profile strength</span>
+          <strong>82%</strong>
+          <p>Complete the fields Vera uses to explain role fit, salary range, and roadmap priority.</p>
+          <div class="cg-edit-meter"><span style="width:82%"></span></div>
+          <ul>
+            <li>${icon("check-circle")} Account identity</li>
+            <li>${icon("check-circle")} Education and role target</li>
+            <li>${icon("circle")} Portfolio proof</li>
+          </ul>
+        </aside>
+
+        <div class="cg-edit-stack">
+          <section class="cg-edit-card">
+            <header>
+              <span>${icon("user-round")}</span>
+              <div><small>Account</small><h2>Basic details</h2></div>
+            </header>
+            <div class="cg-edit-grid">
+              <label>Full name<input name="fullName" value="${htmlValue(profile.personal.fullName || getUserName(state))}" autocomplete="name"></label>
+              <label>Email<input name="email" type="email" value="${htmlValue(profile.personal.email || state.session.email || "")}" autocomplete="email"></label>
+              <label>Phone<input name="phone" value="${htmlValue(profile.personal.phone || "")}" autocomplete="tel"></label>
+              <label>City / state<input name="cityState" value="${htmlValue(profile.personal.cityState || "")}" placeholder="Kuala Lumpur"></label>
+              <label>Country<input name="country" value="${htmlValue(profile.personal.country || "Malaysia")}"></label>
+              <label>Preferred language<input name="preferredLanguage" value="${htmlValue(profile.personal.preferredLanguage || "English")}"></label>
+            </div>
+          </section>
+
+          <section class="cg-edit-card">
+            <header>
+              <span>${icon("graduation-cap")}</span>
+              <div><small>Education</small><h2>School and background</h2></div>
+            </header>
+            <div class="cg-edit-grid">
+              <label>Education level
+                <select name="educationLevel">
+                  ${["", "High school", "Diploma", "Bachelor degree", "Master degree", "PhD", "Bootcamp / certificate"].map(value => option(value, profile.background.educationLevel || "")).join("")}
+                </select>
+              </label>
+              <label>School / university<input name="school" value="${htmlValue(profile.background.school || "")}" placeholder="University of Malaya"></label>
+              <label>Course / major<input name="courseMajor" value="${htmlValue(profile.background.courseMajor || "")}" placeholder="Product Design, Computer Science"></label>
+              <label>Expected graduation year<input name="expectedGraduationYear" value="${htmlValue(profile.background.expectedGraduationYear || "")}" placeholder="2027"></label>
+              <label>Academic performance<input name="academicPerformance" value="${htmlValue(profile.background.academicPerformance || "")}" placeholder="CGPA, awards, dean list"></label>
+              <label>Club / leadership<input name="clubLeadership" value="${htmlValue(profile.background.clubLeadership || "")}" placeholder="Product club, student council"></label>
+            </div>
+          </section>
+
+          <section class="cg-edit-card">
+            <header>
+              <span>${icon("briefcase-business")}</span>
+              <div><small>Career</small><h2>Current path and target</h2></div>
+            </header>
+            <div class="cg-edit-grid">
+              <label>Role type
+                <select name="roleType">
+                  ${["", ...ROLE_TYPES].map(value => option(value, profile.personal.roleType || "")).join("")}
+                </select>
+              </label>
+              <label>Career stage
+                <select name="careerStage">
+                  ${["", ...CAREER_STAGES].map(value => option(value, profile.careerStage || "")).join("")}
+                </select>
+              </label>
+              <label>Current role<input name="currentRole" value="${htmlValue(profile.background.currentRole || "")}" placeholder="Product Designer"></label>
+              <label>Industry<input name="industry" value="${htmlValue(profile.background.industry || "")}" placeholder="Fintech, AI, education"></label>
+              <label>Years of experience<input name="yearsExperience" value="${htmlValue(profile.background.yearsExperience || "")}" placeholder="2"></label>
+              <label>Current salary range<input name="currentSalaryRange" value="${htmlValue(profile.background.currentSalaryRange || "")}" placeholder="RM 7k - 9k"></label>
+              <label class="cg-edit-wide">Career goals<textarea name="goals" placeholder="Find a PM role, prepare for interviews">${listValue(profile.goals)}</textarea><small>Separate with commas.</small></label>
+              <label class="cg-edit-wide">Reason for using CareerGo<textarea name="reasonForCareerGo">${htmlValue(profile.background.reasonForCareerGo || "")}</textarea></label>
+            </div>
+          </section>
+
+          <section class="cg-edit-card">
+            <header>
+              <span>${icon("sparkles")}</span>
+              <div><small>Skills</small><h2>Proof Vera can use</h2></div>
+            </header>
+            <div class="cg-edit-grid">
+              <label class="cg-edit-wide">Technical skills<textarea name="technical">${listValue(profile.skills.technical)}</textarea><small>Examples: SQL, Figma, product analytics.</small></label>
+              <label class="cg-edit-wide">Soft skills<textarea name="soft">${listValue(profile.skills.soft)}</textarea></label>
+              <label class="cg-edit-wide">Tools<textarea name="tools">${listValue(profile.skills.tools)}</textarea></label>
+              <label class="cg-edit-wide">Certifications<textarea name="certifications">${listValue(profile.skills.certifications)}</textarea></label>
+              <label class="cg-edit-wide">Projects<textarea name="projects">${listValue(profile.skills.projects)}</textarea></label>
+              <label class="cg-edit-wide">Achievements<textarea name="achievements">${listValue(profile.skills.achievements)}</textarea></label>
+            </div>
+          </section>
+
+          <section class="cg-edit-card">
+            <header>
+              <span>${icon("link")}</span>
+              <div><small>Portfolio</small><h2>Public proof links</h2></div>
+            </header>
+            <div class="cg-edit-grid">
+              <label>Portfolio<input name="portfolioLinks" value="${htmlValue(profile.skills.portfolioLinks || "")}" placeholder="https://"></label>
+              <label>LinkedIn<input name="linkedin" value="${htmlValue(profile.skills.linkedin || "")}" placeholder="https://linkedin.com/in/..."></label>
+              <label>GitHub<input name="github" value="${htmlValue(profile.skills.github || "")}" placeholder="https://github.com/..."></label>
+              <label>Website<input name="website" value="${htmlValue(profile.skills.website || "")}" placeholder="https://"></label>
+            </div>
+          </section>
+
+          <section class="cg-edit-card">
+            <header>
+              <span>${icon("sliders-horizontal")}</span>
+              <div><small>Preferences</small><h2>What should CareerGo optimize for?</h2></div>
+            </header>
+            <div class="cg-edit-grid">
+              <label class="cg-edit-wide">Target roles<textarea name="roles">${listValue(profile.preferences.roles)}</textarea></label>
+              <label class="cg-edit-wide">Industries<textarea name="industries">${listValue(profile.preferences.industries)}</textarea></label>
+              <label class="cg-edit-wide">Locations<textarea name="locations">${listValue(profile.preferences.locations)}</textarea></label>
+              <label>Work mode
+                <select name="workMode">${["Remote", "Hybrid", "Onsite", "Flexible"].map(value => option(value, profile.preferences.workMode || "Hybrid")).join("")}</select>
+              </label>
+              <label>Minimum salary<input name="minimumSalary" value="${htmlValue(profile.preferences.minimumSalary || "")}" placeholder="RM 8,000"></label>
+              <label>Relocate
+                <select name="relocate">${["Yes", "Maybe", "No"].map(value => option(value, profile.preferences.relocate || "Maybe")).join("")}</select>
+              </label>
+              <label>Company size<input name="companySize" value="${htmlValue(profile.preferences.companySize || "")}" placeholder="Startup, scaleup, enterprise"></label>
+              <label>Work culture<input name="workCulture" value="${htmlValue(profile.preferences.workCulture || "")}" placeholder="Async, craft-led, fast-moving"></label>
+            </div>
+          </section>
+
+          <section class="cg-edit-card">
+            <header>
+              <span>${icon("bot")}</span>
+              <div><small>Vera context</small><h2>Coaching signal</h2></div>
+            </header>
+            <div class="cg-edit-grid">
+              <label class="cg-edit-wide">Current worry<textarea name="worry">${htmlValue(profile.coach.worry || "")}</textarea></label>
+              <label class="cg-edit-wide">Support style<textarea name="supportStyle">${htmlValue(profile.coach.supportStyle || "")}</textarea></label>
+              <label>Growth preference<input name="growthPreference" value="${htmlValue(profile.coach.growthPreference || "Stable growth")}"></label>
+              <label>Confidence today<input name="confidenceToday" value="${htmlValue(profile.coach.confidenceToday || "Medium")}"></label>
+            </div>
+          </section>
+
+          <footer class="cg-edit-savebar">
+            <span>${icon("shield-check")} Saved data updates your account and Vera recommendations.</span>
+            <div>
+              <a class="btn btn-ghost" href="settings.html">Cancel</a>
+              <button class="btn btn-primary" type="submit">${icon("save")} Save career data</button>
+            </div>
+          </footer>
+        </div>
+      </form>
+    </section>
+  `);
+
+  qs("[data-career-data-form]")?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const splitList = name => String(form.get(name) || "")
+      .split(",")
+      .map(item => item.trim())
+      .filter(Boolean);
+    const next = readState();
+    const nextProfile = next.profile;
+    nextProfile.personal.fullName = String(form.get("fullName") || "").trim();
+    nextProfile.personal.email = String(form.get("email") || "").trim();
+    nextProfile.personal.phone = String(form.get("phone") || "").trim();
+    nextProfile.personal.cityState = String(form.get("cityState") || "").trim();
+    nextProfile.personal.country = String(form.get("country") || "Malaysia").trim();
+    nextProfile.personal.preferredLanguage = String(form.get("preferredLanguage") || "English").trim();
+    nextProfile.personal.roleType = String(form.get("roleType") || "").trim();
+    nextProfile.careerStage = String(form.get("careerStage") || "").trim();
+    ["educationLevel", "school", "courseMajor", "expectedGraduationYear", "academicPerformance", "clubLeadership", "currentRole", "industry", "yearsExperience", "currentSalaryRange", "reasonForCareerGo"].forEach(key => {
+      nextProfile.background[key] = String(form.get(key) || "").trim();
+    });
+    nextProfile.goals = splitList("goals");
+    nextProfile.skills.technical = splitList("technical");
+    nextProfile.skills.soft = splitList("soft");
+    nextProfile.skills.tools = splitList("tools");
+    nextProfile.skills.certifications = splitList("certifications");
+    nextProfile.skills.projects = splitList("projects");
+    nextProfile.skills.achievements = splitList("achievements");
+    ["portfolioLinks", "linkedin", "github", "website"].forEach(key => {
+      nextProfile.skills[key] = String(form.get(key) || "").trim();
+    });
+    nextProfile.preferences.roles = splitList("roles");
+    nextProfile.preferences.industries = splitList("industries");
+    nextProfile.preferences.locations = splitList("locations");
+    nextProfile.preferences.workMode = String(form.get("workMode") || "Hybrid");
+    nextProfile.preferences.minimumSalary = String(form.get("minimumSalary") || "").trim();
+    nextProfile.preferences.relocate = String(form.get("relocate") || "Maybe");
+    nextProfile.preferences.companySize = String(form.get("companySize") || "").trim();
+    nextProfile.preferences.workCulture = String(form.get("workCulture") || "").trim();
+    nextProfile.coach.worry = String(form.get("worry") || "").trim();
+    nextProfile.coach.supportStyle = String(form.get("supportStyle") || "").trim();
+    nextProfile.coach.growthPreference = String(form.get("growthPreference") || "Stable growth").trim();
+    nextProfile.coach.confidenceToday = String(form.get("confidenceToday") || "Medium").trim();
+    nextProfile.intelligence = generateCareerIntelligence(nextProfile);
+    nextProfile.updatedAt = nowStamp();
+    syncCurrentUser(next);
+    writeState(next);
+    showToast("Career data saved.");
+    renderEditCareerData();
   });
   createIcons();
 }
@@ -6262,6 +6692,12 @@ function renderPosts() {
   const root = qs("[data-posts]");
   if (!root) return;
   if (!requireAccount(root, "join the professional feed")) return;
+  if (document.body.dataset.postsHashReady !== "true") {
+    document.body.dataset.postsHashReady = "true";
+    window.addEventListener("hashchange", () => {
+      if (document.body.dataset.page === "posts") renderPosts();
+    });
+  }
   const state = readState();
   qs(".page-hero")?.classList.add("is-hidden");
   const activeTab = (location.hash || "#for-you").replace("#", "");
@@ -6311,6 +6747,62 @@ function renderPosts() {
     .map(part => part[0])
     .join("")
     .toUpperCase();
+  const inboxThreads = [
+    ["Aisha Rahman", "Recruiter · Grab Malaysia", "Recruiter", "Would you be free Thursday 3p...", "2h", "2", true],
+    ["Ravi Iyer", "Head of Product · Vercel", "Mentor", "Happy to look at your PM portfolio — s...", "1d", "", false],
+    ["Nurul Adlina", "Hiring Manager · Setel", "Hiring manager", "Great chat. Sharing the take...", "2d", "1", false],
+    ["Shreya Kapoor", "Design → Product · Figma", "Connection", "Yes, I made the same jump — let m...", "4d", "", false]
+  ];
+  if (activeTab === "messages") {
+    root.innerHTML = appShell("posts", `
+      <section class="cg-messages-shell">
+        <aside class="cg-inbox-panel">
+          <span class="cg-overline">Messages</span>
+          <h1>Inbox</h1>
+          <label class="cg-inbox-search">${icon("search")}<input placeholder="Search people or messages"></label>
+          <div class="cg-inbox-filters">
+            ${["All", "Recruiters", "Mentors", "Hiring", "Connections"].map((label, index) => `<button class="${index === 0 ? "active" : ""}" type="button">${label}</button>`).join("")}
+          </div>
+          <div class="cg-thread-list">
+            ${inboxThreads.map(([name, role, tag, preview, time, unread, active]) => `
+              <article class="cg-thread-card ${active ? "active" : ""}">
+                <span class="cg-feed-avatar">${postInitials(name)}</span>
+                <div>
+                  <header><strong>${name}</strong>${active ? icon("pin") : ""}<time>${time}</time></header>
+                  <small>${role}</small>
+                  <p><b>${tag}</b> ${preview}</p>
+                </div>
+                ${unread ? `<i>${unread}</i>` : ""}
+              </article>
+            `).join("")}
+          </div>
+          <p class="cg-inbox-foot">Looking to message someone new? Go to <a href="posts.html#network">Network</a>.</p>
+        </aside>
+        <main class="cg-message-thread">
+          <header>
+            <div><h2>Aisha Rahman</h2><p>Recruiter · Grab Malaysia · Usually replies within 2h</p></div>
+            <span>Warm — 3 replies this week</span>
+          </header>
+          <section class="cg-chat-thread" aria-label="Conversation with Aisha Rahman">
+            <p class="incoming">Hi Aarav — loved your portfolio. Would you be open to a 30-min chat about the Sr. PM role next week?</p>
+            <p class="outgoing">Yes, definitely. Thursday afternoon works for me. I can also share a short teardown of GrabFood I did last month.</p>
+            <p class="incoming delivered">Perfect. Would you be free Thursday 3pm for the case round?<small>${icon("check-check")} Delivered</small></p>
+            <article class="cg-vera-suggests">
+              <span>${icon("sparkles")} Vera suggests</span>
+              <p>"Thursday 3pm works. I'll prep a short GrabFood teardown and bring 2 metric-tradeoff questions I'd love your take on."</p>
+              <footer><button type="button">Use draft</button><button type="button">Rewrite</button></footer>
+            </article>
+          </section>
+          <form class="cg-message-composer">
+            <input placeholder="Write a message...">
+            <button type="button">${icon("send")} Send</button>
+          </form>
+        </main>
+      </section>
+    `);
+    createIcons();
+    return;
+  }
   const commentSeed = post => [
     { author: "Vera", body: "Strong framing. Try adding one metric or user signal to make the lesson interview-ready.", time: "1h" },
     { author: "CareerGo member", body: "This is exactly how I started turning class projects into portfolio stories.", time: "34m" }
@@ -6405,11 +6897,14 @@ function renderPosts() {
         ${[
           ["for-you", "For you", "sparkles"],
           ["following", "Following", "users-round"],
-          ["companies", "Companies", "building-2"],
-          ["universities", "Universities", "graduation-cap"],
-          ["trend-pm-transitions", "Trending", "flame"],
-          ["saved", "Saved", "bookmark"]
+          ["network", "Network", "users-round"],
+          ["communities", "Communities", "hash"],
+          ["trend-pm-transitions", "Trending", "flame"]
         ].map(([key, label, ic]) => `<a class="${activeTab === key || (key === "for-you" && !activeTrend && activeTab === "for-you") ? "active" : ""}" href="#${key}" data-feed-tab-link>${icon(ic)} <span>${label}</span></a>`).join("")}
+        <article class="cg-feed-left-note">
+          <strong>${icon("compass")} Looking for opportunities?</strong>
+          <p>Companies, universities, and roles now live in <a href="jobs.html">Discover</a>. Saved items are in your Profile.</p>
+        </article>
       </aside>
       <main class="cg-feed-main">
         <header class="cg-feed-hero">
@@ -6419,8 +6914,7 @@ function renderPosts() {
 
         ${isDirectoryTab ? "" : `<form class="cg-feed-composer" data-post-form>
           <span class="cg-feed-avatar">${profileInitial}</span>
-          <input name="title" aria-label="Post title" placeholder="Milestone, lesson, or question title">
-          <textarea name="body" aria-label="Post body" placeholder="Share a milestone, lesson, or question..."></textarea>
+          <input name="body" aria-label="Post body" placeholder="Share a milestone, lesson, or question...">
           <input data-post-media name="media" type="file" accept="image/*,.pdf,.doc,.docx" hidden>
           <button class="btn btn-ghost" type="button" data-media-post>${icon("image")} Media</button>
           <button class="btn btn-primary" type="submit">${icon("plus")} Post</button>
@@ -6501,8 +6995,8 @@ function renderPosts() {
   qs("[data-post-form]")?.addEventListener("submit", event => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const title = String(form.get("title")).trim();
-    const body = String(form.get("body")).trim();
+    const title = String(form.get("title") || "").trim();
+    const body = String(form.get("body") || "").trim();
     if (!body) return showToast("Write a short lesson, milestone, or question first.", "note");
     const next = readState();
     const mediaName = mediaInput?.files?.[0]?.name || "";
@@ -6889,6 +7383,7 @@ function init() {
   renderProfile();
   renderPublicProfile();
   renderSettings();
+  renderEditCareerData();
   renderSavedItems();
   renderMarket();
   renderAutopilot();
