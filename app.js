@@ -1943,15 +1943,15 @@ function workspaceTopNav() {
       <input name="q" aria-label="Search workspace" placeholder="${isEmployer ? "Search candidates, roles, applicants" : "Search jobs, companies, universities"}">
     </form>
     <div class="nav-actions">
-      <a class="btn btn-ghost" href="${isEmployer ? "employer-app.html#pipeline" : "autopilot.html"}">${icon("bell")} ${state.notifications?.length || 0}</a>
+      <a class="btn btn-ghost" href="${isEmployer ? "employer-app.html#hiring" : "autopilot.html"}">${icon("bell")} ${state.notifications?.length || 0}</a>
       <div class="account-menu-wrap">
         <button class="btn btn-primary account-menu-trigger" type="button" data-account-menu-toggle aria-haspopup="menu" aria-expanded="false">
           ${icon(isEmployer ? "building-2" : "user-round")} ${getFirstName(state)}
         </button>
         <div class="account-menu glass-card" data-account-menu hidden role="menu">
-          <a role="menuitem" href="${isEmployer ? "employer-app.html#company-profile" : "public-profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
+          <a role="menuitem" href="${isEmployer ? "employer-app.html#company" : "public-profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
           <a role="menuitem" href="${isEmployer ? "employer-app.html#settings" : "settings.html"}">${icon("settings")} Settings</a>
-          ${isEmployer ? `<a role="menuitem" href="employer-app.html#talent-pool">${icon("bookmark")} Talent Pool</a>` : `<a role="menuitem" href="saved.html">${icon("bookmark")} Saved Items</a>`}
+          ${isEmployer ? `<a role="menuitem" href="employer-app.html#talent">${icon("bookmark")} Talent Pool</a>` : `<a role="menuitem" href="saved.html">${icon("bookmark")} Saved Items</a>`}
           <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
         </div>
       </div>
@@ -1989,7 +1989,7 @@ function renderNavigation() {
       : lower.includes("company") || lower.includes("culture") || lower.includes("review") || lower.includes("maybank") || lower.includes("grab") || lower.includes("cimb")
         ? "companies.html"
         : "jobs.html";
-    location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#candidates` : `${destination}?q=${encodeURIComponent(q)}`;
+    location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#talent` : `${destination}?q=${encodeURIComponent(q)}`;
   });
 }
 
@@ -2046,8 +2046,8 @@ function renderSiteFooter() {
           <h3>For Employers</h3>
           <a href="employers.html">Employer entry</a>
           <a href="register.html">Create employer account</a>
-          <a href="employer-app.html#candidates">Candidate search</a>
-          <a href="employer-app.html#pipeline">Hiring pipeline</a>
+          <a href="employer-app.html#talent">Candidate search</a>
+          <a href="employer-app.html#hiring">Hiring pipeline</a>
         </nav>
         <nav class="footer-column" aria-label="Company">
           <h3>Company</h3>
