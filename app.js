@@ -775,9 +775,10 @@ const DATA = {
     { title: "Portfolio evidence beats certificate volume", body: "Employers respond better to proof of outcomes than long course lists.", impact: "Polish one measurable case study" }
   ],
   communityPosts: [
-    { id: "p1", author: "Nadia, UX Intern", title: "How I explained a messy university project in interviews", body: "I reframed it around constraints, decisions, and what changed after testing.", reactions: 42 },
-    { id: "p2", author: "Jason, Data Analyst", title: "SQL portfolio tip", body: "One clear dashboard with a business question is stronger than five disconnected notebooks.", reactions: 36 },
-    { id: "p3", author: "Vera", title: "Weekly career prompt", body: "Before applying, write the one sentence evidence you would use to prove fit for the role.", reactions: 88 }
+    { id: "p1", author: "Nadia, UX Intern", authorType: "candidate", verified: false, title: "How I explained a messy university project in interviews", body: "I reframed it around constraints, decisions, and what changed after testing.", reactions: 42 },
+    { id: "p2", author: "Jason, Data Analyst", authorType: "candidate", verified: false, title: "SQL portfolio tip", body: "One clear dashboard with a business question is stronger than five disconnected notebooks.", reactions: 36 },
+    { id: "p3", author: "Vera", authorType: "vera", verified: false, title: "Weekly career prompt", body: "Before applying, write the one sentence evidence you would use to prove fit for the role.", reactions: 88 },
+    { id: "p4", author: "Maybank", authorType: "employer", verified: true, title: "What do early-career software engineers value most when choosing their first employer?", body: "We are reviewing how we communicate graduate development opportunities and would like to hear from students and recent graduates.", reactions: 14 }
   ],
   autopilotEvents: [
     { id: "a1", type: "recommended", title: "Product Designer at Maybank", reason: "92% fit, strong salary, hybrid setup", status: "Ready to review" },
@@ -787,7 +788,11 @@ const DATA = {
   candidates: [
     { id: "c1", name: "Siti Nur", privacy: "Public profile", role: "Product Designer", stage: "Screen", fit: 92, location: "Kuala Lumpur", availability: "2 weeks", salary: "RM 5k - 7k", education: "BA Design, Taylor's", experience: "1 year internship", careerStage: "Fresh Graduate", portfolio: "Strong", skills: ["Figma", "Research", "Design Systems"], reason: "Portfolio shows banking onboarding work and strong research evidence." },
     { id: "c2", name: "Daniel Lim", privacy: "Anonymized", role: "Data Analyst", stage: "Interview", fit: 88, location: "Petaling Jaya", availability: "Immediate", salary: "RM 4.8k - 6.5k", education: "BSc Statistics, UM", experience: "Graduate projects", careerStage: "Looking for first full-time job", portfolio: "Moderate", skills: ["SQL", "Python", "Dashboards"], reason: "Strong SQL dashboard proof and clear interest in marketplace analytics." },
-    { id: "c3", name: "Priya Nair", privacy: "Public profile", role: "Frontend Developer", stage: "Saved", fit: 84, location: "Remote / Selangor", availability: "1 month", salary: "RM 6k - 8k", education: "Diploma Software Engineering", experience: "2 years freelance", careerStage: "Career Switcher", portfolio: "Strong", skills: ["React", "TypeScript", "Testing"], reason: "Transferable freelance delivery evidence with strong component testing habits." }
+    { id: "c3", name: "Priya Nair", privacy: "Public profile", role: "Frontend Developer", stage: "Review", fit: 84, location: "Remote / Selangor", availability: "1 month", salary: "RM 6k - 8k", education: "Diploma Software Engineering", experience: "2 years freelance", careerStage: "Career Switcher", portfolio: "Strong", skills: ["React", "TypeScript", "Testing"], reason: "Transferable freelance delivery evidence with strong component testing habits." },
+    { id: "c4", name: "Ahmad Zulkifli", privacy: "Public profile", role: "Backend Engineer", stage: "New", fit: 79, location: "Kuala Lumpur", availability: "3 weeks", salary: "RM 6k - 8k", education: "BSc Computer Science, UPM", experience: "1.5 years", careerStage: "Early career", portfolio: "Moderate", skills: ["Java", "SQL", "Microservices"], reason: "Recently applied with a relevant microservices side project." },
+    { id: "c5", name: "Wei Jun Tan", privacy: "Public profile", role: "Junior Data Analyst", stage: "Offer", fit: 81, location: "Petaling Jaya", availability: "Immediate", salary: "RM 4k - 5.5k", education: "BSc Statistics, UM", experience: "Graduate projects", careerStage: "Fresh Graduate", portfolio: "Moderate", skills: ["SQL", "Power BI", "Excel"], reason: "Strong coursework portfolio, immediately available." },
+    { id: "c6", name: "Farah Alia", privacy: "Public profile", role: "Software Engineer", stage: "Final", fit: 90, location: "Kuala Lumpur", availability: "2 weeks", salary: "RM 6.5k - 8.5k", education: "BSc Computer Science, MMU", experience: "2 years", careerStage: "Early career", portfolio: "Strong", skills: ["React", "Node.js", "AWS"], reason: "Cleared technical rounds with strong system design answers." },
+    { id: "c7", name: "Kevin Ong", privacy: "Public profile", role: "Product Design Intern", stage: "Hired", fit: 95, location: "Kuala Lumpur", availability: "Accepted", salary: "RM 2k - 2.5k", education: "BA Design, Taylor's", experience: "Internship-level", careerStage: "Fresh Graduate", portfolio: "Strong", skills: ["Figma", "Prototyping"], reason: "Accepted offer after a strong final-round portfolio review." }
   ],
   employerRoles: [
     {
@@ -973,7 +978,9 @@ function readState() {
     notifications: [],
     interviewCoach: { role: "", type: "Behavioral", focus: "Leadership", started: false, answer: "", feedback: null, sessions: [] },
     autopilotRules: { salary: "", location: "", threshold: 75, scanOnly: true, exclude: "" },
-    posts: DATA.communityPosts
+    posts: DATA.communityPosts,
+    employerTalentPools: [{ id: "pool-1", name: "Backend Prospects", candidateIds: [] }],
+    employerInvitations: {}
   };
   try {
     return normalizeState({ ...fallback, ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") });
