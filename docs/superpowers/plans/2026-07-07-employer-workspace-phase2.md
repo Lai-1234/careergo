@@ -910,7 +910,7 @@ Replace with:
 function renderEmployerCommunity(root) {
   function draw() {
     root.innerHTML = `
-      <div class="emp-view-header"><h1>Community</h1><button type="button" class="btn btn-primary" data-community-compose">${icon("plus")} Create Post</button></div>
+      <div class="emp-view-header"><h1>Community</h1><button type="button" class="btn btn-primary" data-community-compose>${icon("plus")} Create Post</button></div>
       <div class="emp-community-feed" data-community-feed></div>
       <div class="emp-compose-modal" data-community-modal hidden>
         <div class="card emp-compose-card">
