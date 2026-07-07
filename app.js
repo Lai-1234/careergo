@@ -263,7 +263,7 @@ const DATA = {
   ],
   missions: [
     { id: "m1", title: "Compare 3 organizations", body: "Review culture, pay, growth, and watchouts before applying.", xp: 120, progress: 66, href: "companies.html" },
-    { id: "m2", title: "Upgrade one case study", body: "Add trade-offs, metric impact, and stakeholder decisions.", xp: 180, progress: 35, href: "profile.html" },
+    { id: "m2", title: "Upgrade one case study", body: "Add trade-offs, metric impact, and stakeholder decisions.", xp: 180, progress: 35, href: "grow.html" },
     { id: "m3", title: "Practice interview story", body: "Record one STAR answer for ambiguity and feedback.", xp: 90, progress: 20, href: "vera.html#interview" }
   ],
   marketRoles: [
@@ -984,34 +984,34 @@ function personalizedMissions(profile) {
   const target = getTargetLabel(profile);
   if (profile.careerStage === "Still studying" || profile.careerStage === "Looking for internship") {
     return [
-      { id: "pm1", title: "Internship readiness", body: "Add one project, one club/leadership example, and one preferred industry.", xp: 80, progress: 35, href: "profile.html" },
-      { id: "pm2", title: "Resume checklist", body: "Create a one-page student resume with projects and activities.", xp: 70, progress: 20, href: "profile.html" },
+      { id: "pm1", title: "Internship readiness", body: "Add one project, one club/leadership example, and one preferred industry.", xp: 80, progress: 35, href: "grow.html" },
+      { id: "pm2", title: "Resume checklist", body: "Create a one-page student resume with projects and activities.", xp: 70, progress: 20, href: "grow.html" },
       { id: "pm3", title: "Find internship matches", body: "Search roles and save two internships or trainee programs.", xp: 90, progress: 15, href: "jobs.html" }
     ];
   }
   if (profile.careerStage === "Planning to switch career") {
     return [
-      { id: "pm1", title: "Transition map", body: "List transferable skills and the first bridge role toward your target field.", xp: 100, progress: 40, href: "profile.html" },
+      { id: "pm1", title: "Transition map", body: "List transferable skills and the first bridge role toward your target field.", xp: 100, progress: 40, href: "grow.html" },
       { id: "pm2", title: "Risk check", body: "Compare salary, timeline, and skill gaps before making a move.", xp: 80, progress: 25, href: "market.html" },
       { id: "pm3", title: "Bridge skill sprint", body: `Pick one missing skill for ${target} and create proof this week.`, xp: 120, progress: 20, href: "vera.html#skills" }
     ];
   }
   if (profile.careerStage === "Growing into leadership") {
     return [
-      { id: "pm1", title: "Promotion readiness", body: "Document one leadership outcome, not only task execution.", xp: 120, progress: 45, href: "profile.html" },
+      { id: "pm1", title: "Promotion readiness", body: "Document one leadership outcome, not only task execution.", xp: 120, progress: 45, href: "grow.html" },
       { id: "pm2", title: "Salary benchmark", body: "Check market value for your next-level role.", xp: 70, progress: 35, href: "market.html" },
       { id: "pm3", title: "Leadership interview", body: "Practice a conflict, coaching, and stakeholder story.", xp: 90, progress: 20, href: "vera.html#interview" }
     ];
   }
   if (profile.careerStage === "Preparing for retirement or advisory work") {
     return [
-      { id: "pm1", title: "Advisory profile", body: "Package your expertise into clear advisory topics.", xp: 90, progress: 30, href: "profile.html" },
-      { id: "pm2", title: "Flexible work filters", body: "Set workload, location, and advisory preferences.", xp: 60, progress: 25, href: "profile.html" },
+      { id: "pm1", title: "Advisory profile", body: "Package your expertise into clear advisory topics.", xp: 90, progress: 30, href: "grow.html" },
+      { id: "pm2", title: "Flexible work filters", body: "Set workload, location, and advisory preferences.", xp: 60, progress: 25, href: "grow.html" },
       { id: "pm3", title: "Mentoring options", body: "Ask Vera to draft a mentoring/advisory positioning statement.", xp: 80, progress: 20, href: "vera.html" }
     ];
   }
   return [
-    { id: "pm1", title: "Profile baseline", body: "Complete your profile so CareerGo can improve your roadmap.", xp: 90, progress: 45, href: "profile.html" },
+    { id: "pm1", title: "Profile baseline", body: "Complete your profile so CareerGo can improve your roadmap.", xp: 90, progress: 45, href: "edit-career-data.html" },
     { id: "pm2", title: "Role shortlist", body: "Save two roles that match your preferred path.", xp: 80, progress: 30, href: "jobs.html" },
     { id: "pm3", title: "Coach plan", body: "Ask Vera to create a simple 7-day action plan.", xp: 70, progress: 20, href: "vera.html#plan" }
   ];
@@ -1023,7 +1023,7 @@ function starterMissions(profile) {
       id: "tour-profile",
       title: "Complete one profile section",
       body: "Add or review skills, projects, or preferences so recommendations become more accurate.",
-      href: "profile.html",
+      href: "grow.html",
       icon: "user-round"
     },
     {
@@ -1244,7 +1244,7 @@ function requireAccount(root, purpose = "open this workspace") {
       <div class="locked-state glass-card">
         <div class="eyebrow"><span class="spark">*</span> Account required</div>
         <h1 class="section-title">Create your account to ${purpose}.</h1>
-        <p class="section-sub">CareerGo personalizes your roadmap, Vera’s coaching style, job matching, and dashboard from your own career situation.</p>
+        <p class="section-sub">CareerGo personalizes your roadmap, Vera's coaching style, job matching, and dashboard from your own career situation.</p>
         <div class="hero-actions">
           <button class="btn btn-primary" type="button" data-enter-demo>${icon("monitor-play")} Enter demo dashboard</button>
           <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create account</a>
@@ -1258,7 +1258,7 @@ function requireAccount(root, purpose = "open this workspace") {
             <div class="locked-stat-icon">${icon("brain-circuit")}</div>
             <div>
               <strong>AI-Personalized Roadmap</strong>
-              <p>Vera adapts your career plan, coaching tone, and job suggestions based on your real profile — not templates.</p>
+              <p>Vera adapts your career plan, coaching tone, and job suggestions based on your real profile - not templates.</p>
             </div>
           </div>
           <div class="locked-stat">
@@ -1363,20 +1363,19 @@ function bindAccountMenu() {
 }
 
 function publicNav() {
-  const page = document.body.dataset.page || "home";
   return `
-    <a class="brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
-    <nav class="nav-links" aria-label="Public navigation">
+    <a class="brand public-site-brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
+    <nav class="nav-links public-site-nav" aria-label="Public navigation">
       ${[
         ["jobs", "Jobs", "jobs.html"],
         ["companies", "Companies", "companies.html"],
         ["universities", "Universities", "universities.html"],
         ["community", "Community", "community.html"]
-      ].map(([key, label, href]) => `<a data-nav="${key}" class="${page === key ? "active" : ""}" href="${href}">${label}</a>`).join("")}
+      ].map(([, label, href]) => `<a href="${href}">${label}</a>`).join("")}
     </nav>
-    <div class="nav-actions">
-      <a class="btn btn-ghost ${page === "login" ? "active" : ""}" href="login.html">Login</a>
-      <a class="btn btn-primary ${page === "register" ? "active" : ""}" href="register.html">Create Account</a>
+    <div class="nav-actions public-site-actions">
+      <a class="btn btn-ghost" href="login.html">Login</a>
+      <a class="btn btn-primary" href="register.html">Create Account</a>
     </div>
   `;
 }
@@ -1390,27 +1389,29 @@ function workspaceTopNav() {
     const workspaceLinks = [
       ["dashboard", "Today", "dashboard.html"],
       ["jobs", "Discover", "jobs.html"],
-      ["profile", "Grow", "profile.html"],
+      ["grow", "Grow", "grow.html"],
       ["market", "Worth", "market.html"],
       ["autopilot", "Pipeline", "autopilot.html"],
       ["posts", "Feed", "posts.html"]
     ];
     const isWorkspaceTabActive = key => {
       if (key === "jobs") return ["jobs", "companies", "universities"].includes(page);
-      if (key === "profile") return ["profile", "public-profile", "settings", "edit-career-data"].includes(page);
+      if (key === "grow") return page === "grow";
       if (key === "posts") return ["posts", "saved"].includes(page);
       return page === key;
     };
     const initials = String(getFirstName(state) || "A").slice(0, 2).toUpperCase();
     return `
-      <a class="brand cg-top-brand" href="dashboard.html"><span class="cg-brand-mark">${icon("sparkles")}</span><span class="brand-text"><strong>CareerGo</strong></span></a>
+      <a class="brand cg-top-brand" href="dashboard.html" aria-label="CareerGo dashboard">
+        <img class="cg-navbar-logo" src="assets/careergo-logo-script.png" alt="CareerGo">
+      </a>
       <nav class="nav-links cg-workspace-tabs" aria-label="CareerGo workspace">
         ${workspaceLinks.map(([key, label, href]) => `<a data-nav="${key}" class="${isWorkspaceTabActive(key) ? "active" : ""}" href="${href}">${label}</a>`).join("")}
       </nav>
       <form class="workspace-search cg-vera-search" role="search" data-workspace-search data-tour-target="workspace-search">
         ${icon("search")}
         <input name="q" aria-label="Ask Vera" placeholder="Ask Vera anything...">
-        <kbd>⌘ K</kbd>
+        <kbd>Cmd K</kbd>
       </form>
       <div class="nav-actions cg-user-actions">
         <a class="btn btn-ghost cg-message-trigger" href="posts.html#messages" aria-label="Open messages">
@@ -1454,7 +1455,7 @@ function workspaceTopNav() {
             <span>${initials}</span>
           </button>
           <div class="account-menu glass-card" data-account-menu hidden role="menu">
-            <a role="menuitem" href="public-profile.html">${icon("user-round")} Profile</a>
+            <a role="menuitem" href="profile.html">${icon("user-round")} Profile</a>
             <a role="menuitem" href="settings.html">${icon("settings")} Settings</a>
             <a role="menuitem" href="posts.html#saved">${icon("bookmark")} Saved Items</a>
             <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
@@ -1510,7 +1511,7 @@ function workspaceTopNav() {
           <span class="account-avatar-icon">${icon(isEmployer ? "building-2" : "user-round")}</span><span>${getFirstName(state)}</span>
         </button>
         <div class="account-menu glass-card" data-account-menu hidden role="menu">
-          <a role="menuitem" href="${isEmployer ? "employer-app.html#company-profile" : "public-profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
+          <a role="menuitem" href="${isEmployer ? "employer-app.html#company-profile" : "profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
           <a role="menuitem" href="${isEmployer ? "employer-app.html#settings" : "settings.html"}">${icon("settings")} Settings</a>
           ${isEmployer ? `<a role="menuitem" href="employer-app.html#talent-pool">${icon("bookmark")} Talent Pool</a>` : `<a role="menuitem" href="posts.html#saved">${icon("bookmark")} Saved Items</a>`}
           <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
@@ -1518,6 +1519,506 @@ function workspaceTopNav() {
       </div>
     </div>
   `;
+}
+
+function ensureWorkspaceNavbarStyles() {
+  if (document.getElementById("careergo-workspace-navbar-style")) return;
+  const style = document.createElement("style");
+  style.id = "careergo-workspace-navbar-style";
+  style.textContent = `
+    html body .topbar:has(.cg-workspace-tabs),
+    html body .topbar:has(.cg-vera-search) {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 1000 !important;
+      height: 78px !important;
+      min-height: 78px !important;
+      padding: 0 !important;
+      border-bottom: 1px solid rgba(14, 44, 37, 0.1) !important;
+      background: rgba(248, 244, 235, 0.92) !important;
+      box-shadow: none !important;
+      backdrop-filter: blur(18px) !important;
+      -webkit-backdrop-filter: blur(18px) !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs)::before,
+    html body .topbar:has(.cg-vera-search)::before,
+    html body .topbar:has(.cg-workspace-tabs)::after,
+    html body .topbar:has(.cg-vera-search)::after {
+      content: none !important;
+      display: none !important;
+      box-shadow: none !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .nav-inner,
+    html body .topbar:has(.cg-vera-search) .nav-inner {
+      width: min(1460px, calc(100% - 76px)) !important;
+      height: 78px !important;
+      min-height: 78px !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      display: grid !important;
+      grid-template-columns: auto minmax(420px, 1fr) minmax(270px, 0.55fr) auto !important;
+      align-items: center !important;
+      gap: 26px !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-top-brand {
+      justify-self: start !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      width: auto !important;
+      min-width: 154px !important;
+      height: 46px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-navbar-logo {
+      display: block !important;
+      width: 154px !important;
+      max-width: 154px !important;
+      height: auto !important;
+      max-height: 48px !important;
+      object-fit: contain !important;
+      object-position: left center !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-brand-mark,
+    html body .topbar:has(.cg-workspace-tabs) .cg-top-brand .brand-text {
+      display: none !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs {
+      justify-self: start !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 10px !important;
+      min-width: 0 !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a {
+      min-width: 0 !important;
+      min-height: 42px !important;
+      height: 42px !important;
+      padding: 0 17px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 0 !important;
+      border-radius: 999px !important;
+      color: #4c5b55 !important;
+      -webkit-text-fill-color: #4c5b55 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      font-family: var(--font-sans, Inter, sans-serif) !important;
+      font-size: 16px !important;
+      font-weight: 700 !important;
+      line-height: 1 !important;
+      text-decoration: none !important;
+      letter-spacing: 0 !important;
+      white-space: nowrap !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a.active,
+    html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a:hover {
+      color: #fffaf2 !important;
+      -webkit-text-fill-color: #fffaf2 !important;
+      background: #07382f !important;
+      box-shadow: 0 10px 22px rgba(7, 56, 47, 0.18) !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search {
+      justify-self: end !important;
+      width: min(310px, 100%) !important;
+      max-width: 310px !important;
+      min-width: 0 !important;
+      height: 40px !important;
+      min-height: 40px !important;
+      padding: 0 10px 0 14px !important;
+      display: grid !important;
+      grid-template-columns: 18px minmax(0, 1fr) auto !important;
+      align-items: center !important;
+      gap: 8px !important;
+      border: 1px solid rgba(14, 44, 37, 0.1) !important;
+      border-radius: 999px !important;
+      background: rgba(255, 255, 255, 0.76) !important;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65), 0 10px 28px rgba(28, 40, 33, 0.06) !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search svg {
+      width: 18px !important;
+      height: 18px !important;
+      color: #53668a !important;
+      stroke: #53668a !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search input {
+      width: 100% !important;
+      min-width: 0 !important;
+      height: 100% !important;
+      padding: 0 !important;
+      border: 0 !important;
+      outline: 0 !important;
+      color: #46534e !important;
+      -webkit-text-fill-color: #46534e !important;
+      background: transparent !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      box-shadow: none !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search input::placeholder {
+      color: #7584a2 !important;
+      -webkit-text-fill-color: #7584a2 !important;
+      opacity: 1 !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search kbd {
+      width: auto !important;
+      min-width: 44px !important;
+      height: 24px !important;
+      padding: 0 8px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 1px solid rgba(14, 44, 37, 0.09) !important;
+      border-radius: 7px !important;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+      background: rgba(255, 255, 255, 0.64) !important;
+      font-size: 0 !important;
+      font-family: var(--font-sans, Inter, sans-serif) !important;
+      box-shadow: none !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search kbd::before {
+      content: "\\2318 K" !important;
+      color: #87908b !important;
+      -webkit-text-fill-color: #87908b !important;
+      font-size: 12px !important;
+      font-weight: 800 !important;
+      white-space: nowrap !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-user-actions {
+      justify-self: end !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 14px !important;
+      min-width: 0 !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-message-trigger,
+    html body .topbar:has(.cg-workspace-tabs) .notification-trigger {
+      width: 34px !important;
+      min-width: 34px !important;
+      height: 34px !important;
+      min-height: 34px !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 1px solid rgba(14, 44, 37, 0.1) !important;
+      border-radius: 999px !important;
+      color: #07382f !important;
+      -webkit-text-fill-color: #07382f !important;
+      background: rgba(255, 255, 255, 0.72) !important;
+      box-shadow: 0 10px 22px rgba(7, 56, 47, 0.08) !important;
+      position: relative !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-message-trigger svg,
+    html body .topbar:has(.cg-workspace-tabs) .notification-trigger svg {
+      width: 20px !important;
+      height: 20px !important;
+      color: #07382f !important;
+      stroke: #07382f !important;
+      margin: 0 !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .notification-trigger strong {
+      position: absolute !important;
+      right: -5px !important;
+      bottom: -7px !important;
+      width: 20px !important;
+      height: 20px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 999px !important;
+      color: #fffaf2 !important;
+      -webkit-text-fill-color: #fffaf2 !important;
+      background: #42c99a !important;
+      font-size: 11px !important;
+      font-weight: 900 !important;
+      box-shadow: 0 0 0 3px rgba(248, 244, 235, 0.95) !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .account-menu-trigger,
+    html body .topbar:has(.cg-workspace-tabs) .nav-actions .account-menu-trigger,
+    html body .topbar:has(.cg-workspace-tabs) .cg-avatar-trigger {
+      width: 46px !important;
+      min-width: 46px !important;
+      height: 46px !important;
+      min-height: 46px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 999px !important;
+      color: #fffaf2 !important;
+      -webkit-text-fill-color: #fffaf2 !important;
+      background: #07382f !important;
+      box-shadow: 0 10px 24px rgba(7, 56, 47, 0.18) !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .account-menu-trigger :is(span, strong, i),
+    html body .topbar:has(.cg-workspace-tabs) .nav-actions .account-menu-trigger :is(span, strong, i),
+    html body .topbar:has(.cg-workspace-tabs) .cg-avatar-trigger span {
+      color: #fffaf2 !important;
+      -webkit-text-fill-color: #fffaf2 !important;
+      font-size: 17px !important;
+      font-weight: 850 !important;
+      line-height: 1 !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .account-menu {
+      top: calc(100% + 10px) !important;
+      right: 0 !important;
+    }
+
+    @media (max-width: 1180px) {
+      html body .topbar:has(.cg-workspace-tabs) .nav-inner,
+      html body .topbar:has(.cg-vera-search) .nav-inner {
+        width: min(100% - 32px, 1460px) !important;
+        grid-template-columns: auto 1fr auto !important;
+        gap: 18px !important;
+      }
+
+      html body .topbar:has(.cg-vera-search) .cg-vera-search {
+        display: none !important;
+      }
+
+      html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs {
+        overflow-x: auto !important;
+        scrollbar-width: none !important;
+      }
+
+      html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs::-webkit-scrollbar {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 760px) {
+      html body .topbar:has(.cg-workspace-tabs) {
+        height: auto !important;
+        min-height: 74px !important;
+      }
+
+      html body .topbar:has(.cg-workspace-tabs) .nav-inner {
+        width: min(100% - 24px, 1460px) !important;
+        min-height: 74px !important;
+        grid-template-columns: auto auto !important;
+        grid-template-areas: "brand actions" "tabs tabs" !important;
+        row-gap: 8px !important;
+        padding: 10px 0 !important;
+      }
+
+      html body .topbar:has(.cg-workspace-tabs) .cg-top-brand {
+        grid-area: brand !important;
+      }
+
+      html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs {
+        grid-area: tabs !important;
+        width: 100% !important;
+      }
+
+      html body .topbar:has(.cg-workspace-tabs) .cg-user-actions {
+        grid-area: actions !important;
+      }
+
+      html body .topbar:has(.cg-workspace-tabs) .cg-navbar-logo {
+        width: 132px !important;
+      }
+
+      html body .topbar:has(.cg-workspace-tabs) .cg-message-trigger {
+        display: none !important;
+      }
+    }
+  `;
+  style.textContent += `
+    html body .topbar:has(.cg-workspace-tabs),
+    html body .topbar:has(.cg-vera-search) {
+      height: 64px !important;
+      min-height: 64px !important;
+      border-bottom: 1px solid rgba(227, 220, 200, 0.7) !important;
+      background: rgba(248, 244, 234, 0.78) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .nav-inner,
+    html body .topbar:has(.cg-vera-search) .nav-inner {
+      width: min(1240px, calc(100% - 48px)) !important;
+      height: 64px !important;
+      min-height: 64px !important;
+      grid-template-columns: auto minmax(360px, 1fr) minmax(250px, 0.55fr) auto !important;
+      gap: 32px !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs {
+      gap: 4px !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a {
+      min-height: 40px !important;
+      height: 40px !important;
+      padding: 0 16px !important;
+      color: #5f7573 !important;
+      -webkit-text-fill-color: #5f7573 !important;
+      font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 400 !important;
+      line-height: 1 !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a.active,
+    html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a:hover {
+      color: #f8f4ea !important;
+      -webkit-text-fill-color: #f8f4ea !important;
+      background: #1f332c !important;
+      box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-navbar-logo {
+      width: 154px !important;
+      max-width: 154px !important;
+      max-height: 42px !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search {
+      width: min(290px, 100%) !important;
+      max-width: 290px !important;
+      height: 32px !important;
+      min-height: 32px !important;
+      padding: 0 8px 0 12px !important;
+      border-radius: 9999px !important;
+      border-color: rgba(227, 220, 200, 0.9) !important;
+      background: rgba(255, 255, 255, 0.62) !important;
+      box-shadow: none !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search input {
+      color: #5f7573 !important;
+      -webkit-text-fill-color: #5f7573 !important;
+      font-size: 12px !important;
+      font-weight: 400 !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search input::placeholder {
+      color: #5f7573 !important;
+      -webkit-text-fill-color: #5f7573 !important;
+      opacity: 0.82 !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search kbd {
+      min-width: 34px !important;
+      height: 20px !important;
+      padding: 0 6px !important;
+      border-color: #e3dcc8 !important;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+    }
+
+    html body .topbar:has(.cg-vera-search) .cg-vera-search kbd::before {
+      content: "Cmd K" !important;
+      color: #5f7573 !important;
+      -webkit-text-fill-color: #5f7573 !important;
+      font-size: 10px !important;
+      font-weight: 500 !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-message-trigger,
+    html body .topbar:has(.cg-workspace-tabs) .notification-trigger {
+      width: 36px !important;
+      min-width: 36px !important;
+      height: 36px !important;
+      min-height: 36px !important;
+      border: 1px solid rgba(227, 220, 200, 0.86) !important;
+      background: rgba(255, 255, 255, 0.66) !important;
+      color: #1f332c !important;
+      -webkit-text-fill-color: #1f332c !important;
+      box-shadow: 0 1px 2px rgba(31, 51, 44, 0.04), 0 2px 8px -2px rgba(31, 51, 44, 0.08) !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .cg-message-trigger svg,
+    html body .topbar:has(.cg-workspace-tabs) .notification-trigger svg {
+      color: #1f332c !important;
+      stroke: #1f332c !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .account-menu-trigger,
+    html body .topbar:has(.cg-workspace-tabs) .cg-avatar-trigger {
+      width: 36px !important;
+      min-width: 36px !important;
+      height: 36px !important;
+      min-height: 36px !important;
+      color: #f8f4ea !important;
+      -webkit-text-fill-color: #f8f4ea !important;
+      background: #1f332c !important;
+      box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+    }
+
+    html body .topbar:has(.cg-workspace-tabs) .account-menu-trigger :is(span, strong, i),
+    html body .topbar:has(.cg-workspace-tabs) .cg-avatar-trigger span {
+      color: #f8f4ea !important;
+      -webkit-text-fill-color: #f8f4ea !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+    }
+
+    @media (max-width: 1180px) {
+      html body .topbar:has(.cg-workspace-tabs) .nav-inner,
+      html body .topbar:has(.cg-vera-search) .nav-inner {
+        width: min(100% - 32px, 1240px) !important;
+        grid-template-columns: auto 1fr auto !important;
+        gap: 18px !important;
+      }
+    }
+
+    html body:is([data-page="grow"], [data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main > .workspace-page-container,
+    html body[data-page="dashboard"] main > .container.os-layout.workspace-page-container,
+    html body[data-page="market"]:has(.cg-worth) main > .container.os-layout.workspace-page-container,
+    html body[data-page="autopilot"]:has(.cg-pipeline) main > .container.os-layout.workspace-page-container,
+    html body[data-page="jobs"] main.workspace-page-container[data-jobs-page],
+    html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container,
+    html body[data-page="jobs"] main[data-jobs-page] > .page-hero > .container,
+    html body[data-page="jobs"] main[data-jobs-page] > .jobs-page-layout {
+      width: min(1240px, calc(100% - 48px)) !important;
+      max-width: 1240px !important;
+      margin-inline: auto !important;
+      padding-inline: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    @media (max-width: 1180px) {
+      html body:is([data-page="grow"], [data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main > .workspace-page-container,
+      html body[data-page="dashboard"] main > .container.os-layout.workspace-page-container,
+      html body[data-page="market"]:has(.cg-worth) main > .container.os-layout.workspace-page-container,
+      html body[data-page="autopilot"]:has(.cg-pipeline) main > .container.os-layout.workspace-page-container,
+      html body[data-page="jobs"] main.workspace-page-container[data-jobs-page],
+      html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container,
+      html body[data-page="jobs"] main[data-jobs-page] > .page-hero > .container,
+      html body[data-page="jobs"] main[data-jobs-page] > .jobs-page-layout {
+        width: min(100% - 32px, 1240px) !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
 }
 
 function renderNavigation() {
@@ -1528,11 +2029,14 @@ function renderNavigation() {
   if (!navInner) return;
   const state = readState();
   const loggedIn = Boolean(state.session.loggedIn);
-  navInner.innerHTML = loggedIn ? workspaceTopNav() : publicNav();
+  const publicPages = new Set(["home", "login", "register", "jobs", "companies", "universities"]);
+  const forcePublicNav = publicPages.has(document.body.dataset.page || "home");
+  navInner.innerHTML = loggedIn && !forcePublicNav ? workspaceTopNav() : publicNav();
+  ensureWorkspaceNavbarStyles();
   if (mobileNav) {
-    mobileNav.innerHTML = loggedIn
+    mobileNav.innerHTML = loggedIn && !forcePublicNav
       ? ""
-      : `<a data-nav="jobs" href="jobs.html">Jobs</a><a data-nav="companies" href="companies.html">Companies</a><a data-nav="universities" href="universities.html">Universities</a><a data-nav="community" href="community.html">Community</a><a data-nav="login" href="login.html">Login</a><a data-nav="register" href="register.html">Create Account</a>`;
+      : `<a href="jobs.html">Jobs</a><a href="companies.html">Companies</a><a href="universities.html">Universities</a><a href="community.html">Community</a><a href="login.html">Login</a><a href="register.html">Create Account</a>`;
   }
   createIcons();
   setActiveNav();
@@ -1632,7 +2136,7 @@ function ensureBrandFonts() {
   const link = document.createElement("link");
   link.id = "careergo-brand-fonts";
   link.rel = "stylesheet";
-  link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900;1000&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap";
+  link.href = "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700;800;900&display=swap";
   document.head.appendChild(link);
 }
 
@@ -1677,7 +2181,7 @@ function renderSiteFooter() {
           </nav>
         </div>
         <div class="footer-bottom">
-          <span>© 2026 CareerGo. All rights reserved.</span>
+          <span>(c) 2026 CareerGo. All rights reserved.</span>
         </div>
       </div>
     `;
@@ -1690,7 +2194,7 @@ function renderSiteFooter() {
       <div class="footer-grid">
         <div class="footer-brand">
           <h2>CareerGo</h2>
-          <p>The AI-guided career platform — find jobs, research companies and universities, and grow with Vera.</p>
+          <p>The AI-guided career platform - find jobs, research companies and universities, and grow with Vera.</p>
         </div>
         <nav class="footer-column" aria-label="Product">
           <h3>Product</h3>
@@ -1716,7 +2220,7 @@ function renderSiteFooter() {
         </nav>
       </div>
       <div class="footer-bottom">
-        <span>© 2026 CareerGo · Career OS</span>
+        <span>(c) 2026 CareerGo  - Career OS</span>
       </div>
     </div>
   `;
@@ -2009,6 +2513,12 @@ function initWorkspaceRailScrollSync() {
 }
 
 function setActiveNav() {
+  if (qs(".public-site-nav")) {
+    qsa("[data-nav].active, .public-site-nav .active, .public-site-actions .active").forEach(link => {
+      link.classList.remove("active");
+    });
+    return;
+  }
   const page = document.body.dataset.page || "home";
   qsa("[data-nav]").forEach(link => {
     link.classList.toggle("active", link.dataset.nav === page);
@@ -2841,7 +3351,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><div class="cg-section-kicker">Featured companies</div><h2>Four teams Vera thinks you should know this week.</h2></div>
-            <a class="cg-discover-link-btn" href="companies.html">Explore 1,240 companies ${icon("arrow-right")}</a>
+            <a class="cg-discover-link-btn" href="companies.html#companies">Explore 1,240 companies ${icon("arrow-right")}</a>
           </div>
           <div class="cg-featured-org-grid">
             ${featuredCompanies.map(([name, sub, tag, roles, why]) => `
@@ -2857,7 +3367,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><div class="cg-section-kicker">Featured universities</div><h2>Institutions treated like career opportunities.</h2></div>
-            <a class="cg-discover-link-btn" href="universities.html">Browse all universities ${icon("arrow-right")}</a>
+            <a class="cg-discover-link-btn" href="companies.html#universities">Browse all universities ${icon("arrow-right")}</a>
           </div>
           <div class="cg-featured-org-grid">
             ${universities.map(([name, sub, tag, why]) => `
@@ -2923,10 +3433,10 @@ function renderJobsPage() {
   if (state.session.loggedIn) {
     const topPick = DATA.jobs.find(job => job.id === "job-ai-product") || DATA.jobs[0];
     const roleDirections = [
-      ["AI Product Manager", "One step above your current level", "91% match", "RM 145k / yr", "▲ 34%", "High", "Medium", "Common", "91%", "Your SQL + design background is exactly what AI product teams in KL are hiring for."],
-      ["Design Engineer", "Leans into your design background", "78% match", "RM 118k / yr", "▲ 22%", "High", "Low", "Common", "78%", "Rare hybrid role - few Malaysian designers code, few engineers design."],
-      ["Founding PM (Seed startup)", "Fits your risk profile", "72% match", "RM 130k + equity / yr", "▲ 12%", "Very high", "High", "Sometimes", "72%", "You've saved 3 seed-stage KL startups this month."],
-      ["Head of Product (Seed)", "3-year direction from your current roadmap", "64% match", "RM 200k / yr", "▲ 18%", "High", "High", "Sometimes", "64%", "Reachable within 3 years if you complete the Grow plan and lead 1 launch."]
+      ["AI Product Manager", "One step above your current level", "91% match", "RM 145k / yr", "+34%", "High", "Medium", "Common", "91%", "Your SQL + design background is exactly what AI product teams in KL are hiring for."],
+      ["Design Engineer", "Leans into your design background", "78% match", "RM 118k / yr", "+22%", "High", "Low", "Common", "78%", "Rare hybrid role - few Malaysian designers code, few engineers design."],
+      ["Founding PM (Seed startup)", "Fits your risk profile", "72% match", "RM 130k + equity / yr", "+12%", "Very high", "High", "Sometimes", "72%", "You've saved 3 seed-stage KL startups this month."],
+      ["Head of Product (Seed)", "3-year direction from your current roadmap", "64% match", "RM 200k / yr", "+18%", "High", "High", "Sometimes", "64%", "Reachable within 3 years if you complete the Grow plan and lead 1 launch."]
     ];
     const marketPulse = [
       ["In your market", "Hiring +34%", "AI Product roles", "RM 145k / year", "67% remote-friendly", "312 new openings", "teal"],
@@ -2935,26 +3445,26 @@ function renderJobsPage() {
       ["Your region", "Hiring +12%", "KL fintech product hubs", "RM 128k / year", "38% remote-friendly", "204 new openings", "rose"]
     ];
     const companies = [
-      ["Setel", "Fintech · PETRONAS Digital", "4 open roles", "RM 9k-14k / mo expected", "Hybrid (KL)", "Interview: Medium", "↑ 22% headcount", "Matches your fintech interest and hires PMs from design."],
-      ["Carsome", "Marketplace · Series E", "3 open roles", "RM 10k-15k / mo expected", "Hybrid (KL)", "Interview: Medium-high", "↑ 14% headcount", "3 people from your university joined PM here in the last year."],
-      ["StoreHub", "SaaS for SMB · Craft-led", "2 open roles", "RM 8k-12k / mo expected", "Remote-friendly", "Interview: Medium", "↑ 18% headcount", "Async-first culture, close to your working-style profile."],
-      ["Aerodyne", "Drone + AI · Global HQ in KL", "5 open roles", "RM 11k-16k / mo expected", "Hybrid", "Interview: High", "↑ 27% headcount", "AI-native org - matches your saved roles pattern."]
+      ["Setel", "Fintech  - PETRONAS Digital", "4 open roles", "RM 9k-14k / mo expected", "Hybrid (KL)", "Interview: Medium", "+22% headcount", "Matches your fintech interest and hires PMs from design."],
+      ["Carsome", "Marketplace  - Series E", "3 open roles", "RM 10k-15k / mo expected", "Hybrid (KL)", "Interview: Medium-high", "+14% headcount", "3 people from your university joined PM here in the last year."],
+      ["StoreHub", "SaaS for SMB  - Craft-led", "2 open roles", "RM 8k-12k / mo expected", "Remote-friendly", "Interview: Medium", "+18% headcount", "Async-first culture, close to your working-style profile."],
+      ["Aerodyne", "Drone + AI  - Global HQ in KL", "5 open roles", "RM 11k-16k / mo expected", "Hybrid", "Interview: High", "+27% headcount", "AI-native org - matches your saved roles pattern."]
     ];
     const programs = [
-      ["Reforge - AI Product Management", "6-week online sprint", "Est. +18% market value", "Cost: USD 2,000 (~RM 9,400)", "Duration: 6 weeks · part-time", "Closes your top skill gap: LLM product design."],
-      ["Asia School of Business - Exec Ed", "Product leadership · MIT-linked", "Est. +12% market value", "Cost: RM 12,000", "Duration: 5 weekends", "Matches your 3-year plan toward Head of Product."],
-      ["Stanford Online - AI Product Certificate", "Self-paced certificate", "Asked for by 4 employers you follow", "Cost: USD 1,750 (~RM 8,200)", "Duration: 8 weeks · self-paced", "Setel, Carsome, and 2 others list this as a plus."],
+      ["Reforge - AI Product Management", "6-week online sprint", "Est. +18% market value", "Cost: USD 2,000 (~RM 9,400)", "Duration: 6 weeks  - part-time", "Closes your top skill gap: LLM product design."],
+      ["Asia School of Business - Exec Ed", "Product leadership  - MIT-linked", "Est. +12% market value", "Cost: RM 12,000", "Duration: 5 weekends", "Matches your 3-year plan toward Head of Product."],
+      ["Stanford Online - AI Product Certificate", "Self-paced certificate", "Asked for by 4 employers you follow", "Cost: USD 1,750 (~RM 8,200)", "Duration: 8 weeks  - self-paced", "Setel, Carsome, and 2 others list this as a plus."],
       ["MBA - Universiti Malaya (Weekend)", "Part-time MBA", "Closes the credential gap for senior roles", "Cost: RM 38,000", "Duration: 2 years", "Only if you target Director-level within 5 years."]
     ];
     const mentors = [
-      ["Aisyah R.", "4y journey", "Designer → PM at Setel", "Started with a design background just like you.", "82% path overlap"],
-      ["Rohan S.", "3y journey", "Design Eng → AI PM at StoreHub", "Made the AI PM jump using a similar skill stack.", "76% path overlap"],
-      ["Meera K.", "6y journey", "Product designer → Head of Product", "Long-term direction if you follow the 3-yr roadmap.", "68% path overlap"]
+      ["Aisyah R.", "4y journey", "Designer -> PM at Setel", "Started with a design background just like you.", "82% path overlap"],
+      ["Rohan S.", "3y journey", "Design Eng -> AI PM at StoreHub", "Made the AI PM jump using a similar skill stack.", "76% path overlap"],
+      ["Meera K.", "6y journey", "Product designer -> Head of Product", "Long-term direction if you follow the 3-yr roadmap.", "68% path overlap"]
     ];
     root.innerHTML = `
       <section class="cg-discover">
         <header class="cg-discover-hero">
-          <div class="cg-discover-kicker"><span>${icon("sparkles")} Discover</span><small>${icon("map-pin")} Malaysia · Kuala Lumpur · Tuned for your Product Management journey</small></div>
+          <div class="cg-discover-kicker"><span>${icon("sparkles")} Discover</span><small>${icon("map-pin")} Malaysia  - Kuala Lumpur  - Tuned for your Product Management journey</small></div>
           <h1>What should you explore next, <em>and why should you care?</em></h1>
           <p>Vera reads your roadmap, your skills, and the Malaysian market - then explains why each opportunity matters for the next step in your career.</p>
           <form class="cg-discover-search" action="vera.html">
@@ -2989,9 +3499,9 @@ function renderJobsPage() {
           <h2>The single move most likely to move your career forward.</h2>
           <article class="cg-top-pick-card">
             <div class="cg-top-pick-main">
-              <div class="cg-pill-row"><span class="dark">${icon("sparkles")} Vera found this</span><span>${icon("flame")} 91% roadmap match</span><small>Posted 2 days ago · 34 applicants</small></div>
+              <div class="cg-pill-row"><span class="dark">${icon("sparkles")} Vera found this</span><span>${icon("flame")} 91% roadmap match</span><small>Posted 2 days ago  - 34 applicants</small></div>
               <h3>Senior Product Manager, AI Platform</h3>
-              <p class="cg-role-line">${icon("building-2")} Setel (PETRONAS Digital) · ${icon("map-pin")} Kuala Lumpur · Hybrid</p>
+              <p class="cg-role-line">${icon("building-2")} Setel (PETRONAS Digital)  - ${icon("map-pin")} Kuala Lumpur  - Hybrid</p>
               <p class="cg-salary"><span>Estimated annual salary (Malaysia)</span> RM 140,000 - RM 168,000 <small>/ year</small></p>
               <div class="cg-why-card">
                 <span>${icon("sparkles")} Why Vera recommends this</span>
@@ -3008,16 +3518,16 @@ function renderJobsPage() {
             <aside class="cg-top-pick-side">
               <div><span>Career match</span><strong>91%</strong><small>based on your roadmap</small></div>
               <div><span>${icon("target")} Skills you already have</span><p><b>Product discovery</b><b>User research</b><b>SQL for PM</b><b>Design systems</b></p><span>${icon("lightbulb")} Skills to strengthen</span><p><em>LLM product design</em><em>Prompt evaluation</em></p></div>
-              <div class="mini"><span>Interview difficulty</span><strong>Medium</strong><small>3 rounds · case study</small></div>
+              <div class="mini"><span>Interview difficulty</span><strong>Medium</strong><small>3 rounds  - case study</small></div>
               <div class="mini"><span>Success odds after roadmap</span><strong>76%</strong><small>if you finish Grow plan</small></div>
               <div class="mini"><span>Applicant strength</span><strong>Top 22%</strong><small>vs. this role</small></div>
-              <div class="mini"><span>Company hiring trend</span><strong>↑ 18%</strong><small>PM headcount, 6 mo</small></div>
+              <div class="mini"><span>Company hiring trend</span><strong>+18%</strong><small>PM headcount, 6 mo</small></div>
             </aside>
           </article>
         </section>
 
         <section class="cg-discover-section">
-          <div class="cg-section-kicker">Market pulse · Malaysia</div>
+          <div class="cg-section-kicker">Market pulse  - Malaysia</div>
           <h2>Quick intelligence on what's heating up around you.</h2>
           <div class="cg-market-grid">
             ${marketPulse.map(([tag, trend, title, salary, remote, openings, tone], index) => `
@@ -3037,7 +3547,7 @@ function renderJobsPage() {
           <div class="cg-collection-grid">
             <article class="cg-collection-card large"><span>12 companies</span><i>${icon("arrow-up-right")}</i><h3>Fast-growing AI companies hiring PMs in Malaysia</h3><p>12 teams where the AI stack IS the product. Weighted by funding velocity, headcount growth in KL/Penang, and open PM roles.</p><footer><b>${icon("sparkles")} Why this</b> Because your last 4 saved roles were AI-native.</footer></article>
             <article class="cg-collection-card"><span>8 companies</span><i>${icon("arrow-up-right")}</i><h3>Startups with strong work-life balance</h3><p>Async-first Malaysian teams. Median 34h weeks, no on-call PM culture, hybrid-friendly.</p><footer><b>${icon("sparkles")} Why this</b> Matches your working-style profile.</footer></article>
-            <article class="cg-collection-card"><span>17 roles</span><i>${icon("arrow-up-right")}</i><h3>Roles you could apply to today</h3><p>No upskilling required - your current skills already cover 85%+ of the job spec.</p><footer><b>${icon("sparkles")} Why this</b> Skill overlap ≥ 85%.</footer></article>
+            <article class="cg-collection-card"><span>17 roles</span><i>${icon("arrow-up-right")}</i><h3>Roles you could apply to today</h3><p>No upskilling required - your current skills already cover 85%+ of the job spec.</p><footer><b>${icon("sparkles")} Why this</b> Skill overlap >= 85%.</footer></article>
           </div>
         </section>
 
@@ -3051,7 +3561,7 @@ function renderJobsPage() {
                 <h3>${title}</h3>
                 <p>${sub}</p>
                 <dl>
-                  <dt>Estimated salary</dt><dd>${salary}<small>Malaysia · median</small></dd>
+                  <dt>Estimated salary</dt><dd>${salary}<small>Malaysia  - median</small></dd>
                   <dt>Market demand</dt><dd>${demand}<small>last 30 days</small></dd>
                   <dt>Growth potential</dt><dd>${growth}</dd>
                   <dt>Competition</dt><dd>${competition}</dd>
@@ -3066,7 +3576,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-two-col">
           <article class="cg-list-panel">
-            <header><div><h2>${icon("building-2")} Companies matching your working style</h2><p>Malaysia · async-friendly · craft-led · design-forward</p></div><a href="#companies">See all</a></header>
+            <header><div><h2>${icon("building-2")} Companies matching your working style</h2><p>Malaysia  - async-friendly  - craft-led  - design-forward</p></div><a href="#companies">See all</a></header>
             ${companies.map(([name, sub, open, salary, mode, interview, growth, why]) => `
               <div class="cg-list-row"><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${sub}</p><dl><dd>${salary}</dd><dd>${mode}</dd><dd>${interview}</dd><dd>${growth}</dd></dl><small>${icon("sparkles")} ${why}</small></div><b>${icon("briefcase-business")} ${open}</b></div>
             `).join("")}
@@ -3084,7 +3594,7 @@ function renderJobsPage() {
           <h2>People whose career journeys rhyme with yours.</h2>
           <div class="cg-mentor-grid">
             ${mentors.map(([name, years, path, why, overlap]) => `
-              <article class="cg-mentor-card"><header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${years}</p></div></header><strong>${path}</strong><p>${icon("sparkles")} ${why}</p><footer><small>${icon("lightbulb")} ${overlap}</small><a href="vera.html?topic=${encodeURIComponent(`Show me a path like ${name}`)}">See path →</a></footer></article>
+              <article class="cg-mentor-card"><header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${years}</p></div></header><strong>${path}</strong><p>${icon("sparkles")} ${why}</p><footer><small>${icon("lightbulb")} ${overlap}</small><a href="vera.html?topic=${encodeURIComponent(`Show me a path like ${name}`)}">See path -></a></footer></article>
             `).join("")}
           </div>
         </section>
@@ -3095,7 +3605,7 @@ function renderJobsPage() {
   }
   if (state.session.loggedIn) {
     root.innerHTML = `
-      <section class="container os-layout">
+      <section class="container os-layout workspace-page-container">
         ${appShell("jobs", `
           <section class="glass-card dashboard-hero jobs-hero-card">
             <div>
@@ -3626,7 +4136,7 @@ function renderDirectoryPage(kind) {
   if (!root) return;
   const state = readState();
   const loggedIn = Boolean(state.session.loggedIn);
-  if (loggedIn && state.session.role === "employer" && ["companies", "universities"].includes(kind)) {
+  if (loggedIn && state.session.role === "employer") {
     root.innerHTML = `
       <section class="container section">
         <div class="locked-state glass-card">
@@ -3640,220 +4150,213 @@ function renderDirectoryPage(kind) {
     createIcons();
     return;
   }
-  if (loggedIn) {
-    const title = kind === "universities" ? "Universities" : "Companies";
-    const singular = kind === "universities" ? "university" : "company";
-    root.innerHTML = `
-      <section class="container os-layout">
-        ${appShell(kind, `
-          <section class="directory-workspace">
-            <aside class="filters card compact-filter directory-filter-bar">
-              <h2 class="filter-title">Find ${title.toLowerCase()}</h2>
-              <div class="filter-stack">
-                <div class="field"><i data-lucide="search"></i><input data-org-query placeholder="${title}, industry, location"></div>
-                <a class="btn btn-cyan btn-wide" href="vera.html?topic=${singular} research">${icon("sparkles")} Ask Vera</a>
-              </div>
-            </aside>
-            <div class="directory-split">
-              <section class="list-stack" data-org-list></section>
-              <section class="detail-panel glass-card" data-org-detail></section>
-            </div>
-          </section>
-        `, { title, subtitle: `Research ${title.toLowerCase()}, reviews, outcomes, and fit from inside your CareerGo workspace.` })}
+
+  const extraCompanies = [
+    { id: "shell", name: "Shell", industry: "Energy", location: "Kuala Lumpur", rating: 4.4, reviews: 612, open: 10, signal: "Structured graduate rotations", tags: ["Verified", "Graduates' Choice", "Hiring at scale"], summary: "Global energy employer with commercial rotations, digital product work, and established graduate pathways.", salary: "RM 5k - 14k / month", size: "10,000+ employees", type: "Company" },
+    { id: "setel", name: "Setel", industry: "Fintech", location: "Kuala Lumpur", rating: 4.3, reviews: 288, open: 4, signal: "AI-native product squad", tags: ["Verified", "Fast responders", "Product"], summary: "Fintech product team close to PETRONAS Digital, useful for PMs who want payments and mobility products.", salary: "RM 9k - 14k / month", size: "250+ employees", type: "Company" },
+    { id: "carsome", name: "Carsome", industry: "Marketplace", location: "Kuala Lumpur", rating: 4.2, reviews: 356, open: 3, signal: "Regional marketplace scale", tags: ["Fast growing", "Hybrid", "Product"], summary: "Regional marketplace company with operations, analytics, product growth, and customer platform roles.", salary: "RM 10k - 15k / month", size: "1,000+ employees", type: "Company" },
+    { id: "storehub", name: "StoreHub", industry: "SaaS", location: "Kuala Lumpur", rating: 4.2, reviews: 204, open: 2, signal: "Remote-first craft culture", tags: ["Remote-first", "SaaS", "Async"], summary: "Craft-led SaaS company with strong SMB product problems and close user feedback loops.", salary: "RM 8k - 12k / month", size: "300+ employees", type: "Company" },
+    { id: "aerodyne", name: "Aerodyne", industry: "AI", location: "Kuala Lumpur", rating: 4.1, reviews: 172, open: 5, signal: "Drone and AI platform work", tags: ["AI", "Global HQ", "Product"], summary: "Malaysia-born AI and drone company with global operations, data-heavy products, and technical PM paths.", salary: "RM 11k - 16k / month", size: "800+ employees", type: "Company" }
+  ];
+  const extraUniversities = [
+    { id: "sunway", name: "Sunway University", industry: "Private University", location: "Selangor", rating: 4.4, reviews: 438, open: 18, signal: "Fintech partnerships", tags: ["91% employment", "Industry links", "Business"], summary: "Private university with strong employer links, business programmes, and a growing tech ecosystem.", salary: "91% employed in 6 months", size: "18,000 students", type: "University" },
+    { id: "asb", name: "Asia School of Business", industry: "Business School", location: "Kuala Lumpur", rating: 4.5, reviews: 196, open: 9, signal: "MIT-linked executive education", tags: ["MIT-linked", "Exec Ed", "Leadership"], summary: "Business school focused on leadership, analytics, and regional management programmes.", salary: "88% employed in 6 months", size: "1,200 learners", type: "University" },
+    { id: "apu-malaysia", name: "APU Malaysia", industry: "Private University", location: "Kuala Lumpur", rating: 4.1, reviews: 318, open: 14, signal: "AI programme partners", tags: ["Technology", "AI", "Employability"], summary: "Technology-focused university with computing, AI, and business IT pathways.", salary: "80% employed in 6 months", size: "13,000 students", type: "University" },
+    { id: "iim-bangalore", name: "IIM Bangalore", industry: "Business School", location: "Online", rating: 4.6, reviews: 524, open: 7, signal: "Product leadership alumni", tags: ["Online", "Leadership", "Product"], summary: "Executive programmes and alumni networks useful for product, strategy, and leadership transitions.", salary: "Global alumni network", size: "Executive cohorts", type: "University" }
+  ];
+  const companies = [...DATA.companies, ...extraCompanies]
+    .filter((org, index, all) => all.findIndex(item => item.id === org.id) === index)
+    .map((org, index) => ({ ...org, category: "companies", response: index % 3 === 0 ? "Replies ~1d" : index % 3 === 1 ? "Hiring at scale" : "Strong learning path" }));
+  const universities = [...DATA.universities, ...extraUniversities]
+    .filter((org, index, all) => all.findIndex(item => item.id === org.id) === index)
+    .map((org, index) => ({ ...org, category: "universities", response: index % 3 === 0 ? "Employer linked" : index % 3 === 1 ? "High outcomes" : "Strong alumni" }));
+  const catalog = [...companies, ...universities].map(org => ({
+    ...org,
+    following: org.type === "University" ? `${Math.max(12, Math.round(org.reviews / 10))}k alumni signals` : `${Math.max(3, Math.round(org.reviews / 80))}k following`,
+    programme: org.type === "University" ? (org.tags?.[0] || "Career outcomes") : (org.tags?.[1] || "Verified")
+  }));
+  let activeKind = (location.hash || "").replace("#", "") || (kind === "universities" ? "universities" : "companies");
+  if (!["companies", "universities"].includes(activeKind)) activeKind = "companies";
+  const title = "Career places worth knowing.";
+  const copy = "Browse verified companies and universities in one place. Use categories and filters to compare employer signals, graduate outcomes, locations, programmes, and career fit.";
+  const pageMarkup = `
+    <section class="cg-directory-browser cg-directory-unified" data-cg-directory-browser>
+      <header class="cg-directory-hero">
+        <span class="cg-overline">Browse career places</span>
+        <h1>${title}</h1>
+        <p>${copy}</p>
+      </header>
+      <nav class="cg-directory-tabs" aria-label="Directory category">
+        <button type="button" data-directory-kind="companies">${icon("building-2")} Companies <span>1,240 indexed</span></button>
+        <button type="button" data-directory-kind="universities">${icon("graduation-cap")} Universities <span>186 indexed</span></button>
+      </nav>
+      <section class="cg-directory-controls" aria-label="Directory filters">
+        <label class="cg-directory-search">${icon("search")}<input data-directory-search placeholder="Search companies, universities, programmes, locations..."></label>
+        <select data-directory-sort aria-label="Sort directory">
+          <option value="top">Top rated</option>
+          <option value="open">Most openings / programmes</option>
+          <option value="reviews">Most signals</option>
+        </select>
+        <select data-directory-filter="industry" aria-label="Filter sector"><option value="">All sectors</option></select>
+        <select data-directory-filter="location" aria-label="Filter location"><option value="">All locations</option></select>
+        <select data-directory-filter="rating" aria-label="Filter rating">
+          <option value="">Any rating</option><option value="4.5">4.5+</option><option value="4.3">4.3+</option><option value="4.1">4.1+</option>
+        </select>
+        <select data-directory-filter="programme" aria-label="Filter signal"><option value="">All signals</option></select>
+        <div class="cg-directory-chips">
+          <button type="button" data-chip-filter="Verified">${icon("badge-check")} Verified only</button>
+          <button type="button" data-chip-filter="Graduates">${icon("award")} Graduates' Choice</button>
+          <button type="button" data-chip-filter="Fast">${icon("zap")} Fast responders</button>
+        </div>
       </section>
-    `;
-    createIcons();
+      <p class="cg-directory-count"><strong data-directory-count>0</strong> shown &middot; <span data-directory-mode>Companies</span> &middot; sorted by top rated</p>
+      <section class="cg-directory-grid" data-directory-grid></section>
+    </section>
+  `;
+  if (loggedIn) {
+    root.innerHTML = `<section class="container os-layout workspace-page-container">${appShell("jobs", pageMarkup, { title: "Career Directory", subtitle: copy })}</section>`;
     initSidebarToggle();
   } else {
-    qsa('a[href^="vera.html"]', root).forEach(link => {
-      link.setAttribute("href", "#");
-      link.dataset.authPrompt = "ask Vera for personalized research";
-    });
-    bindProtectedPrompts(root);
+    root.innerHTML = `<section class="container">${pageMarkup}</section>`;
   }
-  const orgs = orgsFor(kind);
+
+  const searchInput = qs("[data-directory-search]", root);
+  const sortSelect = qs("[data-directory-sort]", root);
+  const filterControls = qsa("[data-directory-filter]", root);
+  const chipButtons = qsa("[data-chip-filter]", root);
+  const kindButtons = qsa("[data-directory-kind]", root);
+  const countNode = qs("[data-directory-count]", root);
+  const modeNode = qs("[data-directory-mode]", root);
+  const grid = qs("[data-directory-grid]", root);
   const params = new URLSearchParams(location.search);
-  let active = orgs.find(org => org.id === params.get("org")) || orgs[0];
-  const listRoot = qs("[data-org-list]");
-  const detailRoot = qs("[data-org-detail]");
-  const queryInput = qs("[data-org-query]");
-  const typeButtons = qsa("[data-org-type]");
-  if (queryInput) queryInput.value = params.get("q") || "";
+  if (searchInput) searchInput.value = params.get("q") || "";
 
-  function syncOrgDetailView({ resetScroll = false, reveal = false } = {}) {
-    if (!detailRoot) return;
-    if (resetScroll) {
-      detailRoot.scrollTop = 0;
-      detailRoot.scrollTo?.({ top: 0, left: 0, behavior: "auto" });
-    }
-    if (!reveal) return;
-    window.requestAnimationFrame(() => {
-      if (resetScroll) {
-        detailRoot.scrollTop = 0;
-        detailRoot.scrollTo?.({ top: 0, left: 0, behavior: "auto" });
-      }
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const topbar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--cg-topbar")) || 72;
-      const offset = topbar + 18;
-      const rect = detailRoot.getBoundingClientRect();
-      const targetTop = Math.max(0, window.scrollY + rect.top - offset);
-      window.scrollTo({
-        top: targetTop,
-        behavior: reducedMotion ? "auto" : "smooth"
-      });
-    });
+  function initials(name) {
+    return String(name || "CG").split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase();
   }
 
-  function filteredOrgs() {
-    const q = queryInput.value.trim().toLowerCase();
-    const selectedType = qs("[data-org-type].active")?.dataset.orgType || "All";
-    return orgsFor(kind === "all" ? selectedType.toLowerCase() : kind).filter(org => {
-      const hay = [org.name, org.industry, org.location, ...org.tags].join(" ").toLowerCase();
-      return hay.includes(q);
-    });
+  function activeCatalog() {
+    return catalog.filter(org => org.category === activeKind);
   }
 
-  function renderList() {
-    const items = filteredOrgs();
-    listRoot.innerHTML = items.map(org => `
-      <button class="list-card ${org.id === active.id ? "active" : ""}" data-org-id="${org.id}">
-        <div class="list-card-top">
-          <div>
-            <h3>${org.name}</h3>
-            <div class="muted small">${org.industry} - ${org.location}</div>
-          </div>
-          ${rating(org.rating)}
-        </div>
-        ${pills(org.tags.slice(0, 3), "gold")}
-      </button>
-    `).join("");
-    qsa("[data-org-id]", listRoot).forEach(btn => {
-      btn.addEventListener("click", () => {
-        const previousOrgId = active.id;
-        active = [...DATA.companies, ...DATA.universities].find(org => org.id === btn.dataset.orgId);
-        history.replaceState(null, "", `${kind === "universities" ? "universities" : "companies"}.html?org=${active.id}`);
-        renderList();
-        renderDetail({ resetScroll: active.id !== previousOrgId, reveal: true });
-      });
-    });
-    createIcons();
+  function syncFilters() {
+    const items = activeCatalog();
+    const industry = qs('[data-directory-filter="industry"]', root);
+    const location = qs('[data-directory-filter="location"]', root);
+    const programme = qs('[data-directory-filter="programme"]', root);
+    const fill = (select, label, values) => {
+      const previous = select.value;
+      select.innerHTML = `<option value="">${label}</option>${values.map(value => `<option value="${value}">${value}</option>`).join("")}`;
+      if (values.includes(previous)) select.value = previous;
+    };
+    fill(industry, activeKind === "companies" ? "All sectors" : "All institution types", [...new Set(items.map(org => org.industry))].sort());
+    fill(location, "All locations", [...new Set(items.map(org => org.location))].sort());
+    fill(programme, "All signals", [...new Set(items.flatMap(org => org.tags || []))].sort());
+    kindButtons.forEach(button => button.classList.toggle("active", button.dataset.directoryKind === activeKind));
+    if (modeNode) modeNode.textContent = activeKind === "companies" ? "Companies" : "Universities";
   }
 
-  function renderDetail({ resetScroll = false, reveal = false } = {}) {
-    const currentState = readState();
-    const currentLoggedIn = Boolean(currentState.session.loggedIn);
-    const reviews = currentState.reviews.filter(r => r.targetId === active.id);
-    const saved = currentState.savedOrgs.includes(active.id);
-    const isUniversity = active.type === "University";
-    const saveLabel = saved ? "Saved" : `Save ${isUniversity ? "university" : "company"}`;
-    const secondaryLabel = isUniversity ? "Compare programs" : "Contact";
-    const secondaryTopic = isUniversity ? `${active.name} program comparison` : `${active.name} contact strategy`;
-    detailRoot.innerHTML = `
-      <div class="detail-head">
-        <div>
-          <span class="org-detail-label">${active.type}</span>
-          <span class="pill ${isUniversity ? "cyan" : "gold"}">${active.type}</span>
-          <h2>${active.name}</h2>
-          <div class="muted">${active.industry} - ${active.location}</div>
-        </div>
-        <div>${rating(active.rating)}<div class="muted small">${active.reviews + reviews.length} reviews</div></div>
-      </div>
-      <div class="detail-section">
-        <p class="muted">${active.summary}</p>
-        ${pills(active.tags, isUniversity ? "cyan" : "gold")}
-      </div>
-      <div class="detail-section score-grid">
-        ${Object.entries(active.scores).map(([label, value]) => `<div class="score-tile"><span>${label}</span><strong>${value.toFixed(1)}</strong></div>`).join("")}
-      </div>
-      <div class="detail-section content-grid info-card-row">
-        <div class="vera-box">
-          <h3>${icon("sparkles")} Vera's research note</h3>
-          <p class="muted">${active.signal}. Review themes suggest ${active.scores.growth >= 4.3 ? "strong growth upside" : "steady growth"} with ${active.scores.balance >= 4 ? "healthy balance" : "some balance trade-offs"}. Compare this against your target role, preferred pace, salary expectations, and learning style before deciding.</p>
-        </div>
-        <div class="card">
-          <h3>Background</h3>
-          <p class="muted">Size: ${active.size}</p>
-          <p class="muted">${active.type === "University" ? "Outcome" : "Salary"}: ${active.salary}</p>
-          <p class="muted">Open roles / partners: ${active.open}</p>
-        </div>
-      </div>
-      <div class="detail-section content-grid info-card-row">
-        <div class="card">
-          <h3>Highlights</h3>
-          <ul class="check-list">${active.highlights.map(x => `<li>${x}</li>`).join("")}</ul>
-        </div>
-        <div class="warning-box">
-          <h3>${icon("alert-circle")} Watchouts</h3>
-          <ul class="check-list">${active.watchouts.map(x => `<li>${x}</li>`).join("")}</ul>
-        </div>
-      </div>
-      <div class="detail-section">
-        <div class="section-head" style="margin-bottom:14px">
-          <h3>Reviews</h3>
-        </div>
-        <div>
-          ${(reviews.length ? reviews : currentState.reviews.filter(r => r.targetId === active.id)).map(review => `
-            <div class="review-card">
-              <div class="review-head">
-                <div>
-                  <h4>${review.title}</h4>
-                  <div class="muted small">${review.author} - ${review.date}</div>
-                </div>
-                ${rating(review.rating)}
+  function currentItems() {
+    const query = (searchInput?.value || "").trim().toLowerCase();
+    const selected = Object.fromEntries(filterControls.map(control => [control.dataset.directoryFilter, control.value]));
+    const activeChip = qs("[data-chip-filter].active", root)?.dataset.chipFilter || "";
+    let items = activeCatalog().filter(org => {
+      const hay = [org.name, org.industry, org.location, org.signal, org.programme, org.summary, ...(org.tags || [])].join(" ").toLowerCase();
+      if (query && !hay.includes(query)) return false;
+      if (selected.industry && org.industry !== selected.industry) return false;
+      if (selected.location && org.location !== selected.location) return false;
+      if (selected.rating && Number(org.rating) < Number(selected.rating)) return false;
+      if (selected.programme && !hay.includes(selected.programme.toLowerCase())) return false;
+      if (activeChip && !hay.includes(activeChip.toLowerCase())) return false;
+      return true;
+    });
+    const sort = sortSelect?.value || "top";
+    items = items.sort((a, b) => {
+      if (sort === "open") return Number(b.open || 0) - Number(a.open || 0);
+      if (sort === "reviews") return Number(b.reviews || 0) - Number(a.reviews || 0);
+      return Number(b.rating || 0) - Number(a.rating || 0);
+    });
+    return items;
+  }
+
+  function renderCards() {
+    const items = currentItems();
+    if (countNode) countNode.textContent = String(items.length);
+    grid.innerHTML = items.map(org => {
+      const savedOrgs = Array.isArray(readState().savedOrgs) ? readState().savedOrgs : [];
+      const isSaved = savedOrgs.includes(org.id);
+      const verified = org.tags?.some(tag => /verified|choice|employment|industry/i.test(tag));
+      return `
+        <article class="cg-directory-card ${org.category}">
+          <div class="cg-directory-card-body">
+            <header class="cg-directory-card-head">
+              <span class="cg-directory-logo">${initials(org.name)}</span>
+              <div>
+                <small class="cg-directory-type">${org.type}</small>
+                <h2>${org.name} ${verified ? icon("badge-check") : ""}</h2>
+                <p>${org.industry} &middot; ${org.location}</p>
+                <small>${icon("star")} ${Number(org.rating).toFixed(1)} &middot; ${org.following}</small>
               </div>
-              <p class="muted">${review.body}</p>
-            </div>
-          `).join("") || `<div class="review-card"><p class="muted">No reviews yet. Be the first to help other users research this ${active.type.toLowerCase()}.</p></div>`}
-        </div>
-      </div>
-      <div class="org-detail-actions">
-        ${currentLoggedIn ? `
-          <div class="org-detail-action-row">
-            <button class="btn btn-ghost" data-save-org>${icon(saved ? "bookmark-check" : "bookmark")} ${saveLabel}</button>
-            <a class="btn btn-primary" href="vera.html?topic=${encodeURIComponent(secondaryTopic)}">${icon(isUniversity ? "graduation-cap" : "send")} ${secondaryLabel}</a>
+            </header>
+            <section class="cg-directory-special">
+              <span>What stands out</span>
+              <div>
+                <b>${icon("sparkles")} ${org.signal}</b>
+                <b>${icon(org.type === "University" ? "graduation-cap" : "briefcase")} ${org.response}</b>
+              </div>
+            </section>
+            <section class="cg-directory-signals">
+              <span>Signals</span>
+              <div>
+                ${(org.tags || []).slice(0, 4).map(tag => `<b>${tag}</b>`).join("")}
+                <b>${org.type === "University" ? org.salary : `${org.open} open roles`}</b>
+              </div>
+            </section>
+            <p>${org.summary}</p>
+            <footer>
+              <button type="button" data-directory-save="${org.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save"}</button>
+              <a href="vera.html?topic=${encodeURIComponent(`${org.name} ${org.type.toLowerCase()} research`)}">${icon("sparkles")} Ask Vera</a>
+            </footer>
           </div>
-          <a class="btn btn-cyan org-detail-action-wide" href="vera.html?topic=${encodeURIComponent(`${active.name} ${active.type.toLowerCase()} research`)}">${icon("message-circle")} Ask Vera</a>
-        ` : `
-          <div class="org-detail-action-row">
-            <button class="btn btn-ghost" data-auth-prompt="save and compare ${active.type.toLowerCase()} research">${icon("bookmark")} ${isUniversity ? "Save university" : "Save company"}</button>
-            <button class="btn btn-primary" data-auth-prompt="${isUniversity ? "compare university programs" : "contact this company"}">${icon(isUniversity ? "graduation-cap" : "send")} ${secondaryLabel}</button>
-          </div>
-          <button class="btn btn-cyan org-detail-action-wide" data-auth-prompt="ask Vera for personalized research">${icon("message-circle")} Ask Vera</button>
-        `}
-      </div>
-    `;
-    syncOrgDetailView({ resetScroll, reveal });
-    if (!currentLoggedIn) {
-      bindProtectedPrompts(detailRoot);
-      createIcons();
-      return;
-    }
-    qs("[data-review]", detailRoot)?.addEventListener("click", () => openReviewModal(active));
-    qs("[data-save-org]", detailRoot)?.addEventListener("click", () => {
+        </article>
+      `;
+    }).join("") || `<article class="cg-directory-empty"><h2>No matches yet.</h2><p>Try clearing a filter or searching a broader term.</p></article>`;
+    qsa("[data-directory-save]", grid).forEach(button => button.addEventListener("click", () => {
+      if (!readState().session.loggedIn) {
+        showToast("Create an account to save research.", "note");
+        return;
+      }
       const next = readState();
-      next.savedOrgs = next.savedOrgs.includes(active.id) ? next.savedOrgs.filter(id => id !== active.id) : [...next.savedOrgs, active.id];
+      next.savedOrgs = Array.isArray(next.savedOrgs) ? next.savedOrgs : [];
+      const id = button.dataset.directorySave;
+      next.savedOrgs = next.savedOrgs.includes(id) ? next.savedOrgs.filter(savedId => savedId !== id) : [...next.savedOrgs, id];
       writeState(next);
-      showToast(next.savedOrgs.includes(active.id) ? "Organization saved for comparison." : "Organization removed from saved list.");
-      renderDetail();
-    });
+      renderCards();
+      showToast(next.savedOrgs.includes(id) ? "Saved for comparison." : "Removed from saved.");
+    }));
     createIcons();
   }
 
-  typeButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      typeButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      const previousOrgId = active.id;
-      active = filteredOrgs()[0] || active;
-      renderList();
-      renderDetail({ resetScroll: active.id !== previousOrgId, reveal: true });
-    });
-  });
-  queryInput.addEventListener("input", renderList);
-  renderList();
-  renderDetail();
-}
+  function refresh() {
+    syncFilters();
+    renderCards();
+  }
 
+  kindButtons.forEach(button => button.addEventListener("click", () => {
+    activeKind = button.dataset.directoryKind;
+    history.replaceState(null, "", `${location.pathname}#${activeKind}`);
+    chipButtons.forEach(item => item.classList.remove("active"));
+    refresh();
+  }));
+  [searchInput, sortSelect, ...filterControls].filter(Boolean).forEach(control => control.addEventListener("input", renderCards));
+  chipButtons.forEach(button => button.addEventListener("click", () => {
+    const wasActive = button.classList.contains("active");
+    chipButtons.forEach(item => item.classList.remove("active"));
+    if (!wasActive) button.classList.add("active");
+    renderCards();
+  }));
+  refresh();
+}
 function openReviewModal(target) {
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop";
@@ -3981,7 +4484,7 @@ function renderDashboard() {
     ? trackedJobs.slice(0, 2)
     : topJobs.slice(0, 2).map(job => ({ job, record: createApplicationRecord(job.id, "saved") })));
   const longArcCards = [
-    ["Career Simulation", "See where your career could be in 5 years", "compass", "profile.html"],
+    ["Career Simulation", "See where your career could be in 5 years", "compass", "grow.html"],
     ["Fair Pay", "Your market value increased 6% this month", "chart-line", "market.html"],
     ["Career Planning", "Continue your 3-year roadmap", "target", "market.html#roadmap"],
     ["Company Research", `${savedOrgs.length || 12} new insights on companies you follow`, "building-2", "companies.html"]
@@ -3999,7 +4502,7 @@ function renderDashboard() {
 
       <section class="cg-kpi-grid" data-tour-target="metrics">
         ${kpis.map(([label, value, progress, detail, ic], index) => `
-          <a class="cg-kpi-card tone-${index + 1}" href="${index === 3 ? "jobs.html#tracker" : index === 1 ? "market.html" : "profile.html"}">
+          <a class="cg-kpi-card tone-${index + 1}" href="${index === 3 ? "jobs.html#tracker" : index === 1 ? "market.html" : "grow.html"}">
             <span class="cg-card-icon">${icon(ic)}</span>
             <span class="cg-kpi-label">${label}</span>
             <strong>${value}</strong>
@@ -4019,7 +4522,7 @@ function renderDashboard() {
           <p>${focusDetail}</p>
           <div class="cg-action-row">
             <a class="btn btn-primary" href="vera.html#plan">Start with Vera ${icon("arrow-up-right")}</a>
-            <a class="btn btn-ghost" href="profile.html">Snooze</a>
+            <a class="btn btn-ghost" href="grow.html">Snooze</a>
             <span class="cg-confidence">${icon("gauge")} Confidence: ${intel.confidence}</span>
           </div>
         </article>
@@ -4352,7 +4855,7 @@ function renderVera() {
         body: "Set your profile baseline, choose one target path, and build a clean evidence map.",
         outcome: "A focused target role, ATS baseline, and one clear proof gap.",
         tasks: [
-          ["baseline-profile", "Update Career Intelligence profile and resume baseline", "profile.html"],
+          ["baseline-profile", "Update Career Intelligence profile and resume baseline", "edit-career-data.html"],
           ["baseline-target", `Choose one target path: ${getTargetLabel(state.profile)}`, "jobs.html"],
           ["baseline-research", "Compare 3 companies or universities before applying", "companies.html"]
         ]
@@ -4364,8 +4867,8 @@ function renderVera() {
         body: "Close your top two gaps with visible proof: one strategy artifact and one metrics story.",
         outcome: "A portfolio-ready project story that proves judgment, impact, and trade-offs.",
         tasks: [
-          ["proof-strategy", "Write one product strategy memo from a past project", "profile.html"],
-          ["proof-metrics", "Add before/after metrics to one case study", "profile.html"],
+          ["proof-strategy", "Write one product strategy memo from a past project", "grow.html"],
+          ["proof-metrics", "Add before/after metrics to one case study", "grow.html"],
           ["proof-skill", "Complete one high-value skill sprint from Vera's roadmap", "vera.html#skills"]
         ]
       },
@@ -5101,8 +5604,8 @@ function renderEmployerOnboarding() {
   createIcons();
 }
 
-function renderProfile() {
-  const root = qs("[data-profile]");
+function renderGrow() {
+  const root = qs("[data-grow]");
   if (!root) return;
   if (!requireAccount(root, "edit your Career Intelligence Profile")) return;
   const state = readState();
@@ -5110,7 +5613,7 @@ function renderProfile() {
   const intel = profile.intelligence || generateCareerIntelligence(profile);
   const growthStats = [
     ["Interview readiness", "68%", "74%", "+6"],
-    ["Skill percentile", "Top 42%", "Top 31%", "▲ 11"],
+    ["Skill percentile", "Top 42%", "Top 31%", "+11"],
     ["Matching jobs", "118", "153", "+35"],
     ["Estimated pay", "RM 7,800", "RM 8,900", "+RM 1,100"]
   ];
@@ -5122,15 +5625,15 @@ function renderProfile() {
     ["User research", "On track", "One study away from target.", "Top 38%", 74, "track"]
   ];
   const milestones = [
-    ["Milestone 1", "Interview foundation", "Warm up SQL, storytelling, and metric intuition.", "Ends Fri", "+8% readiness · +40 role matches", 62, "In progress"],
-    ["Milestone 2", "Data confidence", "Ship 2 dashboards. Own a metric end-to-end.", "~2 weeks", "Closes largest skill gap · +RM 1.3k pay band", 0, ""],
+    ["Milestone 1", "Interview foundation", "Warm up SQL, storytelling, and metric intuition.", "Ends Fri", "+8% readiness  - +40 role matches", 62, "In progress"],
+    ["Milestone 2", "Data confidence", "Ship 2 dashboards. Own a metric end-to-end.", "~2 weeks", "Closes largest skill gap  - +RM 1.3k pay band", 0, ""],
     ["Milestone 3", "Portfolio proof", "One public case study Vera helps you write.", "~3 weeks", "Lifts interview callback rate ~2.3x", 0, ""],
-    ["Milestone 4", "Application sprint", "5 applications · 2 warm intros via Vera.", "~4 weeks", "Median offer RM 10.2k · 3 expected interviews", 0, ""]
+    ["Milestone 4", "Application sprint", "5 applications  - 2 warm intros via Vera.", "~4 weeks", "Median offer RM 10.2k  - 3 expected interviews", 0, ""]
   ];
   const moves = [
-    ["Practice", "3h · Beginner", "SQL for Product Managers", "DataLemur", "Chosen because: 78% of your saved PM roles list SQL as required.", [["Interview readiness", "+8%"], ["New matching jobs", "+31"], ["Skill gap closed", "Data fluency"]]],
-    ["Course", "6h · Intermediate", "Product Strategy sprint", "Reforge", "Chosen because: Completes Milestone 1 and matches your Grab & Setel targets.", [["Interview readiness", "+11%"], ["Pay band shift", "+RM 900"], ["Milestone", "Closes M1"]]],
-    ["Essay pack", "45m · Any", "Write a crisp problem statement", "Vera curated", "Chosen because: Your written comms is your strongest signal - publish once to lock Top 18%.", [["Callback rate", "x1.4"], ["Portfolio proof", "+1 artifact"], ["Milestone", "Feeds M3"]]]
+    ["Practice", "3h  - Beginner", "SQL for Product Managers", "DataLemur", "Chosen because: 78% of your saved PM roles list SQL as required.", [["Interview readiness", "+8%"], ["New matching jobs", "+31"], ["Skill gap closed", "Data fluency"]]],
+    ["Course", "6h  - Intermediate", "Product Strategy sprint", "Reforge", "Chosen because: Completes Milestone 1 and matches your Grab & Setel targets.", [["Interview readiness", "+11%"], ["Pay band shift", "+RM 900"], ["Milestone", "Closes M1"]]],
+    ["Essay pack", "45m  - Any", "Write a crisp problem statement", "Vera curated", "Chosen because: Your written comms is your strongest signal - publish once to lock Top 18%.", [["Callback rate", "x1.4"], ["Portfolio proof", "+1 artifact"], ["Milestone", "Feeds M3"]]]
   ];
   const practiceItems = [
     ["Mock interview", "15 min", "15-min PM mock - marketplace pricing", "Product thinking", "+4% readiness"],
@@ -5159,13 +5662,13 @@ function renderProfile() {
       </header>
 
       <section class="cg-grow-stats">
-        <div class="cg-section-kicker">${icon("trending-up")} You're improving · last 14 days</div>
+        <div class="cg-section-kicker">${icon("trending-up")} You're improving  - last 14 days</div>
         <div class="cg-grow-stat-grid">
           ${growthStats.map(([label, oldValue, value, delta]) => `
             <article>
               <span>${label}</span>
               <strong><s>${oldValue}</s> ${value}</strong>
-              <small>↗ ${delta}</small>
+              <small>-${delta}</small>
             </article>
           `).join("")}
         </div>
@@ -5189,7 +5692,7 @@ function renderProfile() {
         </article>
 
         <article class="cg-skill-graph">
-          <header><h2>${icon("brain-circuit")} Your skill graph</h2><small>vs. PM archetype · KL market</small></header>
+          <header><h2>${icon("brain-circuit")} Your skill graph</h2><small>vs. PM archetype  - KL market</small></header>
           ${skillGraph.map(([skill, status, note, rank, value, tone]) => `
             <div class="cg-skill-row tone-${tone}">
               <div><strong>${skill}</strong><span>${status}</span></div>
@@ -5203,12 +5706,12 @@ function renderProfile() {
       <section class="cg-grow-journey">
         <header>
           <div>
-            <span class="cg-section-kicker">Your growth journey · Product Manager, KL</span>
+            <span class="cg-section-kicker">Your growth journey  - Product Manager, KL</span>
             <h2>Four milestones to your next offer.</h2>
           </div>
           <button class="btn btn-ghost" type="button">${icon("target")} Adjust goals</button>
         </header>
-        <div class="cg-grow-progress"><i></i><span>18% overall · est. offer by mid-August</span><b>${icon("flame")} 6-day streak</b></div>
+        <div class="cg-grow-progress"><i></i><span>18% overall  - est. offer by mid-August</span><b>${icon("flame")} 6-day streak</b></div>
         <div class="cg-milestone-list">
           ${milestones.map(([label, title, body, time, result, progress, stateLabel], index) => `
             <article class="cg-milestone-card">
@@ -5226,13 +5729,13 @@ function renderProfile() {
 
       <section class="cg-interview-coach">
         <div class="cg-grow-section-head">
-          <div><span class="cg-section-kicker">Interview coach · powered by Vera</span><h2>Walk into every interview <em>already prepared.</em></h2></div>
+          <div><span class="cg-section-kicker">Interview coach  - powered by Vera</span><h2>Walk into every interview <em>already prepared.</em></h2></div>
           <span class="cg-soft-pill">${icon("shield-check")} Adaptive to each company</span>
         </div>
         <div class="cg-interview-top">
           <article class="cg-upcoming-interview">
             <small>${icon("calendar-clock")} Upcoming interview</small>
-            <header><div><h3>Product Manager</h3><p>${icon("building-2")} Grab Malaysia · Round 2 · Hiring Manager + Case</p></div><time>Tuesday, 9 Jul · 10:00 AM<span>3 days remaining</span></time></header>
+            <header><div><h3>Product Manager</h3><p>${icon("building-2")} Grab Malaysia  - Round 2  - Hiring Manager + Case</p></div><time>Tuesday, 9 Jul  - 10:00 AM<span>3 days remaining</span></time></header>
             <div class="cg-interview-kpis">
               <div><span>Interview readiness</span><strong>74%</strong></div>
               <div><span>Difficulty</span><strong>High</strong></div>
@@ -5277,7 +5780,7 @@ function renderProfile() {
           </article>
         </div>
         <article class="cg-interview-checklist">
-          <header><span>${icon("clipboard-check")} Interview in 3 days · Grab PM</span><div><i><em style="width:67%"></em></i><b>4/6 · 67% ready</b></div></header>
+          <header><span>${icon("clipboard-check")} Interview in 3 days  - Grab PM</span><div><i><em style="width:67%"></em></i><b>4/6  - 67% ready</b></div></header>
           <div>
             ${[
               ["Resume tailored to Grab PM JD", true],
@@ -5293,7 +5796,7 @@ function renderProfile() {
       </section>
 
       <section class="cg-grow-section">
-        <div class="cg-grow-section-head"><div><span class="cg-section-kicker">Chosen for you · this week</span><h2>The three moves with the biggest return.</h2></div><a href="vera.html#skills">Browse all</a></div>
+        <div class="cg-grow-section-head"><div><span class="cg-section-kicker">Chosen for you  - this week</span><h2>The three moves with the biggest return.</h2></div><a href="vera.html#skills">Browse all</a></div>
         <div class="cg-move-grid">
           ${moves.map(([kind, time, title, source, why, metrics]) => `
             <article class="cg-move-card">
@@ -5495,6 +5998,563 @@ function renderProfile() {
   createIcons();
 }
 
+function renderProfileLegacy() {
+  const root = qs("[data-profile]");
+  if (!root) return;
+  if (!requireAccount(root, "edit your CareerGo profile")) return;
+
+  const state = readState();
+  const profile = normalizeProfile(state.profile);
+  const intel = profile.intelligence || generateCareerIntelligence(profile);
+  const name = profile.personal.fullName || state.session.name || "Mira Tan";
+  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase() || "MI";
+  const targetRole = profile.preferences.roles[0] || profile.background.currentRole || "Product Analyst Candidate";
+  const stage = profile.careerStage || "Career Switcher";
+  const locationLabel = [profile.personal.cityState, profile.personal.country].filter(Boolean).join(", ") || "Kuala Lumpur, Malaysia";
+  const school = profile.background.school || "Universiti Malaya";
+  const course = profile.background.courseMajor || "Product Analytics path";
+  const visibility = profile.privacy.profileVisibility || "Private";
+  const publicUrl = `careergo.app/u/${encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"))}`;
+  const profileStrength = Math.min(100, 45
+    + (profile.resume.uploaded || profile.resume.name ? 15 : 0)
+    + (profile.skills.technical.length ? 15 : 0)
+    + (profile.preferences.roles.length ? 10 : 0)
+    + (profile.preferences.industries.length ? 10 : 0)
+    + (profile.skills.projects.length ? 5 : 0));
+  const listValue = value => Array.isArray(value) ? value.join(", ") : String(value || "");
+  const htmlValue = value => String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  const option = (value, selected) => `<option value="${htmlValue(value)}" ${value === selected ? "selected" : ""}>${value}</option>`;
+  const field = (label, name, value, placeholder = "") => `<label>${label}<input name="${name}" value="${htmlValue(value)}" placeholder="${htmlValue(placeholder)}"></label>`;
+  const area = (label, name, value, placeholder = "") => `<label class="cg-profile-wide">${label}<textarea name="${name}" placeholder="${htmlValue(placeholder)}">${htmlValue(value)}</textarea></label>`;
+  const formSections = [
+    ["Personal Information", "user-round", [
+      field("Full name", "fullName", profile.personal.fullName, "Mira Tan"),
+      field("Email", "email", profile.personal.email, "mira@email.com"),
+      field("Phone", "phone", profile.personal.phone, "+60"),
+      field("City / State", "cityState", profile.personal.cityState, "Kuala Lumpur"),
+      field("Country", "country", profile.personal.country, "Malaysia"),
+      field("Preferred language", "preferredLanguage", profile.personal.preferredLanguage, "English"),
+      `<label>Role type<select name="roleType">${["", ...ROLE_TYPES].map(value => option(value, profile.personal.roleType || "")).join("")}</select></label>`,
+      field("Age range", "ageRange", profile.personal.ageRange, "18-24")
+    ]],
+    ["Education", "graduation-cap", [
+      field("School / university", "school", profile.background.school, "Universiti Malaya"),
+      field("Education level", "educationLevel", profile.background.educationLevel, "Degree"),
+      field("Course / major", "courseMajor", profile.background.courseMajor, "Business Analytics"),
+      field("Expected graduation year", "expectedGraduationYear", profile.background.expectedGraduationYear, "2027"),
+      field("Academic performance", "academicPerformance", profile.background.academicPerformance, "CGPA 3.7"),
+      area("Projects and club leadership", "clubLeadership", profile.background.clubLeadership || profile.background.projectExperience, "Case competitions, student clubs, leadership roles")
+    ]],
+    ["Experience", "briefcase-business", [
+      field("Current / last role", "currentRole", profile.background.currentRole || profile.background.lastRole, "Product Designer"),
+      field("Industry", "industry", profile.background.industry, "Fintech"),
+      field("Years of experience", "yearsExperience", profile.background.yearsExperience, "2"),
+      field("Current salary range", "currentSalaryRange", profile.background.currentSalaryRange, "RM 7k - 9k"),
+      field("Management experience", "managementExperience", profile.background.managementExperience, "None"),
+      area("Previous roles / work experience", "previousRoles", profile.background.previousRoles || profile.skills.workExperience, "Internships, freelance work, part-time roles")
+    ]],
+    ["Skills", "sparkles", [
+      area("Technical skills", "technical", listValue(profile.skills.technical), "SQL, product analytics, user research"),
+      area("Soft skills", "soft", listValue(profile.skills.soft), "Storytelling, stakeholder management"),
+      area("Tools", "tools", listValue(profile.skills.tools), "Figma, Notion, Mixpanel"),
+      area("Certifications", "certifications", listValue(profile.skills.certifications), "Google Analytics, DataCamp"),
+      field("Languages", "languages", listValue(profile.skills.languages), "English, Malay, Mandarin")
+    ]],
+    ["Career Goals", "target", [
+      `<label>Career stage<select name="careerStage">${["", ...CAREER_STAGES].map(value => option(value, profile.careerStage || "")).join("")}</select></label>`,
+      area("Goals", "goals", listValue(profile.goals), "Move into product analytics, prepare for PM interviews"),
+      area("Preferred roles", "roles", listValue(profile.preferences.roles), "Product Analyst, Associate PM"),
+      area("Target industries", "industries", listValue(profile.preferences.industries), "Fintech, AI, SaaS"),
+      area("Career context", "careerContext", profile.background.switchConcerns || profile.background.gapReason || profile.background.reasonForCareerGo, "What should Vera understand about your transition?")
+    ]],
+    ["Projects & Links", "link", [
+      area("Projects", "projects", listValue(profile.skills.projects), "Portfolio case study, dashboard, research project"),
+      area("Achievements", "achievements", listValue(profile.skills.achievements), "Awards, shipped outcomes, leadership wins"),
+      field("Portfolio links", "portfolioLinks", profile.skills.portfolioLinks, "https://"),
+      field("LinkedIn", "linkedin", profile.skills.linkedin, "https://linkedin.com/in/..."),
+      field("GitHub", "github", profile.skills.github, "https://github.com/..."),
+      field("Website", "website", profile.skills.website, "https://")
+    ]],
+    ["Job Preferences", "sliders-horizontal", [
+      area("Preferred locations", "locations", listValue(profile.preferences.locations), "Kuala Lumpur, Remote"),
+      field("Work mode", "workMode", profile.preferences.workMode, "Hybrid"),
+      field("Employment types", "employmentTypes", listValue(profile.preferences.employmentTypes), "Full-time, internship"),
+      field("Minimum salary", "minimumSalary", profile.preferences.minimumSalary, "RM 8,000"),
+      field("Relocate", "relocate", profile.preferences.relocate, "Maybe"),
+      field("Company size", "companySize", profile.preferences.companySize, "Startup, scaleup"),
+      field("Work culture", "workCulture", profile.preferences.workCulture, "Async, craft-led"),
+      field("Risk tolerance", "riskTolerance", profile.preferences.riskTolerance, "Medium")
+    ]],
+    ["Resume & Documents", "file-text", [
+      `<div class="cg-profile-upload"><span>${icon("file-check-2")}</span><strong>${profile.resume.name || "No resume uploaded yet"}</strong><p>Upload a resume so Vera can refresh job fit, profile strength, and interview readiness.</p><input name="resume" type="file" accept=".pdf,.doc,.docx"></div>`
+    ]],
+    ["Privacy Settings", "shield-check", [
+      `<label>Profile visibility<select name="profileVisibility">${["Private", "Public", "Visible to employers", "Visible for advisory opportunities"].map(value => option(value, visibility)).join("")}</select></label>`,
+      `<label class="cg-profile-check"><input name="allowEmployerDiscovery" type="checkbox" ${profile.privacy.allowEmployerDiscovery ? "checked" : ""}> Allow employer discovery</label>`,
+      `<label class="cg-profile-check"><input name="allowCoachMemory" type="checkbox" ${profile.privacy.allowCoachMemory ? "checked" : ""}> Allow Vera to remember coaching context</label>`
+    ]],
+    ["AI Coach Preferences", "bot", [
+      area("Career worry", "worry", profile.coach.worry, "Confidence, interviews, salary, direction"),
+      area("Support wanted from Vera", "supportStyle", profile.coach.supportStyle, "Direct feedback, encouragement, detailed planning"),
+      field("Growth preference", "growthPreference", profile.coach.growthPreference, "Stable growth"),
+      field("Explanation style", "explanationStyle", profile.coach.explanationStyle, "Simple guidance"),
+      field("Mission frequency", "missionFrequency", profile.coach.missionFrequency, "Weekly"),
+      field("Confidence today", "confidenceToday", profile.coach.confidenceToday, "Medium")
+    ]]
+  ];
+
+  root.innerHTML = appShell("profile", `
+    <section class="cg-profile-page">
+      <div class="cg-profile-shell">
+        <main class="cg-profile-main">
+          <section class="cg-profile-hero-card">
+            <div class="cg-profile-cover">
+              <button class="cg-profile-cover-edit" type="button" aria-label="Edit cover">${icon("camera")}</button>
+            </div>
+            <div class="cg-profile-intro">
+              <div class="cg-profile-avatar-wrap">
+                <div class="cg-profile-avatar">${initials}</div>
+                <button type="button" aria-label="Upload profile photo">${icon("plus")}</button>
+              </div>
+              <button class="cg-profile-edit-btn" type="button" aria-label="Edit profile">${icon("pencil")}</button>
+              <div class="cg-profile-identity">
+                <h1>${name}</h1>
+                <p>${targetRole} - ${stage}</p>
+                <div class="cg-profile-meta">
+                  <span>${icon("graduation-cap")} ${school} - ${course}</span>
+                  <span>${icon("map-pin")} ${locationLabel}</span>
+                  <a href="settings.html">${icon("mail")} Contact info</a>
+                </div>
+              </div>
+              <div class="cg-profile-actions">
+                <button class="cg-profile-primary" type="button">${icon("toggle-right")} Open to work</button>
+                <a class="cg-profile-secondary" href="#profile-form">${icon("plus")} Add section</a>
+                <button class="cg-profile-secondary" type="button" data-analyze>${icon("scan-search")} Refresh analysis</button>
+                <button class="cg-profile-more" type="button" aria-label="More actions">${icon("ellipsis")}</button>
+              </div>
+              <div class="cg-profile-nudges" aria-label="Profile improvement suggestions">
+                ${[
+                  ["file-up", "Add your resume to unlock better matches", "Get started"],
+                  ["sparkles", "Complete your skills section", "Get started"],
+                  ["target", "Add target industries for sharper recommendations", "Get started"]
+                ].map(([iconName, text, action]) => `<article><span>${icon(iconName)}</span><p>${text}</p><a href="#profile-form">${action}</a><button type="button" aria-label="Dismiss">${icon("x")}</button></article>`).join("")}
+              </div>
+            </div>
+          </section>
+
+          <section class="cg-profile-suggested">
+            <header><div><span>Suggested for you</span><h2>Small updates that improve Vera's signal.</h2></div><small>${profileStrength}% profile strength</small></header>
+            <div>
+              ${[
+                ["briefcase-business", "Add your target industries", "Vera can compare your skills against roles in the markets you actually want.", "Add industries"],
+                ["camera", "Upload a profile photo", "A simple avatar helps your profile feel complete across saved items and employer views.", "Upload photo"]
+              ].map(([iconName, title, body, action]) => `<article><button type="button" aria-label="Dismiss">${icon("x")}</button><span>${icon(iconName)}</span><h3>${title}</h3><p>${body}</p><a href="#profile-form">${action}</a></article>`).join("")}
+            </div>
+          </section>
+        </main>
+
+        <aside class="cg-profile-sidebar">
+          <article class="cg-profile-side-card">
+            <header><h2>Profile visibility</h2><button type="button">${icon("pencil")}</button></header>
+            <p>${visibility}</p>
+            <div class="cg-mini-progress"><i style="width:${profile.privacy.allowEmployerDiscovery ? 82 : 42}%"></i></div>
+            <small>${profile.privacy.allowEmployerDiscovery ? "Employers can discover your profile." : "Private until you switch visibility on."}</small>
+          </article>
+          <article class="cg-profile-side-card">
+            <header><h2>Public profile & URL</h2><button type="button">${icon("copy")}</button></header>
+            <p>${publicUrl}</p>
+            <a href="public-profile.html">Preview public profile ${icon("arrow-right")}</a>
+          </article>
+          <article class="cg-profile-side-card cg-next-steps">
+            <h2>Suggested next steps</h2>
+            ${[
+              ["target", "Complete Career Goals", profile.preferences.roles.length ? "Done" : "Complete"],
+              ["sparkles", "Add 2 more skills to reach 90% strength", profile.skills.technical.length >= 2 ? "Done" : "Complete"],
+              ["file-text", "Upload resume for fresh analysis", profile.resume.uploaded || profile.resume.name ? "Done" : "Complete"]
+            ].map(([iconName, text, action]) => `<section><span>${icon(iconName)}</span><p>${text}</p><a href="#profile-form">${action}</a></section>`).join("")}
+          </article>
+        </aside>
+      </div>
+
+      <form class="cg-profile-form" id="profile-form" data-profile-form>
+        <header class="cg-profile-form-head">
+          <div><span>Career data</span><h2>Edit the details Vera uses.</h2><p>${intel.summary}</p></div>
+          <button class="cg-profile-primary" type="submit">${icon("save")} Save profile and refresh recommendations</button>
+        </header>
+        <div class="cg-profile-form-grid">
+          ${formSections.map(([title, iconName, controls]) => `
+            <section class="cg-profile-form-card">
+              <header><span>${icon(iconName)}</span><div><small>${title}</small><h3>${title}</h3></div></header>
+              <div class="cg-profile-fields">${controls.join("")}</div>
+            </section>
+          `).join("")}
+        </div>
+        <footer class="cg-profile-savebar">
+          <span>${icon("shield-check")} Saved data updates your account, Career Worth, matching, and Vera recommendations.</span>
+          <div>
+            <button class="cg-profile-secondary" type="button" data-export>${icon("download")} Export profile</button>
+            <button class="cg-profile-primary" type="submit">${icon("save")} Save profile</button>
+          </div>
+        </footer>
+      </form>
+    </section>
+  `);
+
+  qsa(".cg-profile-nudges article button, .cg-profile-suggested article button", root).forEach(button => {
+    button.addEventListener("click", () => button.closest("article")?.remove());
+  });
+  qs("[data-analyze]", root)?.addEventListener("click", () => showToast("Vera refreshed your profile analysis."));
+  qs("[data-export]", root)?.addEventListener("click", () => {
+    const blob = new Blob([`${name}\nStage: ${profile.careerStage}\nGoals: ${profile.goals.join(", ")}\nSkills: ${profile.skills.technical.join(", ")}\nProjects: ${profile.skills.projects.join("; ")}\nSummary: ${intel.summary}`], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "CareerGo-profile-export.txt";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+  qs("[data-profile-form]", root)?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const splitField = name => splitList(form.get(name));
+    const next = readState();
+    const p = normalizeProfile(next.profile);
+    ["fullName", "email", "phone", "ageRange", "preferredLanguage", "country", "cityState", "roleType"].forEach(key => {
+      p.personal[key] = String(form.get(key) || "").trim();
+    });
+    p.careerStage = String(form.get("careerStage") || "").trim();
+    ["school", "educationLevel", "courseMajor", "expectedGraduationYear", "academicPerformance", "clubLeadership", "currentRole", "industry", "yearsExperience", "currentSalaryRange", "managementExperience", "previousRoles"].forEach(key => {
+      p.background[key] = String(form.get(key) || "").trim();
+    });
+    p.background.lastRole = p.background.currentRole;
+    p.background.switchConcerns = String(form.get("careerContext") || "").trim();
+    p.goals = splitField("goals");
+    p.skills.technical = splitField("technical");
+    p.skills.soft = splitField("soft");
+    p.skills.tools = splitField("tools");
+    p.skills.certifications = splitField("certifications");
+    p.skills.languages = splitField("languages");
+    p.skills.projects = splitField("projects");
+    p.skills.achievements = splitField("achievements");
+    ["portfolioLinks", "linkedin", "github", "website"].forEach(key => {
+      p.skills[key] = String(form.get(key) || "").trim();
+    });
+    p.preferences.roles = splitField("roles");
+    p.preferences.industries = splitField("industries");
+    p.preferences.locations = splitField("locations");
+    p.preferences.workMode = String(form.get("workMode") || "Hybrid").trim();
+    p.preferences.employmentTypes = splitField("employmentTypes");
+    p.preferences.minimumSalary = String(form.get("minimumSalary") || "").trim();
+    p.preferences.relocate = String(form.get("relocate") || "Maybe").trim();
+    p.preferences.companySize = String(form.get("companySize") || "").trim();
+    p.preferences.workCulture = String(form.get("workCulture") || "").trim();
+    p.preferences.riskTolerance = String(form.get("riskTolerance") || "Medium").trim();
+    p.privacy.profileVisibility = String(form.get("profileVisibility") || "Private");
+    p.privacy.allowEmployerDiscovery = Boolean(form.get("allowEmployerDiscovery"));
+    p.privacy.allowCoachMemory = Boolean(form.get("allowCoachMemory"));
+    p.coach.worry = String(form.get("worry") || "").trim();
+    p.coach.supportStyle = String(form.get("supportStyle") || "").trim();
+    p.coach.growthPreference = String(form.get("growthPreference") || "Stable growth").trim();
+    p.coach.explanationStyle = String(form.get("explanationStyle") || "Simple guidance").trim();
+    p.coach.missionFrequency = String(form.get("missionFrequency") || "Weekly").trim();
+    p.coach.confidenceToday = String(form.get("confidenceToday") || "Medium").trim();
+    const file = event.currentTarget.resume?.files?.[0];
+    if (file) p.resume = { name: file.name, uploaded: true };
+    p.intelligence = generateCareerIntelligence(p);
+    p.updatedAt = nowStamp();
+    next.profile = p;
+    next.session.name = p.personal.fullName;
+    syncCurrentUser(next);
+    writeState(next);
+    showToast("Profile updated and recommendations refreshed.");
+    renderProfile();
+  });
+  createIcons();
+}
+
+function renderProfile() {
+  const root = qs("[data-profile]");
+  if (!root) return;
+  if (!requireAccount(root, "view your CareerGo profile")) return;
+
+  const state = readState();
+  const profile = normalizeProfile(state.profile);
+  const name = profile.personal.fullName || state.session.name || "Aisyah Rahman";
+  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase() || "AR";
+  const firstName = name.split(/\s+/).filter(Boolean)[0] || "Aisyah";
+  const locationLabel = [profile.personal.cityState, profile.personal.country].filter(Boolean).join(", ") || "Kuala Lumpur, Malaysia";
+  const targetRole = profile.preferences.roles[0] || profile.background.currentRole || "Applied AI Engineer";
+  const school = profile.background.school || "Universiti Malaya";
+  const major = profile.background.courseMajor || "Computer Science - AI specialisation";
+  const techSkills = profile.skills.technical.length ? profile.skills.technical : ["Python", "TypeScript", "PostgreSQL", "LangChain", "pgvector", "FastAPI", "Evals"];
+  const softSkills = profile.skills.soft.length ? profile.skills.soft : ["Leadership", "Mentoring", "Public speaking"];
+  const tools = profile.skills.tools.length ? profile.skills.tools : ["React", "Supabase", "Tailwind", "XGBoost"];
+  const esc = value => String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  const chip = text => `<span class="cg-up-chip">${esc(text)}</span>`;
+  const skillBar = (label, value) => `
+    <div class="cg-up-skill-row">
+      <div><span>${esc(label)}</span><strong>${value}</strong></div>
+      <i><b style="width:${value}%"></b></i>
+    </div>
+  `;
+  const projects = [
+    {
+      title: "MarketPulse - fair-pay salary intelligence",
+      label: "Pinned",
+      verified: true,
+      body: "Percentile salary bands per role, location and experience - winner of UMHack 2025 fintech track.",
+      meta: [["Role", "Full-stack + ML"], ["Duration", "3 months"], ["Team", "2"]],
+      impact: "12k+ salary data points modeled",
+      chips: ["FastAPI", "PostgreSQL", "React", "XGBoost"],
+      tone: "dark"
+    },
+    {
+      title: "Kubu - student mentor matching",
+      label: "Vera verified",
+      verified: true,
+      body: "Two-sided platform pairing final-year students with industry mentors using an embedding-based match.",
+      meta: [["Role", "Founding Engineer"], ["Duration", "6 months"], ["Team", "4"]],
+      impact: "1,200 sign-ups in 8 weeks",
+      chips: ["TypeScript", "Supabase", "Tailwind"],
+      tone: "mint"
+    }
+  ];
+  const roles = [
+    {
+      org: "Petronas Digital",
+      initials: "PD",
+      title: "AI Engineer Intern",
+      date: "Jan 2026 - Present - 6 mo",
+      body: "Shipped Vera-Lite to 400 internal users; +32% retrieval accuracy.",
+      chips: ["LLM apps", "Evaluation", "Python", "SQL"]
+    },
+    {
+      org: "Maybank",
+      initials: "MB",
+      title: "Software Engineer Intern",
+      date: "May 2025 - Aug 2025 - 4 mo",
+      body: "Rebuilt fraud-review UI; reduced analyst handling time by 22%.",
+      chips: ["React", "TypeScript", "Kafka", "PostgreSQL"]
+    },
+    {
+      org: "UM AI Society",
+      initials: "UM",
+      title: "Technical Lead",
+      date: "Aug 2024 - Apr 2025 - 9 mo",
+      body: "Led 12 members, ran UMHack track with 480 participants.",
+      chips: softSkills.slice(0, 3)
+    }
+  ];
+  const gallery = [
+    ["Screenshot", "Vera-Lite UI", "mint"],
+    ["Screenshot", "MarketPulse dashboard", "aqua"],
+    ["Video", "UMHack demo", "dark"],
+    ["Design", "Kubu onboarding", "mint"],
+    ["Certificate", "Kaggle certificate", "dark"],
+    ["Slides", "IEEE presentation", "aqua"]
+  ];
+  const activities = [
+    ["rocket", "Shipped Vera-Lite v0.4", "2 days ago - Project"],
+    ["award", "Earned AWS ML Foundations", "1 week ago - Certificate"],
+    ["book-open", "Wrote - 'Evals for RAG in production'", "2 weeks ago - Article - 3.4k reads"],
+    ["users", "Mentored 3 first-year students", "3 weeks ago - Community"],
+    ["zap", "Reached 1,000 followers on CareerGo", "1 month ago - Milestone"]
+  ];
+
+  root.innerHTML = appShell("", `
+    <section class="cg-user-profile-v2">
+      <header class="cg-up-hero">
+        <div class="cg-up-cover">
+          <div class="cg-up-avatar">${initials}</div>
+          <button class="cg-up-camera" type="button" aria-label="Upload photo">${icon("camera")}</button>
+        </div>
+        <div class="cg-up-identity">
+          <div>
+            <span class="cg-up-kicker">Vera verified profile</span>
+            <h1>${esc(name)}</h1>
+            <p>${esc(targetRole)} - ${esc(locationLabel)}</p>
+            <div class="cg-up-meta">
+              <span>${icon("graduation-cap")} ${esc(school)}</span>
+              <span>${icon("map-pin")} ${esc(locationLabel)}</span>
+              <a href="settings.html">${icon("mail")} Contact info</a>
+            </div>
+          </div>
+          <div class="cg-up-actions">
+            <a class="cg-up-primary" href="edit-career-data.html">${icon("pencil")} Edit career data</a>
+            <a class="cg-up-secondary" href="settings.html">${icon("settings")} Settings</a>
+          </div>
+        </div>
+        <div class="cg-up-stats">
+          ${[
+            ["Portfolio readiness", "92", "Recommended hire"],
+            ["Career fit", "88", targetRole],
+            ["Profile strength", "94", "Employer-ready"],
+            ["Network signal", "1,284", "Followers"]
+          ].map(([label, value, detail]) => `<article><span>${esc(label)}</span><strong>${esc(value)}</strong><small>${esc(detail)}</small></article>`).join("")}
+        </div>
+      </header>
+
+      <div class="cg-up-layout">
+        <main class="cg-up-main">
+          <section class="cg-up-section">
+            <div class="cg-up-section-head">
+              <div><span class="cg-up-kicker">Portfolio proof</span><h2>Proof employers can scan in seconds.</h2></div>
+              <a class="cg-up-mini-btn" href="edit-career-data.html">${icon("plus")} Add proof</a>
+            </div>
+            <div class="cg-up-project-grid">
+              ${projects.map(project => `
+                <article class="cg-up-project-card">
+                  <div class="cg-up-project-art ${project.tone}">
+                    <div>
+                      <span>${esc(project.label)}</span>
+                      ${project.verified ? `<span>${icon("sparkles")} Vera verified</span>` : ""}
+                    </div>
+                    <h3>${esc(project.title)}</h3>
+                    <a href="#" aria-label="Open project">${icon("arrow-up-right")}</a>
+                  </div>
+                  <div class="cg-up-project-body">
+                    <p>${esc(project.body)}</p>
+                    <dl>${project.meta.map(([key, value]) => `<div><dt>${esc(key)}</dt><dd>${esc(value)}</dd></div>`).join("")}</dl>
+                    <strong>Impact - ${esc(project.impact)}</strong>
+                    <div class="cg-up-chip-row">${project.chips.map(chip).join("")}</div>
+                    <footer><span>${icon("github")} Code</span><span>${icon("external-link")} Demo</span><span>${icon("file-text")} Case study</span><a href="#">Read ${icon("arrow-right")}</a></footer>
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+          </section>
+
+          <section class="cg-up-section">
+            <div class="cg-up-section-head"><div><span class="cg-up-kicker">Experience</span><h2>Roles & impact</h2></div></div>
+            <div class="cg-up-role-list">
+              ${roles.map(role => `
+                <article class="cg-up-role-card">
+                  <div class="cg-up-logo-tile">${esc(role.initials)}</div>
+                  <div>
+                    <h3>${esc(role.title)}</h3>
+                    <p>${esc(role.org)} - ${esc(role.date)}</p>
+                    <strong>${esc(role.body)}</strong>
+                    <div class="cg-up-chip-row">${role.chips.map(chip).join("")}</div>
+                  </div>
+                  <a href="#" aria-label="Open role">${icon("arrow-up-right")}</a>
+                </article>
+              `).join("")}
+            </div>
+          </section>
+
+          <section class="cg-up-section">
+            <div class="cg-up-section-head"><div><span class="cg-up-kicker">Education</span><h2>Learning path</h2></div></div>
+            <div class="cg-up-education-grid">
+              ${[
+                ["graduation-cap", school, major, "2022 - 2026", "3.86 / 4.00", ["Dean's List - 4 semesters", "Research: LLM eval for low-resource languages", "Exchange: Kyoto University, Fall 2025"]],
+                ["brain", "Deep Learning Specialization", "DeepLearning.AI - Andrew Ng", "2024", "Verified", ["5-course specialisation with capstone", "Focus: sequence models & transformers"]]
+              ].map(([iconName, title, subtitle, years, score, bullets]) => `
+                <article class="cg-up-edu-card">
+                  <span>${icon(iconName)}</span>
+                  <div>
+                    <h3>${esc(title)}</h3>
+                    <p>${esc(subtitle)}</p>
+                    <small>${esc(years)} - ${esc(score)}</small>
+                    <ul>${bullets.map(item => `<li>${esc(item)}</li>`).join("")}</ul>
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+          </section>
+
+          <section class="cg-up-section">
+            <div class="cg-up-section-head">
+              <div><span class="cg-up-kicker">Portfolio gallery</span><h2>Visual work</h2></div>
+              <a class="cg-up-mini-btn" href="edit-career-data.html">${icon("plus")} Upload</a>
+            </div>
+            <div class="cg-up-gallery">
+              ${gallery.map(([label, title, tone]) => `
+                <article class="cg-up-gallery-card ${tone}">
+                  <span>${esc(label)}</span>
+                  ${label === "Video" ? `<button type="button" aria-label="Play video">${icon("play")}</button>` : ""}
+                  <strong>${esc(title)}</strong>
+                  <i>${icon("arrow-up-right")}</i>
+                </article>
+              `).join("")}
+            </div>
+          </section>
+
+          <section class="cg-up-section">
+            <div class="cg-up-section-head"><div><span class="cg-up-kicker">Activity</span><h2>Recent professional activity</h2></div></div>
+            <article class="cg-up-activity-card">
+              ${activities.map(([iconName, title, meta], index) => `
+                <a href="#">
+                  <span class="${index === 0 ? "active" : ""}">${icon(iconName)}</span>
+                  <div><strong>${esc(title)}</strong><small>${esc(meta)}</small></div>
+                  ${icon("arrow-up-right")}
+                </a>
+              `).join("")}
+            </article>
+          </section>
+        </main>
+
+        <aside class="cg-up-sidebar">
+          <section class="cg-up-side-panel">
+            <span class="cg-up-kicker">Skill signal</span>
+            <h2>Technical depth</h2>
+            ${skillBar(techSkills[0] || "Python", 92)}
+            ${skillBar(techSkills[1] || "TypeScript", 84)}
+            ${skillBar(techSkills[2] || "PostgreSQL", 78)}
+          </section>
+          <section class="cg-up-side-panel">
+            <h2>AI & ML</h2>
+            ${skillBar("LLM apps / RAG", 90)}
+            ${skillBar("Evaluation", 82)}
+            ${skillBar(tools[3] || "XGBoost", 74)}
+          </section>
+          <section class="cg-up-side-panel">
+            <h2>Leadership</h2>
+            ${skillBar("Mentoring", 80)}
+            ${skillBar("Public speaking", 72)}
+          </section>
+          <section class="cg-up-side-panel">
+            <h2>Languages</h2>
+            ${skillBar("English", 95)}
+            ${skillBar("Malay", 100)}
+            ${skillBar("Japanese (N4)", 45)}
+          </section>
+          <section class="cg-up-side-panel cg-up-network">
+            <span class="cg-up-kicker">Network</span>
+            <h2>Professional circle</h2>
+            <div>
+              <p><span>Followers</span><strong>1,284</strong></p>
+              <p><span>Following</span><strong>312</strong></p>
+              <p><span>Mentors</span><strong>6</strong></p>
+              <p><span>Companies followed</span><strong>24</strong></p>
+            </div>
+            <footer><b>AI</b><b>MK</b><b>JT</b><b>SR</b><b>NH</b><em>+32 mutual</em></footer>
+          </section>
+          <section class="cg-up-hire-card">
+            <span class="cg-up-kicker">For employers</span>
+            <h2>Why hire ${esc(firstName)}</h2>
+            <div>
+              <span>${icon("trending-up")} Recommended hire</span>
+              <strong>92 <small>/ 100 match for ${esc(targetRole)}</small></strong>
+              <p>${icon("check-circle-2")} 3 production LLM projects with measurable impact</p>
+              <p>${icon("check-circle-2")} Verified engineering fundamentals (${esc(techSkills.slice(0, 3).join(", "))})</p>
+              <p>${icon("check-circle-2")} Ships fast - 4 shipped features in the last 90 days</p>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+  `);
+
+  createIcons();
+}
+
 function renderPublicProfile() {
   const root = qs("[data-public-profile]");
   if (!root) return;
@@ -5599,7 +6659,7 @@ function renderPublicProfile() {
         <div>
           <div class="eyebrow"><span class="spark">*</span> Public Profile Preview</div>
           <h1 class="section-title">${name}</h1>
-          <p class="section-sub">${target} · ${locationLabel}</p>
+          <p class="section-sub">${target}  - ${locationLabel}</p>
           <p class="muted">CareerGo public profiles help employers and collaborators understand your headline, evidence, portfolio, skills, and visibility preferences without exposing private Career Intelligence notes.</p>
           <div class="hero-actions compact-actions">
             <button class="btn btn-primary" type="button">${icon("user-plus")} Connect</button>
@@ -5627,7 +6687,7 @@ function renderPublicProfile() {
         <article class="glass-card">
           <div class="section-kicker">Education</div>
           <h3>${educationSummary}</h3>
-          <p class="muted">${profile.background.educationLevel || "Education level"} ${profile.background.expectedGraduationYear ? `· ${profile.background.expectedGraduationYear}` : ""}</p>
+          <p class="muted">${profile.background.educationLevel || "Education level"} ${profile.background.expectedGraduationYear ? ` - ${profile.background.expectedGraduationYear}` : ""}</p>
         </article>
       </section>
       <section class="glass-card">
@@ -6090,9 +7150,9 @@ function renderMarket() {
       ["map-pin", "Relocate to Singapore", "PM - SG cost adjusted", 100, "RM 18,000", "dark"]
     ];
     const learningRoi = [
-      ["graduation-cap", "SQL for Product Managers", "Vera + DataCamp", "8 hrs", "+RM 900 / mo", "★★★★★", "Removes your #1 interview blocker. Payback in first offer."],
-      ["graduation-cap", "Portfolio case study - Grab clone", "Coached by Vera", "6 hrs", "+RM 600 / mo", "★★★★☆", "Recruiters shortlist 2.1x more when a case study is linked."],
-      ["graduation-cap", "Product Analytics with Mixpanel", "Mixpanel Academy", "14 hrs", "+RM 1,300 / mo", "★★★★★", "Unlocks senior PM bands across Malaysian fintech."]
+      ["graduation-cap", "SQL for Product Managers", "Vera + DataCamp", "8 hrs", "+RM 900 / mo", "*****", "Removes your #1 interview blocker. Payback in first offer."],
+      ["graduation-cap", "Portfolio case study - Grab clone", "Coached by Vera", "6 hrs", "+RM 600 / mo", "****", "Recruiters shortlist 2.1x more when a case study is linked."],
+      ["graduation-cap", "Product Analytics with Mixpanel", "Mixpanel Academy", "14 hrs", "+RM 1,300 / mo", "*****", "Unlocks senior PM bands across Malaysian fintech."]
     ];
     const observations = [
       ["trending-up", "You're now above 68% of Product Managers in Kuala Lumpur at your years of experience."],
@@ -6147,7 +7207,7 @@ function renderMarket() {
               <h2>Complete the Product Analytics sprint.</h2>
               <p>Of every roadmap step, portfolio push and referral request open to you, this one moves your Career Value the most for the least effort. It also unlocks the Stripe and Grab interview rubrics in Pipeline.</p>
               <div class="cg-worth-chips"><span>${icon("trending-up")} +RM 1,300 / month expected</span><span>${icon("clock")} 12 hrs over 3 weeks</span><span>${icon("target")} 92% probability of completion</span></div>
-              <div class="cg-worth-actions"><a class="btn btn-primary" href="profile.html">${icon("sparkles")} Start in Grow</a><a class="btn btn-ghost" href="vera.html#chat">Why this one? ${icon("arrow-right")}</a></div>
+              <div class="cg-worth-actions"><a class="btn btn-primary" href="grow.html">${icon("sparkles")} Start in Grow</a><a class="btn btn-ghost" href="vera.html#chat">Why this one? ${icon("arrow-right")}</a></div>
             </article>
             <aside>
               <span>Why Vera picked this</span>
@@ -6398,7 +7458,7 @@ function renderMarket() {
           </div>
           <div class="plan-command-row">
             <a class="btn btn-cyan" href="vera.html#chat">${icon("message-circle")} Discuss with Vera</a>
-            <a class="btn btn-ghost" href="profile.html">${icon("brain-circuit")} Update proof</a>
+            <a class="btn btn-ghost" href="grow.html">${icon("brain-circuit")} Update proof</a>
             <button class="btn btn-ghost" type="button" data-market-plan-reset>${icon("rotate-ccw")} Reset value plan</button>
           </div>
         </div>
@@ -6446,7 +7506,7 @@ function renderMarket() {
       expectedLift,
       createdAt: nowStamp(),
       tasks: [
-        { id: "market-proof", title: `Prove ${current.skills[0]}`, body: "Add one project story with context, trade-off, metric, and result.", href: "profile.html", done: false },
+        { id: "market-proof", title: `Prove ${current.skills[0]}`, body: "Add one project story with context, trade-off, metric, and result.", href: "grow.html", done: false },
         { id: "market-benchmark", title: "Benchmark 5 roles", body: "Compare salary range, demand, competition, and required proof.", href: "jobs.html", done: false },
         { id: "market-signal", title: "Add one market signal", body: `Build evidence around ${current.skills[1] || "a high-demand skill"} using a concrete artifact.`, href: "vera.html#skills", done: false },
         { id: "market-story", title: "Practice value story", body: "Prepare a 60-second answer explaining why your market value has increased.", href: "vera.html#interview", done: false }
@@ -6676,9 +7736,9 @@ function renderAutopilot() {
             <a class="btn btn-primary" href="vera.html#chat">${icon("sparkles")} Plan next week with Vera</a>
           </article>
           <div>
-            ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "↑ 12%"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening"]].map(([label, value]) => `<section><span>${label}</span><strong>${value}</strong></section>`).join("")}
+            ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "+12%"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening"]].map(([label, value]) => `<section><span>${label}</span><strong>${value}</strong></section>`).join("")}
           </div>
-          <footer>${icon("info")} Recommended focus next week - <strong>Practice SQL interviews.</strong> Vera has a 4-day plan queued in Grow. <a href="profile.html">Open plan ${icon("arrow-right")}</a></footer>
+          <footer>${icon("info")} Recommended focus next week - <strong>Practice SQL interviews.</strong> Vera has a 4-day plan queued in Grow. <a href="grow.html">Open plan ${icon("arrow-right")}</a></footer>
         </section>
       </section>
     `);
@@ -6800,7 +7860,7 @@ function renderAutopilot() {
       ${suggestedJobs.length ? `
         <div class="application-suggestion-strip">
           <div><div class="section-kicker">Suggested to track</div><h3>High-fit roles not in your pipeline yet.</h3></div>
-          <div class="application-suggestion-list">${suggestedJobs.map(job => `<button class="pill cyan" type="button" data-track-role="${job.id}">${icon("plus")} ${job.title} · ${job.match}%</button>`).join("")}</div>
+          <div class="application-suggestion-list">${suggestedJobs.map(job => `<button class="pill cyan" type="button" data-track-role="${job.id}">${icon("plus")} ${job.title}  - ${job.match}%</button>`).join("")}</div>
         </div>
       ` : ""}
     </section>
@@ -6996,10 +8056,10 @@ function renderPosts() {
     .join("")
     .toUpperCase();
   const inboxThreads = [
-    ["Aisha Rahman", "Recruiter · Grab Malaysia", "Recruiter", "Would you be free Thursday 3p...", "2h", "2", true],
-    ["Ravi Iyer", "Head of Product · Vercel", "Mentor", "Happy to look at your PM portfolio — s...", "1d", "", false],
-    ["Nurul Adlina", "Hiring Manager · Setel", "Hiring manager", "Great chat. Sharing the take...", "2d", "1", false],
-    ["Shreya Kapoor", "Design → Product · Figma", "Connection", "Yes, I made the same jump — let m...", "4d", "", false]
+    ["Aisha Rahman", "Recruiter  - Grab Malaysia", "Recruiter", "Would you be free Thursday 3p...", "2h", "2", true],
+    ["Ravi Iyer", "Head of Product  - Vercel", "Mentor", "Happy to look at your PM portfolio - s...", "1d", "", false],
+    ["Nurul Adlina", "Hiring Manager  - Setel", "Hiring manager", "Great chat. Sharing the take...", "2d", "1", false],
+    ["Shreya Kapoor", "Design -> Product  - Figma", "Connection", "Yes, I made the same jump - let m...", "4d", "", false]
   ];
   if (activeTab === "messages") {
     root.innerHTML = appShell("posts", `
@@ -7028,11 +8088,11 @@ function renderPosts() {
         </aside>
         <main class="cg-message-thread">
           <header>
-            <div><h2>Aisha Rahman</h2><p>Recruiter · Grab Malaysia · Usually replies within 2h</p></div>
-            <span>Warm — 3 replies this week</span>
+            <div><h2>Aisha Rahman</h2><p>Recruiter  - Grab Malaysia  - Usually replies within 2h</p></div>
+            <span>Warm - 3 replies this week</span>
           </header>
           <section class="cg-chat-thread" aria-label="Conversation with Aisha Rahman">
-            <p class="incoming">Hi Aarav — loved your portfolio. Would you be open to a 30-min chat about the Sr. PM role next week?</p>
+            <p class="incoming">Hi Aarav - loved your portfolio. Would you be open to a 30-min chat about the Sr. PM role next week?</p>
             <p class="outgoing">Yes, definitely. Thursday afternoon works for me. I can also share a short teardown of GrabFood I did last month.</p>
             <p class="incoming delivered">Perfect. Would you be free Thursday 3pm for the case round?<small>${icon("check-check")} Delivered</small></p>
             <article class="cg-vera-suggests">
@@ -7628,6 +8688,7 @@ function init() {
   renderAuth();
   renderCandidateOnboarding();
   renderEmployerOnboarding();
+  renderGrow();
   renderProfile();
   renderPublicProfile();
   renderSettings();

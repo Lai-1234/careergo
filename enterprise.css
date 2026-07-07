@@ -47,7 +47,7 @@
   --home-paper: #faf9f7;
   --home-line: #e3e7ea;
   --home-soft: #f3f6f6;
-  --home-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --home-serif: "Fraunces", Georgia, "Times New Roman", serif;
 }
 
 body[data-page="home"] {
@@ -8954,7 +8954,7 @@ html body[data-page="public-profile"]:has(.cg-workspace-tabs) .public-avatar {
   --cg-shot-line: rgba(14, 44, 37, 0.12);
   --cg-shot-green: #07382f;
   --cg-shot-teal: #6aa59d;
-  --cg-shot-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --cg-shot-serif: "Fraunces", Georgia, "Times New Roman", serif;
   --cg-shot-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -10621,6 +10621,550 @@ html body[data-page="dashboard"] .nav-actions .account-menu-trigger :is(span, st
 
   html body[data-page="dashboard"] .cg-vera-search {
     display: none !important;
+  }
+}
+/* Absolute final user-page design-system override. Keep this as the last user workspace lock. */
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) {
+  --ivory: #f8f4ea !important;
+  --ivory-deep: #f1ead8 !important;
+  --forest: #1f332c !important;
+  --teal: #245c63 !important;
+  --teal-soft: #c8dee0 !important;
+  --aqua: #9fc7ce !important;
+  --background: #f8f4ea !important;
+  --foreground: #1f332c !important;
+  --card: #ffffff !important;
+  --primary: #245c63 !important;
+  --primary-foreground: #f8f4ea !important;
+  --muted: #ede6d3 !important;
+  --muted-foreground: #5f7573 !important;
+  --border: #e3dcc8 !important;
+  --input: #e3dcc8 !important;
+  --ring: #245c63 !important;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  --font-serif: "Fraunces", ui-serif, Georgia, serif !important;
+  --cg-shot-paper: #f8f4ea !important;
+  --cg-shot-ink: #1f332c !important;
+  --cg-shot-muted: #5f7573 !important;
+  --cg-shot-line: #e3dcc8 !important;
+  --cg-shot-green: #1f332c !important;
+  --cg-shot-teal: #245c63 !important;
+  --cg-shot-mint: #c8dee0 !important;
+  --cg-shot-serif: "Fraunces", ui-serif, Georgia, serif !important;
+  color: #1f332c !important;
+  background: #f8f4ea !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-feature-settings: "ss01", "cv11" !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) main > :is(.container, .os-layout, .os-main, .cg-dashboard, .directory-page-layout, .public-profile-shell) {
+  width: min(1240px, calc(100% - 48px)) !important;
+  max-width: 1240px !important;
+  margin-inline: auto !important;
+  padding-top: 40px !important;
+  padding-bottom: 96px !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(h1, h2, h3, .section-title, .cg-section-title, .cg-feed-hero h1, .profile-name, .stat-value, .metric-value) {
+  color: #1f332c !important;
+  -webkit-text-fill-color: #1f332c !important;
+  font-family: "Fraunces", ui-serif, Georgia, serif !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) h1 {
+  font-size: clamp(44px, 5.2vw, 56px) !important;
+  line-height: 1.05 !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) h2 {
+  font-size: clamp(28px, 3vw, 36px) !important;
+  line-height: 1.1 !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(p, li, .section-sub, .muted, .small, .cg-body, .cg-feed-body) {
+  color: #5f7573 !important;
+  -webkit-text-fill-color: #5f7573 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0 !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.section-kicker, .eyebrow, .cg-overline, .job-detail-label, .stats-label, .profile-label, .field-label) {
+  color: #5f7573 !important;
+  -webkit-text-fill-color: #5f7573 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.glass-card, .card, .list-card, .detail-panel, .application-control, .score-tile, .timeline-item, .cg-kpi-card, .cg-autopilot-card, .cg-task-section, .cg-application-card, .cg-role-card, .cg-long-card, .cg-feed-post, .cg-feed-composer, .cg-follow-card, .profile-card, .settings-card, .career-form-card, .directory-card, .public-discovery-card) {
+  border: 1px solid rgba(227, 220, 200, 0.8) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  color: #1f332c !important;
+  box-shadow: 0 1px 2px rgba(31, 51, 44, 0.04), 0 2px 8px -2px rgba(31, 51, 44, 0.08) !important;
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.7, 0.2, 1), border-color 220ms cubic-bezier(0.2, 0.7, 0.2, 1) !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.glass-card, .card, .list-card, .detail-panel, .application-control, .score-tile, .timeline-item, .cg-kpi-card, .cg-autopilot-card, .cg-task-section, .cg-application-card, .cg-role-card, .cg-long-card, .cg-feed-post, .cg-follow-card, .profile-card, .settings-card, .career-form-card, .directory-card, .public-discovery-card):hover {
+  border-color: rgba(36, 92, 99, 0.25) !important;
+  box-shadow: 0 1px 2px rgba(31, 51, 44, 0.04), 0 18px 40px -24px rgba(31, 51, 44, 0.35) !important;
+  transform: translateY(-2px) !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs),
+html body .topbar:has(.cg-vera-search),
+html body[data-page="dashboard"] .topbar:has(.cg-workspace-tabs),
+html body[data-page="dashboard"] .topbar:has(.workspace-search) {
+  height: 64px !important;
+  min-height: 64px !important;
+  border-bottom: 1px solid rgba(227, 220, 200, 0.7) !important;
+  background: rgba(248, 244, 234, 0.78) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .nav-inner,
+html body .topbar:has(.cg-vera-search) .nav-inner,
+html body[data-page="dashboard"] .topbar:has(.cg-workspace-tabs) .nav-inner,
+html body[data-page="dashboard"] .topbar:has(.workspace-search) .nav-inner {
+  width: min(1240px, calc(100% - 48px)) !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  grid-template-columns: auto minmax(360px, 1fr) minmax(250px, 0.55fr) auto !important;
+  gap: 32px !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a,
+html body[data-page="dashboard"] .cg-workspace-tabs a {
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 16px !important;
+  color: #5f7573 !important;
+  -webkit-text-fill-color: #5f7573 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a.active,
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a:hover,
+html body[data-page="dashboard"] .cg-workspace-tabs a.active,
+html body[data-page="dashboard"] .cg-workspace-tabs a:hover {
+  color: #f8f4ea !important;
+  -webkit-text-fill-color: #f8f4ea !important;
+  background: #1f332c !important;
+  box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+}
+
+html body .topbar:has(.cg-vera-search) .cg-vera-search,
+html body[data-page="dashboard"] .cg-vera-search {
+  width: min(290px, 100%) !important;
+  max-width: 290px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 8px 0 12px !important;
+  border-radius: 9999px !important;
+  border-color: rgba(227, 220, 200, 0.9) !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  box-shadow: none !important;
+}
+
+html body .topbar:has(.cg-vera-search) .cg-vera-search kbd::before,
+html body[data-page="dashboard"] .cg-vera-search kbd::before {
+  content: "Cmd K" !important;
+  color: #5f7573 !important;
+  -webkit-text-fill-color: #5f7573 !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+}
+
+/* Absolute final workspace content gutters: dashboard/discover/worth/pipeline match grow.html. */
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main > .container.os-layout,
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main > .container,
+html body[data-page="jobs"] main[data-jobs-page],
+html body[data-page="jobs"] main[data-jobs-page] > .container.os-layout {
+  width: min(1240px, calc(100% - 48px)) !important;
+  max-width: 1240px !important;
+  margin-inline: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) .os-main {
+  width: 100% !important;
+  max-width: none !important;
+  margin-inline: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+html body[data-page="dashboard"] .cg-dashboard,
+html body[data-page="jobs"] .cg-discover-v2,
+html body[data-page="market"] .cg-worth,
+html body[data-page="autopilot"] .cg-pipeline {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+@media (max-width: 760px) {
+  html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main > .container.os-layout,
+  html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main > .container,
+  html body[data-page="jobs"] main[data-jobs-page],
+  html body[data-page="jobs"] main[data-jobs-page] > .container.os-layout {
+    width: min(100% - 28px, 1240px) !important;
+  }
+}
+
+/* Home pages design system v2 - aligned to the provided configuration sheet. */
+:root {
+  --home-v2-background: #f8f7f4;
+  --home-v2-foreground: #1e293b;
+  --home-v2-card: #ffffff;
+  --home-v2-card-foreground: #1e293b;
+  --home-v2-popover: #ffffff;
+  --home-v2-surface: #f2f3f5;
+  --home-v2-primary: #0f4c5c;
+  --home-v2-primary-hover: #146c78;
+  --home-v2-primary-foreground: #f8f7f4;
+  --home-v2-secondary: #f2f3f5;
+  --home-v2-secondary-foreground: #1e293b;
+  --home-v2-muted: #f2f3f5;
+  --home-v2-muted-foreground: #64748b;
+  --home-v2-accent: #4db6ac;
+  --home-v2-accent-foreground: #0f4c5c;
+  --home-v2-warning: #d97706;
+  --home-v2-danger: #b91c1c;
+  --home-v2-border: #e5e7eb;
+  --home-v2-ring: #0f4c5c;
+  --home-v2-radius-sm: 8px;
+  --home-v2-radius-md: 10px;
+  --home-v2-radius: 12px;
+  --home-v2-radius-lg: 16px;
+  --home-v2-radius-xl: 20px;
+  --home-v2-radius-2xl: 24px;
+  --home-v2-radius-hero: 28px;
+  --home-v2-shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 8px -2px rgba(15, 23, 42, 0.06);
+  --home-v2-shadow-elegant: 0 1px 2px rgba(15, 76, 92, 0.04), 0 8px 24px -12px rgba(15, 76, 92, 0.12);
+  --home-v2-shadow-lift: 0 2px 4px rgba(15, 23, 42, 0.04), 0 24px 48px -16px rgba(15, 76, 92, 0.18);
+  --home-v2-gradient-brand: linear-gradient(120deg, #0f4c5c 0%, #146c78 45%, #4db6ac 100%);
+  --home-v2-gradient-bars: linear-gradient(180deg, #146c78 0%, #0f4c5c 100%);
+  --home-v2-gradient-progress: linear-gradient(90deg, #0f4c5c 0%, #4db6ac 100%);
+  --home-v2-gradient-priority: linear-gradient(135deg, #0f4c5c 0%, #0f4c5c 45%, #146c78 100%);
+  --home-v2-gradient-tint: linear-gradient(120deg, rgba(15, 76, 92, 0.06) 0%, rgba(77, 182, 172, 0.1) 100%);
+  --home-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --home-ink: var(--home-v2-foreground);
+  --home-teal: var(--home-v2-primary);
+  --home-teal-2: var(--home-v2-accent);
+  --home-blue: var(--home-v2-muted-foreground);
+  --home-paper: var(--home-v2-background);
+  --home-line: var(--home-v2-border);
+  --home-soft: var(--home-v2-surface);
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) {
+  color: var(--home-v2-foreground) !important;
+  background: var(--home-v2-background) !important;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(main, .home-main, .site-shell) {
+  background: var(--home-v2-background) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.home-container, .container, .nav-inner, .footer-grid, .footer-bottom) {
+  width: min(1200px, calc(100% - 48px)) !important;
+  max-width: 1200px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  min-height: 64px !important;
+  height: 64px !important;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.7) !important;
+  background: rgba(248, 247, 244, 0.75) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-inner {
+  min-height: 64px !important;
+  height: 64px !important;
+  padding: 0 !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .brand-logo {
+  width: auto !important;
+  height: 36px !important;
+  max-width: 156px !important;
+  border-radius: 0 !important;
+  object-fit: contain !important;
+  box-shadow: none !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .brand-text {
+  display: none !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-links {
+  gap: 32px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-links a {
+  min-height: 36px !important;
+  padding: 0 !important;
+  color: var(--home-v2-muted-foreground) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-links a:hover,
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-links a.active {
+  color: var(--home-v2-foreground) !important;
+  background: transparent !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(h1, .hero-title, .home-hero h1, .section-title, .home-section-head h2, .home-cta-panel h2) {
+  color: var(--home-v2-primary) !important;
+  font-family: "Fraunces", Georgia, "Times New Roman", serif !important;
+  font-weight: 500 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.02em !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) h1,
+html body[data-page="home"] .home-hero h1 {
+  font-size: clamp(48px, 6vw, 72px) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) h2,
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .section-title,
+html body[data-page="home"] .home-section-head h2 {
+  font-size: clamp(28px, 3vw, 36px) !important;
+  line-height: 1.1 !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(h3, .card h3, .home-feature-matrix h3) {
+  color: var(--home-v2-primary) !important;
+  font-family: "Fraunces", Georgia, "Times New Roman", serif !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.02em !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(p, li, .section-sub, .card-copy, .page-copy, .hero-copy, .home-hero p, .home-section-head p, .home-feature-matrix p) {
+  color: var(--home-v2-muted-foreground) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0 !important;
+}
+
+html body[data-page="home"] .home-hero p {
+  max-width: 720px !important;
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.eyebrow, .section-kicker, .home-badge, .home-section-head span, .card-label, .stat-label) {
+  color: var(--home-v2-muted-foreground) !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.btn, .home-btn, .home-search button, .home-cta-panel a, button) {
+  border-radius: 9999px !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child) {
+  color: var(--home-v2-primary-foreground) !important;
+  background: var(--home-v2-primary) !important;
+  border-color: var(--home-v2-primary) !important;
+  box-shadow: var(--home-v2-shadow-elegant) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child):hover {
+  background: var(--home-v2-primary-hover) !important;
+  border-color: var(--home-v2-primary-hover) !important;
+  transform: translateY(-2px);
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.btn-ghost, .home-btn-secondary, .home-cta-panel a:last-child) {
+  color: var(--home-v2-foreground) !important;
+  background: var(--home-v2-card) !important;
+  border: 1px solid var(--home-v2-border) !important;
+  box-shadow: var(--home-v2-shadow-soft) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.home-search, .search-panel, .filters, input, select, textarea) {
+  border-color: var(--home-v2-border) !important;
+  border-radius: var(--home-v2-radius) !important;
+  color: var(--home-v2-foreground) !important;
+  background: var(--home-v2-card) !important;
+}
+
+html body[data-page="home"] .home-search {
+  width: min(100%, 920px) !important;
+  min-height: 56px !important;
+  padding: 8px !important;
+  border-radius: var(--home-v2-radius-lg) !important;
+  box-shadow: var(--home-v2-shadow-lift) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(input, select, textarea) {
+  min-height: 40px;
+  padding-inline: 12px !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(input, select, textarea)::placeholder {
+  color: var(--home-v2-muted-foreground) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(input, select, textarea):focus {
+  outline: 2px solid var(--home-v2-ring) !important;
+  outline-offset: 2px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.glass-card, .card, .home-preview-card, .home-feature-matrix, .home-feature-matrix a, .home-compare article, .home-browser, .home-float-card, .home-cta-panel) {
+  border: 1px solid var(--home-v2-border) !important;
+  border-radius: var(--home-v2-radius-lg) !important;
+  color: var(--home-v2-card-foreground) !important;
+  background: var(--home-v2-card) !important;
+  box-shadow: var(--home-v2-shadow-soft) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.home-preview-card:hover, .home-feature-matrix a:hover, .home-compare article:hover, .card:hover, .glass-card:hover) {
+  border-color: rgba(15, 76, 92, 0.25) !important;
+  box-shadow: var(--home-v2-shadow-elegant) !important;
+  transform: translateY(-2px);
+}
+
+html body[data-page="home"] :is(.home-hero, .home-preview-section, .home-metrics, .home-logo-band, .home-product-section, .home-stage-section, .home-why-section, .home-cta-section) {
+  padding-block: clamp(64px, 7vw, 96px) !important;
+  border-top: 1px solid var(--home-v2-border) !important;
+  background: var(--home-v2-background) !important;
+}
+
+html body[data-page="home"] .home-hero {
+  min-height: auto !important;
+  padding-top: clamp(80px, 9vw, 96px) !important;
+  border-top: 0 !important;
+}
+
+html body[data-page="home"] .home-preview-card.coach,
+html body[data-page="home"] .home-cta-panel {
+  color: var(--home-v2-primary-foreground) !important;
+  background: var(--home-v2-gradient-priority) !important;
+  border-radius: var(--home-v2-radius-lg) !important;
+  box-shadow: var(--home-v2-shadow-lift) !important;
+}
+
+html body[data-page="home"] .home-preview-card.coach :is(p, span, small, strong, h3, svg),
+html body[data-page="home"] .home-cta-panel :is(p, span, h2, a, svg) {
+  color: var(--home-v2-primary-foreground) !important;
+  -webkit-text-fill-color: var(--home-v2-primary-foreground) !important;
+}
+
+html body[data-page="home"] .home-bars span {
+  background: var(--home-v2-gradient-bars) !important;
+  border-radius: 9999px !important;
+}
+
+html body[data-page="home"] :is(.home-paybar span, .progress-fill, .bar-fill, .score-bar span, .comparison-score-bar span) {
+  background: var(--home-v2-gradient-progress) !important;
+  border-radius: 9999px !important;
+}
+
+html body[data-page="home"] :is(.home-pill-row span, .home-card-head small, .home-application em, .home-search-prompts a, .pill, .tag, .chip) {
+  min-height: 24px;
+  padding: 4px 10px !important;
+  border-radius: 9999px !important;
+  color: var(--home-v2-muted-foreground) !important;
+  background: var(--home-v2-muted) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+html body[data-page="home"] .home-feature-matrix {
+  gap: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+html body[data-page="home"] .home-feature-matrix a {
+  padding: 24px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html body[data-page="home"] .home-metrics strong,
+html body[data-page="home"] .home-salary {
+  color: var(--home-v2-primary) !important;
+  font-family: "Fraunces", Georgia, "Times New Roman", serif !important;
+  font-size: clamp(24px, 2.4vw, 30px) !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.02em !important;
+}
+
+html body[data-page="home"] .site-footer {
+  color: var(--home-v2-muted-foreground) !important;
+  background: var(--home-v2-background) !important;
+  border-top: 1px solid var(--home-v2-border) !important;
+}
+
+html body[data-page="home"] .home-back-top {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 9999px !important;
+  color: var(--home-v2-primary-foreground) !important;
+  background: var(--home-v2-primary) !important;
+  box-shadow: var(--home-v2-shadow-elegant) !important;
+}
+
+@media (max-width: 760px) {
+  html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.home-container, .container, .nav-inner, .footer-grid, .footer-bottom) {
+    width: min(100% - 32px, 1200px) !important;
+  }
+
+  html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) h1,
+  html body[data-page="home"] .home-hero h1 {
+    font-size: 48px !important;
+  }
+
+  html body[data-page="home"] .home-hero p {
+    font-size: 18px !important;
   }
 }
 
@@ -14962,6 +15506,892 @@ html body[data-page="dashboard"] .cg-avatar-trigger span {
 
   html body[data-page="dashboard"] .cg-vera-search {
     display: none !important;
+  }
+}
+
+/* Absolute final user-page design-system override. Keep this as the last user workspace lock. */
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) {
+  --ivory: #f8f4ea !important;
+  --ivory-deep: #f1ead8 !important;
+  --forest: #1f332c !important;
+  --teal: #245c63 !important;
+  --teal-soft: #c8dee0 !important;
+  --aqua: #9fc7ce !important;
+  --background: #f8f4ea !important;
+  --foreground: #1f332c !important;
+  --card: #ffffff !important;
+  --primary: #245c63 !important;
+  --primary-foreground: #f8f4ea !important;
+  --muted: #ede6d3 !important;
+  --muted-foreground: #5f7573 !important;
+  --border: #e3dcc8 !important;
+  --input: #e3dcc8 !important;
+  --ring: #245c63 !important;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  --font-serif: "Fraunces", ui-serif, Georgia, serif !important;
+  --cg-shot-paper: #f8f4ea !important;
+  --cg-shot-ink: #1f332c !important;
+  --cg-shot-muted: #5f7573 !important;
+  --cg-shot-line: #e3dcc8 !important;
+  --cg-shot-green: #1f332c !important;
+  --cg-shot-teal: #245c63 !important;
+  --cg-shot-mint: #c8dee0 !important;
+  --cg-shot-serif: "Fraunces", ui-serif, Georgia, serif !important;
+  color: #1f332c !important;
+  background: #f8f4ea !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-feature-settings: "ss01", "cv11" !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) main > :is(.container, .os-layout, .os-main, .cg-dashboard, .directory-page-layout, .public-profile-shell) {
+  width: min(1240px, calc(100% - 48px)) !important;
+  max-width: 1240px !important;
+  margin-inline: auto !important;
+  padding-top: 40px !important;
+  padding-bottom: 96px !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(h1, h2, h3, .section-title, .cg-section-title, .cg-feed-hero h1, .profile-name, .stat-value, .metric-value) {
+  color: #1f332c !important;
+  -webkit-text-fill-color: #1f332c !important;
+  font-family: "Fraunces", ui-serif, Georgia, serif !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) h1 {
+  font-size: clamp(44px, 5.2vw, 56px) !important;
+  line-height: 1.05 !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(p, li, .section-sub, .muted, .small, .cg-body, .cg-feed-body) {
+  color: #5f7573 !important;
+  -webkit-text-fill-color: #5f7573 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0 !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.section-kicker, .eyebrow, .cg-overline, .job-detail-label, .stats-label, .profile-label, .field-label) {
+  color: #5f7573 !important;
+  -webkit-text-fill-color: #5f7573 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.glass-card, .card, .list-card, .detail-panel, .application-control, .score-tile, .timeline-item, .cg-kpi-card, .cg-autopilot-card, .cg-task-section, .cg-application-card, .cg-role-card, .cg-long-card, .cg-feed-post, .cg-feed-composer, .cg-follow-card, .profile-card, .settings-card, .career-form-card, .directory-card, .public-discovery-card) {
+  border: 1px solid rgba(227, 220, 200, 0.8) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  color: #1f332c !important;
+  box-shadow: 0 1px 2px rgba(31, 51, 44, 0.04), 0 2px 8px -2px rgba(31, 51, 44, 0.08) !important;
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.7, 0.2, 1), border-color 220ms cubic-bezier(0.2, 0.7, 0.2, 1) !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.glass-card, .card, .list-card, .detail-panel, .application-control, .score-tile, .timeline-item, .cg-kpi-card, .cg-autopilot-card, .cg-task-section, .cg-application-card, .cg-role-card, .cg-long-card, .cg-feed-post, .cg-follow-card, .profile-card, .settings-card, .career-form-card, .directory-card, .public-discovery-card):hover {
+  border-color: rgba(36, 92, 99, 0.25) !important;
+  box-shadow: 0 1px 2px rgba(31, 51, 44, 0.04), 0 18px 40px -24px rgba(31, 51, 44, 0.35) !important;
+  transform: translateY(-2px) !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs),
+html body .topbar:has(.cg-vera-search),
+html body[data-page="dashboard"] .topbar:has(.cg-workspace-tabs),
+html body[data-page="dashboard"] .topbar:has(.workspace-search) {
+  height: 64px !important;
+  min-height: 64px !important;
+  border-bottom: 1px solid rgba(227, 220, 200, 0.7) !important;
+  background: rgba(248, 244, 234, 0.78) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .nav-inner,
+html body .topbar:has(.cg-vera-search) .nav-inner,
+html body[data-page="dashboard"] .topbar:has(.cg-workspace-tabs) .nav-inner,
+html body[data-page="dashboard"] .topbar:has(.workspace-search) .nav-inner {
+  width: min(1240px, calc(100% - 48px)) !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  grid-template-columns: auto minmax(360px, 1fr) minmax(250px, 0.55fr) auto !important;
+  gap: 32px !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a,
+html body[data-page="dashboard"] .cg-workspace-tabs a {
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 16px !important;
+  color: #5f7573 !important;
+  -webkit-text-fill-color: #5f7573 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a.active,
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a:hover,
+html body[data-page="dashboard"] .cg-workspace-tabs a.active,
+html body[data-page="dashboard"] .cg-workspace-tabs a:hover {
+  color: #f8f4ea !important;
+  -webkit-text-fill-color: #f8f4ea !important;
+  background: #1f332c !important;
+  box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+}
+
+html body .topbar:has(.cg-vera-search) .cg-vera-search,
+html body[data-page="dashboard"] .cg-vera-search {
+  width: min(290px, 100%) !important;
+  max-width: 290px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 8px 0 12px !important;
+  border-radius: 9999px !important;
+  border-color: rgba(227, 220, 200, 0.9) !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  box-shadow: none !important;
+}
+
+html body .topbar:has(.cg-vera-search) .cg-vera-search kbd::before,
+html body[data-page="dashboard"] .cg-vera-search kbd::before {
+  content: "Cmd K" !important;
+  color: #5f7573 !important;
+  -webkit-text-fill-color: #5f7573 !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+}
+
+/* CareerGo user workspace design-system lock. Source: CareerGo-Design-System.md */
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) {
+  --ivory: #f8f4ea;
+  --ivory-deep: #f1ead8;
+  --forest: #1f332c;
+  --teal: #245c63;
+  --teal-soft: #c8dee0;
+  --aqua: #9fc7ce;
+  --background: var(--ivory);
+  --foreground: var(--forest);
+  --card: #ffffff;
+  --card-foreground: var(--forest);
+  --primary: var(--teal);
+  --primary-foreground: var(--ivory);
+  --secondary: #ede6d3;
+  --muted: #ede6d3;
+  --muted-foreground: #5f7573;
+  --accent: var(--teal-soft);
+  --accent-foreground: var(--forest);
+  --border: #e3dcc8;
+  --input: #e3dcc8;
+  --ring: var(--teal);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "Fraunces", ui-serif, Georgia, serif;
+  --cg-shot-paper: var(--ivory);
+  --cg-shot-ink: var(--forest);
+  --cg-shot-muted: var(--muted-foreground);
+  --cg-shot-line: var(--border);
+  --cg-shot-green: var(--forest);
+  --cg-shot-teal: var(--teal);
+  --cg-shot-mint: var(--teal-soft);
+  --cg-shot-serif: var(--font-serif);
+  --shadow-soft: 0 1px 2px rgba(31, 51, 44, 0.04), 0 2px 8px -2px rgba(31, 51, 44, 0.08);
+  --shadow-elegant: 0 1px 2px rgba(31, 51, 44, 0.04), 0 18px 40px -24px rgba(31, 51, 44, 0.35);
+  --shadow-lift: 0 0 0 1px rgba(36, 92, 99, 0.15), 0 20px 60px -30px rgba(36, 92, 99, 0.5);
+  color: var(--foreground) !important;
+  background: var(--background) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  font-feature-settings: "ss01", "cv11" !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(main, .os-main, .cg-dashboard, .cg-discover-page, .cg-grow-page, .cg-worth-page, .cg-pipeline-page, .cg-feed-shell, .profile-page, .settings-page, .edit-career-page) {
+  color: var(--foreground) !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(.container, .os-layout, .os-main, .cg-dashboard, .cg-discover-page, .cg-feed-shell, .directory-page-layout, .public-profile-shell) {
+  max-width: 1240px !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) main > :is(.container, .os-layout, .os-main, .cg-dashboard, .directory-page-layout, .public-profile-shell) {
+  width: min(1240px, calc(100% - 48px)) !important;
+  margin-inline: auto !important;
+  padding-top: 40px !important;
+  padding-bottom: 96px !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(h1, h2, h3, .section-title, .cg-section-title, .cg-feed-hero h1, .profile-name, .stat-value, .metric-value) {
+  color: var(--forest) !important;
+  -webkit-text-fill-color: var(--forest) !important;
+  font-family: var(--font-serif) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) h1 {
+  font-size: clamp(44px, 5.2vw, 56px) !important;
+  line-height: 1.05 !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) h2 {
+  font-size: clamp(28px, 3vw, 36px) !important;
+  line-height: 1.1 !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(p, li, small, span, label, input, textarea, select, button, a) {
+  font-family: var(--font-sans) !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(p, li, .section-sub, .muted, .small, .cg-body, .cg-feed-body) {
+  color: var(--muted-foreground) !important;
+  -webkit-text-fill-color: var(--muted-foreground) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0 !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(.section-kicker, .eyebrow, .cg-overline, .job-detail-label, .stats-label, .profile-label, .field-label) {
+  color: var(--muted-foreground) !important;
+  -webkit-text-fill-color: var(--muted-foreground) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(.glass-card, .card, .list-card, .detail-panel, .application-control, .score-tile, .timeline-item, .cg-kpi-card, .cg-autopilot-card, .cg-task-section, .cg-application-card, .cg-role-card, .cg-long-card, .cg-feed-post, .cg-feed-composer, .cg-follow-card, .profile-card, .settings-card, .career-form-card, .directory-card, .public-discovery-card) {
+  border: 1px solid rgba(227, 220, 200, 0.8) !important;
+  border-radius: 18px !important;
+  background: var(--card) !important;
+  color: var(--card-foreground) !important;
+  box-shadow: var(--shadow-soft) !important;
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.7, 0.2, 1), border-color 220ms cubic-bezier(0.2, 0.7, 0.2, 1) !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(.glass-card, .card, .list-card, .detail-panel, .application-control, .score-tile, .timeline-item, .cg-kpi-card, .cg-autopilot-card, .cg-task-section, .cg-application-card, .cg-role-card, .cg-long-card, .cg-feed-post, .cg-follow-card, .profile-card, .settings-card, .career-form-card, .directory-card, .public-discovery-card):hover {
+  border-color: rgba(36, 92, 99, 0.25) !important;
+  box-shadow: var(--shadow-elegant) !important;
+  transform: translateY(-2px) !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(.btn, .btn-primary, .btn-secondary, .btn-ghost, button, .pill, .chip, .tag) {
+  border-radius: 9999px !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(.btn-primary, button.primary, .primary-action, .cg-feed-composer .btn-primary) {
+  color: var(--primary-foreground) !important;
+  -webkit-text-fill-color: var(--primary-foreground) !important;
+  background: var(--forest) !important;
+  border-color: var(--forest) !important;
+  box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(.btn-ghost, .btn-secondary, .ghost-btn, .secondary-action) {
+  color: var(--foreground) !important;
+  -webkit-text-fill-color: var(--foreground) !important;
+  background: rgba(255, 255, 255, 0.58) !important;
+  border: 1px solid rgba(227, 220, 200, 0.85) !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(input, textarea, select, .field, .custom-select-field, .workspace-search, .cg-vera-search) {
+  border-color: var(--input) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.66) !important;
+  color: var(--foreground) !important;
+  -webkit-text-fill-color: var(--foreground) !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(input, textarea)::placeholder {
+  color: var(--muted-foreground) !important;
+  -webkit-text-fill-color: var(--muted-foreground) !important;
+  opacity: 0.82 !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(.progress-fill, .bar-fill, .score-bar span, .comparison-score-bar span, .metric-progress span, .roadmap-progress span) {
+  background: linear-gradient(90deg, var(--teal) 0%, var(--aqua) 100%) !important;
+  border-radius: 9999px !important;
+}
+
+html body:is(
+  [data-page="dashboard"],
+  [data-page="jobs"],
+  [data-page="companies"],
+  [data-page="universities"],
+  [data-page="grow"],
+  [data-page="market"],
+  [data-page="autopilot"],
+  [data-page="posts"],
+  [data-page="saved"],
+  [data-page="profile"],
+  [data-page="public-profile"],
+  [data-page="settings"],
+  [data-page="edit-career-data"],
+  [data-page="vera"]
+) :is(.icon-badge, .cg-icon-badge, .stat-icon, .avatar-soft, .feature-icon) {
+  background: rgba(200, 222, 224, 0.5) !important;
+  color: var(--forest) !important;
+  border: 1px solid rgba(36, 92, 99, 0.14) !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs),
+html body .topbar:has(.cg-vera-search) {
+  height: 64px !important;
+  min-height: 64px !important;
+  border-bottom: 1px solid rgba(227, 220, 200, 0.7) !important;
+  background: rgba(248, 244, 234, 0.78) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .nav-inner,
+html body .topbar:has(.cg-vera-search) .nav-inner,
+html body[data-page="dashboard"] .topbar:has(.cg-workspace-tabs) .nav-inner,
+html body[data-page="dashboard"] .topbar:has(.workspace-search) .nav-inner {
+  width: min(1240px, calc(100% - 48px)) !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  grid-template-columns: auto minmax(360px, 1fr) minmax(250px, 0.55fr) auto !important;
+  gap: 32px !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-navbar-logo {
+  width: 154px !important;
+  max-width: 154px !important;
+  max-height: 42px !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs {
+  gap: 4px !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a,
+html body[data-page="dashboard"] .cg-workspace-tabs a {
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 0 16px !important;
+  color: var(--muted-foreground) !important;
+  -webkit-text-fill-color: var(--muted-foreground) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a.active,
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a:hover,
+html body[data-page="dashboard"] .cg-workspace-tabs a.active,
+html body[data-page="dashboard"] .cg-workspace-tabs a:hover {
+  color: var(--primary-foreground) !important;
+  -webkit-text-fill-color: var(--primary-foreground) !important;
+  background: var(--forest) !important;
+  box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+}
+
+html body .topbar:has(.cg-vera-search) .cg-vera-search,
+html body[data-page="dashboard"] .cg-vera-search {
+  width: min(290px, 100%) !important;
+  max-width: 290px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 8px 0 12px !important;
+  border-radius: 9999px !important;
+  border-color: rgba(227, 220, 200, 0.9) !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  box-shadow: none !important;
+}
+
+html body .topbar:has(.cg-vera-search) .cg-vera-search input,
+html body[data-page="dashboard"] .cg-vera-search input {
+  color: var(--muted-foreground) !important;
+  -webkit-text-fill-color: var(--muted-foreground) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+
+html body .topbar:has(.cg-vera-search) .cg-vera-search kbd,
+html body[data-page="dashboard"] .cg-vera-search kbd {
+  min-width: 34px !important;
+  height: 20px !important;
+  padding: 0 6px !important;
+  border-color: var(--border) !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html body .topbar:has(.cg-vera-search) .cg-vera-search kbd::before,
+html body[data-page="dashboard"] .cg-vera-search kbd::before {
+  content: "Cmd K" !important;
+  color: var(--muted-foreground) !important;
+  -webkit-text-fill-color: var(--muted-foreground) !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-message-trigger,
+html body .topbar:has(.cg-workspace-tabs) .notification-trigger,
+html body[data-page="dashboard"] .notification-trigger {
+  width: 36px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  border: 1px solid rgba(227, 220, 200, 0.86) !important;
+  background: rgba(255, 255, 255, 0.66) !important;
+  color: var(--forest) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .account-menu-trigger,
+html body .topbar:has(.cg-workspace-tabs) .cg-avatar-trigger,
+html body[data-page="dashboard"] .account-menu-trigger,
+html body[data-page="dashboard"] .cg-avatar-trigger {
+  width: 36px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  color: var(--primary-foreground) !important;
+  -webkit-text-fill-color: var(--primary-foreground) !important;
+  background: var(--forest) !important;
+  box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .account-menu-trigger :is(span, strong, i),
+html body .topbar:has(.cg-workspace-tabs) .cg-avatar-trigger span,
+html body[data-page="dashboard"] .account-menu-trigger :is(span, strong, i),
+html body[data-page="dashboard"] .cg-avatar-trigger span {
+  color: var(--primary-foreground) !important;
+  -webkit-text-fill-color: var(--primary-foreground) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 1180px) {
+  html body .topbar:has(.cg-workspace-tabs) .nav-inner,
+  html body .topbar:has(.cg-vera-search) .nav-inner,
+  html body[data-page="dashboard"] .topbar:has(.cg-workspace-tabs) .nav-inner,
+  html body[data-page="dashboard"] .topbar:has(.workspace-search) .nav-inner {
+    width: min(100% - 32px, 1240px) !important;
+    grid-template-columns: auto 1fr auto !important;
+    gap: 18px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html body:is(
+    [data-page="dashboard"],
+    [data-page="jobs"],
+    [data-page="companies"],
+    [data-page="universities"],
+    [data-page="grow"],
+    [data-page="market"],
+    [data-page="autopilot"],
+    [data-page="posts"],
+    [data-page="saved"],
+    [data-page="profile"],
+    [data-page="public-profile"],
+    [data-page="settings"],
+    [data-page="edit-career-data"],
+    [data-page="vera"]
+  ) main > :is(.container, .os-layout, .os-main, .cg-dashboard, .directory-page-layout, .public-profile-shell) {
+    width: min(100% - 24px, 1240px) !important;
+    padding-top: 32px !important;
+  }
+}
+
+/* Absolute final home-page token enforcement from the supplied configuration sheet. */
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) {
+  --cg-bg: #f8f7f4 !important;
+  --cg-card: #ffffff !important;
+  --cg-surface: #f2f3f5 !important;
+  --cg-border: #e5e7eb !important;
+  --cg-text: #1e293b !important;
+  --cg-heading: #0f4c5c !important;
+  --cg-muted: #64748b !important;
+  --cg-primary: #0f4c5c !important;
+  --cg-primary-hover: #146c78 !important;
+  --cg-accent: #4db6ac !important;
+  --cg-radius-sm: 8px !important;
+  --cg-radius: 12px !important;
+  --cg-radius-lg: 16px !important;
+  --cg-radius-xl: 20px !important;
+  --home-paper: #f8f7f4 !important;
+  --home-ink: #1e293b !important;
+  --home-blue: #64748b !important;
+  --home-teal: #0f4c5c !important;
+  --home-teal-2: #4db6ac !important;
+  --home-line: #e5e7eb !important;
+  --home-soft: #f2f3f5 !important;
+  --home-serif: "Fraunces", Georgia, "Times New Roman", serif !important;
+  color: #1e293b !important;
+  background: #f8f7f4 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.home-container, .container, .nav-inner) {
+  width: min(1200px, calc(100% - 48px)) !important;
+  max-width: 1200px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) {
+  height: 64px !important;
+  min-height: 64px !important;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.7) !important;
+  background: rgba(248, 247, 244, 0.75) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-inner {
+  height: 64px !important;
+  min-height: 64px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(h1, .section-title, .home-hero h1, .home-section-head h2, .home-cta-panel h2) {
+  color: #0f4c5c !important;
+  font-family: "Fraunces", Georgia, "Times New Roman", serif !important;
+  font-weight: 500 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.02em !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) h1,
+html body[data-page="home"] .home-hero h1 {
+  font-size: clamp(48px, 6vw, 72px) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(p, li, small, .section-sub, .home-hero p, .home-section-head p, .card-copy) {
+  color: #64748b !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0 !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.eyebrow, .section-kicker, .home-badge, .home-section-head span) {
+  color: #64748b !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.glass-card, .card, .home-preview-card, .home-feature-matrix, .home-feature-matrix a, .home-compare article, .home-browser, .home-float-card, .home-cta-panel) {
+  border: 1px solid #e5e7eb !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 8px -2px rgba(15, 23, 42, 0.06) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.glass-card:hover, .card:hover, .home-preview-card:hover, .home-feature-matrix a:hover) {
+  border-color: rgba(15, 76, 92, 0.25) !important;
+  box-shadow: 0 1px 2px rgba(15, 76, 92, 0.04), 0 8px 24px -12px rgba(15, 76, 92, 0.12) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child) {
+  color: #f8f7f4 !important;
+  background: #0f4c5c !important;
+  border-color: #0f4c5c !important;
+  border-radius: 9999px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.btn-ghost, .home-btn-secondary, .home-cta-panel a:last-child, .pill, .tag, .chip) {
+  color: #64748b !important;
+  background: #f2f3f5 !important;
+  border-color: #e5e7eb !important;
+  border-radius: 9999px !important;
+}
+
+html body[data-page="home"] :is(.home-paybar span, .progress-fill, .bar-fill, .score-bar span, .comparison-score-bar span) {
+  background: linear-gradient(90deg, #0f4c5c 0%, #4db6ac 100%) !important;
+  border-radius: 9999px !important;
+}
+
+html body[data-page="home"] .home-bars span {
+  background: linear-gradient(180deg, #146c78 0%, #0f4c5c 100%) !important;
+  border-radius: 9999px !important;
+}
+
+@media (max-width: 760px) {
+  html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.home-container, .container, .nav-inner) {
+    width: min(100% - 32px, 1200px) !important;
   }
 }
 
@@ -19634,87 +21064,130 @@ html body[data-page="home"] .home-back-top svg {
     bottom: max(18px, env(safe-area-inset-bottom)) !important;
   }
 }
-/* Public top navigation sizing lock - actual final */
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) {
-  min-height: 92px !important;
-  height: 92px !important;
-  border-bottom: 0 !important;
-  background: #ffffff !important;
+/* Shared public top navigation: mirrors index.html and is injected by publicNav(). */
+html body .topbar:has(.public-site-nav) {
+  min-height: 72px !important;
+  height: 72px !important;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.72) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(18px) !important;
+  box-shadow: none !important;
 }
 
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-inner {
-  width: min(1840px, calc(100% - 96px)) !important;
-  min-height: 92px !important;
-  height: 92px !important;
-  grid-template-columns: minmax(160px, 1fr) auto minmax(300px, 1fr) !important;
-  gap: clamp(32px, 4vw, 76px) !important;
+html body .topbar:has(.public-site-nav) .nav-inner {
+  width: min(1200px, calc(100% - 48px)) !important;
+  min-height: 72px !important;
+  height: 72px !important;
+  margin-inline: auto !important;
+  display: grid !important;
+  grid-template-columns: auto 1fr auto !important;
+  align-items: center !important;
+  gap: clamp(28px, 4vw, 64px) !important;
+  padding: 0 !important;
 }
 
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .brand-logo {
-  width: 118px !important;
-  max-height: 54px !important;
+html body .topbar:has(.public-site-nav) .brand,
+html body .topbar:has(.public-site-nav) .public-site-brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+
+html body .topbar:has(.public-site-nav) .brand-logo {
+  width: 112px !important;
+  max-height: 42px !important;
   height: auto !important;
   object-fit: contain !important;
   border-radius: 0 !important;
   box-shadow: none !important;
 }
 
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .brand-text {
+html body .topbar:has(.public-site-nav) .brand-text {
   display: none !important;
 }
 
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links {
-  gap: clamp(46px, 5.2vw, 86px) !important;
+html body .topbar:has(.public-site-nav) .public-site-nav {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: clamp(24px, 3vw, 42px) !important;
 }
 
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links a,
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn-ghost {
-  color: #53668a !important;
-  font-size: 20px !important;
-  font-weight: 850 !important;
+html body .topbar:has(.public-site-nav) .public-site-nav a,
+html body .topbar:has(.public-site-nav) .public-site-nav a.active,
+html body .topbar:has(.public-site-nav) .public-site-actions .btn-ghost,
+html body .topbar:has(.public-site-nav) .public-site-actions .btn-ghost.active {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
   line-height: 1 !important;
+  letter-spacing: 0 !important;
   background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  min-height: auto !important;
 }
 
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links a:hover,
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-links a.active,
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn-ghost:hover {
-  color: #123c34 !important;
+html body .topbar:has(.public-site-nav) .public-site-nav a:hover,
+html body .topbar:has(.public-site-nav) .public-site-actions .btn-ghost:hover {
+  color: #0f4c5c !important;
+  -webkit-text-fill-color: #0f4c5c !important;
 }
 
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions {
-  gap: 34px !important;
+html body .topbar:has(.public-site-nav) .public-site-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 22px !important;
 }
 
-html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn-primary {
-  min-height: 64px !important;
-  padding: 0 36px !important;
+html body .topbar:has(.public-site-nav) .public-site-actions .btn-primary,
+html body .topbar:has(.public-site-nav) .public-site-actions .btn-primary.active {
+  min-height: 44px !important;
+  padding: 0 24px !important;
   border-radius: 999px !important;
-  color: #fffaf2 !important;
-  background: #103b34 !important;
-  border-color: #103b34 !important;
-  box-shadow: 0 18px 36px rgba(16, 59, 52, 0.16) !important;
-  font-size: 20px !important;
-  font-weight: 900 !important;
+  color: #f8f7f4 !important;
+  -webkit-text-fill-color: #f8f7f4 !important;
+  background: #0f4c5c !important;
+  border: 1px solid #0f4c5c !important;
+  box-shadow: 0 12px 28px rgba(15, 76, 92, 0.16) !important;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
   line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+html body .topbar:has(.public-site-nav) .public-site-actions .btn-primary:hover {
+  background: #146c78 !important;
+  border-color: #146c78 !important;
 }
 
 @media (max-width: 900px) {
-  html body .topbar:has(.nav-links):not(:has(.workspace-search)) {
+  html body .topbar:has(.public-site-nav) {
     height: auto !important;
     min-height: 72px !important;
   }
 
-  html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-inner {
+  html body .topbar:has(.public-site-nav) .nav-inner {
     width: min(100% - 32px, 1840px) !important;
     height: 72px !important;
     min-height: 72px !important;
     display: flex !important;
+    justify-content: space-between !important;
   }
 
-  html body .topbar:has(.nav-links):not(:has(.workspace-search)) .brand-logo {
+  html body .topbar:has(.public-site-nav) .brand-logo {
     width: 104px !important;
     max-height: 46px !important;
+  }
+
+  html body .topbar:has(.public-site-nav) .public-site-nav {
+    display: none !important;
   }
 }
 
@@ -20019,6 +21492,146 @@ html body[data-page="posts"] .cg-follow-card {
   }
 }
 
+/* Absolute final public home token lock - must sit after the public nav sizing block. */
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) {
+  --cg-bg: #f8f7f4 !important;
+  --cg-card: #ffffff !important;
+  --cg-surface: #f2f3f5 !important;
+  --cg-border: #e5e7eb !important;
+  --cg-text: #1e293b !important;
+  --cg-heading: #0f4c5c !important;
+  --cg-muted: #64748b !important;
+  --cg-primary: #0f4c5c !important;
+  --cg-primary-hover: #146c78 !important;
+  --cg-accent: #4db6ac !important;
+  --home-paper: #f8f7f4 !important;
+  --home-ink: #1e293b !important;
+  --home-blue: #64748b !important;
+  --home-teal: #0f4c5c !important;
+  --home-teal-2: #4db6ac !important;
+  --home-line: #e5e7eb !important;
+  --home-soft: #f2f3f5 !important;
+  --home-serif: "Fraunces", Georgia, "Times New Roman", serif !important;
+  color: #1e293b !important;
+  background: #f8f7f4 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01" !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.home-container, .container, .nav-inner, .footer-grid, .footer-bottom) {
+  width: min(1200px, calc(100% - 48px)) !important;
+  max-width: 1200px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) {
+  height: 64px !important;
+  min-height: 64px !important;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.7) !important;
+  background: rgba(248, 247, 244, 0.75) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-inner {
+  height: 64px !important;
+  min-height: 64px !important;
+  grid-template-columns: minmax(150px, 1fr) auto minmax(220px, 1fr) !important;
+  gap: 32px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .brand-logo {
+  width: auto !important;
+  height: 36px !important;
+  max-width: 156px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-links {
+  gap: 32px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-links a,
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-actions .btn-ghost {
+  color: #64748b !important;
+  background: transparent !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-actions .btn-primary {
+  min-height: 40px !important;
+  padding: 0 18px !important;
+  color: #f8f7f4 !important;
+  background: #0f4c5c !important;
+  border-color: #0f4c5c !important;
+  border-radius: 9999px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 1px 2px rgba(15, 76, 92, 0.04), 0 8px 24px -12px rgba(15, 76, 92, 0.12) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(h1, .section-title, .home-hero h1, .home-section-head h2, .home-cta-panel h2) {
+  color: #0f4c5c !important;
+  font-family: "Fraunces", Georgia, "Times New Roman", serif !important;
+  font-weight: 500 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.02em !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) h1,
+html body[data-page="home"] .home-hero h1 {
+  font-size: clamp(48px, 6vw, 72px) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(p, li, small, .section-sub, .home-hero p, .home-section-head p, .card-copy) {
+  color: #64748b !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.55 !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.eyebrow, .section-kicker, .home-badge, .home-section-head span) {
+  color: #64748b !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.glass-card, .card, .home-preview-card, .home-feature-matrix, .home-feature-matrix a, .home-compare article, .home-browser, .home-float-card, .home-cta-panel) {
+  border: 1px solid #e5e7eb !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 8px -2px rgba(15, 23, 42, 0.06) !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child) {
+  color: #f8f7f4 !important;
+  background: #0f4c5c !important;
+  border-color: #0f4c5c !important;
+  border-radius: 9999px !important;
+}
+
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.btn-ghost, .home-btn-secondary, .home-cta-panel a:last-child, .pill, .tag, .chip) {
+  color: #64748b !important;
+  background: #f2f3f5 !important;
+  border-color: #e5e7eb !important;
+  border-radius: 9999px !important;
+}
+
+html body[data-page="home"] :is(.home-paybar span, .progress-fill, .bar-fill, .score-bar span, .comparison-score-bar span) {
+  background: linear-gradient(90deg, #0f4c5c 0%, #4db6ac 100%) !important;
+  border-radius: 9999px !important;
+}
+
+html body[data-page="home"] .home-bars span {
+  background: linear-gradient(180deg, #146c78 0%, #0f4c5c 100%) !important;
+  border-radius: 9999px !important;
+}
+
 /* Absolute final: Today uses the exact Discover workspace top navigation sizing. */
 html body[data-page="dashboard"] .topbar:has(.cg-workspace-tabs),
 html body[data-page="dashboard"] .topbar:has(.workspace-search) {
@@ -20233,5 +21846,96 @@ html body[data-page="dashboard"] .cg-avatar-trigger span {
 
   html body[data-page="dashboard"] .cg-vera-search {
     display: none !important;
+  }
+}
+
+/* Absolute final navbar override from CareerGo-Design-System.md. */
+html body .topbar:has(.cg-workspace-tabs),
+html body .topbar:has(.cg-vera-search),
+html body[data-page="dashboard"] .topbar:has(.cg-workspace-tabs),
+html body[data-page="dashboard"] .topbar:has(.workspace-search) {
+  height: 64px !important;
+  min-height: 64px !important;
+  border-bottom: 1px solid rgba(227, 220, 200, 0.7) !important;
+  background: rgba(248, 244, 234, 0.78) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .nav-inner,
+html body .topbar:has(.cg-vera-search) .nav-inner,
+html body[data-page="dashboard"] .topbar:has(.cg-workspace-tabs) .nav-inner,
+html body[data-page="dashboard"] .topbar:has(.workspace-search) .nav-inner {
+  width: min(1240px, calc(100% - 48px)) !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  grid-template-columns: auto minmax(360px, 1fr) minmax(250px, 0.55fr) auto !important;
+  gap: 32px !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a,
+html body[data-page="dashboard"] .cg-workspace-tabs a {
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 16px !important;
+  color: #5f7573 !important;
+  -webkit-text-fill-color: #5f7573 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a.active,
+html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs a:hover,
+html body[data-page="dashboard"] .cg-workspace-tabs a.active,
+html body[data-page="dashboard"] .cg-workspace-tabs a:hover {
+  color: #f8f4ea !important;
+  -webkit-text-fill-color: #f8f4ea !important;
+  background: #1f332c !important;
+  box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+}
+
+html body .topbar:has(.cg-vera-search) .cg-vera-search,
+html body[data-page="dashboard"] .cg-vera-search {
+  width: min(290px, 100%) !important;
+  max-width: 290px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 8px 0 12px !important;
+  border-radius: 9999px !important;
+  border-color: rgba(227, 220, 200, 0.9) !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  box-shadow: none !important;
+}
+
+html body .topbar:has(.cg-vera-search) .cg-vera-search kbd::before,
+html body[data-page="dashboard"] .cg-vera-search kbd::before {
+  content: "Cmd K" !important;
+  color: #5f7573 !important;
+  -webkit-text-fill-color: #5f7573 !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+}
+html body:is([data-page="grow"], [data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main > .workspace-page-container,
+html body[data-page="dashboard"] main > .container.os-layout.workspace-page-container,
+html body[data-page="market"]:has(.cg-worth) main > .container.os-layout.workspace-page-container,
+html body[data-page="autopilot"]:has(.cg-pipeline) main > .container.os-layout.workspace-page-container,
+html body[data-page="jobs"] main.workspace-page-container[data-jobs-page],
+html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container {
+  width: min(1240px, calc(100% - 48px)) !important;
+  max-width: 1240px !important;
+  margin-inline: auto !important;
+  padding-inline: 0 !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 1180px) {
+  html body:is([data-page="grow"], [data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main > .workspace-page-container,
+  html body[data-page="dashboard"] main > .container.os-layout.workspace-page-container,
+  html body[data-page="market"]:has(.cg-worth) main > .container.os-layout.workspace-page-container,
+  html body[data-page="autopilot"]:has(.cg-pipeline) main > .container.os-layout.workspace-page-container,
+  html body[data-page="jobs"] main.workspace-page-container[data-jobs-page],
+  html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container {
+    width: min(100% - 32px, 1240px) !important;
   }
 }
