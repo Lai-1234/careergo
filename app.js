@@ -6205,6 +6205,7 @@ function renderEmployerView(view, params, root) {
     case "role-builder": return renderEmployerRoleBuilder(root, params.id || null);
     case "talent": return renderEmployerTalent(root, params);
     case "hiring": return renderEmployerHiring(root);
+    case "intelligence": return renderEmployerIntelligence(root);
     default: return renderEmployerPlaceholder(root, view);
   }
 }
@@ -6692,6 +6693,84 @@ function renderEmployerHiring(root) {
         <p class="emp-talent-reason">${c.reason}</p>
       </div>
     `;
+  }
+
+  draw();
+}
+
+function renderEmployerIntelligence(root) {
+  let activeTab = "analytics";
+  let selectedRoleId = DATA.employerRoles[0].id;
+
+  function draw() {
+    const roles = DATA.employerRoles;
+    const candidates = DATA.candidates;
+    const totalApplicants = roles.reduce((sum, r) => sum + r.applicants, 0);
+    const totalQualified = roles.reduce((sum, r) => sum + r.qualified, 0);
+    const qualifiedRate = Math.round((totalQualified / totalApplicants) * 100);
+    const interviewCount = candidates.filter(c => ["Interview", "Final", "Offer", "Hired"].includes(c.stage)).length;
+    const interviewRate = Math.round((interviewCount / candidates.length) * 100);
+    const hiredCount = candidates.filter(c => c.stage === "Hired").length;
+    const offerCount = candidates.filter(c => ["Offer", "Hired"].includes(c.stage)).length;
+    const offerAcceptance = offerCount ? Math.round((hiredCount / offerCount) * 100) : 0;
+
+    const selectedRole = roles.find(r => r.id === selectedRoleId);
+
+    root.innerHTML = `
+      <div class="emp-view-header"><h1>Intelligence</h1></div>
+      <div class="emp-subtabs">
+        <button type="button" class="emp-subtab ${activeTab === "analytics" ? "active" : ""}" data-intel-tab="analytics">Hiring Analytics</button>
+        <button type="button" class="emp-subtab ${activeTab === "market" ? "active" : ""}" data-intel-tab="market">Talent Market</button>
+        <button type="button" class="emp-subtab ${activeTab === "university" ? "active" : ""}" data-intel-tab="university">University Pipelines</button>
+      </div>
+
+      <div class="emp-subpanel ${activeTab === "analytics" ? "active" : ""}" ${activeTab === "analytics" ? "" : "hidden"}>
+        <div class="emp-kpi-row">
+          <div class="emp-kpi-tile"><strong>${totalApplicants}</strong><span>Applicants</span></div>
+          <div class="emp-kpi-tile"><strong>${qualifiedRate}%</strong><span>Qualified rate</span></div>
+          <div class="emp-kpi-tile"><strong>${interviewRate}%</strong><span>Interview rate</span></div>
+          <div class="emp-kpi-tile"><strong>${offerAcceptance}%</strong><span>Offer acceptance</span></div>
+        </div>
+        <div class="card emp-funnel-card">
+          <h2>Funnel</h2>
+          <div class="emp-funnel-row">
+            ${EMPLOYER_PIPELINE_STAGES.map(stage => `<div class="emp-funnel-stage"><strong>${candidates.filter(c => c.stage === stage).length}</strong><span>${stage}</span></div>`).join("")}
+          </div>
+        </div>
+      </div>
+
+      <div class="emp-subpanel ${activeTab === "market" ? "active" : ""}" ${activeTab === "market" ? "" : "hidden"}>
+        <div class="card">
+          <label class="emp-market-select">Role
+            <select data-intel-role>
+              ${roles.map(r => `<option value="${r.id}" ${r.id === selectedRoleId ? "selected" : ""}>${r.title}</option>`).join("")}
+            </select>
+          </label>
+          <div class="emp-stat-row"><span>Talent availability</span><strong>${selectedRole.roleIntelligence.talentAvailability}</strong></div>
+          <div class="emp-stat-row"><span>Typical experience</span><strong>${selectedRole.roleIntelligence.typicalExperience}</strong></div>
+          <div class="emp-stat-row"><span>Typical salary</span><strong>${selectedRole.roleIntelligence.commonSalary}</strong></div>
+          <div class="emp-tags"><span class="emp-tags-label">Common skills</span><div class="pill-row">${selectedRole.roleIntelligence.commonSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
+        </div>
+      </div>
+
+      <div class="emp-subpanel ${activeTab === "university" ? "active" : ""}" ${activeTab === "university" ? "" : "hidden"}>
+        <div class="emp-university-grid">
+          <div class="card"><h3>University of Malaya</h3><p class="emp-talent-meta">Strong research and technical foundation</p><a class="btn btn-ghost" href="universities.html">View university</a></div>
+          <div class="card"><h3>Asia Pacific University</h3><p class="emp-talent-meta">Strong computing and technology pipeline</p><a class="btn btn-ghost" href="universities.html">View university</a></div>
+          <div class="card"><h3>Taylor's University</h3><p class="emp-talent-meta">Strong industry project exposure</p><a class="btn btn-ghost" href="universities.html">View university</a></div>
+        </div>
+      </div>
+    `;
+    createIcons();
+
+    qsa("[data-intel-tab]", root).forEach(btn => btn.addEventListener("click", () => {
+      activeTab = btn.dataset.intelTab;
+      draw();
+    }));
+    qs("[data-intel-role]", root)?.addEventListener("change", event => {
+      selectedRoleId = event.target.value;
+      draw();
+    });
   }
 
   draw();
