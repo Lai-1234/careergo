@@ -6180,6 +6180,96 @@ function renderEmployerView(view, params, root) {
   }
 }
 
+function renderEmployerDashboard(root) {
+  const roles = DATA.employerRoles;
+  const priorityRole = roles.find(r => r.health === "Needs attention") || roles[0];
+  const activeCount = roles.filter(r => r.status === "Active").length;
+  const newQualified = roles.reduce((sum, r) => sum + r.qualified, 0);
+  const waitingTooLong = roles.filter(r => r.daysOpen > 14).length;
+
+  root.innerHTML = `
+    <div class="emp-view-header">
+      <h1>Good morning, ${(readState().employerProfile?.contactName) || "there"}.</h1>
+      <p>Here's what needs attention across your hiring today.</p>
+    </div>
+
+    <div class="card emp-priority-card">
+      <div class="emp-priority-label">${icon("sparkles")} Your highest-impact action</div>
+      <p class="emp-priority-body">The <strong>${priorityRole.title}</strong> role has ${priorityRole.roleIntelligence.talentAvailability.toLowerCase()} candidate supply, but ${priorityRole.roleIntelligence.potentialIssue.charAt(0).toLowerCase()}${priorityRole.roleIntelligence.potentialIssue.slice(1)}</p>
+      <div class="emp-priority-impact">Potential impact: <strong>+${Math.max(12, priorityRole.qualified)} relevant candidates</strong></div>
+      <div class="emp-priority-actions">
+        <button type="button" class="btn btn-primary" data-emp-review-role="${priorityRole.id}">Review requirement</button>
+        <button type="button" class="btn btn-ghost" data-emp-view-candidates>See affected candidates</button>
+      </div>
+    </div>
+
+    <div class="emp-kpi-row">
+      <div class="emp-kpi-tile"><strong>${activeCount}</strong><span>Active roles</span></div>
+      <div class="emp-kpi-tile"><strong>${newQualified}</strong><span>New qualified candidates</span></div>
+      <div class="emp-kpi-tile"><strong>4</strong><span>Interviews this week</span></div>
+      <div class="emp-kpi-tile"><strong>${waitingTooLong}</strong><span>Roles waiting too long</span></div>
+    </div>
+
+    <div class="card emp-priorities-card">
+      <h2>Today's priorities</h2>
+      <ul class="emp-priority-list">
+        <li><span>3 candidates are waiting for review on Junior Data Analyst.</span><button type="button" class="btn btn-ghost" data-emp-view-candidates>Review</button></li>
+        <li><span>Interview with Sarah Lee at 2:00 PM today.</span><button type="button" class="btn btn-ghost" data-emp-view-candidates>Open</button></li>
+        <li><span>2 strong new matches for Backend Engineer.</span><button type="button" class="btn btn-ghost" data-emp-view-candidates>View</button></li>
+        <li><span>Product Designer candidate has waited 6 days without a response.</span><button type="button" class="btn btn-ghost" data-emp-view-candidates>Respond</button></li>
+        <li><span>Junior Data Analyst salary range may be below market.</span><button type="button" class="btn btn-ghost" data-emp-review-role="er2">Review</button></li>
+      </ul>
+    </div>
+
+    <div class="card emp-roles-card">
+      <div class="emp-card-head"><h2>Active roles</h2><a href="#roles" class="btn btn-ghost" data-emp-nav="roles">See all roles</a></div>
+      <div class="table-wrap">
+        <table class="emp-table">
+          <thead><tr><th>Role</th><th>Status</th><th>Applicants</th><th>Qualified</th><th>Strong fits</th><th>Days open</th><th>Health</th></tr></thead>
+          <tbody>
+            ${roles.map(r => `
+              <tr class="emp-table-row" data-emp-open-role="${r.id}">
+                <td>${r.title}</td>
+                <td><span class="pill ${r.status === "Active" ? "green" : r.status === "Draft" ? "gold" : ""}">${r.status}</span></td>
+                <td>${r.applicants}</td>
+                <td>${r.qualified}</td>
+                <td>${r.strongFits}</td>
+                <td>${r.daysOpen}d</td>
+                <td><span class="pill ${r.health === "Healthy" ? "green" : "red"}">${r.health}</span></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card emp-pipeline-snapshot">
+      <h2>Pipeline snapshot</h2>
+      <div class="emp-stage-row">
+        <div class="emp-stage-tile"><strong>18</strong><span>New</span></div>
+        <div class="emp-stage-tile"><strong>24</strong><span>Review</span></div>
+        <div class="emp-stage-tile"><strong>31</strong><span>Screen</span></div>
+        <div class="emp-stage-tile"><strong>9</strong><span>Interview</span></div>
+        <div class="emp-stage-tile"><strong>3</strong><span>Offer</span></div>
+      </div>
+      <p class="emp-pipeline-note">Largest bottleneck: <strong>Screen stage</strong> — average time <strong>8 days</strong>.</p>
+    </div>
+  `;
+  createIcons();
+
+  qsa("[data-emp-open-role], [data-emp-review-role]", root).forEach(el => el.addEventListener("click", () => {
+    const id = el.dataset.empOpenRole || el.dataset.empReviewRole;
+    employerNavigateTo("role-builder", { id });
+  }));
+  qsa("[data-emp-view-candidates]", root).forEach(el => el.addEventListener("click", () => {
+    showToast("Candidate Search opens in a later phase.", "info");
+  }));
+  qsa("[data-emp-nav]", root).forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    employerNavigateTo(link.dataset.empNav);
+  }));
+}
+
 function renderEmployerPlaceholder(root, view) {
   const title = EMPLOYER_VIEW_TITLES[view] || "This view";
   root.innerHTML = `
