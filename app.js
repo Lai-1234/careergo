@@ -6066,6 +6066,148 @@ function renderPosts() {
   createIcons();
 }
 
+const EMPLOYER_NAV_GROUPS = [
+  { label: "Overview", items: [["dashboard", "Dashboard", "layout-dashboard"]] },
+  { label: "Hire", items: [
+    ["roles", "Roles", "briefcase"],
+    ["candidate-search", "Candidate Search", "search"],
+    ["talent-pool", "Talent Pool", "bookmark"],
+    ["hiring", "Hiring", "kanban"]
+  ] },
+  { label: "Intelligence", items: [
+    ["analytics", "Analytics", "bar-chart-2"],
+    ["university-talent", "University Talent", "graduation-cap"],
+    ["company-profile", "Company Profile", "building-2"]
+  ] },
+  { label: "AI", items: [["vera", "Vera", "sparkles"]] },
+  { label: "Account", items: [["settings", "Settings", "settings"]] }
+];
+
+const EMPLOYER_VIEW_KEYS = EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key]) => key));
+const EMPLOYER_VIEW_TITLES = Object.fromEntries(EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key, label]) => [key, label])));
+
+let employerRouteState = { view: "", params: {} };
+
+function renderEmployerShell(root) {
+  const state = readState();
+  const employer = state.employerProfile || {};
+  root.innerHTML = `
+    <header class="emp-app-header">
+      <div class="emp-app-header-left">
+        <button type="button" class="emp-app-menu-btn" data-emp-menu-toggle aria-label="Open navigation">${icon("menu")}</button>
+        <a class="emp-app-brand" href="index.html">${icon("layout-dashboard")}<span>CareerGo <small>Employer OS</small></span></a>
+      </div>
+      <div class="emp-app-header-search field">
+        ${icon("search")}
+        <input type="text" placeholder="Search candidates, roles, applicants..." disabled>
+      </div>
+      <div class="emp-app-header-right">
+        <button type="button" class="emp-app-icon-btn" aria-label="Notifications">${icon("bell")}</button>
+        <span class="emp-app-workspace">${employer.company || "Your Workspace"}</span>
+        <span class="emp-app-avatar">${(employer.contactName || employer.company || "E").charAt(0).toUpperCase()}</span>
+      </div>
+    </header>
+    <div class="emp-app-body">
+      <aside class="emp-app-sidebar" data-emp-sidebar>
+        <nav aria-label="Employer navigation">
+          ${EMPLOYER_NAV_GROUPS.map(group => `
+            <div class="emp-nav-group">
+              <span class="emp-nav-group-label">${group.label}</span>
+              ${group.items.map(([key, label, ic]) => `<a href="#${key}" class="emp-nav-item" data-emp-nav="${key}">${icon(ic)}<span>${label}</span></a>`).join("")}
+            </div>
+          `).join("")}
+        </nav>
+        <button type="button" class="emp-nav-item emp-app-collapse-btn" data-emp-collapse aria-label="Collapse sidebar">${icon("chevron-left")}<span>Collapse</span></button>
+        <button type="button" class="emp-nav-item" data-logout>${icon("log-out")}<span>Logout</span></button>
+      </aside>
+      <div class="emp-app-sidebar-overlay" data-emp-sidebar-overlay></div>
+      <main id="employer-view" class="emp-app-main"></main>
+    </div>
+  `;
+  createIcons();
+
+  qsa("[data-emp-nav]", root).forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    document.body.classList.remove("emp-sidebar-open");
+    employerNavigateTo(link.dataset.empNav);
+  }));
+  qs("[data-emp-menu-toggle]", root)?.addEventListener("click", () => {
+    document.body.classList.toggle("emp-sidebar-open");
+  });
+  qs("[data-emp-sidebar-overlay]", root)?.addEventListener("click", () => {
+    document.body.classList.remove("emp-sidebar-open");
+  });
+  qs("[data-emp-collapse]", root)?.addEventListener("click", () => {
+    const collapsed = document.body.classList.toggle("emp-sidebar-collapsed");
+    localStorage.setItem("careergo-employer-sidebar-collapsed", collapsed ? "1" : "0");
+  });
+  if (localStorage.getItem("careergo-employer-sidebar-collapsed") === "1") {
+    document.body.classList.add("emp-sidebar-collapsed");
+  }
+}
+
+function parseEmployerHash() {
+  const raw = (location.hash || "").replace(/^#\/?/, "");
+  const [view, id] = raw.split("/");
+  return {
+    view: EMPLOYER_VIEW_KEYS.includes(view) ? view : "dashboard",
+    params: id ? { id } : {}
+  };
+}
+
+function employerNavigateTo(view, params = {}, options = {}) {
+  const root = qs("#employer-view");
+  if (!root) return;
+  const isSameRoute = employerRouteState.view === view && employerRouteState.params.id === params.id;
+  if (isSameRoute && !options.force) return;
+
+  employerRouteState = { view, params };
+  qsa("[data-emp-nav]").forEach(link => link.classList.toggle("active", link.dataset.empNav === view));
+
+  renderEmployerView(view, params, root);
+  root.scrollTop = 0;
+
+  const nextHash = `#${view}${params.id ? "/" + params.id : ""}`;
+  if (location.hash !== nextHash) history.replaceState(null, "", nextHash);
+}
+
+function renderEmployerView(view, params, root) {
+  switch (view) {
+    case "dashboard": return renderEmployerDashboard(root);
+    case "roles": return renderEmployerRolesList(root);
+    case "role-builder": return renderEmployerRoleBuilder(root, params.id || null);
+    default: return renderEmployerPlaceholder(root, view);
+  }
+}
+
+function renderEmployerPlaceholder(root, view) {
+  const title = EMPLOYER_VIEW_TITLES[view] || "This view";
+  root.innerHTML = `
+    <div class="emp-view-header"><h1>${title}</h1></div>
+    <div class="emp-empty-state card">
+      <div class="feature-icon">${icon("hourglass")}</div>
+      <h2>${title} is coming in a later phase.</h2>
+      <p>This part of the employer workspace is being built next. Dashboard and Roles are fully wired up today.</p>
+    </div>
+  `;
+  createIcons();
+}
+
+function initEmployerRouter() {
+  const shellRoot = qs("[data-employer-app]");
+  if (!shellRoot) return;
+  if (!requireRole(shellRoot, "employer", "open your employer workspace")) return;
+
+  renderEmployerShell(shellRoot);
+  const initial = parseEmployerHash();
+  employerNavigateTo(initial.view, initial.params, { force: true });
+
+  window.addEventListener("hashchange", () => {
+    const next = parseEmployerHash();
+    employerNavigateTo(next.view, next.params);
+  });
+}
+
 function renderEmployerPortal() {
   const root = qs("[data-employer-app]");
   if (!root) return;
@@ -6358,7 +6500,7 @@ function init() {
   renderMarket();
   renderAutopilot();
   renderPosts();
-  renderEmployerPortal();
+  initEmployerRouter();
   renderEmployers();
   renderComparison();
   renderSiteFooter();
