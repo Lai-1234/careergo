@@ -6105,7 +6105,8 @@ function renderEmployerShell(root) {
       </div>
       <div class="emp-app-header-search field">
         ${icon("search")}
-        <input type="text" placeholder="Search candidates, roles, applicants..." disabled>
+        <input type="text" placeholder="Search candidates, roles, applicants..." data-emp-search-input autocomplete="off">
+        <div class="emp-search-results" data-emp-search-results hidden></div>
       </div>
       <div class="emp-app-header-right">
         <button type="button" class="emp-app-icon-btn" aria-label="Notifications">${icon("bell")}</button>
@@ -6442,6 +6443,55 @@ function renderWizardStepContent(step, existing) {
   }
 }
 
+function filterEmployerSearch(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const groups = [];
+  const roleMatches = DATA.employerRoles.filter(r => r.title.toLowerCase().includes(q));
+  if (roleMatches.length) groups.push({ label: "Roles", items: roleMatches.map(r => ({ id: r.id, primary: r.title, secondary: r.status, view: "role-builder" })) });
+  const candidateMatches = DATA.candidates.filter(c => c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q));
+  if (candidateMatches.length) groups.push({ label: "Candidates", items: candidateMatches.map(c => ({ id: c.id, primary: c.name, secondary: c.role, view: "talent" })) });
+  return groups;
+}
+
+function initEmployerGlobalSearch() {
+  const input = qs("[data-emp-search-input]");
+  const results = qs("[data-emp-search-results]");
+  if (!input || !results) return;
+
+  function close() {
+    results.hidden = true;
+    results.innerHTML = "";
+  }
+
+  input.addEventListener("input", () => {
+    const groups = filterEmployerSearch(input.value);
+    if (!groups.length) { close(); return; }
+    results.innerHTML = groups.map(group => `
+      <div class="emp-search-group">
+        <span class="emp-search-group-label">${group.label}</span>
+        ${group.items.map(item => `<button type="button" class="emp-search-result" data-emp-search-result data-view="${item.view}" data-id="${item.id}"><strong>${item.primary}</strong><span>${item.secondary}</span></button>`).join("")}
+      </div>
+    `).join("");
+    results.hidden = false;
+  });
+
+  results.addEventListener("click", event => {
+    const btn = event.target.closest("[data-emp-search-result]");
+    if (!btn) return;
+    employerNavigateTo(btn.dataset.view, { id: btn.dataset.id });
+    input.value = "";
+    close();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") close();
+  });
+  document.addEventListener("click", event => {
+    if (!event.target.closest(".emp-app-header-search")) close();
+  });
+}
+
 function renderEmployerPlaceholder(root, view) {
   const title = EMPLOYER_VIEW_TITLES[view] || "This view";
   root.innerHTML = `
@@ -6652,6 +6702,7 @@ function init() {
   renderAutopilot();
   renderPosts();
   initEmployerRouter();
+  initEmployerGlobalSearch();
   renderEmployers();
   renderComparison();
   renderSiteFooter();
