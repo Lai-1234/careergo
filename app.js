@@ -6204,6 +6204,7 @@ function renderEmployerView(view, params, root) {
     case "roles": return renderEmployerRolesList(root);
     case "role-builder": return renderEmployerRoleBuilder(root, params.id || null);
     case "talent": return renderEmployerTalent(root, params);
+    case "hiring": return renderEmployerHiring(root);
     default: return renderEmployerPlaceholder(root, view);
   }
 }
@@ -6590,6 +6591,107 @@ function renderEmployerTalent(root, params = {}) {
       writeState(next);
       draw();
     });
+  }
+
+  draw();
+}
+
+const EMPLOYER_PIPELINE_STAGES = ["New", "Review", "Screen", "Interview", "Final", "Offer", "Hired"];
+
+function renderEmployerHiring(root) {
+  let activeTab = "applicants";
+  let openCandidateId = null;
+
+  function draw() {
+    root.innerHTML = `
+      <div class="emp-view-header"><h1>Hiring</h1></div>
+      <div class="emp-subtabs">
+        <button type="button" class="emp-subtab ${activeTab === "applicants" ? "active" : ""}" data-hiring-tab="applicants">Applicants</button>
+        <button type="button" class="emp-subtab ${activeTab === "pipeline" ? "active" : ""}" data-hiring-tab="pipeline">Pipeline</button>
+        <button type="button" class="emp-subtab ${activeTab === "interviews" ? "active" : ""}" data-hiring-tab="interviews">Interviews</button>
+      </div>
+
+      <div class="emp-subpanel ${activeTab === "applicants" ? "active" : ""}" ${activeTab === "applicants" ? "" : "hidden"}>
+        <div class="card">
+          <div class="table-wrap">
+            <table class="emp-table">
+              <thead><tr><th>Candidate</th><th>Role</th><th>Stage</th><th>Role fit</th><th>Availability</th></tr></thead>
+              <tbody>
+                ${DATA.candidates.map(c => `
+                  <tr class="emp-table-row" data-hiring-open="${c.id}">
+                    <td>${c.name}</td><td>${c.role}</td><td>${c.stage}</td><td>${c.fit}%</td><td>${c.availability}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        ${openCandidateId ? renderCandidateDetail(openCandidateId) : ""}
+      </div>
+
+      <div class="emp-subpanel ${activeTab === "pipeline" ? "active" : ""}" ${activeTab === "pipeline" ? "" : "hidden"}>
+        <div class="emp-kanban">
+          ${EMPLOYER_PIPELINE_STAGES.map(stage => `
+            <div class="emp-kanban-col">
+              <h3>${stage} <span class="pill">${DATA.candidates.filter(c => c.stage === stage).length}</span></h3>
+              ${DATA.candidates.filter(c => c.stage === stage).map(c => `
+                <div class="card emp-kanban-card">
+                  <strong>${c.name}</strong>
+                  <span class="emp-talent-meta">${c.role} · ${c.fit}% fit</span>
+                  <select data-hiring-stage="${c.id}">
+                    ${EMPLOYER_PIPELINE_STAGES.map(s => `<option value="${s}" ${s === c.stage ? "selected" : ""}>${s}</option>`).join("")}
+                  </select>
+                </div>
+              `).join("") || `<p class="emp-empty-hint">No candidates.</p>`}
+            </div>
+          `).join("")}
+        </div>
+      </div>
+
+      <div class="emp-subpanel ${activeTab === "interviews" ? "active" : ""}" ${activeTab === "interviews" ? "" : "hidden"}>
+        <div class="card emp-interview-card">
+          <div class="emp-card-head"><h3>Sarah Lee</h3><span class="pill gold">Upcoming</span></div>
+          <p class="emp-talent-meta">Junior Data Analyst · Tomorrow, 2:00 PM · Round 1</p>
+          <button type="button" class="btn btn-ghost" data-hiring-kit="upcoming">Open Interview Kit</button>
+        </div>
+        <div class="card emp-interview-card">
+          <div class="emp-card-head"><h3>Daniel Lim</h3><span class="pill green">Completed</span></div>
+          <p class="emp-talent-meta">Data Analyst · Last week · Round 2</p>
+          <button type="button" class="btn btn-ghost" data-hiring-kit="completed">Add Feedback</button>
+        </div>
+      </div>
+    `;
+    createIcons();
+
+    qsa("[data-hiring-tab]", root).forEach(btn => btn.addEventListener("click", () => {
+      activeTab = btn.dataset.hiringTab;
+      draw();
+    }));
+    qsa("[data-hiring-open]", root).forEach(row => row.addEventListener("click", () => {
+      openCandidateId = row.dataset.hiringOpen;
+      draw();
+    }));
+    qsa("[data-hiring-stage]", root).forEach(select => select.addEventListener("change", () => {
+      const candidate = DATA.candidates.find(c => c.id === select.dataset.hiringStage);
+      if (candidate) candidate.stage = select.value;
+      draw();
+    }));
+    qsa("[data-hiring-kit]", root).forEach(btn => btn.addEventListener("click", () => {
+      showToast("Full interview kit generation opens in a later phase.", "info");
+    }));
+  }
+
+  function renderCandidateDetail(id) {
+    const c = DATA.candidates.find(cand => cand.id === id);
+    if (!c) return "";
+    return `
+      <div class="card emp-candidate-detail">
+        <div class="emp-card-head"><h3>${c.name}</h3><span class="pill">${c.fit}% fit</span></div>
+        <p class="emp-talent-meta">${c.role} · ${c.location} · ${c.salary}</p>
+        <div class="pill-row">${c.skills.map(s => `<span class="pill">${s}</span>`).join("")}</div>
+        <p class="emp-talent-reason">${c.reason}</p>
+      </div>
+    `;
   }
 
   draw();
