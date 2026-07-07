@@ -790,9 +790,61 @@ const DATA = {
     { id: "c3", name: "Priya Nair", privacy: "Public profile", role: "Frontend Developer", stage: "Saved", fit: 84, location: "Remote / Selangor", availability: "1 month", salary: "RM 6k - 8k", education: "Diploma Software Engineering", experience: "2 years freelance", careerStage: "Career Switcher", portfolio: "Strong", skills: ["React", "TypeScript", "Testing"], reason: "Transferable freelance delivery evidence with strong component testing habits." }
   ],
   employerRoles: [
-    { id: "er1", title: "Product Design Intern", applicants: 84, qualified: 21, status: "Active" },
-    { id: "er2", title: "Junior Data Analyst", applicants: 126, qualified: 34, status: "Active" },
-    { id: "er3", title: "Graduate UX Researcher", applicants: 47, qualified: 16, status: "Draft" }
+    {
+      id: "er1", title: "Product Design Intern", status: "Active",
+      applicants: 84, qualified: 21, strongFits: 9, talentSupply: "Good", daysOpen: 7, health: "Healthy",
+      roleIntelligence: {
+        talentAvailability: "Good", typicalExperience: "0-1 years", commonSalary: "RM 1.8k - 2.5k",
+        commonSkills: ["Figma", "User Research", "Prototyping", "Design Systems"],
+        requestedButLessCommon: ["Motion Design"],
+        potentialIssue: "No major mismatch between requirements and the current intern talent pool.",
+        suggestedAdjustment: "Requirements already align well with available candidates."
+      }
+    },
+    {
+      id: "er2", title: "Junior Data Analyst", status: "Active",
+      applicants: 126, qualified: 34, strongFits: 8, talentSupply: "Strong", daysOpen: 12, health: "Needs attention",
+      roleIntelligence: {
+        talentAvailability: "Strong", typicalExperience: "0-2 years", commonSalary: "RM 3.8k - 6k",
+        commonSkills: ["SQL", "Excel", "Power BI", "Python"],
+        requestedButLessCommon: ["AWS", "ML in production"],
+        potentialIssue: "Requiring 3+ years of experience may reduce your available candidate pool by 62%.",
+        suggestedAdjustment: "1-3 years or strong project evidence."
+      }
+    },
+    {
+      id: "er3", title: "Graduate UX Researcher", status: "Draft",
+      applicants: 47, qualified: 16, strongFits: 5, talentSupply: "Good", daysOpen: 3, health: "Healthy",
+      roleIntelligence: {
+        talentAvailability: "Good", typicalExperience: "0-1 years", commonSalary: "RM 3k - 4.5k",
+        commonSkills: ["User Interviews", "Usability Testing", "Figma", "Survey Design"],
+        requestedButLessCommon: ["Quantitative Research"],
+        potentialIssue: "Draft not yet published — no applicant data yet.",
+        suggestedAdjustment: "Publish the role to start receiving applicants."
+      }
+    },
+    {
+      id: "er4", title: "Software Engineer", status: "Active",
+      applicants: 84, qualified: 29, strongFits: 11, talentSupply: "Strong", daysOpen: 7, health: "Healthy",
+      roleIntelligence: {
+        talentAvailability: "Strong", typicalExperience: "1-3 years", commonSalary: "RM 4.5k - 7k",
+        commonSkills: ["React", "Node.js", "SQL", "AWS"],
+        requestedButLessCommon: ["Kubernetes"],
+        potentialIssue: "No major mismatch between requirements and the current talent pool.",
+        suggestedAdjustment: "Requirements already align well with available candidates."
+      }
+    },
+    {
+      id: "er5", title: "Backend Engineer", status: "Paused",
+      applicants: 58, qualified: 19, strongFits: 6, talentSupply: "Tight", daysOpen: 21, health: "Needs attention",
+      roleIntelligence: {
+        talentAvailability: "Tight", typicalExperience: "3-5 years", commonSalary: "RM 7k - 10k",
+        commonSkills: ["Java", "Microservices", "SQL", "Kafka"],
+        requestedButLessCommon: ["Kafka at scale", "Site reliability"],
+        potentialIssue: "The combination of a 5+ year requirement and Kafka-at-scale evidence is uncommon locally, narrowing supply.",
+        suggestedAdjustment: "Consider 3-5 years with strong distributed-systems evidence instead of a hard 5-year cutoff."
+      }
+    }
   ]
 };
 
