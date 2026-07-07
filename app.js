@@ -6126,56 +6126,76 @@ function candidateCard(candidate, compact = false) {
 }
 
 function renderEmployers() {
-  const root = qs("[data-employers]");
-  if (!root) return;
+  if (!qs(".employer-page")) return;
   const state = readState();
   if (state.session.loggedIn && state.session.role === "employer") {
     location.href = "employer-app.html";
-    return;
   }
-  root.innerHTML = `
-    <div class="glass-card employer-entry-card">
-      <div>
-        <div class="eyebrow"><span class="spark">*</span> Employer Journey</div>
-        <h2 class="section-title">Hire based on fit, skills, and career trajectory.</h2>
-        <p class="section-sub">CareerGo helps employers post roles, discover candidates, review talent profiles, manage applicants, and reduce noisy keyword-only screening.</p>
-      </div>
-      <div class="hero-actions employer-entry-actions">
-        <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create Employer Account</a>
-        <a class="btn btn-ghost" href="login.html">${icon("log-in")} Login</a>
-        <a class="btn btn-cyan" href="#learn-more">${icon("arrow-down")} Learn More</a>
-      </div>
-    </div>
-    <div class="grid-3 employer-feature-grid">
-      ${[
-        ["Talent discovery", "Search candidates by readiness, skill trajectory, and Vera-verified evidence.", "users"],
-        ["Company reputation", "Understand reviews, culture signals, candidate concerns, and hiring conversion.", "building-2"],
-        ["University outcomes", "Track graduate readiness, employer demand, internship pipelines, and alumni feedback.", "graduation-cap"]
-      ].map(([title, body, ic]) => `
-        <div class="card">
-          <div class="feature-icon">${icon(ic)}</div>
-          <h3>${title}</h3>
-          <p>${body}</p>
-        </div>
-      `).join("")}
-    </div>
-    <div class="glass-card employer-dashboard-card" id="learn-more">
-      <div class="section-head employer-dashboard-head">
-        <div>
-          <div class="section-kicker">Hiring dashboard</div>
-          <h2 class="section-title">A cleaner view of fit, pipeline, and reputation.</h2>
-        </div>
-        <a class="btn btn-primary" href="register.html">${icon("layout-dashboard")} Create employer workspace</a>
-      </div>
-      <div class="metric-strip">
-        <div class="metric"><strong>126</strong><span>Candidates</span></div>
-        <div class="metric"><strong>21d</strong><span>Time to hire</span></div>
-        <div class="metric"><strong>86%</strong><span>Offer acceptance</span></div>
-        <div class="metric"><strong>4.4</strong><span>Reputation</span></div>
-      </div>
-    </div>
-  `;
-  createIcons();
+}
+
+function initEmployerTabs() {
+  const tabs = qsa("[data-emp-tab]");
+  if (!tabs.length) return;
+  tabs.forEach(btn => btn.addEventListener("click", () => {
+    tabs.forEach(item => {
+      const active = item === btn;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    qsa("[data-emp-panel]").forEach(panel => {
+      const active = panel.dataset.empPanel === btn.dataset.empTab;
+      panel.classList.toggle("active", active);
+      panel.hidden = !active;
+    });
+  }));
+}
+
+const EMPLOYER_VERA_RESPONSES = {
+  jd: "Here is a tighter draft: lead with impact and day-to-day ownership, list must-have skills separately from nice-to-haves, and state the salary range up front. Clear, specific listings attract stronger applicants.",
+  realistic: "Two of your requirements appear stricter than the current market. \"3+ years of experience\" and \"AWS production experience\" are uncommon for junior analysts in Kuala Lumpur. Consider moving AWS production experience to preferred skills.",
+  compare: "Sarah has the strongest immediate role alignment, Amir shows the highest growth potential, and Jason brings the strongest backend specialization. Compare their evidence side by side before deciding.",
+  availability: "There are 34 matching candidates for this role right now, with 214 high-readiness profiles across the wider market. Availability is healthy for a junior-level opening.",
+  salary: "Most candidates for this role expect RM 4.5k to 6k. Your posted budget of RM 4k to 6k sits within range, though the lower end may filter out some strong-fit candidates.",
+  uni: "Three university pipelines are relevant here: University of Malaya, Asia Pacific University, and Taylor's University all produce graduates with strong analytics foundations.",
+  interview: "Focus interview questions on SQL problem-solving, a walkthrough of a past analysis project, and how the candidate handles ambiguous data requests."
+};
+
+function initEmployerVera() {
+  const actions = qs("[data-emp-vera-actions]");
+  const answer = qs("[data-emp-vera-answer]");
+  if (!actions || !answer) return;
+  actions.addEventListener("click", event => {
+    const btn = event.target.closest("[data-emp-vera]");
+    if (!btn) return;
+    qsa("[data-emp-vera]", actions).forEach(item => item.classList.toggle("active", item === btn));
+    const response = EMPLOYER_VERA_RESPONSES[btn.dataset.empVera];
+    if (response) answer.textContent = response;
+  });
+}
+
+function initEmployerCompare() {
+  const table = qs("[data-emp-compare]");
+  if (!table) return;
+  const focusColumn = col => {
+    qsa("th, td", table).forEach(cell => cell.classList.remove("is-focused"));
+    if (!col) return;
+    qsa(`[data-emp-compare-col="${col}"]`, table).forEach(th => th.classList.add("is-focused"));
+    qsa("tbody tr", table).forEach(row => {
+      const cell = row.children[Number(col)];
+      if (cell) cell.classList.add("is-focused");
+    });
+  };
+  qsa("[data-emp-compare-col]", table).forEach(th => {
+    th.addEventListener("click", () => {
+      const active = th.classList.contains("is-focused");
+      focusColumn(active ? null : th.dataset.empCompareCol);
+    });
+    th.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      th.click();
+    });
+  });
 }
 
 function renderComparison() {
@@ -6294,6 +6314,9 @@ function init() {
   initResearchMarquee();
   initHomeMetricCountUp();
   initComparisonTableAnimation();
+  initEmployerTabs();
+  initEmployerVera();
+  initEmployerCompare();
   bindGlobalActions();
   createIcons();
   initSidebarToggle();
