@@ -6270,6 +6270,46 @@ function renderEmployerDashboard(root) {
   }));
 }
 
+function renderEmployerRolesList(root) {
+  const roles = DATA.employerRoles;
+  root.innerHTML = `
+    <div class="emp-view-header">
+      <h1>Roles</h1>
+      <button type="button" class="btn btn-primary" data-emp-create-role>${icon("plus")} Create role</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table class="emp-table">
+          <thead><tr><th>Role</th><th>Status</th><th>Applicants</th><th>Qualified</th><th>Strong fits</th><th>Talent supply</th><th>Days open</th><th>Health</th><th></th></tr></thead>
+          <tbody>
+            ${roles.map(r => `
+              <tr class="emp-table-row">
+                <td>${r.title}</td>
+                <td><span class="pill ${r.status === "Active" ? "green" : r.status === "Draft" ? "gold" : ""}">${r.status}</span></td>
+                <td>${r.applicants}</td>
+                <td>${r.qualified}</td>
+                <td>${r.strongFits}</td>
+                <td>${r.talentSupply}</td>
+                <td>${r.daysOpen}d</td>
+                <td><span class="pill ${r.health === "Healthy" ? "green" : "red"}">${r.health}</span></td>
+                <td class="emp-table-actions">
+                  <button type="button" class="btn btn-ghost btn-sm" data-emp-edit-role="${r.id}">Edit</button>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  createIcons();
+
+  qs("[data-emp-create-role]", root)?.addEventListener("click", () => employerNavigateTo("role-builder", {}));
+  qsa("[data-emp-edit-role]", root).forEach(btn => btn.addEventListener("click", () => {
+    employerNavigateTo("role-builder", { id: btn.dataset.empEditRole });
+  }));
+}
+
 function renderEmployerPlaceholder(root, view) {
   const title = EMPLOYER_VIEW_TITLES[view] || "This view";
   root.innerHTML = `
