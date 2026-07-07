@@ -6310,6 +6310,112 @@ function renderEmployerRolesList(root) {
   }));
 }
 
+const EMPLOYER_ROLE_BUILDER_STEPS = ["Basics", "Responsibilities", "Requirements", "Salary & Location", "Hiring Preferences", "Preview & Publish"];
+
+function renderEmployerRoleBuilder(root, roleId) {
+  const existing = roleId ? DATA.employerRoles.find(r => r.id === roleId) : null;
+  let activeStep = existing ? 2 : 0; // jump straight to Requirements when editing, so Role Intelligence is visible immediately
+
+  function draw() {
+    const ri = existing?.roleIntelligence;
+    root.innerHTML = `
+      <div class="emp-view-header">
+        <h1>${existing ? `Edit ${existing.title}` : "Create role"}</h1>
+        <button type="button" class="btn btn-ghost" data-emp-nav="roles">${icon("x")} Cancel</button>
+      </div>
+      <div class="emp-wizard-steps">
+        ${EMPLOYER_ROLE_BUILDER_STEPS.map((label, i) => `
+          <button type="button" class="emp-wizard-step ${i === activeStep ? "active" : ""} ${i < activeStep ? "done" : ""}" data-emp-step="${i}">
+            <span class="emp-wizard-step-index">${i + 1}</span><span>${label}</span>
+          </button>
+        `).join("")}
+      </div>
+      <div class="emp-wizard-body">
+        <div class="card emp-wizard-form">
+          ${renderWizardStepContent(activeStep, existing)}
+          <div class="emp-wizard-actions">
+            ${activeStep > 0 ? `<button type="button" class="btn btn-ghost" data-emp-prev>Back</button>` : "<span></span>"}
+            ${activeStep < EMPLOYER_ROLE_BUILDER_STEPS.length - 1
+              ? `<button type="button" class="btn btn-primary" data-emp-next>Continue</button>`
+              : `<button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} ${existing ? "Save changes" : "Publish role"}</button>`}
+          </div>
+        </div>
+        ${(activeStep === 2 || activeStep === 3) && ri ? `
+          <div class="card emp-role-intelligence">
+            <div class="emp-callout-label">${icon("sparkles")} Role Intelligence</div>
+            <div class="emp-stat-row"><span>Talent availability</span><strong>${ri.talentAvailability}</strong></div>
+            <div class="emp-stat-row"><span>Typical experience</span><strong>${ri.typicalExperience}</strong></div>
+            <div class="emp-stat-row"><span>Common salary</span><strong>${ri.commonSalary}</strong></div>
+            <div class="emp-tags"><span class="emp-tags-label">Common skills</span><div class="pill-row">${ri.commonSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
+            <div class="emp-callout emp-callout-warn">
+              <div class="emp-callout-label warn">${icon("alert-triangle")} Potential issue</div>
+              <p>${ri.potentialIssue}</p>
+            </div>
+            <div class="emp-callout emp-callout-suggest">
+              <div class="emp-callout-label">${icon("lightbulb")} Suggested adjustment</div>
+              <p>${ri.suggestedAdjustment}</p>
+            </div>
+            <p class="emp-vera-principle">${icon("shield-check")} Vera advises and explains. You make the final decision.</p>
+          </div>
+        ` : ""}
+      </div>
+    `;
+    createIcons();
+    bindEvents();
+  }
+
+  function bindEvents() {
+    qsa("[data-emp-step]", root).forEach(btn => btn.addEventListener("click", () => {
+      activeStep = Number(btn.dataset.empStep);
+      draw();
+    }));
+    qs("[data-emp-prev]", root)?.addEventListener("click", () => { activeStep = Math.max(0, activeStep - 1); draw(); });
+    qs("[data-emp-next]", root)?.addEventListener("click", () => { activeStep = Math.min(EMPLOYER_ROLE_BUILDER_STEPS.length - 1, activeStep + 1); draw(); });
+    qs("[data-emp-publish]", root)?.addEventListener("click", () => {
+      showToast(existing ? "Role updated." : "Role published.");
+      employerNavigateTo("roles", {}, { force: true });
+    });
+    qs("[data-emp-nav]", root)?.addEventListener("click", event => {
+      event.preventDefault();
+      employerNavigateTo("roles");
+    });
+  }
+
+  draw();
+}
+
+function renderWizardStepContent(step, existing) {
+  const v = field => existing ? (field === "title" ? existing.title : "") : "";
+  switch (EMPLOYER_ROLE_BUILDER_STEPS[step]) {
+    case "Basics":
+      return `
+        <label>Role title<input type="text" value="${v("title")}" placeholder="e.g. Junior Data Analyst"></label>
+        <label>Department<input type="text" placeholder="e.g. Data & Analytics"></label>
+        <label>Employment type<select><option>Full-time</option><option>Internship</option><option>Contract</option></select></label>
+      `;
+    case "Responsibilities":
+      return `<label>Key responsibilities<textarea rows="6" placeholder="Describe the day-to-day ownership of this role"></textarea></label>`;
+    case "Requirements":
+      return `
+        <label>Required skills<input type="text" placeholder="Comma-separated, e.g. SQL, Excel, Power BI"></label>
+        <label>Minimum experience<input type="text" placeholder="e.g. 1-3 years"></label>
+      `;
+    case "Salary & Location":
+      return `
+        <label>Salary range<input type="text" placeholder="e.g. RM 3.8k - 6k"></label>
+        <label>Location<input type="text" placeholder="e.g. Kuala Lumpur"></label>
+        <label>Work mode<select><option>On-site</option><option>Hybrid</option><option>Remote</option></select></label>
+      `;
+    case "Hiring Preferences":
+      return `
+        <label>Match threshold<select><option>70%</option><option>80%</option><option>90%</option></select></label>
+        <label class="check-field custom-checkbox"><input type="checkbox"> Require portfolio evidence</label>
+      `;
+    default: // Preview & Publish
+      return `<p class="emp-preview-note">Review the details across the previous steps, then publish. Vera will keep monitoring talent availability against this role's requirements once it's live.</p>`;
+  }
+}
+
 function renderEmployerPlaceholder(root, view) {
   const title = EMPLOYER_VIEW_TITLES[view] || "This view";
   root.innerHTML = `
