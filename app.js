@@ -6203,6 +6203,7 @@ function renderEmployerView(view, params, root) {
     case "dashboard": return renderEmployerDashboard(root);
     case "roles": return renderEmployerRolesList(root);
     case "role-builder": return renderEmployerRoleBuilder(root, params.id || null);
+    case "talent": return renderEmployerTalent(root, params);
     default: return renderEmployerPlaceholder(root, view);
   }
 }
@@ -6490,6 +6491,108 @@ function initEmployerGlobalSearch() {
   document.addEventListener("click", event => {
     if (!event.target.closest(".emp-app-header-search")) close();
   });
+}
+
+function renderEmployerTalent(root, params = {}) {
+  let activeTab = "discover";
+  const focusedCandidate = params.id ? DATA.candidates.find(c => c.id === params.id) : null;
+
+  function draw() {
+    const state = readState();
+    const pools = state.employerTalentPools;
+    const invitations = state.employerInvitations;
+
+    root.innerHTML = `
+      <div class="emp-view-header"><h1>Talent</h1></div>
+      <div class="emp-subtabs">
+        <button type="button" class="emp-subtab ${activeTab === "discover" ? "active" : ""}" data-talent-tab="discover">Discover</button>
+        <button type="button" class="emp-subtab ${activeTab === "saved-pools" ? "active" : ""}" data-talent-tab="saved-pools">Saved Pools</button>
+      </div>
+
+      <div class="emp-subpanel ${activeTab === "discover" ? "active" : ""}" ${activeTab === "discover" ? "" : "hidden"}>
+        <div class="card emp-talent-filters">
+          <input type="text" data-talent-query placeholder="Search by name, role, or skill" value="${focusedCandidate ? focusedCandidate.name : ""}">
+          <select disabled><option>Any experience</option></select>
+          <select disabled><option>Any location</option></select>
+          <select disabled><option>Any work mode</option></select>
+        </div>
+        <div class="emp-talent-grid" data-talent-results></div>
+      </div>
+
+      <div class="emp-subpanel ${activeTab === "saved-pools" ? "active" : ""}" ${activeTab === "saved-pools" ? "" : "hidden"}>
+        <div class="emp-view-header"><h2>Saved Pools</h2><button type="button" class="btn btn-ghost" data-talent-create-pool>${icon("plus")} Create Pool</button></div>
+        ${pools.map(pool => `
+          <div class="card emp-pool-card">
+            <div class="emp-card-head"><h3>${pool.name}</h3><span class="pill">${pool.candidateIds.length} candidates</span></div>
+            ${pool.candidateIds.length
+              ? `<ul class="emp-pool-list">${pool.candidateIds.map(id => {
+                  const c = DATA.candidates.find(cand => cand.id === id);
+                  return c ? `<li>${c.name} — ${c.role}</li>` : "";
+                }).join("")}</ul>`
+              : `<p class="emp-empty-hint">No candidates saved to this pool yet.</p>`}
+          </div>
+        `).join("")}
+      </div>
+    `;
+    createIcons();
+
+    qsa("[data-talent-tab]", root).forEach(btn => btn.addEventListener("click", () => {
+      activeTab = btn.dataset.talentTab;
+      draw();
+    }));
+
+    function renderResults(query = "") {
+      const q = query.trim().toLowerCase();
+      const matches = DATA.candidates.filter(c => !q || c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q) || c.skills.some(s => s.toLowerCase().includes(q)));
+      const list = qs("[data-talent-results]", root);
+      list.innerHTML = matches.slice(0, 6).map(c => `
+        <div class="card emp-talent-card">
+          <div class="emp-card-head"><h3>${c.name}</h3><span class="pill ${c.fit >= 85 ? "green" : ""}">${c.fit}% fit</span></div>
+          <p class="emp-talent-meta">${c.role} · ${c.location} · ${c.availability}</p>
+          <div class="pill-row">${c.skills.map(s => `<span class="pill">${s}</span>`).join("")}</div>
+          <p class="emp-talent-reason"><strong>Why this person may fit:</strong> ${c.reason}</p>
+          <div class="emp-talent-actions">
+            <button type="button" class="btn btn-ghost" data-talent-save="${c.id}">Save</button>
+            <button type="button" class="btn btn-ghost" data-talent-compare="${c.id}">Compare</button>
+            <button type="button" class="btn btn-primary" data-talent-invite="${c.id}">Invite</button>
+          </div>
+        </div>
+      `).join("") || `<p class="emp-empty-hint">No candidates match that search.</p>`;
+
+      qsa("[data-talent-save]", list).forEach(btn => btn.addEventListener("click", () => {
+        const next = readState();
+        const pool = next.employerTalentPools[0];
+        if (!pool.candidateIds.includes(btn.dataset.talentSave)) pool.candidateIds.push(btn.dataset.talentSave);
+        writeState(next);
+        showToast("Candidate saved to Backend Prospects.");
+      }));
+      qsa("[data-talent-invite]", list).forEach(btn => btn.addEventListener("click", () => {
+        const next = readState();
+        next.employerInvitations[btn.dataset.talentInvite] = "invited";
+        writeState(next);
+        showToast("Invitation sent.");
+      }));
+      qsa("[data-talent-compare]", list).forEach(btn => btn.addEventListener("click", () => {
+        showToast("Comparison view opens in a later phase.", "info");
+      }));
+    }
+
+    if (activeTab === "discover") {
+      renderResults(focusedCandidate ? focusedCandidate.name : "");
+      qs("[data-talent-query]", root)?.addEventListener("input", event => renderResults(event.target.value));
+    }
+
+    qs("[data-talent-create-pool]", root)?.addEventListener("click", () => {
+      const name = prompt("Pool name?");
+      if (!name) return;
+      const next = readState();
+      next.employerTalentPools.push({ id: `pool-${Date.now()}`, name, candidateIds: [] });
+      writeState(next);
+      draw();
+    });
+  }
+
+  draw();
 }
 
 function renderEmployerPlaceholder(root, view) {
