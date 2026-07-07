@@ -6083,7 +6083,7 @@ const EMPLOYER_NAV_GROUPS = [
   { label: "Account", items: [["settings", "Settings", "settings"]] }
 ];
 
-const EMPLOYER_VIEW_KEYS = EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key]) => key));
+const EMPLOYER_VIEW_KEYS = [...EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key]) => key)), "role-builder"];
 const EMPLOYER_VIEW_TITLES = Object.fromEntries(EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key, label]) => [key, label])));
 
 let employerRouteState = { view: "", params: {} };
