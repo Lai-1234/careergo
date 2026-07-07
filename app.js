@@ -6206,6 +6206,7 @@ function renderEmployerView(view, params, root) {
     case "talent": return renderEmployerTalent(root, params);
     case "hiring": return renderEmployerHiring(root);
     case "intelligence": return renderEmployerIntelligence(root);
+    case "community": return renderEmployerCommunity(root);
     default: return renderEmployerPlaceholder(root, view);
   }
 }
@@ -6771,6 +6772,69 @@ function renderEmployerIntelligence(root) {
       selectedRoleId = event.target.value;
       draw();
     });
+  }
+
+  draw();
+}
+
+function renderEmployerCommunity(root) {
+  function draw() {
+    root.innerHTML = `
+      <div class="emp-view-header"><h1>Community</h1><button type="button" class="btn btn-primary" data-community-compose>${icon("plus")} Create Post</button></div>
+      <div class="emp-community-feed" data-community-feed></div>
+      <div class="emp-compose-modal" data-community-modal hidden>
+        <div class="card emp-compose-card">
+          <h2>New post</h2>
+          <textarea data-community-draft placeholder="Share a discussion, question, or hiring insight..." rows="4"></textarea>
+          <div class="emp-compose-actions">
+            <button type="button" class="btn btn-ghost" data-community-cancel>Cancel</button>
+            <button type="button" class="btn btn-primary" data-community-submit>Post</button>
+          </div>
+        </div>
+      </div>
+    `;
+    createIcons();
+    renderFeed();
+
+    qs("[data-community-compose]", root)?.addEventListener("click", () => {
+      qs("[data-community-modal]", root).hidden = false;
+    });
+    qs("[data-community-cancel]", root)?.addEventListener("click", () => {
+      qs("[data-community-modal]", root).hidden = true;
+    });
+    qs("[data-community-submit]", root)?.addEventListener("click", () => {
+      const textarea = qs("[data-community-draft]", root);
+      const body = textarea.value.trim();
+      if (!body) return;
+      DATA.communityPosts.unshift({ id: `p-${Date.now()}`, author: "Maybank", authorType: "employer", verified: true, title: "Company update", body, reactions: 0 });
+      textarea.value = "";
+      qs("[data-community-modal]", root).hidden = true;
+      renderFeed();
+      showToast("Post published.");
+    });
+  }
+
+  function renderFeed() {
+    const feed = qs("[data-community-feed]", root);
+    feed.innerHTML = DATA.communityPosts.map(post => `
+      <div class="card emp-post-card">
+        <div class="emp-post-head">
+          <strong>${post.author}</strong>
+          ${post.verified ? `<span class="pill cyan">Verified Employer</span>` : ""}
+        </div>
+        <h3>${post.title}</h3>
+        <p>${post.body}</p>
+        <div class="emp-post-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-community-react="${post.id}">${icon("heart")} ${post.reactions}</button>
+        </div>
+      </div>
+    `).join("");
+    qsa("[data-community-react]", feed).forEach(btn => btn.addEventListener("click", () => {
+      const post = DATA.communityPosts.find(p => p.id === btn.dataset.communityReact);
+      if (post) post.reactions += 1;
+      renderFeed();
+    }));
+    createIcons();
   }
 
   draw();
