@@ -6077,14 +6077,13 @@ const EMPLOYER_NAV_GROUPS = [
   { label: "Overview", items: [["dashboard", "Dashboard", "layout-dashboard"]] },
   { label: "Hire", items: [
     ["roles", "Roles", "briefcase"],
-    ["candidate-search", "Candidate Search", "search"],
-    ["talent-pool", "Talent Pool", "bookmark"],
+    ["talent", "Talent", "users"],
     ["hiring", "Hiring", "kanban"]
   ] },
-  { label: "Intelligence", items: [
-    ["analytics", "Analytics", "bar-chart-2"],
-    ["university-talent", "University Talent", "graduation-cap"],
-    ["company-profile", "Company Profile", "building-2"]
+  { label: "Intelligence", items: [["intelligence", "Intelligence", "bar-chart-2"]] },
+  { label: "Connect", items: [
+    ["community", "Community", "messages-square"],
+    ["company", "Company", "building-2"]
   ] },
   { label: "AI", items: [["vera", "Vera", "sparkles"]] },
   { label: "Account", items: [["settings", "Settings", "settings"]] }
@@ -6110,8 +6109,10 @@ function renderEmployerShell(root) {
       </div>
       <div class="emp-app-header-right">
         <button type="button" class="emp-app-icon-btn" aria-label="Notifications">${icon("bell")}</button>
-        <span class="emp-app-workspace">${employer.company || "Your Workspace"}</span>
-        <span class="emp-app-avatar">${(employer.contactName || employer.company || "E").charAt(0).toUpperCase()}</span>
+        <button type="button" class="emp-app-identity">
+          <span class="emp-app-avatar">${getFirstName(state).charAt(0).toUpperCase()}</span>
+          <span class="emp-app-identity-text">${getFirstName(state)} <small>${employer.company || "Your Workspace"}</small></span>
+        </button>
       </div>
     </header>
     <div class="emp-app-body">
@@ -6124,7 +6125,6 @@ function renderEmployerShell(root) {
             </div>
           `).join("")}
         </nav>
-        <button type="button" class="emp-nav-item emp-app-collapse-btn" data-emp-collapse aria-label="Collapse sidebar">${icon("chevron-left")}<span>Collapse</span></button>
         <button type="button" class="emp-nav-item" data-logout>${icon("log-out")}<span>Logout</span></button>
       </aside>
       <div class="emp-app-sidebar-overlay" data-emp-sidebar-overlay></div>
@@ -6144,12 +6144,31 @@ function renderEmployerShell(root) {
   qs("[data-emp-sidebar-overlay]", root)?.addEventListener("click", () => {
     document.body.classList.remove("emp-sidebar-open");
   });
-  qs("[data-emp-collapse]", root)?.addEventListener("click", () => {
-    const collapsed = document.body.classList.toggle("emp-sidebar-collapsed");
-    localStorage.setItem("careergo-employer-sidebar-collapsed", collapsed ? "1" : "0");
-  });
-  if (localStorage.getItem("careergo-employer-sidebar-collapsed") === "1") {
-    document.body.classList.add("emp-sidebar-collapsed");
+  const sidebar = qs("[data-emp-sidebar]", root);
+  if (sidebar) {
+    let collapseTimer = null;
+    const expand = () => {
+      window.clearTimeout(collapseTimer);
+      sidebar.classList.add("emp-sidebar-hover");
+    };
+    const scheduleCollapse = () => {
+      window.clearTimeout(collapseTimer);
+      collapseTimer = window.setTimeout(() => sidebar.classList.remove("emp-sidebar-hover"), 200);
+    };
+    sidebar.addEventListener("mouseenter", expand);
+    sidebar.addEventListener("focusin", expand);
+    sidebar.addEventListener("mouseleave", scheduleCollapse);
+    sidebar.addEventListener("focusout", scheduleCollapse);
+
+    if (window.matchMedia("(hover: none)").matches) {
+      sidebar.addEventListener("click", event => {
+        if (event.target.closest("[data-emp-nav], [data-logout]")) return;
+        sidebar.classList.toggle("emp-sidebar-hover");
+      });
+      document.addEventListener("click", event => {
+        if (!sidebar.contains(event.target)) sidebar.classList.remove("emp-sidebar-hover");
+      });
+    }
   }
 }
 
@@ -6196,7 +6215,7 @@ function renderEmployerDashboard(root) {
 
   root.innerHTML = `
     <div class="emp-view-header">
-      <h1>Good morning, ${(readState().employerProfile?.contactName) || "there"}.</h1>
+      <h1>Good morning, ${getFirstName(readState())}.</h1>
       <p>Here's what needs attention across your hiring today.</p>
     </div>
 
