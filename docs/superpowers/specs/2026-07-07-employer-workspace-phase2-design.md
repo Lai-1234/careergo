@@ -138,7 +138,7 @@ to one grouped, single clickable identity element:
 ```html
 <button type="button" class="emp-app-identity">
   <span class="emp-app-avatar">${initial}</span>
-  <span class="emp-app-identity-text">${contactName} <small>${company}</small></span>
+  <span class="emp-app-identity-text">${getFirstName(state)} <small>${company}</small></span>
 </button>
 ```
 
@@ -212,8 +212,9 @@ inside `.emp-app-shell` exceeds `72ch` width.
   present and stylistically real, but only the free-text query actually
   filters in this phase; the rest are static selects, wired for real
   filtering in Phase 3). Below it, candidate result cards built from
-  `DATA.candidates` (currently 3 entries — sufficient for "a few real
-  cards", not expanded in this phase) showing name, role, location,
+  `DATA.candidates` (expanded from 3 to 7 entries — see Data additions
+  below — so both Discover and the Pipeline tab have enough variety)
+  showing name, role, location,
   availability, skills, a "Why this person may fit" line (reuse each
   candidate's existing `reason` field), and Save/Compare/Invite buttons.
   "Save" actually appends the candidate's id to an in-memory
@@ -236,9 +237,10 @@ inside `.emp-app-shell` exceeds `72ch` width.
   lightweight detail panel (not the full Candidate Review Workspace yet)
   showing the candidate's existing `reason`/skills/salary fields.
 - **Pipeline tab:** a real Kanban *layout* with stage columns (New,
-  Review, Screen, Interview, Final, Offer, Hired) populated by each
-  candidate's existing `stage` field (mapped to the nearest matching
-  column) — cards are real and show name/role/fit; drag-and-drop itself
+  Review, Screen, Interview, Final, Offer, Hired), each populated with at
+  least one of the 7 expanded `DATA.candidates` entries (one per stage,
+  see Data additions) so every column shows a real card, not an empty
+  placeholder — cards are real and show name/role/fit; drag-and-drop itself
   is out of scope for Phase 2 (Phase 4), but each card has a `<select>`
   of the 7 stage names; changing it actually updates that candidate's
   `stage` in state and re-renders the column counts.
@@ -316,6 +318,31 @@ breaking change to any existing reader of `DATA.communityPosts` (checked:
 only the candidate-side community page reads this array, and it doesn't
 filter on fields it doesn't recognize, so adding `authorType`/`verified`
 is safe).
+
+`DATA.candidates` is expanded from 3 to 7 entries, one per Pipeline
+column (`New`, `Review`, `Screen`, `Interview`, `Final`, `Offer`,
+`Hired`) — the existing 3 (Siti Nur/`Screen`, Daniel Lim/`Interview`,
+Priya Nair/`Saved`→remapped to `Review`, since `Saved` isn't one of the
+7 pipeline stages and a saved-but-not-yet-applied candidate belongs in
+early review, not a pipeline stage of its own — "Saved" as a *Talent Pool*
+concept is separate from "stage" as a *pipeline* concept, and this
+expansion is also the point where that distinction becomes real: the 3
+existing candidates keep their `stage` field for Pipeline purposes, and
+Talent's Saved Pools reads `employerTalentPools[].candidateIds`
+independently) plus 4 new entries covering `New`, `Final`, `Offer`, and
+`Hired`, each with the same field shape as the existing 3 (`id`, `name`,
+`privacy`, `role`, `stage`, `fit`, `location`, `availability`, `salary`,
+`education`, `experience`, `careerStage`, `portfolio`, `skills`, `reason`).
+
+**Fix alongside this phase (found during spec review, not a new
+feature):** Phase 1's Dashboard greeting reads
+`readState().employerProfile?.contactName`, a field the onboarding form
+never actually sets (it only collects `company`/`industry`/`firstRole`/
+`hiringGoal`), so the greeting always falls back to "there" today. Both
+the Dashboard greeting and this phase's new consolidated header identity
+element switch to the existing `getFirstName(state)` / `getUserName(state)`
+helpers (`app.js:1419-1425`, already used elsewhere in the app for the
+logged-in display name) instead of the nonexistent `contactName` field.
 
 ## Acceptance criteria (Phase 2 subset, numbered per the original request)
 
