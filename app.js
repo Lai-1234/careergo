@@ -6136,14 +6136,14 @@ function renderEmployerShell(root) {
 
   qsa("[data-emp-nav]", root).forEach(link => link.addEventListener("click", event => {
     event.preventDefault();
-    document.body.classList.remove("emp-sidebar-open");
+    qs("[data-emp-sidebar]", root)?.classList.remove("emp-sidebar-hover");
     employerNavigateTo(link.dataset.empNav);
   }));
   qs("[data-emp-menu-toggle]", root)?.addEventListener("click", () => {
     qs("[data-emp-sidebar]", root)?.classList.toggle("emp-sidebar-hover");
   });
   qs("[data-emp-sidebar-overlay]", root)?.addEventListener("click", () => {
-    document.body.classList.remove("emp-sidebar-open");
+    qs("[data-emp-sidebar]", root)?.classList.remove("emp-sidebar-hover");
   });
   const sidebar = qs("[data-emp-sidebar]", root);
   if (sidebar) {
