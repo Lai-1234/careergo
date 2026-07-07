@@ -9075,7 +9075,7 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 
 .emp-app-header-left { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
 .emp-app-menu-btn { display: none; border: 0; background: none; padding: 6px; color: var(--text); }
-.emp-app-brand { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--text); }
+.emp-app-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); }
 .emp-app-brand small { display: block; font-size: 11px; font-weight: 700; color: var(--soft); }
 
 .emp-app-header-search {
@@ -9094,7 +9094,7 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-app-workspace { font-size: 13px; font-weight: 700; color: var(--muted); }
 .emp-app-avatar {
   display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb, #0ea5e9); color: #fff; font-size: 13px; font-weight: 800;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9); color: #fff; font-size: 13px; font-weight: 700;
 }
 
 .emp-app-identity {
@@ -9112,7 +9112,7 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
   box-shadow: 0 18px 44px rgba(15, 23, 42, 0.12); padding: 8px; z-index: 50; max-height: 320px; overflow-y: auto;
 }
 .emp-search-group + .emp-search-group { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
-.emp-search-group-label { display: block; padding: 4px 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--soft); }
+.emp-search-group-label { display: block; padding: 4px 8px; font-size: var(--emp-label); font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--soft); }
 .emp-search-result {
   display: flex; flex-direction: column; width: 100%; text-align: left;
   padding: 8px; border: 0; background: none; border-radius: 8px; cursor: pointer;
@@ -9163,7 +9163,7 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-nav-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; }
 .emp-nav-group-label {
   padding: 6px 10px 4px;
-  font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--soft);
+  font-size: var(--emp-label); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--soft);
 }
 
 .emp-nav-item {
@@ -9189,10 +9189,10 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-priority-card { padding: 20px 22px; margin-bottom: 20px; }
 .emp-priority-label {
   display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-  font-size: 12px; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase; color: var(--blue);
+  font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--blue);
 }
 .emp-priority-body { margin: 0; font-size: 15px; line-height: 1.5; }
-.emp-priority-impact { margin-top: 10px; font-size: 13px; font-weight: 800; color: #059669; }
+.emp-priority-impact { margin-top: 10px; font-size: 13px; font-weight: 700; color: #059669; }
 .emp-priority-actions { display: flex; gap: 10px; margin-top: 16px; }
 
 .emp-kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
@@ -9253,7 +9253,7 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-role-intelligence { padding: 20px 22px; }
 .emp-callout-label {
   display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-  font-size: 12px; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase; color: var(--soft);
+  font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--soft);
 }
 .emp-callout-label.warn { color: #b45309; }
 .emp-callout { padding: 12px 0; border-top: 1px solid var(--line); margin-top: 12px; }
@@ -9261,8 +9261,8 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-stat-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid var(--line); }
 .emp-stat-row span { color: var(--muted); }
 .emp-tags { margin-top: 10px; }
-.emp-tags-label { display: block; margin-bottom: 6px; font-size: 11px; color: var(--soft); text-transform: uppercase; }
-.emp-vera-principle { display: flex; gap: 6px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 11px; font-style: italic; color: var(--soft); }
+.emp-tags-label { display: block; margin-bottom: 6px; font-size: var(--emp-label); color: var(--soft); text-transform: uppercase; }
+.emp-vera-principle { display: flex; gap: 6px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: var(--emp-label); font-style: italic; color: var(--soft); }
 
 .emp-subtabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
 .emp-subtab {
