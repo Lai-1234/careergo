@@ -6207,6 +6207,7 @@ function renderEmployerView(view, params, root) {
     case "hiring": return renderEmployerHiring(root);
     case "intelligence": return renderEmployerIntelligence(root);
     case "community": return renderEmployerCommunity(root);
+    case "company": return renderEmployerCompany(root);
     default: return renderEmployerPlaceholder(root, view);
   }
 }
@@ -6835,6 +6836,52 @@ function renderEmployerCommunity(root) {
       renderFeed();
     }));
     createIcons();
+  }
+
+  draw();
+}
+
+function renderEmployerCompany(root) {
+  let activeTab = "profile";
+  const company = DATA.companies.find(c => c.id === "maybank");
+
+  function draw() {
+    root.innerHTML = `
+      <div class="emp-view-header"><h1>Company</h1></div>
+      <div class="emp-subtabs">
+        <button type="button" class="emp-subtab ${activeTab === "profile" ? "active" : ""}" data-company-tab="profile">Public Profile</button>
+        <button type="button" class="emp-subtab ${activeTab === "reputation" ? "active" : ""}" data-company-tab="reputation">Reputation</button>
+      </div>
+
+      <div class="emp-subpanel ${activeTab === "profile" ? "active" : ""}" ${activeTab === "profile" ? "" : "hidden"}>
+        <div class="card">
+          <div class="emp-card-head"><h2>${company.name}</h2><a class="btn btn-ghost" href="companies.html?org=${company.id}">Preview public page</a></div>
+          <div class="emp-stat-row"><span>Industry</span><strong>${company.industry}</strong></div>
+          <div class="emp-stat-row"><span>Location</span><strong>${company.location}</strong></div>
+          <div class="emp-stat-row"><span>Company size</span><strong>${company.size}</strong></div>
+          <div class="emp-stat-row"><span>Work mode</span><strong>${company.workMode}</strong></div>
+          <p class="emp-talent-reason">${company.summary}</p>
+        </div>
+      </div>
+
+      <div class="emp-subpanel ${activeTab === "reputation" ? "active" : ""}" ${activeTab === "reputation" ? "" : "hidden"}>
+        <div class="card">
+          <div class="emp-rating-grid">
+            <div class="emp-rating-tile main"><span>Overall</span><strong>${company.rating}/5</strong></div>
+            <div class="emp-rating-tile"><span>Culture</span><strong>${company.scores.culture}</strong></div>
+            <div class="emp-rating-tile"><span>Growth</span><strong>${company.scores.growth}</strong></div>
+            <div class="emp-rating-tile"><span>Pay</span><strong>${company.scores.pay}</strong></div>
+            <div class="emp-rating-tile"><span>Work-life balance</span><strong>${company.scores.balance}</strong></div>
+          </div>
+          <p class="emp-talent-reason"><strong>Vera:</strong> ${company.veraNote}</p>
+        </div>
+      </div>
+    `;
+    createIcons();
+    qsa("[data-company-tab]", root).forEach(btn => btn.addEventListener("click", () => {
+      activeTab = btn.dataset.companyTab;
+      draw();
+    }));
   }
 
   draw();
