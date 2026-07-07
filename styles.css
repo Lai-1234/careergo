@@ -9047,7 +9047,20 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
    .employer-*) selectors.
    ============================================================ */
 
-.emp-app-shell { display: flex; flex-direction: column; min-height: 100vh; }
+.emp-app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  --emp-title-xl: clamp(28px, 3vw, 34px);
+  --emp-title-lg: 22px;
+  --emp-title-md: 17px;
+  --emp-body: 14px;
+  --emp-body-sm: 13px;
+  --emp-label: 11px;
+  --emp-metric-lg: 26px;
+  --emp-metric-sm: 20px;
+}
+.emp-app-shell p { max-width: 72ch; }
 
 .emp-app-header {
   display: flex;
@@ -9084,19 +9097,68 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
   background: linear-gradient(135deg, #2563eb, #0ea5e9); color: #fff; font-size: 13px; font-weight: 800;
 }
 
+.emp-app-identity {
+  display: flex; align-items: center; gap: 8px;
+  border: 0; background: none; padding: 4px 8px 4px 4px; border-radius: 999px; cursor: pointer;
+}
+.emp-app-identity:hover { background: rgba(37, 99, 235, 0.06); }
+.emp-app-identity-text { font-size: var(--emp-body-sm); font-weight: 600; color: var(--text); text-align: left; }
+.emp-app-identity-text small { display: block; font-size: 11px; font-weight: 500; color: var(--soft); }
+
+.emp-app-header-search { position: relative; }
+.emp-search-results {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: #fff; border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.12); padding: 8px; z-index: 50; max-height: 320px; overflow-y: auto;
+}
+.emp-search-group + .emp-search-group { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.emp-search-group-label { display: block; padding: 4px 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--soft); }
+.emp-search-result {
+  display: flex; flex-direction: column; width: 100%; text-align: left;
+  padding: 8px; border: 0; background: none; border-radius: 8px; cursor: pointer;
+}
+.emp-search-result:hover { background: rgba(37, 99, 235, 0.06); }
+.emp-search-result span { font-size: 12px; color: var(--muted); }
+
 .emp-app-body { display: flex; flex: 1 1 auto; min-height: 0; }
 
 .emp-app-sidebar {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: 232px;
+  width: 68px;
   flex: 0 0 auto;
-  padding: 16px 12px;
+  padding: 16px 8px;
   border-right: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.7);
+  background: #fff;
   overflow-y: auto;
+  overflow-x: hidden;
+  position: fixed;
+  top: 68px;
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+  transition: width 180ms ease, box-shadow 180ms ease;
 }
+.emp-app-sidebar.emp-sidebar-hover {
+  width: 240px;
+  padding: 16px 12px;
+  box-shadow: 8px 0 24px rgba(15, 23, 42, 0.12);
+}
+.emp-app-sidebar .emp-nav-item span,
+.emp-app-sidebar .emp-nav-group-label {
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 180ms ease, transform 180ms ease;
+  white-space: nowrap;
+}
+.emp-app-sidebar.emp-sidebar-hover .emp-nav-item span,
+.emp-app-sidebar.emp-sidebar-hover .emp-nav-group-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+.emp-app-body { padding-left: 68px; }
 
 .emp-nav-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; }
 .emp-nav-group-label {
@@ -9106,13 +9168,12 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 
 .emp-nav-item {
   display: flex; align-items: center; gap: 10px;
-  padding: 8px 10px; border-radius: 10px; border: 0; background: none;
-  color: var(--muted); font-size: 14px; font-weight: 700; text-align: left; cursor: pointer;
+  height: 42px; padding: 0 10px; border-radius: 10px; border: 0; background: none;
+  color: var(--muted); font-size: var(--emp-body-sm); font-weight: 600; text-align: left; cursor: pointer;
 }
 .emp-nav-item:hover { background: rgba(37, 99, 235, 0.06); color: var(--text); }
 .emp-nav-item.active { background: rgba(37, 99, 235, 0.1); color: var(--blue); }
 .emp-nav-item i, .emp-nav-item svg { width: 16px; height: 16px; flex: 0 0 auto; }
-.emp-app-collapse-btn { margin-top: auto; }
 
 .emp-app-sidebar-overlay { display: none; }
 
@@ -9122,8 +9183,8 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   margin-bottom: 24px;
 }
-.emp-view-header h1 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
-.emp-view-header p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+.emp-view-header h1 { margin: 0; font-size: var(--emp-title-xl); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+.emp-view-header p { margin: 4px 0 0; color: var(--muted); font-size: var(--emp-body); line-height: 1.5; }
 
 .emp-priority-card { padding: 20px 22px; margin-bottom: 20px; }
 .emp-priority-label {
@@ -9136,11 +9197,11 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 
 .emp-kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
 .emp-kpi-tile { padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
-.emp-kpi-tile strong { display: block; font-size: 24px; }
+.emp-kpi-tile strong { display: block; font-size: var(--emp-metric-lg); }
 .emp-kpi-tile span { display: block; margin-top: 4px; font-size: 12px; color: var(--soft); }
 
 .emp-priorities-card, .emp-roles-card, .emp-pipeline-snapshot { padding: 20px 22px; margin-bottom: 20px; }
-.emp-priorities-card h2, .emp-roles-card h2, .emp-pipeline-snapshot h2 { margin: 0 0 14px; font-size: 20px; }
+.emp-priorities-card h2, .emp-roles-card h2, .emp-pipeline-snapshot h2 { margin: 0 0 14px; font-size: var(--emp-title-lg); font-weight: 700; }
 
 .emp-priority-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .emp-priority-list li {
@@ -9150,7 +9211,7 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-priority-list li:last-child { border-bottom: 0; }
 
 .emp-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.emp-card-head h2 { margin: 0; font-size: 20px; }
+.emp-card-head h2 { margin: 0; font-size: var(--emp-title-lg); font-weight: 700; }
 
 .emp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .emp-table th, .emp-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
@@ -9203,23 +9264,61 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-tags-label { display: block; margin-bottom: 6px; font-size: 11px; color: var(--soft); text-transform: uppercase; }
 .emp-vera-principle { display: flex; gap: 6px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 11px; font-style: italic; color: var(--soft); }
 
+.emp-subtabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.emp-subtab {
+  padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: #fff;
+  color: var(--muted); font-size: var(--emp-body-sm); font-weight: 600; cursor: pointer;
+}
+.emp-subtab.active { border-color: rgba(37, 99, 235, 0.4); color: var(--blue); background: rgba(37, 99, 235, 0.06); }
+.emp-subpanel { display: none; }
+.emp-subpanel.active { display: block; }
+
+.emp-talent-filters { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 12px; padding: 16px; margin-bottom: 16px; }
+.emp-talent-filters input, .emp-talent-filters select { padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; font-size: var(--emp-body); }
+.emp-talent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.emp-talent-card, .emp-pool-card, .emp-interview-card, .emp-candidate-detail, .emp-post-card { padding: 18px; }
+.emp-talent-card h3, .emp-pool-card h3, .emp-interview-card h3, .emp-candidate-detail h3, .emp-post-card h3 { margin: 0; font-size: var(--emp-title-md); font-weight: 700; }
+.emp-talent-meta { margin: 6px 0 10px; font-size: var(--emp-body-sm); color: var(--muted); }
+.emp-talent-reason { margin: 10px 0 0; font-size: var(--emp-body-sm); line-height: 1.5; }
+.emp-talent-actions { display: flex; gap: 8px; margin-top: 12px; }
+.emp-pool-list { list-style: none; margin: 10px 0 0; padding: 0; font-size: var(--emp-body-sm); display: grid; gap: 6px; }
+.emp-empty-hint { color: var(--soft); font-size: var(--emp-body-sm); }
+
+.emp-kanban { display: grid; grid-template-columns: repeat(7, minmax(160px, 1fr)); gap: 12px; overflow-x: auto; }
+.emp-kanban-col h3 { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; font-size: var(--emp-body); font-weight: 700; }
+.emp-kanban-card { padding: 12px; margin-bottom: 10px; display: grid; gap: 6px; }
+.emp-kanban-card select { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: 12px; }
+
+.emp-funnel-card { padding: 20px; margin-top: 16px; }
+.emp-funnel-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 12px; }
+.emp-funnel-stage { text-align: center; padding: 10px; border: 1px solid var(--line); border-radius: 12px; }
+.emp-funnel-stage strong { display: block; font-size: var(--emp-metric-sm); }
+.emp-funnel-stage span { font-size: 11px; color: var(--soft); }
+.emp-market-select { display: block; margin-bottom: 16px; font-size: var(--emp-body-sm); font-weight: 600; }
+.emp-market-select select { display: block; margin-top: 6px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; width: 100%; max-width: 320px; }
+.emp-university-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+.emp-post-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.emp-post-actions { margin-top: 12px; }
+.emp-compose-modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; background: rgba(15, 23, 42, 0.32); }
+.emp-compose-modal[hidden] { display: none; }
+.emp-compose-card { width: min(480px, calc(100vw - 32px)); }
+.emp-compose-card textarea { width: 100%; margin-top: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; font-family: inherit; font-size: var(--emp-body); }
+.emp-compose-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+
 @media (max-width: 900px) {
   .emp-app-menu-btn { display: inline-flex; }
   .emp-app-header-search { display: none; }
-  .emp-app-sidebar {
-    position: fixed; top: 68px; bottom: 0; left: 0; z-index: 60;
-    transform: translateX(-100%); transition: transform 200ms ease; box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-  }
-  body.emp-sidebar-open .emp-app-sidebar { transform: translateX(0); }
-  body.emp-sidebar-open .emp-app-sidebar-overlay {
-    display: block; position: fixed; inset: 68px 0 0 0; z-index: 55; background: rgba(15, 23, 42, 0.32);
-  }
+  .emp-app-body { padding-left: 0; }
+  .emp-app-sidebar { transform: translateX(-100%); transition: transform 200ms ease; box-shadow: 0 20px 50px rgba(0,0,0,0.12); }
+  .emp-app-sidebar.emp-sidebar-hover { transform: translateX(0); width: 240px; padding: 16px 12px; }
   .emp-app-main { padding: 20px; }
   .emp-kpi-row, .emp-stage-row { grid-template-columns: repeat(2, 1fr); }
   .emp-wizard-body { grid-template-columns: 1fr; }
   .emp-table { min-width: 640px; }
+  .emp-talent-filters { grid-template-columns: 1fr; }
+  .emp-kanban { grid-template-columns: repeat(7, 200px); }
+  .emp-funnel-row { grid-template-columns: repeat(4, 1fr); }
+  .emp-university-grid { grid-template-columns: 1fr; }
 }
 
-body.emp-sidebar-collapsed .emp-app-sidebar { width: 68px; }
-body.emp-sidebar-collapsed .emp-nav-item span,
-body.emp-sidebar-collapsed .emp-nav-group-label { display: none; }

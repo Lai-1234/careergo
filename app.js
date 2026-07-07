@@ -6140,7 +6140,7 @@ function renderEmployerShell(root) {
     employerNavigateTo(link.dataset.empNav);
   }));
   qs("[data-emp-menu-toggle]", root)?.addEventListener("click", () => {
-    document.body.classList.toggle("emp-sidebar-open");
+    qs("[data-emp-sidebar]", root)?.classList.toggle("emp-sidebar-hover");
   });
   qs("[data-emp-sidebar-overlay]", root)?.addEventListener("click", () => {
     document.body.classList.remove("emp-sidebar-open");
