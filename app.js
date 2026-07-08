@@ -105,6 +105,7 @@ const DATA = {
     {
       id: "maybank",
       name: "Maybank",
+      verified: true,
       type: "Company",
       industry: "Banking",
       location: "Kuala Lumpur",
@@ -6407,16 +6408,60 @@ function renderEmployerDashboard(root) {
   }));
 }
 
+function parseSalaryRangeMid(str) {
+  if (!str) return null;
+  const nums = str.match(/[\d.]+k?/gi);
+  if (!nums || nums.length < 2) return null;
+  const toNum = s => (/k$/i.test(s) ? parseFloat(s) * 1000 : parseFloat(s));
+  return (toNum(nums[0]) + toNum(nums[1])) / 2;
+}
+
 function computeHiringMomentum(role) {
   if (role.status === "Draft" || role.status === "Archived") return null;
-  const { strongMatches, daysOpen } = role;
-  if (daysOpen >= 21 && strongMatches <= 2) {
-    return { status: "At Risk", reason: `Open for ${daysOpen} days with only ${strongMatches} strong match${strongMatches === 1 ? "" : "es"}.`, nextAction: "Review requirements" };
-  }
-  if (daysOpen >= 10 && strongMatches < 6) {
-    return { status: "Needs Attention", reason: `Only ${strongMatches} strong match${strongMatches === 1 ? "" : "es"} after ${daysOpen} days.`, nextAction: "Review requirements" };
-  }
-  return { status: "On Track", reason: `${strongMatches} strong match${strongMatches === 1 ? "" : "es"} in ${daysOpen} days.`, nextAction: "Keep monitoring" };
+  const { applicants, strongMatches, daysOpen, minExperience } = role;
+
+  const veryRestrictive = minExperience === "5+ years";
+  const marketMid = parseSalaryRangeMid(role.roleIntelligence?.commonSalary);
+  const roleMid = role.salary && role.salary.min && role.salary.max ? (role.salary.min + role.salary.max) / 2 : null;
+  const belowMarket = !!(marketMid && roleMid && roleMid < marketMid * 0.9);
+  const pendingCandidates = DATA.candidates.filter(c => c.role === role.title && ["New", "Review"].includes(c.stage)).length;
+  const hasPendingActions = pendingCandidates >= 3;
+  const lowMatchRate = applicants > 0 && strongMatches / applicants < 0.1;
+
+  let riskScore = 0;
+  if (veryRestrictive) riskScore += 1;
+  if (belowMarket) riskScore += 1;
+  if (lowMatchRate) riskScore += 1;
+
+  let status;
+  if (daysOpen >= 21 && strongMatches <= 2) status = "At Risk";
+  else if (daysOpen >= 10 && (strongMatches < 6 || riskScore >= 2)) status = "Needs Attention";
+  else if (riskScore >= 1 || hasPendingActions) status = "Needs Attention";
+  else status = "On Track";
+
+  const reasons = [
+    `${applicants} applicant${applicants === 1 ? "" : "s"}`,
+    `${strongMatches} strong match${strongMatches === 1 ? "" : "es"}`,
+    `open ${daysOpen} day${daysOpen === 1 ? "" : "s"}`
+  ];
+  if (veryRestrictive) reasons.push("minimum experience requirement is on the high end");
+  if (belowMarket) reasons.push("salary may be below the typical range");
+  if (hasPendingActions) reasons.push(`${pendingCandidates} candidates waiting for review`);
+
+  let nextAction;
+  if (status === "On Track") nextAction = "Keep monitoring";
+  else if (veryRestrictive) nextAction = "Review the minimum experience requirement";
+  else if (belowMarket) nextAction = "Review salary against the market";
+  else if (hasPendingActions) nextAction = `Review ${pendingCandidates} candidates waiting for a decision`;
+  else nextAction = "Review requirements";
+
+  const summary = status === "At Risk"
+    ? `Open for ${daysOpen} days with only ${strongMatches} strong match${strongMatches === 1 ? "" : "es"}.`
+    : status === "Needs Attention"
+      ? `Only ${strongMatches} strong match${strongMatches === 1 ? "" : "es"} after ${daysOpen} days.`
+      : `${strongMatches} strong match${strongMatches === 1 ? "" : "es"} in ${daysOpen} days.`;
+
+  return { status, summary, reasons, nextAction };
 }
 
 const ROLE_STATUS_PILL_CLASS = { Open: "green", Draft: "gold", Paused: "cyan", Closed: "red", Archived: "" };
@@ -6476,7 +6521,11 @@ function renderEmployerRolesList(root) {
                 return `
                 <tr class="emp-table-row">
                   <td>${r.title}</td>
-                  <td><span class="pill ${ROLE_STATUS_PILL_CLASS[r.status]}">${r.status}</span></td>
+                  <td class="emp-table-actions">
+                    ${ROLE_STATUS_MENU[r.status].length
+                      ? `<button type="button" class="pill emp-status-pill ${ROLE_STATUS_PILL_CLASS[r.status]}" data-emp-role-menu="${r.id}">${r.status} ${icon("chevron-down")}</button>`
+                      : `<span class="pill ${ROLE_STATUS_PILL_CLASS[r.status]}">${r.status}</span>`}
+                  </td>
                   <td>${r.status === "Draft" ? "—" : r.applicants}</td>
                   <td>${r.status === "Draft" ? "—" : r.strongMatches}</td>
                   <td>${r.status === "Draft" ? "—" : `${r.daysOpen}d`}</td>
@@ -6485,7 +6534,8 @@ function renderEmployerRolesList(root) {
                       ? `<button type="button" class="pill emp-momentum-pill ${ROLE_MOMENTUM_CLASS[momentum.status]}" data-emp-momentum="${r.id}">${momentum.status}</button>
                          <div class="emp-momentum-pop" data-emp-momentum-pop="${r.id}" hidden>
                            <strong>${momentum.status}</strong>
-                           <p>${momentum.reason}</p>
+                           <span class="emp-momentum-why-label">Why:</span>
+                           <ul class="emp-momentum-why">${momentum.reasons.map(r2 => `<li>${r2}</li>`).join("")}</ul>
                            <span class="emp-momentum-next">Suggested next step: ${momentum.nextAction}</span>
                          </div>`
                       : `<span class="emp-empty-hint">—</span>`}
@@ -6501,7 +6551,7 @@ function renderEmployerRolesList(root) {
                     ` : ""}
                   </td>
                 </tr>
-              `; }).join("") : `<tr><td colspan="8"><p class="emp-empty-hint">No roles match this filter.</p></td></tr>`}
+              `; }).join("") : `<tr><td colspan="9"><p class="emp-empty-hint">No roles match this filter.</p></td></tr>`}
             </tbody>
           </table>
         </div>
@@ -6534,13 +6584,19 @@ function renderEmployerRolesList(root) {
       draw();
     }));
 
-    qsa("[data-emp-momentum]", root).forEach(btn => btn.addEventListener("click", event => {
-      event.stopPropagation();
+    qsa("[data-emp-momentum]", root).forEach(btn => {
       const pop = qs(`[data-emp-momentum-pop="${btn.dataset.empMomentum}"]`, root);
-      const isHidden = pop.hidden;
-      qsa("[data-emp-momentum-pop]", root).forEach(p => p.hidden = true);
-      pop.hidden = !isHidden;
-    }));
+      btn.addEventListener("click", event => {
+        event.stopPropagation();
+        qsa("[data-emp-momentum-pop]", root).forEach(p => p.hidden = true);
+        pop.hidden = false;
+      });
+      btn.addEventListener("mouseenter", () => {
+        qsa("[data-emp-momentum-pop]", root).forEach(p => p.hidden = true);
+        pop.hidden = false;
+      });
+      btn.parentElement.addEventListener("mouseleave", () => { pop.hidden = true; });
+    });
 
     qsa("[data-emp-role-menu]", root).forEach(btn => btn.addEventListener("click", event => {
       event.stopPropagation();
@@ -6696,7 +6752,7 @@ function renderRoleIntelligencePanel(ri, pendingSuggestions, draft) {
       <div class="emp-stat-row"><span>Typical salary</span><strong>${ri.commonSalary}</strong></div>
       <div class="emp-stat-row"><span>Hiring competition</span><strong>${ri.hiringCompetition}</strong></div>
       <div class="emp-stat-row"><span>Location context</span><strong>${ri.locationContext || "—"}</strong></div>
-      ${ri.dataContext ? `<p class="emp-intel-datacontext">${ri.dataContext.region} · ${ri.dataContext.category} · Confidence: ${ri.dataContext.confidence}</p>` : ""}
+      ${ri.dataContext ? `<p class="emp-intel-datacontext">${ri.dataContext.region} · ${ri.dataContext.category} · Updated recently · Confidence: ${ri.dataContext.confidence}</p>` : ""}
     </div>
 
     ${ri.strengths && ri.strengths.length ? `
@@ -6724,7 +6780,7 @@ function renderRoleIntelligencePanel(ri, pendingSuggestions, draft) {
         ${pendingSuggestions.map(s => `
           <div class="card emp-suggestion-card">
             <p class="emp-suggestion-rec">${s.recommendation}</p>
-            <div class="emp-suggestion-compare">
+            <div class="emp-suggestion-compare" data-suggestion-compare="${s.recommendation}" hidden>
               <span>Current: <strong>${(draft[s.field] ?? "—")}</strong></span>
               <span>Suggested: <strong>${s.suggestedValue}</strong></span>
             </div>
@@ -6734,6 +6790,7 @@ function renderRoleIntelligencePanel(ri, pendingSuggestions, draft) {
             </div>
             <p class="emp-suggestion-effect">${s.effectIsEstimated ? "Estimated impact" : "Expected effect"}: ${s.expectedEffect} · Confidence: ${s.confidence}</p>
             <div class="emp-suggestion-actions">
+              <button type="button" class="btn btn-ghost btn-sm" data-emp-compare-suggestion="${s.recommendation}">Compare change</button>
               <button type="button" class="btn btn-primary btn-sm" data-emp-apply-suggestion="${s.recommendation}">Apply suggestion</button>
               <button type="button" class="btn btn-ghost btn-sm" data-emp-keep-suggestion="${s.recommendation}">Keep current</button>
             </div>
@@ -6856,7 +6913,7 @@ function renderEmployerRoleBuilder(root, roleId) {
     switch (step) {
       case 0:
         return `
-          <div class="emp-form-section-head"><h2>Role Basics</h2><p>Start with the essentials candidates need to understand what this role is.</p></div>
+          <div class="emp-form-section-head"><h2>${icon("briefcase")} Role Basics</h2><p>Start with the essentials candidates need to understand what this role is.</p></div>
           <label>Role title<input type="text" data-field-title value="${draft.title}" placeholder="e.g. Backend Engineer"></label>
           <label>Department<input type="text" data-field-department value="${draft.department}" placeholder="e.g. Engineering"></label>
           <label>Employment type<select data-field-employmentType>${["Full-time", "Part-time", "Contract", "Internship", "Graduate programme"].map(o => `<option ${draft.employmentType === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
@@ -6864,7 +6921,7 @@ function renderEmployerRoleBuilder(root, roleId) {
         `;
       case 1:
         return `
-          <div class="emp-form-section-head"><h2>Role Details</h2><p>Explain what this person will own, work on, and achieve.</p></div>
+          <div class="emp-form-section-head"><h2>${icon("list-checks")} Role Details</h2><p>Explain what this person will own, work on, and achieve.</p></div>
           <label>Role summary<textarea data-field-roleSummary rows="3" placeholder="Describe the role in 2-4 sentences. Focus on the purpose of the position.">${draft.roleSummary}</textarea></label>
           <div>
             <span class="emp-tags-label">Key responsibilities — recommended 3-6</span>
@@ -6874,7 +6931,7 @@ function renderEmployerRoleBuilder(root, roleId) {
         `;
       case 2:
         return `
-          <div class="emp-form-section-head"><h2>Candidate Profile</h2><p>Define what is truly essential, what is preferred, and what can be learned.</p></div>
+          <div class="emp-form-section-head"><h2>${icon("users")} Candidate Profile</h2><p>Define what is truly essential, what is preferred, and what can be learned.</p></div>
           <div><span class="emp-tags-label">Must-have skills — used for essential matching</span>${renderTagInput("mustHaveSkills", draft.mustHaveSkills)}</div>
           <div><span class="emp-tags-label">Nice-to-have skills — improves matching, won't reject candidates</span>${renderTagInput("niceToHaveSkills", draft.niceToHaveSkills)}</div>
           <label>Minimum experience<select data-field-minExperience>${["No experience required", "Less than 1 year", "1-2 years", "3-5 years", "5+ years"].map(o => `<option ${draft.minExperience === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
@@ -6882,7 +6939,7 @@ function renderEmployerRoleBuilder(root, roleId) {
         `;
       case 3:
         return `
-          <div class="emp-form-section-head"><h2>Offer & Hiring Setup</h2><p>Set the offer and tell CareerGo how you want candidates to be matched.</p></div>
+          <div class="emp-form-section-head"><h2>${icon("wallet")} Offer & Hiring Setup</h2><p>Set the offer and tell CareerGo how you want candidates to be matched.</p></div>
           <div class="emp-salary-row">
             <label>Minimum (MYR)<input type="number" data-field-salary-min value="${draft.salary.min ?? ""}" placeholder="e.g. 4500"></label>
             <label>Maximum (MYR)<input type="number" data-field-salary-max value="${draft.salary.max ?? ""}" placeholder="e.g. 7000"></label>
@@ -6941,8 +6998,11 @@ function renderEmployerRoleBuilder(root, roleId) {
         <div class="emp-wizard-actions">
           <button type="button" class="btn btn-ghost" data-emp-prev>Back</button>
           <div class="emp-publish-buttons">
-            <button type="button" class="btn btn-ghost" data-emp-save-draft>Save draft</button>
-            <button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} ${existing ? "Save changes" : "Publish role"}</button>
+            ${existing
+              ? `<button type="button" class="btn btn-ghost" data-emp-preview-public>Preview public post</button>
+                 <button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} Save changes</button>`
+              : `<button type="button" class="btn btn-ghost" data-emp-save-draft>Save draft</button>
+                 <button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} Publish role</button>`}
           </div>
         </div>
       </div>
@@ -6956,32 +7016,55 @@ function renderEmployerRoleBuilder(root, roleId) {
             </div>
           </div>
           <div class="emp-job-preview-frame" data-emp-preview-frame>
-            <div class="emp-job-preview-company">
-              <strong>${company ? company.name : "Your Company"}</strong>
-              ${company?.verified ? `<span class="pill cyan">Verified</span>` : ""}
-            </div>
-            <h2>${draft.title || "Role title"}</h2>
-            <div class="emp-job-preview-meta">${[draft.location, draft.workMode, draft.employmentType].filter(Boolean).join(" · ") || "Location · Work mode · Employment type"}</div>
-            ${draft.salary.min && draft.salary.max ? `<div class="emp-job-preview-salary">RM ${draft.salary.min.toLocaleString()} – RM ${draft.salary.max.toLocaleString()} / ${draft.salary.period.toLowerCase()}</div>` : ""}
-            <h3>About the role</h3>
-            <p>${draft.roleSummary || "Add a role summary in Role Details."}</p>
-            ${responsibilities.length ? `<h3>What you'll do</h3><ul>${responsibilities.map(r => `<li>${r}</li>`).join("")}</ul>` : ""}
-            ${draft.successLooksLike ? `<h3>What success looks like</h3><p>${draft.successLooksLike}</p>` : ""}
-            ${draft.mustHaveSkills.length ? `<h3>Must-have skills</h3><div class="pill-row">${draft.mustHaveSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div>` : ""}
-            ${draft.niceToHaveSkills.length ? `<h3>Nice-to-have</h3><div class="pill-row">${draft.niceToHaveSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div>` : ""}
-            <h3>Work style</h3>
-            <p>${draft.workMode || "Hybrid"}</p>
-            <button type="button" class="btn btn-primary" disabled>Apply</button>
+            ${renderJobPreviewContent(company, responsibilities)}
           </div>
         </div>
         <div class="card emp-role-intelligence">
           ${renderRoleIntelligencePanel(ri, pendingSuggestions, draft)}
         </div>
       </div>
+      <div class="emp-compose-modal" data-emp-public-preview-modal hidden>
+        <div class="card emp-compose-card emp-public-preview-card">
+          <div class="emp-preview-toolbar">
+            <h2>Public post preview</h2>
+            <button type="button" class="btn btn-ghost btn-sm" data-emp-close-public-preview>${icon("x")} Close</button>
+          </div>
+          <div class="emp-job-preview-frame">
+            ${renderJobPreviewContent(company, responsibilities)}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderJobPreviewContent(company, responsibilities) {
+    const initial = (company ? company.name : "Y").charAt(0).toUpperCase();
+    return `
+      <div class="emp-job-preview-company">
+        <span class="emp-job-preview-logo">${initial}</span>
+        <strong>${company ? company.name : "Your Company"}</strong>
+        ${company?.verified ? `<span class="pill cyan">Verified</span>` : ""}
+      </div>
+      <h2>${draft.title || "Role title"}</h2>
+      <div class="emp-job-preview-meta">${[draft.location, draft.workMode, draft.employmentType].filter(Boolean).join(" · ") || "Location · Work mode · Employment type"}</div>
+      ${draft.salary.min && draft.salary.max ? `<div class="emp-job-preview-salary">RM ${draft.salary.min.toLocaleString()} – RM ${draft.salary.max.toLocaleString()} / ${draft.salary.period.toLowerCase()}</div>` : ""}
+      <h3>About the role</h3>
+      <p>${draft.roleSummary || "Add a role summary in Role Details."}</p>
+      ${responsibilities.length ? `<h3>What you'll do</h3><ul>${responsibilities.map(r => `<li>${r}</li>`).join("")}</ul>` : ""}
+      ${draft.successLooksLike ? `<h3>What success looks like</h3><p>${draft.successLooksLike}</p>` : ""}
+      ${draft.mustHaveSkills.length ? `<h3>Must-have skills</h3><div class="pill-row">${draft.mustHaveSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div>` : ""}
+      ${draft.niceToHaveSkills.length ? `<h3>Nice-to-have</h3><div class="pill-row">${draft.niceToHaveSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div>` : ""}
+      <h3>Work style</h3>
+      <p>${draft.workMode || "Hybrid"}</p>
+      <button type="button" class="btn btn-primary" disabled>Apply</button>
     `;
   }
 
   function bindPreviewPublishEvents() {
+    qsa("[data-emp-compare-suggestion]", root).forEach(btn => btn.addEventListener("click", () => {
+      const panel = qs(`[data-suggestion-compare="${btn.dataset.empCompareSuggestion}"]`, root);
+      if (panel) panel.hidden = !panel.hidden;
+    }));
     qsa("[data-emp-apply-suggestion]", root).forEach(btn => btn.addEventListener("click", () => {
       const ri = existing ? existing.roleIntelligence : FALLBACK_ROLE_INTELLIGENCE;
       const suggestion = (ri.suggestions || []).find(s => s.recommendation === btn.dataset.empApplySuggestion);
@@ -7004,6 +7087,12 @@ function renderEmployerRoleBuilder(root, roleId) {
     }));
     qs("[data-emp-save-draft]", root)?.addEventListener("click", () => commitDraft("Draft"));
     qs("[data-emp-publish]", root)?.addEventListener("click", () => commitDraft(existing ? existing.status : "Open"));
+    qs("[data-emp-preview-public]", root)?.addEventListener("click", () => {
+      qs("[data-emp-public-preview-modal]", root).hidden = false;
+    });
+    qs("[data-emp-close-public-preview]", root)?.addEventListener("click", () => {
+      qs("[data-emp-public-preview-modal]", root).hidden = true;
+    });
   }
 
   function draw() {
@@ -7011,7 +7100,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       <div class="emp-view-header">
         <div>
           <h1>${existing ? "Edit your role" : "Create a role"}</h1>
-          <p>${existing ? `${existing.title} · <span data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>` : "Set up the role candidates will see and CareerGo will match against."}</p>
+          <p>${existing ? `${existing.title} · ` : "Set up the role candidates will see and CareerGo will match against. · "}<span data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span></p>
         </div>
         <button type="button" class="btn btn-ghost" data-emp-nav="roles">${icon("x")} Cancel</button>
       </div>

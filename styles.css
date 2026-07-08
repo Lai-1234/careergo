@@ -9221,14 +9221,17 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 
 .emp-momentum-cell { position: relative; }
 .emp-momentum-pill { border: none; cursor: pointer; font: inherit; }
+.emp-status-pill { border: none; cursor: pointer; font: inherit; display: inline-flex; align-items: center; gap: 4px; }
+.emp-status-pill svg { width: 12px; height: 12px; }
 .emp-momentum-pop {
-  position: absolute; z-index: 20; top: 100%; left: 0; margin-top: 6px; width: 240px;
+  position: absolute; z-index: 20; top: 100%; left: 0; margin-top: 6px; width: 260px;
   padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: #fff;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14); text-align: left;
 }
-.emp-momentum-pop strong { display: block; font-size: 13px; margin-bottom: 4px; }
-.emp-momentum-pop p { margin: 0 0 8px; font-size: 12px; line-height: 1.5; color: var(--muted); }
-.emp-momentum-next { display: block; font-size: 12px; font-weight: 600; color: var(--blue); }
+.emp-momentum-pop strong { display: block; font-size: 13px; margin-bottom: 6px; }
+.emp-momentum-why-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--soft); margin-bottom: 2px; }
+.emp-momentum-why { margin: 0 0 8px; padding-left: 16px; font-size: 12px; line-height: 1.6; color: var(--muted); }
+.emp-momentum-next { display: block; font-size: 12px; font-weight: 600; color: var(--blue); padding-top: 8px; border-top: 1px solid var(--line); }
 
 .emp-menu-toggle { padding: 6px 8px; }
 .emp-actions-menu {
@@ -9291,7 +9294,8 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-vera-principle { display: flex; gap: 6px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: var(--emp-label); font-style: italic; color: var(--soft); }
 
 .emp-form-section-head { margin-bottom: 4px; }
-.emp-form-section-head h2 { margin: 0 0 4px; font-size: var(--emp-title-md); font-weight: 700; }
+.emp-form-section-head h2 { margin: 0 0 4px; font-size: var(--emp-title-md); font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.emp-form-section-head h2 svg { width: 16px; height: 16px; color: var(--blue); }
 .emp-form-section-head p { margin: 0; font-size: var(--emp-body-sm); color: var(--muted); }
 .emp-optional-tag { text-transform: none; font-weight: 500; color: var(--soft); font-size: 11px; margin-left: 6px; }
 
@@ -9322,6 +9326,10 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-job-preview-frame { border: 1px solid var(--line); border-radius: 16px; padding: 22px; max-width: 100%; }
 .emp-job-preview-frame.emp-preview-mobile { max-width: 360px; margin: 0 auto; }
 .emp-job-preview-company { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 13px; }
+.emp-job-preview-logo {
+  display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px;
+  border-radius: 8px; background: rgba(37, 99, 235, 0.1); color: var(--blue); font-weight: 700; font-size: 13px;
+}
 .emp-job-preview-frame h2 { margin: 0 0 6px; font-size: var(--emp-title-lg); }
 .emp-job-preview-meta { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
 .emp-job-preview-salary { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 14px; }
@@ -9338,6 +9346,7 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-suggestion-card { padding: 14px 16px; margin-bottom: 10px; border: 1px solid var(--line); }
 .emp-suggestion-rec { margin: 0 0 8px; font-size: 13px; font-weight: 700; }
 .emp-suggestion-compare { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.emp-suggestion-compare[hidden] { display: none; }
 .emp-suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
 .emp-suggestion-grid ul { margin: 0; padding-left: 16px; font-size: 12px; line-height: 1.6; }
 .emp-suggestion-effect { margin: 0 0 10px; font-size: 12px; color: var(--muted); }
@@ -9382,6 +9391,9 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-compose-modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; background: rgba(15, 23, 42, 0.32); }
 .emp-compose-modal[hidden] { display: none; }
 .emp-compose-card { width: min(480px, calc(100vw - 32px)); }
+.emp-public-preview-card { width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 64px); overflow-y: auto; }
+.emp-public-preview-card .emp-preview-toolbar { margin-bottom: 14px; }
+.emp-public-preview-card .emp-preview-toolbar h2 { margin: 0; }
 .emp-compose-card textarea { width: 100%; margin-top: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; font-family: inherit; font-size: var(--emp-body); }
 .emp-compose-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
 
