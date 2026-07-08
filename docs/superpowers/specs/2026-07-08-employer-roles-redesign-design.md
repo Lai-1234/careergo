@@ -79,6 +79,9 @@ this redesign, so they must keep working unmodified.
   roleIntelligence: {
     // existing flat fields, unchanged, still consumed by Dashboard/Intelligence:
     talentAvailability, typicalExperience, commonSalary, commonSkills: [string],
+    potentialIssue,                // KEPT: Dashboard's priority card (app.js:6228-6236) reads this
+                                    // directly as prose. Authored as a one-line summary, normally
+                                    // mirroring concerns[0].issue. Do not remove.
     // new fields, used only by the redesigned Role Intelligence panel:
     hiringCompetition,             // e.g. "High"
     locationContext,               // e.g. "Kuala Lumpur + Remote Malaysia"
@@ -94,8 +97,11 @@ this redesign, so they must keep working unmodified.
 }
 ```
 
-`requestedButLessCommon` and `potentialIssue`/`suggestedAdjustment` (old
-singular-string fields) are dropped in favor of `concerns[]`/`suggestions[]`.
+`requestedButLessCommon` (dead field, never rendered anywhere) and
+`suggestedAdjustment` (only ever rendered inside the wizard panel being
+redesigned here — confirmed via the Talent Market tab's code, which omits it
+entirely) are dropped. `potentialIssue` is kept, per above, since Dashboard
+depends on it directly.
 
 Mock data: rewrite all 5 existing roles' `roleIntelligence` into the new
 shape (hand-authored strengths/concerns/suggestions per role, consistent with
