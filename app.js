@@ -1,4 +1,4 @@
-const DATA = {
+﻿const DATA = {
   jobs: [
     {
       id: "job-product-designer",
@@ -109,6 +109,12 @@ const DATA = {
       type: "Company",
       industry: "Banking",
       location: "Kuala Lumpur",
+      officeLocations: ["Kuala Lumpur", "Penang", "Johor"],
+      founded: 1960,
+      website: "maybank2u.com.my",
+      followers: 8600,
+      publicProfileStatus: "Live",
+      lastUpdated: "2 days ago",
       size: "10,000+ employees",
       rating: 4.4,
       reviews: 1284,
@@ -140,7 +146,32 @@ const DATA = {
         { id: "mb-coa", title: "Customer Operations Associate", department: "Customer Operations", salaryRange: "RM 2.8k - 4k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Diploma/Degree in any discipline", cgpaRequirement: "Not strictly required", requiredSkills: ["Communication", "Problem solving", "Patience"], preferredSkills: ["CRM tools experience", "Multilingual ability", "Process improvement mindset"], tools: ["CRM/ticketing systems", "Excel"], responsibilities: ["Handle customer inquiries and issues", "Maintain service quality standards", "Escalate complex cases appropriately", "Support process improvement initiatives"], hiringProcess: "Interview with operations manager, situational assessment", careerPath: "Associate -> Senior Associate -> Team Lead", benefits: ["Medical coverage", "Shift allowance (if applicable)", "Performance incentives"], status: "Open", hiringDifficulty: "Easy", watchouts: ["May involve shift work", "High interaction volume during peak periods"] }
       ],
       highlights: ["Strong training and rotation programs", "Good brand value for early career", "Structured promotion paths"],
-      watchouts: ["Large-company pace can feel slower", "Some teams report layered approvals"]
+      watchouts: ["Large-company pace can feel slower", "Some teams report layered approvals"],
+      profileGaps: [
+        "Average interview timeline has not been confirmed for Finance Executive",
+        "No team or workplace media uploaded",
+        "Benefits have not been updated in 14 months",
+        "Remote-work policy is unclear for 3 teams"
+      ],
+      candidateInterest: {
+        profileViews: { value: 12480, period: "Last 30 days", trend: "+8% vs previous period" },
+        saved: { value: 1284, percentOfViewers: 10.3, trend: "+3% vs previous period" },
+        roleClicks: { value: 3860, trend: "+5% vs previous period" },
+        applicationStarts: { value: 1140, trend: "-2% vs previous period" }
+      },
+      reputationSummary: {
+        strongestSignal: { label: "Career growth", value: "4.3 / 5" },
+        mostCommonPositive: "Structured graduate development",
+        biggestQuestion: "Salary transparency",
+        mostCommonWatchout: "Slow approval processes",
+        basis: "Based on 1,285 employee reviews and candidate behaviour."
+      },
+      veraCompanyRead: {
+        summary: "Maybank is landing strongest with graduates and early-career candidates who value structured development, stability and a recognised brand. Candidate interest drops when salary ranges and team-level work style are unclear. The highest-impact improvement would be publishing salary information and clearer hiring timelines for your most-viewed graduate roles.",
+        whatIsWorking: ["Structured graduate programs", "Strong early-career brand", "Broad learning opportunities"],
+        whatMayBeLimiting: ["Unclear role-level salary information", "Team-level work style varies", "Slower candidate response expectations"],
+        nextBestImprovement: "Publish salary ranges and expected hiring timelines for your top 5 most-viewed roles."
+      }
     },
     {
       id: "grab",
@@ -1169,7 +1200,8 @@ function readState() {
     posts: DATA.communityPosts,
     employerTalentPools: [{ id: "pool-1", name: "Backend Prospects", candidateIds: [] }],
     employerInvitations: {},
-    employerRoleDrafts: {}
+    employerRoleDrafts: {},
+    employerCompanyDraft: null
   };
   try {
     return normalizeState({ ...fallback, ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") });
@@ -6267,7 +6299,6 @@ const EMPLOYER_NAV_GROUPS = [
     ["roles", "Roles", "briefcase"],
     ["pipeline", "Talent Pipeline", "kanban"]
   ] },
-  { label: "Intelligence", items: [["intelligence", "Intelligence", "bar-chart-2"]] },
   { label: "Connect", items: [
     ["community", "Community", "messages-square"],
     ["company", "Company", "building-2"]
@@ -6276,7 +6307,7 @@ const EMPLOYER_NAV_GROUPS = [
   { label: "Account", items: [["settings", "Settings", "settings"]] }
 ];
 
-const EMPLOYER_VIEW_KEYS = [...EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key]) => key)), "role-builder"];
+const EMPLOYER_VIEW_KEYS = [...EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key]) => key)), "role-builder", "company-edit"];
 const EMPLOYER_VIEW_TITLES = Object.fromEntries(EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key, label]) => [key, label])));
 
 let employerRouteState = { view: "", params: {} };
@@ -6391,9 +6422,9 @@ function renderEmployerView(view, params, root) {
     case "roles": return renderEmployerRolesList(root);
     case "role-builder": return renderEmployerRoleBuilder(root, params.id || null);
     case "pipeline": return renderEmployerTalentPipeline(root, params);
-    case "intelligence": return renderEmployerIntelligence(root);
     case "community": return renderEmployerCommunity(root);
     case "company": return renderEmployerCompany(root);
+    case "company-edit": return renderEmployerCompanyEdit(root);
     default: return renderEmployerPlaceholder(root, view);
   }
 }
@@ -7638,6 +7669,10 @@ function renderEmployerTalentPipeline(root, params = {}) {
     const feedbackWaitingCount = activeList().filter(feedbackWaiting).length;
     const offersOutstandingCount = activeList().filter(offerOutstanding).length;
     const newCount = activeList().filter(c => c.stage === "New").length;
+    const hiredCount = activeList().filter(c => c.stage === "Hired").length;
+    const offerDecidedCount = activeList().filter(c => c.offer && ["Accepted", "Declined"].includes(c.offer.status)).length;
+    const offerAcceptanceRate = offerDecidedCount ? Math.round((hiredCount / offerDecidedCount) * 100) : null;
+    const stalledCount = activeList().filter(c => c.stage === "Interview" && !c.interview?.nextInterview).length;
 
     const attentionChips = [];
     if (feedbackWaitingCount) attentionChips.push({ text: `${feedbackWaitingCount} feedback form${feedbackWaitingCount === 1 ? "" : "s"} overdue`, filter: "feedback" });
@@ -7700,6 +7735,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
         <button type="button" class="emp-kpi-tile emp-kpi-clickable" data-snapshot-metric="feedback"><strong>${feedbackWaitingCount}</strong><span>Feedback waiting</span></button>
         <button type="button" class="emp-kpi-tile emp-kpi-clickable" data-snapshot-metric="offers"><strong>${offersOutstandingCount}</strong><span>Offers outstanding</span></button>
       </div>
+      <p class="emp-pipeline-health">${offerAcceptanceRate === null ? "No decided offers yet" : `Offer acceptance: <strong>${offerAcceptanceRate}%</strong>`} · Stalled in interview: <strong>${stalledCount}</strong></p>
 
       <div class="emp-pipeline-section-head">
         <div>
@@ -7851,85 +7887,6 @@ function renderEmployerTalentPipeline(root, params = {}) {
   draw();
 }
 
-function renderEmployerIntelligence(root) {
-  let activeTab = "analytics";
-  let selectedRoleId = DATA.employerRoles[0].id;
-
-  function draw() {
-    const roles = DATA.employerRoles;
-    const candidates = DATA.candidates;
-    const totalApplicants = roles.reduce((sum, r) => sum + r.applicants, 0);
-    const totalQualified = roles.reduce((sum, r) => sum + r.qualified, 0);
-    const qualifiedRate = Math.round((totalQualified / totalApplicants) * 100);
-    const activeCandidates = candidates.filter(c => !c.archived);
-    const interviewCount = candidates.filter(c => ["Interview", "Final Review", "Offer", "Hired"].includes(c.stage)).length;
-    const interviewRate = Math.round((interviewCount / activeCandidates.length) * 100);
-    const hiredCount = candidates.filter(c => c.stage === "Hired").length;
-    const offerCount = candidates.filter(c => ["Offer", "Hired"].includes(c.stage)).length;
-    const offerAcceptance = offerCount ? Math.round((hiredCount / offerCount) * 100) : 0;
-
-    const selectedRole = roles.find(r => r.id === selectedRoleId);
-
-    root.innerHTML = `
-      <div class="emp-view-header"><h1>Intelligence</h1></div>
-      <div class="emp-subtabs">
-        <button type="button" class="emp-subtab ${activeTab === "analytics" ? "active" : ""}" data-intel-tab="analytics">Hiring Analytics</button>
-        <button type="button" class="emp-subtab ${activeTab === "market" ? "active" : ""}" data-intel-tab="market">Talent Market</button>
-        <button type="button" class="emp-subtab ${activeTab === "university" ? "active" : ""}" data-intel-tab="university">University Pipelines</button>
-      </div>
-
-      <div class="emp-subpanel ${activeTab === "analytics" ? "active" : ""}" ${activeTab === "analytics" ? "" : "hidden"}>
-        <div class="emp-kpi-row">
-          <div class="emp-kpi-tile"><strong>${totalApplicants}</strong><span>Applicants</span></div>
-          <div class="emp-kpi-tile"><strong>${qualifiedRate}%</strong><span>Qualified rate</span></div>
-          <div class="emp-kpi-tile"><strong>${interviewRate}%</strong><span>Interview rate</span></div>
-          <div class="emp-kpi-tile"><strong>${offerAcceptance}%</strong><span>Offer acceptance</span></div>
-        </div>
-        <div class="card emp-funnel-card">
-          <h2>Funnel</h2>
-          <div class="emp-funnel-row">
-            ${EMPLOYER_TALENT_PIPELINE_STAGES.map(stage => `<div class="emp-funnel-stage"><strong>${candidates.filter(c => c.stage === stage).length}</strong><span>${stage}</span></div>`).join("")}
-          </div>
-        </div>
-      </div>
-
-      <div class="emp-subpanel ${activeTab === "market" ? "active" : ""}" ${activeTab === "market" ? "" : "hidden"}>
-        <div class="card">
-          <label class="emp-market-select">Role
-            <select data-intel-role>
-              ${roles.map(r => `<option value="${r.id}" ${r.id === selectedRoleId ? "selected" : ""}>${r.title}</option>`).join("")}
-            </select>
-          </label>
-          <div class="emp-stat-row"><span>Talent availability</span><strong>${selectedRole.roleIntelligence.talentAvailability}</strong></div>
-          <div class="emp-stat-row"><span>Typical experience</span><strong>${selectedRole.roleIntelligence.typicalExperience}</strong></div>
-          <div class="emp-stat-row"><span>Typical salary</span><strong>${selectedRole.roleIntelligence.commonSalary}</strong></div>
-          <div class="emp-tags"><span class="emp-tags-label">Common skills</span><div class="pill-row">${selectedRole.roleIntelligence.commonSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
-        </div>
-      </div>
-
-      <div class="emp-subpanel ${activeTab === "university" ? "active" : ""}" ${activeTab === "university" ? "" : "hidden"}>
-        <div class="emp-university-grid">
-          <div class="card"><h3>University of Malaya</h3><p class="emp-talent-meta">Strong research and technical foundation</p><a class="btn btn-ghost" href="universities.html">View university</a></div>
-          <div class="card"><h3>Asia Pacific University</h3><p class="emp-talent-meta">Strong computing and technology pipeline</p><a class="btn btn-ghost" href="universities.html">View university</a></div>
-          <div class="card"><h3>Taylor's University</h3><p class="emp-talent-meta">Strong industry project exposure</p><a class="btn btn-ghost" href="universities.html">View university</a></div>
-        </div>
-      </div>
-    `;
-    createIcons();
-
-    qsa("[data-intel-tab]", root).forEach(btn => btn.addEventListener("click", () => {
-      activeTab = btn.dataset.intelTab;
-      draw();
-    }));
-    qs("[data-intel-role]", root)?.addEventListener("change", event => {
-      selectedRoleId = event.target.value;
-      draw();
-    });
-  }
-
-  draw();
-}
-
 function renderEmployerCommunity(root) {
   function draw() {
     root.innerHTML = `
@@ -7993,47 +7950,635 @@ function renderEmployerCommunity(root) {
   draw();
 }
 
+function sourceTag(label) { return `<span class="emp-source-tag">${label}</span>`; }
+
+function computeCompanyCompleteness(company) {
+  const checks = [
+    !!company.summary, !!company.averageRequirements, !!company.hiringProcess, !!company.salaryBenefits,
+    !!company.careerGrowth, !!company.workCulture, !!(company.highlights && company.highlights.length),
+    false // workplace media - not yet supported, counted as a gap
+  ];
+  return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+}
+
 function renderEmployerCompany(root) {
-  let activeTab = "profile";
   const company = DATA.companies.find(c => c.id === "maybank");
+  let showAllRoles = false;
+  let showAllReviews = false;
+
+  function formatRoleSalary(r) {
+    if (!r.salary || !r.salary.min || !r.salary.max) return "Salary not published";
+    const fmt = n => (n / 1000).toFixed(1).replace(".0", "");
+    return `RM ${fmt(r.salary.min)}k–${fmt(r.salary.max)}k / ${r.salary.period.toLowerCase()}`;
+  }
 
   function draw() {
-    root.innerHTML = `
-      <div class="emp-view-header"><h1>Company</h1></div>
-      <div class="emp-subtabs">
-        <button type="button" class="emp-subtab ${activeTab === "profile" ? "active" : ""}" data-company-tab="profile">Public Profile</button>
-        <button type="button" class="emp-subtab ${activeTab === "reputation" ? "active" : ""}" data-company-tab="reputation">Reputation</button>
-      </div>
+    const openRoles = DATA.employerRoles.filter(r => r.status === "Open");
+    const rolesToShow = showAllRoles ? openRoles : openRoles.slice(0, 4);
+    const allReviews = [
+      ...DATA.reviews.filter(r => r.targetId === company.id).map(r => ({ title: r.title, role: r.author, date: r.date, rating: r.rating, body: r.body })),
+      ...company.companyReviews.map(r => ({ title: r.title, role: r.role, date: r.date, rating: r.rating, body: r.body }))
+    ];
+    const reviewsToShow = showAllReviews ? allReviews : allReviews.slice(0, 3);
+    const completeness = computeCompanyCompleteness(company);
 
-      <div class="emp-subpanel ${activeTab === "profile" ? "active" : ""}" ${activeTab === "profile" ? "" : "hidden"}>
-        <div class="card">
-          <div class="emp-card-head"><h2>${company.name}</h2><a class="btn btn-ghost" href="companies.html?org=${company.id}">Preview public page</a></div>
-          <div class="emp-stat-row"><span>Industry</span><strong>${company.industry}</strong></div>
-          <div class="emp-stat-row"><span>Location</span><strong>${company.location}</strong></div>
-          <div class="emp-stat-row"><span>Company size</span><strong>${company.size}</strong></div>
-          <div class="emp-stat-row"><span>Work mode</span><strong>${company.workMode}</strong></div>
-          <p class="emp-talent-reason">${company.summary}</p>
+    root.innerHTML = `
+      <div class="emp-view-header">
+        <div>
+          <h1>Company Profile</h1>
+          <p>Manage how candidates see your company and understand what is shaping their interest.</p>
         </div>
       </div>
 
-      <div class="emp-subpanel ${activeTab === "reputation" ? "active" : ""}" ${activeTab === "reputation" ? "" : "hidden"}>
-        <div class="card">
-          <div class="emp-rating-grid">
-            <div class="emp-rating-tile main"><span>Overall</span><strong>${company.rating}/5</strong></div>
-            <div class="emp-rating-tile"><span>Culture</span><strong>${company.scores.culture}</strong></div>
-            <div class="emp-rating-tile"><span>Growth</span><strong>${company.scores.growth}</strong></div>
-            <div class="emp-rating-tile"><span>Pay</span><strong>${company.scores.pay}</strong></div>
-            <div class="emp-rating-tile"><span>Work-life balance</span><strong>${company.scores.balance}</strong></div>
+      <div class="card emp-company-header">
+        <div class="emp-company-header-top">
+          <div class="emp-company-header-identity">
+            <span class="emp-company-logo">${company.name.charAt(0)}</span>
+            <div>
+              <div class="emp-company-name-row"><h2>${company.name}</h2>${company.verified ? `<span class="pill cyan">${icon("shield-check")} Verified company</span>` : ""}</div>
+              <p class="emp-cand-meta">${company.industry} · ${company.location} · ${company.size}</p>
+              <p class="emp-cand-meta">${company.workMode} · ${company.followers.toLocaleString()} followers · ${openRoles.length} open roles</p>
+            </div>
           </div>
-          <p class="emp-talent-reason"><strong>Vera:</strong> ${company.veraNote}</p>
+          <div class="emp-company-header-actions">
+            <button type="button" class="btn btn-primary" data-company-edit>Edit profile</button>
+            <a class="btn btn-ghost" href="companies.html?org=${company.id}" target="_blank" rel="noopener">${icon("external-link")} View as candidate</a>
+            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-company-menu>${icon("more-horizontal")}</button>
+            <div class="emp-actions-menu" data-company-menu-panel hidden>
+              <button type="button" data-company-share>Share public profile</button>
+            </div>
+          </div>
+        </div>
+        <div class="emp-company-header-status">
+          <span><strong>Public profile:</strong> ${company.publicProfileStatus}</span>
+          <span><strong>Profile completeness:</strong> ${completeness}%</span>
+          <span>Last updated ${company.lastUpdated}</span>
+        </div>
+      </div>
+
+      <div class="emp-detail-tabs" data-company-nav>
+        <a href="#comp-overview" data-jump="comp-overview">Overview</a>
+        <a href="#comp-roles" data-jump="comp-roles">Roles</a>
+        <a href="#comp-requirements" data-jump="comp-requirements">Requirements</a>
+        <a href="#comp-hiring" data-jump="comp-hiring">Hiring</a>
+        <a href="#comp-salary" data-jump="comp-salary">Salary &amp; Benefits</a>
+        <a href="#comp-growth" data-jump="comp-growth">Growth &amp; Culture</a>
+        <a href="#comp-reviews" data-jump="comp-reviews">Reviews</a>
+        <a href="#comp-insights" data-jump="comp-insights">Insights</a>
+      </div>
+
+      <div class="card emp-company-section" id="comp-overview">
+        <div class="emp-company-section-head"><h2>Company at a Glance</h2>${sourceTag("Company provided")}</div>
+        <div class="emp-requirements-grid">
+          <div class="emp-stat-row"><span>Industry</span><strong>${company.industry}</strong></div>
+          <div class="emp-stat-row"><span>Headquarters</span><strong>${company.location}</strong></div>
+          <div class="emp-stat-row"><span>Company size</span><strong>${company.size}</strong></div>
+          <div class="emp-stat-row"><span>Work mode</span><strong>${company.workMode}</strong></div>
+          <div class="emp-stat-row"><span>Founded</span><strong>${company.founded}</strong></div>
+          <div class="emp-stat-row"><span>Office locations</span><strong>${company.officeLocations.join(" · ")}</strong></div>
+          <div class="emp-stat-row"><span>Website</span><strong>${company.website}</strong></div>
+        </div>
+        <p class="emp-company-description">${company.summary}</p>
+        <div class="emp-tags">
+          <span class="emp-tags-label">Profile characteristics ${sourceTag("Verified by CareerGo")}</span>
+          <div class="pill-row">${company.tags.map(t => `<span class="pill">${t}</span>`).join("")}</div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-roles">
+        <div class="emp-company-section-head">
+          <div><h2>Roles Candidates Can Explore</h2><p>Current opportunities and common career paths associated with your company.</p></div>
+          <button type="button" class="btn btn-ghost btn-sm" data-company-manage-roles>Manage roles</button>
+        </div>
+        <div class="emp-company-role-list">
+          ${rolesToShow.length ? rolesToShow.map(r => `
+            <div class="emp-company-role-row">
+              <div>
+                <strong>${r.title}</strong>
+                <p class="emp-cand-meta">${r.department || "—"} · ${formatRoleSalary(r)} · ${r.minExperience}</p>
+              </div>
+              <span class="pill green">${r.status}</span>
+              <button type="button" class="btn btn-ghost btn-sm" data-company-view-role="${r.id}">View role</button>
+            </div>
+          `).join("") : `<p class="emp-empty-hint">No open roles right now.</p>`}
+        </div>
+        ${openRoles.length > 4 ? `<button type="button" class="btn btn-ghost btn-sm" data-company-toggle-roles>${showAllRoles ? "Show fewer roles" : `Show all ${openRoles.length} roles`}</button>` : ""}
+      </div>
+
+      <div class="card emp-company-section" id="comp-requirements">
+        <div class="emp-company-section-head"><h2>What Candidates Usually Need</h2>${sourceTag("Company provided")}</div>
+        <p class="emp-company-section-desc">Typical requirements candidates should understand before applying.</p>
+        <div class="emp-requirements-grid">
+          <div class="emp-stat-row"><span>Education</span><strong>${company.averageRequirements.education}</strong></div>
+          <div class="emp-stat-row"><span>CGPA</span><strong>${company.averageRequirements.cgpa}</strong></div>
+          <div class="emp-stat-row"><span>Experience</span><strong>${company.averageRequirements.experience}</strong></div>
+          <div class="emp-stat-row"><span>English</span><strong>${company.averageRequirements.englishRequirement}</strong></div>
+          <div class="emp-stat-row"><span>Portfolio</span><strong>${company.averageRequirements.portfolio}</strong></div>
+          <div class="emp-stat-row"><span>Internship experience</span><strong>${company.averageRequirements.internshipPreferred}</strong></div>
+          <div class="emp-stat-row"><span>Certifications</span><strong>${company.averageRequirements.certifications}</strong></div>
+        </div>
+        <div class="emp-tags"><span class="emp-tags-label">Common skills</span><div class="pill-row">${company.averageRequirements.commonSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
+        <div class="emp-tags"><span class="emp-tags-label">Tech / tools</span><div class="pill-row">${company.averageRequirements.techSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-hiring">
+        <div class="emp-company-section-head"><h2>How Hiring Works</h2>${sourceTag("Company provided")}</div>
+        <p class="emp-company-section-desc">Help candidates understand what usually happens after they apply.</p>
+        <ol class="emp-hiring-steps">
+          ${company.hiringProcess.steps.map((s, i) => `<li><span class="emp-hiring-step-index">${i + 1}</span><span>${s}</span></li>`).join("")}
+        </ol>
+        <div class="emp-requirements-grid">
+          <div class="emp-stat-row"><span>Typical duration</span><strong>${company.hiringProcess.avgResponseTime}</strong></div>
+          <div class="emp-stat-row"><span>Interview rounds</span><strong>${company.hiringProcess.steps.length}</strong></div>
+          <div class="emp-stat-row"><span>Assessment</span><strong>${company.hiringProcess.assessmentNote}</strong></div>
+          <div class="emp-stat-row"><span>Candidate feedback</span><strong>Varies by role</strong></div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-salary">
+        <div class="emp-company-section-head"><h2>Salary &amp; Benefits</h2>${sourceTag("Company provided + live roles")}</div>
+        <p class="emp-company-section-desc">What candidates can realistically expect.</p>
+        <div class="emp-requirements-grid">
+          <div class="emp-stat-row"><span>Average salary range</span><strong>${company.salary}</strong></div>
+          <div class="emp-stat-row"><span>Fresh graduate salary</span><strong>${company.salaryBenefits.freshGradSalary}</strong></div>
+          <div class="emp-stat-row"><span>Internship allowance</span><strong>${company.salaryBenefits.internshipAllowance}</strong></div>
+          <div class="emp-stat-row"><span>Bonus / incentives</span><strong>${company.salaryBenefits.bonus}</strong></div>
+          <div class="emp-stat-row"><span>Medical benefits</span><strong>${company.salaryBenefits.medical}</strong></div>
+          <div class="emp-stat-row"><span>Flexible work</span><strong>${company.salaryBenefits.flexibleWork}</strong></div>
+          <div class="emp-stat-row"><span>Training</span><strong>${company.salaryBenefits.training}</strong></div>
+          <div class="emp-stat-row"><span>Leave benefits</span><strong>${company.salaryBenefits.leave}</strong></div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-growth">
+        <div class="emp-company-section-head"><h2>Growth &amp; Development</h2>${sourceTag("Company provided")}</div>
+        <p class="emp-company-section-desc">How people learn, move and progress inside the company.</p>
+        <div class="emp-requirements-grid">
+          <div class="emp-stat-row"><span>Training quality</span><strong>${company.careerGrowth.trainingQuality}</strong></div>
+          <div class="emp-stat-row"><span>Promotion path</span><strong>${company.careerGrowth.promotionPath}</strong></div>
+          <div class="emp-stat-row"><span>Graduate program</span><strong>${company.careerGrowth.graduateProgram}</strong></div>
+          <div class="emp-stat-row"><span>Mentorship</span><strong>${company.careerGrowth.mentorship}</strong></div>
+          <div class="emp-stat-row"><span>Internal transfer</span><strong>${company.careerGrowth.internalTransfer}</strong></div>
+          <div class="emp-stat-row"><span>Learning opportunities</span><strong>${company.careerGrowth.learningOpportunities}</strong></div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section">
+        <div class="emp-company-section-head"><h2>Work Culture</h2></div>
+        <p class="emp-company-section-desc">What day-to-day work may feel like.</p>
+        <div class="emp-requirements-grid">
+          <div class="emp-stat-row"><span>Pace</span><strong>${company.workCulture.pace}</strong></div>
+          <div class="emp-stat-row"><span>Team style</span><strong>${company.workCulture.teamStyle}</strong></div>
+          <div class="emp-stat-row"><span>Work-life balance</span><strong>${company.workCulture.workLifeBalance}</strong></div>
+          <div class="emp-stat-row"><span>Management style ${sourceTag("Employee reviews")}</span><strong>${company.workCulture.managementStyle}</strong></div>
+          <div class="emp-stat-row"><span>Collaboration</span><strong>${company.workCulture.collaboration}</strong></div>
+          <div class="emp-stat-row"><span>Overtime signal ${sourceTag("Employee reviews")}</span><strong>${company.workCulture.overtimeSignal}</strong></div>
+          <div class="emp-stat-row"><span>Review themes ${sourceTag("Employee reviews")}</span><strong>${company.workCulture.reviewThemes}</strong></div>
+        </div>
+        <div class="emp-highlight-watchout-grid">
+          <div class="card emp-highlight-card">
+            <div class="emp-callout-label">${icon("check")} What candidates like ${sourceTag("Vera synthesis")}</div>
+            <ul>${company.highlights.map(h => `<li>${h}</li>`).join("")}</ul>
+          </div>
+          <div class="card emp-watchout-card">
+            <div class="emp-callout-label warn">${icon("alert-triangle")} What candidates should know ${sourceTag("Vera synthesis")}</div>
+            <ul>${company.watchouts.map(w => `<li>${w}</li>`).join("")}</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-reviews">
+        <div class="emp-company-section-head"><h2>Reputation &amp; Employee Voice</h2>${sourceTag("Employee reviews")}</div>
+        <p class="emp-company-section-desc">What employees consistently say about working here.</p>
+        <div class="emp-score-grid">
+          <div class="emp-score-tile main"><strong>${company.rating}</strong><span>Overall</span></div>
+          <div class="emp-score-tile"><strong>${company.scores.culture}</strong><span>Culture</span></div>
+          <div class="emp-score-tile"><strong>${company.scores.growth}</strong><span>Growth</span></div>
+          <div class="emp-score-tile"><strong>${company.scores.pay}</strong><span>Pay</span></div>
+          <div class="emp-score-tile"><strong>${company.scores.balance}</strong><span>Work-life balance</span></div>
+        </div>
+        <p class="emp-empty-hint">${company.reviews.toLocaleString()} reviews</p>
+        <div class="emp-review-list">
+          ${reviewsToShow.map(r => `
+            <div class="card emp-review-card">
+              <div class="emp-card-head"><h3>${r.title}</h3><span class="pill green">${r.rating} / 5</span></div>
+              <p class="emp-cand-meta">${r.role} · ${r.date}</p>
+              <p>${r.body}</p>
+              <button type="button" class="btn btn-ghost btn-sm" data-company-respond-review>Respond to review</button>
+            </div>
+          `).join("")}
+        </div>
+        ${allReviews.length > 3 ? `<button type="button" class="btn btn-ghost btn-sm" data-company-toggle-reviews>${showAllReviews ? "Show fewer reviews" : "Show more reviews"}</button>` : ""}
+      </div>
+
+      <div class="card emp-company-section" id="comp-insights">
+        <div class="emp-company-section-head"><h2>How Candidates See Your Company</h2></div>
+        <p class="emp-company-section-desc">Candidate behaviour, profile quality and reputation signals — explained in one place.</p>
+
+        <div class="emp-company-subsection">
+          <span class="emp-tags-label">Candidate interest ${sourceTag("Candidate activity")}</span>
+          <div class="emp-kpi-row">
+            <div class="emp-kpi-tile"><strong>${company.candidateInterest.profileViews.value.toLocaleString()}</strong><span>Profile views</span><span class="emp-kpi-trend">${company.candidateInterest.profileViews.trend}</span></div>
+            <div class="emp-kpi-tile"><strong>${company.candidateInterest.saved.value.toLocaleString()}</strong><span>Saved by candidates</span><span class="emp-kpi-trend">${company.candidateInterest.saved.percentOfViewers}% of viewers</span></div>
+            <div class="emp-kpi-tile"><strong>${company.candidateInterest.roleClicks.value.toLocaleString()}</strong><span>Open-role clicks</span><span class="emp-kpi-trend">${company.candidateInterest.roleClicks.trend}</span></div>
+            <div class="emp-kpi-tile"><strong>${company.candidateInterest.applicationStarts.value.toLocaleString()}</strong><span>Application starts</span><span class="emp-kpi-trend">${company.candidateInterest.applicationStarts.trend}</span></div>
+          </div>
+        </div>
+
+        <div class="emp-company-subsection">
+          <span class="emp-tags-label">Reputation summary ${sourceTag("Vera synthesis")}</span>
+          <div class="emp-requirements-grid">
+            <div class="emp-stat-row"><span>Strongest signal</span><strong>${company.reputationSummary.strongestSignal.label} — ${company.reputationSummary.strongestSignal.value}</strong></div>
+            <div class="emp-stat-row"><span>Most common positive theme</span><strong>${company.reputationSummary.mostCommonPositive}</strong></div>
+            <div class="emp-stat-row"><span>Biggest candidate question</span><strong>${company.reputationSummary.biggestQuestion}</strong></div>
+            <div class="emp-stat-row"><span>Most common watchout</span><strong>${company.reputationSummary.mostCommonWatchout}</strong></div>
+          </div>
+          <p class="emp-empty-hint">${company.reputationSummary.basis}</p>
+        </div>
+
+        <div class="emp-company-subsection" id="comp-gaps">
+          <span class="emp-tags-label">What candidates still need to know</span>
+          <ul class="emp-gap-list">${company.profileGaps.map(g => `<li>${icon("alert-triangle")} ${g}</li>`).join("")}</ul>
+        </div>
+
+        <div class="emp-company-subsection emp-vera-read">
+          <div class="emp-callout-label">${icon("sparkles")} Vera's Read</div>
+          <p>${company.veraCompanyRead.summary}</p>
+          <div class="emp-vera-read-grid">
+            <div><span class="emp-tags-label">What is working</span><ul>${company.veraCompanyRead.whatIsWorking.map(w => `<li>${icon("check")} ${w}</li>`).join("")}</ul></div>
+            <div><span class="emp-tags-label">What may be limiting interest</span><ul>${company.veraCompanyRead.whatMayBeLimiting.map(w => `<li>${icon("alert-triangle")} ${w}</li>`).join("")}</ul></div>
+          </div>
+          <div class="emp-callout emp-callout-suggest">
+            <div class="emp-callout-label">${icon("lightbulb")} Next best improvement</div>
+            <p>${company.veraCompanyRead.nextBestImprovement}</p>
+          </div>
+          <div class="emp-vera-read-actions">
+            <button type="button" class="btn btn-primary" data-company-edit>Edit profile</button>
+            <button type="button" class="btn btn-ghost" data-company-jump-gaps>Review missing information</button>
+          </div>
         </div>
       </div>
     `;
     createIcons();
-    qsa("[data-company-tab]", root).forEach(btn => btn.addEventListener("click", () => {
-      activeTab = btn.dataset.companyTab;
+    bind();
+  }
+
+  function bind() {
+    qsa("[data-company-edit]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo("company-edit")));
+    qs("[data-company-menu]", root)?.addEventListener("click", event => {
+      event.stopPropagation();
+      const panel = qs("[data-company-menu-panel]", root);
+      panel.hidden = !panel.hidden;
+    });
+    document.addEventListener("click", () => { const p = qs("[data-company-menu-panel]", root); if (p) p.hidden = true; });
+    qs("[data-company-share]", root)?.addEventListener("click", () => showToast("Public profile link copied."));
+    qs("[data-company-nav]", root)?.addEventListener("click", event => {
+      const link = event.target.closest("[data-jump]");
+      if (!link) return;
+      event.preventDefault();
+      qs(`#${link.dataset.jump}`, root)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    qs("[data-company-manage-roles]", root)?.addEventListener("click", () => employerNavigateTo("roles"));
+    qsa("[data-company-view-role]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo("role-builder", { id: btn.dataset.companyViewRole })));
+    qs("[data-company-toggle-roles]", root)?.addEventListener("click", () => { showAllRoles = !showAllRoles; draw(); });
+    qs("[data-company-toggle-reviews]", root)?.addEventListener("click", () => { showAllReviews = !showAllReviews; draw(); });
+    qsa("[data-company-respond-review]", root).forEach(btn => btn.addEventListener("click", () => showToast("Response drafted. Full response workflow is coming soon.", "info")));
+    qs("[data-company-jump-gaps]", root)?.addEventListener("click", () => qs("#comp-insights", root)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
+  draw();
+}
+
+const COMPANY_EDIT_SECTIONS = [
+  ["basics", "Company basics"],
+  ["requirements", "Candidate requirements"],
+  ["hiring", "Hiring process"],
+  ["salary", "Salary & benefits"],
+  ["growth", "Growth"],
+  ["culture", "Culture"],
+  ["media", "Media"]
+];
+
+function makeCompanyDraft(company) {
+  return {
+    name: company.name, industry: company.industry, location: company.location, size: company.size,
+    workMode: company.workMode, website: company.website, founded: company.founded, summary: company.summary,
+    requirements: { ...company.averageRequirements, commonSkills: [...company.averageRequirements.commonSkills], techSkills: [...company.averageRequirements.techSkills] },
+    hiringSteps: [...company.hiringProcess.steps], avgResponseTime: company.hiringProcess.avgResponseTime, assessmentNote: company.hiringProcess.assessmentNote,
+    salaryBenefits: { ...company.salaryBenefits }, salary: company.salary,
+    careerGrowth: { ...company.careerGrowth },
+    workCulture: { ...company.workCulture },
+    lastSavedAt: null
+  };
+}
+
+function renderEmployerCompanyEdit(root) {
+  const company = DATA.companies.find(c => c.id === "maybank");
+  const seedState = readState();
+  const draft = seedState.employerCompanyDraft || makeCompanyDraft(company);
+  let savedSnapshot = JSON.stringify(draft);
+
+  function persistDraft() {
+    draft.lastSavedAt = new Date().toISOString();
+    const state = readState();
+    state.employerCompanyDraft = draft;
+    writeState(state);
+    const label = qs("[data-company-saved-label]", root);
+    if (label) label.textContent = formatSavedLabel(draft.lastSavedAt);
+  }
+
+  function bindField(selector, path) {
+    const el = qs(selector, root);
+    if (!el) return;
+    const keys = path.split(".");
+    el.addEventListener("input", () => {
+      let obj = draft;
+      for (let i = 0; i < keys.length - 1; i++) obj = obj[keys[i]];
+      obj[keys[keys.length - 1]] = el.value;
+    });
+    el.addEventListener("blur", persistDraft);
+  }
+
+  function renderTagField(field, values) {
+    return `
+      <div class="emp-tag-input" data-company-tag-field="${field}">
+        <div class="pill-row" data-tag-list>
+          ${values.map((v, i) => `<span class="pill emp-tag-pill">${v} <button type="button" data-company-tag-remove="${i}" aria-label="Remove ${v}">${icon("x")}</button></span>`).join("")}
+        </div>
+        <input type="text" data-company-tag-new placeholder="Type a skill and press Enter">
+      </div>
+    `;
+  }
+
+  function bindTagField(field) {
+    const container = qs(`[data-company-tag-field="${field}"]`, root);
+    if (!container) return;
+    const input = qs("[data-company-tag-new]", container);
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === ",") {
+        event.preventDefault();
+        const val = input.value.trim().replace(/,$/, "");
+        if (val && !draft.requirements[field].includes(val)) {
+          draft.requirements[field].push(val);
+          persistDraft();
+          draw();
+          qs(`[data-company-tag-field="${field}"] [data-company-tag-new]`, root)?.focus();
+        } else { input.value = ""; }
+      }
+    });
+    qsa("[data-company-tag-remove]", container).forEach(btn => btn.addEventListener("click", () => {
+      draft.requirements[field].splice(Number(btn.dataset.companyTagRemove), 1);
+      persistDraft();
       draw();
     }));
+  }
+
+  function bindHiringSteps() {
+    qsa("[data-company-step-index]", root).forEach(input => {
+      input.addEventListener("input", () => { draft.hiringSteps[Number(input.dataset.companyStepIndex)] = input.value; });
+      input.addEventListener("blur", persistDraft);
+    });
+    qsa("[data-company-step-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      draft.hiringSteps.splice(Number(btn.dataset.companyStepRemove), 1);
+      persistDraft();
+      draw();
+    }));
+    qs("[data-company-step-add]", root)?.addEventListener("click", () => {
+      draft.hiringSteps.push("");
+      persistDraft();
+      draw();
+      const inputs = qsa("[data-company-step-index]", root);
+      inputs[inputs.length - 1]?.focus();
+    });
+  }
+
+  function tempMergedCompany() {
+    return {
+      ...company, summary: draft.summary,
+      averageRequirements: draft.requirements,
+      hiringProcess: { steps: draft.hiringSteps, avgResponseTime: draft.avgResponseTime, assessmentNote: draft.assessmentNote },
+      salaryBenefits: draft.salaryBenefits,
+      careerGrowth: draft.careerGrowth,
+      workCulture: draft.workCulture
+    };
+  }
+
+  function commitPublish() {
+    Object.assign(company, {
+      name: draft.name, industry: draft.industry, location: draft.location, size: draft.size, workMode: draft.workMode,
+      website: draft.website, founded: draft.founded, summary: draft.summary,
+      averageRequirements: draft.requirements,
+      hiringProcess: { steps: draft.hiringSteps, avgResponseTime: draft.avgResponseTime, assessmentNote: draft.assessmentNote },
+      salaryBenefits: draft.salaryBenefits, salary: draft.salary,
+      careerGrowth: draft.careerGrowth,
+      workCulture: draft.workCulture,
+      lastUpdated: "Just now"
+    });
+    const state = readState();
+    state.employerCompanyDraft = null;
+    writeState(state);
+    savedSnapshot = JSON.stringify(draft);
+    showToast("Company profile updated.");
+    employerNavigateTo("company", {}, { force: true });
+  }
+
+  function draw() {
+    root.innerHTML = `
+      <div class="emp-view-header">
+        <div>
+          <h1>Edit Company Profile</h1>
+          <p>Keep your public company information accurate, complete and useful to candidates. <span data-company-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span></p>
+        </div>
+        <button type="button" class="btn btn-ghost" data-company-edit-cancel>${icon("x")} Cancel</button>
+      </div>
+
+      <div class="emp-detail-tabs" data-company-edit-nav>
+        ${COMPANY_EDIT_SECTIONS.map(([id, label]) => `<a href="#edit-${id}" data-jump="edit-${id}">${label}</a>`).join("")}
+      </div>
+
+      <div class="emp-edit-layout">
+        <div class="emp-edit-main">
+          <div class="card emp-company-section" id="edit-basics">
+            <h2>Company Basics</h2>
+            <label>Company name<input type="text" data-field="name" value="${draft.name}"></label>
+            <label>Industry<input type="text" data-field="industry" value="${draft.industry}"></label>
+            <label>Headquarters<input type="text" data-field="location" value="${draft.location}"></label>
+            <label>Company size<input type="text" data-field="size" value="${draft.size}"></label>
+            <label>Work mode<input type="text" data-field="workMode" value="${draft.workMode}"></label>
+            <label>Website<input type="text" data-field="website" value="${draft.website}"></label>
+            <label>Founded<input type="text" data-field="founded" value="${draft.founded}"></label>
+            <label>Description<textarea data-field="summary" rows="3">${draft.summary}</textarea></label>
+            <p class="emp-field-help">Logo, cover image and office locations editing are coming in a future update.</p>
+          </div>
+
+          <div class="card emp-company-section" id="edit-requirements">
+            <h2>Candidate Requirements</h2>
+            <label>Typical education<input type="text" data-field="requirements.education" value="${draft.requirements.education}"></label>
+            <label>CGPA expectation<input type="text" data-field="requirements.cgpa" value="${draft.requirements.cgpa}"></label>
+            <label>Typical experience<input type="text" data-field="requirements.experience" value="${draft.requirements.experience}"></label>
+            <label>English expectation<input type="text" data-field="requirements.englishRequirement" value="${draft.requirements.englishRequirement}"></label>
+            <label>Portfolio expectation<input type="text" data-field="requirements.portfolio" value="${draft.requirements.portfolio}"></label>
+            <label>Internship experience<input type="text" data-field="requirements.internshipPreferred" value="${draft.requirements.internshipPreferred}"></label>
+            <label>Certifications<input type="text" data-field="requirements.certifications" value="${draft.requirements.certifications}"></label>
+            <div><span class="emp-tags-label">Common skills</span>${renderTagField("commonSkills", draft.requirements.commonSkills)}</div>
+            <div><span class="emp-tags-label">Common tools</span>${renderTagField("techSkills", draft.requirements.techSkills)}</div>
+          </div>
+
+          <div class="card emp-company-section" id="edit-hiring">
+            <h2>Hiring Process</h2>
+            <span class="emp-tags-label">Hiring stages</span>
+            <div data-step-list>
+              ${draft.hiringSteps.map((s, i) => `
+                <div class="emp-resp-row">
+                  <input type="text" data-company-step-index="${i}" value="${s}" placeholder="e.g. HR interview">
+                  <button type="button" class="btn btn-ghost btn-sm" data-company-step-remove="${i}" aria-label="Remove">${icon("x")}</button>
+                </div>
+              `).join("")}
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm" data-company-step-add>${icon("plus")} Add stage</button>
+            <label>Average timeline<input type="text" data-field="avgResponseTime" value="${draft.avgResponseTime}"></label>
+            <label>Assessment note<input type="text" data-field="assessmentNote" value="${draft.assessmentNote}"></label>
+          </div>
+
+          <div class="card emp-company-section" id="edit-salary">
+            <h2>Salary &amp; Benefits</h2>
+            <label>Average salary range<input type="text" data-field="salary" value="${draft.salary}"></label>
+            <label>Fresh graduate salary<input type="text" data-field="salaryBenefits.freshGradSalary" value="${draft.salaryBenefits.freshGradSalary}"></label>
+            <label>Internship allowance<input type="text" data-field="salaryBenefits.internshipAllowance" value="${draft.salaryBenefits.internshipAllowance}"></label>
+            <label>Bonus / incentives<input type="text" data-field="salaryBenefits.bonus" value="${draft.salaryBenefits.bonus}"></label>
+            <label>Medical benefits<input type="text" data-field="salaryBenefits.medical" value="${draft.salaryBenefits.medical}"></label>
+            <label>Flexible work<input type="text" data-field="salaryBenefits.flexibleWork" value="${draft.salaryBenefits.flexibleWork}"></label>
+            <label>Training support<input type="text" data-field="salaryBenefits.training" value="${draft.salaryBenefits.training}"></label>
+            <label>Leave benefits<input type="text" data-field="salaryBenefits.leave" value="${draft.salaryBenefits.leave}"></label>
+          </div>
+
+          <div class="card emp-company-section" id="edit-growth">
+            <h2>Growth &amp; Development</h2>
+            <label>Training quality<input type="text" data-field="careerGrowth.trainingQuality" value="${draft.careerGrowth.trainingQuality}"></label>
+            <label>Promotion path<input type="text" data-field="careerGrowth.promotionPath" value="${draft.careerGrowth.promotionPath}"></label>
+            <label>Graduate program<input type="text" data-field="careerGrowth.graduateProgram" value="${draft.careerGrowth.graduateProgram}"></label>
+            <label>Mentorship<input type="text" data-field="careerGrowth.mentorship" value="${draft.careerGrowth.mentorship}"></label>
+            <label>Internal transfer<input type="text" data-field="careerGrowth.internalTransfer" value="${draft.careerGrowth.internalTransfer}"></label>
+            <label>Learning opportunities<input type="text" data-field="careerGrowth.learningOpportunities" value="${draft.careerGrowth.learningOpportunities}"></label>
+          </div>
+
+          <div class="card emp-company-section" id="edit-culture">
+            <h2>Culture</h2>
+            <label>Team pace<input type="text" data-field="workCulture.pace" value="${draft.workCulture.pace}"></label>
+            <label>Team style<input type="text" data-field="workCulture.teamStyle" value="${draft.workCulture.teamStyle}"></label>
+            <label>Work-life balance<input type="text" data-field="workCulture.workLifeBalance" value="${draft.workCulture.workLifeBalance}"></label>
+            <label>Collaboration style<input type="text" data-field="workCulture.collaboration" value="${draft.workCulture.collaboration}"></label>
+            <p class="emp-field-help">Management style, overtime signal and review themes are derived from employee reviews and cannot be edited here.</p>
+          </div>
+
+          <div class="card emp-company-section" id="edit-media">
+            <h2>Media</h2>
+            <p class="emp-field-help">Workplace images, team photos, videos and graduate program media uploads are coming in a future update.</p>
+          </div>
+
+          <div class="emp-wizard-actions">
+            <button type="button" class="btn btn-ghost" data-company-save-draft>Save draft</button>
+            <div class="emp-publish-buttons">
+              <button type="button" class="btn btn-ghost" data-company-preview>Preview changes</button>
+              <button type="button" class="btn btn-primary" data-company-publish>${icon("check")} Publish changes</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="emp-edit-side">
+          <div class="card emp-edit-support">
+            <div class="emp-callout-label">${icon("list-checks")} Profile completion</div>
+            <p class="emp-metric-lg-value">${computeCompanyCompleteness(tempMergedCompany())}%</p>
+            <span class="emp-tags-label">Missing information</span>
+            <ul class="emp-gap-list">${company.profileGaps.map(g => `<li>${icon("alert-triangle")} ${g}</li>`).join("")}</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="emp-compose-modal" data-company-preview-modal hidden>
+        <div class="card emp-compose-card emp-public-preview-card">
+          <div class="emp-preview-toolbar"><h2>Preview: ${draft.name}</h2><button type="button" class="btn btn-ghost btn-sm" data-company-preview-close>${icon("x")} Close</button></div>
+          <p class="emp-cand-meta">${draft.industry} · ${draft.location} · ${draft.size}</p>
+          <p class="emp-company-description">${draft.summary}</p>
+          <div class="emp-tags"><span class="emp-tags-label">Common skills</span><div class="pill-row">${draft.requirements.commonSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
+          <div class="emp-requirements-grid">
+            <div class="emp-stat-row"><span>Average salary</span><strong>${draft.salary}</strong></div>
+            <div class="emp-stat-row"><span>Hiring timeline</span><strong>${draft.avgResponseTime}</strong></div>
+          </div>
+        </div>
+      </div>
+    `;
+    createIcons();
+    bind();
+  }
+
+  function bind() {
+    bindField("[data-field='name']", "name");
+    bindField("[data-field='industry']", "industry");
+    bindField("[data-field='location']", "location");
+    bindField("[data-field='size']", "size");
+    bindField("[data-field='workMode']", "workMode");
+    bindField("[data-field='website']", "website");
+    bindField("[data-field='founded']", "founded");
+    bindField("[data-field='summary']", "summary");
+    bindField("[data-field='requirements.education']", "requirements.education");
+    bindField("[data-field='requirements.cgpa']", "requirements.cgpa");
+    bindField("[data-field='requirements.experience']", "requirements.experience");
+    bindField("[data-field='requirements.englishRequirement']", "requirements.englishRequirement");
+    bindField("[data-field='requirements.portfolio']", "requirements.portfolio");
+    bindField("[data-field='requirements.internshipPreferred']", "requirements.internshipPreferred");
+    bindField("[data-field='requirements.certifications']", "requirements.certifications");
+    bindField("[data-field='avgResponseTime']", "avgResponseTime");
+    bindField("[data-field='assessmentNote']", "assessmentNote");
+    bindField("[data-field='salary']", "salary");
+    bindField("[data-field='salaryBenefits.freshGradSalary']", "salaryBenefits.freshGradSalary");
+    bindField("[data-field='salaryBenefits.internshipAllowance']", "salaryBenefits.internshipAllowance");
+    bindField("[data-field='salaryBenefits.bonus']", "salaryBenefits.bonus");
+    bindField("[data-field='salaryBenefits.medical']", "salaryBenefits.medical");
+    bindField("[data-field='salaryBenefits.flexibleWork']", "salaryBenefits.flexibleWork");
+    bindField("[data-field='salaryBenefits.training']", "salaryBenefits.training");
+    bindField("[data-field='salaryBenefits.leave']", "salaryBenefits.leave");
+    bindField("[data-field='careerGrowth.trainingQuality']", "careerGrowth.trainingQuality");
+    bindField("[data-field='careerGrowth.promotionPath']", "careerGrowth.promotionPath");
+    bindField("[data-field='careerGrowth.graduateProgram']", "careerGrowth.graduateProgram");
+    bindField("[data-field='careerGrowth.mentorship']", "careerGrowth.mentorship");
+    bindField("[data-field='careerGrowth.internalTransfer']", "careerGrowth.internalTransfer");
+    bindField("[data-field='careerGrowth.learningOpportunities']", "careerGrowth.learningOpportunities");
+    bindField("[data-field='workCulture.pace']", "workCulture.pace");
+    bindField("[data-field='workCulture.teamStyle']", "workCulture.teamStyle");
+    bindField("[data-field='workCulture.workLifeBalance']", "workCulture.workLifeBalance");
+    bindField("[data-field='workCulture.collaboration']", "workCulture.collaboration");
+    bindTagField("commonSkills");
+    bindTagField("techSkills");
+    bindHiringSteps();
+
+    qs("[data-company-edit-nav]", root)?.addEventListener("click", event => {
+      const link = event.target.closest("[data-jump]");
+      if (!link) return;
+      event.preventDefault();
+      qs(`#${link.dataset.jump}`, root)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    qs("[data-company-edit-cancel]", root)?.addEventListener("click", () => {
+      if (JSON.stringify(draft) !== savedSnapshot) {
+        if (!confirm("You have unsaved changes. Leave without saving?")) return;
+      }
+      employerNavigateTo("company");
+    });
+
+    qs("[data-company-save-draft]", root)?.addEventListener("click", () => {
+      persistDraft();
+      savedSnapshot = JSON.stringify(draft);
+      showToast("Draft saved.");
+    });
+    qs("[data-company-preview]", root)?.addEventListener("click", () => { qs("[data-company-preview-modal]", root).hidden = false; });
+    qs("[data-company-preview-close]", root)?.addEventListener("click", () => { qs("[data-company-preview-modal]", root).hidden = true; });
+    qs("[data-company-publish]", root)?.addEventListener("click", commitPublish);
+  }
+
+  if (!seedState.employerCompanyDraft) {
+    seedState.employerCompanyDraft = draft;
+    writeState(seedState);
   }
 
   draw();
