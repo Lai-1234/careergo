@@ -1388,14 +1388,14 @@ function workspaceTopNav() {
   if (!isEmployer) {
     const workspaceLinks = [
       ["dashboard", "Today", "dashboard.html"],
-      ["jobs", "Discover", "jobs.html"],
+      ["discover", "Discover", "discover.html"],
       ["grow", "Grow", "grow.html"],
       ["market", "Worth", "market.html"],
       ["autopilot", "Pipeline", "autopilot.html"],
       ["posts", "Feed", "posts.html"]
     ];
     const isWorkspaceTabActive = key => {
-      if (key === "jobs") return ["jobs", "companies", "universities"].includes(page);
+      if (key === "discover") return page === "discover";
       if (key === "grow") return page === "grow";
       if (key === "posts") return ["posts", "saved"].includes(page);
       return page === key;
@@ -1990,10 +1990,12 @@ function ensureWorkspaceNavbarStyles() {
       }
     }
 
-    html body:is([data-page="grow"], [data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main > .workspace-page-container,
+    html body:is([data-page="grow"], [data-page="dashboard"], [data-page="discover"], [data-page="market"], [data-page="autopilot"]) main > .workspace-page-container,
     html body[data-page="dashboard"] main > .container.os-layout.workspace-page-container,
     html body[data-page="market"]:has(.cg-worth) main > .container.os-layout.workspace-page-container,
     html body[data-page="autopilot"]:has(.cg-pipeline) main > .container.os-layout.workspace-page-container,
+    html body[data-page="discover"] main.workspace-page-container[data-jobs-page],
+    html body[data-page="discover"] main[data-jobs-page] > .workspace-page-container,
     html body[data-page="jobs"] main.workspace-page-container[data-jobs-page],
     html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container,
     html body[data-page="jobs"] main[data-jobs-page] > .page-hero > .container,
@@ -2006,10 +2008,12 @@ function ensureWorkspaceNavbarStyles() {
     }
 
     @media (max-width: 1180px) {
-      html body:is([data-page="grow"], [data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main > .workspace-page-container,
+      html body:is([data-page="grow"], [data-page="dashboard"], [data-page="discover"], [data-page="market"], [data-page="autopilot"]) main > .workspace-page-container,
       html body[data-page="dashboard"] main > .container.os-layout.workspace-page-container,
       html body[data-page="market"]:has(.cg-worth) main > .container.os-layout.workspace-page-container,
       html body[data-page="autopilot"]:has(.cg-pipeline) main > .container.os-layout.workspace-page-container,
+      html body[data-page="discover"] main.workspace-page-container[data-jobs-page],
+      html body[data-page="discover"] main[data-jobs-page] > .workspace-page-container,
       html body[data-page="jobs"] main.workspace-page-container[data-jobs-page],
       html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container,
       html body[data-page="jobs"] main[data-jobs-page] > .page-hero > .container,
@@ -3200,6 +3204,7 @@ function renderJobsPage() {
   const root = qs("[data-jobs-page]");
   if (!root) return;
   let state = readState();
+  const isDiscoverPage = document.body.dataset.page === "discover";
   if (state.session.loggedIn && state.session.role === "employer") {
     root.innerHTML = `
       <section class="container section">
@@ -3214,8 +3219,8 @@ function renderJobsPage() {
     createIcons();
     return;
   }
-  if (state.session.loggedIn && needsOnboarding(root)) return;
-  if (state.session.loggedIn) {
+  if (state.session.loggedIn && isDiscoverPage && needsOnboarding(root)) return;
+  if (isDiscoverPage) {
     const topPick = DATA.jobs.find(job => job.id === "job-ai-product") || DATA.jobs[0];
     const marketPulse = [
       ["In your market", "Hiring +34%", "AI Product roles", "RM 145k / year", "67% remote-friendly", "312 new openings", "teal"],
@@ -3430,7 +3435,7 @@ function renderJobsPage() {
     createIcons();
     return;
   }
-  if (state.session.loggedIn) {
+  if (state.session.loggedIn && document.body.dataset.page === "workspace-jobs") {
     const topPick = DATA.jobs.find(job => job.id === "job-ai-product") || DATA.jobs[0];
     const roleDirections = [
       ["AI Product Manager", "One step above your current level", "91% match", "RM 145k / yr", "+34%", "High", "Medium", "Common", "91%", "Your SQL + design background is exactly what AI product teams in KL are hiring for."],
@@ -3670,6 +3675,7 @@ function renderJobsPage() {
     `;
     createIcons();
     initSidebarToggle();
+    return;
   }
   if (!state.session.loggedIn) {
     const layout = qs(".jobs-page-layout", root);
@@ -8211,7 +8217,7 @@ function renderPosts() {
         ].map(([key, label, ic]) => `<a class="${activeTab === key || (key === "for-you" && !activeTrend && activeTab === "for-you") ? "active" : ""}" href="#${key}" data-feed-tab-link>${icon(ic)} <span>${label}</span></a>`).join("")}
         <article class="cg-feed-left-note">
           <strong>${icon("compass")} Looking for opportunities?</strong>
-          <p>Companies, universities, and roles now live in <a href="jobs.html">Discover</a>. Saved items are in your Profile.</p>
+          <p>Companies, universities, and roles now live in <a href="discover.html">Discover</a>. Saved items are in your Profile.</p>
         </article>
       </aside>
       <main class="cg-feed-main">

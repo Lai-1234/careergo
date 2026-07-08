@@ -4369,7 +4369,7 @@ html body[data-page="settings"] :is(input, textarea, select) {
 }
 
 /* Discover page rebuilt from the provided reference screenshots. */
-body[data-page="jobs"]:has(.cg-discover) main[data-jobs-page] {
+body[data-page="discover"]:has(.cg-discover) main[data-jobs-page] {
   width: min(1460px, calc(100% - 76px)) !important;
   margin: 0 auto !important;
 }
@@ -5056,7 +5056,7 @@ body[data-page="jobs"]:has(.cg-discover) main[data-jobs-page] {
 }
 
 @media (max-width: 720px) {
-  body[data-page="jobs"]:has(.cg-discover) main[data-jobs-page] {
+  body[data-page="discover"]:has(.cg-discover) main[data-jobs-page] {
     width: min(100% - 28px, 1460px) !important;
   }
 
@@ -5097,20 +5097,20 @@ body[data-page="jobs"]:has(.cg-discover) main[data-jobs-page] {
 }
 
 /* Discover latest visual delta: hub copy, compact featured cards, and three-card sections. */
-html body[data-page="jobs"] .cg-discover-v2 {
+html body[data-page="discover"] .cg-discover-v2 {
   gap: 76px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-hero h1 {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero h1 {
   max-width: 760px !important;
   font-size: clamp(58px, 6vw, 82px) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-hero > p:not(.cg-discover-network-note) {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero > p:not(.cg-discover-network-note) {
   max-width: 720px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-network-note {
+html body[data-page="discover"] .cg-discover-network-note {
   margin: -12px 0 0 !important;
   color: #53635d !important;
   -webkit-text-fill-color: #53635d !important;
@@ -5118,7 +5118,7 @@ html body[data-page="jobs"] .cg-discover-network-note {
   font-weight: 700 !important;
 }
 
-html body[data-page="jobs"] .cg-search-chip {
+html body[data-page="discover"] .cg-search-chip {
   min-height: 32px !important;
   padding: 0 12px !important;
   color: #68756f !important;
@@ -5128,18 +5128,18 @@ html body[data-page="jobs"] .cg-search-chip {
   background: rgba(255, 255, 255, 0.84) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-section-head {
+html body[data-page="discover"] .cg-discover-section-head {
   display: flex !important;
   align-items: end !important;
   justify-content: space-between !important;
   gap: 28px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-section-head .cg-section-kicker {
+html body[data-page="discover"] .cg-discover-section-head .cg-section-kicker {
   margin-bottom: 14px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-section-head h2 {
+html body[data-page="discover"] .cg-discover-section-head h2 {
   max-width: 980px !important;
   margin: 0 !important;
   color: var(--cg-shot-ink) !important;
@@ -5151,7 +5151,7 @@ html body[data-page="jobs"] .cg-discover-section-head h2 {
   letter-spacing: -0.035em !important;
 }
 
-html body[data-page="jobs"] .cg-discover-link-btn {
+html body[data-page="discover"] .cg-discover-link-btn {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -5170,11 +5170,11 @@ html body[data-page="jobs"] .cg-discover-link-btn {
   white-space: nowrap !important;
 }
 
-html body[data-page="jobs"] .cg-market-card {
+html body[data-page="discover"] .cg-market-card {
   position: relative !important;
 }
 
-html body[data-page="jobs"] .cg-market-card > a {
+html body[data-page="discover"] .cg-market-card > a {
   position: absolute !important;
   top: 92px !important;
   right: 24px !important;
@@ -5182,19 +5182,19 @@ html body[data-page="jobs"] .cg-market-card > a {
   -webkit-text-fill-color: #40514a !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-grid,
-html body[data-page="jobs"] .cg-program-card-grid {
+html body[data-page="discover"] .cg-featured-org-grid,
+html body[data-page="discover"] .cg-program-card-grid {
   display: grid !important;
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   gap: 18px !important;
 }
 
-html body[data-page="jobs"] .cg-program-card-grid {
+html body[data-page="discover"] .cg-program-card-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-card,
-html body[data-page="jobs"] .cg-program-card {
+html body[data-page="discover"] .cg-featured-org-card,
+html body[data-page="discover"] .cg-program-card {
   min-height: 150px !important;
   padding: 22px !important;
   border: 1px solid rgba(14, 44, 37, 0.1) !important;
@@ -5203,24 +5203,24 @@ html body[data-page="jobs"] .cg-program-card {
   box-shadow: 0 18px 44px rgba(35, 29, 18, 0.055) !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-card {
+html body[data-page="discover"] .cg-featured-org-card {
   display: grid !important;
   gap: 14px !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-card header,
-html body[data-page="jobs"] .cg-program-card header {
+html body[data-page="discover"] .cg-featured-org-card header,
+html body[data-page="discover"] .cg-program-card header {
   display: flex !important;
   align-items: flex-start !important;
   justify-content: space-between !important;
   gap: 14px !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-card header {
+html body[data-page="discover"] .cg-featured-org-card header {
   justify-content: flex-start !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-card header > span {
+html body[data-page="discover"] .cg-featured-org-card header > span {
   display: grid !important;
   place-items: center !important;
   flex: 0 0 auto !important;
@@ -5232,8 +5232,8 @@ html body[data-page="jobs"] .cg-featured-org-card header > span {
   font-weight: 850 !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-card h3,
-html body[data-page="jobs"] .cg-program-card h3 {
+html body[data-page="discover"] .cg-featured-org-card h3,
+html body[data-page="discover"] .cg-program-card h3 {
   color: var(--cg-shot-ink) !important;
   -webkit-text-fill-color: var(--cg-shot-ink) !important;
   font-family: var(--cg-shot-sans) !important;
@@ -5243,15 +5243,15 @@ html body[data-page="jobs"] .cg-program-card h3 {
   line-height: 1.2 !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-card p,
-html body[data-page="jobs"] .cg-program-card p {
+html body[data-page="discover"] .cg-featured-org-card p,
+html body[data-page="discover"] .cg-program-card p {
   margin: 3px 0 0 !important;
   font-size: 13px !important;
   font-weight: 650 !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-card b,
-html body[data-page="jobs"] .cg-program-card b {
+html body[data-page="discover"] .cg-featured-org-card b,
+html body[data-page="discover"] .cg-program-card b {
   display: inline-flex !important;
   align-items: center !important;
   width: fit-content !important;
@@ -5265,15 +5265,15 @@ html body[data-page="jobs"] .cg-program-card b {
   font-weight: 800 !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-card strong {
+html body[data-page="discover"] .cg-featured-org-card strong {
   color: #33453f !important;
   -webkit-text-fill-color: #33453f !important;
   font-size: 14px !important;
   font-weight: 750 !important;
 }
 
-html body[data-page="jobs"] .cg-featured-org-card footer,
-html body[data-page="jobs"] .cg-program-card footer {
+html body[data-page="discover"] .cg-featured-org-card footer,
+html body[data-page="discover"] .cg-program-card footer {
   margin-top: 2px !important;
   padding-top: 14px !important;
   border-top: 1px solid rgba(14, 44, 37, 0.1) !important;
@@ -5283,26 +5283,26 @@ html body[data-page="jobs"] .cg-program-card footer {
   font-weight: 650 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-grid {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card {
   min-height: 250px !important;
   padding: 28px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card h3 {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card h3 {
   max-width: 360px !important;
   font-size: 27px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card dl {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card dl {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 20px !important;
 }
 
-html body[data-page="jobs"] .cg-program-card dl {
+html body[data-page="discover"] .cg-program-card dl {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   gap: 12px !important;
@@ -5312,7 +5312,7 @@ html body[data-page="jobs"] .cg-program-card dl {
   border-bottom: 1px solid rgba(14, 44, 37, 0.1) !important;
 }
 
-html body[data-page="jobs"] .cg-program-card dd {
+html body[data-page="discover"] .cg-program-card dd {
   margin: 0 !important;
   color: #40514a !important;
   -webkit-text-fill-color: #40514a !important;
@@ -5320,33 +5320,33 @@ html body[data-page="jobs"] .cg-program-card dd {
   font-weight: 700 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-grid {
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card {
   min-height: 250px !important;
 }
 
 @media (max-width: 1180px) {
-  html body[data-page="jobs"] .cg-featured-org-grid,
-  html body[data-page="jobs"] .cg-program-card-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-direction-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-grid {
+  html body[data-page="discover"] .cg-featured-org-grid,
+  html body[data-page="discover"] .cg-program-card-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-direction-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-mentor-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
 @media (max-width: 720px) {
-  html body[data-page="jobs"] .cg-discover-section-head {
+  html body[data-page="discover"] .cg-discover-section-head {
     align-items: start !important;
     flex-direction: column !important;
   }
 
-  html body[data-page="jobs"] .cg-featured-org-grid,
-  html body[data-page="jobs"] .cg-program-card-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-direction-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-grid {
+  html body[data-page="discover"] .cg-featured-org-grid,
+  html body[data-page="discover"] .cg-program-card-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-direction-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-mentor-grid {
     grid-template-columns: 1fr !important;
   }
 }
@@ -10807,7 +10807,7 @@ html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], 
 }
 
 html body[data-page="dashboard"] .cg-dashboard,
-html body[data-page="jobs"] .cg-discover-v2,
+html body[data-page="discover"] .cg-discover-v2,
 html body[data-page="market"] .cg-worth,
 html body[data-page="autopilot"] .cg-pipeline {
   width: 100% !important;
@@ -12392,27 +12392,27 @@ html body[data-page="edit-career-data"] .cg-edit-savebar div {
 }
 
 /* Discover final rebuild from the 8.30 PM reference set. */
-html body[data-page="jobs"]:has(.cg-discover-v2) {
+html body[data-page="discover"]:has(.cg-discover-v2) {
   background:
     radial-gradient(circle at 52% -6%, rgba(205, 220, 208, 0.28), transparent 30rem),
     linear-gradient(180deg, #f8f4eb 0%, #f6f1e7 100%) !important;
   color: #0b3b33 !important;
 }
 
-html body[data-page="jobs"]:has(.cg-discover-v2) main[data-jobs-page] {
+html body[data-page="discover"]:has(.cg-discover-v2) main[data-jobs-page] {
   width: min(1460px, calc(100% - 76px)) !important;
   max-width: 1460px !important;
   margin: 0 auto !important;
   padding: 0 0 84px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 {
+html body[data-page="discover"] .cg-discover-v2 {
   display: grid !important;
   gap: 76px !important;
   padding: 58px 0 0 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-hero {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero {
   display: grid !important;
   gap: 24px !important;
   margin: 0 !important;
@@ -12422,14 +12422,14 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-hero {
   box-shadow: none !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-kicker {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-kicker {
   display: flex !important;
   align-items: center !important;
   gap: 14px !important;
   margin: 0 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-kicker span {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-kicker span {
   min-height: 29px !important;
   padding: 0 13px !important;
   border: 1px solid rgba(14, 44, 37, 0.12) !important;
@@ -12443,7 +12443,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-kicker span {
   text-transform: uppercase !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-kicker small {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-kicker small {
   display: inline-flex !important;
   align-items: center !important;
   gap: 7px !important;
@@ -12454,7 +12454,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-kicker small {
   letter-spacing: 0 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-hero h1 {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero h1 {
   max-width: 760px !important;
   margin: 0 !important;
   color: #07382f !important;
@@ -12466,14 +12466,14 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-hero h1 {
   letter-spacing: 0 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-hero h1 em {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero h1 em {
   color: #0b7a72 !important;
   -webkit-text-fill-color: #0b7a72 !important;
   font-style: italic !important;
   font-weight: 500 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-hero > p:not(.cg-discover-network-note) {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero > p:not(.cg-discover-network-note) {
   max-width: 720px !important;
   margin: 0 !important;
   color: #53635d !important;
@@ -12483,7 +12483,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-hero > p:not(.cg-discov
   line-height: 1.55 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-search {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-search {
   display: grid !important;
   grid-template-columns: 22px minmax(0, 1fr) auto auto auto !important;
   align-items: center !important;
@@ -12498,7 +12498,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-search {
   box-shadow: 0 14px 34px rgba(31, 42, 34, 0.08) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-search input {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-search input {
   min-height: 46px !important;
   padding: 0 !important;
   border: 0 !important;
@@ -12510,7 +12510,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-search input {
   font-weight: 650 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-search button {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-search button {
   min-height: 42px !important;
   padding: 0 17px !important;
   border: 1px solid rgba(14, 44, 37, 0.1) !important;
@@ -12523,7 +12523,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-search button {
   font-weight: 850 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-search button[type="submit"] {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-search button[type="submit"] {
   min-width: 126px !important;
   color: #fffaf2 !important;
   -webkit-text-fill-color: #fffaf2 !important;
@@ -12532,7 +12532,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-search button[type="sub
   box-shadow: 0 16px 34px rgba(7, 56, 47, 0.18) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-network-note {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-network-note {
   margin: -8px 0 0 !important;
   color: #53635d !important;
   -webkit-text-fill-color: #53635d !important;
@@ -12540,14 +12540,14 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-network-note {
   font-weight: 750 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-question-grid {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-question-grid {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: 16px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-question-grid > .cg-section-kicker,
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-section > .cg-section-kicker {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-question-grid > .cg-section-kicker,
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-section > .cg-section-kicker {
   grid-column: 1 / -1 !important;
   margin: 0 0 8px !important;
   color: #68776f !important;
@@ -12558,7 +12558,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-section > .cg-section-k
   text-transform: uppercase !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-question-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-question-card {
   position: relative !important;
   display: grid !important;
   grid-template-columns: 54px minmax(0, 1fr) 20px !important;
@@ -12575,7 +12575,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-question-card {
   text-decoration: none !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-question-card > span {
+html body[data-page="discover"] .cg-discover-v2 .cg-question-card > span {
   grid-area: icon !important;
   display: grid !important;
   place-items: center !important;
@@ -12586,7 +12586,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-question-card > span {
   color: #0c766f !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-question-card strong {
+html body[data-page="discover"] .cg-discover-v2 .cg-question-card strong {
   grid-area: title !important;
   color: #213f38 !important;
   -webkit-text-fill-color: #213f38 !important;
@@ -12594,7 +12594,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-question-card strong {
   font-weight: 850 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-question-card small {
+html body[data-page="discover"] .cg-discover-v2 .cg-question-card small {
   grid-area: sub !important;
   color: #6b7a73 !important;
   -webkit-text-fill-color: #6b7a73 !important;
@@ -12602,13 +12602,13 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-question-card small {
   font-weight: 700 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-question-card i {
+html body[data-page="discover"] .cg-discover-v2 .cg-question-card i {
   grid-area: arrow !important;
   color: #40524b !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-feature,
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-section {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-feature,
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-section {
   display: grid !important;
   gap: 28px !important;
   margin: 0 !important;
@@ -12618,8 +12618,8 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-section {
   box-shadow: none !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 :is(.cg-discover-feature > h2, .cg-discover-section > h2),
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-section-head h2 {
+html body[data-page="discover"] .cg-discover-v2 :is(.cg-discover-feature > h2, .cg-discover-section > h2),
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-section-head h2 {
   max-width: 1050px !important;
   margin: 0 !important;
   color: #07382f !important;
@@ -12631,14 +12631,14 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-section-head h2 {
   letter-spacing: 0 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-section-head {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-section-head {
   display: flex !important;
   justify-content: space-between !important;
   align-items: end !important;
   gap: 28px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-section-head .cg-section-kicker {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-section-head .cg-section-kicker {
   margin-bottom: 14px !important;
   color: #68776f !important;
   -webkit-text-fill-color: #68776f !important;
@@ -12648,7 +12648,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-section-head .cg-sectio
   text-transform: uppercase !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-discover-link-btn {
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-link-btn {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -12667,7 +12667,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-discover-link-btn {
   white-space: nowrap !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-card {
   display: grid !important;
   grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.85fr) !important;
   gap: 36px !important;
@@ -12680,19 +12680,19 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-card {
   box-shadow: 0 24px 60px rgba(31, 42, 34, 0.07) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-pill-row {
+html body[data-page="discover"] .cg-discover-v2 .cg-pill-row {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 10px !important;
   align-items: center !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-pill-row span,
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side b,
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side em,
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card > span,
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card b,
-html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-card b {
+html body[data-page="discover"] .cg-discover-v2 .cg-pill-row span,
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side b,
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side em,
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card > span,
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card b,
+html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-card b {
   display: inline-flex !important;
   align-items: center !important;
   width: fit-content !important;
@@ -12707,13 +12707,13 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-card b {
   font-style: normal !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-pill-row span.dark {
+html body[data-page="discover"] .cg-discover-v2 .cg-pill-row span.dark {
   color: #fffaf2 !important;
   -webkit-text-fill-color: #fffaf2 !important;
   background: #083d34 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-main h3 {
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-main h3 {
   margin: 30px 0 14px !important;
   color: #07382f !important;
   -webkit-text-fill-color: #07382f !important;
@@ -12724,17 +12724,17 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-main h3 {
   letter-spacing: 0 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-role-line,
-html body[data-page="jobs"] .cg-discover-v2 .cg-salary,
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side small,
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side span {
+html body[data-page="discover"] .cg-discover-v2 .cg-role-line,
+html body[data-page="discover"] .cg-discover-v2 .cg-salary,
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side small,
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side span {
   color: #53635d !important;
   -webkit-text-fill-color: #53635d !important;
   font-size: 15px !important;
   font-weight: 700 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-salary {
+html body[data-page="discover"] .cg-discover-v2 .cg-salary {
   margin: 24px 0 !important;
   color: #07382f !important;
   -webkit-text-fill-color: #07382f !important;
@@ -12743,7 +12743,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-salary {
   font-weight: 650 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-salary span {
+html body[data-page="discover"] .cg-discover-v2 .cg-salary span {
   margin-right: 12px !important;
   color: #68776f !important;
   -webkit-text-fill-color: #68776f !important;
@@ -12754,21 +12754,21 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-salary span {
   text-transform: uppercase !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-why-card,
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side > div {
+html body[data-page="discover"] .cg-discover-v2 .cg-why-card,
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side > div {
   padding: 20px !important;
   border: 1px solid rgba(14, 44, 37, 0.1) !important;
   border-radius: 18px !important;
   background: rgba(250, 248, 242, 0.78) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-why-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-why-card {
   display: grid !important;
   gap: 11px !important;
   margin-top: 24px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-why-card span {
+html body[data-page="discover"] .cg-discover-v2 .cg-why-card span {
   color: #68776f !important;
   -webkit-text-fill-color: #68776f !important;
   font-size: 12px !important;
@@ -12777,7 +12777,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-why-card span {
   text-transform: uppercase !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-why-card p {
+html body[data-page="discover"] .cg-discover-v2 .cg-why-card p {
   margin: 0 !important;
   color: #253f38 !important;
   -webkit-text-fill-color: #253f38 !important;
@@ -12785,14 +12785,14 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-why-card p {
   font-weight: 700 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-action-row {
+html body[data-page="discover"] .cg-discover-v2 .cg-action-row {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 12px !important;
   margin-top: 28px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-action-row .btn {
+html body[data-page="discover"] .cg-discover-v2 .cg-action-row .btn {
   min-height: 44px !important;
   border-radius: 999px !important;
   padding: 0 19px !important;
@@ -12800,33 +12800,33 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-action-row .btn {
   font-weight: 850 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-action-row .btn-primary {
+html body[data-page="discover"] .cg-discover-v2 .cg-action-row .btn-primary {
   color: #fffaf2 !important;
   -webkit-text-fill-color: #fffaf2 !important;
   background: #083d34 !important;
   border-color: #083d34 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-action-row .btn-ghost {
+html body[data-page="discover"] .cg-discover-v2 .cg-action-row .btn-ghost {
   color: #2a443d !important;
   -webkit-text-fill-color: #2a443d !important;
   background: rgba(255, 255, 255, 0.8) !important;
   border-color: rgba(14, 44, 37, 0.1) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side {
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 14px !important;
   align-content: start !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side > div:nth-child(1),
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side > div:nth-child(2) {
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side > div:nth-child(1),
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side > div:nth-child(2) {
   grid-column: 1 / -1 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side strong {
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side strong {
   display: block !important;
   color: #07382f !important;
   -webkit-text-fill-color: #07382f !important;
@@ -12835,55 +12835,55 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side strong {
   font-weight: 650 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side p {
+html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side p {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 8px !important;
   margin: 10px 0 14px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-grid,
-html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-grid,
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-grid {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-grid,
+html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-grid,
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-grid {
   display: grid !important;
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   gap: 18px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-grid,
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card-grid {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-grid,
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card-grid {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: 18px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-card,
-html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card,
-html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-card,
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card,
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card,
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-card,
+html body[data-page="discover"] .cg-discover-v2 .cg-collection-card,
+html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-card,
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card,
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card,
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card {
   border: 1px solid rgba(14, 44, 37, 0.12) !important;
   border-radius: 20px !important;
   background: rgba(255, 255, 255, 0.8) !important;
   box-shadow: 0 18px 44px rgba(31, 42, 34, 0.055) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-card {
   position: relative !important;
   min-height: 274px !important;
   padding: 22px !important;
   overflow: hidden !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-card > div:first-child {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-card > div:first-child {
   display: flex !important;
   align-items: start !important;
   justify-content: space-between !important;
   gap: 12px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-card > div:first-child span {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-card > div:first-child span {
   min-height: 28px !important;
   padding: 0 12px !important;
   border-radius: 999px !important;
@@ -12894,7 +12894,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-market-card > div:first-child sp
   font-weight: 850 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-card h3 {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-card h3 {
   margin: 26px 34px 18px 0 !important;
   color: #07382f !important;
   -webkit-text-fill-color: #07382f !important;
@@ -12904,14 +12904,14 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-market-card h3 {
   line-height: 1.08 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-card > a {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-card > a {
   position: absolute !important;
   top: 88px !important;
   right: 24px !important;
   color: #53635d !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-bars {
+html body[data-page="discover"] .cg-discover-v2 .cg-bars {
   display: flex !important;
   align-items: end !important;
   gap: 7px !important;
@@ -12919,35 +12919,35 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-bars {
   margin: 0 0 16px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-bars i {
+html body[data-page="discover"] .cg-discover-v2 .cg-bars i {
   flex: 1 1 0 !important;
   min-width: 8px !important;
   border-radius: 7px 7px 3px 3px !important;
   background: linear-gradient(180deg, #0b7a72 0%, #b9d9d4 100%) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-card.tone-blue .cg-bars i {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-card.tone-blue .cg-bars i {
   background: linear-gradient(180deg, #367da1 0%, #cae4ee 100%) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-card.tone-gold .cg-bars i {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-card.tone-gold .cg-bars i {
   background: linear-gradient(180deg, #b5892e 0%, #eadfbf 100%) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-card.tone-rose .cg-bars i {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-card.tone-rose .cg-bars i {
   background: linear-gradient(180deg, #b77c6b 0%, #ecd5cf 100%) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-market-card dl,
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card dl,
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card dl {
+html body[data-page="discover"] .cg-discover-v2 .cg-market-card dl,
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card dl,
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card dl {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
   gap: 9px 16px !important;
   margin: 0 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 :is(dt, dd) {
+html body[data-page="discover"] .cg-discover-v2 :is(dt, dd) {
   margin: 0 !important;
   color: #465c55 !important;
   -webkit-text-fill-color: #465c55 !important;
@@ -12955,19 +12955,19 @@ html body[data-page="jobs"] .cg-discover-v2 :is(dt, dd) {
   font-weight: 750 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 dd {
+html body[data-page="discover"] .cg-discover-v2 dd {
   color: #143e36 !important;
   -webkit-text-fill-color: #143e36 !important;
   font-weight: 850 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-collection-grid {
+html body[data-page="discover"] .cg-discover-v2 .cg-collection-grid {
   display: grid !important;
   grid-template-columns: 2fr 1fr !important;
   gap: 18px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-collection-card {
   position: relative !important;
   display: grid !important;
   gap: 22px !important;
@@ -12976,11 +12976,11 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card {
   border-top: 6px solid #557f77 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card.small {
+html body[data-page="discover"] .cg-discover-v2 .cg-collection-card.small {
   max-width: 470px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card span {
+html body[data-page="discover"] .cg-discover-v2 .cg-collection-card span {
   color: #68776f !important;
   -webkit-text-fill-color: #68776f !important;
   font-size: 13px !important;
@@ -12989,14 +12989,14 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card span {
   text-transform: uppercase !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card i {
+html body[data-page="discover"] .cg-discover-v2 .cg-collection-card i {
   position: absolute !important;
   top: 34px !important;
   right: 34px !important;
   color: #40524b !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card h3 {
+html body[data-page="discover"] .cg-discover-v2 .cg-collection-card h3 {
   max-width: 780px !important;
   margin: 0 !important;
   color: #07382f !important;
@@ -13007,11 +13007,11 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card h3 {
   line-height: 1.04 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card:not(.large) h3 {
+html body[data-page="discover"] .cg-discover-v2 .cg-collection-card:not(.large) h3 {
   font-size: 31px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card p {
+html body[data-page="discover"] .cg-discover-v2 .cg-collection-card p {
   max-width: 820px !important;
   margin: 0 !important;
   color: #53635d !important;
@@ -13021,7 +13021,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card p {
   line-height: 1.58 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card footer {
+html body[data-page="discover"] .cg-discover-v2 .cg-collection-card footer {
   padding-top: 17px !important;
   border-top: 1px solid rgba(14, 44, 37, 0.1) !important;
   color: #53635d !important;
@@ -13030,22 +13030,22 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-collection-card footer {
   font-weight: 750 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-card,
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card,
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-card,
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card,
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card {
   min-height: 150px !important;
   padding: 22px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-card header,
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card header {
+html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-card header,
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card header {
   display: flex !important;
   align-items: center !important;
   gap: 14px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-card header > span,
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card header > span {
+html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-card header > span,
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card header > span {
   display: grid !important;
   place-items: center !important;
   flex: 0 0 auto !important;
@@ -13060,9 +13060,9 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card header > span {
   font-weight: 650 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-card h3,
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card h3,
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card h3 {
+html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-card h3,
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card h3,
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card h3 {
   margin: 0 !important;
   color: #183f37 !important;
   -webkit-text-fill-color: #183f37 !important;
@@ -13072,9 +13072,9 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card h3 {
   line-height: 1.2 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-card p,
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card p,
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card p {
+html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-card p,
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card p,
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card p {
   margin: 4px 0 0 !important;
   color: #53635d !important;
   -webkit-text-fill-color: #53635d !important;
@@ -13083,10 +13083,10 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card p {
   line-height: 1.45 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-card footer,
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card footer,
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card footer,
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card footer {
+html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-card footer,
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card footer,
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card footer,
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card footer {
   margin-top: 12px !important;
   padding-top: 14px !important;
   border-top: 1px solid rgba(14, 44, 37, 0.1) !important;
@@ -13097,12 +13097,12 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card footer {
   line-height: 1.45 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-card {
   display: grid !important;
   gap: 13px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card {
   position: relative !important;
   display: grid !important;
   gap: 17px !important;
@@ -13110,13 +13110,13 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card {
   padding: 28px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card > span {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card > span {
   position: absolute !important;
   top: 28px !important;
   right: 28px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card h3 {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card h3 {
   max-width: 360px !important;
   margin: 0 !important;
   padding-right: 92px !important;
@@ -13128,7 +13128,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card h3 {
   line-height: 1.08 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card > p {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card > p {
   margin: 0 !important;
   color: #53635d !important;
   -webkit-text-fill-color: #53635d !important;
@@ -13136,12 +13136,12 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card > p {
   font-weight: 700 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card dl {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card dl {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   padding: 10px 0 0 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card dt {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card dt {
   color: #68776f !important;
   -webkit-text-fill-color: #68776f !important;
   font-size: 12px !important;
@@ -13150,7 +13150,7 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card dt {
   text-transform: uppercase !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card dd {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card dd {
   display: grid !important;
   gap: 3px !important;
   color: #07382f !important;
@@ -13159,39 +13159,39 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card dd {
   font-weight: 850 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-direction-card dd small {
+html body[data-page="discover"] .cg-discover-v2 .cg-direction-card dd small {
   color: #6b7a73 !important;
   -webkit-text-fill-color: #6b7a73 !important;
   font-size: 12px !important;
   font-weight: 700 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card {
   display: grid !important;
   gap: 14px !important;
   min-height: 170px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card header {
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card header {
   display: flex !important;
   align-items: start !important;
   justify-content: space-between !important;
   gap: 14px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-program-card dl {
+html body[data-page="discover"] .cg-discover-v2 .cg-program-card dl {
   padding: 14px 0 !important;
   border-top: 1px solid rgba(14, 44, 37, 0.1) !important;
   border-bottom: 1px solid rgba(14, 44, 37, 0.1) !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card {
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card {
   display: grid !important;
   gap: 16px !important;
   min-height: 250px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card strong {
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card strong {
   color: #183f37 !important;
   -webkit-text-fill-color: #183f37 !important;
   font-size: 16px !important;
@@ -13199,14 +13199,14 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card strong {
   line-height: 1.35 !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card footer {
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card footer {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   gap: 14px !important;
 }
 
-html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card footer a {
+html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card footer a {
   color: #53635d !important;
   -webkit-text-fill-color: #53635d !important;
   font-size: 13px !important;
@@ -13216,55 +13216,55 @@ html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-card footer a {
 }
 
 @media (max-width: 1180px) {
-  html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-card,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-collection-grid {
+  html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-card,
+  html body[data-page="discover"] .cg-discover-v2 .cg-collection-grid {
     grid-template-columns: 1fr !important;
   }
 
-  html body[data-page="jobs"] .cg-discover-v2 .cg-market-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-direction-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-program-card-grid {
+  html body[data-page="discover"] .cg-discover-v2 .cg-market-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-mentor-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-direction-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-program-card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
 @media (max-width: 760px) {
-  html body[data-page="jobs"]:has(.cg-discover-v2) main[data-jobs-page] {
+  html body[data-page="discover"]:has(.cg-discover-v2) main[data-jobs-page] {
     width: min(100% - 32px, 1460px) !important;
   }
 
-  html body[data-page="jobs"] .cg-discover-v2 {
+  html body[data-page="discover"] .cg-discover-v2 {
     gap: 48px !important;
     padding-top: 36px !important;
   }
 
-  html body[data-page="jobs"] .cg-discover-v2 .cg-discover-search,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-discover-section-head {
+  html body[data-page="discover"] .cg-discover-v2 .cg-discover-search,
+  html body[data-page="discover"] .cg-discover-v2 .cg-discover-section-head {
     display: flex !important;
     align-items: stretch !important;
     flex-direction: column !important;
   }
 
-  html body[data-page="jobs"] .cg-discover-v2 .cg-discover-hero h1 {
+  html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero h1 {
     font-size: 48px !important;
   }
 
-  html body[data-page="jobs"] .cg-discover-v2 .cg-discover-question-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-market-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-featured-org-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-mentor-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-direction-grid,
-  html body[data-page="jobs"] .cg-discover-v2 .cg-program-card-grid {
+  html body[data-page="discover"] .cg-discover-v2 .cg-discover-question-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-market-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-featured-org-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-mentor-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-direction-grid,
+  html body[data-page="discover"] .cg-discover-v2 .cg-program-card-grid {
     grid-template-columns: 1fr !important;
   }
 
-  html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-card {
+  html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-card {
     padding: 26px !important;
   }
 
-  html body[data-page="jobs"] .cg-discover-v2 .cg-top-pick-side {
+  html body[data-page="discover"] .cg-discover-v2 .cg-top-pick-side {
     grid-template-columns: 1fr !important;
   }
 }
@@ -17197,21 +17197,21 @@ html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [d
   box-shadow: inset 0 0 0 1px rgba(11, 109, 101, 0.08), 0 10px 22px rgba(7, 56, 47, 0.06) !important;
 }
 
-html body[data-page="jobs"] .cg-top-pick,
+html body[data-page="discover"] .cg-top-pick,
 html body[data-page="profile"] .cg-upcoming-interview,
 html body[data-page="profile"] .cg-move-card {
   border-top-color: #0b6d65 !important;
   box-shadow: 0 22px 56px rgba(7, 56, 47, 0.09) !important;
 }
 
-html body[data-page="jobs"] .cg-market-card.tone-blue,
+html body[data-page="discover"] .cg-market-card.tone-blue,
 html body[data-page="profile"] .cg-company-coaching section.tone-blue {
   background:
     linear-gradient(180deg, rgba(239, 248, 255, 0.92), rgba(255, 255, 255, 0.78)),
     radial-gradient(circle at 100% 0%, rgba(150, 203, 236, 0.28), transparent 180px) !important;
 }
 
-html body[data-page="jobs"] .cg-market-card.tone-gold,
+html body[data-page="discover"] .cg-market-card.tone-gold,
 html body[data-page="profile"] .cg-company-coaching section.tone-gold,
 html body[data-page="market"] .cg-worth-benchmarks .tone-warn {
   background:
@@ -17219,7 +17219,7 @@ html body[data-page="market"] .cg-worth-benchmarks .tone-warn {
     radial-gradient(circle at 100% 0%, var(--cg-card-glow-gold), transparent 180px) !important;
 }
 
-html body[data-page="jobs"] .cg-market-card.tone-rose {
+html body[data-page="discover"] .cg-market-card.tone-rose {
   background:
     linear-gradient(180deg, rgba(255, 242, 237, 0.92), rgba(255, 255, 255, 0.78)),
     radial-gradient(circle at 100% 0%, rgba(226, 166, 110, 0.2), transparent 180px) !important;
@@ -17553,7 +17553,7 @@ html body[data-page="dashboard"] .cg-ask-vera {
 }
 
 /* Final targeted fixes from visual review: Discover, Grow, Worth, Pipeline. */
-html body[data-page="jobs"] .cg-direction-card {
+html body[data-page="discover"] .cg-direction-card {
   display: grid !important;
   gap: 20px !important;
   min-height: 430px !important;
@@ -17562,7 +17562,7 @@ html body[data-page="jobs"] .cg-direction-card {
   overflow: hidden !important;
 }
 
-html body[data-page="jobs"] .cg-direction-card > span {
+html body[data-page="discover"] .cg-direction-card > span {
   position: absolute !important;
   top: 28px !important;
   right: 30px !important;
@@ -17586,14 +17586,14 @@ html body[data-page="jobs"] .cg-direction-card > span {
   text-transform: none !important;
 }
 
-html body[data-page="jobs"] .cg-direction-card h3 {
+html body[data-page="discover"] .cg-direction-card h3 {
   max-width: calc(100% - 132px) !important;
   margin: 0 !important;
   font-size: 33px !important;
   line-height: 1.08 !important;
 }
 
-html body[data-page="jobs"] .cg-direction-card > p {
+html body[data-page="discover"] .cg-direction-card > p {
   margin: -10px 0 8px !important;
   color: #263a34 !important;
   -webkit-text-fill-color: #263a34 !important;
@@ -17601,13 +17601,13 @@ html body[data-page="jobs"] .cg-direction-card > p {
   font-weight: 800 !important;
 }
 
-html body[data-page="jobs"] .cg-direction-card dl {
+html body[data-page="discover"] .cg-direction-card dl {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: 22px 42px !important;
   margin-top: 8px !important;
 }
 
-html body[data-page="jobs"] .cg-direction-card dt {
+html body[data-page="discover"] .cg-direction-card dt {
   color: #68756f !important;
   -webkit-text-fill-color: #68756f !important;
   font-size: 12px !important;
@@ -17615,19 +17615,19 @@ html body[data-page="jobs"] .cg-direction-card dt {
   letter-spacing: 0.16em !important;
 }
 
-html body[data-page="jobs"] .cg-direction-card dd {
+html body[data-page="discover"] .cg-direction-card dd {
   color: #07382f !important;
   -webkit-text-fill-color: #07382f !important;
   font-size: 25px !important;
   font-weight: 900 !important;
 }
 
-html body[data-page="jobs"] .cg-direction-card dd small {
+html body[data-page="discover"] .cg-direction-card dd small {
   color: #68756f !important;
   -webkit-text-fill-color: #68756f !important;
 }
 
-html body[data-page="jobs"] .cg-direction-card footer {
+html body[data-page="discover"] .cg-direction-card footer {
   margin-top: 8px !important;
   padding-top: 20px !important;
   color: #4b5c55 !important;
@@ -17793,7 +17793,7 @@ html body[data-page="autopilot"] .cg-pipeline-kpis article:not(.dark) p {
 }
 
 @media (max-width: 1000px) {
-  html body[data-page="jobs"] .cg-direction-card dl {
+  html body[data-page="discover"] .cg-direction-card dl {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 
@@ -21939,3 +21939,4 @@ html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container {
     width: min(100% - 32px, 1240px) !important;
   }
 }
+
