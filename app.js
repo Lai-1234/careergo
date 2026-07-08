@@ -796,58 +796,162 @@ const DATA = {
   ],
   employerRoles: [
     {
-      id: "er1", title: "Product Design Intern", status: "Active",
-      applicants: 84, qualified: 21, strongFits: 9, talentSupply: "Good", daysOpen: 7, health: "Healthy",
+      id: "er1", title: "Product Design Intern", status: "Open", closeReason: null,
+      applicants: 84, qualified: 21, strongMatches: 9, talentSupply: "Good", daysOpen: 7, health: "Healthy",
+      department: "Design", employmentType: "Internship", reportsTo: "Design Lead",
+      roleSummary: "Support the design team on end-to-end product design work across research, prototyping, and design systems.",
+      responsibilities: ["Conduct user research and usability tests", "Design and prototype product flows in Figma", "Contribute to and maintain the design system"],
+      successLooksLike: "In the first 3 months, this person should have shipped one polished feature prototype and run two usability tests.",
+      mustHaveSkills: ["Figma", "User Research", "Prototyping"], niceToHaveSkills: ["Motion Design", "Design Systems"],
+      minExperience: "No experience required", educationOrCertification: "",
+      salary: { min: 1800, max: 2500, currency: "MYR", period: "Monthly" }, location: "Kuala Lumpur", workMode: "Hybrid",
+      matchThreshold: 70, portfolioRequirement: "Preferred",
       roleIntelligence: {
         talentAvailability: "Good", typicalExperience: "0-1 years", commonSalary: "RM 1.8k - 2.5k",
         commonSkills: ["Figma", "User Research", "Prototyping", "Design Systems"],
-        requestedButLessCommon: ["Motion Design"],
         potentialIssue: "No major mismatch between requirements and the current intern talent pool.",
-        suggestedAdjustment: "Requirements already align well with available candidates."
+        hiringCompetition: "Low", locationContext: "Kuala Lumpur + Remote Malaysia",
+        dataContext: { region: "Malaysia", category: "Product Design (Intern)", confidence: "High" },
+        strengths: ["Salary is aligned with the local intern market.", "Responsibilities are clear and specific.", "Hybrid work increases your available candidate pool."],
+        concerns: [],
+        suggestions: []
       }
     },
     {
-      id: "er2", title: "Junior Data Analyst", status: "Active",
-      applicants: 126, qualified: 34, strongFits: 8, talentSupply: "Strong", daysOpen: 12, health: "Needs attention",
+      id: "er2", title: "Junior Data Analyst", status: "Open", closeReason: null,
+      applicants: 126, qualified: 34, strongMatches: 8, talentSupply: "Strong", daysOpen: 12, health: "Needs attention",
+      department: "Data & Analytics", employmentType: "Full-time", reportsTo: "Analytics Manager",
+      roleSummary: "Own recurring reporting and ad-hoc analysis that helps the business understand what's working.",
+      responsibilities: ["Build and maintain dashboards in Power BI", "Write SQL queries against the marketplace warehouse", "Partner with product and marketing on ad-hoc analysis"],
+      successLooksLike: "In the first 6 months, this person should own the weekly business review dashboard end to end.",
+      mustHaveSkills: ["SQL", "Excel"], niceToHaveSkills: ["Power BI", "Python", "AWS"],
+      minExperience: "3-5 years", educationOrCertification: "",
+      salary: { min: 3800, max: 6000, currency: "MYR", period: "Monthly" }, location: "Kuala Lumpur", workMode: "Hybrid",
+      matchThreshold: 70, portfolioRequirement: "Optional",
       roleIntelligence: {
         talentAvailability: "Strong", typicalExperience: "0-2 years", commonSalary: "RM 3.8k - 6k",
         commonSkills: ["SQL", "Excel", "Power BI", "Python"],
-        requestedButLessCommon: ["AWS", "ML in production"],
-        potentialIssue: "Requiring 3+ years of experience may reduce your available candidate pool by 62%.",
-        suggestedAdjustment: "1-3 years or strong project evidence."
+        potentialIssue: "Requiring 3-5 years of experience may unnecessarily reduce your candidate pool for a junior title.",
+        hiringCompetition: "Medium", locationContext: "Kuala Lumpur + Remote Malaysia",
+        dataContext: { region: "Malaysia", category: "Data Analytics (Junior)", confidence: "High" },
+        strengths: ["Salary is aligned with the local market.", "SQL and Excel as must-haves match what most similar roles require."],
+        concerns: [{ issue: "5+ years of experience may unnecessarily reduce the candidate pool.", why: "Most candidates applying to a Junior Data Analyst title have 0-2 years of experience; a 3-5 year minimum filters most of them out before they can be reviewed." }],
+        suggestions: [{
+          recommendation: "Change minimum experience from 3-5 years to 1-2 years.",
+          pros: ["Larger candidate pool", "Closer to the market norm for this title", "More strong matches"],
+          cons: ["More candidate screening may be required", "Some candidates may need additional onboarding"],
+          expectedEffect: "Larger eligible candidate pool", effectIsEstimated: true, confidence: "Medium",
+          field: "minExperience", suggestedValue: "1-2 years"
+        }]
       }
     },
     {
-      id: "er3", title: "Graduate UX Researcher", status: "Draft",
-      applicants: 47, qualified: 16, strongFits: 5, talentSupply: "Good", daysOpen: 3, health: "Healthy",
+      id: "er3", title: "Graduate UX Researcher", status: "Draft", closeReason: null,
+      applicants: 0, qualified: 0, strongMatches: 0, talentSupply: "Good", daysOpen: 0, health: "Healthy",
+      department: "Design", employmentType: "Graduate programme", reportsTo: "Research Lead",
+      roleSummary: "", responsibilities: [], successLooksLike: "",
+      mustHaveSkills: [], niceToHaveSkills: [], minExperience: "No experience required", educationOrCertification: "",
+      salary: { min: null, max: null, currency: "MYR", period: "Monthly" }, location: "", workMode: "Hybrid",
+      matchThreshold: 70, portfolioRequirement: "Optional",
       roleIntelligence: {
         talentAvailability: "Good", typicalExperience: "0-1 years", commonSalary: "RM 3k - 4.5k",
         commonSkills: ["User Interviews", "Usability Testing", "Figma", "Survey Design"],
-        requestedButLessCommon: ["Quantitative Research"],
         potentialIssue: "Draft not yet published — no applicant data yet.",
-        suggestedAdjustment: "Publish the role to start receiving applicants."
+        hiringCompetition: "Low", locationContext: "Kuala Lumpur + Remote Malaysia",
+        dataContext: { region: "Malaysia", category: "UX Research (Graduate)", confidence: "Medium" },
+        strengths: [], concerns: [], suggestions: []
       }
     },
     {
-      id: "er4", title: "Software Engineer", status: "Active",
-      applicants: 84, qualified: 29, strongFits: 11, talentSupply: "Strong", daysOpen: 7, health: "Healthy",
+      id: "er4", title: "Software Engineer", status: "Open", closeReason: null,
+      applicants: 84, qualified: 29, strongMatches: 11, talentSupply: "Strong", daysOpen: 7, health: "Healthy",
+      department: "Engineering", employmentType: "Full-time", reportsTo: "Engineering Manager",
+      roleSummary: "Build and ship customer-facing features across our web platform, from API to UI.",
+      responsibilities: ["Build features across the React front end and Node.js API", "Write and maintain automated tests", "Participate in code review and technical design discussions"],
+      successLooksLike: "In the first 6 months, this person should have shipped two customer-facing features end to end.",
+      mustHaveSkills: ["React", "Node.js", "SQL"], niceToHaveSkills: ["AWS", "Kubernetes"],
+      minExperience: "1-2 years", educationOrCertification: "",
+      salary: { min: 4500, max: 7000, currency: "MYR", period: "Monthly" }, location: "Kuala Lumpur", workMode: "Hybrid",
+      matchThreshold: 70, portfolioRequirement: "Optional",
       roleIntelligence: {
         talentAvailability: "Strong", typicalExperience: "1-3 years", commonSalary: "RM 4.5k - 7k",
         commonSkills: ["React", "Node.js", "SQL", "AWS"],
-        requestedButLessCommon: ["Kubernetes"],
         potentialIssue: "No major mismatch between requirements and the current talent pool.",
-        suggestedAdjustment: "Requirements already align well with available candidates."
+        hiringCompetition: "Medium", locationContext: "Kuala Lumpur + Remote Malaysia",
+        dataContext: { region: "Malaysia", category: "Software Engineering (Early Career)", confidence: "High" },
+        strengths: ["Salary is aligned with the local market.", "Must-have skills match what most similar roles require.", "Hybrid work increases your available candidate pool."],
+        concerns: [], suggestions: []
       }
     },
     {
-      id: "er5", title: "Backend Engineer", status: "Paused",
-      applicants: 58, qualified: 19, strongFits: 6, talentSupply: "Tight", daysOpen: 21, health: "Needs attention",
+      id: "er5", title: "Backend Engineer", status: "Paused", closeReason: null,
+      applicants: 58, qualified: 19, strongMatches: 6, talentSupply: "Tight", daysOpen: 21, health: "Needs attention",
+      department: "Engineering", employmentType: "Full-time", reportsTo: "Engineering Manager",
+      roleSummary: "Own core backend services powering payments and order processing.",
+      responsibilities: ["Design and build distributed backend services in Java", "Operate Kafka-based event pipelines", "Improve system reliability and on-call practices"],
+      successLooksLike: "In the first 6 months, this person should have shipped one major service and improved system reliability.",
+      mustHaveSkills: ["Java", "SQL", "Microservices"], niceToHaveSkills: ["Kafka", "Site Reliability"],
+      minExperience: "5+ years", educationOrCertification: "",
+      salary: { min: 7000, max: 10000, currency: "MYR", period: "Monthly" }, location: "Kuala Lumpur", workMode: "Hybrid",
+      matchThreshold: 70, portfolioRequirement: "Optional",
       roleIntelligence: {
         talentAvailability: "Tight", typicalExperience: "3-5 years", commonSalary: "RM 7k - 10k",
         commonSkills: ["Java", "Microservices", "SQL", "Kafka"],
-        requestedButLessCommon: ["Kafka at scale", "Site reliability"],
         potentialIssue: "The combination of a 5+ year requirement and Kafka-at-scale evidence is uncommon locally, narrowing supply.",
-        suggestedAdjustment: "Consider 3-5 years with strong distributed-systems evidence instead of a hard 5-year cutoff."
+        hiringCompetition: "High", locationContext: "Kuala Lumpur + Remote Malaysia",
+        dataContext: { region: "Malaysia", category: "Backend Engineering", confidence: "High" },
+        strengths: ["Salary is aligned with the local market for senior backend roles.", "Responsibilities are clear and specific."],
+        concerns: [
+          { issue: "5+ years of experience may unnecessarily reduce the candidate pool.", why: "Most local candidates with distributed-systems experience have 3-5 years; a hard 5-year cutoff excludes many strong applicants before review." },
+          { issue: "Kafka is currently marked as essential, but most similar roles treat it as preferred.", why: "Requiring Kafka-at-scale evidence on top of the experience bar compounds the talent pool reduction." }
+        ],
+        suggestions: [{
+          recommendation: "Change minimum experience from 5+ years to 3-5 years.",
+          pros: ["Larger candidate pool", "Closer to the market norm", "More strong matches"],
+          cons: ["More candidate screening may be required", "Some candidates may need additional onboarding"],
+          expectedEffect: "Larger eligible candidate pool", effectIsEstimated: true, confidence: "High",
+          field: "minExperience", suggestedValue: "3-5 years"
+        }]
+      }
+    },
+    {
+      id: "er6", title: "Marketing Coordinator", status: "Closed", closeReason: "Position filled",
+      applicants: 72, qualified: 25, strongMatches: 10, talentSupply: "Good", daysOpen: 18, health: "Healthy",
+      department: "Marketing", employmentType: "Full-time", reportsTo: "Marketing Manager",
+      roleSummary: "Coordinate campaign execution across social, email, and events.",
+      responsibilities: ["Plan and execute monthly campaign calendars", "Coordinate with design and content freelancers", "Report on campaign performance"],
+      successLooksLike: "",
+      mustHaveSkills: ["Campaign Management", "Copywriting"], niceToHaveSkills: ["Canva", "Meta Ads"],
+      minExperience: "1-2 years", educationOrCertification: "",
+      salary: { min: 3200, max: 4500, currency: "MYR", period: "Monthly" }, location: "Petaling Jaya", workMode: "On-site",
+      matchThreshold: 70, portfolioRequirement: "Optional",
+      roleIntelligence: {
+        talentAvailability: "Good", typicalExperience: "1-2 years", commonSalary: "RM 3.2k - 4.5k",
+        commonSkills: ["Campaign Management", "Copywriting", "Canva"],
+        potentialIssue: "Role closed after filling — kept for historical reference.",
+        hiringCompetition: "Low", locationContext: "Petaling Jaya",
+        dataContext: { region: "Malaysia", category: "Marketing (Coordinator)", confidence: "Medium" },
+        strengths: ["Filled within 18 days with 10 strong matches."], concerns: [], suggestions: []
+      }
+    },
+    {
+      id: "er7", title: "Office Administrator", status: "Archived", closeReason: "Role changed",
+      applicants: 41, qualified: 12, strongMatches: 4, talentSupply: "Good", daysOpen: 35, health: "Needs attention",
+      department: "Operations", employmentType: "Full-time", reportsTo: "Operations Manager",
+      roleSummary: "Manage day-to-day office operations and vendor coordination.",
+      responsibilities: ["Coordinate office vendors and supplies", "Support onboarding logistics for new hires"],
+      successLooksLike: "",
+      mustHaveSkills: ["Office Administration"], niceToHaveSkills: ["Vendor Management"],
+      minExperience: "1-2 years", educationOrCertification: "",
+      salary: { min: 2800, max: 3600, currency: "MYR", period: "Monthly" }, location: "Kuala Lumpur", workMode: "On-site",
+      matchThreshold: 70, portfolioRequirement: "Optional",
+      roleIntelligence: {
+        talentAvailability: "Good", typicalExperience: "1-2 years", commonSalary: "RM 2.8k - 3.6k",
+        commonSkills: ["Office Administration", "Vendor Management"],
+        potentialIssue: "Role was restructured into a hybrid Operations Coordinator position — archived, not deleted.",
+        hiringCompetition: "Low", locationContext: "Kuala Lumpur",
+        dataContext: { region: "Malaysia", category: "Operations (Administrator)", confidence: "Medium" },
+        strengths: [], concerns: [], suggestions: []
       }
     }
   ]
@@ -980,7 +1084,8 @@ function readState() {
     autopilotRules: { salary: "", location: "", threshold: 75, scanOnly: true, exclude: "" },
     posts: DATA.communityPosts,
     employerTalentPools: [{ id: "pool-1", name: "Backend Prospects", candidateIds: [] }],
-    employerInvitations: {}
+    employerInvitations: {},
+    employerRoleDrafts: {}
   };
   try {
     return normalizeState({ ...fallback, ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") });
@@ -6215,7 +6320,7 @@ function renderEmployerView(view, params, root) {
 function renderEmployerDashboard(root) {
   const roles = DATA.employerRoles;
   const priorityRole = roles.find(r => r.health === "Needs attention") || roles[0];
-  const activeCount = roles.filter(r => r.status === "Active").length;
+  const activeCount = roles.filter(r => r.status === "Open").length;
   const newQualified = roles.reduce((sum, r) => sum + r.qualified, 0);
   const waitingTooLong = roles.filter(r => r.daysOpen > 14).length;
 
@@ -6262,10 +6367,10 @@ function renderEmployerDashboard(root) {
             ${roles.map(r => `
               <tr class="emp-table-row" data-emp-open-role="${r.id}">
                 <td>${r.title}</td>
-                <td><span class="pill ${r.status === "Active" ? "green" : r.status === "Draft" ? "gold" : ""}">${r.status}</span></td>
+                <td><span class="pill ${r.status === "Open" ? "green" : r.status === "Draft" ? "gold" : ""}">${r.status}</span></td>
                 <td>${r.applicants}</td>
                 <td>${r.qualified}</td>
-                <td>${r.strongFits}</td>
+                <td>${r.strongMatches}</td>
                 <td>${r.daysOpen}d</td>
                 <td><span class="pill ${r.health === "Healthy" ? "green" : "red"}">${r.health}</span></td>
               </tr>
@@ -6302,57 +6407,612 @@ function renderEmployerDashboard(root) {
   }));
 }
 
-function renderEmployerRolesList(root) {
-  const roles = DATA.employerRoles;
-  root.innerHTML = `
-    <div class="emp-view-header">
-      <h1>Roles</h1>
-      <button type="button" class="btn btn-primary" data-emp-create-role>${icon("plus")} Create role</button>
-    </div>
-    <div class="card">
-      <div class="table-wrap">
-        <table class="emp-table">
-          <thead><tr><th>Role</th><th>Status</th><th>Applicants</th><th>Qualified</th><th>Strong fits</th><th>Talent supply</th><th>Days open</th><th>Health</th><th></th></tr></thead>
-          <tbody>
-            ${roles.map(r => `
-              <tr class="emp-table-row">
-                <td>${r.title}</td>
-                <td><span class="pill ${r.status === "Active" ? "green" : r.status === "Draft" ? "gold" : ""}">${r.status}</span></td>
-                <td>${r.applicants}</td>
-                <td>${r.qualified}</td>
-                <td>${r.strongFits}</td>
-                <td>${r.talentSupply}</td>
-                <td>${r.daysOpen}d</td>
-                <td><span class="pill ${r.health === "Healthy" ? "green" : "red"}">${r.health}</span></td>
-                <td class="emp-table-actions">
-                  <button type="button" class="btn btn-ghost btn-sm" data-emp-edit-role="${r.id}">Edit</button>
-                </td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-  createIcons();
-
-  qs("[data-emp-create-role]", root)?.addEventListener("click", () => employerNavigateTo("role-builder", {}));
-  qsa("[data-emp-edit-role]", root).forEach(btn => btn.addEventListener("click", () => {
-    employerNavigateTo("role-builder", { id: btn.dataset.empEditRole });
-  }));
+function computeHiringMomentum(role) {
+  if (role.status === "Draft" || role.status === "Archived") return null;
+  const { strongMatches, daysOpen } = role;
+  if (daysOpen >= 21 && strongMatches <= 2) {
+    return { status: "At Risk", reason: `Open for ${daysOpen} days with only ${strongMatches} strong match${strongMatches === 1 ? "" : "es"}.`, nextAction: "Review requirements" };
+  }
+  if (daysOpen >= 10 && strongMatches < 6) {
+    return { status: "Needs Attention", reason: `Only ${strongMatches} strong match${strongMatches === 1 ? "" : "es"} after ${daysOpen} days.`, nextAction: "Review requirements" };
+  }
+  return { status: "On Track", reason: `${strongMatches} strong match${strongMatches === 1 ? "" : "es"} in ${daysOpen} days.`, nextAction: "Keep monitoring" };
 }
 
-const EMPLOYER_ROLE_BUILDER_STEPS = ["Basics", "Responsibilities", "Requirements", "Salary & Location", "Hiring Preferences", "Preview & Publish"];
+const ROLE_STATUS_PILL_CLASS = { Open: "green", Draft: "gold", Paused: "cyan", Closed: "red", Archived: "" };
+const ROLE_MOMENTUM_CLASS = { "On Track": "green", "Needs Attention": "gold", "At Risk": "red" };
 
-function renderEmployerRoleBuilder(root, roleId) {
-  const existing = roleId ? DATA.employerRoles.find(r => r.id === roleId) : null;
-  let activeStep = existing ? 2 : 0; // jump straight to Requirements when editing, so Role Intelligence is visible immediately
+const ROLE_STATUS_PRIMARY = {
+  Draft: "Continue setup", Open: "View candidates", Paused: "Resume hiring", Closed: "View results", Archived: "View results"
+};
+
+const ROLE_STATUS_MENU = {
+  Draft: [["Continue setup", "edit"], ["Preview draft", "preview"], ["Duplicate", "duplicate"], ["Delete draft", "delete"]],
+  Open: [["View candidates", "candidates"], ["Preview public post", "preview"], ["Edit role", "edit"], ["Duplicate role", "duplicate"], ["Pause hiring", "pause"], ["Close role", "close"]],
+  Paused: [["Resume hiring", "resume"], ["View candidates", "candidates"], ["Edit role", "edit"], ["Close role", "close"]],
+  Closed: [["View results", "results"], ["View candidates", "candidates"], ["Reopen role", "reopen"], ["Duplicate role", "duplicate"], ["Archive", "archive"]],
+  Archived: [["View results", "results"]]
+};
+
+const ROLE_CLOSE_REASONS = ["Position filled", "Hiring paused indefinitely", "Role changed", "Duplicate role", "Other"];
+
+function changeRoleStatus(role, newStatus, reason = null) {
+  role.status = newStatus;
+  role.closeReason = newStatus === "Closed" ? reason : null;
+}
+
+function duplicateEmployerRole(role) {
+  const copy = JSON.parse(JSON.stringify(role));
+  copy.id = `er-${Date.now()}`;
+  copy.title = `${role.title} (Copy)`;
+  copy.status = "Draft";
+  copy.closeReason = null;
+  copy.applicants = 0; copy.qualified = 0; copy.strongMatches = 0; copy.daysOpen = 0;
+  DATA.employerRoles.push(copy);
+  return copy;
+}
+
+function renderEmployerRolesList(root) {
+  let activeFilter = "All";
+  const ROLE_STATUS_FILTERS = ["All", "Open", "Draft", "Paused", "Closed", "Archived"];
 
   function draw() {
-    const ri = existing?.roleIntelligence;
+    const roles = DATA.employerRoles.filter(r => activeFilter === "All" || r.status === activeFilter);
     root.innerHTML = `
       <div class="emp-view-header">
-        <h1>${existing ? `Edit ${existing.title}` : "Create role"}</h1>
+        <h1>Roles in your company</h1>
+        <button type="button" class="btn btn-primary" data-emp-create-role>${icon("plus")} Create role</button>
+      </div>
+      <div class="emp-subtabs">
+        ${ROLE_STATUS_FILTERS.map(f => `<button type="button" class="emp-subtab ${activeFilter === f ? "active" : ""}" data-emp-role-filter="${f}">${f}</button>`).join("")}
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table class="emp-table">
+            <thead><tr><th>Role</th><th>Status</th><th>Applicants</th><th>Strong matches</th><th>Days open</th><th>Hiring momentum</th><th>Next action</th><th></th><th></th></tr></thead>
+            <tbody>
+              ${roles.length ? roles.map(r => {
+                const momentum = computeHiringMomentum(r);
+                return `
+                <tr class="emp-table-row">
+                  <td>${r.title}</td>
+                  <td><span class="pill ${ROLE_STATUS_PILL_CLASS[r.status]}">${r.status}</span></td>
+                  <td>${r.status === "Draft" ? "—" : r.applicants}</td>
+                  <td>${r.status === "Draft" ? "—" : r.strongMatches}</td>
+                  <td>${r.status === "Draft" ? "—" : `${r.daysOpen}d`}</td>
+                  <td class="emp-momentum-cell">
+                    ${momentum
+                      ? `<button type="button" class="pill emp-momentum-pill ${ROLE_MOMENTUM_CLASS[momentum.status]}" data-emp-momentum="${r.id}">${momentum.status}</button>
+                         <div class="emp-momentum-pop" data-emp-momentum-pop="${r.id}" hidden>
+                           <strong>${momentum.status}</strong>
+                           <p>${momentum.reason}</p>
+                           <span class="emp-momentum-next">Suggested next step: ${momentum.nextAction}</span>
+                         </div>`
+                      : `<span class="emp-empty-hint">—</span>`}
+                  </td>
+                  <td>${momentum ? momentum.nextAction : (r.status === "Draft" ? "Complete setup" : "—")}</td>
+                  <td class="emp-table-actions"><button type="button" class="btn btn-primary btn-sm" data-emp-primary="${r.id}">${ROLE_STATUS_PRIMARY[r.status]}</button></td>
+                  <td class="emp-table-actions">
+                    ${ROLE_STATUS_MENU[r.status].length ? `
+                      <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-emp-role-menu="${r.id}">${icon("more-horizontal")}</button>
+                      <div class="emp-actions-menu" data-emp-role-menu-panel="${r.id}" hidden>
+                        ${ROLE_STATUS_MENU[r.status].map(([label, action]) => `<button type="button" data-emp-role-action="${action}" data-emp-role-id="${r.id}">${label}</button>`).join("")}
+                      </div>
+                    ` : ""}
+                  </td>
+                </tr>
+              `; }).join("") : `<tr><td colspan="8"><p class="emp-empty-hint">No roles match this filter.</p></td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="emp-compose-modal" data-emp-close-modal hidden>
+        <div class="card emp-compose-card">
+          <h2>Why are you closing this role?</h2>
+          <p class="emp-preview-note">Closing this role stops new applications. Existing applicants and hiring history will remain available.</p>
+          <div class="emp-close-reasons">
+            ${ROLE_CLOSE_REASONS.map((reason, i) => `
+              <label class="check-field custom-checkbox"><input type="radio" name="close-reason" value="${reason}" ${i === 0 ? "checked" : ""}> ${reason}</label>
+            `).join("")}
+          </div>
+          <div class="emp-compose-actions">
+            <button type="button" class="btn btn-ghost" data-emp-close-cancel>Cancel</button>
+            <button type="button" class="btn btn-primary" data-emp-close-confirm>Close role</button>
+          </div>
+        </div>
+      </div>
+    `;
+    createIcons();
+    bind();
+  }
+
+  function bind() {
+    qs("[data-emp-create-role]", root)?.addEventListener("click", () => employerNavigateTo("role-builder", {}));
+
+    qsa("[data-emp-role-filter]", root).forEach(btn => btn.addEventListener("click", () => {
+      activeFilter = btn.dataset.empRoleFilter;
+      draw();
+    }));
+
+    qsa("[data-emp-momentum]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      const pop = qs(`[data-emp-momentum-pop="${btn.dataset.empMomentum}"]`, root);
+      const isHidden = pop.hidden;
+      qsa("[data-emp-momentum-pop]", root).forEach(p => p.hidden = true);
+      pop.hidden = !isHidden;
+    }));
+
+    qsa("[data-emp-role-menu]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      const panel = qs(`[data-emp-role-menu-panel="${btn.dataset.empRoleMenu}"]`, root);
+      const isHidden = panel.hidden;
+      qsa("[data-emp-role-menu-panel]", root).forEach(p => p.hidden = true);
+      panel.hidden = !isHidden;
+    }));
+
+    document.addEventListener("click", () => {
+      qsa("[data-emp-role-menu-panel], [data-emp-momentum-pop]", root).forEach(p => p.hidden = true);
+    });
+
+    qsa("[data-emp-primary]", root).forEach(btn => btn.addEventListener("click", () => {
+      const role = DATA.employerRoles.find(r => r.id === btn.dataset.empPrimary);
+      runRoleAction(role, role.status === "Draft" ? "edit" : role.status === "Paused" ? "resume" : role.status === "Open" ? "candidates" : "results");
+    }));
+
+    qsa("[data-emp-role-action]", root).forEach(btn => btn.addEventListener("click", () => {
+      const role = DATA.employerRoles.find(r => r.id === btn.dataset.empRoleId);
+      runRoleAction(role, btn.dataset.empRoleAction);
+    }));
+
+    qs("[data-emp-close-cancel]", root)?.addEventListener("click", () => { qs("[data-emp-close-modal]", root).hidden = true; });
+    qs("[data-emp-close-confirm]", root)?.addEventListener("click", () => {
+      const modal = qs("[data-emp-close-modal]", root);
+      const reason = qs('input[name="close-reason"]:checked', root)?.value || "Other";
+      const role = DATA.employerRoles.find(r => r.id === modal.dataset.roleId);
+      changeRoleStatus(role, "Closed", reason);
+      modal.hidden = true;
+      draw();
+      showToast(`${role.title} closed.`);
+    });
+  }
+
+  function runRoleAction(role, action) {
+    switch (action) {
+      case "edit": case "preview":
+        employerNavigateTo("role-builder", { id: role.id });
+        break;
+      case "candidates":
+        employerNavigateTo("hiring");
+        break;
+      case "results":
+        showToast("Results view opens in a later phase.", "info");
+        break;
+      case "duplicate": {
+        const copy = duplicateEmployerRole(role);
+        draw();
+        showToast(`Duplicated as "${copy.title}".`);
+        break;
+      }
+      case "delete":
+        if (confirm(`Delete the draft "${role.title}"? This cannot be undone.`)) {
+          DATA.employerRoles.splice(DATA.employerRoles.indexOf(role), 1);
+          draw();
+          showToast("Draft deleted.");
+        }
+        break;
+      case "pause":
+        changeRoleStatus(role, "Paused");
+        draw();
+        showToast(`${role.title} paused.`);
+        break;
+      case "resume":
+        changeRoleStatus(role, "Open");
+        draw();
+        showToast(`${role.title} reopened for applicants.`);
+        break;
+      case "reopen":
+        changeRoleStatus(role, "Open");
+        draw();
+        showToast(`${role.title} reopened.`);
+        break;
+      case "archive":
+        changeRoleStatus(role, "Archived");
+        draw();
+        showToast(`${role.title} archived.`);
+        break;
+      case "close": {
+        const modal = qs("[data-emp-close-modal]", root);
+        modal.dataset.roleId = role.id;
+        modal.hidden = false;
+        break;
+      }
+    }
+  }
+
+  draw();
+}
+
+const EMPLOYER_ROLE_BUILDER_STEPS = ["Role Basics", "Role Details", "Candidate Profile", "Offer & Hiring Setup", "Preview & Publish"];
+
+const FALLBACK_ROLE_INTELLIGENCE = {
+  talentAvailability: "Not enough data", typicalExperience: "—", commonSalary: "—", commonSkills: [],
+  potentialIssue: "", hiringCompetition: "—", locationContext: "",
+  dataContext: { region: "Malaysia", category: "General", confidence: "Low" },
+  strengths: [], concerns: [], suggestions: []
+};
+
+function makeEmployerRoleDraft(existing) {
+  const base = {
+    title: "", department: "", employmentType: "Full-time", reportsTo: "",
+    roleSummary: "", responsibilities: [], successLooksLike: "",
+    mustHaveSkills: [], niceToHaveSkills: [],
+    minExperience: "No experience required", educationOrCertification: "",
+    salary: { min: null, max: null, currency: "MYR", period: "Monthly" },
+    location: "", workMode: "Hybrid",
+    matchThreshold: 70, portfolioRequirement: "Optional",
+    lastSavedAt: null
+  };
+  if (!existing) return base;
+  return {
+    ...base, title: existing.title, department: existing.department || "", employmentType: existing.employmentType || "Full-time",
+    reportsTo: existing.reportsTo || "", roleSummary: existing.roleSummary || "",
+    responsibilities: [...(existing.responsibilities || [])], successLooksLike: existing.successLooksLike || "",
+    mustHaveSkills: [...(existing.mustHaveSkills || [])], niceToHaveSkills: [...(existing.niceToHaveSkills || [])],
+    minExperience: existing.minExperience || "No experience required", educationOrCertification: existing.educationOrCertification || "",
+    salary: { ...base.salary, ...(existing.salary || {}) },
+    location: existing.location || "", workMode: existing.workMode || "Hybrid",
+    matchThreshold: existing.matchThreshold || 70, portfolioRequirement: existing.portfolioRequirement || "Optional"
+  };
+}
+
+function formatSavedLabel(iso) {
+  if (!iso) return "Not saved yet";
+  const secs = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
+  if (secs < 10) return "Saved just now";
+  if (secs < 60) return `Saved ${secs}s ago`;
+  const mins = Math.round(secs / 60);
+  return `Saved ${mins} minute${mins === 1 ? "" : "s"} ago`;
+}
+
+function renderTagInput(field, values) {
+  return `
+    <div class="emp-tag-input" data-tag-field="${field}">
+      <div class="pill-row" data-tag-list>
+        ${values.map((v, i) => `<span class="pill emp-tag-pill">${v} <button type="button" data-tag-remove="${i}" aria-label="Remove ${v}">${icon("x")}</button></span>`).join("")}
+      </div>
+      <input type="text" data-tag-new placeholder="Type a skill and press Enter">
+    </div>
+  `;
+}
+
+function renderRoleIntelligencePanel(ri, pendingSuggestions, draft) {
+  return `
+    <div class="emp-callout-label">${icon("sparkles")} Role Intelligence</div>
+
+    <div class="emp-intel-section">
+      <h3 class="emp-intel-heading">Market snapshot</h3>
+      <div class="emp-stat-row"><span>Talent availability</span><strong>${ri.talentAvailability}</strong></div>
+      <div class="emp-stat-row"><span>Typical experience</span><strong>${ri.typicalExperience}</strong></div>
+      <div class="emp-stat-row"><span>Typical salary</span><strong>${ri.commonSalary}</strong></div>
+      <div class="emp-stat-row"><span>Hiring competition</span><strong>${ri.hiringCompetition}</strong></div>
+      <div class="emp-stat-row"><span>Location context</span><strong>${ri.locationContext || "—"}</strong></div>
+      ${ri.dataContext ? `<p class="emp-intel-datacontext">${ri.dataContext.region} · ${ri.dataContext.category} · Confidence: ${ri.dataContext.confidence}</p>` : ""}
+    </div>
+
+    ${ri.strengths && ri.strengths.length ? `
+      <div class="emp-intel-section">
+        <h3 class="emp-intel-heading">What looks strong</h3>
+        <ul class="emp-intel-strengths">${ri.strengths.map(s => `<li>${icon("check")} ${s}</li>`).join("")}</ul>
+      </div>
+    ` : ""}
+
+    ${ri.concerns && ri.concerns.length ? `
+      <div class="emp-intel-section">
+        <h3 class="emp-intel-heading">Potential concerns</h3>
+        ${ri.concerns.map(c => `
+          <div class="emp-callout emp-callout-warn">
+            <div class="emp-callout-label warn">${icon("alert-triangle")} ${c.issue}</div>
+            <p>${c.why}</p>
+          </div>
+        `).join("")}
+      </div>
+    ` : ""}
+
+    ${pendingSuggestions.length ? `
+      <div class="emp-intel-section">
+        <h3 class="emp-intel-heading">Suggested adjustments</h3>
+        ${pendingSuggestions.map(s => `
+          <div class="card emp-suggestion-card">
+            <p class="emp-suggestion-rec">${s.recommendation}</p>
+            <div class="emp-suggestion-compare">
+              <span>Current: <strong>${(draft[s.field] ?? "—")}</strong></span>
+              <span>Suggested: <strong>${s.suggestedValue}</strong></span>
+            </div>
+            <div class="emp-suggestion-grid">
+              <div><span class="emp-tags-label">Pros</span><ul>${s.pros.map(p => `<li>${p}</li>`).join("")}</ul></div>
+              <div><span class="emp-tags-label">Cons</span><ul>${s.cons.map(c => `<li>${c}</li>`).join("")}</ul></div>
+            </div>
+            <p class="emp-suggestion-effect">${s.effectIsEstimated ? "Estimated impact" : "Expected effect"}: ${s.expectedEffect} · Confidence: ${s.confidence}</p>
+            <div class="emp-suggestion-actions">
+              <button type="button" class="btn btn-primary btn-sm" data-emp-apply-suggestion="${s.recommendation}">Apply suggestion</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-emp-keep-suggestion="${s.recommendation}">Keep current</button>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    ` : ""}
+
+    <p class="emp-vera-principle">${icon("shield-check")} Vera advises and explains. You make the final decision.</p>
+  `;
+}
+
+function renderEmployerRoleBuilder(root, roleId) {
+  let existing = roleId ? DATA.employerRoles.find(r => r.id === roleId) : null;
+  const draftId = existing ? existing.id : `draft-${Date.now()}`;
+  const seedState = readState();
+  const draft = seedState.employerRoleDrafts[draftId] || makeEmployerRoleDraft(existing);
+  if (!seedState.employerRoleDrafts[draftId]) {
+    seedState.employerRoleDrafts[draftId] = draft;
+    writeState(seedState);
+  }
+  let activeStep = 0;
+  const dismissedSuggestions = new Set();
+  const appliedSuggestions = new Set();
+
+  function persistDraft() {
+    draft.lastSavedAt = new Date().toISOString();
+    const state = readState();
+    state.employerRoleDrafts[draftId] = draft;
+    writeState(state);
+    const label = qs("[data-emp-saved-label]", root);
+    if (label) label.textContent = formatSavedLabel(draft.lastSavedAt);
+  }
+
+  function bindField(selector, field) {
+    const el = qs(selector, root);
+    if (!el) return;
+    el.addEventListener("input", () => { draft[field] = el.value; });
+    el.addEventListener("blur", persistDraft);
+  }
+
+  function bindSelect(selector, field, isNumber) {
+    const el = qs(selector, root);
+    if (!el) return;
+    el.addEventListener("change", () => { draft[field] = isNumber ? Number(el.value) : el.value; persistDraft(); });
+  }
+
+  function bindSalaryField(sub) {
+    const el = qs(`[data-field-salary-${sub}]`, root);
+    if (!el) return;
+    el.addEventListener("input", () => { draft.salary[sub] = el.value === "" ? null : Number(el.value); });
+    el.addEventListener("blur", persistDraft);
+  }
+
+  function bindSalarySelect(sub) {
+    const el = qs(`[data-field-salary-${sub}]`, root);
+    if (!el) return;
+    el.addEventListener("change", () => { draft.salary[sub] = el.value; persistDraft(); });
+  }
+
+  function renderResponsibilityList() {
+    return `
+      <div data-resp-list>
+        ${draft.responsibilities.map((r, i) => `
+          <div class="emp-resp-row">
+            <input type="text" data-resp-index="${i}" value="${r}" placeholder="e.g. Build and maintain backend services">
+            <button type="button" class="btn btn-ghost btn-sm" data-resp-remove="${i}" aria-label="Remove">${icon("x")}</button>
+          </div>
+        `).join("")}
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" data-resp-add>${icon("plus")} Add responsibility</button>
+    `;
+  }
+
+  function bindResponsibilityList() {
+    qsa("[data-resp-index]", root).forEach(input => {
+      input.addEventListener("input", () => { draft.responsibilities[Number(input.dataset.respIndex)] = input.value; });
+      input.addEventListener("blur", persistDraft);
+    });
+    qsa("[data-resp-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      draft.responsibilities.splice(Number(btn.dataset.respRemove), 1);
+      persistDraft();
+      draw();
+    }));
+    qs("[data-resp-add]", root)?.addEventListener("click", () => {
+      draft.responsibilities.push("");
+      persistDraft();
+      draw();
+      const inputs = qsa("[data-resp-index]", root);
+      inputs[inputs.length - 1]?.focus();
+    });
+  }
+
+  function bindTagInput(field) {
+    const container = qs(`[data-tag-field="${field}"]`, root);
+    if (!container) return;
+    const input = qs("[data-tag-new]", container);
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === ",") {
+        event.preventDefault();
+        const val = input.value.trim().replace(/,$/, "");
+        if (val && !draft[field].includes(val)) {
+          draft[field].push(val);
+          persistDraft();
+          draw();
+          qs(`[data-tag-field="${field}"] [data-tag-new]`, root)?.focus();
+        } else {
+          input.value = "";
+        }
+      }
+    });
+    qsa("[data-tag-remove]", container).forEach(btn => btn.addEventListener("click", () => {
+      draft[field].splice(Number(btn.dataset.tagRemove), 1);
+      persistDraft();
+      draw();
+    }));
+  }
+
+  function renderWizardStepContent(step) {
+    switch (step) {
+      case 0:
+        return `
+          <div class="emp-form-section-head"><h2>Role Basics</h2><p>Start with the essentials candidates need to understand what this role is.</p></div>
+          <label>Role title<input type="text" data-field-title value="${draft.title}" placeholder="e.g. Backend Engineer"></label>
+          <label>Department<input type="text" data-field-department value="${draft.department}" placeholder="e.g. Engineering"></label>
+          <label>Employment type<select data-field-employmentType>${["Full-time", "Part-time", "Contract", "Internship", "Graduate programme"].map(o => `<option ${draft.employmentType === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+          <label>Reports to <span class="emp-optional-tag">Optional</span><input type="text" data-field-reportsTo value="${draft.reportsTo}" placeholder="e.g. Engineering Manager"></label>
+        `;
+      case 1:
+        return `
+          <div class="emp-form-section-head"><h2>Role Details</h2><p>Explain what this person will own, work on, and achieve.</p></div>
+          <label>Role summary<textarea data-field-roleSummary rows="3" placeholder="Describe the role in 2-4 sentences. Focus on the purpose of the position.">${draft.roleSummary}</textarea></label>
+          <div>
+            <span class="emp-tags-label">Key responsibilities — recommended 3-6</span>
+            ${renderResponsibilityList()}
+          </div>
+          <label>What success looks like <span class="emp-optional-tag">Optional</span><textarea data-field-successLooksLike rows="2" placeholder="e.g. In the first 6 months, this person should have shipped one major service.">${draft.successLooksLike}</textarea></label>
+        `;
+      case 2:
+        return `
+          <div class="emp-form-section-head"><h2>Candidate Profile</h2><p>Define what is truly essential, what is preferred, and what can be learned.</p></div>
+          <div><span class="emp-tags-label">Must-have skills — used for essential matching</span>${renderTagInput("mustHaveSkills", draft.mustHaveSkills)}</div>
+          <div><span class="emp-tags-label">Nice-to-have skills — improves matching, won't reject candidates</span>${renderTagInput("niceToHaveSkills", draft.niceToHaveSkills)}</div>
+          <label>Minimum experience<select data-field-minExperience>${["No experience required", "Less than 1 year", "1-2 years", "3-5 years", "5+ years"].map(o => `<option ${draft.minExperience === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+          <label>Education or certification <span class="emp-optional-tag">Optional</span><input type="text" data-field-educationOrCertification value="${draft.educationOrCertification}" placeholder="e.g. Bachelor's degree preferred"></label>
+        `;
+      case 3:
+        return `
+          <div class="emp-form-section-head"><h2>Offer & Hiring Setup</h2><p>Set the offer and tell CareerGo how you want candidates to be matched.</p></div>
+          <div class="emp-salary-row">
+            <label>Minimum (MYR)<input type="number" data-field-salary-min value="${draft.salary.min ?? ""}" placeholder="e.g. 4500"></label>
+            <label>Maximum (MYR)<input type="number" data-field-salary-max value="${draft.salary.max ?? ""}" placeholder="e.g. 7000"></label>
+            <label>Pay period<select data-field-salary-period>${["Monthly", "Annual", "Hourly"].map(o => `<option ${draft.salary.period === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+          </div>
+          <label>Location<input type="text" data-field-location value="${draft.location}" placeholder="e.g. Kuala Lumpur"></label>
+          <label>Work mode<select data-field-workMode>${["On-site", "Hybrid", "Remote"].map(o => `<option ${draft.workMode === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+          <label>Match threshold<select data-field-matchThreshold>
+            ${[[60, "Broad pool — 60%"], [70, "Balanced — 70%"], [80, "Focused — 80%"], [90, "Very selective — 90%"]].map(([v, l]) => `<option value="${v}" ${draft.matchThreshold === v ? "selected" : ""}>${l}</option>`).join("")}
+          </select></label>
+          <p class="emp-field-help">Candidates above this match level will appear as Strong Matches. Higher threshold: fewer candidates, closer skill alignment. Lower threshold: larger candidate pool, more employer review required.</p>
+          <label>Portfolio evidence<select data-field-portfolioRequirement>${["Optional", "Preferred", "Required"].map(o => `<option ${draft.portfolioRequirement === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+        `;
+      default:
+        return "";
+    }
+  }
+
+  function commitDraft(status) {
+    const state = readState();
+    if (existing) {
+      Object.assign(existing, draft, { status });
+    } else {
+      const created = Object.assign({
+        id: draftId, applicants: 0, qualified: 0, strongMatches: 0, daysOpen: 0, health: "Healthy", closeReason: null,
+        roleIntelligence: FALLBACK_ROLE_INTELLIGENCE
+      }, draft, { status });
+      DATA.employerRoles.push(created);
+      existing = created;
+    }
+    delete state.employerRoleDrafts[draftId];
+    writeState(state);
+    showToast(status === "Open" ? "Role published." : status === "Draft" ? "Draft saved." : "Role updated.");
+    employerNavigateTo("roles", {}, { force: true });
+  }
+
+  function renderPreviewPublishStep() {
+    const ri = existing ? existing.roleIntelligence : FALLBACK_ROLE_INTELLIGENCE;
+    const company = DATA.companies.find(c => c.id === "maybank");
+    const checklist = [
+      { label: "Role basics complete", done: !!(draft.title && draft.department) },
+      { label: "Responsibilities added", done: draft.responsibilities.filter(r => r.trim()).length > 0 },
+      { label: "Salary and location complete", done: !!(draft.salary.min && draft.salary.max && draft.location) },
+      { label: "Candidate requirements complete", done: draft.mustHaveSkills.length > 0 && !!draft.minExperience }
+    ];
+    const pendingSuggestions = (ri.suggestions || []).filter(s => !dismissedSuggestions.has(s.recommendation) && !appliedSuggestions.has(s.recommendation));
+    const responsibilities = draft.responsibilities.filter(r => r.trim());
+
+    return `
+      <div class="card emp-publish-checklist">
+        <div class="emp-callout-label">${icon("list-checks")} Ready to publish</div>
+        <ul class="emp-checklist">
+          ${checklist.map(item => `<li class="${item.done ? "done" : ""}">${icon(item.done ? "check" : "x")} ${item.label}</li>`).join("")}
+          ${pendingSuggestions.length ? `<li class="warn">${icon("alert-triangle")} ${pendingSuggestions.length} Vera recommendation${pendingSuggestions.length === 1 ? "" : "s"} not applied</li>` : ""}
+        </ul>
+        <div class="emp-wizard-actions">
+          <button type="button" class="btn btn-ghost" data-emp-prev>Back</button>
+          <div class="emp-publish-buttons">
+            <button type="button" class="btn btn-ghost" data-emp-save-draft>Save draft</button>
+            <button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} ${existing ? "Save changes" : "Publish role"}</button>
+          </div>
+        </div>
+      </div>
+      <div class="emp-wizard-body">
+        <div class="card emp-job-preview">
+          <div class="emp-preview-toolbar">
+            <span class="emp-tags-label">Preview as candidate</span>
+            <div class="emp-preview-device-toggle">
+              <button type="button" class="active" data-emp-preview-device="desktop">Desktop</button>
+              <button type="button" data-emp-preview-device="mobile">Mobile</button>
+            </div>
+          </div>
+          <div class="emp-job-preview-frame" data-emp-preview-frame>
+            <div class="emp-job-preview-company">
+              <strong>${company ? company.name : "Your Company"}</strong>
+              ${company?.verified ? `<span class="pill cyan">Verified</span>` : ""}
+            </div>
+            <h2>${draft.title || "Role title"}</h2>
+            <div class="emp-job-preview-meta">${[draft.location, draft.workMode, draft.employmentType].filter(Boolean).join(" · ") || "Location · Work mode · Employment type"}</div>
+            ${draft.salary.min && draft.salary.max ? `<div class="emp-job-preview-salary">RM ${draft.salary.min.toLocaleString()} – RM ${draft.salary.max.toLocaleString()} / ${draft.salary.period.toLowerCase()}</div>` : ""}
+            <h3>About the role</h3>
+            <p>${draft.roleSummary || "Add a role summary in Role Details."}</p>
+            ${responsibilities.length ? `<h3>What you'll do</h3><ul>${responsibilities.map(r => `<li>${r}</li>`).join("")}</ul>` : ""}
+            ${draft.successLooksLike ? `<h3>What success looks like</h3><p>${draft.successLooksLike}</p>` : ""}
+            ${draft.mustHaveSkills.length ? `<h3>Must-have skills</h3><div class="pill-row">${draft.mustHaveSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div>` : ""}
+            ${draft.niceToHaveSkills.length ? `<h3>Nice-to-have</h3><div class="pill-row">${draft.niceToHaveSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div>` : ""}
+            <h3>Work style</h3>
+            <p>${draft.workMode || "Hybrid"}</p>
+            <button type="button" class="btn btn-primary" disabled>Apply</button>
+          </div>
+        </div>
+        <div class="card emp-role-intelligence">
+          ${renderRoleIntelligencePanel(ri, pendingSuggestions, draft)}
+        </div>
+      </div>
+    `;
+  }
+
+  function bindPreviewPublishEvents() {
+    qsa("[data-emp-apply-suggestion]", root).forEach(btn => btn.addEventListener("click", () => {
+      const ri = existing ? existing.roleIntelligence : FALLBACK_ROLE_INTELLIGENCE;
+      const suggestion = (ri.suggestions || []).find(s => s.recommendation === btn.dataset.empApplySuggestion);
+      if (suggestion) {
+        draft[suggestion.field] = suggestion.suggestedValue;
+        appliedSuggestions.add(suggestion.recommendation);
+        persistDraft();
+        draw();
+        showToast("Suggestion applied.");
+      }
+    }));
+    qsa("[data-emp-keep-suggestion]", root).forEach(btn => btn.addEventListener("click", () => {
+      dismissedSuggestions.add(btn.dataset.empKeepSuggestion);
+      draw();
+    }));
+    qsa("[data-emp-preview-device]", root).forEach(btn => btn.addEventListener("click", () => {
+      qsa("[data-emp-preview-device]", root).forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      qs("[data-emp-preview-frame]", root)?.classList.toggle("emp-preview-mobile", btn.dataset.empPreviewDevice === "mobile");
+    }));
+    qs("[data-emp-save-draft]", root)?.addEventListener("click", () => commitDraft("Draft"));
+    qs("[data-emp-publish]", root)?.addEventListener("click", () => commitDraft(existing ? existing.status : "Open"));
+  }
+
+  function draw() {
+    root.innerHTML = `
+      <div class="emp-view-header">
+        <div>
+          <h1>${existing ? "Edit your role" : "Create a role"}</h1>
+          <p>${existing ? `${existing.title} · <span data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>` : "Set up the role candidates will see and CareerGo will match against."}</p>
+        </div>
         <button type="button" class="btn btn-ghost" data-emp-nav="roles">${icon("x")} Cancel</button>
       </div>
       <div class="emp-wizard-steps">
@@ -6362,35 +7022,15 @@ function renderEmployerRoleBuilder(root, roleId) {
           </button>
         `).join("")}
       </div>
-      <div class="emp-wizard-body">
+      ${activeStep === 4 ? renderPreviewPublishStep() : `
         <div class="card emp-wizard-form">
-          ${renderWizardStepContent(activeStep, existing)}
+          ${renderWizardStepContent(activeStep)}
           <div class="emp-wizard-actions">
             ${activeStep > 0 ? `<button type="button" class="btn btn-ghost" data-emp-prev>Back</button>` : "<span></span>"}
-            ${activeStep < EMPLOYER_ROLE_BUILDER_STEPS.length - 1
-              ? `<button type="button" class="btn btn-primary" data-emp-next>Continue</button>`
-              : `<button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} ${existing ? "Save changes" : "Publish role"}</button>`}
+            <button type="button" class="btn btn-primary" data-emp-next>Continue</button>
           </div>
         </div>
-        ${(activeStep === 2 || activeStep === 3) && ri ? `
-          <div class="card emp-role-intelligence">
-            <div class="emp-callout-label">${icon("sparkles")} Role Intelligence</div>
-            <div class="emp-stat-row"><span>Talent availability</span><strong>${ri.talentAvailability}</strong></div>
-            <div class="emp-stat-row"><span>Typical experience</span><strong>${ri.typicalExperience}</strong></div>
-            <div class="emp-stat-row"><span>Common salary</span><strong>${ri.commonSalary}</strong></div>
-            <div class="emp-tags"><span class="emp-tags-label">Common skills</span><div class="pill-row">${ri.commonSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
-            <div class="emp-callout emp-callout-warn">
-              <div class="emp-callout-label warn">${icon("alert-triangle")} Potential issue</div>
-              <p>${ri.potentialIssue}</p>
-            </div>
-            <div class="emp-callout emp-callout-suggest">
-              <div class="emp-callout-label">${icon("lightbulb")} Suggested adjustment</div>
-              <p>${ri.suggestedAdjustment}</p>
-            </div>
-            <p class="emp-vera-principle">${icon("shield-check")} Vera advises and explains. You make the final decision.</p>
-          </div>
-        ` : ""}
-      </div>
+      `}
     `;
     createIcons();
     bindEvents();
@@ -6403,49 +7043,39 @@ function renderEmployerRoleBuilder(root, roleId) {
     }));
     qs("[data-emp-prev]", root)?.addEventListener("click", () => { activeStep = Math.max(0, activeStep - 1); draw(); });
     qs("[data-emp-next]", root)?.addEventListener("click", () => { activeStep = Math.min(EMPLOYER_ROLE_BUILDER_STEPS.length - 1, activeStep + 1); draw(); });
-    qs("[data-emp-publish]", root)?.addEventListener("click", () => {
-      showToast(existing ? "Role updated." : "Role published.");
-      employerNavigateTo("roles", {}, { force: true });
-    });
     qs("[data-emp-nav]", root)?.addEventListener("click", event => {
       event.preventDefault();
       employerNavigateTo("roles");
     });
+
+    if (activeStep === 0) {
+      bindField("[data-field-title]", "title");
+      bindField("[data-field-department]", "department");
+      bindSelect("[data-field-employmentType]", "employmentType");
+      bindField("[data-field-reportsTo]", "reportsTo");
+    } else if (activeStep === 1) {
+      bindField("[data-field-roleSummary]", "roleSummary");
+      bindResponsibilityList();
+      bindField("[data-field-successLooksLike]", "successLooksLike");
+    } else if (activeStep === 2) {
+      bindTagInput("mustHaveSkills");
+      bindTagInput("niceToHaveSkills");
+      bindSelect("[data-field-minExperience]", "minExperience");
+      bindField("[data-field-educationOrCertification]", "educationOrCertification");
+    } else if (activeStep === 3) {
+      bindSalaryField("min");
+      bindSalaryField("max");
+      bindSalarySelect("period");
+      bindField("[data-field-location]", "location");
+      bindSelect("[data-field-workMode]", "workMode");
+      bindSelect("[data-field-matchThreshold]", "matchThreshold", true);
+      bindSelect("[data-field-portfolioRequirement]", "portfolioRequirement");
+    } else if (activeStep === 4) {
+      bindPreviewPublishEvents();
+    }
   }
 
   draw();
-}
-
-function renderWizardStepContent(step, existing) {
-  const v = field => existing ? (field === "title" ? existing.title : "") : "";
-  switch (EMPLOYER_ROLE_BUILDER_STEPS[step]) {
-    case "Basics":
-      return `
-        <label>Role title<input type="text" value="${v("title")}" placeholder="e.g. Junior Data Analyst"></label>
-        <label>Department<input type="text" placeholder="e.g. Data & Analytics"></label>
-        <label>Employment type<select><option>Full-time</option><option>Internship</option><option>Contract</option></select></label>
-      `;
-    case "Responsibilities":
-      return `<label>Key responsibilities<textarea rows="6" placeholder="Describe the day-to-day ownership of this role"></textarea></label>`;
-    case "Requirements":
-      return `
-        <label>Required skills<input type="text" placeholder="Comma-separated, e.g. SQL, Excel, Power BI"></label>
-        <label>Minimum experience<input type="text" placeholder="e.g. 1-3 years"></label>
-      `;
-    case "Salary & Location":
-      return `
-        <label>Salary range<input type="text" placeholder="e.g. RM 3.8k - 6k"></label>
-        <label>Location<input type="text" placeholder="e.g. Kuala Lumpur"></label>
-        <label>Work mode<select><option>On-site</option><option>Hybrid</option><option>Remote</option></select></label>
-      `;
-    case "Hiring Preferences":
-      return `
-        <label>Match threshold<select><option>70%</option><option>80%</option><option>90%</option></select></label>
-        <label class="check-field custom-checkbox"><input type="checkbox"> Require portfolio evidence</label>
-      `;
-    default: // Preview & Publish
-      return `<p class="emp-preview-note">Review the details across the previous steps, then publish. Vera will keep monitoring talent availability against this role's requirements once it's live.</p>`;
-  }
 }
 
 function filterEmployerSearch(query) {

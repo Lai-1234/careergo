@@ -9217,7 +9217,33 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-table th, .emp-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
 .emp-table th { font-size: 11px; color: var(--soft); text-transform: uppercase; letter-spacing: 0.04em; }
 .emp-table-row:hover { background: rgba(37, 99, 235, 0.04); cursor: pointer; }
-.emp-table-actions { white-space: nowrap; }
+.emp-table-actions { white-space: nowrap; position: relative; }
+
+.emp-momentum-cell { position: relative; }
+.emp-momentum-pill { border: none; cursor: pointer; font: inherit; }
+.emp-momentum-pop {
+  position: absolute; z-index: 20; top: 100%; left: 0; margin-top: 6px; width: 240px;
+  padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: #fff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14); text-align: left;
+}
+.emp-momentum-pop strong { display: block; font-size: 13px; margin-bottom: 4px; }
+.emp-momentum-pop p { margin: 0 0 8px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.emp-momentum-next { display: block; font-size: 12px; font-weight: 600; color: var(--blue); }
+
+.emp-menu-toggle { padding: 6px 8px; }
+.emp-actions-menu {
+  position: absolute; z-index: 20; top: 100%; right: 0; margin-top: 6px; min-width: 170px;
+  padding: 6px; border-radius: 12px; border: 1px solid var(--line); background: #fff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14); display: grid;
+}
+.emp-actions-menu button {
+  display: block; width: 100%; text-align: left; padding: 8px 10px; border: none; background: none;
+  border-radius: 8px; font-size: 13px; color: var(--text); cursor: pointer; font-family: inherit;
+}
+.emp-actions-menu button:hover { background: rgba(37, 99, 235, 0.06); }
+.emp-actions-menu[hidden], .emp-momentum-pop[hidden] { display: none; }
+
+.emp-close-reasons { display: grid; gap: 8px; margin: 14px 0; }
 
 .emp-stage-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
 .emp-stage-tile { padding: 12px; border: 1px solid var(--line); border-radius: 12px; text-align: center; }
@@ -9263,6 +9289,59 @@ body[data-page="companies"] .university-detail-scroll::-webkit-scrollbar-thumb {
 .emp-tags { margin-top: 10px; }
 .emp-tags-label { display: block; margin-bottom: 6px; font-size: var(--emp-label); color: var(--soft); text-transform: uppercase; }
 .emp-vera-principle { display: flex; gap: 6px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: var(--emp-label); font-style: italic; color: var(--soft); }
+
+.emp-form-section-head { margin-bottom: 4px; }
+.emp-form-section-head h2 { margin: 0 0 4px; font-size: var(--emp-title-md); font-weight: 700; }
+.emp-form-section-head p { margin: 0; font-size: var(--emp-body-sm); color: var(--muted); }
+.emp-optional-tag { text-transform: none; font-weight: 500; color: var(--soft); font-size: 11px; margin-left: 6px; }
+
+.emp-tag-input { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; display: grid; gap: 8px; }
+.emp-tag-pill { display: inline-flex; align-items: center; gap: 4px; }
+.emp-tag-pill button { display: inline-flex; border: none; background: none; padding: 0; cursor: pointer; color: inherit; }
+.emp-tag-input input { border: none; padding: 4px 2px; font-size: var(--emp-body); font-family: inherit; }
+.emp-tag-input input:focus { outline: none; }
+
+.emp-resp-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.emp-resp-row input { flex: 1; }
+
+.emp-salary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.emp-field-help { margin: -8px 0 4px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+
+.emp-publish-checklist { padding: 18px 22px; margin-bottom: 20px; }
+.emp-checklist { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+.emp-checklist li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.emp-checklist li.done { color: var(--text); }
+.emp-checklist li.warn { color: #b45309; }
+.emp-publish-buttons { display: flex; gap: 8px; }
+
+.emp-job-preview { padding: 20px 22px; }
+.emp-preview-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.emp-preview-device-toggle { display: flex; gap: 4px; border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.emp-preview-device-toggle button { border: none; background: none; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; }
+.emp-preview-device-toggle button.active { background: rgba(37, 99, 235, 0.08); color: var(--blue); }
+.emp-job-preview-frame { border: 1px solid var(--line); border-radius: 16px; padding: 22px; max-width: 100%; }
+.emp-job-preview-frame.emp-preview-mobile { max-width: 360px; margin: 0 auto; }
+.emp-job-preview-company { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 13px; }
+.emp-job-preview-frame h2 { margin: 0 0 6px; font-size: var(--emp-title-lg); }
+.emp-job-preview-meta { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.emp-job-preview-salary { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 14px; }
+.emp-job-preview-frame h3 { margin: 16px 0 6px; font-size: var(--emp-body); font-weight: 700; }
+.emp-job-preview-frame p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--text); }
+.emp-job-preview-frame ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; }
+.emp-job-preview-frame .btn { margin-top: 18px; }
+
+.emp-intel-section { margin-bottom: 16px; padding-bottom: 4px; }
+.emp-intel-heading { margin: 0 0 6px; font-size: var(--emp-label); text-transform: uppercase; letter-spacing: 0.05em; color: var(--soft); }
+.emp-intel-datacontext { margin: 8px 0 0; font-size: 11px; color: var(--soft); }
+.emp-intel-strengths { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.emp-intel-strengths li { display: flex; gap: 6px; font-size: 13px; color: var(--text); }
+.emp-suggestion-card { padding: 14px 16px; margin-bottom: 10px; border: 1px solid var(--line); }
+.emp-suggestion-rec { margin: 0 0 8px; font-size: 13px; font-weight: 700; }
+.emp-suggestion-compare { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.emp-suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+.emp-suggestion-grid ul { margin: 0; padding-left: 16px; font-size: 12px; line-height: 1.6; }
+.emp-suggestion-effect { margin: 0 0 10px; font-size: 12px; color: var(--muted); }
+.emp-suggestion-actions { display: flex; gap: 8px; }
 
 .emp-subtabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
 .emp-subtab {
