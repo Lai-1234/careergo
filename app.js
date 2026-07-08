@@ -2021,6 +2021,299 @@ function ensureWorkspaceNavbarStyles() {
         width: min(100% - 32px, 1240px) !important;
       }
     }
+
+    html body .topbar.workspace-topbar {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 1000 !important;
+      height: 64px !important;
+      min-height: 64px !important;
+      padding: 0 !important;
+      border-bottom: 1px solid rgba(227, 220, 200, 0.7) !important;
+      background: rgba(248, 244, 234, 0.78) !important;
+      box-shadow: none !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+    }
+
+    html body .topbar.workspace-topbar::before,
+    html body .topbar.workspace-topbar::after {
+      content: none !important;
+      display: none !important;
+    }
+
+    html body .topbar.workspace-topbar .nav-inner {
+      width: min(1240px, calc(100% - 48px)) !important;
+      max-width: 1240px !important;
+      height: 64px !important;
+      min-height: 64px !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      display: grid !important;
+      grid-template-columns: auto minmax(360px, 1fr) minmax(250px, 0.55fr) auto !important;
+      align-items: center !important;
+      gap: 32px !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-top-brand {
+      justify-self: start !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      min-width: 154px !important;
+      height: 42px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-navbar-logo {
+      display: block !important;
+      width: 154px !important;
+      max-width: 154px !important;
+      height: auto !important;
+      max-height: 42px !important;
+      object-fit: contain !important;
+      object-position: left center !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-brand-mark,
+    html body .topbar.workspace-topbar .cg-top-brand .brand-text {
+      display: none !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-workspace-tabs {
+      justify-self: start !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-workspace-tabs a {
+      min-width: 0 !important;
+      width: auto !important;
+      height: 40px !important;
+      min-height: 40px !important;
+      padding: 0 16px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 0 !important;
+      border-radius: 9999px !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      color: #5f7573 !important;
+      -webkit-text-fill-color: #5f7573 !important;
+      font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 400 !important;
+      line-height: 1 !important;
+      letter-spacing: 0 !important;
+      text-decoration: none !important;
+      white-space: nowrap !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-workspace-tabs a.active,
+    html body .topbar.workspace-topbar .cg-workspace-tabs a:hover {
+      color: #f8f4ea !important;
+      -webkit-text-fill-color: #f8f4ea !important;
+      background: #1f332c !important;
+      box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-vera-search {
+      justify-self: end !important;
+      width: min(290px, 100%) !important;
+      max-width: 290px !important;
+      height: 32px !important;
+      min-height: 32px !important;
+      margin: 0 !important;
+      padding: 0 8px 0 12px !important;
+      display: grid !important;
+      grid-template-columns: 16px minmax(0, 1fr) auto !important;
+      align-items: center !important;
+      gap: 8px !important;
+      border: 1px solid rgba(227, 220, 200, 0.9) !important;
+      border-radius: 9999px !important;
+      background: rgba(255, 255, 255, 0.62) !important;
+      box-shadow: none !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-vera-search svg {
+      width: 16px !important;
+      height: 16px !important;
+      color: #6a7a9a !important;
+      stroke: #6a7a9a !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-vera-search input {
+      width: 100% !important;
+      min-width: 0 !important;
+      height: 100% !important;
+      padding: 0 !important;
+      border: 0 !important;
+      outline: 0 !important;
+      background: transparent !important;
+      color: #5f7573 !important;
+      -webkit-text-fill-color: #5f7573 !important;
+      font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      line-height: 1 !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-vera-search input::placeholder {
+      color: #5f7573 !important;
+      -webkit-text-fill-color: #5f7573 !important;
+      opacity: 0.82 !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-vera-search kbd {
+      min-width: 34px !important;
+      height: 20px !important;
+      padding: 0 6px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 1px solid #e3dcc8 !important;
+      border-radius: 7px !important;
+      background: rgba(255, 255, 255, 0.8) !important;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+      font-size: 0 !important;
+      line-height: 1 !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-vera-search kbd::before {
+      content: "Cmd K" !important;
+      color: #5f7573 !important;
+      -webkit-text-fill-color: #5f7573 !important;
+      font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+      font-size: 10px !important;
+      font-weight: 500 !important;
+      line-height: 1 !important;
+      letter-spacing: 0 !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-user-actions {
+      justify-self: end !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-message-trigger,
+    html body .topbar.workspace-topbar .notification-trigger {
+      position: relative !important;
+      width: 36px !important;
+      min-width: 36px !important;
+      height: 36px !important;
+      min-height: 36px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 1px solid rgba(227, 220, 200, 0.86) !important;
+      border-radius: 9999px !important;
+      background: rgba(255, 255, 255, 0.66) !important;
+      color: #1f332c !important;
+      -webkit-text-fill-color: #1f332c !important;
+      box-shadow: 0 1px 2px rgba(31, 51, 44, 0.04), 0 2px 8px -2px rgba(31, 51, 44, 0.08) !important;
+    }
+
+    html body .topbar.workspace-topbar .cg-message-trigger svg,
+    html body .topbar.workspace-topbar .notification-trigger svg {
+      width: 20px !important;
+      height: 20px !important;
+      color: #1f332c !important;
+      stroke: #1f332c !important;
+    }
+
+    html body .topbar.workspace-topbar .notification-trigger strong {
+      position: absolute !important;
+      right: -5px !important;
+      top: -5px !important;
+      width: 18px !important;
+      height: 18px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 9999px !important;
+      background: #4db6ac !important;
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      font-size: 10px !important;
+      font-weight: 700 !important;
+      line-height: 1 !important;
+    }
+
+    html body .topbar.workspace-topbar .account-menu-trigger,
+    html body .topbar.workspace-topbar .nav-actions .account-menu-trigger,
+    html body .topbar.workspace-topbar .cg-avatar-trigger {
+      width: 36px !important;
+      min-width: 36px !important;
+      height: 36px !important;
+      min-height: 36px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 0 !important;
+      border-radius: 9999px !important;
+      background: #1f332c !important;
+      box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+      color: #f8f4ea !important;
+      -webkit-text-fill-color: #f8f4ea !important;
+    }
+
+    html body .topbar.workspace-topbar .account-menu-trigger :is(span, strong, i),
+    html body .topbar.workspace-topbar .nav-actions .account-menu-trigger :is(span, strong, i),
+    html body .topbar.workspace-topbar .cg-avatar-trigger span {
+      color: #f8f4ea !important;
+      -webkit-text-fill-color: #f8f4ea !important;
+      font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      line-height: 1 !important;
+      letter-spacing: 0 !important;
+    }
+
+    html body .topbar.workspace-topbar .account-menu {
+      top: calc(100% + 10px) !important;
+      right: 0 !important;
+    }
+
+    @media (max-width: 1180px) {
+      html body .topbar.workspace-topbar .nav-inner {
+        width: min(100% - 32px, 1240px) !important;
+        grid-template-columns: auto 1fr auto !important;
+        gap: 18px !important;
+      }
+
+      html body .topbar.workspace-topbar .cg-vera-search {
+        display: none !important;
+      }
+
+      html body .topbar.workspace-topbar .cg-workspace-tabs {
+        overflow-x: auto !important;
+        scrollbar-width: none !important;
+      }
+
+      html body .topbar.workspace-topbar .cg-workspace-tabs::-webkit-scrollbar {
+        display: none !important;
+      }
+    }
   `;
   document.head.appendChild(style);
 }
@@ -2033,12 +2326,18 @@ function renderNavigation() {
   if (!navInner) return;
   const state = readState();
   const loggedIn = Boolean(state.session.loggedIn);
-  const publicPages = new Set(["home", "login", "register", "jobs", "companies", "universities"]);
-  const forcePublicNav = publicPages.has(document.body.dataset.page || "home");
-  navInner.innerHTML = loggedIn && !forcePublicNav ? workspaceTopNav() : publicNav();
+  const page = document.body.dataset.page || "home";
+  const publicPages = new Set(["home", "login", "register", "jobs", "companies", "universities", "community"]);
+  const workspacePages = new Set(["dashboard", "discover", "grow", "market", "autopilot", "posts", "profile"]);
+  const forcePublicNav = publicPages.has(page);
+  const useWorkspaceNav = workspacePages.has(page) || (loggedIn && !forcePublicNav);
+  topbar.classList.toggle("workspace-topbar", useWorkspaceNav);
+  topbar.classList.toggle("public-topbar", !useWorkspaceNav);
+  topbar.dataset.navMode = useWorkspaceNav ? "workspace" : "public";
+  navInner.innerHTML = useWorkspaceNav ? workspaceTopNav() : publicNav();
   ensureWorkspaceNavbarStyles();
   if (mobileNav) {
-    mobileNav.innerHTML = loggedIn && !forcePublicNav
+    mobileNav.innerHTML = useWorkspaceNav
       ? ""
       : `<a href="jobs.html">Jobs</a><a href="companies.html">Companies</a><a href="universities.html">Universities</a><a href="community.html">Community</a><a href="login.html">Login</a><a href="register.html">Create Account</a>`;
   }

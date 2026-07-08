@@ -18,6 +18,321 @@ body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public
   border-bottom: 1px solid rgba(229, 231, 235, 0.72) !important;
 }
 
+/* Keep this last: directory pages load this file after enterprise.css, so this
+   final lock keeps their public navbar identical to index.html. */
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
+  height: 82px !important;
+  min-height: 82px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #eef0ee !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .nav-inner {
+  width: min(1410px, calc(100% - 72px)) !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  display: grid !important;
+  grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr) !important;
+  align-items: center !important;
+  gap: 32px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-logo {
+  width: 118px !important;
+  max-width: 118px !important;
+  height: auto !important;
+  max-height: 46px !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-text {
+  display: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav {
+  gap: 34px !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a {
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions {
+  gap: 24px !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn {
+  height: 44px !important;
+  min-height: 44px !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary {
+  min-width: 148px !important;
+  padding-inline: 28px !important;
+  background: #0f4c5c !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Must stay last: directory pages load this stylesheet after enterprise.css. */
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
+  height: 82px !important;
+  min-height: 82px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #eef0ee !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .nav-inner {
+  width: min(1410px, calc(100% - 72px)) !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  display: grid !important;
+  grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr) !important;
+  align-items: center !important;
+  gap: 32px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-logo {
+  width: 118px !important;
+  max-width: 118px !important;
+  height: auto !important;
+  max-height: 46px !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-text {
+  display: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav {
+  gap: 34px !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a {
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions {
+  gap: 24px !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn {
+  height: 44px !important;
+  min-height: 44px !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary {
+  min-width: 148px !important;
+  padding-inline: 28px !important;
+  background: #0f4c5c !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Public navbar parity: companies/universities load this file after enterprise.css,
+   so keep their top navigation exactly aligned with index.html. */
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  border-bottom: 1px solid #eef0ee !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav)::before,
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav)::after {
+  content: none !important;
+  display: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .nav-inner {
+  width: min(1410px, calc(100% - 72px)) !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr) !important;
+  align-items: center !important;
+  gap: 32px !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-brand {
+  justify-self: start !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-logo {
+  display: block !important;
+  width: 118px !important;
+  max-width: 118px !important;
+  height: auto !important;
+  max-height: 46px !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-text {
+  display: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav {
+  justify-self: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 34px !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a {
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-decoration: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a:hover,
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a.active {
+  color: #0f4c5c !important;
+  -webkit-text-fill-color: #0f4c5c !important;
+  background: transparent !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions {
+  justify-self: end !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 24px !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 22px !important;
+  border-radius: 999px !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-decoration: none !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-ghost {
+  min-width: auto !important;
+  padding-inline: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary {
+  min-width: 148px !important;
+  padding-inline: 28px !important;
+  border: 1px solid #0f4c5c !important;
+  background: #0f4c5c !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 14px 28px rgba(15, 76, 92, 0.14) !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary:hover {
+  border-color: #0b3e4c !important;
+  background: #0b3e4c !important;
+}
+
+@media (max-width: 900px) {
+  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
+    height: auto !important;
+    min-height: 72px !important;
+  }
+
+  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .nav-inner {
+    width: min(100% - 32px, 1410px) !important;
+    height: 72px !important;
+    min-height: 72px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+
+  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav {
+    display: none !important;
+  }
+
+  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-logo {
+    width: 106px !important;
+  }
+
+  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions {
+    gap: 14px !important;
+  }
+
+  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary {
+    min-width: 126px !important;
+    padding-inline: 18px !important;
+  }
+}
+
 body:is([data-page="companies"], [data-page="universities"]) .topbar {
   position: sticky !important;
   top: 0 !important;
@@ -430,8 +745,119 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-empty
 }
 
 body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
-  height: 72px !important;
-  min-height: 72px !important;
-  background: rgba(255, 255, 255, 0.88) !important;
-  border-bottom: 1px solid rgba(229, 231, 235, 0.72) !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #eef0ee !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .nav-inner {
+  width: min(1410px, calc(100% - 72px)) !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  display: grid !important;
+  grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr) !important;
+  align-items: center !important;
+  gap: 32px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-logo {
+  width: 118px !important;
+  max-width: 118px !important;
+  height: auto !important;
+  max-height: 46px !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-text {
+  display: none !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav {
+  gap: 34px !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a {
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions {
+  gap: 24px !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn {
+  height: 44px !important;
+  min-height: 44px !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary {
+  min-width: 148px !important;
+  padding-inline: 28px !important;
+  background: #0f4c5c !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Match public directory CTAs to the dashboard deep teal action color. */
+html body:is([data-page="companies"], [data-page="universities"])
+  :is(.public-site-actions .btn-primary, .btn-primary, .search-button, .company-review-link) {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
+  color: #f8f7f4 !important;
+  -webkit-text-fill-color: #f8f7f4 !important;
+  box-shadow: 0 18px 34px rgba(7, 56, 47, 0.18) !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"])
+  :is(.public-site-actions .btn-primary, .btn-primary, .search-button, .company-review-link):hover {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Keep directory pages aligned with the public teal action color. */
+html body:is([data-page="companies"], [data-page="universities"]) {
+  --cg-primary: #0b6d65 !important;
+  --cg-primary-hover: #004a41 !important;
+  --home-teal: #0b6d65 !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"])
+  :is(.topbar:has(.public-site-nav) .public-site-actions .btn-primary, .btn-primary, .search-button, .company-review-link, .filter-tab.active, .directory-tab.active) {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
+  color: #f8f7f4 !important;
+  -webkit-text-fill-color: #f8f7f4 !important;
+  box-shadow: 0 18px 34px rgba(7, 56, 47, 0.18) !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"])
+  :is(.topbar:has(.public-site-nav) .public-site-actions .btn-primary, .btn-primary, .search-button, .company-review-link, .filter-tab.active, .directory-tab.active):hover {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"])
+  :is(.topbar:has(.public-site-nav) .public-site-nav a:hover, .topbar:has(.public-site-nav) .public-site-nav a.active) {
+  color: #0b6d65 !important;
+  -webkit-text-fill-color: #0b6d65 !important;
 }

@@ -1,159 +1,278 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file gives future agents the current working rules for the CareerGo repository.
 
-**CRITICAL RULE:** 任何代码上传（如 `git push`）到 GitHub 之前，必须先询问用户并获得明确同意。
+**Critical rule:** Never push code to GitHub or run destructive git commands unless the user explicitly asks for it.
 
-## Running the prototype
+## Project Status
 
-Open `careergo.html` directly in a browser — no build step, no server required. All dependencies load from CDN at runtime. Double-click the file or use `start careergo.html` on Windows.
+CareerGo is now a static, multi-page prototype. Do not treat it as the older single React/CDN app. Most user-facing screens are plain HTML files styled by shared CSS.
 
-## Project context
+Open pages directly in the browser. No build step is required.
 
-CareerGo v3 is an **AI-guided career platform** and Career Operating System. It should feel like a complete, useful website rather than a visual-only hackathon demo. The product should help candidates make real career decisions across jobs, company research, university research, applications, market value, and mentoring.
+Primary files:
 
-**Product narrative:** The platform helps users navigate their long-term career journey with intelligence, research, applications, simulation, automation, and active mentorship from Vera. The core flow is: Start with Vera -> explore jobs -> research companies/universities -> compare choices -> apply with evidence -> track progress.
+- Public marketing pages: `index.html`, `jobs.html`, `companies.html`, `universities.html`, `community.html`, `login.html`, `register.html`
+- Logged-in workspace pages: `dashboard.html`, `discover.html`, `grow.html`, `market.html`, `autopilot.html`, `posts.html`, `profile.html`, `settings.html`, `saved.html`, `edit-career-data.html`, `vera.html`
+- Shared public/user styling: `enterprise.css`
+- Directory browser styling: `directory-final.css`
+- Feed styling: `feed-final.css`
+- Profile styling: `profile-final.css`
+- Browser interactions and shared behavior: `app.js`
 
-**Vera product principle:** Vera is not a simple chatbot or passive Q&A box. Vera should feel like the user's career life coach, gym coach, and teacher combined: warm from day one, aware of the user's profile, and proactive about what the user should do next. Chat is only one surface for Vera; the larger idea is that CareerGo is AI-guided everywhere.
+Every page should keep a `body data-page="..."` attribute. Many final CSS rules depend on it.
 
-**Research principle:** Company and university research is a first-class workflow. Users should be able to check backgrounds, ratings, review themes, culture, salary/outcome signals, highlights, watchouts, and comparisons before applying or choosing a career path.
+## Product Direction
 
-**What should feel real:** UI/UX, workflows, mock data, visual polish, product storytelling, organization research, reviews, comparison, and Vera's continuous mentor presence.
-**What is simulated:** AI reasoning, market data, salary figures, job matches, ratings, reviews, and analytics are local mock data for the current static build. Interactions such as saving jobs, applying, filtering, comparing, and writing reviews should work in-session.
+CareerGo is an AI-guided career operating system. It should feel polished, useful, and editorial, not like a generic admin dashboard.
 
-## Architecture
+Core product surfaces:
 
-Single HTML app mirrored in both `index.html` and `careergo.html`. All markup, styles, data, and logic live in the file. React 18 is loaded via CDN; Babel Standalone compiles JSX in the browser at runtime.
+- Today: daily career brief, Vera focus, tasks, applications, roles, long-term growth
+- Discover: logged-in career discovery hub for roles, companies, universities, programmes, mentors
+- Grow: coaching, milestones, interview prep, skill graph, highest-return learning moves
+- Worth: career value, market benchmarks, ROI, scenarios, salary negotiation
+- Pipeline: applications, follow-ups, relationship signals, weekly job-search momentum
+- Feed: community learning feed and inbox-style messaging
+- Profile: professional user profile and career data, based on the user design system
 
-**CDN dependencies (in `<head>`):**
-- `react@18` + `react-dom@18` (production builds)
-- `@babel/standalone` (in-browser JSX compilation)
-- Tailwind CSS CDN with a custom `tailwind.config` block
-- `lucide@latest` (exposes icons on `window.lucide`)
+Vera should feel proactive. She is not only a chat box. The UI should make Vera feel like a coach that reads the user's profile, market, pipeline, and next move.
 
-**`<script type="text/babel" data-presets="react">` block order (v3):**
-1. `Icon` component — wraps Lucide via DOM refs
-2. Mock data: `jobs`, `companies`, `universities`, `baseReviews`, `profile`
-3. Shared UI: `Rating`, `Button`, `SectionTitle`, `VeraCard`, `TopNav`
-4. Main pages: `Home`, `JobsPage`, `ResearchPage`, `Dashboard`, `EmployersPage`
-5. Review workflow: `ReviewModal`
-6. `App` top-level router with query-string support (`?page=jobs`, `?page=research`, etc.)
+## Page Separation Rules
 
-## Critical patterns
+There are two different concepts that must not be mixed:
 
-### Icon component
-**Never** use Lucide icons directly in JSX. Always use the `Icon` wrapper:
-```jsx
-<Icon name="trending-up" size={20} className="text-emerald-600"/>
-```
-Icon names use kebab-case (`brain-circuit`, `arrow-right`). For icon color via inline style, wrap in a span:
-```jsx
-<span style={{color:'#FDBA2D'}}><Icon name="sparkles" size={14}/></span>
-```
+- `jobs.html` is the public Jobs page for guests and marketing visitors.
+- `discover.html` is the logged-in Discover workspace page.
 
-### Routing
-Simple `page` state in `App`. Navigation via `go(page, opts)` callback. Valid page keys: `landing`, `login`, `register`, `onboard-candidate`, `onboard-employer`, `app`, `employer`.
+The logged-in workspace nav item `Discover` must link to `discover.html`, not `jobs.html`.
 
-Candidate app sub-views are in `CandidateApp`'s `views` object, keyed by string id: `dashboard`, `profile`, `jobs`, `companion`, `pay`, `auto`.
+Likewise:
 
-### CANDIDATE_NAV (current)
-```js
-const CANDIDATE_NAV=[
-  {id:'dashboard', icon:'layout-dashboard', tk:'appDashboard', tourStep:null},
-  {id:'profile',   icon:'brain-circuit',    tk:'appProfile',   tourStep:1},
-  {id:'jobs',      icon:'briefcase',         tk:'appJobs',      tourStep:4},
-  {id:'companion', icon:'bot',               tk:'appCompanion', tourStep:2},
-  {id:'pay',       icon:'bar-chart-2',       tk:'appMarket',    tourStep:3},
-  {id:'auto',      icon:'radar',             tk:'appAuto',      tourStep:5},
-];
-```
+- Public `companies.html` and `universities.html` are directory browser pages.
+- Logged-in Discover sections may link to those public directory pages only when the user explicitly chooses "Explore companies" or "Browse all universities".
+- `grow.html` is not a profile page. It must remain the Grow coaching page.
+- `profile.html` is the user profile page.
 
-### Translation system
-`LANG` object has `en` and `bm` keys. `useT(lang)` returns a `(key) => string` function. BM only active on landing page; app shows "coming soon" toast.
+## Design System
 
-### Tailwind custom tokens
-```js
-theme.extend: {
-  colors: { brand: {50–950}, deep:'#1e0a3c', gold:{300/400/500}, cyn:{300/400} },
-  boxShadow: { soft, card, glow, 'glow-sm' },
-  backgroundImage: { 'hero-gradient', 'sidebar-gradient', 'card-gradient' }
-}
-```
+Use the current CareerGo cream and forest-green editorial design system.
 
-### Design system — app (candidate dashboard area)
-| Role | Value |
-|------|-------|
-| Brand purple | `#5B2EFF` (Tailwind: `brand-700`) |
-| Light purple | `#8A63FF` |
-| Gold accent | `#FDBA2D` (Tailwind: `gold-400`) |
-| Teal success | `#1D9E75` |
-| Amber warning | `#EF9F27` |
-| Dark bg | `#0d0222` / `#1A0146` |
-| Card bg | white |
-| App background | `#F8FAFC` (slate-50) |
+### Colors
 
-For dark section headers (Autopilot command, Career Intelligence banner, Dashboard hero):
-```js
-background: 'linear-gradient(135deg,#1A0146 0%,#0d0222 60%,#1a1060 100%)'
+Primary values:
+
+- Page background: `#F8F7F4`
+- Primary text / deep slate: `#1E293B`
+- Main brand green: `#0F4C5C`
+- New public CTA teal: `#0b6d65`
+- Deep teal hover: `#004a41`
+- Dark priority surface start: `#07382f`
+- Mint accent: `#4DB6AC`
+- Muted surface: `#F2F3F5`
+- Border: `#E5E7EB`
+- Error: `#B91C1C`
+- Warning recommendation: `#D97706`
+
+Signature gradients:
+
+```css
+linear-gradient(120deg, #07382f 0%, #004a41 45%, #0b6d65 100%)
+linear-gradient(90deg, #004a41 0%, #0b6d65 100%)
+linear-gradient(180deg, #0b6d65 0%, #004a41 100%)
 ```
 
-### CSS class reference (custom, in `<style>` block)
-**Batch A:** `.tour-backdrop`, `.tour-spotlight`, `.tour-tooltip`, `.tour-dot`, `@keyframes ringDraw`, `.health-arc`, `.metric-tip`, `.metric-tip-anchor`, `@keyframes streakGlow`, `.streak-bar-fill`, `.future-card`, `.quick-chip`, `.interview-type-chip`, `.dim-bar-track`, `.dim-bar-fill`
+Public primary CTAs on `index.html`, `jobs.html`, `companies.html`, `universities.html`, and `community.html` should use the new teal gradient, not the older blue-teal button color.
 
-**Batch B:** `@keyframes radarPing`, `.radar-ping`, `.ap-toggle`, `.ap-toggle.on`, `.ap-toggle-thumb`, `.market-tab`, `.market-tab.active`, `.profile-dim-bar`, `.profile-dim-fill`
+### Typography
 
-**Batch C:** `.nav-link`, `.nav-link:hover`, `.nav-link.active`, `.nav-gold-dot`, `.hover-lift`, `.skill-badge`, `.impact-tip`, `.impact-tooltip`, `.notif-dropdown`
+Use two font families:
 
-### LogoMark gradient IDs
-`LogoMark` uses `useMemo(()=>'lg'+Math.random()...,[])` to avoid SVG gradient ID collisions.
+- Inter for UI, body, buttons, labels
+- Fraunces for large editorial headings and display metrics
 
-### Scroll-reveal system (landing page only)
-- `reveal` class → fades in via IntersectionObserver
-- `stagger-reveal` + `stagger-child` → 80ms stagger on card grids
-- `step-item` → sequential reveal via `stepsRef`
+Expected sizing:
 
-### Gold CTA button (landing page)
-```jsx
-<button className="cta-gold inline-flex items-center gap-2 px-7 py-3.5 text-base font-bold" style={{borderRadius:20}}>
+- Hero H1: Fraunces 48-72px, weight 500, line-height about 1.05
+- Section H2: Fraunces 28-36px, weight 500
+- Large card title: Fraunces 22-24px
+- Card title H3: Fraunces 18px
+- Display metric: Fraunces 24-30px
+- Body large: Inter 18px, line-height 1.6
+- Body: Inter 14px, line-height 1.55
+- Body small: Inter 13px
+- Caption: Inter 12px
+- Eyebrow label: Inter 11-12px, weight 500, uppercase, letter-spacing about 0.18em
+- Nav link: Inter 14px
+- Default button: Inter 14px, weight 500
+
+Avoid negative letter spacing except where already established for Fraunces headings.
+
+### Layout
+
+Standard content rhythm:
+
+- Max content width: 1200px unless the existing page intentionally uses a wider hero surface
+- Page horizontal padding: 24px
+- Section vertical spacing: 64px mobile, 80-96px desktop
+- Dashboard section gap: 32px
+- Card grid gap: 16px compact, 24px default
+- Default card padding: 20px
+- Featured/hero card padding: 24-32px
+- Header height: 64px
+
+Use shared container classes already present in the repo where possible. Keep horizontal spacing consistent with `grow.html` for logged-in workspace pages.
+
+### Radius And Shadows
+
+- Pill buttons: full radius
+- Inline chips: 12-16px
+- Inputs: 12px
+- Standard cards: 16px
+- Hero preview outer cards: 28px
+- Hero preview inner cards: 22px
+- List rows: 8-10px
+- Progress bars: full radius
+
+Shadow tokens in use:
+
+```css
+--shadow-soft: 0 1px 2px rgba(15,23,42,.04), 0 2px 8px -2px rgba(15,23,42,.06)
+--shadow-elegant: 0 1px 2px rgba(15,76,92,.04), 0 8px 24px -12px rgba(15,76,92,.12)
+--shadow-lift: 0 2px 4px rgba(15,23,42,.04), 0 24px 48px -16px rgba(15,76,92,.18)
 ```
 
-## Mock data reference
+Use subtle shadows. The design should feel premium and calm, not heavy.
 
-| Constant | Purpose |
-|----------|---------|
-| `USER` | User profile — name, scores, skills, XP, market value |
-| `CAREER_PATHS` | Career path simulations (salary in RM) |
-| `JOBS` | 5 mock job listings with match %, impact, growth |
-| `CHECKLIST` | Skills growth checklist items |
-| `PAYOFF_SKILLS` | Skill → salary uplift mapping |
-| `PULSE_JOBS` | Job demand trend data |
-| `PULSE_SKILLS` | Skill demand index |
-| `INBOX_ITEMS` | Autopilot activity log items |
-| `TRACKED_APPS` | Application tracker mock entries |
+## Navigation Rules
 
-Currency: All in-app salary figures use RM (Malaysian Ringgit). `USER.marketValue` = 92000 (RM).
+There are two nav systems.
 
-## Current improvement targets (Prompt 1 — Batch D)
+### Public Navbar
 
-Next implementation batch covers these 3 pages:
+Used on:
 
-### Autopilot redesign
-- "Scan Jobs Only" secondary button (scan only, no auto-apply)
-- Autopilot Status Card (Active status, Last Scan, Scanned/Recommended/Applied/Saved stats)
-- Rules Panel expansion: work arrangement chips, employment type, experience level, company size, industry dropdown, visa/relocation toggles, commute slider, match threshold selector (70/80/90/95%), excluded companies tag input, excluded keywords tag input
-- "Advanced AI Rules" card pointing to AI Assistant
-- Activity Log: show 5 by default + "See All", status/score/date/industry filters, skipped-reason filter, summary bar
+- `index.html`
+- `jobs.html`
+- `companies.html`
+- `universities.html`
+- `community.html`
+- `login.html`
+- `register.html`
 
-### Market Intelligence redesign  
-- Career Worth Dashboard: Current (RM92k) / Target (RM120k) / Potential (RM145k) with breakdown by experience/skills/industry/location/leadership/demand
-- Career Value Explorer: role switcher (Product Designer → Senior → Lead → Design Manager → PM → Head of Product) that updates salary range + demand + hiring trend
-- Market Value Growth Simulator: replaces Skill Payoff — shows 4 scenarios with progressive value increases
-- Enhanced Market Signals: Emerging Roles section, Skills to Watch, Salary Trend Forecast (12/24/36mo), Industry Outlook, Remote Hiring Trend, Location Opportunity table
-- AI Market Insights panel: 3–5 mock AI-generated career insights
+This navbar should match `index.html`:
 
-### Jobs & Opportunities redesign
-- Community tab alongside Jobs tab: LinkedIn-style feed with ~5 mock posts, like/comment/bookmark interactions
-- Job card: "Why Recommended" checklist (✓ bullets) + "Why Not Recommended" (missing skills etc.)
-- Enhanced job metadata: Growth Potential, Promotion Potential, Interview Difficulty, Competition Level, Remote Friendliness, Career Alignment Score
-- AI Match Explanation section on each card
-- Filter improvements: Industry, Company Size, Salary Range, Career Impact, Growth Potential, Interview Difficulty, Work Arrangement
+- White background
+- CareerGo logo image on the left
+- Nav links: `Jobs`, `Companies`, `Universities`, `Community`
+- No bold active-state styling
+- Right actions: `Login` plain text and `Create Account` teal pill CTA
+- Shared markup should use `data-public-topbar` where present
+
+Do not make `companies.html` or `universities.html` use a different active-bold public nav. They should visually match the homepage navbar.
+
+### Logged-In Workspace Navbar
+
+Used on:
+
+- `dashboard.html`
+- `discover.html`
+- `grow.html`
+- `market.html`
+- `autopilot.html`
+- `posts.html`
+- `profile.html`
+- `settings.html`
+- `saved.html`
+- `edit-career-data.html`
+- `vera.html`
+
+This navbar should match the current dashboard workspace style:
+
+- CareerGo logo on the left
+- Tabs: `Today`, `Discover`, `Grow`, `Worth`, `Pipeline`, `Feed`
+- Active tab is a solid forest-green pill
+- Search bar says `Ask Vera anything...` with `⌘ K`
+- Chat and notification icon buttons
+- User avatar initials on the far right
+- Sticky at the top when scrolling
+
+Mapping:
+
+- `dashboard.html` -> Today
+- `discover.html` -> Discover
+- `grow.html` -> Grow
+- `market.html` -> Worth
+- `autopilot.html` -> Pipeline
+- `posts.html` -> Feed
+
+Profile/settings/saved/edit-career-data are account pages. Keep the same workspace navbar but do not invent new top-level nav labels unless the user asks.
+
+## CSS File Roles
+
+`enterprise.css` is the broad shared stylesheet. Most global visual language, nav normalization, page spacing, and public CTA colors live here.
+
+`directory-final.css` loads after `enterprise.css` on `companies.html` and `universities.html`. Any directory-specific override here wins over `enterprise.css`, so public navbar and CTA parity rules for directory pages may need to be repeated here.
+
+`feed-final.css` styles `posts.html`.
+
+`profile-final.css` styles `profile.html`.
+
+When fixing visual issues:
+
+- Prefer adding or editing the final relevant CSS layer rather than scattering inline styles.
+- Keep `data-page` selectors narrow.
+- Avoid touching unrelated pages.
+- Preserve existing HTML content unless the user asks for content changes.
+
+## Public Directory Pages
+
+`companies.html` and `universities.html` intentionally share one directory browser design. They use:
+
+- `data-page="companies"` or `data-page="universities"`
+- `data-directory="companies"` or `data-directory="universities"`
+- `directory-final.css`
+
+Companies and universities should be browseable in the same visual system and separable via tabs/categories. Do not use a gold premier ribbon unless the user explicitly asks for it.
+
+## User Profile Pages
+
+Profile work should follow the user page design system:
+
+- Cream/off-white page background
+- Large Fraunces editorial headings
+- White or soft cream cards with 16px radius
+- Pastel mint icon badges
+- Two-column card grids where useful
+- Portfolio/gallery cards may use teal grid-gradient preview surfaces
+- Right sidebar cards are acceptable for professional circle, hiring proof, suggested next steps
+
+`profile.html` is the public/user profile surface.
+`edit-career-data.html` is for editing account, education, skills, goals, preferences, documents, privacy, and Vera settings.
+`settings.html` is for application/account settings.
+
+## Implementation Guidance
+
+- Use `rg` first for searches.
+- Use `apply_patch` for manual edits.
+- Keep files ASCII unless an existing file already requires non-ASCII.
+- Do not remove user changes you did not make.
+- Do not confuse the public Jobs page with logged-in Discover.
+- Do not turn logged-in pages into public marketing pages.
+- Do not change content when the user asked for styling only.
+- When updating nav, prefer shared reusable markup/classes and keep the two nav systems separate.
+
+## Verification Checklist
+
+Before saying a change is complete, check the relevant pages for:
+
+- Correct page destination links
+- Correct navbar system for that page type
+- Correct active workspace tab
+- No old page accidentally reused for another purpose
+- No light text on light background or dark text on dark background
+- Cards do not overlap or crop text
+- Buttons fit their labels
+- Mobile-safe wrapping for headings and card rows
+- Public CTA color uses the new deep teal gradient where requested
+

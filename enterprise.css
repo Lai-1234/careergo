@@ -21069,9 +21069,304 @@ html body .topbar:has(.public-site-nav) {
   min-height: 72px !important;
   height: 72px !important;
   border-bottom: 1px solid rgba(229, 231, 235, 0.72) !important;
-  background: rgba(255, 255, 255, 0.88) !important;
+  background: #ffffff !important;
   backdrop-filter: blur(18px) !important;
   box-shadow: none !important;
+}
+
+
+/* Shared public navbar: index.html is the reference for all marketing/auth pages. */
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  border-bottom: 1px solid #eef0ee !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs))::before,
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs))::after {
+  content: none !important;
+  display: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-inner {
+  width: min(1410px, calc(100% - 72px)) !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr) !important;
+  align-items: center !important;
+  gap: 32px !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-brand {
+  justify-self: start !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .brand-logo {
+  display: block !important;
+  width: 118px !important;
+  max-width: 118px !important;
+  height: auto !important;
+  max-height: 46px !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .brand-text {
+  display: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav {
+  justify-self: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 34px !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav a {
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-decoration: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav a:hover,
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav a.active {
+  color: #0b6d65 !important;
+  -webkit-text-fill-color: #0b6d65 !important;
+  background: transparent !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions {
+  justify-self: end !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 24px !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions .btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 22px !important;
+  border-radius: 999px !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-decoration: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions .btn-ghost {
+  min-width: auto !important;
+  padding-inline: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions .btn-primary {
+  min-width: 148px !important;
+  padding-inline: 28px !important;
+  border: 1px solid #0b6d65 !important;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 18px 34px rgba(7, 56, 47, 0.18) !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions .btn-primary:hover {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
+}
+
+@media (max-width: 900px) {
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) {
+    height: auto !important;
+    min-height: 72px !important;
+  }
+
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-inner {
+    width: min(100% - 32px, 1410px) !important;
+    height: 72px !important;
+    min-height: 72px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav {
+    display: none !important;
+  }
+
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .brand-logo {
+    width: 106px !important;
+  }
+
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions {
+    gap: 14px !important;
+  }
+
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions .btn-primary {
+    min-width: 126px !important;
+    padding-inline: 18px !important;
+  }
+}
+
+/* Final public teal pass: use the dashboard deep teal instead of the old blue-teal. */
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"]) {
+  --home-v2-primary: #0b6d65 !important;
+  --home-v2-primary-hover: #004a41 !important;
+  --home-v2-accent-foreground: #0b6d65 !important;
+  --home-v2-ring: #0b6d65 !important;
+  --home-v2-gradient-brand: linear-gradient(120deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
+  --home-v2-gradient-bars: linear-gradient(180deg, #0b6d65 0%, #004a41 100%) !important;
+  --home-v2-gradient-progress: linear-gradient(90deg, #004a41 0%, #0b6d65 100%) !important;
+  --home-v2-gradient-priority: linear-gradient(135deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
+  --home-v2-gradient-tint: linear-gradient(120deg, rgba(11, 109, 101, 0.06) 0%, rgba(77, 182, 172, 0.1) 100%) !important;
+  --cg-heading: #0b6d65 !important;
+  --cg-primary: #0b6d65 !important;
+  --cg-primary-hover: #004a41 !important;
+  --home-teal: #0b6d65 !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"])
+  :is(.btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child, .public-site-actions .btn-primary, .search-button, .company-review-link, .compare-btn, .primary-action) {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
+  color: #f8f7f4 !important;
+  -webkit-text-fill-color: #f8f7f4 !important;
+  box-shadow: 0 18px 34px rgba(7, 56, 47, 0.18) !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"])
+  :is(.btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child, .public-site-actions .btn-primary, .search-button, .company-review-link, .compare-btn, .primary-action):hover {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"])
+  :is(.home-paybar span, .progress-fill, .bar-fill, .score-bar span, .comparison-score-bar span, .metric-progress span, .roadmap-progress span) {
+  background: linear-gradient(90deg, #004a41 0%, #0b6d65 100%) !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"]) .home-bars span {
+  background: linear-gradient(180deg, #0b6d65 0%, #004a41 100%) !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"])
+  .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav a:hover {
+  color: #0b6d65 !important;
+  -webkit-text-fill-color: #0b6d65 !important;
+}
+
+/* Final public-page action color override: match dashboard deep teal. */
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"]) {
+  --home-v2-primary: #0b6d65 !important;
+  --home-v2-primary-hover: #004a41 !important;
+  --home-v2-accent-foreground: #0b6d65 !important;
+  --home-v2-ring: #0b6d65 !important;
+  --home-v2-gradient-brand: linear-gradient(120deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
+  --home-v2-gradient-progress: linear-gradient(90deg, #004a41 0%, #0b6d65 100%) !important;
+  --home-v2-gradient-priority: linear-gradient(135deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"])
+  :is(.public-site-actions .btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child, .search-button, .compare-btn, .company-review-link) {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
+  color: #f8f7f4 !important;
+  -webkit-text-fill-color: #f8f7f4 !important;
+  box-shadow: 0 18px 34px rgba(7, 56, 47, 0.18) !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"])
+  :is(.public-site-actions .btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child, .search-button, .compare-btn, .company-review-link):hover {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Final public-page action color override: match dashboard deep teal. */
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"]) {
+  --home-v2-primary: #0b6d65 !important;
+  --home-v2-primary-hover: #004a41 !important;
+  --home-v2-accent-foreground: #0b6d65 !important;
+  --home-v2-ring: #0b6d65 !important;
+  --home-v2-gradient-brand: linear-gradient(120deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
+  --home-v2-gradient-progress: linear-gradient(90deg, #004a41 0%, #0b6d65 100%) !important;
+  --home-v2-gradient-priority: linear-gradient(135deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"])
+  :is(.public-site-actions .btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child, .search-button, .compare-btn, .company-review-link) {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
+  color: #f8f7f4 !important;
+  -webkit-text-fill-color: #f8f7f4 !important;
+  box-shadow: 0 18px 34px rgba(7, 56, 47, 0.18) !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"])
+  :is(.public-site-actions .btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child, .search-button, .compare-btn, .company-review-link):hover {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Public pages use the dashboard deep teal action color. */
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"])
+  :is(.public-site-actions .btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child, .search-button, .compare-btn, .company-review-link) {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
+  color: #f8f7f4 !important;
+  -webkit-text-fill-color: #f8f7f4 !important;
+  box-shadow: 0 18px 34px rgba(7, 56, 47, 0.18) !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"])
+  :is(.public-site-actions .btn-primary, .home-btn-primary, .home-search button, .home-cta-panel a:first-child, .search-button, .compare-btn, .company-review-link):hover {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 html body .topbar:has(.public-site-nav) .nav-inner {
@@ -21937,6 +22232,177 @@ html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container {
   html body[data-page="jobs"] main.workspace-page-container[data-jobs-page],
   html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container {
     width: min(100% - 32px, 1240px) !important;
+  }
+}
+
+/* Final public-navbar lock: keep index, jobs, companies, universities, community, login, and register identical. */
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  border-bottom: 1px solid #eef0ee !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs))::before,
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs))::after {
+  content: none !important;
+  display: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-inner {
+  width: min(1410px, calc(100% - 72px)) !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr) !important;
+  align-items: center !important;
+  gap: 32px !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-brand {
+  justify-self: start !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .brand-logo {
+  display: block !important;
+  width: 118px !important;
+  max-width: 118px !important;
+  height: auto !important;
+  max-height: 46px !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .brand-text {
+  display: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav {
+  justify-self: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 34px !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav a {
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-decoration: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav a:hover,
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav a.active {
+  color: #0b6d65 !important;
+  -webkit-text-fill-color: #0b6d65 !important;
+  background: transparent !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions {
+  justify-self: end !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 24px !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions .btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 22px !important;
+  border-radius: 999px !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-decoration: none !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions .btn-ghost {
+  min-width: auto !important;
+  padding-inline: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions .btn-primary {
+  min-width: 148px !important;
+  padding-inline: 28px !important;
+  border: 1px solid #0b6d65 !important;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 18px 34px rgba(7, 56, 47, 0.18) !important;
+}
+
+html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions .btn-primary:hover {
+  border-color: #0b6d65 !important;
+  background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
+}
+
+@media (max-width: 900px) {
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) {
+    height: auto !important;
+    min-height: 72px !important;
+  }
+
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .nav-inner {
+    width: min(100% - 32px, 1410px) !important;
+    height: 72px !important;
+    min-height: 72px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-nav {
+    display: none !important;
+  }
+
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .brand-logo {
+    width: 106px !important;
+  }
+
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions {
+    gap: 14px !important;
+  }
+
+  html body:is([data-page="home"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="community"], [data-page="login"], [data-page="register"]) .topbar:not(:has(.cg-workspace-tabs)) .public-site-actions .btn-primary {
+    min-width: 126px !important;
+    padding-inline: 18px !important;
   }
 }
 
