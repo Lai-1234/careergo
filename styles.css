@@ -12452,47 +12452,61 @@ body[data-page="home"] .home-metrics span {
     var(--emp-bg);
 }
 .emp-app-shell p { max-width: 72ch; }
-.emp-app-shell :is(h1, h2, h3) { font-family: var(--emp-serif); color: var(--emp-ink); font-weight: 650; letter-spacing: -0.02em; }
-.emp-app-shell :is(p, span, small, li, time, label, input, textarea, select, button) { font-family: var(--emp-sans); }
+/* !important + doubled .emp-app-shell.emp-app-shell below: styles.css carries a
+   long-standing global, unscoped !important cascade on .card/.btn/.pill/heading
+   colors (from earlier light/dark theme patches), some of which reach elevated
+   specificity via :is() lists that mix compound selectors (e.g. ".metric strong").
+   Repeating the class selector raises our specificity past all of it while
+   staying scoped to .emp-app-shell (present only in the Employer DOM), so
+   Employer tokens win without touching that cascade or the Candidate pages
+   that depend on it. */
+.emp-app-shell.emp-app-shell :is(h1, h2, h3) { font-family: var(--emp-serif) !important; color: var(--emp-ink) !important; font-weight: 650 !important; letter-spacing: -0.02em; }
+.emp-app-shell.emp-app-shell :is(p, span, small, li, time, label, input, textarea, select, button) { font-family: var(--emp-sans) !important; }
 
 /* Shared component tokens — every current and future Employer page inherits
    these automatically (Roles, Talent Pipeline, Company Profile, Feed, Settings)
    without needing page-specific overrides. */
-.emp-app-shell .card {
-  border-color: var(--emp-line);
+.emp-app-shell.emp-app-shell .card {
+  border-color: var(--emp-line) !important;
   border-radius: var(--emp-radius-card);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.78));
-  box-shadow: var(--emp-shadow-card);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.78)) !important;
+  box-shadow: var(--emp-shadow-card) !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
-.emp-app-shell .btn {
+.emp-app-shell.emp-app-shell .btn {
   border-radius: 999px;
-  font-family: var(--emp-sans);
+  font-family: var(--emp-sans) !important;
   font-weight: 700;
 }
-.emp-app-shell .btn-primary {
-  color: var(--emp-cream-text);
-  background: var(--emp-green);
-  border-color: var(--emp-green);
-  box-shadow: 0 10px 26px rgba(7, 56, 47, 0.22);
+.emp-app-shell.emp-app-shell .btn-primary {
+  color: var(--emp-cream-text) !important;
+  background: var(--emp-green) !important;
+  border-color: var(--emp-green) !important;
+  box-shadow: 0 10px 26px rgba(7, 56, 47, 0.22) !important;
 }
-.emp-app-shell .btn-ghost {
-  color: var(--emp-ink);
+.emp-app-shell.emp-app-shell .btn-ghost {
+  color: var(--emp-ink) !important;
   border: 1px solid var(--emp-line);
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.7) !important;
 }
-.emp-app-shell .pill {
-  font-family: var(--emp-sans);
-  color: var(--emp-ink);
-  background: rgba(7, 56, 47, 0.08);
+.emp-app-shell.emp-app-shell .pill {
+  font-family: var(--emp-sans) !important;
+  color: var(--emp-ink) !important;
+  background: rgba(7, 56, 47, 0.08) !important;
 }
-.emp-app-shell .pill.green { color: var(--emp-green); background: rgba(7, 56, 47, 0.12); }
-.emp-app-shell .pill.gold { color: #92400e; background: rgba(217, 119, 6, 0.12); }
-.emp-app-shell .pill.cyan { color: var(--emp-teal); background: rgba(106, 165, 157, 0.16); }
-.emp-app-shell .pill.red { color: #b91c1c; background: rgba(239, 68, 68, 0.1); }
-.emp-app-shell .emp-subtab.active { background: var(--emp-green-nav); color: var(--emp-cream-text); border-color: var(--emp-green-nav); }
-.emp-app-shell .emp-source-tag, .emp-app-shell .emp-tags-label { font-family: var(--emp-sans); }
+.emp-app-shell.emp-app-shell .pill.green { color: var(--emp-green) !important; background: rgba(7, 56, 47, 0.12) !important; }
+.emp-app-shell.emp-app-shell .pill.gold { color: #92400e !important; background: rgba(217, 119, 6, 0.12) !important; }
+.emp-app-shell.emp-app-shell .pill.cyan { color: var(--emp-teal) !important; background: rgba(106, 165, 157, 0.16) !important; }
+.emp-app-shell.emp-app-shell .pill.red { color: #b91c1c !important; background: rgba(239, 68, 68, 0.1) !important; }
+.emp-app-shell.emp-app-shell .emp-subtab.active { background: var(--emp-green-nav) !important; color: var(--emp-cream-text) !important; border-color: var(--emp-green-nav) !important; }
+.emp-app-shell.emp-app-shell .emp-source-tag, .emp-app-shell.emp-app-shell .emp-tags-label { font-family: var(--emp-sans) !important; }
+.emp-app-shell.emp-app-shell :is(.page-hero, .dashboard-hero, .market-hero, .os-module-header, .compact-dashboard-hero, .glass-card, .tool-card, .list-card, .filters, .detail-panel, .search-panel, .hero-discovery-engine, .field, .workspace-search, .custom-select-panel, .locked-state, .locked-panel, .modal, .score-tile, .metric, .pipeline-stage) :is(h1, h2, h3, h4, strong, label) {
+  color: var(--emp-ink) !important;
+}
+.emp-app-shell.emp-app-shell :is(.page-hero, .dashboard-hero, .market-hero, .os-module-header, .compact-dashboard-hero, .glass-card, .tool-card, .list-card, .filters, .detail-panel, .search-panel, .hero-discovery-engine, .field, .workspace-search, .custom-select-panel, .locked-state, .locked-panel, .modal, .score-tile, .metric, .pipeline-stage) :is(p, span, small, li) {
+  color: var(--emp-muted) !important;
+}
 
 /* ---------- Top navigation (replaces the old left sidebar) ---------- */
 .emp-app-header {
