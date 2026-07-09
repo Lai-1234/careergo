@@ -8951,7 +8951,7 @@ function employerNavigateTo(view, params = {}, options = {}) {
   root.scrollTop = 0;
 
   const nextHash = `#${view}${params.id ? "/" + params.id : ""}`;
-  if (location.hash !== nextHash) history.replaceState(null, "", nextHash);
+  if (location.hash !== nextHash) history.pushState(null, "", nextHash);
 }
 
 function getEmployerVeraContext() {
