@@ -12366,3 +12366,283 @@ body {
   border-color: rgba(11, 109, 101, 0.28) !important;
   background: rgba(11, 109, 101, 0.10) !important;
 }
+
+/* Login redesign */
+body[data-page="login"] {
+  background:
+    radial-gradient(circle at 82% 20%, rgba(77, 182, 172, 0.14), transparent 30%),
+    linear-gradient(180deg, #f8f7f4 0%, #f2f3ed 100%);
+}
+
+body[data-page="login"] .login-redesign {
+  width: min(1200px, calc(100% - 48px));
+  min-height: calc(100vh - 64px);
+  margin: 0 auto;
+  padding: 72px 0 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.32fr) minmax(360px, 0.9fr);
+  gap: 48px;
+  align-items: start;
+}
+
+body[data-page="login"] .login-story-card {
+  min-height: 560px;
+  padding: 32px;
+  border: 1px solid rgba(15, 41, 59, 0.08);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.82)),
+    radial-gradient(circle at 82% 18%, rgba(77, 182, 172, 0.13), transparent 36%);
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04), 0 24px 48px -16px rgba(15, 76, 92, 0.14);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+body[data-page="login"] .login-eyebrow {
+  margin: 0 0 16px;
+  color: #64748b;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+body[data-page="login"] .login-story-card h1,
+body[data-page="login"] .login-form-heading h2 {
+  margin: 0;
+  color: #1e293b;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(38px, 4vw, 50px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+body[data-page="login"] .login-story-copy,
+body[data-page="login"] .login-form-heading p:not(.login-eyebrow) {
+  margin: 20px 0 0;
+  max-width: 560px;
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+body[data-page="login"] .vera-coach-note {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid rgba(15, 41, 59, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body[data-page="login"] .vera-coach-note img {
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
+  padding: 6px;
+  border: 1px solid rgba(77, 182, 172, 0.35);
+  background: #f8f7f4;
+  object-fit: contain;
+}
+
+body[data-page="login"] .vera-coach-note p {
+  margin: 0 0 4px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+body[data-page="login"] .vera-coach-note span {
+  color: #1e293b;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+body[data-page="login"] .login-form-column {
+  padding-top: 4px;
+}
+
+body[data-page="login"] .login-form-card {
+  margin-top: 34px;
+  padding: 32px;
+  border: 1px solid rgba(15, 41, 59, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04), 0 24px 48px -16px rgba(15, 76, 92, 0.14);
+}
+
+body[data-page="login"] .login-social-stack {
+  display: grid;
+  gap: 12px;
+}
+
+body[data-page="login"] .login-social-button,
+body[data-page="login"] .login-submit {
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+body[data-page="login"] .login-social-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid #e5e7eb;
+  color: #1e293b;
+  background: #f8f7f4;
+}
+
+body[data-page="login"] .login-social-button span {
+  min-width: 18px;
+  color: #0b6d65;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+body[data-page="login"] .login-divider {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 28px 0;
+  color: #64748b;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+body[data-page="login"] .login-divider::before,
+body[data-page="login"] .login-divider::after {
+  content: "";
+  height: 1px;
+  background: #e5e7eb;
+}
+
+body[data-page="login"] .login-field {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+body[data-page="login"] .login-field > span:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+body[data-page="login"] .login-field a,
+body[data-page="login"] .login-create-account a {
+  color: #0b6d65;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+body[data-page="login"] .login-input-shell {
+  height: 44px;
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #f8f7f4;
+}
+
+body[data-page="login"] .login-input-shell svg {
+  width: 16px;
+  height: 16px;
+  color: #64748b;
+}
+
+body[data-page="login"] .login-input-shell input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: #1e293b;
+  background: transparent;
+  font: 400 14px/1.4 "Inter", system-ui, sans-serif;
+}
+
+body[data-page="login"] .login-input-shell input::placeholder {
+  color: #64748b;
+}
+
+body[data-page="login"] .login-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+body[data-page="login"] .login-remember input {
+  width: 16px;
+  height: 16px;
+  accent-color: #0b6d65;
+}
+
+body[data-page="login"] .login-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 26px;
+  border: 0;
+  color: #fffaf2;
+  background: linear-gradient(135deg, #06382d 0%, #0b6d65 100%);
+  box-shadow: 0 18px 42px rgba(6, 56, 45, 0.18);
+}
+
+body[data-page="login"] .login-submit svg {
+  width: 16px;
+  height: 16px;
+}
+
+body[data-page="login"] .login-create-account {
+  margin: 24px 0 0;
+  color: #64748b;
+  text-align: center;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  body[data-page="login"] .login-redesign {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-top: 40px;
+  }
+
+  body[data-page="login"] .login-story-card {
+    min-height: 420px;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-page="login"] .login-redesign {
+    width: min(100% - 32px, 1200px);
+  }
+
+  body[data-page="login"] .login-story-card,
+  body[data-page="login"] .login-form-card {
+    padding: 22px;
+    border-radius: 20px;
+  }
+}
