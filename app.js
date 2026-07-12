@@ -2444,14 +2444,23 @@ function ensureBrandFonts() {
 
 function renderSiteFooter() {
   const host = qs(".site-shell") || document.body;
-  let footer = qs(".site-footer");
+  const page = document.body.dataset.page || "home";
+  const footerPages = new Set(["home", "jobs", "companies", "universities", "community"]);
+  const existingFooter = qs(".site-footer");
+
+  if (!footerPages.has(page)) {
+    existingFooter?.remove();
+    return;
+  }
+
+  let footer = existingFooter;
   if (!footer) {
     footer = document.createElement("footer");
     footer.className = "site-footer";
     host.appendChild(footer);
   }
 
-  if (document.body.dataset.page === "home") {
+  if (page === "home") {
     footer.innerHTML = `
       <div class="footer-wrap">
         <div class="footer-grid">

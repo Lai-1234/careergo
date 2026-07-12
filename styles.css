@@ -41,6 +41,10 @@ body {
   overflow-x: clip;
 }
 
+body[data-page="jobs"] {
+  background: #FAF7F2;
+}
+
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
 a { color: inherit; text-decoration: none; }
@@ -10979,6 +10983,10 @@ body {
     radial-gradient(circle at 8% -8%, rgba(251, 191, 36, 0.16), transparent 30%),
     radial-gradient(circle at 92% 0%, rgba(47, 174, 122, 0.12), transparent 28%),
     linear-gradient(135deg, #FAF7F2 0%, rgba(250, 247, 242, 0.92) 48%, rgba(251, 191, 36, 0.10) 100%) !important;
+}
+
+body[data-page="jobs"] {
+  background: #FAF7F2 !important;
 }
 
 .site-shell,
