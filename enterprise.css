@@ -18892,6 +18892,24 @@ html body:is([data-page="home"], [data-page="about"], [data-page="community"], [
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 8px -2px rgba(15, 23, 42, 0.06) !important;
 }
 
+html body[data-page="home"] .home-cta-panel {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #0f4c5c 0%, #0b6d65 100%) !important;
+  border-color: transparent !important;
+  box-shadow: 0 28px 70px rgba(15, 89, 105, 0.18) !important;
+}
+
+html body[data-page="home"] .home-cta-panel h2,
+html body[data-page="home"] .home-cta-panel p,
+html body[data-page="home"] .home-cta-panel a {
+  color: inherit !important;
+}
+
+html body[data-page="home"] .home-cta-panel a:last-child {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
 html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"]) :is(.btn-ghost, .home-btn-secondary, .home-cta-panel a:last-child, .pill, .tag, .chip) {
   color: #64748b !important;
   background: #f2f3f5 !important;
