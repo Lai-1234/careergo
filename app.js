@@ -1367,9 +1367,8 @@ function publicNav() {
     <a class="brand public-site-brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
     <nav class="nav-links public-site-nav" aria-label="Public navigation">
       ${[
-        ["jobs", "Jobs", "jobs.html"],
-        ["companies", "Companies", "companies.html"],
-        ["universities", "Universities", "universities.html"],
+        ["jobs", "Explore", "jobs.html"],
+        ["companies", "Opportunities", "companies.html"],
         ["community", "Community", "community.html"]
       ].map(([, label, href]) => `<a href="${href}">${label}</a>`).join("")}
     </nav>
@@ -2339,7 +2338,7 @@ function renderNavigation() {
   if (mobileNav) {
     mobileNav.innerHTML = useWorkspaceNav
       ? ""
-      : `<a href="jobs.html">Jobs</a><a href="companies.html">Companies</a><a href="universities.html">Universities</a><a href="community.html">Community</a><a href="login.html">Login</a><a href="register.html">Create Account</a>`;
+      : `<a href="jobs.html">Explore</a><a href="companies.html">Opportunities</a><a href="community.html">Community</a><a href="login.html">Login</a><a href="register.html">Create Account</a>`;
   }
   createIcons();
   setActiveNav();
