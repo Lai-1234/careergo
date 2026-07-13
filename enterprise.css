@@ -10757,10 +10757,8 @@ html body[data-page="edit-career-data"] .cg-edit-savebar div {
 }
 
 html body[data-page="discover"]:has(.cg-discover-v2) {
-  background:
-    radial-gradient(circle at 52% -6%, rgba(205, 220, 208, 0.28), transparent 30rem),
-    linear-gradient(180deg, #f8f4eb 0%, #f6f1e7 100%) !important;
-  color: #0b3b33 !important;
+  background: var(--cg-shot-bg) !important;
+  color: var(--cg-shot-ink) !important;
 }
 
 html body[data-page="discover"]:has(.cg-discover-v2) main[data-jobs-page] {
@@ -11287,19 +11285,6 @@ html body[data-page="discover"] .cg-discover-v2 .cg-bars i {
   flex: 1 1 0 !important;
   min-width: 8px !important;
   border-radius: 7px 7px 3px 3px !important;
-  background: linear-gradient(180deg, #0b7a72 0%, #b9d9d4 100%) !important;
-}
-
-html body[data-page="discover"] .cg-discover-v2 .cg-market-card.tone-blue .cg-bars i {
-  background: linear-gradient(180deg, #367da1 0%, #cae4ee 100%) !important;
-}
-
-html body[data-page="discover"] .cg-discover-v2 .cg-market-card.tone-gold .cg-bars i {
-  background: linear-gradient(180deg, #b5892e 0%, #eadfbf 100%) !important;
-}
-
-html body[data-page="discover"] .cg-discover-v2 .cg-market-card.tone-rose .cg-bars i {
-  background: linear-gradient(180deg, #b77c6b 0%, #ecd5cf 100%) !important;
 }
 
 html body[data-page="discover"] .cg-discover-v2 .cg-market-card dl,
@@ -11327,7 +11312,7 @@ html body[data-page="discover"] .cg-discover-v2 dd {
 
 html body[data-page="discover"] .cg-discover-v2 .cg-collection-grid {
   display: grid !important;
-  grid-template-columns: 2fr 1fr !important;
+  grid-template-columns: 1fr !important;
   gap: 18px !important;
 }
 
@@ -11341,7 +11326,7 @@ html body[data-page="discover"] .cg-discover-v2 .cg-collection-card {
 }
 
 html body[data-page="discover"] .cg-discover-v2 .cg-collection-card.small {
-  max-width: 470px !important;
+  max-width: none !important;
 }
 
 html body[data-page="discover"] .cg-discover-v2 .cg-collection-card span {

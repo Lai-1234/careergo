@@ -3526,6 +3526,12 @@ function renderJobsPage() {
       ["Matches your background", "Hiring +21%", "Design-first PMs", "RM 132k / year", "54% remote-friendly", "96 new openings", "gold"],
       ["Your region", "Hiring +12%", "KL fintech product hubs", "RM 128k / year", "38% remote-friendly", "204 new openings", "rose"]
     ];
+    const barRamp = {
+      teal: ["#b9d9d4", "#a0cbc6", "#87beb8", "#6eb0aa", "#56a39c", "#3d958e", "#248880", "#0b7a72"],
+      blue: ["#cae4ee", "#b5d5e3", "#a0c7d8", "#8bb8cd", "#75a9c2", "#609ab7", "#4b8cac", "#367da1"],
+      gold: ["#eadfbf", "#e2d3aa", "#dbc696", "#d3ba81", "#ccae6c", "#c4a257", "#bd9543", "#b5892e"],
+      rose: ["#ecd5cf", "#e4c8c1", "#ddbcb2", "#d5afa4", "#cea296", "#c69588", "#bf8979", "#b77c6b"]
+    };
     const collections = [
       ["12 companies", "Fast-growing AI companies hiring PMs in Malaysia", "12 teams where the AI stack IS the product. Weighted by funding velocity, headcount growth in KL/Penang, and open PM roles.", "Because your last 4 saved roles were AI-native.", "large"],
       ["8 companies", "Startups with strong work-life balance", "Async-first Malaysian teams. Median 34h weeks, no on-call PM culture, hybrid-friendly.", "Matches your working-style profile.", ""],
@@ -3634,7 +3640,7 @@ function renderJobsPage() {
               <article class="cg-market-card tone-${tone}">
                 <div><span>${icon("zap")} ${tag}</span><small>${icon("trending-up")} ${trend}</small></div>
                 <h3>${title}</h3><a href="vera.html?topic=${encodeURIComponent(title)}" aria-label="Explore ${title}">${icon("arrow-up-right")}</a>
-                <div class="cg-bars">${Array.from({ length: 12 }, (_, i) => `<i style="height:${14 + ((i + index) % 8) * 5}px"></i>`).join("")}</div>
+                <div class="cg-bars">${Array.from({ length: 12 }, (_, i) => { const step = (i + index) % 8; return `<i style="height:${14 + step * 5}px;background:${barRamp[tone][step]}"></i>`; }).join("")}</div>
                 <dl><dt>Avg. salary (MY)</dt><dd>${salary}</dd><dt>Remote share</dt><dd>${remote}</dd><dt>Openings</dt><dd>${openings}</dd></dl>
               </article>
             `).join("")}
