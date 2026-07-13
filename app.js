@@ -1118,27 +1118,9 @@ function initDashboardTour() {
   if (!state.session.loggedIn || !state.onboarding.candidateDone) return;
   const tour = getDashboardTourState();
   if (tour.status === "completed" || tour.status === "skipped") {
-    injectTourRestart();
     return;
   }
   window.setTimeout(() => showDashboardTourStep(tour.step || 0), 180);
-}
-
-function injectTourRestart() {
-  if (qs("[data-restart-tour]")) return;
-  const target = qs("[data-tour-target='dashboard-hero'] .hero-actions") || qs("[data-tour-target='dashboard-hero']");
-  if (!target) return;
-  const btn = document.createElement("button");
-  btn.className = "btn btn-ghost tour-restart-btn";
-  btn.type = "button";
-  btn.dataset.restartTour = "";
-  btn.innerHTML = `${icon("map")} Replay tour`;
-  btn.addEventListener("click", () => {
-    saveDashboardTour({ status: "active", step: 0, startedAt: nowStamp() });
-    showDashboardTourStep(0);
-  });
-  target.appendChild(btn);
-  createIcons();
 }
 
 function removeDashboardTour() {
@@ -1194,14 +1176,12 @@ function showDashboardTourStep(index) {
   qs("[data-tour-skip]", card).addEventListener("click", () => {
     saveDashboardTour({ status: "skipped", step: stepIndex, skippedAt: nowStamp() });
     removeDashboardTour();
-    injectTourRestart();
   });
   qs("[data-tour-back]", card).addEventListener("click", () => showDashboardTourStep(stepIndex - 1));
   qs("[data-tour-next]", card).addEventListener("click", () => {
     if (stepIndex === DASHBOARD_TOUR_STEPS.length - 1) {
       saveDashboardTour({ status: "completed", step: stepIndex, completedAt: nowStamp() });
       removeDashboardTour();
-      injectTourRestart();
       showToast("Tour completed. Your first missions are ready.");
       return;
     }

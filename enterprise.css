@@ -16286,7 +16286,7 @@ body[data-page="autopilot"] .application-note-form label {
   .grid-3 > *,
   .market-signal-grid > *,
   .market-worth-grid > *) {
-  animation: interactionContentIn 360ms ease both;
+  animation: interactionContentIn 360ms ease backwards;
 }
 
 .interaction-motion-ready :is(.grid-2 > *,
