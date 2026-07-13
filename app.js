@@ -6134,8 +6134,17 @@ function renderGrow() {
             <p><span>Latest feedback</span>"Strong framing. Tighten prioritization + numbers."</p>
           </article>
           <article class="cg-company-coaching">
-            <header><h3>${icon("building-2")} Company-specific coaching</h3><small>Vera tunes prep to each loop</small></header>
-            <div>${coachingCards.map(([company, a, b, c, tone]) => `<section class="tone-${tone}"><span>Focus areas</span><h4>${company}</h4><ul><li>${a}</li><li>${b}</li><li>${c}</li></ul></section>`).join("")}</div>
+            <header>
+              <h3>${icon("building-2")} Company-specific coaching</h3>
+              <label class="cg-company-select">
+                <select data-company-filter aria-label="Choose company">
+                  <option value="">Choose company</option>
+                  ${coachingCards.map(([company]) => `<option value="${company}">${company}</option>`).join("")}
+                </select>
+                ${icon("chevron-down")}
+              </label>
+            </header>
+            <div data-company-cards>${coachingCards.map(([company, a, b, c, tone]) => `<section class="tone-${tone}" data-company="${company}"><span>Focus areas</span><h4>${company}</h4><ul><li>${a}</li><li>${b}</li><li>${c}</li></ul></section>`).join("")}</div>
           </article>
         </div>
       </section>
@@ -6167,6 +6176,12 @@ function renderGrow() {
       </section>
     </section>
   `);
+  qs("[data-company-filter]", root)?.addEventListener("change", event => {
+    const chosen = event.target.value;
+    qsa("[data-company-cards] section", root).forEach(section => {
+      section.style.display = !chosen || section.dataset.company === chosen ? "" : "none";
+    });
+  });
   createIcons();
   return;
   root.innerHTML = appShell("intelligence", `

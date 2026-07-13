@@ -5867,6 +5867,37 @@ body[data-page="profile"]:has(.cg-grow) .container.os-layout {
   gap: 20px;
 }
 
+.cg-company-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.cg-company-select select {
+  width: 180px;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 10px 38px 10px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  background: #fff;
+  color: #1E293B;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cg-company-select svg {
+  position: absolute;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  color: #68756f;
+  pointer-events: none;
+}
+
 .cg-practice-panel h3,
 .cg-readiness-card h3,
 .cg-mock-history h3,
