@@ -1379,7 +1379,7 @@ function workspaceTopNav() {
     const workspaceLinks = [
       ["dashboard", "Dashboard", "dashboard.html"],
       ["discover", "Discover", "discover.html"],
-      ["grow", "Grow", "grow.html"],
+      ["grow", "Growth", "grow.html"],
       ["market", "Worth", "market.html"],
       ["autopilot", "Pipeline", "autopilot.html"],
       ["posts", "Feed", "posts.html"]
@@ -5936,10 +5936,10 @@ function renderGrow() {
   const profile = state.profile;
   const intel = profile.intelligence || generateCareerIntelligence(profile);
   const growthStats = [
-    ["Interview readiness", "68%", "74%", "+6"],
-    ["Skill percentile", "Top 42%", "Top 31%", "+11"],
-    ["Matching jobs", "118", "153", "+35"],
-    ["Estimated pay", "RM 7,800", "RM 8,900", "+RM 1,100"]
+    ["Interview readiness", "74%", "6"],
+    ["Skill percentile", "Top 31%", "11"],
+    ["Matching jobs", "153", "35"],
+    ["Estimated pay", "RM 8,900", "RM 1,100"]
   ];
   const skillGraph = [
     ["Product strategy", "Strong", "Near target - one artifact away from proof.", "Top 30%", 78, "strong"],
@@ -5980,7 +5980,7 @@ function renderGrow() {
   root.innerHTML = appShell("intelligence", `
     <section class="cg-grow">
       <header class="cg-grow-hero">
-        <span class="cg-section-kicker">Grow</span>
+        <span class="cg-section-kicker">Growth</span>
         <h1>Your next move, <em>coached by Vera.</em></h1>
         <p>I watch what the market rewards for the roles you're chasing, then coach you toward the smallest move with the biggest career return.</p>
       </header>
@@ -5988,17 +5988,27 @@ function renderGrow() {
       <section class="cg-grow-stats">
         <div class="cg-section-kicker">${icon("trending-up")} You're improving  - last 14 days</div>
         <div class="cg-grow-stat-grid">
-          ${growthStats.map(([label, oldValue, value, delta]) => `
+          ${growthStats.map(([label, value, delta]) => `
             <article>
               <span>${label}</span>
-              <strong><s>${oldValue}</s> ${value}</strong>
-              <small>-${delta}</small>
+              <strong>${value}<span class="cg-grow-stat-delta">${icon("arrow-up")}${delta}</span></strong>
             </article>
           `).join("")}
         </div>
       </section>
 
       <section class="cg-grow-coach-grid">
+        <article class="cg-skill-graph">
+          <header><h2>${icon("brain-circuit")} Your skill graph</h2><small>vs. PM archetype  - KL market</small></header>
+          ${skillGraph.map(([skill, status, note, rank, value, tone]) => `
+            <div class="cg-skill-row tone-${tone}">
+              <div><strong>${skill}</strong><span>${status}</span></div>
+              <i><b style="width:${value}%"></b></i>
+              <footer><small>${note}</small><small>${rank}</small></footer>
+            </div>
+          `).join("")}
+        </article>
+
         <article class="cg-grow-coach">
           <div class="cg-grow-coach-head"><span>${icon("sparkles")} Coach Vera</span><b>online</b></div>
           <div class="cg-chat-bubble">I noticed something. You've saved 4 Product Manager roles this week - 3 of them explicitly ask for SQL fluency in the JD. That's your largest hiring blocker right now.</div>
@@ -6014,24 +6024,13 @@ function renderGrow() {
             <button type="submit">${icon("send")}</button>
           </form>
         </article>
-
-        <article class="cg-skill-graph">
-          <header><h2>${icon("brain-circuit")} Your skill graph</h2><small>vs. PM archetype  - KL market</small></header>
-          ${skillGraph.map(([skill, status, note, rank, value, tone]) => `
-            <div class="cg-skill-row tone-${tone}">
-              <div><strong>${skill}</strong><span>${status}</span></div>
-              <i><b style="width:${value}%"></b></i>
-              <footer><small>${note}</small><small>${rank}</small></footer>
-            </div>
-          `).join("")}
-        </article>
       </section>
 
       <section class="cg-grow-journey">
         <header>
           <div>
-            <span class="cg-section-kicker">Your growth journey  - Product Manager, KL</span>
-            <h2>Four milestones to your next offer.</h2>
+            <span class="cg-section-kicker">Goals</span>
+            <h2>Your growth journey - Product Manager, KL</h2>
           </div>
           <button class="btn btn-ghost" type="button">${icon("target")} Adjust goals</button>
         </header>
@@ -6049,11 +6048,25 @@ function renderGrow() {
             </article>
           `).join("")}
         </div>
+        <article class="cg-interview-checklist">
+          <header><span>${icon("clipboard-check")} Interview in 3 days  - Grab PM</span><div><i><em style="width:67%"></em></i><b>4/6  - 67% ready</b></div></header>
+          <div>
+            ${[
+              ["Resume tailored to Grab PM JD", true],
+              ["Company research completed", true],
+              ["STAR stories prepared (5)", true],
+              ["Mock interview completed", true],
+              ["Questions for interviewer prepared", false],
+              ["Portfolio case rehearsed out loud", false]
+            ].map(([item, done]) => `<p class="${done ? "done" : ""}">${icon(done ? "check-circle-2" : "circle")} ${item}</p>`).join("")}
+          </div>
+          <footer><span>Finish the last two to reach <strong>81%</strong> ready.</span><a class="btn btn-ghost" href="vera.html#interview">Continue preparation ${icon("arrow-right")}</a></footer>
+        </article>
       </section>
 
       <section class="cg-interview-coach">
         <div class="cg-grow-section-head">
-          <div><span class="cg-section-kicker">Interview coach  - powered by Vera</span><h2>Walk into every interview <em>already prepared.</em></h2></div>
+          <div><h2>Interview Coach-Powered by Vera</h2></div>
           <span class="cg-soft-pill">${icon("shield-check")} Adaptive to each company</span>
         </div>
         <div class="cg-interview-top">
@@ -6095,7 +6108,29 @@ function renderGrow() {
         <div class="cg-interview-history-grid">
           <article class="cg-mock-history">
             <h3>${icon("history")} Mock interview history</h3>
-            <div class="cg-history-bars">${[58, 67, 76].map((score, index) => `<div><i style="height:${score + 20}px"></i><strong>${score}%</strong><span>Attempt ${index + 1}</span></div>`).join("")}</div>
+            ${(() => {
+              const scores = [58, 67, 76];
+              const width = 600, height = 190, padX = 60, topY = 30, bottomY = 140;
+              const min = Math.min(...scores), max = Math.max(...scores), range = (max - min) || 1;
+              const points = scores.map((score, index) => ({
+                x: scores.length === 1 ? width / 2 : padX + (index * (width - padX * 2)) / (scores.length - 1),
+                y: bottomY - ((score - min) / range) * (bottomY - topY),
+                score
+              }));
+              const linePoints = points.map(p => `${p.x},${p.y}`).join(" ");
+              return `
+                <svg class="cg-history-trend" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mock interview score trend: ${scores.join(", ")}">
+                  <polyline points="${linePoints}"></polyline>
+                  ${points.map((p, index) => `
+                    <g>
+                      <circle cx="${p.x}" cy="${p.y}" r="7"></circle>
+                      <text x="${p.x}" y="${p.y - 20}" text-anchor="middle" class="cg-history-value">${p.score}%</text>
+                      <text x="${p.x}" y="${height - 15}" text-anchor="middle" class="cg-history-label">Attempt ${index + 1}</text>
+                    </g>
+                  `).join("")}
+                </svg>
+              `;
+            })()}
             <p><span>Latest feedback</span>"Strong framing. Tighten prioritization + numbers."</p>
           </article>
           <article class="cg-company-coaching">
@@ -6103,24 +6138,10 @@ function renderGrow() {
             <div>${coachingCards.map(([company, a, b, c, tone]) => `<section class="tone-${tone}"><span>Focus areas</span><h4>${company}</h4><ul><li>${a}</li><li>${b}</li><li>${c}</li></ul></section>`).join("")}</div>
           </article>
         </div>
-        <article class="cg-interview-checklist">
-          <header><span>${icon("clipboard-check")} Interview in 3 days  - Grab PM</span><div><i><em style="width:67%"></em></i><b>4/6  - 67% ready</b></div></header>
-          <div>
-            ${[
-              ["Resume tailored to Grab PM JD", true],
-              ["Company research completed", true],
-              ["STAR stories prepared (5)", true],
-              ["Mock interview completed", true],
-              ["Questions for interviewer prepared", false],
-              ["Portfolio case rehearsed out loud", false]
-            ].map(([item, done]) => `<p class="${done ? "done" : ""}">${icon(done ? "check-circle-2" : "circle")} ${item}</p>`).join("")}
-          </div>
-          <footer><span>Finish the last two to reach <strong>81%</strong> ready.</span><a class="btn btn-ghost" href="vera.html#interview">Continue preparation ${icon("arrow-right")}</a></footer>
-        </article>
       </section>
 
       <section class="cg-grow-section">
-        <div class="cg-grow-section-head"><div><span class="cg-section-kicker">Chosen for you  - this week</span><h2>The three moves with the biggest return.</h2></div><a href="vera.html#skills">Browse all</a></div>
+        <div class="cg-grow-section-head"><div><h2>Recommended Growth</h2></div><a href="vera.html#skills">Browse all</a></div>
         <div class="cg-move-grid">
           ${moves.map(([kind, time, title, source, why, metrics]) => `
             <article class="cg-move-card">
