@@ -793,9 +793,20 @@ function createApplicationRecord(jobId, stage = "saved", seed = {}) {
     deadline: seed.deadline || (stage === "saved" ? "This week" : "Next 3 days"),
     nextAction: seed.nextAction || defaultApplicationAction(job, stage),
     note: seed.note || `Vera is watching for ${job.skills[0]} proof and company-fit signals.`,
+    updatedLabel: seed.updatedLabel || defaultUpdatedLabel(stage),
     timeline,
     updatedAt: now
   };
+}
+
+function defaultUpdatedLabel(stage) {
+  if (stage === "saved") return "1 week ago";
+  if (stage === "applied") return "4 days ago";
+  if (stage === "screening") return "3 days ago";
+  if (stage === "interview") return "2 days ago";
+  if (stage === "offer") return "1 day ago";
+  if (stage === "rejected") return "2 weeks ago";
+  return "3 weeks ago";
 }
 
 function defaultApplicationAction(job, stage) {
@@ -1386,7 +1397,7 @@ function workspaceTopNav() {
   const page = document.body.dataset.page || "";
   if (!isEmployer) {
     const workspaceLinks = [
-      ["dashboard", "Today", "dashboard.html"],
+      ["dashboard", "Dashboard", "dashboard.html"],
       ["discover", "Discover", "discover.html"],
       ["grow", "Grow", "grow.html"],
       ["market", "Worth", "market.html"],
@@ -4719,6 +4730,8 @@ function openReviewModal(target) {
   createIcons();
 }
 
+let dashboardTaskFilter = "";
+
 function renderDashboard() {
   const root = qs("[data-dashboard]");
   if (!root) return;
@@ -4748,7 +4761,6 @@ function renderDashboard() {
     .sort((a, b) => b.match - a.match)
     .slice(0, 3);
   const urgentRecord = trackedJobs.find(item => ["interview", "screening"].includes(item.record.stage)) || trackedJobs[0];
-  const focusTitle = intel.immediateActions[0] || `Strengthen your ${target} proof today.`;
   const focusDetail = intel.summary || "Vera is using your profile, saved roles, and application signals to keep the next step focused.";
   const activeApps = trackedJobs.length || applications.length;
   const interviewCount = trackedJobs.filter(item => item.record.stage === "interview").length || counts.interview || 0;
@@ -4793,6 +4805,12 @@ function renderDashboard() {
       progress: 26
     }
   ];
+  const taskCategories = ["Interview", "Learning", "Application", "Networking"];
+  const taskPriorityRank = { High: 0, Medium: 1, Low: 2 };
+  const visibleTasks = dailyTasks
+    .map((task, index) => ({ ...task, originalIndex: index, category: task.meta.split(" - ")[0] }))
+    .filter(task => !dashboardTaskFilter || task.category === dashboardTaskFilter)
+    .sort((a, b) => taskPriorityRank[a.priority] - taskPriorityRank[b.priority]);
   const applicationCards = (trackedJobs.length
     ? trackedJobs.slice(0, 2)
     : topJobs.slice(0, 2).map(job => ({ job, record: createApplicationRecord(job.id, "saved") })));
@@ -4831,7 +4849,7 @@ function renderDashboard() {
             <span>${icon("sparkles")} Today's focus - by Vera</span>
             <span>${icon("clock")} 45 min - Deep work</span>
           </div>
-          <h2>${focusTitle}</h2>
+          <h2>Hi, I'm Vera, your AI career coach.</h2>
           <p>${focusDetail}</p>
           <div class="cg-action-row">
             <a class="btn btn-primary" href="vera.html#plan">Start with Vera ${icon("arrow-up-right")}</a>
@@ -4865,21 +4883,23 @@ function renderDashboard() {
       <section class="cg-task-section glass-card" data-tour-target="missions">
         <div class="cg-section-line">
           <div>
-            <span class="cg-overline">Today's tasks</span>
-            <h2>Four small moves</h2>
+            <h2>Explore something today!</h2>
           </div>
           <span class="cg-streak">${icon("flame")} Streak - 12 days</span>
         </div>
+        <div class="cg-task-filters">
+          ${taskCategories.map(cat => `<button type="button" class="pill ${dashboardTaskFilter === cat ? "active" : ""}" data-task-filter="${cat}">${cat}</button>`).join("")}
+        </div>
         <div class="cg-task-grid">
-          ${dailyTasks.map((task, index) => {
-            const mission = task.mission || visibleBeginnerMissions[index % Math.max(1, visibleBeginnerMissions.length)];
+          ${visibleTasks.map(task => {
+            const mission = task.mission || visibleBeginnerMissions[task.originalIndex % Math.max(1, visibleBeginnerMissions.length)];
             const progress = mission ? (state.missionProgress[mission.id] || 0) : 0;
             const done = progress >= 100;
             return `
               <article class="cg-task-card ${done ? "complete" : ""}" data-mission-card="${mission?.id || ""}">
                 <span class="cg-check"></span>
                 <div>
-                  <div class="cg-task-meta"><span>${task.priority}</span><span>${task.meta}</span></div>
+                  <div class="cg-task-meta"><span>${task.meta}</span></div>
                   <h3>${task.title}</h3>
                   <p>${icon("sparkles")} ${task.body}</p>
                   ${progressBar(done ? 100 : task.progress)}
@@ -4894,8 +4914,7 @@ function renderDashboard() {
       <section class="cg-applications" data-tour-target="applications">
         <div class="cg-section-line">
           <div>
-            <span class="cg-overline">Active applications</span>
-            <h2>Where each application stands</h2>
+            <h2>Recent Applications</h2>
           </div>
           <a href="discover.html#tracker">Open Pipeline ${icon("chevron-right")}</a>
         </div>
@@ -4905,7 +4924,10 @@ function renderDashboard() {
               <div class="cg-job-head">
                 <span class="cg-company-mark">${job.company.charAt(0)}</span>
                 <div><small>${job.company}</small><h3>${job.title}</h3></div>
-                ${applicationStagePill(record.stage)}
+                <span class="cg-job-status">
+                  <span class="cg-update-time">${record.updatedLabel}</span>
+                  ${applicationStagePill(record.stage)}
+                </span>
               </div>
               <div class="cg-stage-track"><i></i><i></i><i></i><i></i></div>
               <div class="cg-stage-labels"><span>Applied</span><span>Screen</span><span>Interview</span><span>Offer</span></div>
@@ -4929,7 +4951,7 @@ function renderDashboard() {
         <div class="cg-section-line">
           <div>
             <span class="cg-overline">For you</span>
-            <h2>Roles picked by Vera</h2>
+            <h2>Vera's Recommended Roles</h2>
           </div>
           <a href="discover.html">See all ${DATA.jobs.length} ${icon("chevron-right")}</a>
         </div>
@@ -4976,6 +4998,10 @@ function renderDashboard() {
   `);
   createIcons();
   bindMissionActions();
+  qsa("[data-task-filter]", root).forEach(btn => btn.addEventListener("click", () => {
+    dashboardTaskFilter = dashboardTaskFilter === btn.dataset.taskFilter ? "" : btn.dataset.taskFilter;
+    renderDashboard();
+  }));
   initDashboardTour();
 }
 

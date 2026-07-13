@@ -8590,22 +8590,11 @@ body[data-page="dashboard"] .os-main {
   text-transform: none;
 }
 
-.cg-task-meta span:first-child {
-  padding: 4px 8px;
-  border-radius: 999px;
-  color: #8a3434;
-  background: rgba(252, 229, 224, 0.86);
-  text-transform: uppercase;
-}
-
-.cg-task-card:nth-child(2) .cg-task-meta span:first-child {
-  color: #456c66;
-  background: rgba(217, 238, 232, 0.88);
-}
-
-.cg-task-card:nth-child(4) .cg-task-meta span:first-child {
-  color: #6c685d;
-  background: rgba(230, 226, 216, 0.88);
+.cg-task-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
 .cg-task-card h3 {
@@ -8670,6 +8659,19 @@ body[data-page="dashboard"] .os-main {
 .cg-job-head h3 {
   margin: 2px 0 0;
   font-size: 22px;
+}
+
+.cg-job-status {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.cg-update-time {
+  font-size: 12px;
+  color: var(--cg-muted);
+  white-space: nowrap;
 }
 
 .cg-dashboard .pill {
