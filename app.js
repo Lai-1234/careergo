@@ -4804,7 +4804,7 @@ function renderDashboard() {
     <section class="cg-dashboard" data-tour-target="dashboard-hero">
       <header class="cg-dash-hero">
         <div>
-          <div class="cg-overline">${icon("calendar-days")} Today - Week 7 of your ${target} transition ${state.session.isDemo ? `<span class="demo-badge inline">${icon("monitor-play")} Demo Mode</span>` : ""}</div>
+          <div class="cg-overline">${icon("calendar-days")} Today - Week 7 of your ${target} transition</div>
           <h1>Good morning, ${getFirstName(state)}.</h1>
           <p>You are making steady progress - ahead of 72% of candidates on the same path.</p>
         </div>
@@ -4860,37 +4860,6 @@ function renderDashboard() {
         </article>
       </section>
 
-      <section class="cg-task-section glass-card" data-tour-target="missions">
-        <div class="cg-section-line">
-          <div>
-            <h2>Explore something today!</h2>
-          </div>
-          <span class="cg-streak">${icon("flame")} Streak - 12 days</span>
-        </div>
-        <div class="cg-task-filters">
-          ${taskCategories.map(cat => `<button type="button" class="pill ${dashboardTaskFilter === cat ? "active" : ""}" data-task-filter="${cat}">${cat}</button>`).join("")}
-        </div>
-        <div class="cg-task-grid">
-          ${visibleTasks.map(task => {
-            const mission = task.mission || visibleBeginnerMissions[task.originalIndex % Math.max(1, visibleBeginnerMissions.length)];
-            const progress = mission ? (state.missionProgress[mission.id] || 0) : 0;
-            const done = progress >= 100;
-            return `
-              <article class="cg-task-card ${done ? "complete" : ""}" data-mission-card="${mission?.id || ""}">
-                <span class="cg-check"></span>
-                <div>
-                  <div class="cg-task-meta"><span>${task.meta}</span></div>
-                  <h3>${task.title}</h3>
-                  <p>${icon("sparkles")} ${task.body}</p>
-                  ${progressBar(done ? 100 : task.progress)}
-                </div>
-                ${mission ? `<button class="btn btn-ghost" type="button" data-complete-mission="${mission.id}">${done ? "Done" : "Start"} ${icon("arrow-up-right")}</button>` : `<a class="btn btn-ghost" href="vera.html#plan">Start ${icon("arrow-up-right")}</a>`}
-              </article>
-            `;
-          }).join("")}
-        </div>
-      </section>
-
       <section class="cg-applications" data-tour-target="applications">
         <div class="cg-section-line">
           <div>
@@ -4924,6 +4893,37 @@ function renderDashboard() {
           <span>${icon("trending-up")} Interview readiness +18% this month</span>
           <span>${icon("sparkles")} Ahead of 72% of candidates on your path</span>
           <span>${icon("zap")} One project separates you from median ${target}</span>
+        </div>
+      </section>
+
+      <section class="cg-task-section glass-card" data-tour-target="missions">
+        <div class="cg-section-line">
+          <div>
+            <h2>Explore something today!</h2>
+          </div>
+          <span class="cg-streak">${icon("flame")} Streak - 12 days</span>
+        </div>
+        <div class="cg-task-filters">
+          ${taskCategories.map(cat => `<button type="button" class="pill ${dashboardTaskFilter === cat ? "active" : ""}" data-task-filter="${cat}">${cat}</button>`).join("")}
+        </div>
+        <div class="cg-task-grid">
+          ${visibleTasks.map(task => {
+            const mission = task.mission || visibleBeginnerMissions[task.originalIndex % Math.max(1, visibleBeginnerMissions.length)];
+            const progress = mission ? (state.missionProgress[mission.id] || 0) : 0;
+            const done = progress >= 100;
+            return `
+              <article class="cg-task-card ${done ? "complete" : ""}" data-mission-card="${mission?.id || ""}">
+                <span class="cg-check"></span>
+                <div>
+                  <div class="cg-task-meta"><span>${task.meta}</span></div>
+                  <h3>${task.title}</h3>
+                  <p>${icon("sparkles")} ${task.body}</p>
+                  ${progressBar(done ? 100 : task.progress)}
+                </div>
+                ${mission ? `<button class="btn btn-ghost" type="button" data-complete-mission="${mission.id}">${done ? "Done" : "Start"} ${icon("arrow-up-right")}</button>` : `<a class="btn btn-ghost" href="vera.html#plan">Start ${icon("arrow-up-right")}</a>`}
+              </article>
+            `;
+          }).join("")}
         </div>
       </section>
 
