@@ -3596,7 +3596,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-feature">
           <div class="cg-section-kicker">Vera's top pick this week</div>
-          <h2>The single move most likely to move your career forward.</h2>
+          <h2>Vera's Top Pick</h2>
           <article class="cg-top-pick-card">
             <div class="cg-top-pick-main">
               <div class="cg-pill-row"><span class="dark">${icon("sparkles")} Vera found this</span><span>${icon("flame")} 91% roadmap match</span><small>Posted 2 days ago - 34 applicants</small></div>
@@ -3628,7 +3628,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-section">
           <div class="cg-section-kicker">Market pulse - Malaysia</div>
-          <h2>Quick intelligence on what's heating up around you.</h2>
+          <h2>Market Pulse in Malaysia</h2>
           <div class="cg-market-grid">
             ${marketPulse.map(([tag, trend, title, salary, remote, openings, tone], index) => `
               <article class="cg-market-card tone-${tone}">
@@ -3642,8 +3642,7 @@ function renderJobsPage() {
         </section>
 
         <section class="cg-discover-section">
-          <div class="cg-section-kicker">Curated by Vera</div>
-          <h2>Collections built around your next step, not tags.</h2>
+          <h2>Curated Collections by Vera.</h2>
           <div class="cg-collection-grid">
             ${collections.map(([count, title, copy, why, size]) => `
               <article class="cg-collection-card ${size}"><span>${count}</span><i>${icon("arrow-up-right")}</i><h3>${title}</h3><p>${copy}</p><footer><b>${icon("sparkles")} Why this</b> ${why}</footer></article>
@@ -3653,7 +3652,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
-            <div><div class="cg-section-kicker">Featured companies</div><h2>Four teams Vera thinks you should know this week.</h2></div>
+            <div><h2>Featured Companies</h2></div>
             <a class="cg-discover-link-btn" href="companies.html#companies">Explore 1,240 companies ${icon("arrow-right")}</a>
           </div>
           <div class="cg-featured-org-grid">
@@ -3669,7 +3668,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
-            <div><div class="cg-section-kicker">Featured universities</div><h2>Institutions treated like career opportunities.</h2></div>
+            <div><h2>Featured Universities</h2></div>
             <a class="cg-discover-link-btn" href="companies.html#universities">Browse all universities ${icon("arrow-right")}</a>
           </div>
           <div class="cg-featured-org-grid">
@@ -3685,7 +3684,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
-            <div><div class="cg-section-kicker">Where your career could go next</div><h2>Top three directions Vera has mapped for you.</h2></div>
+            <div><div class="cg-section-kicker">Where your career could go next</div><h2>Career Paths</h2></div>
             <a class="cg-discover-link-btn" href="vera.html?topic=career paths">Explore all career paths ${icon("arrow-right")}</a>
           </div>
           <div class="cg-direction-grid">
@@ -3703,7 +3702,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
-            <div><div class="cg-section-kicker">Programmes that could accelerate you</div><h2>Three high-ROI programmes for your next step.</h2></div>
+            <div><div class="cg-section-kicker">Programmes that could accelerate you</div><h2>Recommended Programmes</h2></div>
             <a class="cg-discover-link-btn" href="vera.html?topic=programmes">Explore all programmes ${icon("arrow-right")}</a>
           </div>
           <div class="cg-program-card-grid">
@@ -3719,7 +3718,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
-            <div><div class="cg-section-kicker">Who inspires this path</div><h2>Mentors whose journeys rhyme with yours.</h2></div>
+            <div><div class="cg-section-kicker">Who inspires this path</div><h2>Mentors You can reach out to</h2></div>
             <a class="cg-discover-link-btn" href="posts.html#messages">Browse all mentors ${icon("arrow-right")}</a>
           </div>
           <div class="cg-mentor-grid">
