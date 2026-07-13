@@ -12,12 +12,13 @@ Open pages directly in the browser. No build step is required.
 
 Primary files:
 
-- Public marketing pages: `index.html`, `jobs.html`, `companies.html`, `universities.html`, `community.html`, `login.html`, `register.html`
+- Public marketing pages: `index.html`, `explore.html`, `companies.html`, `universities.html`, `community.html`, `login.html`, `register.html`
 - Logged-in workspace pages: `dashboard.html`, `discover.html`, `grow.html`, `market.html`, `autopilot.html`, `posts.html`, `profile.html`, `settings.html`, `saved.html`, `edit-career-data.html`, `vera.html`
 - Shared public/user styling: `enterprise.css`
 - Directory browser styling: `directory-final.css`
 - Feed styling: `feed-final.css`
 - Profile styling: `profile-final.css`
+- Explore page styling: `explore-final.css`
 - Browser interactions and shared behavior: `app.js`
 
 Every page should keep a `body data-page="..."` attribute. Many final CSS rules depend on it.
@@ -42,10 +43,10 @@ Vera should feel proactive. She is not only a chat box. The UI should make Vera 
 
 There are two different concepts that must not be mixed:
 
-- `jobs.html` is the public Jobs page for guests and marketing visitors.
+- `explore.html` is the public Jobs/Explore page for guests and marketing visitors.
 - `discover.html` is the logged-in Discover workspace page.
 
-The logged-in workspace nav item `Discover` must link to `discover.html`, not `jobs.html`.
+The logged-in workspace nav item `Discover` must link to `discover.html`, not `explore.html`.
 
 Likewise:
 
@@ -82,7 +83,7 @@ linear-gradient(90deg, #004a41 0%, #0b6d65 100%)
 linear-gradient(180deg, #0b6d65 0%, #004a41 100%)
 ```
 
-Public primary CTAs on `index.html`, `jobs.html`, `companies.html`, `universities.html`, and `community.html` should use the new teal gradient, not the older blue-teal button color.
+Public primary CTAs on `index.html`, `explore.html`, `companies.html`, `universities.html`, and `community.html` should use the new teal gradient, not the older blue-teal button color.
 
 ### Typography
 
@@ -153,7 +154,7 @@ There are two nav systems.
 Used on:
 
 - `index.html`
-- `jobs.html`
+- `explore.html`
 - `companies.html`
 - `universities.html`
 - `community.html`
@@ -164,7 +165,7 @@ This navbar should match `index.html`:
 
 - White background
 - CareerGo logo image on the left
-- Nav links: `Jobs`, `Companies`, `Universities`, `Community`
+- Nav links: `Explore` (links to `explore.html`), `Opportunities` (links to `companies.html`), `Community`
 - No bold active-state styling
 - Right actions: `Login` plain text and `Create Account` teal pill CTA
 - Shared markup should use `data-public-topbar` where present
@@ -218,6 +219,8 @@ Profile/settings/saved/edit-career-data are account pages. Keep the same workspa
 
 `profile-final.css` styles `profile.html`.
 
+`explore-final.css` loads after `enterprise.css` on `explore.html` and holds the page's hero, opportunity, and card-grid layout.
+
 When fixing visual issues:
 
 - Prefer adding or editing the final relevant CSS layer rather than scattering inline styles.
@@ -257,7 +260,7 @@ Profile work should follow the user page design system:
 - Use `apply_patch` for manual edits.
 - Keep files ASCII unless an existing file already requires non-ASCII.
 - Do not remove user changes you did not make.
-- Do not confuse the public Jobs page with logged-in Discover.
+- Do not confuse the public `explore.html` page with logged-in Discover (`discover.html`).
 - Do not turn logged-in pages into public marketing pages.
 - Do not change content when the user asked for styling only.
 - When updating nav, prefer shared reusable markup/classes and keep the two nav systems separate.

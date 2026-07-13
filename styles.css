@@ -12178,12 +12178,29 @@ body[data-page="home"] .home-preview-card.coach :is(.home-card-head span, .home-
 
 body[data-page="home"] .home-preview-card.coach .home-card-head small {
   color: #486173 !important;
+  -webkit-text-fill-color: #486173 !important;
   background: #fffaf2 !important;
 }
 
 body[data-page="home"] .home-preview-card.coach .home-pill-row span {
   border-color: rgba(255, 250, 242, 0.2) !important;
   background: rgba(255, 250, 242, 0.12) !important;
+}
+
+body[data-page="home"] .home-preview-card.next {
+  background:
+    radial-gradient(circle at 92% 0%, rgba(11, 109, 101, 0.20), transparent 16rem),
+    linear-gradient(135deg, rgba(6, 56, 45, 0.96), rgba(11, 109, 101, 0.92)) !important;
+}
+
+body[data-page="home"] .home-preview-card.next :is(.home-card-head span, .home-card-head i, p, strong) {
+  color: #fffaf2 !important;
+}
+
+body[data-page="home"] .home-preview-card.next a {
+  color: #0b6d65 !important;
+  -webkit-text-fill-color: #0b6d65 !important;
+  background: #fffaf2 !important;
 }
 
 body[data-page="home"] .home-metrics :is(strong, span) {

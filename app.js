@@ -986,7 +986,7 @@ function personalizedMissions(profile) {
     return [
       { id: "pm1", title: "Internship readiness", body: "Add one project, one club/leadership example, and one preferred industry.", xp: 80, progress: 35, href: "grow.html" },
       { id: "pm2", title: "Resume checklist", body: "Create a one-page student resume with projects and activities.", xp: 70, progress: 20, href: "grow.html" },
-      { id: "pm3", title: "Find internship matches", body: "Search roles and save two internships or trainee programs.", xp: 90, progress: 15, href: "jobs.html" }
+      { id: "pm3", title: "Find internship matches", body: "Search roles and save two internships or trainee programs.", xp: 90, progress: 15, href: "discover.html" }
     ];
   }
   if (profile.careerStage === "Planning to switch career") {
@@ -1012,7 +1012,7 @@ function personalizedMissions(profile) {
   }
   return [
     { id: "pm1", title: "Profile baseline", body: "Complete your profile so CareerGo can improve your roadmap.", xp: 90, progress: 45, href: "edit-career-data.html" },
-    { id: "pm2", title: "Role shortlist", body: "Save two roles that match your preferred path.", xp: 80, progress: 30, href: "jobs.html" },
+    { id: "pm2", title: "Role shortlist", body: "Save two roles that match your preferred path.", xp: 80, progress: 30, href: "discover.html" },
     { id: "pm3", title: "Coach plan", body: "Ask Vera to create a simple 7-day action plan.", xp: 70, progress: 20, href: "vera.html#plan" }
   ];
 }
@@ -1037,7 +1037,7 @@ function starterMissions(profile) {
       id: "tour-job",
       title: "Review one job match",
       body: "Open a suggested role, check why it matches, then save or compare it.",
-      href: "jobs.html",
+      href: "discover.html",
       icon: "briefcase"
     },
     {
@@ -1367,7 +1367,7 @@ function publicNav() {
     <a class="brand public-site-brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
     <nav class="nav-links public-site-nav" aria-label="Public navigation">
       ${[
-        ["jobs", "Explore", "jobs.html"],
+        ["explore", "Explore", "explore.html"],
         ["companies", "Opportunities", "companies.html"],
         ["community", "Community", "community.html"]
       ].map(([, label, href]) => `<a href="${href}">${label}</a>`).join("")}
@@ -2326,7 +2326,7 @@ function renderNavigation() {
   const state = readState();
   const loggedIn = Boolean(state.session.loggedIn);
   const page = document.body.dataset.page || "home";
-  const publicPages = new Set(["home", "login", "register", "jobs", "companies", "universities", "community"]);
+  const publicPages = new Set(["home", "login", "register", "explore", "companies", "universities", "community"]);
   const workspacePages = new Set(["dashboard", "discover", "grow", "market", "autopilot", "posts", "profile"]);
   const forcePublicNav = publicPages.has(page);
   const useWorkspaceNav = workspacePages.has(page) || (loggedIn && !forcePublicNav);
@@ -2338,7 +2338,7 @@ function renderNavigation() {
   if (mobileNav) {
     mobileNav.innerHTML = useWorkspaceNav
       ? ""
-      : `<a href="jobs.html">Explore</a><a href="companies.html">Opportunities</a><a href="community.html">Community</a><a href="login.html">Login</a><a href="register.html">Create Account</a>`;
+      : `<a href="explore.html">Explore</a><a href="companies.html">Opportunities</a><a href="community.html">Community</a><a href="login.html">Login</a><a href="register.html">Create Account</a>`;
   }
   createIcons();
   setActiveNav();
@@ -2360,7 +2360,7 @@ function renderNavigation() {
       ? "universities.html"
       : lower.includes("company") || lower.includes("culture") || lower.includes("review") || lower.includes("maybank") || lower.includes("grab") || lower.includes("cimb")
         ? "companies.html"
-        : "jobs.html";
+        : "discover.html";
     location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#candidates` : `${destination}?q=${encodeURIComponent(q)}`;
   });
 }
@@ -2445,7 +2445,7 @@ function ensureBrandFonts() {
 function renderSiteFooter() {
   const host = qs(".site-shell") || document.body;
   const page = document.body.dataset.page || "home";
-  const footerPages = new Set(["home", "jobs", "companies", "universities", "community"]);
+  const footerPages = new Set(["home", "explore", "companies", "universities", "community"]);
   const existingFooter = qs(".site-footer");
 
   if (!footerPages.has(page)) {
@@ -2470,7 +2470,7 @@ function renderSiteFooter() {
           </div>
           <nav class="footer-column" aria-label="Product">
             <h3>Product</h3>
-            <a href="jobs.html">Jobs</a>
+            <a href="explore.html">Explore</a>
             <a href="companies.html">Companies</a>
             <a href="universities.html">Universities</a>
             <a href="community.html">Community</a>
@@ -2509,7 +2509,7 @@ function renderSiteFooter() {
         </div>
         <nav class="footer-column" aria-label="Product">
           <h3>Product</h3>
-          <a href="jobs.html">Jobs</a>
+          <a href="explore.html">Explore</a>
           <a href="companies.html">Companies</a>
           <a href="universities.html">Universities</a>
           <a href="community.html">Community</a>
@@ -2840,7 +2840,7 @@ function renderFeatured() {
   const jobRoot = qs("[data-featured-jobs]");
   if (jobRoot) {
     const cards = DATA.jobs.map(job => `
-      <a class="list-card featured-job-card" href="jobs.html?job=${job.id}">
+      <a class="list-card featured-job-card" href="explore.html?job=${job.id}">
         <div class="list-card-top">
           <div>
             <h3>${job.title}</h3>
@@ -3441,7 +3441,7 @@ function renderJobSeekerEntry() {
           <div class="hero-actions">
             <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create Job Seeker Account</a>
             <a class="btn btn-ghost" href="login.html">${icon("log-in")} Login</a>
-            <a class="btn btn-cyan" href="jobs.html">${icon("search")} Browse Jobs as Guest</a>
+            <a class="btn btn-cyan" href="explore.html">${icon("search")} Browse Jobs as Guest</a>
           </div>
         </div>
         <div class="glass-card entry-panel">
@@ -3519,7 +3519,7 @@ function renderJobsPage() {
           <div class="eyebrow"><span class="spark">*</span> Employer account</div>
           <h1 class="section-title">This page is for public job discovery and candidate job tracking.</h1>
           <p class="section-sub">Your employer workspace has job posts, candidate search, applicants, and hiring pipeline tools.</p>
-          <div class="hero-actions"><a class="btn btn-primary" href="employer-app.html">${icon("layout-dashboard")} Open Employer Dashboard</a><a class="btn btn-ghost" href="jobs.html?guest=1">${icon("search")} Browse public jobs</a></div>
+          <div class="hero-actions"><a class="btn btn-primary" href="employer-app.html">${icon("layout-dashboard")} Open Employer Dashboard</a><a class="btn btn-ghost" href="explore.html?guest=1">${icon("search")} Browse public jobs</a></div>
         </div>
       </section>
     `;
@@ -3619,7 +3619,7 @@ function renderJobsPage() {
                 <p>${icon("check-circle-2")} You saved 3 AI-native startups recently.</p>
               </div>
               <div class="cg-action-row">
-                <a class="btn btn-primary" href="jobs.html?job=${topPick.id}">Explore role ${icon("arrow-up-right")}</a>
+                <a class="btn btn-primary" href="discover.html?job=${topPick.id}">Explore role ${icon("arrow-up-right")}</a>
                 <button class="btn btn-ghost" type="button">${icon("bookmark")} Save</button>
                 <a class="btn btn-ghost" href="vera.html?topic=Tell me more about this role">Ask Vera more</a>
               </div>
@@ -3822,7 +3822,7 @@ function renderJobsPage() {
                 <p>${icon("check-circle-2")} You saved 3 AI-native startups recently.</p>
               </div>
               <div class="cg-action-row">
-                <a class="btn btn-primary" href="jobs.html?job=${topPick.id}">Explore role ${icon("arrow-up-right")}</a>
+                <a class="btn btn-primary" href="discover.html?job=${topPick.id}">Explore role ${icon("arrow-up-right")}</a>
                 <button class="btn btn-ghost" type="button">${icon("bookmark")} Save</button>
                 <a class="btn btn-ghost" href="vera.html?topic=Tell me more about this role">Ask Vera more</a>
               </div>
@@ -4111,7 +4111,7 @@ function renderJobsPage() {
     qsa("[data-job-id]", listRoot).forEach(card => card.addEventListener("click", () => {
       const previousJobId = active.id;
       active = DATA.jobs.find(job => job.id === card.dataset.jobId) || active;
-      history.replaceState(null, "", `jobs.html?job=${active.id}#tracker`);
+      history.replaceState(null, "", `discover.html?job=${active.id}#tracker`);
       renderList();
       renderDetail({ resetScroll: active.id !== previousJobId, reveal: true });
     }));
@@ -4172,7 +4172,7 @@ function renderJobsPage() {
       btn.addEventListener("click", () => {
         const previousJobId = active.id;
         active = DATA.jobs.find(job => job.id === btn.dataset.jobId);
-        history.replaceState(null, "", `jobs.html?job=${active.id}`);
+        history.replaceState(null, "", `discover.html?job=${active.id}`);
         renderList();
         renderDetail({ resetScroll: active.id !== previousJobId, reveal: true });
       });
@@ -4434,7 +4434,7 @@ function renderJobsPage() {
     qsa("[data-job-tab]").forEach(item => item.classList.remove("active"));
     btn.classList.add("active");
     activeTab = btn.dataset.jobTab;
-    history.replaceState(null, "", activeTab === "tracker" ? `jobs.html?job=${active.id}#tracker` : `jobs.html?job=${active.id}&tab=${activeTab}`);
+    history.replaceState(null, "", activeTab === "tracker" ? `discover.html?job=${active.id}#tracker` : `discover.html?job=${active.id}&tab=${activeTab}`);
     renderList();
     renderDetail();
   }));
@@ -4500,8 +4500,8 @@ function renderDirectoryPage(kind) {
         <p>${copy}</p>
       </header>
       <nav class="cg-directory-tabs" aria-label="Directory category">
-        <button type="button" data-directory-kind="companies">${icon("building-2")} Companies <span>1,240 indexed</span></button>
-        <button type="button" data-directory-kind="universities">${icon("graduation-cap")} Universities <span>186 indexed</span></button>
+        <button type="button" data-directory-kind="companies">${icon("building-2")} Companies</button>
+        <button type="button" data-directory-kind="universities">${icon("graduation-cap")} Universities</button>
       </nav>
       <section class="cg-directory-controls" aria-label="Directory filters">
         <label class="cg-directory-search">${icon("search")}<input data-directory-search placeholder="Search companies, universities, programmes, locations..."></label>
@@ -4815,7 +4815,7 @@ function renderDashboard() {
 
       <section class="cg-kpi-grid" data-tour-target="metrics">
         ${kpis.map(([label, value, progress, detail, ic], index) => `
-          <a class="cg-kpi-card tone-${index + 1}" href="${index === 3 ? "jobs.html#tracker" : index === 1 ? "market.html" : "grow.html"}">
+          <a class="cg-kpi-card tone-${index + 1}" href="${index === 3 ? "discover.html#tracker" : index === 1 ? "market.html" : "grow.html"}">
             <span class="cg-card-icon">${icon(ic)}</span>
             <span class="cg-kpi-label">${label}</span>
             <strong>${value}</strong>
@@ -4897,7 +4897,7 @@ function renderDashboard() {
             <span class="cg-overline">Active applications</span>
             <h2>Where each application stands</h2>
           </div>
-          <a href="jobs.html#tracker">Open Pipeline ${icon("chevron-right")}</a>
+          <a href="discover.html#tracker">Open Pipeline ${icon("chevron-right")}</a>
         </div>
         <div class="cg-application-grid">
           ${applicationCards.map(({ job, record }) => `
@@ -4912,8 +4912,8 @@ function renderDashboard() {
               <p class="cg-application-meta">${icon("calendar")} ${record.deadline || "Due in 2 days"} ${icon("clock")} ${record.nextAction}</p>
               <div class="cg-note">${icon("sparkles")} ${record.nextAction}</div>
               <div class="cg-action-row">
-                <a class="btn btn-primary" href="jobs.html?job=${job.id}#tracker">Continue ${icon("arrow-up-right")}</a>
-                <a class="btn btn-ghost" href="jobs.html?job=${job.id}">Details</a>
+                <a class="btn btn-primary" href="discover.html?job=${job.id}#tracker">Continue ${icon("arrow-up-right")}</a>
+                <a class="btn btn-ghost" href="discover.html?job=${job.id}">Details</a>
               </div>
             </article>
           `).join("")}
@@ -4931,7 +4931,7 @@ function renderDashboard() {
             <span class="cg-overline">For you</span>
             <h2>Roles picked by Vera</h2>
           </div>
-          <a href="jobs.html">See all ${DATA.jobs.length} ${icon("chevron-right")}</a>
+          <a href="discover.html">See all ${DATA.jobs.length} ${icon("chevron-right")}</a>
         </div>
         <div class="cg-role-grid">
           ${topJobs.map(job => `
@@ -4946,8 +4946,8 @@ function renderDashboard() {
                 ${job.why.slice(0, 3).map(reason => `<li>${reason}</li>`).join("")}
               </ul>
               <div class="cg-action-row">
-                <a class="btn btn-primary" href="jobs.html?job=${job.id}">Quick apply</a>
-                <a class="btn btn-ghost" href="jobs.html?job=${job.id}">Save</a>
+                <a class="btn btn-primary" href="discover.html?job=${job.id}">Quick apply</a>
+                <a class="btn btn-ghost" href="discover.html?job=${job.id}">Save</a>
               </div>
             </article>
           `).join("")}
@@ -5169,7 +5169,7 @@ function renderVera() {
         outcome: "A focused target role, ATS baseline, and one clear proof gap.",
         tasks: [
           ["baseline-profile", "Update Career Intelligence profile and resume baseline", "edit-career-data.html"],
-          ["baseline-target", `Choose one target path: ${getTargetLabel(state.profile)}`, "jobs.html"],
+          ["baseline-target", `Choose one target path: ${getTargetLabel(state.profile)}`, "discover.html"],
           ["baseline-research", "Compare 3 companies or universities before applying", "companies.html"]
         ]
       },
@@ -5192,7 +5192,7 @@ function renderVera() {
         body: "Apply selectively, practice high-signal interview stories, and use research before accepting.",
         outcome: "Five high-fit applications, stronger interview stories, and a decision framework.",
         tasks: [
-          ["apply-roles", "Apply to 5 roles above your match threshold", "jobs.html"],
+          ["apply-roles", "Apply to 5 roles above your match threshold", "discover.html"],
           ["apply-interview", "Practice 3 interview answers with Vera feedback", "vera.html#interview"],
           ["apply-decision", "Compare offers or shortlists using growth, pay, and culture", "companies.html"]
         ]
@@ -7428,7 +7428,7 @@ function renderSavedItems() {
       <div><div class="eyebrow"><span class="spark">*</span> Saved Items</div><h1 class="section-title">Your saved jobs, research, and posts.</h1><p class="section-sub">Keep career decisions organized without crowding the main dashboard.</p></div>
     </section>
     <section class="saved-items-stack">
-      <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved jobs</div><h2 class="section-title mini">${savedJobs.length} roles</h2></div><a class="btn btn-ghost" href="jobs.html">${icon("briefcase")} Jobs</a></div><div class="list-stack">${savedJobs.map(job => `<a class="list-card quiet" href="jobs.html?job=${job.id}"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div></a>`).join("") || `<p class="muted">No saved jobs yet.</p>`}</div></article>
+      <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved jobs</div><h2 class="section-title mini">${savedJobs.length} roles</h2></div><a class="btn btn-ghost" href="discover.html">${icon("briefcase")} Jobs</a></div><div class="list-stack">${savedJobs.map(job => `<a class="list-card quiet" href="discover.html?job=${job.id}"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div></a>`).join("") || `<p class="muted">No saved jobs yet.</p>`}</div></article>
       <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved research</div><h2 class="section-title mini">${savedOrgs.length} organizations</h2></div><a class="btn btn-ghost" href="companies.html">${icon("search")} Research</a></div><div class="list-stack">${savedOrgs.map(org => `<a class="list-card quiet" href="${org.type === "University" ? "universities.html" : "companies.html"}?org=${org.id}"><div class="list-card-top"><div><h3>${org.name}</h3><div class="muted small">${org.signal}</div></div>${rating(org.rating)}</div></a>`).join("") || `<p class="muted">No saved companies or universities yet.</p>`}</div></article>
     </section>
     <section class="glass-card"><div class="section-kicker">Saved posts</div><div class="grid-3">${DATA.communityPosts.slice(0, 3).map(post => `<article class="tool-card"><h3>${post.title}</h3><p>${post.body}</p><span class="pill gold">${post.reactions} reactions</span></article>`).join("")}</div></section>
@@ -7820,7 +7820,7 @@ function renderMarket() {
       createdAt: nowStamp(),
       tasks: [
         { id: "market-proof", title: `Prove ${current.skills[0]}`, body: "Add one project story with context, trade-off, metric, and result.", href: "grow.html", done: false },
-        { id: "market-benchmark", title: "Benchmark 5 roles", body: "Compare salary range, demand, competition, and required proof.", href: "jobs.html", done: false },
+        { id: "market-benchmark", title: "Benchmark 5 roles", body: "Compare salary range, demand, competition, and required proof.", href: "discover.html", done: false },
         { id: "market-signal", title: "Add one market signal", body: `Build evidence around ${current.skills[1] || "a high-demand skill"} using a concrete artifact.`, href: "vera.html#skills", done: false },
         { id: "market-story", title: "Practice value story", body: "Prepare a 60-second answer explaining why your market value has increased.", href: "vera.html#interview", done: false }
       ]
@@ -7916,7 +7916,7 @@ function renderAutopilot() {
           <span class="cg-pipeline-pill">${icon("radio")} Pipeline - live</span>
           <h1>Your job search is <em>accelerating.</em><br>One move today changes the week.</h1>
           <p>Vera is tracking 12 relationships, 3 recruiters who opened your profile this week, and 2 offers within striking distance. Predicted first offer: <strong>28 Nov - 64% confidence.</strong></p>
-          <a class="btn btn-primary" href="jobs.html">${icon("plus")} Add application</a>
+          <a class="btn btn-primary" href="discover.html">${icon("plus")} Add application</a>
         </header>
 
         <section class="cg-pipeline-one-move">
@@ -7954,7 +7954,7 @@ function renderAutopilot() {
             ["Expected interviews", "5", "Next 3 weeks", "video"],
             ["Expected offers", "2", "Confidence 64%", "trophy"],
             ["If you apply to 5 more matches", "3 offers", "Vera can queue them", "zap"]
-          ].map(([label, value, body, ic], index) => `<article class="${index === 3 ? "dark" : ""}"><span>${label}${icon(ic)}</span><strong>${value}</strong><p>${body}</p>${index === 3 ? `<a href="jobs.html">Queue matches ${icon("arrow-right")}</a>` : ""}</article>`).join("")}
+          ].map(([label, value, body, ic], index) => `<article class="${index === 3 ? "dark" : ""}"><span>${label}${icon(ic)}</span><strong>${value}</strong><p>${body}</p>${index === 3 ? `<a href="discover.html">Queue matches ${icon("arrow-right")}</a>` : ""}</article>`).join("")}
         </section>
 
         <section class="cg-pipeline-memory">
@@ -8094,7 +8094,7 @@ function renderAutopilot() {
     <section class="glass-card application-overview" data-no-number-animation>
       <div class="section-head">
         <div><div class="section-kicker">Application command center</div><h2 class="section-title mini">Nothing disappears after you apply.</h2></div>
-        <div class="hero-actions compact-actions"><a class="btn btn-primary" href="jobs.html#tracker">${icon("briefcase")} Manage in Jobs</a><button class="btn btn-cyan" type="button" data-add-best-role>${icon("plus")} Track best match</button></div>
+        <div class="hero-actions compact-actions"><a class="btn btn-primary" href="discover.html#tracker">${icon("briefcase")} Manage in Jobs</a><button class="btn btn-cyan" type="button" data-add-best-role>${icon("plus")} Track best match</button></div>
       </div>
       <div class="application-kpi-grid">
         ${[
@@ -8160,7 +8160,7 @@ function renderAutopilot() {
             <div class="plan-outcome"><strong>Next action</strong><span>${activeItem.record.nextAction}</span></div>
             <div class="plan-command-row">
               <button class="btn btn-cyan" type="button" data-app-vera="${activeItem.job.id}">${icon("sparkles")} Ask Vera</button>
-              <a class="btn btn-ghost" href="jobs.html?job=${activeItem.job.id}#tracker">${icon("external-link")} Open job</a>
+              <a class="btn btn-ghost" href="discover.html?job=${activeItem.job.id}#tracker">${icon("external-link")} Open job</a>
               <button class="btn btn-ghost" type="button" data-app-stage="archived" data-app-id="${activeItem.job.id}">${icon("archive")} Archive</button>
               <button class="btn btn-ghost" type="button" data-back-app-list>${icon("arrow-up")} Back to list</button>
             </div>
@@ -8476,7 +8476,7 @@ function renderPosts() {
         <span>${icon("sparkles")} ${job.why[0]}</span>
       </div>
       <div class="cg-feed-actions">
-        <a href="jobs.html?job=${job.id}">${icon("briefcase")} Open role</a>
+        <a href="discover.html?job=${job.id}">${icon("briefcase")} Open role</a>
         <button type="button" data-feed-unsave-job="${job.id}">${icon("bookmark-x")} Remove</button>
       </div>
     </article>
