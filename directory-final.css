@@ -435,7 +435,7 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-tabs 
 body:is([data-page="companies"], [data-page="universities"]) .cg-directory-tabs button.active {
   color: #fffaf2 !important;
   -webkit-text-fill-color: #fffaf2 !important;
-  background: var(--dir-ink) !important;
+  background: linear-gradient(120deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
   box-shadow: 0 12px 26px rgba(7, 56, 47, 0.18) !important;
 }
 
@@ -860,4 +860,8 @@ html body:is([data-page="companies"], [data-page="universities"])
   :is(.topbar:has(.public-site-nav) .public-site-nav a:hover, .topbar:has(.public-site-nav) .public-site-nav a.active) {
   color: #0b6d65 !important;
   -webkit-text-fill-color: #0b6d65 !important;
+}
+
+html body:is([data-page="companies"], [data-page="universities"]) .site-footer {
+  margin-top: 0 !important;
 }
