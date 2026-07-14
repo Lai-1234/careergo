@@ -1380,7 +1380,7 @@ function workspaceTopNav() {
       ["dashboard", "Dashboard", "dashboard.html"],
       ["discover", "Discover", "discover.html"],
       ["grow", "Growth", "grow.html"],
-      ["market", "Worth", "market.html"],
+      ["market", "Career Value", "market.html"],
       ["autopilot", "Pipeline", "autopilot.html"],
       ["posts", "Feed", "posts.html"]
     ];
@@ -7491,11 +7491,29 @@ function renderMarket() {
   const state = readState();
   if (state.session.loggedIn) {
     const valueDrivers = [
-      ["target", "Product Analytics", "Unlocks senior PM roles at Grab, Setel, Carsome.", "+RM 1,300", "Effort - 12 hrs - 3 weeks"],
-      ["zap", "SQL fluency", "Removes your #1 interview blocker in KL fintechs.", "+RM 900", "Effort - 8 hrs - 2 weeks"],
-      ["briefcase-business", "Portfolio case study", "Recruiter response rate lifts ~2.1x when linked.", "+RM 700", "Effort - 6 hrs - 1 weekend"],
-      ["rocket", "Leadership experience", "Lead one cross-team initiative this quarter.", "+RM 500", "Effort - Ongoing"]
+      ["target", "Product Analytics", "Unlocks senior PM roles at Grab, Setel, Carsome.", 13, "Effort - 12 hrs - 3 weeks", [["Market pulse", 8], ["Peer review", 3], ["Mentor input", 2]]],
+      ["zap", "SQL fluency", "Removes your #1 interview blocker in KL fintechs.", 9, "Effort - 8 hrs - 2 weeks", [["Market pulse", 6], ["Peer review", 2], ["Mentor input", 1]]],
+      ["briefcase-business", "Portfolio case study", "Recruiter response rate lifts ~2.1x when linked.", 7, "Effort - 6 hrs - 1 weekend", [["Market pulse", 5], ["Peer review", 1], ["Mentor input", 1]]],
+      ["rocket", "Leadership experience", "Lead one cross-team initiative this quarter.", 5, "Effort - Ongoing", [["Market pulse", 3], ["Peer review", 1], ["Mentor input", 1]]]
     ];
+    const worthPieColors = ["#1baf7a", "#2a78d6", "#eda100"];
+    const worthDriverPie = breakdown => {
+      const total = breakdown.reduce((sum, [, value]) => sum + value, 0);
+      let cumulative = 0;
+      const segments = breakdown.map(([label, value], i) => {
+        const frac = total ? (value / total) * 100 : 0;
+        const dashoffset = 25 - cumulative;
+        cumulative += frac;
+        return `<circle class="cg-worth-pie-seg" cx="21" cy="21" r="15.9155" fill="transparent" stroke="${worthPieColors[i % worthPieColors.length]}" stroke-width="6" stroke-dasharray="${frac} ${100 - frac}" stroke-dashoffset="${dashoffset}"><title>${label} - ${value}% of value</title></circle>`;
+      }).join("");
+      const legend = breakdown.map(([label, value], i) => `<li><i style="background:${worthPieColors[i % worthPieColors.length]}"></i>${label}<b>${value}%</b></li>`).join("");
+      return `
+        <div class="cg-worth-pie" role="img" aria-label="Value breakdown: ${breakdown.map(([label, value]) => `${label} ${value}%`).join(", ")}">
+          <svg viewBox="0 0 42 42">${segments}</svg>
+          <ul class="cg-worth-pie-legend">${legend}</ul>
+        </div>
+      `;
+    };
     const memory = [
       ["Last month", "RM 8,450", "Before you started the SQL sprint"],
       ["Last week", "RM 8,780", "Resume rewrite lifted recruiter reply rate"],
@@ -7538,14 +7556,10 @@ function renderMarket() {
           <span class="cg-worth-pill">${icon("flame")} Vera believes you're underpriced</span>
           <div class="cg-worth-hero-grid">
             <div>
-              <h1><span>RM</span>8,950</h1>
-              <p>Your Career Value climbed overnight because two Grab recruiters opened your profile and your SQL sprint is 40% through. You're closer to your six-month goal than you were last Monday.</p>
-              <div class="cg-worth-meta"><span>72% confidence</span><span>Based on 6,431 verified MY offers</span><span>Refreshes each time you ship</span></div>
+              <h1><span>RM</span>8,950<small>/ month</small></h1>
             </div>
             <div class="cg-worth-side">
-              <span>/ month</span>
               <b>${icon("trending-up")} +RM 50 since yesterday</b>
-              <dl><dt>In 6 months</dt><dd>RM 10,200</dd><dt>Potential gain</dt><dd>+RM 1,300</dd><dt>Confidence</dt><dd>87%</dd></dl>
             </div>
           </div>
           <article class="cg-worth-vera-note">
@@ -7579,20 +7593,23 @@ function renderMarket() {
         </section>
 
         <section class="cg-worth-section">
-          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Top value drivers</span><h2>What gives you the biggest return.</h2><p>Ranked by expected monthly pay lift, weighted by how likely you are to complete it.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-section-head"><div><h2>Top value drivers</h2><p>Ranked by expected monthly pay lift, weighted by how likely you are to complete it.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-driver-grid">
-            ${valueDrivers.map(([ic, title, body, lift, effort]) => `
+            ${valueDrivers.map(([ic, title, body, pct, effort, breakdown]) => `
               <article>
                 <span>${icon(ic)}</span>
                 <div><h3>${title}</h3><p>${body}</p><small>${effort}</small></div>
-                <strong>${lift}</strong>
+                <div class="cg-worth-driver-value">
+                  <strong>+${pct}<small>% Value</small></strong>
+                  ${worthDriverPie(breakdown)}
+                </div>
               </article>
             `).join("")}
           </div>
         </section>
 
         <section class="cg-worth-memory">
-          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Vera remembers</span><h2>You've grown +13% since October.</h2><p>Small changes compound. Here's the story your Career Value has been telling.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-section-head"><div><h2>Value Growth</h2><p>Small changes compound. Here's the story your Career Value has been telling.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-memory-grid">
             ${memory.map(([label, value, body], index) => `<article class="${index === memory.length - 1 ? "active" : ""}"><span>${icon("history")} ${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}
           </div>
@@ -7600,7 +7617,7 @@ function renderMarket() {
         </section>
 
         <section class="cg-worth-section">
-          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Career value scenarios</span><h2>Five futures. One decision at a time.</h2><p>Each row is a realistic path based on your archetype. Explore before you commit.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-section-head"><div><h2>Career Value Scenarios</h2></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-scenarios">
             ${scenarios.map(([ic, title, body, width, value, tone]) => `
               <article class="tone-${tone}">
@@ -7636,7 +7653,7 @@ function renderMarket() {
         </section>
 
         <section class="cg-worth-section">
-          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Learning ROI</span><h2>Every hour, priced in Ringgit.</h2><p>Vera picks the smallest inputs with the largest impact on your Career Value.</p></div><a href="vera.html#skills">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-section-head"><div><h2>Career value Timetable</h2><p>Vera picks the smallest inputs with the largest impact on your Career Value.</p></div><a href="vera.html#skills">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-roi-grid">
             ${learningRoi.map(([ic, title, source, time, lift, stars, why]) => `
               <article>
@@ -7684,7 +7701,7 @@ function renderMarket() {
         </section>
 
         <section class="cg-worth-section">
-          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Market benchmarks</span><h2>How you compare in Malaysia.</h2><p>Live Fair Pay data from KL, Penang, Johor, and remote Malaysia postings.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-section-head"><div><h2>Benchmark -In Malaysia</h2><p>Live Fair Pay data from KL, Penang, Johor, and remote Malaysia postings.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-benchmarks">
             ${benchmarks.map(([label, value, body, tone]) => `<article class="tone-${tone}"><span>${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}
           </div>
