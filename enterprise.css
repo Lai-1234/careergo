@@ -19126,6 +19126,30 @@ html body:is([data-page="home"], [data-page="about"], [data-page="community"], [
   border-radius: 9999px !important;
 }
 
+/* .workspace-nav.glass-card above forces this bar to a white background on the employers
+   page group, but its .os-nav link colors (styles.css) were authored for the old dark
+   #1B3A34 background, leaving active/hover text at near-white on white. Repaint for the
+   light background. */
+html body[data-page="employers"] .workspace-nav.glass-card .os-nav a {
+  color: #44554f !important;
+}
+
+html body[data-page="employers"] .workspace-nav.glass-card .os-nav a.active {
+  color: #ffffff !important;
+  background: #0b6d65 !important;
+  box-shadow: none !important;
+}
+
+html body[data-page="employers"] .workspace-nav.glass-card .os-nav a:hover:not(.active),
+html body[data-page="employers"] .workspace-nav.glass-card .os-nav-button:hover {
+  color: #0b6d65 !important;
+  background: rgba(11, 109, 101, 0.1) !important;
+}
+
+html body[data-page="employers"] .workspace-nav.glass-card .os-nav-button {
+  color: #44554f !important;
+}
+
 html body[data-page="home"] :is(.home-paybar span, .progress-fill, .bar-fill, .score-bar span, .comparison-score-bar span) {
   background: linear-gradient(90deg, #0f4c5c 0%, #4db6ac 100%) !important;
   border-radius: 9999px !important;
