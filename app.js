@@ -3691,7 +3691,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><h2>Featured Companies</h2></div>
-            <a class="cg-discover-link-btn" href="companies.html#companies">Explore 1,240 companies ${icon("arrow-right")}</a>
+            <button type="button" class="cg-discover-link-btn" data-org-browse-open="companies">Explore 1,240 companies ${icon("arrow-right")}</button>
           </div>
           <div class="cg-featured-org-grid">
             ${featuredCompanies.map(([name, sub, tag, roles, why]) => `
@@ -3707,7 +3707,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><h2>Featured Universities</h2></div>
-            <a class="cg-discover-link-btn" href="companies.html#universities">Browse all universities ${icon("arrow-right")}</a>
+            <button type="button" class="cg-discover-link-btn" data-org-browse-open="universities">Browse all universities ${icon("arrow-right")}</button>
           </div>
           <div class="cg-featured-org-grid">
             ${universities.map(([name, sub, tag, why]) => `
@@ -3770,6 +3770,7 @@ function renderJobsPage() {
     `;
     createIcons();
     wireVeraWidget(root);
+    qsa("[data-org-browse-open]", root).forEach(button => button.addEventListener("click", () => openOrgBrowserModal(button.dataset.orgBrowseOpen)));
     return;
   }
   if (state.session.loggedIn && document.body.dataset.page === "workspace-jobs") {
@@ -4474,26 +4475,11 @@ function renderJobsPage() {
   renderDetail();
 }
 
-function renderDirectoryPage(kind) {
-  const root = qs("[data-directory-page]");
-  if (!root) return;
-  const state = readState();
-  const loggedIn = Boolean(state.session.loggedIn);
-  if (loggedIn && state.session.role === "employer") {
-    root.innerHTML = `
-      <section class="container section">
-        <div class="locked-state glass-card">
-          <div class="eyebrow"><span class="spark">*</span> Employer workspace</div>
-          <h1 class="section-title">Company and university research is part of the job seeker workspace.</h1>
-          <p class="section-sub">Employers should use Company Profile, Candidate Search, Talent Pool, Applicants, and Analytics inside Employer OS.</p>
-          <div class="hero-actions"><a class="btn btn-primary" href="employer-app.html">${icon("layout-dashboard")} Open Employer OS</a><a class="btn btn-ghost" href="employers.html">${icon("info")} Employer entry</a></div>
-        </div>
-      </section>
-    `;
-    createIcons();
-    return;
-  }
+function orgInitials(name) {
+  return String(name || "CG").split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase();
+}
 
+function buildOrgCatalog() {
   const extraCompanies = [
     { id: "shell", name: "Shell", industry: "Energy", location: "Kuala Lumpur", rating: 4.4, reviews: 612, open: 10, signal: "Structured graduate rotations", tags: ["Verified", "Graduates' Choice", "Hiring at scale"], summary: "Global energy employer with commercial rotations, digital product work, and established graduate pathways.", salary: "RM 5k - 14k / month", size: "10,000+ employees", type: "Company" },
     { id: "setel", name: "Setel", industry: "Fintech", location: "Kuala Lumpur", rating: 4.3, reviews: 288, open: 4, signal: "AI-native product squad", tags: ["Verified", "Fast responders", "Product"], summary: "Fintech product team close to PETRONAS Digital, useful for PMs who want payments and mobility products.", salary: "RM 9k - 14k / month", size: "250+ employees", type: "Company" },
@@ -4518,6 +4504,109 @@ function renderDirectoryPage(kind) {
     following: org.type === "University" ? `${Math.max(12, Math.round(org.reviews / 10))}k alumni signals` : `${Math.max(3, Math.round(org.reviews / 80))}k following`,
     programme: org.type === "University" ? (org.tags?.[0] || "Career outcomes") : (org.tags?.[1] || "Verified")
   }));
+  return { companies, universities, catalog };
+}
+
+function openOrgBrowserModal(kind) {
+  const { catalog } = buildOrgCatalog();
+  const items = catalog.filter(org => org.category === kind);
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.dataset.orgBrowser = "";
+  backdrop.innerHTML = `
+    <div class="modal card cg-org-browse-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Directory</div>
+          <h2>${kind === "companies" ? "All companies" : "All universities"}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close>${icon("x")}</button>
+      </div>
+      <label class="cg-org-browse-search">${icon("search")}<input type="text" placeholder="Search ${kind === "companies" ? "companies" : "universities"}..." data-org-browse-search></label>
+      <div class="cg-org-browse-list" data-org-browse-list></div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+
+  const list = qs("[data-org-browse-list]", backdrop);
+  const searchInput = qs("[data-org-browse-search]", backdrop);
+
+  function renderList() {
+    const query = (searchInput?.value || "").trim().toLowerCase();
+    const savedOrgs = Array.isArray(readState().savedOrgs) ? readState().savedOrgs : [];
+    const filtered = items.filter(org => {
+      if (!query) return true;
+      const hay = [org.name, org.industry, org.location, org.signal, ...(org.tags || [])].join(" ").toLowerCase();
+      return hay.includes(query);
+    });
+    list.innerHTML = filtered.map(org => {
+      const isSaved = savedOrgs.includes(org.id);
+      return `
+        <article class="cg-org-browse-card">
+          <span class="cg-org-browse-logo">${orgInitials(org.name)}</span>
+          <div class="cg-org-browse-body">
+            <h3>${org.name}</h3>
+            <p>${org.industry} &middot; ${org.location} &middot; ${icon("star")} ${Number(org.rating).toFixed(1)}</p>
+            <div class="cg-org-browse-tags">${(org.tags || []).slice(0, 3).map(tag => `<span>${tag}</span>`).join("")}</div>
+            <p class="cg-org-browse-signal">${icon("sparkles")} ${org.signal}</p>
+          </div>
+          <div class="cg-org-browse-actions">
+            <b>${org.type === "University" ? org.salary : `${org.open} open roles`}</b>
+            <button type="button" data-org-browse-save="${org.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save"}</button>
+          </div>
+        </article>
+      `;
+    }).join("") || `<p class="cg-org-browse-empty">No matches yet. Try a different search.</p>`;
+    qsa("[data-org-browse-save]", list).forEach(button => button.addEventListener("click", () => {
+      const next = readState();
+      next.savedOrgs = Array.isArray(next.savedOrgs) ? next.savedOrgs : [];
+      const id = button.dataset.orgBrowseSave;
+      next.savedOrgs = next.savedOrgs.includes(id) ? next.savedOrgs.filter(savedId => savedId !== id) : [...next.savedOrgs, id];
+      writeState(next);
+      renderList();
+      showToast(next.savedOrgs.includes(id) ? "Saved for comparison." : "Removed from saved.");
+    }));
+    createIcons();
+  }
+
+  function close() {
+    backdrop.remove();
+    document.removeEventListener("keydown", onEsc);
+  }
+  function onEsc(event) {
+    if (event.key === "Escape") close();
+  }
+  searchInput.addEventListener("input", renderList);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", close));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) close();
+  });
+  document.addEventListener("keydown", onEsc);
+  renderList();
+  createIcons();
+}
+
+function renderDirectoryPage(kind) {
+  const root = qs("[data-directory-page]");
+  if (!root) return;
+  const state = readState();
+  const loggedIn = Boolean(state.session.loggedIn);
+  if (loggedIn && state.session.role === "employer") {
+    root.innerHTML = `
+      <section class="container section">
+        <div class="locked-state glass-card">
+          <div class="eyebrow"><span class="spark">*</span> Employer workspace</div>
+          <h1 class="section-title">Company and university research is part of the job seeker workspace.</h1>
+          <p class="section-sub">Employers should use Company Profile, Candidate Search, Talent Pool, Applicants, and Analytics inside Employer OS.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="employer-app.html">${icon("layout-dashboard")} Open Employer OS</a><a class="btn btn-ghost" href="employers.html">${icon("info")} Employer entry</a></div>
+        </div>
+      </section>
+    `;
+    createIcons();
+    return;
+  }
+
+  const { catalog } = buildOrgCatalog();
   let activeKind = (location.hash || "").replace("#", "") || (kind === "universities" ? "universities" : "companies");
   if (!["companies", "universities"].includes(activeKind)) activeKind = "companies";
   const title = "Career places worth knowing.";
@@ -4574,9 +4663,7 @@ function renderDirectoryPage(kind) {
   const params = new URLSearchParams(location.search);
   if (searchInput) searchInput.value = params.get("q") || "";
 
-  function initials(name) {
-    return String(name || "CG").split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase();
-  }
+  const initials = orgInitials;
 
   function activeCatalog() {
     return catalog.filter(org => org.category === activeKind);
