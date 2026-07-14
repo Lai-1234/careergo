@@ -14150,6 +14150,10 @@ html body[data-page="dashboard"] .cg-focus-card .btn-primary {
   border-color: #fffaf2 !important;
 }
 
+html body[data-page="dashboard"] .cg-focus-card .btn-primary * {
+  color: #07382f !important;
+}
+
 html body[data-page="dashboard"] .cg-focus-card .btn-ghost {
   border-color: rgba(255, 255, 255, 0.16) !important;
   background: rgba(255, 255, 255, 0.08) !important;
@@ -14820,7 +14824,7 @@ html body[data-page="dashboard"] .tour-restart-btn {
   backdrop-filter: blur(12px) !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-widget {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-widget {
   position: fixed !important;
   right: 44px !important;
   bottom: 32px !important;
@@ -14831,7 +14835,7 @@ html body[data-page="dashboard"] .cg-vera-widget {
   gap: 14px !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-trigger {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-trigger {
   display: grid !important;
   place-items: center !important;
   width: 68px !important;
@@ -14845,18 +14849,18 @@ html body[data-page="dashboard"] .cg-vera-trigger {
   transition: transform 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-trigger:hover {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-trigger:hover {
   transform: scale(1.06) !important;
   box-shadow: 0 28px 56px rgba(7, 56, 47, 0.3) !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-trigger-logo {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-trigger-logo {
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-popover {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-popover {
   width: min(400px, calc(100vw - 48px)) !important;
   max-height: calc(100vh - 170px) !important;
   display: flex !important;
@@ -14871,7 +14875,7 @@ html body[data-page="dashboard"] .cg-vera-popover {
   animation: cgVeraPopIn 0.18s ease !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-popover[hidden] {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-popover[hidden] {
   display: none !important;
 }
 
@@ -14880,7 +14884,7 @@ html body[data-page="dashboard"] .cg-vera-popover[hidden] {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-head {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-head {
   display: flex !important;
   flex-shrink: 0 !important;
   align-items: center !important;
@@ -14892,14 +14896,14 @@ html body[data-page="dashboard"] .cg-vera-pop-head {
   text-transform: uppercase !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-head span {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-head span {
   color: #fffaf2 !important;
   font-size: 13px !important;
   letter-spacing: 0 !important;
   text-transform: none !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-online {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-online {
   padding: 4px 10px !important;
   border-radius: 999px !important;
   color: #d9f0eb !important;
@@ -14909,7 +14913,7 @@ html body[data-page="dashboard"] .cg-vera-pop-online {
   text-transform: lowercase !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-close {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-close {
   margin-left: auto !important;
   display: grid !important;
   place-items: center !important;
@@ -14922,18 +14926,18 @@ html body[data-page="dashboard"] .cg-vera-pop-close {
   cursor: pointer !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-close:hover {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-close:hover {
   background: rgba(255, 255, 255, 0.16) !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-body {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-body {
   display: grid !important;
   gap: 14px !important;
   min-height: 0 !important;
   overflow-y: auto !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-bubble {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-bubble {
   padding: 16px 18px !important;
   border-radius: 18px !important;
   color: rgba(255, 250, 242, 0.92) !important;
@@ -14943,7 +14947,7 @@ html body[data-page="dashboard"] .cg-vera-pop-bubble {
   line-height: 1.55 !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-question {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-question {
   justify-self: end !important;
   max-width: 88% !important;
   padding: 12px 18px !important;
@@ -14954,7 +14958,7 @@ html body[data-page="dashboard"] .cg-vera-pop-question {
   font-weight: 750 !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-move {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-move {
   display: grid !important;
   gap: 12px !important;
   padding: 18px !important;
@@ -14963,7 +14967,7 @@ html body[data-page="dashboard"] .cg-vera-pop-move {
   background: rgba(255, 255, 255, 0.06) !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-move span {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-move span {
   color: rgba(255, 250, 242, 0.62) !important;
   font-size: 11px !important;
   font-weight: 700 !important;
@@ -14971,7 +14975,7 @@ html body[data-page="dashboard"] .cg-vera-pop-move span {
   text-transform: uppercase !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-move h4 {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-move h4 {
   margin: 0 !important;
   color: #fffaf2 !important;
   font-family: "Fraunces", ui-serif, Georgia, serif !important;
@@ -14979,31 +14983,31 @@ html body[data-page="dashboard"] .cg-vera-pop-move h4 {
   font-weight: 500 !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-stats {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-stats {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: 10px !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-stats div {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-stats div {
   display: grid !important;
   gap: 4px !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-stats span {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-stats span {
   color: rgba(255, 250, 242, 0.6) !important;
   font-size: 11px !important;
   font-weight: 700 !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-stats strong {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-stats strong {
   color: #fffaf2 !important;
   font-family: "Fraunces", ui-serif, Georgia, serif !important;
   font-size: 17px !important;
   font-weight: 500 !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-composer {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-composer {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) 40px !important;
   gap: 10px !important;
@@ -15015,7 +15019,7 @@ html body[data-page="dashboard"] .cg-vera-pop-composer {
   flex-shrink: 0 !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-composer input {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-composer input {
   border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
@@ -15024,11 +15028,11 @@ html body[data-page="dashboard"] .cg-vera-pop-composer input {
   font-weight: 600 !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-composer input::placeholder {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-composer input::placeholder {
   color: rgba(255, 250, 242, 0.6) !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-pop-composer button {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-composer button {
   display: grid !important;
   place-items: center !important;
   width: 36px !important;
@@ -15061,12 +15065,12 @@ html body[data-page="dashboard"] .cg-vera-pop-composer button {
     min-width: 150px !important;
   }
 
-  html body[data-page="dashboard"] .cg-vera-widget {
+  html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-widget {
     right: 18px !important;
     bottom: 22px !important;
   }
 
-  html body[data-page="dashboard"] .cg-vera-trigger {
+  html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-trigger {
     width: 56px !important;
     height: 56px !important;
   }

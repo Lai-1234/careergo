@@ -411,7 +411,6 @@ function readState() {
     comparedJobs: [],
     savedOrgs: [],
     missionProgress: {},
-    planProgress: {},
     marketPlan: null,
     guidedTour: { dashboard: { status: "new", step: 0 } },
     reviews: DATA.reviews,
@@ -553,7 +552,6 @@ function normalizeState(state) {
     ignoredJobs: Array.isArray(state.ignoredJobs) ? state.ignoredJobs : [],
     comparedJobs: Array.isArray(state.comparedJobs) ? state.comparedJobs : [],
     savedOrgs: Array.isArray(state.savedOrgs) ? state.savedOrgs : [],
-    planProgress: state.planProgress && typeof state.planProgress === "object" ? state.planProgress : {},
     marketPlan: state.marketPlan && typeof state.marketPlan === "object" ? state.marketPlan : null,
     interviewCoach: {
       role: "",
@@ -1024,7 +1022,7 @@ function personalizedMissions(profile) {
   return [
     { id: "pm1", title: "Profile baseline", body: "Complete your profile so CareerGo can improve your roadmap.", xp: 90, progress: 45, href: "edit-career-data.html" },
     { id: "pm2", title: "Role shortlist", body: "Save two roles that match your preferred path.", xp: 80, progress: 30, href: "discover.html" },
-    { id: "pm3", title: "Coach plan", body: "Ask Vera to create a simple 7-day action plan.", xp: 70, progress: 20, href: "vera.html#plan" }
+    { id: "pm3", title: "Coach plan", body: "Ask Vera to create a simple 7-day action plan.", xp: 70, progress: 20, href: "vera.html#chat" }
   ];
 }
 
@@ -1041,7 +1039,7 @@ function starterMissions(profile) {
       id: "tour-vera",
       title: "Ask Vera for a plan",
       body: `Get a simple 7-day plan for ${getTargetLabel(profile)} with actions you can actually finish.`,
-      href: "vera.html#plan",
+      href: "vera.html#chat",
       icon: "sparkles"
     },
     {
@@ -3733,8 +3731,10 @@ function renderJobsPage() {
           </div>
         </section>
       </section>
+      ${veraWidgetMarkup()}
     `;
     createIcons();
+    wireVeraWidget(root);
     return;
   }
   if (state.session.loggedIn && document.body.dataset.page === "workspace-jobs") {
@@ -4836,7 +4836,7 @@ function renderDashboard() {
           <h2>Hi, I'm Vera, your AI career coach.</h2>
           <p>${focusDetail}</p>
           <div class="cg-action-row">
-            <a class="btn btn-primary" href="vera.html#plan">Start with Vera ${icon("arrow-up-right")}</a>
+            <button type="button" class="btn btn-primary" data-vera-open>${icon("sparkles")} Start with Vera</button>
             <a class="btn btn-ghost" href="grow.html">Snooze</a>
             <span class="cg-confidence">${icon("gauge")} Confidence: ${intel.confidence}</span>
           </div>
@@ -4924,7 +4924,7 @@ function renderDashboard() {
                   <p>${icon("sparkles")} ${task.body}</p>
                   ${progressBar(done ? 100 : task.progress)}
                 </div>
-                ${mission ? `<button class="btn btn-ghost" type="button" data-complete-mission="${mission.id}">${done ? "Done" : "Start"} ${icon("arrow-up-right")}</button>` : `<a class="btn btn-ghost" href="vera.html#plan">Start ${icon("arrow-up-right")}</a>`}
+                ${mission ? `<button class="btn btn-ghost" type="button" data-complete-mission="${mission.id}">${done ? "Done" : "Start"} ${icon("arrow-up-right")}</button>` : `<button class="btn btn-ghost" type="button" data-vera-open>Start ${icon("arrow-up-right")}</button>`}
               </article>
             `;
           }).join("")}
@@ -4977,6 +4977,21 @@ function renderDashboard() {
         </div>
       </section>
 
+      ${veraWidgetMarkup()}
+    </section>
+  `);
+  createIcons();
+  bindMissionActions();
+  qsa("[data-task-filter]", root).forEach(btn => btn.addEventListener("click", () => {
+    dashboardTaskFilter = dashboardTaskFilter === btn.dataset.taskFilter ? "" : btn.dataset.taskFilter;
+    renderDashboard();
+  }));
+  wireVeraWidget(root);
+  initDashboardTour();
+}
+
+function veraWidgetMarkup() {
+  return `
       <div class="cg-vera-widget" data-vera-widget>
         <div class="cg-vera-popover" data-vera-popover hidden>
           <div class="cg-vera-pop-head">
@@ -5007,16 +5022,7 @@ function renderDashboard() {
           <img class="cg-vera-trigger-logo" src="assets/vera-ai-coach.png" alt="Vera AI">
         </button>
       </div>
-    </section>
-  `);
-  createIcons();
-  bindMissionActions();
-  qsa("[data-task-filter]", root).forEach(btn => btn.addEventListener("click", () => {
-    dashboardTaskFilter = dashboardTaskFilter === btn.dataset.taskFilter ? "" : btn.dataset.taskFilter;
-    renderDashboard();
-  }));
-  wireVeraWidget(root);
-  initDashboardTour();
+  `;
 }
 
 function wireVeraWidget(root) {
@@ -5034,6 +5040,10 @@ function wireVeraWidget(root) {
     if (popover.hidden) openPopover(); else closePopover();
   });
   qs("[data-vera-close]", popover).addEventListener("click", closePopover);
+  qsa("[data-vera-open]", root).forEach(btn => btn.addEventListener("click", event => {
+    event.stopPropagation();
+    openPopover();
+  }));
   document.addEventListener("click", event => {
     if (!widget.contains(event.target)) closePopover();
   });
@@ -5062,7 +5072,7 @@ function renderVera() {
   ];
   state.chat = messages;
   writeState(state);
-  let activeTab = location.hash?.replace("#", "") || "plan";
+  let activeTab = location.hash?.replace("#", "") || "chat";
 
   function renderMessages() {
     const target = qs("[data-message-list]");
@@ -5175,21 +5185,20 @@ function renderVera() {
         </section>
       `;
     }
-    if (activeTab === "chat") {
-      const chatPresets = [
-        "Build me a 7-day job search plan",
-        "What should I do about my active application?",
-        "Which skill gap should I close first?",
-        "Compare my saved roles by career impact"
-      ];
-      const draftAnswers = [
-        "I want to switch into Product Analyst. What should I do first?",
-        "Help me prepare for a case-study interview this week.",
-        "Review my next application strategy before I apply."
-      ];
-      const savedCount = state.savedJobs.length;
-      const appliedCount = state.applications.length;
-      return `
+    const chatPresets = [
+      "Build me a 7-day job search plan",
+      "What should I do about my active application?",
+      "Which skill gap should I close first?",
+      "Compare my saved roles by career impact"
+    ];
+    const draftAnswers = [
+      "I want to switch into Product Analyst. What should I do first?",
+      "Help me prepare for a case-study interview this week.",
+      "Review my next application strategy before I apply."
+    ];
+    const savedCount = state.savedJobs.length;
+    const appliedCount = state.applications.length;
+    return `
         <section class="chat-window glass-card">
           <div class="detail-head"><div><h2>Career session</h2><div class="muted">Vera uses your jobs, reviews, profile, market, and goals as context.</div></div><span class="pill green">Online</span></div>
           <div class="career-session-grid">
@@ -5221,98 +5230,6 @@ function renderVera() {
           </form>
         </section>
       `;
-    }
-    const planProgress = readState().planProgress || {};
-    const planPhases = [
-      {
-        id: "baseline",
-        title: "Days 1-30",
-        theme: "Baseline and target clarity",
-        body: "Set your profile baseline, choose one target path, and build a clean evidence map.",
-        outcome: "A focused target role, ATS baseline, and one clear proof gap.",
-        tasks: [
-          ["baseline-profile", "Update Career Intelligence profile and resume baseline", "edit-career-data.html"],
-          ["baseline-target", `Choose one target path: ${getTargetLabel(state.profile)}`, "discover.html"],
-          ["baseline-research", "Compare 3 companies or universities before applying", "companies.html"]
-        ]
-      },
-      {
-        id: "proof",
-        title: "Days 31-60",
-        theme: "Proof-building sprint",
-        body: "Close your top two gaps with visible proof: one strategy artifact and one metrics story.",
-        outcome: "A portfolio-ready project story that proves judgment, impact, and trade-offs.",
-        tasks: [
-          ["proof-strategy", "Write one product strategy memo from a past project", "grow.html"],
-          ["proof-metrics", "Add before/after metrics to one case study", "grow.html"],
-          ["proof-skill", "Complete one high-value skill sprint from Vera's roadmap", "vera.html#skills"]
-        ]
-      },
-      {
-        id: "apply",
-        title: "Days 61-90",
-        theme: "Apply, interview, decide",
-        body: "Apply selectively, practice high-signal interview stories, and use research before accepting.",
-        outcome: "Five high-fit applications, stronger interview stories, and a decision framework.",
-        tasks: [
-          ["apply-roles", "Apply to 5 roles above your match threshold", "discover.html"],
-          ["apply-interview", "Practice 3 interview answers with Vera feedback", "vera.html#interview"],
-          ["apply-decision", "Compare offers or shortlists using growth, pay, and culture", "companies.html"]
-        ]
-      }
-    ];
-    const allPlanTasks = planPhases.flatMap(phase => phase.tasks);
-    const completedPlanTasks = allPlanTasks.filter(([id]) => planProgress[id]).length;
-    const planPercent = Math.round((completedPlanTasks / allPlanTasks.length) * 100);
-    const nextTask = allPlanTasks.find(([id]) => !planProgress[id]);
-    return `
-      <section class="glass-card vera-plan">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">90-day plan</div>
-            <h2 class="section-title mini">A mentor-led path from day one.</h2>
-            <p class="section-sub">Personalized around ${state.profile.careerStage || "your current stage"}, ${getTargetLabel(state.profile)}, and your saved application signals.</p>
-          </div>
-          <button class="btn btn-primary" data-plan>${icon("sparkles")} Regenerate plan</button>
-        </div>
-        <div class="plan-summary-grid">
-          <article class="plan-summary-card"><span>Progress</span><strong>${planPercent}%</strong>${progressBar(planPercent)}</article>
-          <article class="plan-summary-card"><span>Target</span><strong>${getTargetLabel(state.profile)}</strong><p class="muted small">${state.profile.preferences.workMode || "Hybrid"} work - ${state.profile.preferences.ambitionLevel || "steady growth"}</p></article>
-          <article class="plan-summary-card"><span>Next action</span><strong>${nextTask ? nextTask[1] : "Plan complete"}</strong><p class="muted small">${completedPlanTasks}/${allPlanTasks.length} tasks done</p></article>
-        </div>
-        <div class="plan-phase-grid">
-          ${planPhases.map(phase => {
-            const done = phase.tasks.filter(([id]) => planProgress[id]).length;
-            const percent = Math.round((done / phase.tasks.length) * 100);
-            return `
-              <article class="timeline-item plan-phase-card">
-                <div class="list-card-top">
-                  <div><h3>${phase.title}</h3><span class="muted small">${phase.theme}</span></div>
-                  <span class="pill ${percent === 100 ? "green" : "cyan"}">${done}/${phase.tasks.length}</span>
-                </div>
-                <p class="muted">${phase.body}</p>
-                ${progressBar(percent)}
-                <div class="plan-task-list">
-                  ${phase.tasks.map(([id, label, href]) => `
-                    <div class="plan-task ${planProgress[id] ? "complete" : ""}">
-                      <button type="button" class="plan-task-check" data-plan-task="${id}" aria-label="${planProgress[id] ? "Mark incomplete" : "Mark complete"}">${icon(planProgress[id] ? "check" : "circle")}</button>
-                      <span>${label}</span>
-                      <a href="${href}" aria-label="Open related page">${icon("arrow-up-right")}</a>
-                    </div>
-                  `).join("")}
-                </div>
-                <div class="plan-outcome"><strong>Outcome</strong><span>${phase.outcome}</span></div>
-              </article>
-            `;
-          }).join("")}
-        </div>
-        <div class="plan-command-row">
-          <button class="btn btn-cyan" type="button" data-plan-jump="chat">${icon("message-circle")} Ask Vera about this plan</button>
-          <button class="btn btn-ghost" type="button" data-plan-jump="skills">${icon("list-checks")} Open skill roadmap</button>
-          <button class="btn btn-ghost" type="button" data-plan-jump="interview">${icon("messages-square")} Practice interview</button>
-        </div>
-      </section>
-    `;
   }
 
   root.className = "container os-layout";
@@ -5324,7 +5241,6 @@ function renderVera() {
       <p class="section-sub">Vera is designed like a teacher and life coach: proactive, warm, specific, and connected to the whole website.</p>
       <div class="pill-row">
         ${[
-          ["plan", "90-day plan"],
           ["skills", "Skills"],
           ["interview", "Interview"],
           ["chat", "Chat"]
@@ -5378,31 +5294,6 @@ function renderVera() {
         event.currentTarget.form.requestSubmit();
       }
     });
-    qs("[data-plan]")?.addEventListener("click", () => {
-      const next = readState();
-      next.planProgress = {};
-      next.chat = [
-        ...next.chat,
-        { from: "vera", text: "I regenerated your 90-day plan. Start with the first incomplete task, then use each phase outcome as your proof checklist." }
-      ];
-      writeState(next);
-      showToast("Vera regenerated your 90-day plan.");
-      renderVera();
-    });
-    qsa("[data-plan-task]").forEach(btn => btn.addEventListener("click", () => {
-      const taskId = btn.dataset.planTask;
-      const next = readState();
-      next.planProgress = { ...(next.planProgress || {}), [taskId]: !next.planProgress?.[taskId] };
-      writeState(next);
-      showToast(next.planProgress[taskId] ? "Plan task marked complete." : "Plan task reopened.");
-      renderVera();
-    }));
-    qsa("[data-plan-jump]").forEach(btn => btn.addEventListener("click", () => {
-      activeTab = btn.dataset.planJump;
-      location.hash = activeTab;
-      if (activeTab === "chat") sendVera("Help me work through my 90-day plan");
-      else renderVera();
-    }));
     qs("[data-interview-role]")?.addEventListener("change", event => {
       const next = readState();
       next.interviewCoach = { ...(next.interviewCoach || {}), role: event.currentTarget.value.trim() };
@@ -6227,6 +6118,7 @@ function renderGrow() {
         </div>
       </section>
     </section>
+    ${veraWidgetMarkup()}
   `);
   qs("[data-company-filter]", root)?.addEventListener("change", event => {
     const chosen = event.target.value;
@@ -6235,6 +6127,7 @@ function renderGrow() {
     });
   });
   createIcons();
+  wireVeraWidget(root);
   return;
   root.innerHTML = appShell("intelligence", `
     <section class="glass-card dashboard-hero profile-intel-hero">
@@ -7724,8 +7617,10 @@ function renderMarket() {
           <p class="cg-worth-note">${icon("info")} Career Value blends your live skill graph, roadmap velocity, and 6,400+ verified Malaysian offers. It updates every time you complete a roadmap step, ship a project, or receive an offer.</p>
         </section>
       </section>
+      ${veraWidgetMarkup()}
     `);
     createIcons();
+    wireVeraWidget(root);
     return;
   }
   const target = getTargetLabel(state.profile).toLowerCase();
@@ -8146,8 +8041,10 @@ function renderAutopilot() {
           </div>
         </section>
       </section>
+      ${veraWidgetMarkup()}
     `);
     createIcons();
+    wireVeraWidget(root);
     qsa("[data-pipeline-stage]", root).forEach(btn => btn.addEventListener("click", () => {
       const index = btn.getAttribute("data-pipeline-stage");
       qsa("[data-pipeline-stage]", root).forEach(b => b.classList.toggle("active", b === btn));
@@ -8515,8 +8412,10 @@ function renderPosts() {
           </form>
         </main>
       </section>
+      ${veraWidgetMarkup()}
     `);
     createIcons();
+    wireVeraWidget(root);
     return;
   }
   const commentSeed = post => [
@@ -8705,6 +8604,7 @@ function renderPosts() {
         </section>
       </aside>
     </section>
+    ${veraWidgetMarkup()}
   `);
   const mediaInput = qs("[data-post-media]", root);
   const mediaPreview = qs("[data-media-preview]", root);
@@ -8829,6 +8729,7 @@ function renderPosts() {
     renderPosts();
   }));
   createIcons();
+  wireVeraWidget(root);
 }
 
 function renderEmployerPortal() {
