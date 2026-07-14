@@ -9177,10 +9177,19 @@ function initComparisonTableAnimation() {
   observer.observe(card);
 }
 
-function initHomeBackTop() {
-  const button = qs("[data-home-back-top]");
-  if (!button || button.dataset.backTopReady === "true") return;
-  button.dataset.backTopReady = "true";
+function initGlobalBackToTop() {
+  if (document.body.dataset.backTopReady === "true") return;
+  document.body.dataset.backTopReady = "true";
+  let button = qs(".home-back-top");
+  if (!button) {
+    button = document.createElement("button");
+    button.type = "button";
+    button.className = "home-back-top";
+    button.setAttribute("aria-label", "Back to top");
+    button.innerHTML = icon("arrow-up");
+    document.body.appendChild(button);
+    createIcons();
+  }
   const sync = () => {
     button.classList.toggle("is-visible", window.scrollY > 520);
   };
@@ -9224,7 +9233,7 @@ function init() {
   initGlobalInteractionAnimations();
   initHomeStageAnimation();
   initComparisonTableAnimation();
-  initHomeBackTop();
+  initGlobalBackToTop();
   bindGlobalActions();
   createIcons();
   initSidebarToggle();
