@@ -6913,6 +6913,57 @@ body[data-page="market"]:has(.cg-worth) .container.os-layout {
   box-shadow: 0 18px 44px rgba(35, 29, 18, 0.055);
 }
 
+.cg-worth-negotiation .cg-grow-coach {
+  min-height: auto;
+  padding: 38px;
+  border: 0;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 95% 10%, rgba(101, 181, 172, 0.18), transparent 280px),
+    linear-gradient(135deg, #07382f 0%, #052f29 100%);
+}
+
+.cg-worth-coach-message {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.cg-worth-coach-message>div {
+  display: grid;
+  gap: 12px;
+}
+
+.cg-worth-coach-avatar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #fbf6ec;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.cg-worth-coach-avatar img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.cg-vera-mark {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin: 0 2px -5px 0;
+  padding: 2px;
+  border-radius: 999px;
+  background: #fbf6ec;
+  object-fit: contain;
+  vertical-align: baseline;
+}
+
 .cg-worth-negotiation h2 {
   margin-top: 16px;
   font-size: clamp(34px, 3.2vw, 48px);

@@ -6010,7 +6010,7 @@ function renderGrow() {
         </article>
 
         <article class="cg-grow-coach">
-          <div class="cg-grow-coach-head"><span>${icon("sparkles")} Coach Vera</span><b>online</b></div>
+          <div class="cg-grow-coach-head"><span><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Coach Vera</span><b>online</b></div>
           <div class="cg-chat-bubble">I noticed something. You've saved 4 Product Manager roles this week - 3 of them explicitly ask for SQL fluency in the JD. That's your largest hiring blocker right now.</div>
           <div class="cg-chat-question">How much would closing that gap actually change?</div>
           <div class="cg-chat-bubble">For your KL PM targets: unlocks ~40 more roles, lifts interview readiness by 8%, and shifts your median offer band from RM 8.9k to RM 10.2k. 30 focused minutes today gets you 60% of the way.</div>
@@ -7527,22 +7527,6 @@ function renderMarket() {
       ["globe-2", "Remote international (APAC)", "USD-linked, remote MY", 90, "RM 16,000", "dark"],
       ["map-pin", "Relocate to Singapore", "PM - SG cost adjusted", 100, "RM 18,000", "dark"]
     ];
-    const learningRoi = [
-      ["graduation-cap", "SQL for Product Managers", "Vera + DataCamp", "8 hrs", "+RM 900 / mo", "*****", "Removes your #1 interview blocker. Payback in first offer."],
-      ["graduation-cap", "Portfolio case study - Grab clone", "Coached by Vera", "6 hrs", "+RM 600 / mo", "****", "Recruiters shortlist 2.1x more when a case study is linked."],
-      ["graduation-cap", "Product Analytics with Mixpanel", "Mixpanel Academy", "14 hrs", "+RM 1,300 / mo", "*****", "Unlocks senior PM bands across Malaysian fintech."]
-    ];
-    const observations = [
-      ["trending-up", "You're now above 68% of Product Managers in Kuala Lumpur at your years of experience."],
-      ["layers", "Publishing one portfolio case study moved your value more than your last two certifications combined."],
-      ["eye", "Two recruiters viewed your profile in the last 24 hours - your interview probability quietly rose 4%."]
-    ];
-    const ripple = [
-      ["Grow", "Product Analytics sprint becomes today's mission.", ""],
-      ["Worth", "Career Value rises to ~RM 10,200 in 6 months.", "active"],
-      ["Pipeline", "+14% interview odds at Stripe - unlocks 3 senior PM roles.", ""],
-      ["Today", "Vera pins the sprint at the top of tomorrow's brief.", ""]
-    ];
     const benchmarks = [
       ["Vs. PMs in KL", "-RM 900 / mo", "Below median for your years", "warn"],
       ["Vs. top-tier co. (Grab, Shopee)", "+22% ceiling", "You're within reach with roadmap", "good"],
@@ -7640,49 +7624,29 @@ function renderMarket() {
             <div class="cg-worth-slider"><i><em></em><b></b></i><div><span>Lowball - RM 8,400</span><span>Fair - RM 10,100</span><span>Ambitious - RM 11,500</span></div></div>
             <a class="btn btn-primary" href="vera.html#chat">${icon("sparkles")} Generate negotiation points</a>
           </article>
-          <aside>
-            <span class="cg-section-kicker">Vera's talking points</span>
-            <h3>Why RM 10,300 is defensible</h3>
-            ${[
-              "Your SQL + Analytics combo is present in only 34% of KL PMs at your level.",
-              "Median fintech PM base in KL is RM 10,100 - you sit above the archetype floor.",
-              "You've shipped 2 revenue features; Grab weights this heavily in banding.",
-              "Two active offers in your pipeline strengthen your BATNA."
-            ].map(point => `<p>${icon("check")} ${point}</p>`).join("")}
-          </aside>
-        </section>
-
-        <section class="cg-worth-section">
-          <div class="cg-worth-section-head"><div><h2>Career value Timetable</h2><p>Vera picks the smallest inputs with the largest impact on your Career Value.</p></div><a href="vera.html#skills">Explain how ${icon("arrow-right")}</a></div>
-          <div class="cg-worth-roi-grid">
-            ${learningRoi.map(([ic, title, source, time, lift, stars, why]) => `
-              <article>
-                <span>${icon(ic)}</span>
-                <h3>${title}</h3>
-                <p>${source}</p>
-                <dl><dt>Time</dt><dd>${time}</dd><dt>Lift</dt><dd>${lift}</dd><dt>ROI</dt><dd>${stars}</dd></dl>
-                <p><strong>Why</strong> - ${why}</p>
-              </article>
-            `).join("")}
+          <div class="cg-grow-coach">
+            <div class="cg-grow-coach-head"><span><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Coach Vera</span><b>online</b></div>
+            <div class="cg-worth-coach-message">
+              <span class="cg-worth-coach-avatar"><img src="assets/vera-ai-coach.png" alt="Vera AI"></span>
+              <div>
+                <h3>Why RM 10,300 is defensible</h3>
+                ${[
+                  "Your SQL + Analytics combo is present in only 34% of KL PMs at your level.",
+                  "Median fintech PM base in KL is RM 10,100 - you sit above the archetype floor.",
+                  "You've shipped 2 revenue features; Grab weights this heavily in banding.",
+                  "Two active offers in your pipeline strengthen your BATNA."
+                ].map(point => `<div class="cg-chat-bubble">${point}</div>`).join("")}
+              </div>
+            </div>
+            <form class="cg-grow-chat" action="vera.html">
+              <input name="topic" placeholder="Ask Vera anything about your career...">
+              <button type="submit">${icon("send")}</button>
+            </form>
           </div>
-        </section>
-
-        <section class="cg-worth-section">
-          <div class="cg-worth-section-head"><div><span class="cg-section-kicker">${icon("badge-check")} Vera noticed</span><h2>Patterns you probably missed.</h2><p>Small observations that most dashboards would never surface.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
-          <div class="cg-worth-observations">
-            ${observations.map(([ic, body]) => `<article><span>${icon(ic)}</span><p>${body}</p></article>`).join("")}
-          </div>
-        </section>
-
-        <section class="cg-worth-ripple">
-          <span class="cg-section-kicker">${icon("zap")} How today's action ripples through CareerGo</span>
-          <h2>One move. Four pages moved with it.</h2>
-          <div>${ripple.map(([label, body, active]) => `<article class="${active}"><span>${label}</span><p>${body}</p></article>`).join("")}</div>
         </section>
 
         <section class="cg-worth-timeline">
-          <span class="cg-section-kicker">${icon("badge-check")} Career value timeline</span>
-          <h2>Every milestone, priced.</h2>
+          <h2>Career Value Timetable</h2>
           <p>Vera projects how each roadmap action lifts your monthly Career Value.</p>
           <div class="cg-worth-chart">
             <svg viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true">
