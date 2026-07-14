@@ -7886,28 +7886,29 @@ function renderAutopilot() {
   if (needsOnboarding(root)) return;
   const state = readState();
   if (state.session.loggedIn) {
+    const urgencyRank = { Urgent: 0, High: 1, Medium: 2 };
     const impactTasks = [
-      ["Reply to Grab recruiter", "Grab responds within 48h - silence past today drops your callback rate by 31%.", "+14% interview odds", "5 min", "Draft reply"],
-      ["Finish Airtable take-home", "Deadline is Friday EOD. Late submissions are rejected 82% of the time.", "Keeps offer alive", "2 hrs", "Open brief"],
-      ["Prep for Stripe Round 2", "Tue 2:30 PM. Your product-sense score is 68 - Vera has 3 targeted drills.", "+21% pass rate", "45 min", "Start drill"],
-      ["Ask Priya for a Notion referral", "Referrals get 4.2x more responses at Notion. Priya opened your last DM.", "Unlocks 1 warm intro", "3 min", "Compose ask"]
-    ];
+      ["Reply to Grab recruiter", "Grab responds within 48h - silence past today drops your callback rate by 31%.", "+14% interview odds", "5 min", "Draft reply", "Urgent"],
+      ["Finish Airtable take-home", "Deadline is Friday EOD. Late submissions are rejected 82% of the time.", "Keeps offer alive", "2 hrs", "Open brief", "High"],
+      ["Prep for Stripe Round 2", "Tue 2:30 PM. Your product-sense score is 68 - Vera has 3 targeted drills.", "+21% pass rate", "45 min", "Start drill", "High"],
+      ["Ask Priya for a Notion referral", "Referrals get 4.2x more responses at Notion. Priya opened your last DM.", "Unlocks 1 warm intro", "3 min", "Compose ask", "Medium"]
+    ].sort((a, b) => urgencyRank[a[5]] - urgencyRank[b[5]]);
     const pipelineColumns = [
       ["Saved", "3", [
-        ["Setel", "PM - Loyalty - Kuala Lu...", "Health - Warm", 74, "Strong archetype match", "Your resume matches 88% - apply before Fri.", "Apply this week"],
-        ["Carsome", "Senior PM - KL - hybrid", "Health - Warm", 61, "Competitive posting", "", "Tailor resume"]
+        ["Setel", "PM - Loyalty - Kuala Lu...", "Health - Warm", 74, "Strong archetype match", "Your resume matches 88% - apply before Fri.", "Apply this week", "2 days ago"],
+        ["Carsome", "Senior PM - KL - hybrid", "Health - Warm", 61, "Competitive posting", "", "Tailor resume", "5 days ago"]
       ]],
       ["Applied", "5", [
-        ["Grab Malaysia", "PM - Payments - KL", "Health - Healthy", 92, "Recruiter engaged", "Recruiter viewed your profile yesterday.", "Reply today"],
-        ["Shopee MY", "PM - Growth - KL", "Health - Slowing", 58, "Applied 4d ago", "Shopee usually replies within 7 days.", "Wait 3 more days"],
-        ["BigPay", "Product Lead - KL - hyb...", "Health - Cold", 38, "No activity in 12d", "Silent past their typical 10-day window.", "Archive or nudge"]
+        ["Grab Malaysia", "PM - Payments - KL", "Health - Healthy", 92, "Recruiter engaged", "Recruiter viewed your profile yesterday.", "Reply today", "3 days ago"],
+        ["Shopee MY", "PM - Growth - KL", "Health - Slowing", 58, "Applied 4d ago", "Shopee usually replies within 7 days.", "Wait 3 more days", "4 days ago"],
+        ["BigPay", "Product Lead - KL - hyb...", "Health - Cold", 38, "No activity in 12d", "Silent past their typical 10-day window.", "Archive or nudge", "2 weeks ago"]
       ]],
       ["Interviewing", "3", [
-        ["Stripe", "PM - APAC - Remote MY", "Health - Healthy", 88, "Round 2 - Tue 2:30", "Most candidates fail on Round 2 case.", "Prep product sense"],
-        ["Airtable", "PM - Platform - Remote", "Health - Warm", 71, "Take-home due Fri", "Take-home weighting is 60% of decision.", "Submit by EOD"]
+        ["Stripe", "PM - APAC - Remote MY", "Health - Healthy", 88, "Round 2 - Tue 2:30", "Most candidates fail on Round 2 case.", "Prep product sense", "1 week ago"],
+        ["Airtable", "PM - Platform - Remote", "Health - Warm", 71, "Take-home due Fri", "Take-home weighting is 60% of decision.", "Submit by EOD", "2 weeks ago"]
       ]],
       ["Offer", "1", [
-        ["Aerodyne", "Senior PM - Cyberjaya", "Health - Healthy", 95, "RM 1,400 below Fair Pay", "Counter with RM 10,300 - 72% acceptance.", "Negotiate on Mon"]
+        ["Aerodyne", "Senior PM - Cyberjaya", "Health - Healthy", 95, "RM 1,400 below Fair Pay", "Counter with RM 10,300 - 72% acceptance.", "Negotiate on Mon", "3 weeks ago"]
       ]]
     ];
     const memory = [
@@ -7942,7 +7943,7 @@ function renderAutopilot() {
       <section class="cg-pipeline">
         <header class="cg-pipeline-hero">
           <span class="cg-pipeline-pill">${icon("radio")} Pipeline - live</span>
-          <h1>Your job search is <em>accelerating.</em><br>One move today changes the week.</h1>
+          <h1>Your <em>Application Pipeline.</em></h1>
           <p>Vera is tracking 12 relationships, 3 recruiters who opened your profile this week, and 2 offers within striking distance. Predicted first offer: <strong>28 Nov - 64% confidence.</strong></p>
           <a class="btn btn-primary" href="discover.html">${icon("plus")} Add application</a>
         </header>
@@ -7966,11 +7967,11 @@ function renderAutopilot() {
         </section>
 
         <section class="cg-pipeline-impact">
-          <header><div><span class="cg-section-kicker">${icon("briefcase-business")} Vera - today's highest impact</span><h2>Do these four things and your week shifts.</h2></div><small>${icon("clock")} ~3 hr total</small></header>
-          ${impactTasks.map(([title, body, lift, time, action], index) => `
+          <header><div><h2>Vera - today's highest impact</h2></div><small>${icon("clock")} ~3 hr total</small></header>
+          ${impactTasks.map(([title, body, lift, time, action, urgency], index) => `
             <article>
               <span>${index + 1}</span>
-              <div><h3>${title}</h3><p>${body}</p><small><b>${icon("trending-up")} ${lift}</b><b>${icon("clock")} ${time}</b></small></div>
+              <div><div class="cg-pipeline-impact-title"><h3>${title}</h3><em class="cg-urgency cg-urgency-${urgency.toLowerCase()}">${urgency}</em></div><p>${body}</p><small><b>${icon("trending-up")} ${lift}</b><b>${icon("clock")} ${time}</b></small></div>
               <a href="vera.html#chat">${icon("sparkles")} ${action}</a>
             </article>
           `).join("")}
@@ -7996,22 +7997,46 @@ function renderAutopilot() {
         <section class="cg-pipeline-board-section">
           <div class="cg-pipeline-board-head"><h2>Live pipeline</h2><span>Auto-scored by Vera - updated 3 min ago</span></div>
           <div class="cg-pipeline-board">
-            ${pipelineColumns.map(([stage, count, cards]) => `
-              <article class="cg-pipeline-column">
-                <header><h3>${stage} <b>${count}</b></h3><button type="button">+</button></header>
-                ${cards.map(([name, role, health, score, note, vera, next], cardIndex) => `
-                  <section>
-                    <div><span>${icon("building-2")}</span><h4>${name}</h4><p>${role}</p></div>
-                    <small>${health} <b>${score}%</b></small>
-                    <i><em style="width:${score}%"></em></i>
-                    <p>${note}</p>
-                    ${vera ? `<blockquote>${icon("sparkles")} ${vera}</blockquote>` : ""}
-                    <footer><span>Next - ${next}</span><a href="vera.html#chat">Do it ${icon("chevron-right")}</a></footer>
-                  </section>
-                `).join("")}
-              </article>
-            `).join("")}
+            <nav class="cg-pipeline-stage-nav">
+              ${pipelineColumns.map(([stage, count], index) => `
+                <div class="cg-pipeline-stage-row">
+                  <button type="button" class="cg-pipeline-stage-btn${index === 0 ? " active" : ""}" data-pipeline-stage="${index}">
+                    <span>${stage}</span><b>${count}</b>
+                  </button>
+                  <button type="button" class="cg-pipeline-stage-add" aria-label="Add ${stage} application">+</button>
+                </div>
+              `).join("")}
+            </nav>
+            <div class="cg-pipeline-stage-panel">
+              ${pipelineColumns.map(([stage, count, cards], index) => `
+                <article class="cg-pipeline-column${index === 0 ? " active" : ""}" data-pipeline-panel="${index}">
+                  ${cards.map(([name, role, health, score, note, vera, next, timeline]) => `
+                    <section>
+                      <div><span>${icon("building-2")}</span><h4>${name}</h4><p>${role}</p></div>
+                      <div class="cg-pipeline-card-meta"><small>${health} <b>${score}%</b></small><span class="cg-pipeline-timeline">${icon("clock")} ${timeline}</span></div>
+                      <i><em style="width:${score}%"></em></i>
+                      <p>${note}</p>
+                      ${vera ? `<blockquote>${icon("sparkles")} ${vera}</blockquote>` : ""}
+                      <footer><span>Next - ${next}</span><a href="vera.html#chat">Do it ${icon("chevron-right")}</a></footer>
+                    </section>
+                  `).join("")}
+                </article>
+              `).join("")}
+            </div>
           </div>
+        </section>
+
+        <section class="cg-pipeline-review">
+          <article>
+            <span class="cg-section-kicker">${icon("chart-no-axes-column-increasing")} Week in review</span>
+            <h2>Your job search is <em>accelerating.</em></h2>
+            <p>Offer probability rose <strong>+12%</strong> this week. Vera credits your improved resume and faster recruiter replies.</p>
+            <a class="btn btn-primary" href="vera.html#chat">${icon("sparkles")} Plan next week with Vera</a>
+          </article>
+          <div>
+            ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "+12%"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening"]].map(([label, value]) => `<section><span>${label}</span><strong>${value}</strong></section>`).join("")}
+          </div>
+          <footer>${icon("info")} Recommended focus next week - <strong>Practice SQL interviews.</strong> Vera has a 4-day plan queued in Grow. <a href="grow.html">Open plan ${icon("arrow-right")}</a></footer>
         </section>
 
         <section class="cg-pipeline-relationships">
@@ -8068,22 +8093,14 @@ function renderAutopilot() {
             <article><span>Today</span><p>Interview readiness moves from 68 -> 79 by Friday.</p></article>
           </div>
         </section>
-
-        <section class="cg-pipeline-review">
-          <article>
-            <span class="cg-section-kicker">${icon("chart-no-axes-column-increasing")} Week in review</span>
-            <h2>Your job search is <em>accelerating.</em></h2>
-            <p>Offer probability rose <strong>+12%</strong> this week. Vera credits your improved resume and faster recruiter replies.</p>
-            <a class="btn btn-primary" href="vera.html#chat">${icon("sparkles")} Plan next week with Vera</a>
-          </article>
-          <div>
-            ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "+12%"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening"]].map(([label, value]) => `<section><span>${label}</span><strong>${value}</strong></section>`).join("")}
-          </div>
-          <footer>${icon("info")} Recommended focus next week - <strong>Practice SQL interviews.</strong> Vera has a 4-day plan queued in Grow. <a href="grow.html">Open plan ${icon("arrow-right")}</a></footer>
-        </section>
       </section>
     `);
     createIcons();
+    qsa("[data-pipeline-stage]", root).forEach(btn => btn.addEventListener("click", () => {
+      const index = btn.getAttribute("data-pipeline-stage");
+      qsa("[data-pipeline-stage]", root).forEach(b => b.classList.toggle("active", b === btn));
+      qsa("[data-pipeline-panel]", root).forEach(panel => panel.classList.toggle("active", panel.getAttribute("data-pipeline-panel") === index));
+    }));
     return;
   }
   const tracked = getTrackedJobs(state);
