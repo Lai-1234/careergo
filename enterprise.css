@@ -12652,13 +12652,19 @@ html body[data-page="posts"] .cg-follow-card button {
 html body[data-page="posts"] .cg-messages-shell {
   display: grid !important;
   grid-template-columns: 360px minmax(620px, 1fr) !important;
-  gap: 34px !important;
+  gap: 0 !important;
   min-height: calc(100vh - var(--cg-topbar) - 130px) !important;
+  border: 1px solid rgba(18, 59, 52, 0.12) !important;
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 20px 48px rgba(15, 42, 34, 0.08) !important;
+  overflow: hidden !important;
 }
 
 html body[data-page="posts"] .cg-inbox-panel {
-  padding: 0 26px 0 0 !important;
-  border-right: 1px solid rgba(18, 59, 52, 0.10) !important;
+  padding: 32px 26px !important;
+  border-right: 1px solid rgba(18, 59, 52, 0.12) !important;
+  background: rgba(247, 242, 232, 0.4) !important;
 }
 
 html body[data-page="posts"] .cg-inbox-panel h1 {
@@ -12727,14 +12733,21 @@ html body[data-page="posts"] .cg-thread-card {
   gap: 12px !important;
   align-items: start !important;
   padding: 14px !important;
-  border: 1px solid transparent !important;
+  border: 1px solid rgba(18, 59, 52, 0.08) !important;
   border-radius: 16px !important;
-  background: transparent !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+html body[data-page="posts"] .cg-thread-card:hover {
+  border-color: rgba(18, 59, 52, 0.18) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
 }
 
 html body[data-page="posts"] .cg-thread-card.active {
-  border-color: rgba(18, 59, 52, 0.22) !important;
-  background: rgba(219, 239, 233, 0.54) !important;
+  border-color: rgba(18, 59, 52, 0.26) !important;
+  background: rgba(219, 239, 233, 0.7) !important;
+  box-shadow: 0 10px 24px rgba(15, 42, 34, 0.08) !important;
 }
 
 html body[data-page="posts"] .cg-thread-card header {
@@ -12806,6 +12819,7 @@ html body[data-page="posts"] .cg-message-thread {
   display: grid !important;
   grid-template-rows: auto 1fr auto !important;
   min-height: 650px !important;
+  padding: 32px 34px 28px !important;
 }
 
 html body[data-page="posts"] .cg-message-thread>header {
@@ -12865,8 +12879,10 @@ html body[data-page="posts"] .cg-chat-thread .incoming {
 
 html body[data-page="posts"] .cg-chat-thread .outgoing {
   justify-self: end !important;
-  color: #fffaf2 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   background: #063f35 !important;
+  font-weight: 500 !important;
 }
 
 html body[data-page="posts"] .cg-chat-thread .delivered small {
@@ -12879,9 +12895,10 @@ html body[data-page="posts"] .cg-chat-thread .delivered small {
 html body[data-page="posts"] .cg-vera-suggests {
   margin-top: 16px !important;
   padding: 20px !important;
-  border: 1px dashed rgba(18, 59, 52, 0.22) !important;
+  border: 1px solid rgba(18, 59, 52, 0.18) !important;
   border-radius: 18px !important;
-  background: rgba(231, 242, 237, 0.45) !important;
+  background: linear-gradient(135deg, rgba(220, 239, 235, 0.95), rgba(247, 242, 232, 0.6)) !important;
+  box-shadow: 0 14px 30px rgba(15, 42, 34, 0.08) !important;
 }
 
 html body[data-page="posts"] .cg-vera-suggests span {
@@ -12957,7 +12974,12 @@ html body[data-page="posts"] .cg-message-composer input {
 
   html body[data-page="posts"] .cg-inbox-panel {
     border-right: 0 !important;
-    padding-right: 0 !important;
+    border-bottom: 1px solid rgba(18, 59, 52, 0.12) !important;
+    padding: 24px !important;
+  }
+
+  html body[data-page="posts"] .cg-message-thread {
+    padding: 24px !important;
   }
 }
 

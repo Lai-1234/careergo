@@ -3569,8 +3569,7 @@ function renderJobsPage() {
       <section class="cg-discover cg-discover-v2">
         <header class="cg-discover-hero">
           <div class="cg-discover-kicker"><span>${icon("sparkles")} Discover</span><small>${icon("map-pin")} Malaysia - Kuala Lumpur - Tuned for your Product Management journey</small></div>
-          <h1>A discovery hub for <em>your next career move.</em></h1>
-          <p>Curated highlights on this page. Dedicated explorers when you want to go deeper - companies, universities, career paths, programmes, mentors.</p>
+          <h1>Discover</h1>
           <form class="cg-discover-search" action="vera.html">
             ${icon("search")}
             <input name="topic" aria-label="Ask Vera about Discover" placeholder="Search companies, jobs, universities, industries, salaries...">
@@ -8335,8 +8334,6 @@ function renderPosts() {
   qs(".page-hero")?.classList.add("is-hidden");
   const activeTab = (location.hash || "#for-you").replace("#", "");
   const feedTabs = [
-    ["for-you", "For you"],
-    ["following", "Following"],
     ["milestones", "Milestones"],
     ["discussions", "Discussions"],
     ["hiring", "Hiring"]

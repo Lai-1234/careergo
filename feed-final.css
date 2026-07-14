@@ -32,6 +32,26 @@ body[data-page="posts"]:has(.cg-feed-shell) main > .container {
   padding: 0 !important;
 }
 
+body[data-page="posts"]:has(.cg-messages-shell) {
+  --feed-bg: #f7f2e8;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(213, 229, 221, 0.6), transparent 34rem),
+    var(--feed-bg) !important;
+}
+
+body[data-page="posts"]:has(.cg-messages-shell) .container.os-layout,
+body[data-page="posts"]:has(.cg-messages-shell) main > .container {
+  width: min(100% - 56px, 1200px) !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+body[data-page="posts"] .cg-messages-shell {
+  margin: 40px auto !important;
+  max-width: 1160px !important;
+}
+
 body[data-page="posts"] .cg-feed-shell {
   display: grid !important;
   grid-template-columns: 230px minmax(430px, 560px) 300px !important;
@@ -54,8 +74,12 @@ body[data-page="posts"] .cg-feed-aside {
 
 body[data-page="posts"] .cg-feed-left {
   display: grid !important;
-  gap: 8px !important;
-  padding-top: 8px !important;
+  gap: 6px !important;
+  padding: 20px 16px !important;
+  border: 1px solid var(--feed-line) !important;
+  border-radius: 19px !important;
+  background: var(--feed-card) !important;
+  box-shadow: 0 16px 38px rgba(29, 42, 34, 0.06) !important;
 }
 
 body[data-page="posts"] .cg-feed-left a {
@@ -92,11 +116,11 @@ body[data-page="posts"] .cg-feed-left a svg {
 }
 
 body[data-page="posts"] .cg-feed-left-note {
-  margin-top: 32px !important;
-  padding: 18px 16px !important;
-  border: 1px dashed rgba(13, 67, 58, 0.18) !important;
-  border-radius: 18px !important;
-  background: rgba(255, 255, 255, 0.32) !important;
+  margin-top: 22px !important;
+  padding: 16px 14px !important;
+  border: 1px solid rgba(13, 67, 58, 0.16) !important;
+  border-radius: 16px !important;
+  background: var(--feed-mint) !important;
   box-shadow: none !important;
 }
 
@@ -392,20 +416,36 @@ body[data-page="posts"] .cg-feed-aside {
 }
 
 body[data-page="posts"] .cg-feed-aside section {
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  padding: 22px 20px !important;
+  border: 1px solid var(--feed-line) !important;
+  border-radius: 19px !important;
+  background: var(--feed-card) !important;
+  box-shadow: 0 16px 38px rgba(29, 42, 34, 0.06) !important;
 }
 
 body[data-page="posts"] .cg-trend {
   display: grid !important;
   gap: 2px !important;
-  padding: 0 0 18px !important;
+  margin: 0 0 10px !important;
+  padding: 14px 16px !important;
+  border: 1px solid var(--feed-line) !important;
+  border-radius: 14px !important;
+  background: rgba(247, 242, 232, 0.55) !important;
   color: var(--feed-ink) !important;
   -webkit-text-fill-color: var(--feed-ink) !important;
   text-decoration: none !important;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease !important;
+}
+
+body[data-page="posts"] .cg-trend:last-child {
+  margin-bottom: 0 !important;
+}
+
+body[data-page="posts"] .cg-trend:hover,
+body[data-page="posts"] .cg-trend.active {
+  background: var(--feed-mint) !important;
+  border-color: rgba(13, 67, 58, 0.2) !important;
+  transform: translateY(-1px) !important;
 }
 
 body[data-page="posts"] .cg-trend strong {
@@ -429,13 +469,23 @@ body[data-page="posts"] .cg-follow-card {
   grid-template-columns: 38px minmax(0, 1fr) auto !important;
   align-items: center !important;
   gap: 12px !important;
-  min-height: 68px !important;
-  margin: 12px 0 0 !important;
-  padding: 13px 14px !important;
-  border: 1px solid var(--feed-line) !important;
-  border-radius: 16px !important;
-  background: rgba(255, 255, 255, 0.76) !important;
-  box-shadow: 0 14px 34px rgba(29, 42, 34, 0.055) !important;
+  min-height: 60px !important;
+  margin: 0 !important;
+  padding: 12px 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--feed-line) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body[data-page="posts"] .cg-follow-card:first-of-type {
+  padding-top: 2px !important;
+}
+
+body[data-page="posts"] .cg-follow-card:last-child {
+  padding-bottom: 2px !important;
+  border-bottom: 0 !important;
 }
 
 body[data-page="posts"] .cg-follow-card > span {
