@@ -2339,7 +2339,7 @@ function renderNavigation() {
     const q = String(form.get("q") || "").trim();
     if (!q) return;
     if (event.currentTarget.classList.contains("cg-vera-search")) {
-      location.href = `vera.html?topic=${encodeURIComponent(q)}`;
+      location.href = `posts.html?topic=${encodeURIComponent(q)}#messages`;
       return;
     }
     const lower = q.toLowerCase();
@@ -2810,6 +2810,41 @@ function initWorkspaceRailScrollSync() {
   window.addEventListener("resize", requestSync);
   media.addEventListener?.("change", requestSync);
   sync();
+}
+
+function syncFeedSidebarSticky() {
+  const shell = qs(".cg-feed-shell");
+  if (!shell) return;
+  const topOffset = 106;
+  const shellRect = shell.getBoundingClientRect();
+  const shellStyle = getComputedStyle(shell);
+  const paddingTop = parseFloat(shellStyle.paddingTop) || 0;
+  const paddingBottom = parseFloat(shellStyle.paddingBottom) || 0;
+  const contentTop = shellRect.top + paddingTop;
+  const contentHeight = shellRect.height - paddingTop - paddingBottom;
+  qsa(".cg-feed-left, .cg-feed-aside", shell).forEach(el => {
+    const elHeight = el.getBoundingClientRect().height;
+    const maxTranslate = Math.max(0, contentHeight - elHeight);
+    const translate = Math.min(Math.max(topOffset - contentTop, 0), maxTranslate);
+    el.style.transform = translate > 0.5 ? `translateY(${translate}px)` : "";
+  });
+}
+
+function initFeedSidebarStickySync() {
+  if (document.body.dataset.feedSidebarStickyReady === "true") return;
+  document.body.dataset.feedSidebarStickyReady = "true";
+  let ticking = false;
+  function requestSync() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      syncFeedSidebarSticky();
+    });
+  }
+  window.addEventListener("scroll", requestSync, { passive: true });
+  window.addEventListener("resize", requestSync);
+  requestSync();
 }
 
 function setActiveNav() {
@@ -3568,7 +3603,7 @@ function renderJobsPage() {
         <header class="cg-discover-hero">
           <div class="cg-discover-kicker"><span>${icon("sparkles")} Discover</span><small>${icon("map-pin")} Malaysia - Kuala Lumpur - Tuned for your Product Management journey</small></div>
           <h1>Discover</h1>
-          <form class="cg-discover-search" action="vera.html">
+          <form class="cg-discover-search" action="posts.html#messages">
             ${icon("search")}
             <input name="topic" aria-label="Ask Vera about Discover" placeholder="Search companies, jobs, universities, industries, salaries...">
             <button type="button" class="cg-search-chip">Opportunities only</button>
@@ -3615,7 +3650,7 @@ function renderJobsPage() {
               <div class="cg-action-row">
                 <a class="btn btn-primary" href="discover.html?job=${topPick.id}">Explore role ${icon("arrow-up-right")}</a>
                 <button class="btn btn-ghost" type="button">${icon("bookmark")} Save</button>
-                <a class="btn btn-ghost" href="vera.html?topic=Tell me more about this role">Ask Vera more</a>
+                <a class="btn btn-ghost" href="posts.html?topic=Tell me more about this role#messages">Ask Vera more</a>
               </div>
             </div>
             <aside class="cg-top-pick-side">
@@ -3636,7 +3671,7 @@ function renderJobsPage() {
             ${marketPulse.map(([tag, trend, title, salary, remote, openings, tone], index) => `
               <article class="cg-market-card tone-${tone}">
                 <div><span>${icon("zap")} ${tag}</span><small>${icon("trending-up")} ${trend}</small></div>
-                <h3>${title}</h3><a href="vera.html?topic=${encodeURIComponent(title)}" aria-label="Explore ${title}">${icon("arrow-up-right")}</a>
+                <h3>${title}</h3><a href="posts.html?topic=${encodeURIComponent(title)}#messages" aria-label="Explore ${title}">${icon("arrow-up-right")}</a>
                 <div class="cg-bars">${Array.from({ length: 12 }, (_, i) => { const step = (i + index) % 8; return `<i style="height:${14 + step * 5}px;background:${barRamp[tone][step]}"></i>`; }).join("")}</div>
                 <dl><dt>Avg. salary (MY)</dt><dd>${salary}</dd><dt>Remote share</dt><dd>${remote}</dd><dt>Openings</dt><dd>${openings}</dd></dl>
               </article>
@@ -3688,7 +3723,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><div class="cg-section-kicker">Where your career could go next</div><h2>Career Paths</h2></div>
-            <a class="cg-discover-link-btn" href="vera.html?topic=career paths">Explore all career paths ${icon("arrow-right")}</a>
+            <a class="cg-discover-link-btn" href="posts.html?topic=career paths#messages">Explore all career paths ${icon("arrow-right")}</a>
           </div>
           <div class="cg-direction-grid">
             ${roleDirections.map(([title, sub, match, salary, demand, why]) => `
@@ -3706,7 +3741,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><div class="cg-section-kicker">Programmes that could accelerate you</div><h2>Recommended Programmes</h2></div>
-            <a class="cg-discover-link-btn" href="vera.html?topic=programmes">Explore all programmes ${icon("arrow-right")}</a>
+            <a class="cg-discover-link-btn" href="posts.html?topic=programmes#messages">Explore all programmes ${icon("arrow-right")}</a>
           </div>
           <div class="cg-program-card-grid">
             ${programs.map(([name, sub, tag, cost, duration, why]) => `
@@ -3726,7 +3761,7 @@ function renderJobsPage() {
           </div>
           <div class="cg-mentor-grid">
             ${mentors.map(([name, years, path, why, overlap]) => `
-              <article class="cg-mentor-card"><header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${years}</p></div></header><strong>${path}</strong><p>${icon("sparkles")} ${why}</p><footer><small>${icon("lightbulb")} ${overlap}</small><a href="vera.html?topic=${encodeURIComponent(`Show me a path like ${name}`)}">See path -></a></footer></article>
+              <article class="cg-mentor-card"><header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${years}</p></div></header><strong>${path}</strong><p>${icon("sparkles")} ${why}</p><footer><small>${icon("lightbulb")} ${overlap}</small><a href="posts.html?topic=${encodeURIComponent(`Show me a path like ${name}`)}#messages">See path -></a></footer></article>
             `).join("")}
           </div>
         </section>
@@ -3774,7 +3809,7 @@ function renderJobsPage() {
           <div class="cg-discover-kicker"><span>${icon("sparkles")} Discover</span><small>${icon("map-pin")} Malaysia  - Kuala Lumpur  - Tuned for your Product Management journey</small></div>
           <h1>What should you explore next, <em>and why should you care?</em></h1>
           <p>Vera reads your roadmap, your skills, and the Malaysian market - then explains why each opportunity matters for the next step in your career.</p>
-          <form class="cg-discover-search" action="vera.html">
+          <form class="cg-discover-search" action="posts.html#messages">
             ${icon("search")}
             <input name="topic" aria-label="Ask Vera about Discover" placeholder="Try 'PM roles in KL paying above RM10k' or 'remote design-led startups hiring in Malaysia'">
             <button type="button">${icon("sliders-horizontal")} Filters</button>
@@ -3819,7 +3854,7 @@ function renderJobsPage() {
               <div class="cg-action-row">
                 <a class="btn btn-primary" href="discover.html?job=${topPick.id}">Explore role ${icon("arrow-up-right")}</a>
                 <button class="btn btn-ghost" type="button">${icon("bookmark")} Save</button>
-                <a class="btn btn-ghost" href="vera.html?topic=Tell me more about this role">Ask Vera more</a>
+                <a class="btn btn-ghost" href="posts.html?topic=Tell me more about this role#messages">Ask Vera more</a>
               </div>
             </div>
             <aside class="cg-top-pick-side">
@@ -3901,7 +3936,7 @@ function renderJobsPage() {
           <h2>People whose career journeys rhyme with yours.</h2>
           <div class="cg-mentor-grid">
             ${mentors.map(([name, years, path, why, overlap]) => `
-              <article class="cg-mentor-card"><header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${years}</p></div></header><strong>${path}</strong><p>${icon("sparkles")} ${why}</p><footer><small>${icon("lightbulb")} ${overlap}</small><a href="vera.html?topic=${encodeURIComponent(`Show me a path like ${name}`)}">See path -></a></footer></article>
+              <article class="cg-mentor-card"><header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${years}</p></div></header><strong>${path}</strong><p>${icon("sparkles")} ${why}</p><footer><small>${icon("lightbulb")} ${overlap}</small><a href="posts.html?topic=${encodeURIComponent(`Show me a path like ${name}`)}#messages">See path -></a></footer></article>
             `).join("")}
           </div>
         </section>
@@ -3955,7 +3990,7 @@ function renderJobsPage() {
                 </div>
                 <label class="range-field"><span>Minimum match <strong data-threshold-label>70%</strong></span><input data-job-threshold type="range" min="60" max="95" value="70"></label>
                 <label class="check-field custom-checkbox"><input data-job-compare-mode type="checkbox"> Compare roles</label>
-                <a class="btn btn-cyan btn-wide" href="vera.html?topic=job search">${icon("sparkles")} Ask Vera</a>
+                <a class="btn btn-cyan btn-wide" href="posts.html?topic=job search#messages">${icon("sparkles")} Ask Vera</a>
               </div>
             </aside>
             <div class="jobs-main">
@@ -4084,7 +4119,7 @@ function renderJobsPage() {
       <div class="tracker-panel">
         <div class="section-head compact-section-head">
           <div><div class="section-kicker">Application tracker</div><h2 class="section-title mini">Know exactly where every role stands.</h2></div>
-          <a class="btn btn-cyan" href="vera.html?topic=application follow up">${icon("sparkles")} Ask Vera</a>
+          <a class="btn btn-cyan" href="posts.html?topic=application follow up#messages">${icon("sparkles")} Ask Vera</a>
         </div>
         <div class="pipeline-strip">
           ${APPLICATION_STAGES.slice(0, 6).map(stage => `<button class="pipeline-stage" type="button" data-filter-stage="${stage.key}"><span>${stage.label}</span><strong>${counts[stage.key] || 0}</strong></button>`).join("")}
@@ -4305,7 +4340,7 @@ function renderJobsPage() {
           </div>
           <div class="job-detail-action-row">
             <button class="btn btn-cyan" type="button" data-contact-job>${icon("messages-square")} Contact hiring team</button>
-            <a class="btn btn-cyan" href="vera.html?topic=${encodeURIComponent(active.title)}">${icon("message-circle")} Ask Vera</a>
+            <a class="btn btn-cyan" href="posts.html?topic=${encodeURIComponent(active.title)}#messages">${icon("message-circle")} Ask Vera</a>
           </div>
           ${contactOpen ? `
             <form class="job-contact-card" data-job-contact-form>
@@ -4623,7 +4658,7 @@ function renderDirectoryPage(kind) {
             <p>${org.summary}</p>
             <footer>
               <button type="button" data-directory-save="${org.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save"}</button>
-              <a href="vera.html?topic=${encodeURIComponent(`${org.name} ${org.type.toLowerCase()} research`)}">${icon("sparkles")} Ask Vera</a>
+              <a href="posts.html?topic=${encodeURIComponent(`${org.name} ${org.type.toLowerCase()} research`)}#messages">${icon("sparkles")} Ask Vera</a>
             </footer>
           </div>
         </article>
@@ -4715,6 +4750,7 @@ function openReviewModal(target) {
 }
 
 let dashboardTaskFilter = "";
+let activePostsThread = "";
 
 function renderDashboard() {
   const root = qs("[data-dashboard]");
@@ -4990,7 +5026,95 @@ function renderDashboard() {
   initDashboardTour();
 }
 
+function normalizeSkillToken(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function skillIsCovered(skillLabel, ownedSkills) {
+  const target = normalizeSkillToken(skillLabel);
+  if (!target) return false;
+  return (ownedSkills || []).some(owned => {
+    const ownedNorm = normalizeSkillToken(owned);
+    return Boolean(ownedNorm) && (ownedNorm.includes(target) || target.includes(ownedNorm));
+  });
+}
+
+function formatKRM(value) {
+  return `RM ${(value / 1000).toFixed(1)}k`;
+}
+
+function marketRoleFor(job) {
+  if (!job) return null;
+  return DATA.marketRoles.find(role => role.role === job.title)
+    || DATA.marketRoles.find(role => job.skills.some(skill => role.skills.some(roleSkill => normalizeSkillToken(roleSkill) === normalizeSkillToken(skill))))
+    || null;
+}
+
+function veraInsight(state) {
+  const profile = state.profile;
+  const technical = profile.skills?.technical || [];
+  const targetLabel = getTargetLabel(profile);
+  const savedJobs = DATA.jobs
+    .filter(job => (state.savedJobs || []).includes(job.id))
+    .sort((a, b) => b.match - a.match);
+
+  if (!savedJobs.length) {
+    return {
+      bubble1: `You haven't saved any roles yet. Save a few roles you like for ${targetLabel} and I'll start spotting the gaps that matter most against your profile.`,
+      question: "Where should I start looking?",
+      bubble2: `Head to Discover, filter for roles in ${targetLabel}, and save 3-4 of them. Once they're saved I'll compare their requirements against your skills and flag your biggest blocker.`,
+      moveTitle: profile.intelligence?.immediateActions?.[0] || `Save your first roles for ${targetLabel}`,
+      stats: [
+        { label: "Readiness", value: `${profile.intelligence?.readinessScore ?? 42}%` },
+        { label: "Saved roles", value: "0" },
+        { label: "Pay target", value: profile.preferences?.minimumSalary || "Not set" }
+      ]
+    };
+  }
+
+  const topJob = savedJobs[0];
+  const missing = topJob.skills.filter(skill => !skillIsCovered(skill, technical));
+  const market = marketRoleFor(topJob);
+
+  if (!missing.length) {
+    return {
+      bubble1: `Your strongest saved match, ${topJob.title} at ${topJob.company} (${topJob.match}% match), doesn't have any skill gaps against your profile right now.`,
+      question: "So what's actually holding this one back?",
+      bubble2: `At this point it's proof, not skills. Add one project or metric that shows you've used ${topJob.skills[0]} in a real situation - that usually moves reviewers faster than another course.`,
+      moveTitle: `Add one proof point for ${topJob.skills[0]}`,
+      stats: [
+        { label: "Readiness", value: `${topJob.match}%` },
+        { label: "Saved roles", value: String(savedJobs.length) },
+        { label: "Pay band", value: market ? formatKRM(market.fair) : (profile.preferences?.minimumSalary || "Not set") }
+      ]
+    };
+  }
+
+  const gapCounts = {};
+  missing.forEach(skill => {
+    gapCounts[skill] = savedJobs.filter(job => job.skills.some(s => normalizeSkillToken(s) === normalizeSkillToken(skill))).length;
+  });
+  const gapSkill = Object.entries(gapCounts).sort((a, b) => b[1] - a[1])[0][0];
+  const affectedRoles = gapCounts[gapSkill];
+  const coverageDelta = Math.round((1 / topJob.skills.length) * 100);
+  const projectedMatch = Math.min(99, topJob.match + coverageDelta);
+  const minutes = Math.min(60, 20 + missing.length * 10);
+
+  return {
+    bubble1: `I noticed something. You've saved ${savedJobs.length} role${savedJobs.length === 1 ? "" : "s"} this week for ${targetLabel} - ${affectedRoles} of them ask for ${gapSkill} in the JD. That's a real gap against your profile right now.`,
+    question: `How much would closing the ${gapSkill} gap actually change?`,
+    bubble2: `For ${topJob.title} at ${topJob.company}: closing this gap moves your fit from ${topJob.match}% toward ${projectedMatch}%${market ? `, in a role that typically pays ${formatKRM(market.current)} to ${formatKRM(market.fair)}` : ""}. ${minutes} focused minutes on ${gapSkill} gets the first pass done.`,
+    moveTitle: `${minutes}-min ${gapSkill} practice session`,
+    stats: [
+      { label: "Readiness", value: `+${coverageDelta}%` },
+      { label: "Saved roles", value: `${affectedRoles} role${affectedRoles === 1 ? "" : "s"}` },
+      { label: "Pay band", value: market ? `+${formatKRM(market.fair - market.current)}` : "Set a target" }
+    ]
+  };
+}
+
 function veraWidgetMarkup() {
+  const insight = veraInsight(readState());
   return `
       <div class="cg-vera-widget" data-vera-widget>
         <div class="cg-vera-popover" data-vera-popover hidden>
@@ -5000,20 +5124,18 @@ function veraWidgetMarkup() {
             <button type="button" class="cg-vera-pop-close" data-vera-close aria-label="Close Vera">${icon("x")}</button>
           </div>
           <div class="cg-vera-pop-body">
-            <div class="cg-vera-pop-bubble">I noticed something. You've saved 4 Product Manager roles this week - 3 of them explicitly ask for SQL fluency in the JD. That's your largest hiring blocker right now.</div>
-            <div class="cg-vera-pop-question">How much would closing that gap actually change?</div>
-            <div class="cg-vera-pop-bubble">For your KL PM targets: unlocks ~40 more roles, lifts interview readiness by 8%, and shifts your median offer band from RM 8.9k to RM 10.2k. 30 focused minutes today gets you 60% of the way.</div>
+            <div class="cg-vera-pop-bubble">${insight.bubble1}</div>
+            <div class="cg-vera-pop-question">${insight.question}</div>
+            <div class="cg-vera-pop-bubble">${insight.bubble2}</div>
             <div class="cg-vera-pop-move">
               <span>Vera's suggested move today</span>
-              <h4>30-min SQL warm-up - joins &amp; aggregates</h4>
+              <h4>${insight.moveTitle}</h4>
               <div class="cg-vera-pop-stats">
-                <div><span>Readiness</span><strong>+8%</strong></div>
-                <div><span>New matches</span><strong>+40 roles</strong></div>
-                <div><span>Pay band</span><strong>+RM 1.3k</strong></div>
+                ${insight.stats.map(stat => `<div><span>${stat.label}</span><strong>${stat.value}</strong></div>`).join("")}
               </div>
             </div>
           </div>
-          <form class="cg-vera-pop-composer" action="vera.html">
+          <form class="cg-vera-pop-composer" action="posts.html#messages">
             <input name="topic" placeholder="Ask Vera anything about your career..." aria-label="Ask Vera">
             <button type="submit" aria-label="Send">${icon("send")}</button>
           </form>
@@ -5878,6 +6000,7 @@ function renderGrow() {
   const state = readState();
   const profile = state.profile;
   const intel = profile.intelligence || generateCareerIntelligence(profile);
+  const growCoachInsight = veraInsight(state);
   const growthStats = [
     ["Interview readiness", "74%", "6"],
     ["Skill percentile", "Top 31%", "11"],
@@ -5954,15 +6077,15 @@ function renderGrow() {
 
         <article class="cg-grow-coach">
           <div class="cg-grow-coach-head"><span><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Coach Vera</span><b>online</b></div>
-          <div class="cg-chat-bubble">I noticed something. You've saved 4 Product Manager roles this week - 3 of them explicitly ask for SQL fluency in the JD. That's your largest hiring blocker right now.</div>
-          <div class="cg-chat-question">How much would closing that gap actually change?</div>
-          <div class="cg-chat-bubble">For your KL PM targets: unlocks ~40 more roles, lifts interview readiness by 8%, and shifts your median offer band from RM 8.9k to RM 10.2k. 30 focused minutes today gets you 60% of the way.</div>
+          <div class="cg-chat-bubble">${growCoachInsight.bubble1}</div>
+          <div class="cg-chat-question">${growCoachInsight.question}</div>
+          <div class="cg-chat-bubble">${growCoachInsight.bubble2}</div>
           <div class="cg-grow-move">
             <span>Vera's suggested move today</span>
-            <h3>30-min SQL warm-up - joins & aggregates</h3>
-            <dl><dt>Readiness</dt><dd>+8%</dd><dt>New matches</dt><dd>+40 roles</dd><dt>Pay band</dt><dd>+RM 1.3k</dd></dl>
+            <h3>${growCoachInsight.moveTitle}</h3>
+            <dl>${growCoachInsight.stats.map(stat => `<dt>${stat.label}</dt><dd>${stat.value}</dd>`).join("")}</dl>
           </div>
-          <form class="cg-grow-chat" action="vera.html">
+          <form class="cg-grow-chat" action="posts.html#messages">
             <input name="topic" placeholder="Ask Vera anything about your career...">
             <button type="submit">${icon("send")}</button>
           </form>
@@ -7583,7 +7706,7 @@ function renderMarket() {
                 ].map(point => `<div class="cg-chat-bubble">${point}</div>`).join("")}
               </div>
             </div>
-            <form class="cg-grow-chat" action="vera.html">
+            <form class="cg-grow-chat" action="posts.html#messages">
               <input name="topic" placeholder="Ask Vera anything about your career...">
               <button type="submit">${icon("send")}</button>
             </form>
@@ -8360,13 +8483,79 @@ function renderPosts() {
     .map(part => part[0])
     .join("")
     .toUpperCase();
-  const inboxThreads = [
-    ["Aisha Rahman", "Recruiter  - Grab Malaysia", "Recruiter", "Would you be free Thursday 3p...", "2h", "2", true],
-    ["Ravi Iyer", "Head of Product  - Vercel", "Mentor", "Happy to look at your PM portfolio - s...", "1d", "", false],
-    ["Nurul Adlina", "Hiring Manager  - Setel", "Hiring manager", "Great chat. Sharing the take...", "2d", "1", false],
-    ["Shreya Kapoor", "Design -> Product  - Figma", "Connection", "Yes, I made the same jump - let m...", "4d", "", false]
-  ];
   if (activeTab === "messages") {
+    const topicParam = new URLSearchParams(location.search).get("topic");
+    const veraMessages = state.chat.length ? state.chat : [
+      { from: "vera", text: `Welcome back, ${getFirstName(state)}. I checked your ${state.profile.careerStage || "career"} profile. Your best move today is: ${state.profile.intelligence.immediateActions[0]}` },
+      ...(topicParam ? [{ from: "user", text: `Help me with ${topicParam}` }, { from: "vera", text: `Good choice. I will break ${topicParam} into a clear next-step plan: evidence needed, risks, and the action you should take first.` }] : [])
+    ];
+    if (!state.chat.length) {
+      state.chat = veraMessages;
+      writeState(state);
+    }
+    if (topicParam) {
+      activePostsThread = "vera";
+      history.replaceState(null, "", "posts.html#messages");
+    }
+    if (!activePostsThread) activePostsThread = "aisha";
+
+    const humanThreads = [
+      { id: "aisha", name: "Aisha Rahman", role: "Recruiter  - Grab Malaysia", tag: "Recruiter", preview: "Would you be free Thursday 3p...", time: "2h", unread: "2" },
+      { id: "ravi", name: "Ravi Iyer", role: "Head of Product  - Vercel", tag: "Mentor", preview: "Happy to look at your PM portfolio - s...", time: "1d", unread: "" },
+      { id: "nurul", name: "Nurul Adlina", role: "Hiring Manager  - Setel", tag: "Hiring manager", preview: "Great chat. Sharing the take...", time: "2d", unread: "1" },
+      { id: "shreya", name: "Shreya Kapoor", role: "Design -> Product  - Figma", tag: "Connection", preview: "Yes, I made the same jump - let m...", time: "4d", unread: "" }
+    ];
+    const inboxThreads = [
+      { id: "vera", name: "Coach Vera", role: "Your AI career coach", tag: "Coach", preview: veraMessages[veraMessages.length - 1]?.text || "Ask me anything about your career.", time: "now", unread: "" },
+      ...humanThreads
+    ];
+    const activeThread = inboxThreads.find(thread => thread.id === activePostsThread) || inboxThreads[0];
+
+    const veraQuickPrompts = [
+      "What should I do this week?",
+      "Which skill gap should I close first?",
+      "What should I do about my active application?",
+      "Compare my saved roles by career impact",
+      "Review my next application strategy"
+    ];
+    const threadPanel = activeThread.id === "vera" ? `
+          <header>
+            <div><h2>Coach Vera</h2><p>Your AI career coach  - always online</p></div>
+            <span>Personalized to your profile</span>
+          </header>
+          <section class="cg-chat-thread" aria-label="Conversation with Coach Vera" data-vera-thread-messages>
+            ${veraMessages.map(msg => `<p class="${msg.from === "vera" ? "incoming" : "outgoing"}">${msg.text}</p>`).join("")}
+            <div class="cg-vera-quick-prompts" role="group" aria-label="Quick questions for Vera">
+              ${veraQuickPrompts.map(prompt => `<button type="button" class="cg-vera-quick-chip" data-vera-quick="${prompt}">${prompt}</button>`).join("")}
+            </div>
+          </section>
+          <form class="cg-message-composer" data-vera-thread-composer>
+            <input placeholder="Write a message..." data-vera-thread-input>
+            <button type="submit">${icon("send")} Send</button>
+          </form>
+    ` : `
+          <header>
+            <div><h2>${activeThread.name}</h2><p>${activeThread.role}  - Usually replies within 2h</p></div>
+            <span>Warm - 3 replies this week</span>
+          </header>
+          <section class="cg-chat-thread" aria-label="Conversation with ${activeThread.name}">
+            ${activeThread.id === "aisha" ? `
+              <p class="incoming">Hi Aarav - loved your portfolio. Would you be open to a 30-min chat about the Sr. PM role next week?</p>
+              <p class="outgoing">Yes, definitely. Thursday afternoon works for me. I can also share a short teardown of GrabFood I did last month.</p>
+              <p class="incoming delivered">Perfect. Would you be free Thursday 3pm for the case round?<small>${icon("check-check")} Delivered</small></p>
+              <article class="cg-vera-suggests">
+                <span>${icon("sparkles")} Vera suggests</span>
+                <p>"Thursday 3pm works. I'll prep a short GrabFood teardown and bring 2 metric-tradeoff questions I'd love your take on."</p>
+                <footer><button type="button">Use draft</button><button type="button">Rewrite</button></footer>
+              </article>
+            ` : `<p class="incoming">${activeThread.preview}</p>`}
+          </section>
+          <form class="cg-message-composer">
+            <input placeholder="Write a message...">
+            <button type="button">${icon("send")} Send</button>
+          </form>
+    `;
+
     root.innerHTML = appShell("posts", `
       <section class="cg-messages-shell">
         <aside class="cg-inbox-panel">
@@ -8377,45 +8566,52 @@ function renderPosts() {
             ${["All", "Recruiters", "Mentors", "Hiring", "Connections"].map((label, index) => `<button class="${index === 0 ? "active" : ""}" type="button">${label}</button>`).join("")}
           </div>
           <div class="cg-thread-list">
-            ${inboxThreads.map(([name, role, tag, preview, time, unread, active]) => `
-              <article class="cg-thread-card ${active ? "active" : ""}">
-                <span class="cg-feed-avatar">${postInitials(name)}</span>
+            ${inboxThreads.map(thread => `
+              <article class="cg-thread-card ${thread.id === activeThread.id ? "active" : ""}" data-thread-id="${thread.id}">
+                <span class="cg-feed-avatar">${postInitials(thread.name)}</span>
                 <div>
-                  <header><strong>${name}</strong>${active ? icon("pin") : ""}<time>${time}</time></header>
-                  <small>${role}</small>
-                  <p><b>${tag}</b> ${preview}</p>
+                  <header><strong>${thread.name}</strong>${thread.id === activeThread.id ? icon("pin") : ""}<time>${thread.time}</time></header>
+                  <small>${thread.role}</small>
+                  <p><b>${thread.tag}</b> ${thread.preview}</p>
                 </div>
-                ${unread ? `<i>${unread}</i>` : ""}
+                ${thread.unread ? `<i>${thread.unread}</i>` : ""}
               </article>
             `).join("")}
           </div>
           <p class="cg-inbox-foot">Looking to message someone new? Go to <a href="posts.html#network">Network</a>.</p>
         </aside>
         <main class="cg-message-thread">
-          <header>
-            <div><h2>Aisha Rahman</h2><p>Recruiter  - Grab Malaysia  - Usually replies within 2h</p></div>
-            <span>Warm - 3 replies this week</span>
-          </header>
-          <section class="cg-chat-thread" aria-label="Conversation with Aisha Rahman">
-            <p class="incoming">Hi Aarav - loved your portfolio. Would you be open to a 30-min chat about the Sr. PM role next week?</p>
-            <p class="outgoing">Yes, definitely. Thursday afternoon works for me. I can also share a short teardown of GrabFood I did last month.</p>
-            <p class="incoming delivered">Perfect. Would you be free Thursday 3pm for the case round?<small>${icon("check-check")} Delivered</small></p>
-            <article class="cg-vera-suggests">
-              <span>${icon("sparkles")} Vera suggests</span>
-              <p>"Thursday 3pm works. I'll prep a short GrabFood teardown and bring 2 metric-tradeoff questions I'd love your take on."</p>
-              <footer><button type="button">Use draft</button><button type="button">Rewrite</button></footer>
-            </article>
-          </section>
-          <form class="cg-message-composer">
-            <input placeholder="Write a message...">
-            <button type="button">${icon("send")} Send</button>
-          </form>
+          ${threadPanel}
         </main>
       </section>
       ${veraWidgetMarkup()}
     `);
     createIcons();
     wireVeraWidget(root);
+    qsa("[data-thread-id]", root).forEach(card => card.addEventListener("click", () => {
+      activePostsThread = card.dataset.threadId;
+      renderPosts();
+    }));
+    function sendVeraThreadMessage(text) {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+      const next = readState();
+      next.chat = [...next.chat, { from: "user", text: trimmed }, { from: "vera", text: veraReply(trimmed) }];
+      writeState(next);
+      activePostsThread = "vera";
+      renderPosts();
+    }
+    const veraComposer = qs("[data-vera-thread-composer]", root);
+    if (veraComposer) {
+      const input = qs("[data-vera-thread-input]", veraComposer);
+      veraComposer.addEventListener("submit", event => {
+        event.preventDefault();
+        sendVeraThreadMessage(input.value);
+      });
+    }
+    qsa("[data-vera-quick]", root).forEach(chip => chip.addEventListener("click", () => sendVeraThreadMessage(chip.dataset.veraQuick)));
+    const messagesPane = qs("[data-vera-thread-messages]", root);
+    if (messagesPane) messagesPane.scrollTop = messagesPane.scrollHeight;
     return;
   }
   const commentSeed = post => [
@@ -8554,7 +8750,8 @@ function renderPosts() {
                 <time>${post.time}</time>
               </div>
               <span class="cg-feed-tag">${post.category === "milestone" ? "Milestone" : post.category === "hiring" ? "Hiring" : "Discussion"}</span>
-              <p class="cg-feed-body">${post.body}</p>
+              <p class="cg-feed-body" data-feed-body="${post.id}">${post.body}</p>
+              <button type="button" class="cg-feed-expand" data-feed-expand="${post.id}" hidden>Show more</button>
               ${post.mediaName ? `<div class="cg-post-media">${icon("paperclip")} <span>${post.mediaName}</span></div>` : ""}
               <div class="cg-feed-actions">
                 <button type="button" data-like-post="${post.id}" class="${post.liked ? "active" : ""}">${icon("heart")} ${post.reactions || 0}</button>
@@ -8730,6 +8927,16 @@ function renderPosts() {
   }));
   createIcons();
   wireVeraWidget(root);
+  qsa("[data-feed-body]", root).forEach(body => {
+    const toggle = qs(`[data-feed-expand="${body.dataset.feedBody}"]`, root);
+    if (!toggle) return;
+    if (body.scrollHeight - body.clientHeight > 2) toggle.hidden = false;
+    toggle.addEventListener("click", () => {
+      const expanded = body.classList.toggle("is-expanded");
+      toggle.textContent = expanded ? "Show less" : "Show more";
+    });
+  });
+  syncFeedSidebarSticky();
 }
 
 function renderEmployerPortal() {
@@ -9023,6 +9230,7 @@ function init() {
   initSidebarToggle();
   initWorkspaceRailTooltips();
   initWorkspaceRailScrollSync();
+  initFeedSidebarStickySync();
 }
 
 document.addEventListener("DOMContentLoaded", init);

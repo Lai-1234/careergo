@@ -12642,7 +12642,9 @@ html body[data-page="posts"] .cg-messages-shell {
   display: grid !important;
   grid-template-columns: 360px minmax(620px, 1fr) !important;
   gap: 0 !important;
-  min-height: calc(100vh - var(--cg-topbar) - 130px) !important;
+  height: calc(100vh - var(--cg-topbar) - 130px) !important;
+  min-height: 520px !important;
+  max-height: 760px !important;
   border: 1px solid rgba(18, 59, 52, 0.12) !important;
   border-radius: 22px !important;
   background: rgba(255, 255, 255, 0.92) !important;
@@ -12651,9 +12653,14 @@ html body[data-page="posts"] .cg-messages-shell {
 }
 
 html body[data-page="posts"] .cg-inbox-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
   padding: 32px 26px !important;
   border-right: 1px solid rgba(18, 59, 52, 0.12) !important;
   background: rgba(247, 242, 232, 0.4) !important;
+  overflow: hidden !important;
 }
 
 html body[data-page="posts"] .cg-inbox-panel h1 {
@@ -12713,6 +12720,31 @@ html body[data-page="posts"] .cg-inbox-filters button.active {
 html body[data-page="posts"] .cg-thread-list {
   display: grid !important;
   gap: 8px !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  padding-right: 6px !important;
+  margin-right: -6px !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(18, 59, 52, 0.28) transparent !important;
+}
+
+html body[data-page="posts"] .cg-thread-list::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+html body[data-page="posts"] .cg-thread-list::-webkit-scrollbar-thumb {
+  background: rgba(18, 59, 52, 0.24) !important;
+  border-radius: 999px !important;
+}
+
+html body[data-page="posts"] .cg-inbox-search,
+html body[data-page="posts"] .cg-inbox-filters {
+  flex-shrink: 0 !important;
+}
+
+html body[data-page="posts"] .cg-inbox-foot {
+  flex-shrink: 0 !important;
 }
 
 html body[data-page="posts"] .cg-thread-card {
@@ -12807,8 +12839,10 @@ html body[data-page="posts"] .cg-inbox-foot a {
 html body[data-page="posts"] .cg-message-thread {
   display: grid !important;
   grid-template-rows: auto 1fr auto !important;
-  min-height: 650px !important;
+  height: 100% !important;
+  min-height: 0 !important;
   padding: 32px 34px 28px !important;
+  overflow: hidden !important;
 }
 
 html body[data-page="posts"] .cg-message-thread>header {
@@ -12846,7 +12880,20 @@ html body[data-page="posts"] .cg-chat-thread {
   display: grid !important;
   align-content: start !important;
   gap: 18px !important;
-  padding: 26px 0 !important;
+  padding: 26px 6px !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(18, 59, 52, 0.28) transparent !important;
+}
+
+html body[data-page="posts"] .cg-chat-thread::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+html body[data-page="posts"] .cg-chat-thread::-webkit-scrollbar-thumb {
+  background: rgba(18, 59, 52, 0.24) !important;
+  border-radius: 999px !important;
 }
 
 html body[data-page="posts"] .cg-chat-thread>p {
@@ -12879,6 +12926,34 @@ html body[data-page="posts"] .cg-chat-thread .delivered small {
   margin-top: 8px !important;
   color: #68756f !important;
   font-size: 12px !important;
+}
+
+html body[data-page="posts"] .cg-vera-quick-prompts {
+  justify-self: start !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 4px !important;
+}
+
+html body[data-page="posts"] .cg-vera-quick-chip {
+  min-height: 34px !important;
+  padding: 0 14px !important;
+  color: #0b6d65 !important;
+  background: rgba(220, 239, 235, 0.55) !important;
+  border: 1px solid rgba(11, 109, 101, 0.28) !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  transition: background 0.15s ease, border-color 0.15s ease !important;
+}
+
+html body[data-page="posts"] .cg-vera-quick-chip:hover {
+  color: #fffaf2 !important;
+  background: #0b6d65 !important;
+  border-color: #0b6d65 !important;
 }
 
 html body[data-page="posts"] .cg-vera-suggests {
@@ -12956,18 +13031,26 @@ html body[data-page="posts"] .cg-message-composer input {
     grid-template-columns: 1fr !important;
   }
 
+  html body[data-page="posts"] .cg-messages-shell {
+    height: auto !important;
+    max-height: none !important;
+  }
+
   html body[data-page="posts"] .cg-feed-left,
   html body[data-page="posts"] .cg-feed-aside {
     position: static !important;
   }
 
   html body[data-page="posts"] .cg-inbox-panel {
+    height: auto !important;
+    max-height: 340px !important;
     border-right: 0 !important;
     border-bottom: 1px solid rgba(18, 59, 52, 0.12) !important;
     padding: 24px !important;
   }
 
   html body[data-page="posts"] .cg-message-thread {
+    height: 520px !important;
     padding: 24px !important;
   }
 }
@@ -18870,8 +18953,8 @@ html body[data-page="posts"] .cg-feed-shell {
 
 html body[data-page="posts"] .cg-feed-left,
 html body[data-page="posts"] .cg-feed-aside {
-  position: sticky !important;
-  top: 112px !important;
+  position: static !important;
+  will-change: transform !important;
 }
 
 html body[data-page="posts"] .cg-feed-left a {
@@ -19037,8 +19120,8 @@ html body[data-page="posts"] .cg-feed-tabs a.active::after {
 
 html body[data-page="posts"] .cg-feed-post {
   display: grid !important;
-  min-height: 348px !important;
-  padding: 28px 30px !important;
+  min-height: 0 !important;
+  padding: 22px 26px !important;
   border: 1px solid rgba(18, 59, 52, 0.12) !important;
   border-radius: 18px !important;
   background: rgba(255, 255, 255, 0.84) !important;
@@ -19064,12 +19147,36 @@ html body[data-page="posts"] .cg-feed-post-head h2 {
 }
 
 html body[data-page="posts"] .cg-feed-body {
-  margin: 24px 0 0 !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 5 !important;
+  line-clamp: 5 !important;
+  overflow: hidden !important;
+  margin: 14px 0 0 !important;
   color: #263f38 !important;
   -webkit-text-fill-color: #263f38 !important;
-  font-size: 19px !important;
+  font-size: 15px !important;
   font-weight: 500 !important;
-  line-height: 1.52 !important;
+  line-height: 1.6 !important;
+}
+
+html body[data-page="posts"] .cg-feed-body.is-expanded {
+  -webkit-line-clamp: unset !important;
+  line-clamp: unset !important;
+  overflow: visible !important;
+}
+
+html body[data-page="posts"] .cg-feed-expand {
+  justify-self: start !important;
+  margin-top: 8px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #0b6d65 !important;
+  -webkit-text-fill-color: #0b6d65 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
 }
 
 html body[data-page="posts"] .cg-feed-actions {
@@ -19077,7 +19184,7 @@ html body[data-page="posts"] .cg-feed-actions {
   display: flex !important;
   align-items: center !important;
   gap: 24px !important;
-  margin-top: 28px !important;
+  margin-top: 20px !important;
 }
 
 html body[data-page="posts"] .cg-feed-actions :is(button, a) {
@@ -19101,8 +19208,7 @@ html body[data-page="posts"] .cg-feed-actions :is(button, a):last-child {
 html body[data-page="posts"] .cg-feed-aside {
   display: grid !important;
   gap: 36px !important;
-  position: sticky !important;
-  top: calc(var(--cg-topbar) + 34px) !important;
+  position: static !important;
 }
 
 html body[data-page="posts"] .cg-feed-aside section {
