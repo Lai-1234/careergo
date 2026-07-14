@@ -4977,7 +4977,36 @@ function renderDashboard() {
         </div>
       </section>
 
-      <a class="cg-ask-vera" href="vera.html">${icon("message-circle")} Ask Vera</a>
+      <div class="cg-vera-widget" data-vera-widget>
+        <div class="cg-vera-popover" data-vera-popover hidden>
+          <div class="cg-vera-pop-head">
+            <span>Coach Vera</span>
+            <b class="cg-vera-pop-online">online</b>
+            <button type="button" class="cg-vera-pop-close" data-vera-close aria-label="Close Vera">${icon("x")}</button>
+          </div>
+          <div class="cg-vera-pop-body">
+            <div class="cg-vera-pop-bubble">I noticed something. You've saved 4 Product Manager roles this week - 3 of them explicitly ask for SQL fluency in the JD. That's your largest hiring blocker right now.</div>
+            <div class="cg-vera-pop-question">How much would closing that gap actually change?</div>
+            <div class="cg-vera-pop-bubble">For your KL PM targets: unlocks ~40 more roles, lifts interview readiness by 8%, and shifts your median offer band from RM 8.9k to RM 10.2k. 30 focused minutes today gets you 60% of the way.</div>
+            <div class="cg-vera-pop-move">
+              <span>Vera's suggested move today</span>
+              <h4>30-min SQL warm-up - joins &amp; aggregates</h4>
+              <div class="cg-vera-pop-stats">
+                <div><span>Readiness</span><strong>+8%</strong></div>
+                <div><span>New matches</span><strong>+40 roles</strong></div>
+                <div><span>Pay band</span><strong>+RM 1.3k</strong></div>
+              </div>
+            </div>
+          </div>
+          <form class="cg-vera-pop-composer" action="vera.html">
+            <input name="topic" placeholder="Ask Vera anything about your career..." aria-label="Ask Vera">
+            <button type="submit" aria-label="Send">${icon("send")}</button>
+          </form>
+        </div>
+        <button type="button" class="cg-vera-trigger" data-vera-trigger aria-label="Ask Vera">
+          <img class="cg-vera-trigger-logo" src="assets/vera-ai-coach.png" alt="Vera AI">
+        </button>
+      </div>
     </section>
   `);
   createIcons();
@@ -4986,7 +5015,31 @@ function renderDashboard() {
     dashboardTaskFilter = dashboardTaskFilter === btn.dataset.taskFilter ? "" : btn.dataset.taskFilter;
     renderDashboard();
   }));
+  wireVeraWidget(root);
   initDashboardTour();
+}
+
+function wireVeraWidget(root) {
+  const widget = qs("[data-vera-widget]", root);
+  if (!widget) return;
+  const popover = qs("[data-vera-popover]", widget);
+  const trigger = qs("[data-vera-trigger]", widget);
+  const openPopover = () => {
+    popover.hidden = false;
+  };
+  const closePopover = () => {
+    popover.hidden = true;
+  };
+  trigger.addEventListener("click", () => {
+    if (popover.hidden) openPopover(); else closePopover();
+  });
+  qs("[data-vera-close]", popover).addEventListener("click", closePopover);
+  document.addEventListener("click", event => {
+    if (!widget.contains(event.target)) closePopover();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closePopover();
+  });
 }
 
 function renderVera() {

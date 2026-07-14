@@ -9445,17 +9445,6 @@ body[data-page="dashboard"] .cg-long-card.tone-3 {
   background: linear-gradient(135deg, rgba(253, 235, 223, 0.86), rgba(255, 255, 255, 0.74)) !important;
 }
 
-body[data-page="dashboard"] .cg-ask-vera {
-  right: 36px !important;
-  bottom: 34px !important;
-  min-height: 58px !important;
-  padding: 0 24px !important;
-  border-radius: 22px !important;
-  color: #fffaf2 !important;
-  background: var(--cg-shot-green) !important;
-  box-shadow: 0 16px 34px rgba(7, 56, 47, 0.24) !important;
-}
-
 @media (max-width: 1100px) {
   body[data-page="dashboard"] .topbar .nav-inner {
     width: min(100% - 32px, 1460px) !important;
@@ -14831,21 +14820,224 @@ html body[data-page="dashboard"] .tour-restart-btn {
   backdrop-filter: blur(12px) !important;
 }
 
-html body[data-page="dashboard"] .cg-ask-vera {
+html body[data-page="dashboard"] .cg-vera-widget {
   position: fixed !important;
   right: 44px !important;
   bottom: 32px !important;
   z-index: 116 !important;
-  min-width: 190px !important;
-  min-height: 68px !important;
-  padding: 0 30px !important;
-  border-radius: 24px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 12px !important;
-  font-size: 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 14px !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-trigger {
+  display: grid !important;
+  place-items: center !important;
+  width: 68px !important;
+  height: 68px !important;
+  padding: 10px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #fffaf2 !important;
   box-shadow: 0 24px 48px rgba(7, 56, 47, 0.24) !important;
+  cursor: pointer !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-trigger:hover {
+  transform: scale(1.06) !important;
+  box-shadow: 0 28px 56px rgba(7, 56, 47, 0.3) !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-trigger-logo {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-popover {
+  width: min(400px, calc(100vw - 48px)) !important;
+  max-height: calc(100vh - 170px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  padding: 28px !important;
+  border-radius: 26px !important;
+  background:
+    radial-gradient(circle at 95% 10%, rgba(101, 181, 172, 0.18), transparent 220px),
+    linear-gradient(135deg, #07382f 0%, #052f29 100%) !important;
+  box-shadow: 0 28px 64px rgba(7, 56, 47, 0.32) !important;
+  animation: cgVeraPopIn 0.18s ease !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-popover[hidden] {
+  display: none !important;
+}
+
+@keyframes cgVeraPopIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-head {
+  display: flex !important;
+  flex-shrink: 0 !important;
+  align-items: center !important;
+  gap: 10px !important;
+  color: rgba(255, 250, 242, 0.72) !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-head span {
+  color: #fffaf2 !important;
+  font-size: 13px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-online {
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  color: #d9f0eb !important;
+  background: rgba(101, 181, 172, 0.22) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  text-transform: lowercase !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-close {
+  margin-left: auto !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: rgba(255, 250, 242, 0.72) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  cursor: pointer !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-close:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-body {
+  display: grid !important;
+  gap: 14px !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-bubble {
+  padding: 16px 18px !important;
+  border-radius: 18px !important;
+  color: rgba(255, 250, 242, 0.92) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.55 !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-question {
+  justify-self: end !important;
+  max-width: 88% !important;
+  padding: 12px 18px !important;
+  border-radius: 18px !important;
+  color: #243a34 !important;
+  background: #fbf6ec !important;
+  font-size: 13px !important;
+  font-weight: 750 !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-move {
+  display: grid !important;
+  gap: 12px !important;
+  padding: 18px !important;
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-move span {
+  color: rgba(255, 250, 242, 0.62) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-move h4 {
+  margin: 0 !important;
+  color: #fffaf2 !important;
+  font-family: "Fraunces", ui-serif, Georgia, serif !important;
+  font-size: 19px !important;
+  font-weight: 500 !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-stats {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-stats div {
+  display: grid !important;
+  gap: 4px !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-stats span {
+  color: rgba(255, 250, 242, 0.6) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-stats strong {
+  color: #fffaf2 !important;
+  font-family: "Fraunces", ui-serif, Georgia, serif !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-composer {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 40px !important;
+  gap: 10px !important;
+  align-items: center !important;
+  min-height: 52px !important;
+  padding: 6px 8px 6px 18px !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.11) !important;
+  flex-shrink: 0 !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-composer input {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #fffaf2 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-composer input::placeholder {
+  color: rgba(255, 250, 242, 0.6) !important;
+}
+
+html body[data-page="dashboard"] .cg-vera-pop-composer button {
+  display: grid !important;
+  place-items: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: var(--cg-shot-green) !important;
+  background: #fffaf2 !important;
+  cursor: pointer !important;
 }
 
 @media (max-width: 900px) {
@@ -14869,11 +15061,14 @@ html body[data-page="dashboard"] .cg-ask-vera {
     min-width: 150px !important;
   }
 
-  html body[data-page="dashboard"] .cg-ask-vera {
+  html body[data-page="dashboard"] .cg-vera-widget {
     right: 18px !important;
     bottom: 22px !important;
-    min-width: 150px !important;
-    min-height: 56px !important;
+  }
+
+  html body[data-page="dashboard"] .cg-vera-trigger {
+    width: 56px !important;
+    height: 56px !important;
   }
 }
 
