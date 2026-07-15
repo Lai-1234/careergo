@@ -9532,7 +9532,7 @@ body[data-page="dashboard"] .cg-dashboard {
   --cg-paper: rgba(255, 255, 255, 0.72);
   --cg-green: var(--cg-shot-green);
   --cg-teal: var(--cg-shot-teal);
-  gap: 40px !important;
+  gap: 24px !important;
   padding: 0 !important;
   font-family: var(--cg-shot-sans) !important;
 }
@@ -9632,12 +9632,15 @@ body[data-page="dashboard"] .cg-kpi-card.tone-4 {
 
 body[data-page="dashboard"] .cg-focus-grid {
   grid-template-columns: minmax(0, 1.56fr) minmax(410px, 1fr) !important;
+  align-items: stretch !important;
   gap: 24px !important;
 }
 
 body[data-page="dashboard"] .cg-focus-card {
-  min-height: 320px !important;
-  padding: 32px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  padding: 26px !important;
   border: 0 !important;
   border-radius: 24px !important;
   background:
@@ -9647,18 +9650,24 @@ body[data-page="dashboard"] .cg-focus-card {
 }
 
 body[data-page="dashboard"] .cg-focus-card h2 {
-  max-width: 780px !important;
-  margin: 28px 0 16px !important;
+  max-width: 520px !important;
+  margin: 20px 0 18px !important;
   color: #fffaf2 !important;
-  font-size: clamp(32px, 3vw, 38px) !important;
-  line-height: 1.15 !important;
+  font-size: clamp(44px, 4.8vw, 56px) !important;
+  line-height: 1.14 !important;
 }
 
 body[data-page="dashboard"] .cg-focus-card p {
-  max-width: 780px !important;
+  max-width: 520px !important;
   color: rgba(255, 250, 242, 0.76) !important;
-  font-size: 17px !important;
+  font-size: 18px !important;
   font-weight: 600 !important;
+  line-height: 1.65 !important;
+}
+
+body[data-page="dashboard"] .cg-focus-card .cg-action-row {
+  margin-top: auto !important;
+  padding-top: 18px !important;
 }
 
 body[data-page="dashboard"] .cg-focus-meta span {
@@ -9666,24 +9675,24 @@ body[data-page="dashboard"] .cg-focus-meta span {
 }
 
 body[data-page="dashboard"] .cg-autopilot-card {
-  min-height: 360px !important;
-  padding: 34px !important;
+  min-height: 0 !important;
+  padding: 26px !important;
 }
 
 body[data-page="dashboard"] .cg-autopilot-card h2 {
-  margin-top: 14px !important;
-  max-width: 360px !important;
-  font-size: 31px !important;
-  line-height: 1.08 !important;
+  margin-top: 32px !important;
+  max-width: none !important;
+  font-size: 22px !important;
+  line-height: 1.15 !important;
 }
 
 body[data-page="dashboard"] .cg-activity-list {
-  gap: 14px !important;
+  gap: 8px !important;
 }
 
 body[data-page="dashboard"] .cg-activity-item p {
   color: #46564f !important;
-  font-size: 15px !important;
+  font-size: 13px !important;
   font-weight: 600 !important;
 }
 
@@ -9720,7 +9729,7 @@ body[data-page="dashboard"] .cg-task-section {
 }
 
 body[data-page="dashboard"] .cg-section-line {
-  margin-bottom: 30px !important;
+  margin-bottom: 18px !important;
 }
 
 body[data-page="dashboard"] .cg-section-line h2,
@@ -14723,7 +14732,7 @@ html body[data-page="dashboard"] .cg-autopilot-card {
 }
 
 html body[data-page="dashboard"] .cg-activity-item {
-  padding: 10px 0 !important;
+  padding: 7px 0 !important;
   border-bottom: 1px solid rgba(14, 44, 37, 0.07) !important;
 }
 
@@ -15222,20 +15231,17 @@ html body[data-page="dashboard"] .cg-mini-bars i:nth-child(3) {
 }
 
 html body[data-page="dashboard"] .cg-autopilot-card .cg-section-line {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) auto !important;
-  align-items: start !important;
-  gap: 24px !important;
-  margin-bottom: 28px !important;
+  display: block !important;
+  margin-bottom: 18px !important;
 }
 
 html body[data-page="dashboard"] .cg-autopilot-card .cg-pill {
-  align-self: start !important;
-  justify-self: end !important;
-  margin-top: 4px !important;
-  min-width: 168px !important;
-  min-height: 54px !important;
-  padding: 10px 20px !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  min-width: 140px !important;
+  min-height: 38px !important;
+  padding: 8px 16px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -15604,7 +15610,6 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
 
 @media (max-width: 900px) {
 
-  html body[data-page="dashboard"] .cg-autopilot-card .cg-section-line,
   html body[data-page="dashboard"] .cg-kpi-card.tone-4,
   html body[data-page="dashboard"] .cg-application-card .cg-action-row {
     grid-template-columns: 1fr !important;

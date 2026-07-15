@@ -8130,7 +8130,7 @@ body[data-page="dashboard"] .os-main {
   --cg-green: #06382d;
   --cg-teal: #72aaa3;
   display: grid;
-  gap: 34px;
+  gap: 24px;
   padding: 42px 0 28px;
   color: var(--cg-ink);
 }
@@ -8253,6 +8253,7 @@ body[data-page="dashboard"] .os-main {
 
 .cg-focus-grid {
   grid-template-columns: minmax(0, 1.55fr) minmax(340px, 1fr);
+  align-items: stretch;
   gap: 22px;
 }
 
@@ -8387,8 +8388,10 @@ body[data-page="dashboard"] .os-main {
 }
 
 .cg-focus-card {
-  min-height: 320px;
-  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 26px;
   color: #fffaf2;
   background: radial-gradient(circle at 92% 8%, rgba(137, 198, 190, 0.28), transparent 18rem), linear-gradient(135deg, #05392e 0%, #004e43 54%, #07332b 100%);
   box-shadow: 0 22px 60px rgba(5, 48, 40, 0.22);
@@ -8414,17 +8417,17 @@ body[data-page="dashboard"] .os-main {
 }
 
 .cg-focus-card h2 {
-  max-width: 760px;
-  margin: 48px 0 18px;
+  max-width: 520px;
+  margin: 20px 0 18px;
   color: #fffaf2;
-  font-size: clamp(35px, 4.3vw, 56px);
+  font-size: clamp(44px, 4.8vw, 56px);
 }
 
 .cg-focus-card p {
-  max-width: 760px;
+  max-width: 520px;
   margin: 0;
   color: rgba(255, 250, 242, 0.78);
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.65;
 }
 
@@ -8484,7 +8487,7 @@ body[data-page="dashboard"] .os-main {
 
 .cg-section-line {
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .cg-section-line h2,
