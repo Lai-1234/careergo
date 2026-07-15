@@ -1988,8 +1988,8 @@ function ensureWorkspaceNavbarStyles() {
     html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container,
     html body[data-page="jobs"] main[data-jobs-page] > .page-hero > .container,
     html body[data-page="jobs"] main[data-jobs-page] > .jobs-page-layout {
-      width: min(1240px, calc(100% - 48px)) !important;
-      max-width: 1240px !important;
+      width: min(1200px, calc(100% - 48px)) !important;
+      max-width: 1200px !important;
       margin-inline: auto !important;
       padding-inline: 0 !important;
       box-sizing: border-box !important;
@@ -2006,7 +2006,7 @@ function ensureWorkspaceNavbarStyles() {
       html body[data-page="jobs"] main[data-jobs-page] > .workspace-page-container,
       html body[data-page="jobs"] main[data-jobs-page] > .page-hero > .container,
       html body[data-page="jobs"] main[data-jobs-page] > .jobs-page-layout {
-        width: min(100% - 32px, 1240px) !important;
+        width: min(100% - 32px, 1200px) !important;
       }
     }
 
@@ -4935,7 +4935,6 @@ function renderDashboard() {
           <h1>Good morning, ${getFirstName(state)}.</h1>
           <p>You are making steady progress - ahead of 72% of candidates on the same path.</p>
         </div>
-        <span class="cg-vera-status"><i></i> Vera is online - learning your patterns</span>
       </header>
 
       <section class="cg-kpi-grid" data-tour-target="metrics">
@@ -9329,4 +9328,21 @@ function init() {
   initFeedSidebarStickySync();
 }
 
-document.addEventListener("DOMContentLoaded", init);
+function loadDesignSystem() {
+  if (document.getElementById("careergo-design-system")) return Promise.resolve();
+
+  return new Promise(resolve => {
+    const stylesheet = document.createElement("link");
+    stylesheet.id = "careergo-design-system";
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = "design-system.css";
+    stylesheet.addEventListener("load", resolve, { once: true });
+    stylesheet.addEventListener("error", resolve, { once: true });
+    document.head.appendChild(stylesheet);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadDesignSystem();
+  init();
+});

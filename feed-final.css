@@ -26,8 +26,8 @@ body[data-page="posts"] .topbar {
 
 body[data-page="posts"]:has(.cg-feed-shell) .container.os-layout,
 body[data-page="posts"]:has(.cg-feed-shell) main > .container {
-  width: min(100% - 56px, 1370px) !important;
-  max-width: 1370px !important;
+  width: min(100% - 48px, 1200px) !important;
+  max-width: 1200px !important;
   margin: 0 auto !important;
   padding: 0 !important;
 }

@@ -81,7 +81,7 @@ html body[data-page="profile"] :is(h1, h2, h3) {
 
 .cg-up-cover {
   position: relative;
-  min-height: 224px;
+  min-height: 180px;
   background:
     linear-gradient(135deg, rgba(15, 76, 92, 0.06), rgba(77, 182, 172, 0.12)),
     radial-gradient(circle at 17% 10%, rgba(77, 182, 172, 0.22), transparent 260px),
@@ -103,18 +103,18 @@ html body[data-page="profile"] :is(h1, h2, h3) {
 .cg-up-avatar {
   position: absolute;
   left: 32px;
-  bottom: -62px;
+  bottom: -48px;
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 132px;
-  height: 132px;
-  border: 8px solid rgba(77, 182, 172, 0.28);
+  width: 104px;
+  height: 104px;
+  border: 6px solid rgba(77, 182, 172, 0.28);
   border-radius: 999px;
   background: linear-gradient(135deg, #0f4c5c, #4db6ac);
   color: #f8f4ea;
   font-family: "Fraunces", Georgia, serif;
-  font-size: 38px;
+  font-size: 30px;
   font-weight: 500;
   letter-spacing: -0.02em;
   box-shadow: var(--up-shadow-lift);
@@ -406,8 +406,13 @@ html body[data-page="profile"] :is(h1, h2, h3) {
   bottom: 20px;
   margin: 0;
   color: #f8f4ea !important;
-  font-size: 28px;
-  line-height: 1.08;
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+html body[data-page="profile"] .cg-up-project-art h3 {
+  color: #f8f4ea !important;
+  -webkit-text-fill-color: #f8f4ea !important;
 }
 
 .cg-up-project-art a {
