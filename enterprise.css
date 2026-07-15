@@ -1639,6 +1639,10 @@ body .hero-actions .btn-ghost {
   font-size: clamp(24px, 2vw, 32px) !important;
 }
 
+.score-tile strong {
+  font-family: var(--cg-shot-serif) !important;
+}
+
 .metric span {
   color: var(--cg-muted) !important;
   font-size: 12px !important;
@@ -10246,7 +10250,8 @@ body[data-page="market"] .market-scenario-card {
 }
 
 body[data-page="market"] .market-worth-card strong,
-body[data-page="market"] .market-scenario-card strong {
+body[data-page="market"] .market-scenario-card strong,
+body[data-page="market"] .market-value-plan .plan-summary-card strong {
   color: var(--cg-shot-ink) !important;
   font-family: var(--cg-shot-serif) !important;
   font-size: 34px !important;
