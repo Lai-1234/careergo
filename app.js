@@ -5394,16 +5394,22 @@ function veraInsight(state) {
 }
 
 function veraWidgetMarkup() {
-  const insight = veraInsight(readState());
+  const state = readState();
+  const insight = veraInsight(state);
+  const thread = (state.chat || []).map(msg => msg.from === "vera"
+    ? `<div class="cg-vera-pop-bubble">${msg.text}</div>`
+    : `<div class="cg-vera-pop-question">${msg.text}</div>`
+  ).join("");
   return `
       <div class="cg-vera-widget" data-vera-widget>
         <div class="cg-vera-popover" data-vera-popover hidden>
           <div class="cg-vera-pop-head">
             <span>Coach Vera</span>
             <b class="cg-vera-pop-online">online</b>
+            <a class="cg-vera-pop-expand" href="posts.html#messages" aria-label="Open full conversation">${icon("external-link")}</a>
             <button type="button" class="cg-vera-pop-close" data-vera-close aria-label="Close Vera">${icon("x")}</button>
           </div>
-          <div class="cg-vera-pop-body">
+          <div class="cg-vera-pop-body" data-vera-pop-body>
             <div class="cg-vera-pop-bubble">${insight.bubble1}</div>
             <div class="cg-vera-pop-question">${insight.question}</div>
             <div class="cg-vera-pop-bubble">${insight.bubble2}</div>
@@ -5414,9 +5420,10 @@ function veraWidgetMarkup() {
                 ${insight.stats.map(stat => `<div><span>${stat.label}</span><strong>${stat.value}</strong></div>`).join("")}
               </div>
             </div>
+            <div class="cg-vera-pop-thread" data-vera-pop-thread>${thread}</div>
           </div>
-          <form class="cg-vera-pop-composer" action="posts.html#messages">
-            <input name="topic" placeholder="Ask Vera anything about your career..." aria-label="Ask Vera">
+          <form class="cg-vera-pop-composer" data-vera-pop-form>
+            <input name="message" placeholder="Ask Vera anything about your career..." aria-label="Ask Vera" autocomplete="off">
             <button type="submit" aria-label="Send">${icon("send")}</button>
           </form>
         </div>
@@ -5432,8 +5439,12 @@ function wireVeraWidget(root) {
   if (!widget) return;
   const popover = qs("[data-vera-popover]", widget);
   const trigger = qs("[data-vera-trigger]", widget);
+  const body = qs("[data-vera-pop-body]", popover);
+  const thread = qs("[data-vera-pop-thread]", popover);
+  const form = qs("[data-vera-pop-form]", popover);
   const openPopover = () => {
     popover.hidden = false;
+    body.scrollTop = body.scrollHeight;
   };
   const closePopover = () => {
     popover.hidden = true;
@@ -5451,6 +5462,20 @@ function wireVeraWidget(root) {
   });
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") closePopover();
+  });
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    const input = form.message;
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    const reply = veraReply(text);
+    const next = readState();
+    next.chat.push({ from: "user", text });
+    next.chat.push({ from: "vera", text: reply });
+    writeState(next);
+    thread.insertAdjacentHTML("beforeend", `<div class="cg-vera-pop-question">${text}</div><div class="cg-vera-pop-bubble">${reply}</div>`);
+    body.scrollTop = body.scrollHeight;
   });
 }
 
@@ -5482,7 +5507,7 @@ function renderVera() {
       const isVera = msg.from === "vera";
       return `
         <div class="message ${isVera ? "vera" : "user"}">
-          <span class="message-avatar">${icon(isVera ? "sparkles" : "user-round")}</span>
+          <span class="message-avatar">${isVera ? `<img class="cg-vera-chat-avatar" src="assets/vera-ai-coach.png" alt="Vera AI">` : icon("user-round")}</span>
           <div class="message-bubble">
             <strong>${isVera ? "Vera" : getFirstName(readState())}</strong>
             <p>${msg.text}</p>
@@ -9279,10 +9304,38 @@ function renderPosts() {
     if (!activePostsThread) activePostsThread = "aisha";
 
     const humanThreads = [
-      { id: "aisha", name: "Aisha Rahman", role: "Recruiter  - Grab Malaysia", tag: "Recruiter", preview: "Would you be free Thursday 3p...", time: "2h", unread: "2" },
-      { id: "ravi", name: "Ravi Iyer", role: "Head of Product  - Vercel", tag: "Mentor", preview: "Happy to look at your PM portfolio - s...", time: "1d", unread: "" },
-      { id: "nurul", name: "Nurul Adlina", role: "Hiring Manager  - Setel", tag: "Hiring manager", preview: "Great chat. Sharing the take...", time: "2d", unread: "1" },
-      { id: "shreya", name: "Shreya Kapoor", role: "Design -> Product  - Figma", tag: "Connection", preview: "Yes, I made the same jump - let m...", time: "4d", unread: "" }
+      {
+        id: "aisha", name: "Aisha Rahman", role: "Recruiter  - Grab Malaysia", tag: "Recruiter", preview: "Would you be free Thursday 3p...", time: "2h", unread: "2",
+        messages: [
+          { dir: "incoming", text: "Hi Aarav - loved your portfolio. Would you be open to a 30-min chat about the Sr. PM role next week?" },
+          { dir: "outgoing", text: "Yes, definitely. Thursday afternoon works for me. I can also share a short teardown of GrabFood I did last month." },
+          { dir: "incoming", text: "Perfect. Would you be free Thursday 3pm for the case round?", delivered: true }
+        ],
+        veraSuggest: "\"Thursday 3pm works. I'll prep a short GrabFood teardown and bring 2 metric-tradeoff questions I'd love your take on.\""
+      },
+      {
+        id: "ravi", name: "Ravi Iyer", role: "Head of Product  - Vercel", tag: "Mentor", preview: "Happy to look at your PM portfolio - s...", time: "1d", unread: "",
+        messages: [
+          { dir: "incoming", text: "Hey! Happy to look at your PM portfolio - send over what you've got and I'll give honest feedback this weekend." },
+          { dir: "outgoing", text: "That would mean a lot. I'll share the Grab case study and the dashboard I built - could use your read on the metrics section especially." },
+          { dir: "incoming", text: "Perfect, that's the part most candidates get wrong. Send it over and I'll mark it up directly.", delivered: true }
+        ]
+      },
+      {
+        id: "nurul", name: "Nurul Adlina", role: "Hiring Manager  - Setel", tag: "Hiring manager", preview: "Great chat. Sharing the take...", time: "2d", unread: "1",
+        messages: [
+          { dir: "incoming", text: "Great chat today! Sharing the take-home exercise now - due end of next week, no rush." },
+          { dir: "outgoing", text: "Thank you, I'll get started this weekend. Should I loop in any specific stakeholders while drafting the proposal?" },
+          { dir: "incoming", text: "Just focus on the merchant experience - that's the piece our panel cares about most.", delivered: true }
+        ]
+      },
+      {
+        id: "shreya", name: "Shreya Kapoor", role: "Design -> Product  - Figma", tag: "Connection", preview: "Yes, I made the same jump - let m...", time: "4d", unread: "",
+        messages: [
+          { dir: "outgoing", text: "Saw you made the jump from design to product - I'm considering the same move. Any advice on how you framed it?" },
+          { dir: "incoming", text: "Yes, I made the same jump - let me know if you want to grab 15 minutes, happy to share how I positioned my design background as a PM strength.", delivered: true }
+        ]
+      }
     ];
     const inboxThreads = [
       { id: "vera", name: "Coach Vera", role: "Your AI career coach", tag: "Coach", preview: veraMessages[veraMessages.length - 1]?.text || "Ask me anything about your career.", time: "now", unread: "" },
@@ -9318,16 +9371,14 @@ function renderPosts() {
             <span>Warm - 3 replies this week</span>
           </header>
           <section class="cg-chat-thread" aria-label="Conversation with ${activeThread.name}">
-            ${activeThread.id === "aisha" ? `
-              <p class="incoming">Hi Aarav - loved your portfolio. Would you be open to a 30-min chat about the Sr. PM role next week?</p>
-              <p class="outgoing">Yes, definitely. Thursday afternoon works for me. I can also share a short teardown of GrabFood I did last month.</p>
-              <p class="incoming delivered">Perfect. Would you be free Thursday 3pm for the case round?<small>${icon("check-check")} Delivered</small></p>
+            ${activeThread.messages.map(msg => `<p class="${msg.dir}${msg.delivered ? " delivered" : ""}">${msg.text}${msg.delivered ? `<small>${icon("check-check")} Delivered</small>` : ""}</p>`).join("")}
+            ${activeThread.veraSuggest ? `
               <article class="cg-vera-suggests">
                 <span>${icon("sparkles")} Vera suggests</span>
-                <p>"Thursday 3pm works. I'll prep a short GrabFood teardown and bring 2 metric-tradeoff questions I'd love your take on."</p>
+                <p>${activeThread.veraSuggest}</p>
                 <footer><button type="button">Use draft</button><button type="button">Rewrite</button></footer>
               </article>
-            ` : `<p class="incoming">${activeThread.preview}</p>`}
+            ` : ""}
           </section>
           <form class="cg-message-composer">
             <input placeholder="Write a message...">

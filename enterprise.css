@@ -15504,6 +15504,34 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
   gap: 14px !important;
   min-height: 0 !important;
   overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-body::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-expand {
+  display: grid !important;
+  place-items: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  margin-left: auto !important;
+  border-radius: 999px !important;
+  color: rgba(255, 250, 242, 0.72) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  cursor: pointer !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-expand:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-expand svg {
+  width: 14px !important;
+  height: 14px !important;
 }
 
 html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-bubble {
@@ -15574,6 +15602,15 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
   font-family: "Fraunces", ui-serif, Georgia, serif !important;
   font-size: 17px !important;
   font-weight: 500 !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-thread {
+  display: grid !important;
+  gap: 14px !important;
+}
+
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-thread:empty {
+  display: none !important;
 }
 
 html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-pop-composer {
