@@ -7222,28 +7222,19 @@ body[data-page="market"]:has(.cg-worth) .container.os-layout {
   transform: translateX(-8px);
   display: grid;
   gap: 8px;
-  min-width: 170px;
+  width: 145px;
 }
 
-.cg-worth-point strong {
-  position: absolute;
-  bottom: 196px;
-  color: var(--cg-shot-ink);
+.cg-worth-point:last-child {
+  transform: translateX(-100%);
+  text-align: right;
+}
+
+.cg-worth-chart-value {
+  fill: var(--cg-shot-ink);
   font-family: var(--cg-shot-serif);
   font-size: 26px;
-  white-space: nowrap;
-}
-
-.cg-worth-point::before {
-  content: "";
-  position: absolute;
-  bottom: 205px;
-  left: 0;
-  width: 18px;
-  height: 18px;
-  border: 4px solid #fffaf2;
-  border-radius: 999px;
-  background: #0b5d58;
+  font-weight: 500;
 }
 
 .cg-worth-point span {
@@ -15781,6 +15772,42 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
     width: 56px !important;
     height: 56px !important;
   }
+
+  html body[data-page="market"] .cg-worth-chart {
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 410px !important;
+    overflow: visible !important;
+  }
+
+  html body[data-page="market"] .cg-worth-chart svg {
+    inset: 96px 0 96px !important;
+    height: 210px !important;
+  }
+
+  html body[data-page="market"] .cg-worth-point {
+    min-width: 132px !important;
+    transform: translateX(-6px) !important;
+  }
+
+  html body[data-page="market"] .cg-worth-point:last-child {
+    transform: translateX(-100%) !important;
+  }
+
+  html body[data-page="market"] .cg-worth-chart-value {
+    font-size: clamp(18px, 1.7vw, 26px) !important;
+  }
+
+  html body[data-page="market"] .cg-worth-point span {
+    font-size: clamp(15px, 1.25vw, 22px) !important;
+    white-space: nowrap !important;
+  }
+
+  html body[data-page="market"] .cg-worth-point small {
+    max-width: 170px !important;
+    font-size: clamp(13px, 1vw, 17px) !important;
+    line-height: 1.25 !important;
+  }
 }
 
 html body[data-page="discover"] .cg-direction-card {
@@ -15945,50 +15972,6 @@ html body[data-page="market"] .cg-worth-side {
   align-self: start !important;
   gap: 24px !important;
   margin-top: 12px !important;
-}
-
-html body[data-page="market"] .cg-worth-chart {
-  min-width: 0 !important;
-  width: 100% !important;
-  height: 410px !important;
-  overflow: visible !important;
-}
-
-html body[data-page="market"] .cg-worth-chart svg {
-  inset: 96px 0 96px !important;
-  height: 210px !important;
-}
-
-html body[data-page="market"] .cg-worth-point {
-  min-width: 132px !important;
-  transform: translateX(-6px) !important;
-}
-
-html body[data-page="market"] .cg-worth-point:last-child {
-  transform: translateX(-100%) !important;
-}
-
-html body[data-page="market"] .cg-worth-point strong {
-  bottom: 204px !important;
-  font-size: clamp(20px, 1.7vw, 28px) !important;
-  white-space: nowrap !important;
-}
-
-html body[data-page="market"] .cg-worth-point::before {
-  bottom: 213px !important;
-  width: 16px !important;
-  height: 16px !important;
-}
-
-html body[data-page="market"] .cg-worth-point span {
-  font-size: clamp(15px, 1.25vw, 22px) !important;
-  white-space: nowrap !important;
-}
-
-html body[data-page="market"] .cg-worth-point small {
-  max-width: 170px !important;
-  font-size: clamp(13px, 1vw, 17px) !important;
-  line-height: 1.25 !important;
 }
 
 html body[data-page="autopilot"] .cg-pipeline-kpis article.dark {

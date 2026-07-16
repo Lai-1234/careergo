@@ -5179,6 +5179,32 @@ function historyTrendSvg(scores, width = 600) {
   </svg>`;
 }
 
+function worthTimelineSvg(points, width = 1200, height = 360) {
+  const padX = 16;
+  const topPad = 46;
+  const bottomPad = 24;
+  const values = points.map(p => p.value);
+  const min = Math.min(...values), max = Math.max(...values), range = (max - min) || 1;
+  const scaled = points.map(p => ({
+    ...p,
+    x: padX + (p.xPct / 100) * (width - padX * 2),
+    y: height - bottomPad - ((p.value - min) / range) * (height - topPad - bottomPad)
+  }));
+  const linePoints = scaled.map(p => `${p.x},${p.y}`).join(" ");
+  const areaPath = `M${scaled.map(p => `${p.x} ${p.y}`).join(" L")} L${width} ${height} L0 ${height} Z`;
+  return `<svg class="cg-worth-chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Career value projection: ${points.map(p => `${p.label} ${p.display}`).join(", ")}">
+    <defs><linearGradient id="worthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0b6d65" stop-opacity=".28"/><stop offset="100%" stop-color="#0b6d65" stop-opacity="0"/></linearGradient></defs>
+    <path d="${areaPath}" fill="url(#worthFill)"/>
+    <polyline points="${linePoints}" fill="none" stroke="#0b5d58" stroke-width="5"/>
+    ${scaled.map((p, i) => `
+      <g>
+        <circle cx="${p.x}" cy="${p.y}" r="9" fill="#0b5d58" stroke="#fffaf2" stroke-width="4"></circle>
+        <text x="${p.x}" y="${Math.max(28, p.y - 24)}" text-anchor="${i === 0 ? "start" : i === scaled.length - 1 ? "end" : "middle"}" class="cg-worth-chart-value">${p.display}</text>
+      </g>
+    `).join("")}
+  </svg>`;
+}
+
 const OPEN_ROLE_POOL = {
   Banking: ["Product Analyst", "Data Analyst", "Digital Banking Associate", "Risk Analyst"],
   Technology: ["Product Manager", "Data Analyst", "Software Engineer", "Growth Associate"],
@@ -8418,6 +8444,13 @@ function renderMarket() {
       ["Vs. peers w/ your skills", "on par", "Skills match archetype cleanly", ""],
       ["Fair pay confidence", "High", "234 verified data points", ""]
     ];
+    const worthTimelinePoints = [
+      { xPct: 0, value: 8900, display: "8.9k", label: "Today", body: "where you are" },
+      { xPct: 24, value: 9700, display: "RM 9.7k", label: "Week 3", body: "Complete SQL sprint" },
+      { xPct: 47, value: 10300, display: "RM 10.3k", label: "Week 6", body: "Publish portfolio case" },
+      { xPct: 70, value: 11200, display: "RM 11.2k", label: "Month 3", body: "First PM interview cycle" },
+      { xPct: 98, value: 12100, display: "RM 12.1k", label: "Month 6", body: "Fintech switch ready" }
+    ];
     root.innerHTML = appShell("market", `
       <section class="cg-worth">
         <section class="cg-worth-hero">
@@ -8450,7 +8483,7 @@ function renderMarket() {
               <h2>Complete the Product Analytics sprint.</h2>
               <p>Of every roadmap step, portfolio push and referral request open to you, this one moves your Career Value the most for the least effort. It also unlocks the Stripe and Grab interview rubrics in Pipeline.</p>
               <div class="cg-worth-chips"><span>${icon("trending-up")} +RM 1,300 / month expected</span><span>${icon("clock")} 12 hrs over 3 weeks</span><span>${icon("target")} 92% probability of completion</span></div>
-              <div class="cg-worth-actions"><a class="btn btn-primary" href="grow.html">${icon("sparkles")} Start in Grow</a><a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent("why the Product Analytics sprint is today's highest-value move")}#messages">Why this one? ${icon("arrow-right")}</a></div>
+              <div class="cg-worth-actions"><a class="btn btn-primary" href="grow.html">${icon("sparkles")} Start in Growth</a><a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent("why the Product Analytics sprint is today's highest-value move")}#messages">Why this one? ${icon("arrow-right")}</a></div>
             </article>
             <aside>
               <span>Why Vera picked this</span>
@@ -8534,18 +8567,8 @@ function renderMarket() {
           <h2>Career Value Timetable</h2>
           <p>Vera projects how each roadmap action lifts your monthly Career Value.</p>
           <div class="cg-worth-chart">
-            <svg viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true">
-              <defs><linearGradient id="worthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0b6d65" stop-opacity=".28"/><stop offset="100%" stop-color="#0b6d65" stop-opacity="0"/></linearGradient></defs>
-              <path d="M0 278 L290 232 L570 198 L850 142 L1200 82 L1200 360 L0 360 Z" fill="url(#worthFill)"/>
-              <polyline points="0,278 290,232 570,198 850,142 1200,82" fill="none" stroke="#0b5d58" stroke-width="5"/>
-            </svg>
-            ${[
-              ["0%", "8.9k", "Today", "where you are"],
-              ["24%", "RM 9.7k", "Week 3", "Complete SQL sprint"],
-              ["47%", "RM 10.3k", "Week 6", "Publish portfolio case"],
-              ["70%", "RM 11.2k", "Month 3", "First PM interview cycle"],
-              ["98%", "RM 12.1k", "Month 6", "Fintech switch ready"]
-            ].map(([left, value, label, body]) => `<div class="cg-worth-point" style="left:${left}"><strong>${value}</strong><span>${label}</span><small>${body}</small></div>`).join("")}
+            ${worthTimelineSvg(worthTimelinePoints)}
+            ${worthTimelinePoints.map(p => `<div class="cg-worth-point" style="left:${p.xPct}%"><span>${p.label}</span><small>${p.body}</small></div>`).join("")}
           </div>
         </section>
 
@@ -8561,6 +8584,15 @@ function renderMarket() {
     `);
     createIcons();
     wireVeraWidget(root);
+    const worthChartSvg = qs(".cg-worth-chart-svg", root);
+    if (worthChartSvg) {
+      const chartRect = worthChartSvg.getBoundingClientRect();
+      const measuredWidth = Math.round(chartRect.width);
+      const measuredHeight = Math.round(chartRect.height);
+      if (measuredWidth > 0 && measuredHeight > 0 && (Math.abs(measuredWidth - 1200) > 4 || Math.abs(measuredHeight - 360) > 4)) {
+        worthChartSvg.outerHTML = worthTimelineSvg(worthTimelinePoints, measuredWidth, measuredHeight);
+      }
+    }
     return;
   }
   const target = getTargetLabel(state.profile).toLowerCase();
@@ -9060,7 +9092,7 @@ function renderAutopilot() {
                   <button type="button" class="cg-pipeline-stage-btn${index === 0 ? " active" : ""}" data-pipeline-stage="${index}">
                     <span>${stage}</span><b>${count}</b>
                   </button>
-                  <button type="button" class="cg-pipeline-stage-add" aria-label="Add ${stage} application">+</button>
+                  <a class="cg-pipeline-stage-add" href="discover.html" aria-label="Add ${stage} application">+</a>
                 </div>
               `).join("")}
             </nav>
