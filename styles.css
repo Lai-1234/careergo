@@ -8719,6 +8719,19 @@ body[data-page="dashboard"] .os-main {
   font-weight: 700;
 }
 
+.cg-app-details-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.cg-app-details-meta .muted {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .cg-insight-band {
   justify-content: space-between;
   padding: 22px 28px;

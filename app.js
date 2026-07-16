@@ -5200,8 +5200,8 @@ function renderDashboard() {
               <p class="cg-application-meta">${icon("calendar")} ${record.deadline || "Due in 2 days"} ${icon("clock")} ${record.nextAction}</p>
               <div class="cg-note">${icon("sparkles")} ${record.nextAction}</div>
               <div class="cg-action-row">
-                <a class="btn btn-primary" href="discover.html?job=${job.id}#tracker">Continue ${icon("arrow-up-right")}</a>
-                <a class="btn btn-ghost" href="discover.html?job=${job.id}">Details</a>
+                <button type="button" class="btn btn-primary" data-app-details="${job.id}">Continue ${icon("arrow-up-right")}</button>
+                <button type="button" class="btn btn-ghost" data-app-details="${job.id}">Details</button>
               </div>
             </article>
           `).join("")}
@@ -5302,6 +5302,7 @@ function renderDashboard() {
     dashboardTaskFilter = dashboardTaskFilter === btn.dataset.taskFilter ? "" : btn.dataset.taskFilter;
     renderDashboard();
   }));
+  qsa("[data-app-details]", root).forEach(btn => btn.addEventListener("click", () => openApplicationDetailsModal(btn.dataset.appDetails)));
   wireVeraWidget(root);
   initDashboardTour();
 }
@@ -7198,6 +7199,54 @@ function openResumeModal(jobId) {
     window.addEventListener("afterprint", cleanup, { once: true });
     window.print();
     window.setTimeout(cleanup, 1000);
+  });
+  createIcons();
+}
+
+function openApplicationDetailsModal(jobId) {
+  const state = readState();
+  const job = DATA.jobs.find(item => item.id === jobId);
+  if (!job) return;
+  const record = state.applicationRecords?.[jobId] || createApplicationRecord(jobId, "saved");
+  const forwardStages = APPLICATION_STAGES.slice(0, 5);
+  const currentIndex = forwardStages.findIndex(stage => stage.key === record.stage);
+  const nextStage = currentIndex >= 0 && currentIndex < forwardStages.length - 1 ? forwardStages[currentIndex + 1] : null;
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-app-details-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-app-details-modal" role="dialog" aria-label="Application details">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">${job.company}</div>
+          <h2>${job.title}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="cg-app-details-meta">
+        ${applicationStagePill(record.stage)}
+        <span class="muted small">${icon("calendar")} Deadline: ${record.deadline}</span>
+      </div>
+      <div class="cg-pipeline-steps">
+        ${record.timeline.map((step, index) => `<article class="${step.done ? "done" : ""}"><b>${step.done ? icon("check") : index + 1}</b><i></i><span>${step.label}</span><small>${step.date}</small></article>`).join("")}
+      </div>
+      <div class="cg-note">${icon("sparkles")} ${record.note}</div>
+      <div class="hero-actions compact-actions">
+        ${nextStage ? `<button type="button" class="btn btn-primary" data-app-advance="${nextStage.key}">${icon("arrow-up-right")} Mark as ${nextStage.label}</button>` : ""}
+        <a class="btn ${nextStage ? "btn-ghost" : "btn-primary"}" href="posts.html?topic=${encodeURIComponent(record.nextAction)}#messages">${icon("sparkles")} Ask Vera about this</a>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  qs("[data-app-advance]", backdrop)?.addEventListener("click", event => {
+    const nextStageKey = event.currentTarget.dataset.appAdvance;
+    updateApplicationStage(jobId, nextStageKey);
+    showToast(`${job.title} moved to ${stageMeta(nextStageKey).label}.`);
+    backdrop.remove();
+    renderDashboard();
   });
   createIcons();
 }
