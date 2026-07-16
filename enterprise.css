@@ -7639,9 +7639,10 @@ body[data-page="autopilot"]:has(.cg-pipeline) .container.os-layout {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 6px 12px;
   padding: 16px 18px;
-  border: 1px solid rgba(14, 44, 37, 0.1);
+  border: 1px solid rgba(14, 44, 37, 0.18);
   border-radius: 16px;
   background: #fff;
+  box-shadow: var(--shadow-soft);
 }
 
 .cg-autopilot-queue article.blocked {
@@ -7728,9 +7729,10 @@ body[data-page="autopilot"]:has(.cg-pipeline) .container.os-layout {
   align-items: center;
   gap: 14px;
   padding: 12px 16px;
-  border: 1px solid rgba(14, 44, 37, 0.08);
+  border: 1px solid rgba(14, 44, 37, 0.18);
   border-radius: 14px;
   background: #fff;
+  box-shadow: var(--shadow-soft);
 }
 
 .cg-autopilot-log article h3 {
@@ -7787,6 +7789,18 @@ body[data-page="autopilot"]:has(.cg-pipeline) .container.os-layout {
 .cg-pipeline-impact>header {
   align-items: center;
   background: rgba(255, 255, 255, 0.78);
+}
+
+.cg-pipeline-impact>header small {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: #1d4f48;
+  background: rgba(216, 239, 235, 0.75);
+  font-weight: 800;
 }
 
 .cg-pipeline-impact article {
@@ -15990,6 +16004,10 @@ html body .notification-trigger {
   min-width: 52px !important;
   padding: 0 !important;
   border-radius: 999px !important;
+}
+
+html body .notification-trigger.btn {
+  overflow: visible !important;
 }
 
 html body .cg-avatar-trigger,
