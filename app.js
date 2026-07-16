@@ -5046,6 +5046,30 @@ function reviewStars(rating) {
   return `<span class="cg-review-stars" aria-label="${(Number(rating) || 0).toFixed(1)} out of 5">${[1, 2, 3, 4, 5].map(step => `<b class="${step <= rounded ? "filled" : ""}">${icon("star")}</b>`).join("")}</span>`;
 }
 
+const OPEN_ROLE_POOL = {
+  Banking: ["Product Analyst", "Data Analyst", "Digital Banking Associate", "Risk Analyst"],
+  Technology: ["Product Manager", "Data Analyst", "Software Engineer", "Growth Associate"],
+  "Energy Tech": ["AI Product Manager", "Data Engineer", "Business Analyst", "Digital Transformation Associate"],
+  Energy: ["Graduate Product Analyst", "Data Analyst", "Commercial Analyst", "Digital Product Associate"],
+  Fintech: ["Product Manager, Payments", "Data Analyst", "Backend Engineer", "Risk & Fraud Analyst"],
+  Marketplace: ["Growth Product Manager", "Data Analyst", "Operations Analyst", "Platform Engineer"],
+  SaaS: ["Product Manager", "Customer Success Manager", "Full-stack Engineer", "Product Designer"],
+  AI: ["AI Product Manager", "Machine Learning Engineer", "Data Scientist", "Platform Engineer"]
+};
+const DEFAULT_OPEN_ROLES = ["Product Manager", "Data Analyst", "Business Analyst", "Associate"];
+
+function openRolesForOrg(org) {
+  const realJobs = DATA.jobs.filter(job => job.company === org.name);
+  const pool = OPEN_ROLE_POOL[org.industry] || DEFAULT_OPEN_ROLES;
+  const usedTitles = new Set(realJobs.map(job => job.title));
+  const placeholderCount = Math.max(0, Math.min(4, org.open || 0) - realJobs.length);
+  const placeholders = pool.filter(title => !usedTitles.has(title)).slice(0, placeholderCount);
+  return [
+    ...realJobs.map(job => ({ title: job.title, real: true, job })),
+    ...placeholders.map(title => ({ title, real: false }))
+  ];
+}
+
 function openOrgDetailModal(orgId) {
   const { catalog } = buildOrgCatalog();
   const org = catalog.find(item => item.id === orgId) || [...DATA.companies, ...DATA.universities].find(item => item.id === orgId);
@@ -5056,6 +5080,7 @@ function openOrgDetailModal(orgId) {
   const scoreRows = org.scores
     ? [["Culture", org.scores.culture], ["Growth", org.scores.growth], ["Pay", org.scores.pay], ["Balance", org.scores.balance]]
     : [];
+  const openRoles = org.type !== "University" ? openRolesForOrg(org) : [];
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop";
   backdrop.innerHTML = `
@@ -5077,6 +5102,23 @@ function openOrgDetailModal(orgId) {
         <span>${org.reviews} review signals</span>
         <button class="btn btn-primary" type="button" data-write-review>${icon("pen-line")} Write a review</button>
       </div>
+      ${openRoles.length ? `
+        <div class="cg-org-detail-roles">
+          <h3>${icon("briefcase")} Open roles <span>(${org.open})</span></h3>
+          ${openRoles.map(role => role.real ? `
+            <article>
+              <div><h4>${role.job.title}</h4><p>${role.job.location} - ${role.job.salary}</p></div>
+              <button type="button" class="btn btn-primary" data-org-role-details="${role.job.id}">${icon("arrow-up-right")} View role</button>
+            </article>
+          ` : `
+            <article>
+              <div><h4>${role.title}</h4><p>${org.location} - ${org.salary}</p></div>
+              <a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(`Tell me more about the ${role.title} role at ${org.name}`)}#messages">${icon("sparkles")} Ask Vera</a>
+            </article>
+          `).join("")}
+          ${org.open > openRoles.length ? `<p class="cg-org-detail-roles-more">+${org.open - openRoles.length} more roles - ask Vera for the full list.</p>` : ""}
+        </div>
+      ` : ""}
       ${scoreRows.length ? `
         <div class="cg-org-detail-scores">
           ${scoreRows.map(([label, value]) => `<div><span>${label}</span><i><em style="width:${Math.round((Number(value) / 5) * 100)}%"></em></i><b>${Number(value).toFixed(1)}</b></div>`).join("")}
@@ -5111,6 +5153,10 @@ function openOrgDetailModal(orgId) {
       openOrgDetailModal(org.id);
     });
   });
+  qsa("[data-org-role-details]", backdrop).forEach(btn => btn.addEventListener("click", () => {
+    backdrop.remove();
+    openApplicationDetailsModal(btn.dataset.orgRoleDetails);
+  }));
   createIcons();
 }
 
