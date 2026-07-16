@@ -11584,6 +11584,20 @@ html body[data-page="discover"] .cg-discover-v2 .cg-discover-search button[type=
   box-shadow: 0 16px 34px rgba(7, 56, 47, 0.18) !important;
 }
 
+html body[data-page="discover"] .cg-discover-v2 .cg-search-chip[aria-pressed="true"] {
+  color: #fffaf2 !important;
+  -webkit-text-fill-color: #fffaf2 !important;
+  background: #0b6d65 !important;
+  border-color: #0b6d65 !important;
+}
+
+html body[data-page="discover"] .cg-discover-v2 .cg-discover-network-note a {
+  color: #0b6d65 !important;
+  -webkit-text-fill-color: #0b6d65 !important;
+  font-weight: 800 !important;
+  text-decoration: underline !important;
+}
+
 html body[data-page="discover"] .cg-discover-v2 .cg-discover-network-note {
   margin: -8px 0 0 !important;
   color: #53635d !important;

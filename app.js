@@ -304,7 +304,7 @@ const DATA = {
   missions: [
     { id: "m1", title: "Compare 3 organizations", body: "Review culture, pay, growth, and watchouts before applying.", xp: 120, progress: 66, href: "companies.html" },
     { id: "m2", title: "Upgrade one case study", body: "Add trade-offs, metric impact, and stakeholder decisions.", xp: 180, progress: 35, href: "grow.html" },
-    { id: "m3", title: "Practice interview story", body: "Record one STAR answer for ambiguity and feedback.", xp: 90, progress: 20, href: "vera.html#interview" }
+    { id: "m3", title: "Practice interview story", body: "Record one STAR answer for ambiguity and feedback.", xp: 90, progress: 20, href: "grow.html#interview-coach" }
   ],
   marketRoles: [
     { role: "Product Designer", current: 92000, fair: 104000, potential: 138000, demand: "High", trend: "+18%", skills: ["Design Systems", "Research", "Product Strategy"] },
@@ -438,7 +438,6 @@ function readState() {
     reviews: DATA.reviews,
     chat: [],
     notifications: [],
-    interviewCoach: { role: "", type: "Behavioral", focus: "Leadership", started: false, answer: "", feedback: null, sessions: [] },
     autopilotRules: { salary: "", location: "", threshold: 75, scanOnly: true, exclude: "" },
     autopilotLog: [],
     posts: DATA.communityPosts
@@ -576,16 +575,6 @@ function normalizeState(state) {
     comparedJobs: Array.isArray(state.comparedJobs) ? state.comparedJobs : [],
     savedOrgs: Array.isArray(state.savedOrgs) ? state.savedOrgs : [],
     marketPlan: state.marketPlan && typeof state.marketPlan === "object" ? state.marketPlan : null,
-    interviewCoach: {
-      role: "",
-      type: "Behavioral",
-      focus: "Leadership",
-      started: false,
-      answer: "",
-      feedback: null,
-      sessions: [],
-      ...(state.interviewCoach || {})
-    },
     posts: Array.isArray(state.posts) ? state.posts : DATA.communityPosts
   });
 }
@@ -1032,7 +1021,7 @@ function personalizedMissions(profile) {
     return [
       { id: "pm1", title: "Promotion readiness", body: "Document one leadership outcome, not only task execution.", xp: 120, progress: 45, href: "grow.html" },
       { id: "pm2", title: "Salary benchmark", body: "Check market value for your next-level role.", xp: 70, progress: 35, href: "market.html" },
-      { id: "pm3", title: "Leadership interview", body: "Practice a conflict, coaching, and stakeholder story.", xp: 90, progress: 20, href: "vera.html#interview" }
+      { id: "pm3", title: "Leadership interview", body: "Practice a conflict, coaching, and stakeholder story.", xp: 90, progress: 20, href: "grow.html#interview-coach" }
     ];
   }
   if (profile.careerStage === "Preparing for retirement or advisory work") {
@@ -3730,36 +3719,57 @@ function renderJobsPage() {
         <header class="cg-discover-hero">
           <div class="cg-discover-kicker"><span>${icon("sparkles")} Discover</span><small>${icon("map-pin")} Malaysia - Kuala Lumpur - Tuned for your Product Management journey</small></div>
           <h1>Discover</h1>
-          <form class="cg-discover-search" action="posts.html#messages">
+          <form class="cg-discover-search" data-discover-search-form>
             ${icon("search")}
-            <input name="topic" aria-label="Ask Vera about Discover" placeholder="Search companies, jobs, universities, industries, salaries...">
-            <button type="button" class="cg-search-chip">Opportunities only</button>
-            <button type="button">${icon("sliders-horizontal")} Filters</button>
+            <input name="topic" data-discover-search-input aria-label="Ask Vera about Discover" placeholder="Search companies, jobs, universities, industries, salaries...">
+            <button type="button" class="cg-search-chip" data-discover-opportunities-toggle aria-pressed="false">Opportunities only</button>
+            <button type="button" data-discover-filters>${icon("sliders-horizontal")} Filters</button>
             <button type="submit">${icon("sparkles")} Ask Vera</button>
           </form>
-          <p class="cg-discover-network-note">Looking for people, mentors or recruiters? Head to Network.</p>
+          <p class="cg-discover-network-note">Looking for people, mentors or recruiters? <a href="posts.html#messages">Head to Network</a>.</p>
         </header>
 
         <section class="cg-discover-question-grid" aria-label="Start with a question">
           <div class="cg-section-kicker">Start with a question</div>
-          ${[
-            ["What roles fit me?", "14 matched", "compass"],
-            ["Which companies match my style?", "22 curated", "building-2"],
-            ["Where could my career go next?", "6 directions", "rocket"],
-            ["Which industries are growing in Malaysia?", "4 hot right now", "trending-up"],
-            ["What could accelerate my goals?", "9 programs", "graduation-cap"],
-            ["Who inspires this path?", "12 mentors", "users-round"]
-          ].map(([title, sub, ic]) => `
-            <a class="cg-question-card" href="#${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}">
-              <span>${icon(ic)}</span>
-              <strong>${title}</strong>
-              <small>${sub}</small>
-              <i>${icon("arrow-up-right")}</i>
-            </a>
-          `).join("")}
+          <a class="cg-question-card" href="#vera-top-pick">
+            <span>${icon("compass")}</span>
+            <strong>What roles fit me?</strong>
+            <small>14 matched</small>
+            <i>${icon("arrow-up-right")}</i>
+          </a>
+          <button type="button" class="cg-question-card" data-org-browse-open="companies">
+            <span>${icon("building-2")}</span>
+            <strong>Which companies match my style?</strong>
+            <small>22 curated</small>
+            <i>${icon("arrow-up-right")}</i>
+          </button>
+          <button type="button" class="cg-question-card" data-discover-browse="paths">
+            <span>${icon("rocket")}</span>
+            <strong>Where could my career go next?</strong>
+            <small>6 directions</small>
+            <i>${icon("arrow-up-right")}</i>
+          </button>
+          <a class="cg-question-card" href="#market-pulse">
+            <span>${icon("trending-up")}</span>
+            <strong>Which industries are growing in Malaysia?</strong>
+            <small>4 hot right now</small>
+            <i>${icon("arrow-up-right")}</i>
+          </a>
+          <button type="button" class="cg-question-card" data-discover-browse="programs">
+            <span>${icon("graduation-cap")}</span>
+            <strong>What could accelerate my goals?</strong>
+            <small>9 programs</small>
+            <i>${icon("arrow-up-right")}</i>
+          </button>
+          <button type="button" class="cg-question-card" data-discover-browse="mentors">
+            <span>${icon("users-round")}</span>
+            <strong>Who inspires this path?</strong>
+            <small>12 mentors</small>
+            <i>${icon("arrow-up-right")}</i>
+          </button>
         </section>
 
-        <section class="cg-discover-feature">
+        <section class="cg-discover-feature" id="vera-top-pick">
           <div class="cg-section-kicker">Vera's top pick this week</div>
           <h2>Vera's Top Pick</h2>
           <p class="cg-h2-sub">The one role Vera rates highest against your skills, roadmap, and salary target this week.</p>
@@ -3792,7 +3802,7 @@ function renderJobsPage() {
           </article>
         </section>
 
-        <section class="cg-discover-section">
+        <section class="cg-discover-section" id="market-pulse">
           <div class="cg-section-kicker">Market pulse - Malaysia</div>
           <h2>Market Pulse in Malaysia</h2>
           <p class="cg-h2-sub">What's hiring, paying, and growing around you right now - refreshed from live postings.</p>
@@ -3931,6 +3941,26 @@ function renderJobsPage() {
       if (kind === "mentors") openDiscoverListModal("All mentors", mentors.map(discoverMentorCard).join(""));
     }));
     qsa("[data-uni-requirements]", root).forEach(button => button.addEventListener("click", () => openUniversityRequirementsModal(button.dataset.uniRequirements)));
+    qs("[data-discover-opportunities-toggle]", root)?.addEventListener("click", event => {
+      const btn = event.currentTarget;
+      const pressed = btn.getAttribute("aria-pressed") === "true";
+      btn.setAttribute("aria-pressed", String(!pressed));
+      btn.classList.toggle("active", !pressed);
+    });
+    qs("[data-discover-filters]", root)?.addEventListener("click", () => {
+      openDiscoverFiltersModal(summary => {
+        const query = (qs("[data-discover-search-input]", root)?.value || "").trim();
+        const topic = [query, summary].filter(Boolean).join(" - ") || "matching roles";
+        location.href = `posts.html?topic=${encodeURIComponent(topic)}#messages`;
+      });
+    });
+    qs("[data-discover-search-form]", root)?.addEventListener("submit", event => {
+      event.preventDefault();
+      const query = (qs("[data-discover-search-input]", root)?.value || "").trim();
+      const oppOnly = qs("[data-discover-opportunities-toggle]", root)?.getAttribute("aria-pressed") === "true";
+      const topic = [query || "matching opportunities", oppOnly ? "(jobs and roles only)" : ""].filter(Boolean).join(" ");
+      location.href = `posts.html?topic=${encodeURIComponent(topic)}#messages`;
+    });
     return;
   }
   if (state.session.loggedIn && document.body.dataset.page === "workspace-jobs") {
@@ -4746,6 +4776,82 @@ function openDiscoverListModal(title, cardsHtml) {
     if (event.target === backdrop) close();
   });
   document.addEventListener("keydown", onEsc);
+  createIcons();
+}
+
+function openDiscoverFiltersModal(onApply) {
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <form class="modal card" data-discover-filters-form>
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Refine your search</div>
+          <h2>Filters</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="form-grid">
+        <label>Role type
+          <select name="roleType">
+            <option value="">Any role type</option>
+            <option>Full-time</option>
+            <option>Internship</option>
+            <option>Contract</option>
+          </select>
+        </label>
+        <label>Work mode
+          <select name="mode">
+            <option value="">Any work mode</option>
+            <option>Remote</option>
+            <option>Hybrid</option>
+            <option>Onsite</option>
+          </select>
+        </label>
+        <label>Minimum salary (RM / month)
+          <select name="salary">
+            <option value="">No minimum</option>
+            <option>4,000+</option>
+            <option>6,000+</option>
+            <option>10,000+</option>
+          </select>
+        </label>
+        <label>Location
+          <select name="location">
+            <option value="">Anywhere in Malaysia</option>
+            <option>Kuala Lumpur</option>
+            <option>Petaling Jaya</option>
+            <option>Selangor</option>
+          </select>
+        </label>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-primary" type="submit">${icon("sparkles")} Apply filters</button>
+        <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+      </div>
+    </form>
+  `;
+  document.body.appendChild(backdrop);
+  function close() {
+    backdrop.remove();
+    document.removeEventListener("keydown", onEsc);
+  }
+  function onEsc(event) {
+    if (event.key === "Escape") close();
+  }
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", close));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) close();
+  });
+  document.addEventListener("keydown", onEsc);
+  qs("[data-discover-filters-form]", backdrop).addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const salary = form.get("salary");
+    const parts = [form.get("roleType"), form.get("mode"), form.get("location"), salary ? `RM ${salary}/month` : ""].filter(Boolean);
+    close();
+    if (typeof onApply === "function") onApply(parts.join(", "));
+  });
   createIcons();
 }
 
@@ -5756,103 +5862,19 @@ function renderVera() {
     return;
   }
   qs(".page-hero")?.classList.add("is-hidden");
-  let activeTab = location.hash?.replace("#", "") || "skills";
-  if (activeTab === "chat") activeTab = "skills";
 
-  function tabContent() {
-    if (activeTab === "skills") {
-      return `
-        <section class="glass-card">
-          <div class="section-head"><div><div class="section-kicker">Skills growth</div><h2 class="section-title mini">Roadmap Vera recommends now.</h2></div><span class="pill cyan">Demand-led</span></div>
-          <div class="timeline">
-            ${[
-              ["Product strategy", "Write one decision memo from your strongest project.", 45],
-              ["SQL basics", "Complete dashboard query practice for product metrics.", 30],
-              ["Metrics storytelling", "Add before/after impact to your portfolio case study.", 60]
-            ].map(([title, body, progress]) => `<article class="timeline-item"><h3>${title}</h3><p class="muted">${body}</p>${progressBar(progress)}</article>`).join("")}
-          </div>
-        </section>
-      `;
-    }
-    {
-      const coach = readState().interviewCoach || {};
-      const targetRole = coach.role || DATA.jobs.find(job => state.applications.includes(job.id))?.title || DATA.jobs[0]?.title || getTargetLabel(state.profile);
-      const typeOptions = ["Behavioral", "Case Study", "Portfolio Review", "Technical"];
-      const focusOptions = ["Leadership", "Design Process", "Stakeholder Management", "Metrics", "Career Switch"];
-      const questionBank = {
-        "Behavioral|Leadership": `Tell me about a time you had to lead without authority while moving a ${targetRole} project forward.`,
-        "Behavioral|Stakeholder Management": `Describe a moment when stakeholders disagreed with your recommendation. How did you align them and what changed?`,
-        "Case Study|Design Process": `Walk me through how you would diagnose and improve a confusing onboarding journey for a product with falling activation.`,
-        "Case Study|Metrics": `A feature shipped but engagement dropped after launch. How would you investigate the problem and decide the next move?`,
-        "Portfolio Review|Design Process": `Choose one project from your portfolio and explain the constraints, trade-offs, impact, and what you would improve now.`,
-        "Technical|Metrics": `How would you define success metrics for a product experiment, and how would you avoid misleading conclusions?`,
-        "Behavioral|Career Switch": `Explain your career switch story in a way that makes your transferable skills feel like an advantage, not a risk.`
-      };
-      const question = questionBank[`${coach.type}|${coach.focus}`] || `For a ${targetRole} interview, tell me about a project where you handled ambiguity, made a trade-off, and created measurable impact.`;
-      const feedback = coach.feedback;
-      const avgScore = coach.sessions?.length
-        ? Math.round(coach.sessions.reduce((sum, item) => sum + item.score, 0) / coach.sessions.length)
-        : 0;
-      return `
-        <section class="glass-card interview-coach">
-          <div class="section-head">
-            <div><div class="section-kicker">Interview coach</div><h2 class="section-title mini">Practice with structured feedback.</h2><p class="section-sub">Vera scores your answer for structure, specificity, relevance, and confidence signals.</p></div>
-            <span class="pill green">${coach.started ? "Live session" : "Setup"}</span>
-          </div>
-          <div class="interview-control-grid">
-            <div class="tool-card interview-setup-card">
-              <h3>Practice setup</h3>
-              <label>Preparing for <input data-interview-role value="${targetRole}" placeholder="Role or company interview"></label>
-              <div class="chat-presets-label">Interview type</div>
-              <div class="pill-row">${typeOptions.map(type => `<button class="pill ${coach.type === type ? "cyan active" : ""}" type="button" data-interview-type="${type}">${type}</button>`).join("")}</div>
-              <div class="chat-presets-label">Focus area</div>
-              <div class="pill-row">${focusOptions.map(focus => `<button class="pill ${coach.focus === focus ? "gold active" : ""}" type="button" data-interview-focus="${focus}">${focus}</button>`).join("")}</div>
-              <div class="hero-actions compact-actions">
-                <button class="btn btn-primary" type="button" data-interview-start>${icon("play")} ${coach.started ? "Regenerate question" : "Start practice"}</button>
-                <button class="btn btn-ghost" type="button" data-interview-reset>${icon("rotate-ccw")} Reset</button>
-              </div>
-            </div>
-            <div class="tool-card interview-stats-card">
-              <h3>Session tracker</h3>
-              <div class="score-grid compact">
-                <div class="score-tile"><span>Sessions</span><strong>${coach.sessions?.length || 0}</strong></div>
-                <div class="score-tile"><span>Avg score</span><strong>${avgScore || "--"}${avgScore ? "%" : ""}</strong></div>
-                <div class="score-tile"><span>Type</span><strong>${coach.type}</strong></div>
-                <div class="score-tile"><span>Focus</span><strong>${coach.focus}</strong></div>
-              </div>
-              <div class="interview-history">${(coach.sessions || []).slice(-5).map((item, index) => `<span style="height:${Math.max(18, item.score)}%"><em>${item.score}</em></span>`).join("") || `<p class="muted small">No scored answers yet. Start one practice round.</p>`}</div>
-            </div>
-          </div>
-          <div class="interview-practice-grid">
-            <div class="tool-card interview-question-card">
-              <div class="list-card-top"><h3>Question</h3><span class="pill cyan">${coach.type}</span></div>
-              <p>${coach.started ? question : "Choose a setup, then start practice to generate a role-specific question."}</p>
-              ${pills([targetRole, coach.focus, "Vera feedback"], "cyan")}
-            </div>
-            <form class="tool-card interview-answer-card" data-interview-form>
-              <h3>Your answer</h3>
-              <textarea class="input-area" name="answer" placeholder="Type your STAR answer with context, action, trade-off, and result..." ${coach.started ? "" : "disabled"}>${coach.answer || ""}</textarea>
-              <div class="hero-actions compact-actions">
-                <button class="btn btn-primary" type="submit" ${coach.started ? "" : "disabled"}>${icon("scan-text")} Get feedback</button>
-                <button class="btn btn-ghost" type="button" data-interview-fill ${coach.started ? "" : "disabled"}>${icon("wand-sparkles")} Use sample structure</button>
-              </div>
-            </form>
-          </div>
-          <div class="detail-section" data-interview-feedback>
-            ${feedback ? `
-              <div class="score-grid">
-                ${feedback.dimensions.map(item => `<div class="score-tile"><span>${item.label}</span><strong>${item.value}%</strong></div>`).join("")}
-              </div>
-              <div class="interview-feedback-grid">
-                <div class="vera-box detail-section"><h3>Vera feedback</h3><p class="muted">${feedback.summary}</p><ul class="interview-note-list">${feedback.notes.map(note => `<li>${note}</li>`).join("")}</ul></div>
-                <div class="vera-box detail-section"><h3>Model structure</h3><p class="muted">${feedback.model}</p></div>
-              </div>
-            ` : ""}
-          </div>
-        </section>
-      `;
-    }
-  }
+  const skillsContent = `
+    <section class="glass-card">
+      <div class="section-head"><div><div class="section-kicker">Skills growth</div><h2 class="section-title mini">Roadmap Vera recommends now.</h2></div><span class="pill cyan">Demand-led</span></div>
+      <div class="timeline">
+        ${[
+          ["Product strategy", "Write one decision memo from your strongest project.", 45],
+          ["SQL basics", "Complete dashboard query practice for product metrics.", 30],
+          ["Metrics storytelling", "Add before/after impact to your portfolio case study.", 60]
+        ].map(([title, body, progress]) => `<article class="timeline-item"><h3>${title}</h3><p class="muted">${body}</p>${progressBar(progress)}</article>`).join("")}
+      </div>
+    </section>
+  `;
 
   root.className = "container os-layout";
   const veraContent = `
@@ -5861,111 +5883,16 @@ function renderVera() {
       <div class="eyebrow"><span class="spark">*</span> Coach Vera</div>
       <h2 class="section-title" style="font-size:36px">Your AI career mentor.</h2>
       <p class="section-sub">Vera is designed like a teacher and life coach: proactive, warm, specific, and connected to the whole website.</p>
-      <div class="pill-row">
-        ${[
-          ["skills", "Skills"],
-          ["interview", "Interview"]
-        ].map(([key, label]) => `<button class="pill ${activeTab === key ? "cyan active" : ""}" data-vera-tab="${key}">${label}</button>`).join("")}
-      </div>
       <div class="detail-section vera-box">
         <h3>Vera knows</h3>
         <p class="muted">${state.profile.careerStage || "Your career stage"} - ${getTargetLabel(state.profile)} - ${state.applications.length} active application${state.applications.length === 1 ? "" : "s"}.</p>
         <div class="pill-row">${["Plan my week", "Compare companies", "Fix my resume", "Prep interview", "Explain application status"].map(x => `<a class="pill gold" href="posts.html?topic=${encodeURIComponent(x)}#messages">${x}</a>`).join("")}</div>
       </div>
     </aside>
-    <div data-vera-panel>${tabContent()}</div>
+    <div data-vera-panel>${skillsContent}</div>
     </section>
   `;
   root.innerHTML = appShell("vera", veraContent, { title: "Vera", subtitle: "Ask for coaching while keeping your dashboard, jobs, and profile one click away." });
-  attachVeraEvents();
-
-  function attachVeraEvents() {
-    qsa("[data-vera-tab]").forEach(btn => btn.addEventListener("click", () => {
-      activeTab = btn.dataset.veraTab;
-      location.hash = activeTab;
-      renderVera();
-    }));
-    qs("[data-interview-role]")?.addEventListener("change", event => {
-      const next = readState();
-      next.interviewCoach = { ...(next.interviewCoach || {}), role: event.currentTarget.value.trim() };
-      writeState(next);
-    });
-    qsa("[data-interview-type]").forEach(btn => btn.addEventListener("click", () => {
-      const next = readState();
-      next.interviewCoach = { ...(next.interviewCoach || {}), type: btn.dataset.interviewType, started: false, feedback: null };
-      writeState(next);
-      renderVera();
-    }));
-    qsa("[data-interview-focus]").forEach(btn => btn.addEventListener("click", () => {
-      const next = readState();
-      next.interviewCoach = { ...(next.interviewCoach || {}), focus: btn.dataset.interviewFocus, started: false, feedback: null };
-      writeState(next);
-      renderVera();
-    }));
-    qs("[data-interview-start]")?.addEventListener("click", () => {
-      const next = readState();
-      const role = qs("[data-interview-role]")?.value.trim();
-      next.interviewCoach = { ...(next.interviewCoach || {}), role, started: true, answer: "", feedback: null };
-      writeState(next);
-      showToast("Interview question generated.");
-      renderVera();
-    });
-    qs("[data-interview-reset]")?.addEventListener("click", () => {
-      const next = readState();
-      next.interviewCoach = { role: "", type: "Behavioral", focus: "Leadership", started: false, answer: "", feedback: null, sessions: next.interviewCoach?.sessions || [] };
-      writeState(next);
-      showToast("Interview setup reset.");
-      renderVera();
-    });
-    qs("[data-interview-fill]")?.addEventListener("click", () => {
-      const input = qs("[data-interview-form] textarea[name='answer']");
-      if (!input) return;
-      input.value = "Situation: The project had unclear goals and competing stakeholder priorities. Task: I needed to align the team around one measurable outcome. Action: I mapped the user journey, compared two solution paths, explained the trade-off, and tested the preferred direction. Result: We improved the target metric and I documented what I would do differently next time.";
-      input.focus();
-    });
-    qs("[data-interview-form]")?.addEventListener("submit", event => {
-      event.preventDefault();
-      const answer = event.currentTarget.answer.value.trim();
-      if (!answer) return;
-      const hasMetric = /\d|%|rm|kpi|metric|increase|decrease|improve|reduced|growth/i.test(answer);
-      const hasTradeoff = /trade[- ]?off|instead|chose|because|priorit/i.test(answer);
-      const hasStructure = /situation|task|action|result|context|outcome/i.test(answer);
-      const base = answer.length > 180 ? 76 : answer.length > 90 ? 66 : 56;
-      const structure = Math.min(94, base + (hasStructure ? 12 : 0));
-      const specificity = Math.min(92, base + (hasMetric ? 14 : 2));
-      const relevance = Math.min(90, base + (hasTradeoff ? 12 : 4));
-      const confidence = Math.min(93, Math.round((structure + specificity + relevance) / 3) + 3);
-      const total = Math.round((structure + specificity + relevance + confidence) / 4);
-      const next = readState();
-      next.interviewCoach = {
-        ...(next.interviewCoach || {}),
-        answer,
-        feedback: {
-          score: total,
-          dimensions: [
-            { label: "Structure", value: structure },
-            { label: "Specificity", value: specificity },
-            { label: "Role relevance", value: relevance },
-            { label: "Confidence", value: confidence }
-          ],
-          summary: total >= 82
-            ? "Strong answer. Keep the structure, then make the final result even more concrete."
-            : "Good start. Add clearer STAR structure, one measurable result, and one trade-off so the interviewer can see your judgment.",
-          notes: [
-            hasStructure ? "Your answer has a usable structure." : "Add a clearer Situation, Action, Result sequence.",
-            hasMetric ? "You included measurable evidence." : "Add one number, signal, or before/after outcome.",
-            hasTradeoff ? "The trade-off gives your answer stronger seniority." : "Name one option you rejected and why."
-          ],
-          model: "A stronger version: I started with the business problem, named the constraint, compared two paths, chose one based on user impact and delivery risk, measured the result, and closed with what I learned."
-        },
-        sessions: [...(next.interviewCoach?.sessions || []), { score: total, date: nowStamp() }].slice(-8)
-      };
-      writeState(next);
-      showToast(`Interview feedback ready: ${total}%.`);
-      renderVera();
-    });
-    createIcons();
-  }
   createIcons();
 }
 
@@ -6765,11 +6692,11 @@ function renderGrow() {
               ["Portfolio case rehearsed out loud", false]
             ].map(([item, done]) => `<p class="${done ? "done" : ""}">${icon(done ? "check-circle-2" : "circle")} ${item}</p>`).join("")}
           </div>
-          <footer><span>Finish the last two to reach <strong>81%</strong> ready.</span><a class="btn btn-ghost" href="vera.html#interview">Continue preparation ${icon("arrow-right")}</a></footer>
+          <footer><span>Finish the last two to reach <strong>81%</strong> ready.</span><a class="btn btn-ghost" href="#interview-coach">Continue preparation ${icon("arrow-right")}</a></footer>
         </article>
       </section>
 
-      <section class="cg-interview-coach">
+      <section class="cg-interview-coach" id="interview-coach">
         <div class="cg-grow-section-head">
           <div><h2>Interview Coach-Powered by Vera</h2><p class="cg-h2-sub">Practice drills, readiness scores, and prep plans tuned to each company's interview style.</p></div>
           <span class="cg-soft-pill">${icon("shield-check")} Adaptive to each company</span>
@@ -6783,7 +6710,7 @@ function renderGrow() {
               <div><span>Difficulty</span><strong>High</strong></div>
               <div><span>Your confidence</span><strong>Medium</strong></div>
             </div>
-            <footer><p>Closing SQL + metric gaps this week is expected to lift readiness to 81% by interview day.</p><a class="btn btn-primary" href="vera.html#interview">Start today's plan ${icon("arrow-right")}</a></footer>
+            <footer><p>Closing SQL + metric gaps this week is expected to lift readiness to 81% by interview day.</p><a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("today's SQL and metrics prep plan for Grab PM")}#messages">Start today's plan ${icon("arrow-right")}</a></footer>
           </article>
           <article class="cg-vera-focus">
             <small>${icon("sparkles")} Vera's focus for Grab</small>
@@ -6800,7 +6727,7 @@ function renderGrow() {
             <header><h3>${icon("play")} Today's interview practice</h3><span>~90 min total</span></header>
             <div class="cg-practice-cards">
               ${practiceItems.map(([kind, time, title, focus, lift]) => `
-                <div class="cg-practice-card"><header><span>${kind}</span><small>${icon("clock")} ${time}</small></header><h4>${title}</h4><p>${focus}<b>${lift}</b></p><a class="btn btn-primary" href="vera.html#interview">${icon("play")} Start practice</a></div>
+                <div class="cg-practice-card"><header><span>${kind}</span><small>${icon("clock")} ${time}</small></header><h4>${title}</h4><p>${focus}<b>${lift}</b></p><a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent(`practice: ${title}`)}#messages">${icon("play")} Start practice</a></div>
               `).join("")}
             </div>
           </article>
@@ -6890,6 +6817,9 @@ function renderGrow() {
   });
   createIcons();
   wireVeraWidget(root);
+  if (location.hash === "#interview-coach") {
+    window.setTimeout(() => qs("#interview-coach", root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+  }
   return;
   root.innerHTML = appShell("intelligence", `
     <section class="glass-card dashboard-hero profile-intel-hero">
@@ -8701,7 +8631,7 @@ function renderMarket() {
         { id: "market-proof", title: `Prove ${current.skills[0]}`, body: "Add one project story with context, trade-off, metric, and result.", href: "grow.html", done: false },
         { id: "market-benchmark", title: "Benchmark 5 roles", body: "Compare salary range, demand, competition, and required proof.", href: "discover.html", done: false },
         { id: "market-signal", title: "Add one market signal", body: `Build evidence around ${current.skills[1] || "a high-demand skill"} using a concrete artifact.`, href: "vera.html#skills", done: false },
-        { id: "market-story", title: "Practice value story", body: "Prepare a 60-second answer explaining why your market value has increased.", href: "vera.html#interview", done: false }
+        { id: "market-story", title: "Practice value story", body: "Prepare a 60-second answer explaining why your market value has increased.", href: "grow.html#interview-coach", done: false }
       ]
     };
     next.chat = [
