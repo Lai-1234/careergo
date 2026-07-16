@@ -373,10 +373,10 @@ const DASHBOARD_TOUR_STEPS = [
     mission: "Start here whenever you feel unsure what to do next."
   },
   {
-    target: "[data-tour-target='sidebar']",
-    title: "Compact workspace rail",
-    body: "The left rail stays icon-only to keep your workspace clean. Hover or tab into it to reveal labels for Career Intelligence, jobs, applications, Vera, research, saved items, and market signals.",
-    mission: "Use the top search for companies, universities, roles, and saved research."
+    target: "[data-tour-target='workspace-nav']",
+    title: "Your workspace tabs",
+    body: "Move between your daily brief, job discovery, coaching, market value, and pipeline tracking from these tabs. The search bar next to them jumps straight to Vera.",
+    mission: "Try Cmd/Ctrl + K to ask Vera something right now."
   },
   {
     target: "[data-tour-target='metrics']",
@@ -391,10 +391,10 @@ const DASHBOARD_TOUR_STEPS = [
     mission: "Ask Vera for a 7-day plan after this tour."
   },
   {
-    target: "[data-tour-target='intelligence']",
-    title: "Career Intelligence Profile",
-    body: "This section explains your resume readiness, ATS signals, skill competitiveness, and market fit using the information you have provided.",
-    mission: "Update your profile whenever your situation changes."
+    target: "[data-tour-target='applications']",
+    title: "Application journey",
+    body: "Track saved jobs, applications, follow-ups, and interview prep so your search feels organized instead of scattered.",
+    mission: "Save or review one role that matches your roadmap."
   },
   {
     target: "[data-tour-target='missions']",
@@ -403,10 +403,10 @@ const DASHBOARD_TOUR_STEPS = [
     mission: "Finish one beginner mission today."
   },
   {
-    target: "[data-tour-target='applications']",
-    title: "Application journey",
-    body: "Track saved jobs, applications, follow-ups, and interview prep so your search feels organized instead of scattered.",
-    mission: "Save or review one role that matches your roadmap."
+    target: "[data-tour-target='growth']",
+    title: "Long-term growth",
+    body: "These are the bigger bets that compound over the next 6-18 months: career simulations, fair-pay benchmarks, your roadmap, and company research.",
+    mission: "Open one long-term card and see where it leads."
   }
 ];
 
@@ -1411,7 +1411,7 @@ function workspaceTopNav() {
       <a class="brand cg-top-brand" href="dashboard.html" aria-label="CareerGo dashboard">
         <img class="cg-navbar-logo" src="assets/careergo-logo-script.png" alt="CareerGo">
       </a>
-      <nav class="nav-links cg-workspace-tabs" aria-label="CareerGo workspace">
+      <nav class="nav-links cg-workspace-tabs" aria-label="CareerGo workspace" data-tour-target="workspace-nav">
         ${workspaceLinks.map(([key, label, href]) => `<a data-nav="${key}" class="${isWorkspaceTabActive(key) ? "active" : ""}" href="${href}">${label}</a>`).join("")}
       </nav>
       <form class="workspace-search cg-vera-search" role="search" data-workspace-search data-tour-target="workspace-search">
@@ -5464,8 +5464,8 @@ function renderDashboard() {
     ["Company Research", `${savedOrgs.length || 12} new insights on companies you follow`, "building-2", "companies.html"]
   ];
   root.innerHTML = appShell("dashboard", `
-    <section class="cg-dashboard" data-tour-target="dashboard-hero">
-      <header class="cg-dash-hero">
+    <section class="cg-dashboard">
+      <header class="cg-dash-hero" data-tour-target="dashboard-hero">
         <div>
           <div class="cg-overline">${icon("calendar-days")} Today - Week 7 of your ${target} transition</div>
           <h1>Good morning, ${getFirstName(state)}.</h1>
@@ -5637,7 +5637,7 @@ function renderDashboard() {
         </div>
       </section>
 
-      <section class="cg-long-arc" data-tour-target="intelligence">
+      <section class="cg-long-arc" data-tour-target="growth">
         <div>
           <span class="cg-overline">For the long arc</span>
           <h2>Long-term growth</h2>
