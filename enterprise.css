@@ -11138,18 +11138,16 @@ html body[data-page="home"] .home-salary {
 }
 
 html body[data-page="edit-career-data"] {
-  background:
-    radial-gradient(circle at 50% 0, rgba(202, 220, 207, 0.36), transparent 28rem),
-    linear-gradient(180deg, #f8f4eb 0%, #f5f0e6 100%) !important;
-  color: #0b3b33 !important;
+  background: #f7f3ea !important;
+  color: #1b2e28 !important;
 }
 
 html body[data-page="edit-career-data"] .container.os-layout,
 html body[data-page="edit-career-data"] main>.container {
-  width: min(1200px, calc(100% - 48px)) !important;
-  max-width: 1200px !important;
+  width: min(1240px, calc(100% - 48px)) !important;
+  max-width: 1240px !important;
   margin: 0 auto !important;
-  padding: 40px 0 96px !important;
+  padding: 40px 0 !important;
 }
 
 html body[data-page="edit-career-data"] .os-main {
@@ -11158,15 +11156,15 @@ html body[data-page="edit-career-data"] .os-main {
 
 html body[data-page="edit-career-data"] .cg-edit-career {
   display: grid !important;
-  gap: 30px !important;
+  gap: 32px !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-hero {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
-  gap: 34px !important;
+  gap: 24px !important;
   align-items: end !important;
-  padding: 34px 0 20px !important;
+  padding: 0 !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-hero h1 {
@@ -11184,11 +11182,11 @@ html body[data-page="edit-career-data"] .cg-edit-hero h1 {
 html body[data-page="edit-career-data"] .cg-edit-hero p {
   max-width: 620px !important;
   margin: 0 !important;
-  color: #53655f !important;
-  -webkit-text-fill-color: #53655f !important;
-  font-size: 15px !important;
-  font-weight: 500 !important;
-  line-height: 1.55 !important;
+  color: #5b6a66 !important;
+  -webkit-text-fill-color: #5b6a66 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-hero-meta,
@@ -11200,27 +11198,27 @@ html body[data-page="edit-career-data"] .cg-edit-hero-actions {
 }
 
 html body[data-page="edit-career-data"] .cg-edit-hero-meta {
-  margin-top: 24px !important;
+  margin-top: 20px !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-hero-meta span {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important;
-  min-height: 34px !important;
-  padding: 0 13px !important;
-  border: 1px solid rgba(12, 64, 55, 0.08) !important;
+  gap: 6px !important;
+  min-height: 30px !important;
+  padding: 0 12px !important;
+  border: 1px solid #e4dfd3 !important;
   border-radius: 999px !important;
-  background: rgba(223, 242, 238, 0.84) !important;
-  color: #214a42 !important;
-  -webkit-text-fill-color: #214a42 !important;
-  font-size: 13px !important;
-  font-weight: 850 !important;
+  background: #c8dddf !important;
+  color: #1f5560 !important;
+  -webkit-text-fill-color: #1f5560 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-form {
   display: grid !important;
-  grid-template-columns: 340px minmax(0, 1fr) !important;
+  grid-template-columns: 320px minmax(0, 1fr) !important;
   gap: 24px !important;
   align-items: start !important;
 }
@@ -11229,37 +11227,35 @@ html body[data-page="edit-career-data"] .cg-edit-summary {
   position: sticky !important;
   top: 104px !important;
   display: grid !important;
-  gap: 18px !important;
-  padding: 28px !important;
-  border: 1px solid rgba(12, 64, 55, 0.14) !important;
-  border-radius: 28px !important;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(238, 247, 243, 0.76)),
-    #fffaf3 !important;
-  box-shadow: 0 26px 58px rgba(12, 64, 55, 0.09) !important;
+  gap: 16px !important;
+  padding: 16px !important;
+  border: 1px solid #e4dfd3 !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-summary strong {
-  color: #0a3a32 !important;
-  -webkit-text-fill-color: #0a3a32 !important;
+  color: #1b2e28 !important;
+  -webkit-text-fill-color: #1b2e28 !important;
   font-family: var(--cg-shot-serif) !important;
-  font-size: 44px !important;
-  font-weight: 700 !important;
-  line-height: 1 !important;
+  font-size: 32px !important;
+  font-weight: 400 !important;
+  line-height: 1.05 !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-summary p,
 html body[data-page="edit-career-data"] .cg-edit-summary li {
-  color: #53655f !important;
-  -webkit-text-fill-color: #53655f !important;
-  font-size: 15px !important;
-  font-weight: 700 !important;
+  color: #5b6a66 !important;
+  -webkit-text-fill-color: #5b6a66 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
   line-height: 1.5 !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-summary ul {
   display: grid !important;
-  gap: 12px !important;
+  gap: 10px !important;
   margin: 0 !important;
   padding: 0 !important;
   list-style: none !important;
@@ -11268,81 +11264,86 @@ html body[data-page="edit-career-data"] .cg-edit-summary ul {
 html body[data-page="edit-career-data"] .cg-edit-summary li {
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
+  gap: 8px !important;
+  font-size: 13px !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-meter {
-  height: 9px !important;
+  height: 8px !important;
   overflow: hidden !important;
   border-radius: 999px !important;
-  background: rgba(15, 57, 50, 0.09) !important;
+  background: #eeeae0 !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-meter span {
   display: block !important;
   height: 100% !important;
   border-radius: inherit !important;
-  background: linear-gradient(90deg, #0b6f68, #a7d9d4) !important;
+  background: #1f5560 !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-stack {
   display: grid !important;
-  gap: 22px !important;
+  gap: 12px !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-card {
   display: grid !important;
-  gap: 24px !important;
-  padding: 28px !important;
-  border: 1px solid rgba(12, 64, 55, 0.12) !important;
-  border-radius: 26px !important;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.78) 55%, rgba(240, 249, 246, 0.76) 100%),
-    #fffaf4 !important;
-  box-shadow: 0 18px 44px rgba(22, 50, 42, 0.075) !important;
+  gap: 16px !important;
+  padding: 16px !important;
+  border: 1px solid #e4dfd3 !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-card header {
   display: flex !important;
-  gap: 16px !important;
+  gap: 12px !important;
   align-items: center !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-card header>span {
   display: inline-grid !important;
   place-items: center !important;
-  width: 42px !important;
-  height: 42px !important;
-  border: 1px solid rgba(12, 111, 101, 0.16) !important;
+  width: 40px !important;
+  height: 40px !important;
+  border: 0 !important;
   border-radius: 14px !important;
-  background: #ddf3ef !important;
-  color: #0d7a72 !important;
+  background: #c8dddf !important;
+  color: #1f5560 !important;
+}
+
+html body[data-page="edit-career-data"] .cg-edit-card header>span svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke-width: 2px !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-card h2 {
-  margin: 3px 0 0 !important;
-  color: #0a3a32 !important;
-  -webkit-text-fill-color: #0a3a32 !important;
+  margin: 2px 0 0 !important;
+  color: #1b2e28 !important;
+  -webkit-text-fill-color: #1b2e28 !important;
   font-family: var(--cg-shot-serif) !important;
   font-size: 22px !important;
-  font-weight: 700 !important;
-  line-height: 1.05 !important;
+  font-weight: 400 !important;
+  line-height: 1.1 !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-card small,
 html body[data-page="edit-career-data"] .cg-section-kicker {
-  color: #68776f !important;
-  -webkit-text-fill-color: #68776f !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  letter-spacing: 0.18em !important;
+  color: #5b6a66 !important;
+  -webkit-text-fill-color: #5b6a66 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.16em !important;
   text-transform: uppercase !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-grid {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 18px !important;
+  gap: 16px !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-wide {
@@ -11351,19 +11352,19 @@ html body[data-page="edit-career-data"] .cg-edit-wide {
 
 html body[data-page="edit-career-data"] label {
   display: grid !important;
-  gap: 8px !important;
-  color: #344a43 !important;
-  -webkit-text-fill-color: #344a43 !important;
+  gap: 6px !important;
+  color: #1b2e28 !important;
+  -webkit-text-fill-color: #1b2e28 !important;
   font-size: 13px !important;
-  font-weight: 850 !important;
+  font-weight: 500 !important;
   line-height: 1.3 !important;
 }
 
 html body[data-page="edit-career-data"] label small {
-  color: #7a8982 !important;
-  -webkit-text-fill-color: #7a8982 !important;
+  color: #5b6a66 !important;
+  -webkit-text-fill-color: #5b6a66 !important;
   font-size: 12px !important;
-  font-weight: 700 !important;
+  font-weight: 400 !important;
   letter-spacing: 0 !important;
   text-transform: none !important;
 }
@@ -11383,55 +11384,45 @@ html body[data-page="edit-career-data"] :is(input, select, textarea) {
 }
 
 html body[data-page="edit-career-data"] textarea {
-  min-height: 104px !important;
-  padding: 14px 16px !important;
+  min-height: 96px !important;
+  padding: 12px 16px !important;
   resize: vertical !important;
 }
 
 html body[data-page="edit-career-data"] :is(input, select, textarea):focus {
-  border-color: rgba(11, 111, 104, 0.45) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 0 0 4px rgba(166, 220, 214, 0.28) !important;
+  border-color: #1f5560 !important;
+  box-shadow: 0 0 0 2px #f7f3ea, 0 0 0 4px #1f5560 !important;
 }
 
 html body[data-page="edit-career-data"] .btn {
-  min-height: 46px !important;
-  border-radius: 999px !important;
-  padding: 0 22px !important;
-  font-size: 15px !important;
-  font-weight: 900 !important;
+  min-height: 40px !important;
+  border-radius: 8px !important;
+  padding: 0 20px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
   white-space: nowrap !important;
 }
 
-html body[data-page="edit-career-data"] .btn-primary {
-  color: #fffaf2 !important;
-  -webkit-text-fill-color: #fffaf2 !important;
-  background: #083d34 !important;
-  border-color: #083d34 !important;
-  box-shadow: 0 18px 38px rgba(7, 56, 47, 0.18) !important;
-}
-
 html body[data-page="edit-career-data"] .btn-ghost {
-  color: #263f38 !important;
-  -webkit-text-fill-color: #263f38 !important;
-  background: rgba(255, 255, 255, 0.72) !important;
-  border-color: rgba(12, 64, 55, 0.1) !important;
+  color: #1b2e28 !important;
+  -webkit-text-fill-color: #1b2e28 !important;
+  background: #ffffff !important;
+  border-color: #e4dfd3 !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-savebar {
   position: sticky !important;
-  bottom: 18px !important;
+  bottom: 16px !important;
   z-index: 4 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  gap: 18px !important;
-  padding: 18px 20px !important;
-  border: 1px solid rgba(12, 64, 55, 0.12) !important;
-  border-radius: 24px !important;
-  background: rgba(255, 253, 248, 0.9) !important;
-  box-shadow: 0 22px 52px rgba(18, 49, 42, 0.14) !important;
+  gap: 16px !important;
+  padding: 16px !important;
+  border: 1px solid #e4dfd3 !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 18px 40px -24px rgba(27, 46, 40, 0.35) !important;
   backdrop-filter: blur(18px) !important;
   -webkit-backdrop-filter: blur(18px) !important;
 }
@@ -11439,11 +11430,11 @@ html body[data-page="edit-career-data"] .cg-edit-savebar {
 html body[data-page="edit-career-data"] .cg-edit-savebar>span {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 10px !important;
-  color: #51645d !important;
-  -webkit-text-fill-color: #51645d !important;
+  gap: 8px !important;
+  color: #5b6a66 !important;
+  -webkit-text-fill-color: #5b6a66 !important;
   font-size: 14px !important;
-  font-weight: 800 !important;
+  font-weight: 400 !important;
 }
 
 html body[data-page="edit-career-data"] .cg-edit-savebar div {
@@ -11456,7 +11447,7 @@ html body[data-page="edit-career-data"] .cg-edit-savebar div {
   html body[data-page="edit-career-data"] .container.os-layout,
   html body[data-page="edit-career-data"] main>.container {
     width: min(100% - 32px, 1460px) !important;
-    padding-top: 30px !important;
+    padding-top: 32px !important;
   }
 
   html body[data-page="edit-career-data"] .cg-edit-hero,

@@ -9491,10 +9491,10 @@ function renderPosts() {
     ["hiring", "Hiring"]
   ];
   const trendItems = [
-    { id: "pm-transitions", title: "PM transitions", count: "1.2k posts today", keywords: ["pm", "product", "transition", "switch"] },
-    { id: "ai-product-roles", title: "AI product roles", count: "840 posts today", keywords: ["ai", "product", "role"] },
-    { id: "interview-teardowns", title: "Interview teardowns", count: "612 posts today", keywords: ["interview", "teardown", "framework"] },
-    { id: "fair-pay-reports", title: "Fair Pay reports", count: "298 posts today", keywords: ["pay", "salary", "worth", "market"] }
+    { id: "pm-transitions", title: "PM transitions", count: "1.2k posts today", icon: "trending-up", keywords: ["pm", "product", "transition", "switch"] },
+    { id: "ai-product-roles", title: "AI product roles", count: "840 posts today", icon: "sparkles", keywords: ["ai", "product", "role"] },
+    { id: "interview-teardowns", title: "Interview teardowns", count: "612 posts today", icon: "message-circle", keywords: ["interview", "teardown", "framework"] },
+    { id: "fair-pay-reports", title: "Fair Pay reports", count: "298 posts today", icon: "file-text", keywords: ["pay", "salary", "worth", "market"] }
   ];
   const activeTrend = activeTab.startsWith("trend-") ? activeTab.replace("trend-", "") : "";
   const followingList = Array.isArray(state.followingFeed) ? state.followingFeed : [];
@@ -9812,8 +9812,11 @@ function renderPosts() {
           ["trend-pm-transitions", "Trending", "flame"]
         ].map(([key, label, ic]) => `<a class="${activeTab === key || (key === "for-you" && !activeTrend && activeTab === "for-you") ? "active" : ""}" href="#${key}" data-feed-tab-link>${icon(ic)} <span>${label}</span></a>`).join("")}
         <article class="cg-feed-left-note">
-          <strong>${icon("compass")} Looking for opportunities?</strong>
-          <p>Companies, universities, and roles now live in <a href="discover.html">Discover</a>. Saved items are in your Profile.</p>
+          <span class="cg-feed-left-note-icon">${icon("compass")}</span>
+          <strong>Looking for opportunities?</strong>
+          <p>Companies, universities, and roles now live in Discover.</p>
+          <a class="btn btn-primary" href="discover.html">Discover ${icon("arrow-right")}</a>
+          <small>Saved items are in your Profile.</small>
         </article>
       </aside>
       <main class="cg-feed-main">
@@ -9823,7 +9826,7 @@ function renderPosts() {
         </header>
 
         ${isDirectoryTab ? "" : `<form class="cg-feed-composer" data-post-form>
-          <span class="cg-feed-avatar">${profileInitial}</span>
+          <span class="cg-feed-avatar cg-feed-avatar-add" aria-hidden="true">${icon("plus")}</span>
           <input name="body" aria-label="Post body" placeholder="Share a milestone, lesson, or question...">
           <input data-post-media name="media" type="file" accept="image/*,.pdf,.doc,.docx" hidden>
           <button class="btn btn-ghost" type="button" data-media-post>${icon("image")} Media</button>
@@ -9885,7 +9888,7 @@ function renderPosts() {
       <aside class="cg-feed-aside">
         <section>
           <span class="cg-overline">Trending</span>
-          ${trendItems.map(item => `<a class="cg-trend ${activeTrend === item.id ? "active" : ""}" href="#trend-${item.id}" data-feed-tab-link><strong>${item.title}</strong><span>${item.count}</span></a>`).join("")}
+          ${trendItems.map(item => `<a class="cg-trend ${activeTrend === item.id ? "active" : ""}" href="#trend-${item.id}" data-feed-tab-link><span class="cg-trend-icon">${icon(item.icon)}</span><span class="cg-trend-text"><strong>${item.title}</strong><small>${item.count}</small></span></a>`).join("")}
         </section>
         <section>
           <span class="cg-overline">Suggested to follow</span>
@@ -9897,6 +9900,12 @@ function renderPosts() {
             const isFollowing = followingList.includes(name);
             return `<div class="cg-follow-card ${isFollowing ? "following" : ""}"><span>${icon(ic)}</span><div><strong>${name}</strong><small>${sub}</small></div><button type="button" data-follow="${name}" ${isFollowing ? "disabled" : ""}>${isFollowing ? "Following" : "Follow"}</button></div>`;
           }).join("")}
+        </section>
+        <section class="cg-feed-grow-card">
+          <span class="cg-feed-grow-icon">${icon("sprout")}</span>
+          <h3>Grow your network, find your next opportunity.</h3>
+          <p>Connect with mentors, peers and top companies.</p>
+          <a class="btn btn-primary" href="posts.html#network">Explore Network ${icon("arrow-right")}</a>
         </section>
       </aside>
     </section>

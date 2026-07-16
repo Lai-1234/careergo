@@ -418,6 +418,26 @@ html body[data-page="profile"] .cg-up-project-art h3 {
   font-weight: 500 !important;
 }
 
+html body[data-page="profile"] .cg-up-gallery-card strong {
+  color: #f8f4ea !important;
+  -webkit-text-fill-color: #f8f4ea !important;
+}
+
+html body[data-page="profile"] .cg-up-hire-card > div > strong {
+  color: #f8f4ea !important;
+  -webkit-text-fill-color: #f8f4ea !important;
+}
+
+html body[data-page="profile"] .cg-up-hire-card > div > strong small {
+  color: rgba(248, 244, 234, 0.82) !important;
+  -webkit-text-fill-color: rgba(248, 244, 234, 0.82) !important;
+}
+
+html body[data-page="profile"] .cg-up-hire-card > div > p {
+  color: rgba(248, 244, 234, 0.88) !important;
+  -webkit-text-fill-color: rgba(248, 244, 234, 0.88) !important;
+}
+
 .cg-up-project-art a {
   position: absolute;
   right: 18px;
