@@ -5027,6 +5027,7 @@ function openReviewModal(target, onSubmitted) {
 
 let dashboardTaskFilter = "";
 let activePostsThread = "";
+let dashboardFocusSnoozed = false;
 
 function renderDashboard() {
   const root = qs("[data-dashboard]");
@@ -5140,17 +5141,28 @@ function renderDashboard() {
 
       <section class="cg-focus-grid">
         <article class="cg-focus-card" data-tour-target="vera">
-          <div class="cg-focus-meta">
-            <span>${icon("sparkles")} Today's focus - by Vera</span>
-            <span>${icon("clock")} 45 min - Deep work</span>
-          </div>
-          <h2>Hi, I'm Vera, your AI career coach.</h2>
-          <p>${focusDetail}</p>
-          <div class="cg-action-row">
-            <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("today's focus")}#messages">${icon("sparkles")} Start with Vera</a>
-            <a class="btn btn-ghost" href="grow.html">Snooze</a>
-            <span class="cg-confidence">${icon("gauge")} Confidence: ${intel.confidence}</span>
-          </div>
+          ${dashboardFocusSnoozed ? `
+            <div class="cg-focus-meta">
+              <span>${icon("moon")} Today's focus - snoozed</span>
+            </div>
+            <h2>Snoozed for today.</h2>
+            <p>Vera will bring this focus item back tomorrow morning. Nothing else on your dashboard is affected.</p>
+            <div class="cg-action-row">
+              <button type="button" class="btn btn-primary" data-unsnooze-focus>${icon("rotate-ccw")} Show today's focus</button>
+            </div>
+          ` : `
+            <div class="cg-focus-meta">
+              <span>${icon("sparkles")} Today's focus - by Vera</span>
+              <span>${icon("clock")} 45 min - Deep work</span>
+            </div>
+            <h2>Hi, I'm Vera, your AI career coach.</h2>
+            <p>${focusDetail}</p>
+            <div class="cg-action-row">
+              <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("today's focus")}#messages">${icon("sparkles")} Start with Vera</a>
+              <button type="button" class="btn btn-ghost" data-snooze-focus>${icon("moon")} Snooze</button>
+              <span class="cg-confidence">${icon("gauge")} Confidence: ${intel.confidence}</span>
+            </div>
+          `}
         </article>
         <article class="cg-autopilot-card">
           <div class="cg-section-line">
@@ -5171,7 +5183,7 @@ function renderDashboard() {
           </div>
           <div class="cg-action-row compact-actions">
             <a class="btn btn-primary" href="autopilot.html">Review 8 items ${icon("chevron-right")}</a>
-            <a class="btn btn-ghost" href="vera.html">Tune</a>
+            <a class="btn btn-ghost" href="autopilot.html#autopilot-console">Tune</a>
           </div>
         </article>
       </section>
@@ -5182,7 +5194,7 @@ function renderDashboard() {
             <h2>Recent Applications</h2>
             <p class="cg-h2-sub">Where each application stands and the next move that keeps it alive.</p>
           </div>
-          <a href="discover.html#tracker">Open Pipeline ${icon("chevron-right")}</a>
+          <a href="autopilot.html">Open Pipeline ${icon("chevron-right")}</a>
         </div>
         <div class="cg-application-grid">
           ${applicationCards.map(({ job, record }) => `
@@ -5252,10 +5264,13 @@ function renderDashboard() {
             <h2>Vera's Recommended Roles</h2>
             <p class="cg-h2-sub">Matched to your skills, salary target, and the roles you keep saving.</p>
           </div>
-          <a href="discover.html">See all ${DATA.jobs.length} ${icon("chevron-right")}</a>
+          <a href="discover.html">See More ${icon("chevron-right")}</a>
         </div>
         <div class="cg-role-grid">
-          ${topJobs.map(job => `
+          ${topJobs.map(job => {
+            const isApplied = state.applications.includes(job.id);
+            const isSaved = state.savedJobs.includes(job.id);
+            return `
             <article class="cg-role-card">
               <div class="cg-job-head">
                 <span class="cg-company-mark">${job.company.charAt(0)}</span>
@@ -5267,11 +5282,12 @@ function renderDashboard() {
                 ${job.why.slice(0, 3).map(reason => `<li>${reason}</li>`).join("")}
               </ul>
               <div class="cg-action-row">
-                <a class="btn btn-primary" href="discover.html?job=${job.id}">Quick apply</a>
-                <a class="btn btn-ghost" href="discover.html?job=${job.id}">Save</a>
+                <button type="button" class="btn btn-primary" data-quick-apply="${job.id}">${icon(isApplied ? "check" : "send")} ${isApplied ? "Applied" : "Quick apply"}</button>
+                <button type="button" class="btn btn-ghost" data-quick-save="${job.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save"}</button>
               </div>
             </article>
-          `).join("")}
+          `;
+          }).join("")}
         </div>
       </section>
 
@@ -5303,6 +5319,35 @@ function renderDashboard() {
     renderDashboard();
   }));
   qsa("[data-app-details]", root).forEach(btn => btn.addEventListener("click", () => openApplicationDetailsModal(btn.dataset.appDetails)));
+  qs("[data-snooze-focus]", root)?.addEventListener("click", () => {
+    dashboardFocusSnoozed = true;
+    showToast("Snoozed. Vera will bring today's focus back tomorrow.");
+    renderDashboard();
+  });
+  qs("[data-unsnooze-focus]", root)?.addEventListener("click", () => {
+    dashboardFocusSnoozed = false;
+    renderDashboard();
+  });
+  qsa("[data-quick-apply]", root).forEach(btn => btn.addEventListener("click", () => {
+    const jobId = btn.dataset.quickApply;
+    const job = DATA.jobs.find(item => item.id === jobId);
+    if (readState().applications.includes(jobId)) return;
+    updateApplicationStage(jobId, "applied");
+    showToast(job ? `Applied to ${job.title} at ${job.company}.` : "Application added to your tracker.");
+    renderDashboard();
+  }));
+  qsa("[data-quick-save]", root).forEach(btn => btn.addEventListener("click", () => {
+    const jobId = btn.dataset.quickSave;
+    const next = readState();
+    const nowSaved = next.savedJobs.includes(jobId);
+    next.savedJobs = nowSaved ? next.savedJobs.filter(id => id !== jobId) : [...next.savedJobs, jobId];
+    if (!next.applicationRecords) next.applicationRecords = {};
+    if (next.savedJobs.includes(jobId)) next.applicationRecords[jobId] = next.applicationRecords[jobId] || createApplicationRecord(jobId, "saved");
+    else if (!next.applications.includes(jobId)) delete next.applicationRecords[jobId];
+    writeState(next);
+    showToast(nowSaved ? "Role removed from saved jobs." : "Role saved to your dashboard.");
+    renderDashboard();
+  }));
   wireVeraWidget(root);
   initDashboardTour();
 }
@@ -8681,7 +8726,7 @@ function renderAutopilot() {
           <a class="btn btn-primary" href="discover.html">${icon("plus")} Add application</a>
         </header>
 
-        <section class="cg-pipeline-autopilot" data-autopilot-console>
+        <section class="cg-pipeline-autopilot" id="autopilot-console" data-autopilot-console>
           <header>
             <span>${icon("bot")} Vera Autopilot</span>
             <small>${apScanOnly ? "Scan-only mode - Vera waits for your approval" : "Live - Vera applies within your rules"}</small>
@@ -8889,6 +8934,9 @@ function renderAutopilot() {
       ${veraWidgetMarkup()}
     `);
     createIcons();
+    if (location.hash === "#autopilot-console") {
+      window.setTimeout(() => qs("#autopilot-console", root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+    }
     wireVeraWidget(root);
     qs("[data-autopilot-toggle]", root)?.addEventListener("click", () => {
       const next = readState();

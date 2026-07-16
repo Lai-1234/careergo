@@ -14741,6 +14741,13 @@ html body[data-page="dashboard"] .cg-focus-card .btn-primary * {
 html body[data-page="dashboard"] .cg-focus-card .btn-ghost {
   border-color: rgba(255, 255, 255, 0.16) !important;
   background: rgba(255, 255, 255, 0.08) !important;
+  color: #fffaf2 !important;
+  -webkit-text-fill-color: #fffaf2 !important;
+}
+
+html body[data-page="dashboard"] .cg-focus-card .btn-ghost * {
+  color: #fffaf2 !important;
+  -webkit-text-fill-color: #fffaf2 !important;
 }
 
 html body[data-page="dashboard"] .cg-autopilot-card {
