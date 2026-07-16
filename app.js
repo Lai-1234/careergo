@@ -1045,7 +1045,7 @@ function personalizedMissions(profile) {
   return [
     { id: "pm1", title: "Profile baseline", body: "Complete your profile so CareerGo can improve your roadmap.", xp: 90, progress: 45, href: "edit-career-data.html" },
     { id: "pm2", title: "Role shortlist", body: "Save two roles that match your preferred path.", xp: 80, progress: 30, href: "discover.html" },
-    { id: "pm3", title: "Coach plan", body: "Ask Vera to create a simple 7-day action plan.", xp: 70, progress: 20, href: "vera.html#chat" }
+    { id: "pm3", title: "Coach plan", body: "Ask Vera to create a simple 7-day action plan.", xp: 70, progress: 20, href: `posts.html?topic=${encodeURIComponent("a simple 7-day action plan")}#messages` }
   ];
 }
 
@@ -1062,7 +1062,7 @@ function starterMissions(profile) {
       id: "tour-vera",
       title: "Ask Vera for a plan",
       body: `Get a simple 7-day plan for ${getTargetLabel(profile)} with actions you can actually finish.`,
-      href: "vera.html#chat",
+      href: `posts.html?topic=${encodeURIComponent(`a 7-day plan for ${getTargetLabel(profile)}`)}#messages`,
       icon: "sparkles"
     },
     {
@@ -5147,7 +5147,7 @@ function renderDashboard() {
           <h2>Hi, I'm Vera, your AI career coach.</h2>
           <p>${focusDetail}</p>
           <div class="cg-action-row">
-            <button type="button" class="btn btn-primary" data-vera-open>${icon("sparkles")} Start with Vera</button>
+            <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("today's focus")}#messages">${icon("sparkles")} Start with Vera</a>
             <a class="btn btn-ghost" href="grow.html">Snooze</a>
             <span class="cg-confidence">${icon("gauge")} Confidence: ${intel.confidence}</span>
           </div>
@@ -5238,7 +5238,7 @@ function renderDashboard() {
                   <p>${icon("sparkles")} ${task.body}</p>
                   ${progressBar(done ? 100 : task.progress)}
                 </div>
-                ${mission ? `<button class="btn btn-ghost" type="button" data-complete-mission="${mission.id}">${done ? "Done" : "Start"} ${icon("arrow-up-right")}</button>` : `<button class="btn btn-ghost" type="button" data-vera-open>Start ${icon("arrow-up-right")}</button>`}
+                ${mission ? `<button class="btn btn-ghost" type="button" data-complete-mission="${mission.id}">${done ? "Done" : "Start"} ${icon("arrow-up-right")}</button>` : `<a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(task.title || "this task")}#messages">Start ${icon("arrow-up-right")}</a>`}
               </article>
             `;
           }).join("")}
@@ -5393,6 +5393,14 @@ function veraInsight(state) {
   };
 }
 
+const VERA_QUICK_PROMPTS = [
+  "What should I do this week?",
+  "Which skill gap should I close first?",
+  "What should I do about my active application?",
+  "Compare my saved roles by career impact",
+  "Review my next application strategy"
+];
+
 function veraWidgetMarkup() {
   const state = readState();
   const insight = veraInsight(state);
@@ -5406,7 +5414,7 @@ function veraWidgetMarkup() {
           <div class="cg-vera-pop-head">
             <span>Coach Vera</span>
             <b class="cg-vera-pop-online">online</b>
-            <a class="cg-vera-pop-expand" href="posts.html#messages" aria-label="Open full conversation">${icon("external-link")}</a>
+            <a class="cg-vera-pop-expand" href="posts.html?topic=${encodeURIComponent("continuing my conversation with Vera")}#messages" aria-label="Open full conversation">${icon("external-link")}</a>
             <button type="button" class="cg-vera-pop-close" data-vera-close aria-label="Close Vera">${icon("x")}</button>
           </div>
           <div class="cg-vera-pop-body" data-vera-pop-body>
@@ -5422,8 +5430,11 @@ function veraWidgetMarkup() {
             </div>
             <div class="cg-vera-pop-thread" data-vera-pop-thread>${thread}</div>
           </div>
+          <div class="cg-vera-pop-quick" data-vera-pop-quick hidden role="group" aria-label="Quick questions for Vera">
+            ${VERA_QUICK_PROMPTS.map(prompt => `<button type="button" class="cg-vera-pop-quick-chip" data-vera-pop-quick-prompt="${prompt}">${prompt}</button>`).join("")}
+          </div>
           <form class="cg-vera-pop-composer" data-vera-pop-form>
-            <input name="message" placeholder="Ask Vera anything about your career..." aria-label="Ask Vera" autocomplete="off">
+            <input name="message" placeholder="Ask Vera anything about your career..." aria-label="Ask Vera" autocomplete="off" data-vera-pop-input>
             <button type="submit" aria-label="Send">${icon("send")}</button>
           </form>
         </div>
@@ -5442,12 +5453,24 @@ function wireVeraWidget(root) {
   const body = qs("[data-vera-pop-body]", popover);
   const thread = qs("[data-vera-pop-thread]", popover);
   const form = qs("[data-vera-pop-form]", popover);
+  const input = qs("[data-vera-pop-input]", form);
+  const quick = qs("[data-vera-pop-quick]", popover);
   const openPopover = () => {
     popover.hidden = false;
     body.scrollTop = body.scrollHeight;
   };
   const closePopover = () => {
     popover.hidden = true;
+    quick.hidden = true;
+  };
+  const sendMessage = text => {
+    const reply = veraReply(text);
+    const next = readState();
+    next.chat.push({ from: "user", text });
+    next.chat.push({ from: "vera", text: reply });
+    writeState(next);
+    thread.insertAdjacentHTML("beforeend", `<div class="cg-vera-pop-question">${text}</div><div class="cg-vera-pop-bubble">${reply}</div>`);
+    body.scrollTop = body.scrollHeight;
   };
   trigger.addEventListener("click", () => {
     if (popover.hidden) openPopover(); else closePopover();
@@ -5463,19 +5486,28 @@ function wireVeraWidget(root) {
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") closePopover();
   });
+  input.addEventListener("focus", () => {
+    quick.hidden = false;
+  });
+  input.addEventListener("blur", () => {
+    window.setTimeout(() => { quick.hidden = true; }, 120);
+  });
+  quick.addEventListener("mousedown", event => {
+    if (event.target.closest("[data-vera-pop-quick-prompt]")) event.preventDefault();
+  });
+  quick.addEventListener("click", event => {
+    const chip = event.target.closest("[data-vera-pop-quick-prompt]");
+    if (!chip) return;
+    quick.hidden = true;
+    sendMessage(chip.dataset.veraPopQuickPrompt);
+  });
   form.addEventListener("submit", event => {
     event.preventDefault();
-    const input = form.message;
     const text = input.value.trim();
     if (!text) return;
     input.value = "";
-    const reply = veraReply(text);
-    const next = readState();
-    next.chat.push({ from: "user", text });
-    next.chat.push({ from: "vera", text: reply });
-    writeState(next);
-    thread.insertAdjacentHTML("beforeend", `<div class="cg-vera-pop-question">${text}</div><div class="cg-vera-pop-bubble">${reply}</div>`);
-    body.scrollTop = body.scrollHeight;
+    quick.hidden = true;
+    sendMessage(text);
   });
 }
 
@@ -5492,32 +5524,8 @@ function renderVera() {
     return;
   }
   qs(".page-hero")?.classList.add("is-hidden");
-  const initialTopic = new URLSearchParams(location.search).get("topic");
-  const messages = state.chat.length ? state.chat : [
-    { from: "vera", text: `Welcome back, ${getFirstName(state)}. I checked your ${state.profile.careerStage || "career"} profile. Your best move today is: ${state.profile.intelligence.immediateActions[0]}` },
-    ...(initialTopic ? [{ from: "user", text: `Help me with ${initialTopic}` }, { from: "vera", text: `Good choice. I will break ${initialTopic} into a clear next-step plan: evidence needed, risks, and the action you should take first.` }] : [])
-  ];
-  state.chat = messages;
-  writeState(state);
-  let activeTab = location.hash?.replace("#", "") || "chat";
-
-  function renderMessages() {
-    const target = qs("[data-message-list]");
-    if (target) target.innerHTML = readState().chat.map(msg => {
-      const isVera = msg.from === "vera";
-      return `
-        <div class="message ${isVera ? "vera" : "user"}">
-          <span class="message-avatar">${isVera ? `<img class="cg-vera-chat-avatar" src="assets/vera-ai-coach.png" alt="Vera AI">` : icon("user-round")}</span>
-          <div class="message-bubble">
-            <strong>${isVera ? "Vera" : getFirstName(readState())}</strong>
-            <p>${msg.text}</p>
-          </div>
-        </div>
-      `;
-    }).join("");
-    if (target) target.scrollTop = target.scrollHeight;
-    createIcons();
-  }
+  let activeTab = location.hash?.replace("#", "") || "skills";
+  if (activeTab === "chat") activeTab = "skills";
 
   function tabContent() {
     if (activeTab === "skills") {
@@ -5534,7 +5542,7 @@ function renderVera() {
         </section>
       `;
     }
-    if (activeTab === "interview") {
+    {
       const coach = readState().interviewCoach || {};
       const targetRole = coach.role || DATA.jobs.find(job => state.applications.includes(job.id))?.title || DATA.jobs[0]?.title || getTargetLabel(state.profile);
       const typeOptions = ["Behavioral", "Case Study", "Portfolio Review", "Technical"];
@@ -5612,51 +5620,6 @@ function renderVera() {
         </section>
       `;
     }
-    const chatPresets = [
-      "Build me a 7-day job search plan",
-      "What should I do about my active application?",
-      "Which skill gap should I close first?",
-      "Compare my saved roles by career impact"
-    ];
-    const draftAnswers = [
-      "I want to switch into Product Analyst. What should I do first?",
-      "Help me prepare for a case-study interview this week.",
-      "Review my next application strategy before I apply."
-    ];
-    const savedCount = state.savedJobs.length;
-    const appliedCount = state.applications.length;
-    return `
-        <section class="chat-window glass-card">
-          <div class="detail-head"><div><h2>Career session</h2><div class="muted">Vera uses your jobs, reviews, profile, market, and goals as context.</div></div><span class="pill green">Online</span></div>
-          <div class="career-session-grid">
-            <div class="message-list" data-message-list></div>
-            <aside class="chat-context-panel">
-              <div>
-                <div class="section-kicker">Session context</div>
-                <h3>Vera is reading your current journey.</h3>
-                <p class="muted small">${state.profile.careerStage || "Career planning"} - ${getTargetLabel(state.profile)} - ${savedCount} saved role${savedCount === 1 ? "" : "s"} - ${appliedCount} active application${appliedCount === 1 ? "" : "s"}.</p>
-              </div>
-              <div class="chat-insight-list">
-                ${[
-                  ["Best next move", state.profile.intelligence.immediateActions[0] || "Choose one target role and build proof around it."],
-                  ["Application focus", appliedCount ? "Follow up, prepare role evidence, and practice interview stories." : "Save or apply to one high-fit role so Vera can track momentum."],
-                  ["Research habit", "Compare culture, growth, salary signal, and watchouts before committing."]
-                ].map(([title, body]) => `<div class="chat-insight"><strong>${title}</strong><span>${body}</span></div>`).join("")}
-              </div>
-            </aside>
-          </div>
-          <div class="chat-presets">
-            <div class="chat-presets-label">Quick prompts</div>
-            <div class="pill-row">${chatPresets.map(text => `<button class="pill cyan" type="button" data-chat-preset="${text}">${text}</button>`).join("")}</div>
-            <div class="chat-presets-label">Draft into chat box</div>
-            <div class="pill-row">${draftAnswers.map(text => `<button class="pill gold" type="button" data-chat-fill="${text}">${text}</button>`).join("")}</div>
-          </div>
-          <form class="chat-input" data-chat-form>
-            <div class="chat-composer-field"><textarea name="message" rows="1" placeholder="Ask Vera what to do next..."></textarea></div>
-            <button class="btn btn-primary" type="submit">${icon("send")} Send</button>
-          </form>
-        </section>
-      `;
   }
 
   root.className = "container os-layout";
@@ -5669,58 +5632,27 @@ function renderVera() {
       <div class="pill-row">
         ${[
           ["skills", "Skills"],
-          ["interview", "Interview"],
-          ["chat", "Chat"]
+          ["interview", "Interview"]
         ].map(([key, label]) => `<button class="pill ${activeTab === key ? "cyan active" : ""}" data-vera-tab="${key}">${label}</button>`).join("")}
       </div>
       <div class="detail-section vera-box">
         <h3>Vera knows</h3>
         <p class="muted">${state.profile.careerStage || "Your career stage"} - ${getTargetLabel(state.profile)} - ${state.applications.length} active application${state.applications.length === 1 ? "" : "s"}.</p>
-        <div class="pill-row">${["Plan my week", "Compare companies", "Fix my resume", "Prep interview", "Explain application status"].map(x => `<button class="pill gold" data-quick="${x}">${x}</button>`).join("")}</div>
+        <div class="pill-row">${["Plan my week", "Compare companies", "Fix my resume", "Prep interview", "Explain application status"].map(x => `<a class="pill gold" href="posts.html?topic=${encodeURIComponent(x)}#messages">${x}</a>`).join("")}</div>
       </div>
     </aside>
     <div data-vera-panel>${tabContent()}</div>
     </section>
   `;
   root.innerHTML = appShell("vera", veraContent, { title: "Vera", subtitle: "Ask for coaching while keeping your dashboard, jobs, and profile one click away." });
-  renderMessages();
   attachVeraEvents();
 
-  function sendVera(text) {
-    const state = readState();
-    state.chat.push({ from: "user", text });
-    state.chat.push({ from: "vera", text: veraReply(text) });
-    writeState(state);
-    activeTab = "chat";
-    qs("[data-vera-panel]").innerHTML = tabContent();
-    attachVeraEvents();
-    renderMessages();
-  }
   function attachVeraEvents() {
     qsa("[data-vera-tab]").forEach(btn => btn.addEventListener("click", () => {
       activeTab = btn.dataset.veraTab;
       location.hash = activeTab;
       renderVera();
     }));
-    qsa("[data-quick]").forEach(btn => btn.addEventListener("click", () => sendVera(btn.dataset.quick)));
-    qsa("[data-chat-preset]").forEach(btn => btn.addEventListener("click", () => sendVera(btn.dataset.chatPreset)));
-    qsa("[data-chat-fill]").forEach(btn => btn.addEventListener("click", () => {
-      const input = qs("[data-chat-form] [name='message']");
-      if (!input) return;
-      input.value = btn.dataset.chatFill || "";
-      input.focus();
-    }));
-    qs("[data-chat-form] textarea[name='message']")?.addEventListener("input", event => {
-      const input = event.currentTarget;
-      input.style.height = "auto";
-      input.style.height = `${Math.min(input.scrollHeight, 132)}px`;
-    });
-    qs("[data-chat-form] textarea[name='message']")?.addEventListener("keydown", event => {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        event.currentTarget.form.requestSubmit();
-      }
-    });
     qs("[data-interview-role]")?.addEventListener("change", event => {
       const next = readState();
       next.interviewCoach = { ...(next.interviewCoach || {}), role: event.currentTarget.value.trim() };
@@ -5758,14 +5690,6 @@ function renderVera() {
       if (!input) return;
       input.value = "Situation: The project had unclear goals and competing stakeholder priorities. Task: I needed to align the team around one measurable outcome. Action: I mapped the user journey, compared two solution paths, explained the trade-off, and tested the preferred direction. Result: We improved the target metric and I documented what I would do differently next time.";
       input.focus();
-    });
-    qs("[data-chat-form]")?.addEventListener("submit", event => {
-      event.preventDefault();
-      const input = event.currentTarget.message;
-      const text = input.value.trim();
-      if (!text) return;
-      input.value = "";
-      sendVera(text);
     });
     qs("[data-interview-form]")?.addEventListener("submit", event => {
       event.preventDefault();
@@ -8210,7 +8134,7 @@ function renderMarket() {
               <h2>Complete the Product Analytics sprint.</h2>
               <p>Of every roadmap step, portfolio push and referral request open to you, this one moves your Career Value the most for the least effort. It also unlocks the Stripe and Grab interview rubrics in Pipeline.</p>
               <div class="cg-worth-chips"><span>${icon("trending-up")} +RM 1,300 / month expected</span><span>${icon("clock")} 12 hrs over 3 weeks</span><span>${icon("target")} 92% probability of completion</span></div>
-              <div class="cg-worth-actions"><a class="btn btn-primary" href="grow.html">${icon("sparkles")} Start in Grow</a><a class="btn btn-ghost" href="vera.html#chat">Why this one? ${icon("arrow-right")}</a></div>
+              <div class="cg-worth-actions"><a class="btn btn-primary" href="grow.html">${icon("sparkles")} Start in Grow</a><a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent("why the Product Analytics sprint is today's highest-value move")}#messages">Why this one? ${icon("arrow-right")}</a></div>
             </article>
             <aside>
               <span>Why Vera picked this</span>
@@ -8222,7 +8146,7 @@ function renderMarket() {
         </section>
 
         <section class="cg-worth-section">
-          <div class="cg-worth-section-head"><div><h2>Top value drivers</h2><p>Ranked by expected monthly pay lift, weighted by how likely you are to complete it.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-section-head"><div><h2>Top value drivers</h2><p>Ranked by expected monthly pay lift, weighted by how likely you are to complete it.</p></div><a href="posts.html?topic=${encodeURIComponent("how my top value drivers are ranked")}#messages">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-driver-grid">
             ${valueDrivers.map(([ic, title, body, pct, effort, breakdown]) => `
               <article>
@@ -8238,7 +8162,7 @@ function renderMarket() {
         </section>
 
         <section class="cg-worth-memory">
-          <div class="cg-worth-section-head"><div><h2>Value Growth</h2><p>Small changes compound. Here's the story your Career Value has been telling.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-section-head"><div><h2>Value Growth</h2><p>Small changes compound. Here's the story your Career Value has been telling.</p></div><a href="posts.html?topic=${encodeURIComponent("my Career Value growth story")}#messages">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-memory-grid">
             ${memory.map(([label, value, body], index) => `<article class="${index === memory.length - 1 ? "active" : ""}"><span>${icon("history")} ${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}
           </div>
@@ -8246,7 +8170,7 @@ function renderMarket() {
         </section>
 
         <section class="cg-worth-section">
-          <div class="cg-worth-section-head"><div><h2>Career Value Scenarios</h2><p>How different moves - staying, switching, or upskilling - change your value over time.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-section-head"><div><h2>Career Value Scenarios</h2><p>How different moves - staying, switching, or upskilling - change your value over time.</p></div><a href="posts.html?topic=${encodeURIComponent("these Career Value scenarios")}#messages">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-scenarios">
             ${scenarios.map(([ic, title, body, width, value, tone]) => `
               <article class="tone-${tone}">
@@ -8267,7 +8191,7 @@ function renderMarket() {
               ${[["Expected offer", "RM 9,200"], ["Fair market value", "RM 10,100"], ["Suggested ask", "RM 10,300"], ["Confidence", "72%"]].map(([label, value], index) => `<div class="${index === 2 ? "active" : ""}"><span>${label}</span><strong>${value}</strong></div>`).join("")}
             </div>
             <div class="cg-worth-slider"><i><em></em><b></b></i><div><span>Lowball - RM 8,400</span><span>Fair - RM 10,100</span><span>Ambitious - RM 11,500</span></div></div>
-            <a class="btn btn-primary" href="vera.html#chat">${icon("sparkles")} Generate negotiation points</a>
+            <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("generating negotiation points for my next offer")}#messages">${icon("sparkles")} Generate negotiation points</a>
           </article>
           <div class="cg-grow-coach">
             <div class="cg-grow-coach-head"><span><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Coach Vera</span><b>online</b></div>
@@ -8310,7 +8234,7 @@ function renderMarket() {
         </section>
 
         <section class="cg-worth-section">
-          <div class="cg-worth-section-head"><div><h2>Benchmark -In Malaysia</h2><p>Live Fair Pay data from KL, Penang, Johor, and remote Malaysia postings.</p></div><a href="vera.html#chat">Explain how ${icon("arrow-right")}</a></div>
+          <div class="cg-worth-section-head"><div><h2>Benchmark -In Malaysia</h2><p>Live Fair Pay data from KL, Penang, Johor, and remote Malaysia postings.</p></div><a href="posts.html?topic=${encodeURIComponent("the Malaysia pay benchmark data")}#messages">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-benchmarks">
             ${benchmarks.map(([label, value, body, tone]) => `<article class="tone-${tone}"><span>${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}
           </div>
@@ -8445,7 +8369,7 @@ function renderMarket() {
             `).join("")}
           </div>
           <div class="plan-command-row">
-            <a class="btn btn-cyan" href="vera.html#chat">${icon("message-circle")} Discuss with Vera</a>
+            <a class="btn btn-cyan" href="posts.html?topic=${encodeURIComponent("my Career Value plan")}#messages">${icon("message-circle")} Discuss with Vera</a>
             <a class="btn btn-ghost" href="grow.html">${icon("brain-circuit")} Update proof</a>
             <button class="btn btn-ghost" type="button" data-market-plan-reset>${icon("rotate-ccw")} Reset value plan</button>
           </div>
@@ -8772,7 +8696,7 @@ function renderAutopilot() {
               <h2>Reply to Aisha at <em>Grab</em> before 6 PM.</h2>
               <p>She opened your last note 2 hours ago and rated your intro 4.5/5. Grab's recruiters typically ghost after 48h of silence - you have roughly 9 hours of goodwill left.</p>
               <div><span>${icon("trending-up")} +14% interview odds</span><span>${icon("clock")} 5 min</span><span>${icon("target")} 88% reply probability</span></div>
-              <footer><a class="btn btn-primary" href="vera.html#chat">${icon("sparkles")} Draft with Vera</a><a class="btn btn-ghost" href="vera.html#chat">Why this one? ${icon("arrow-right")}</a></footer>
+              <footer><a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("drafting a reply to Aisha at Grab")}#messages">${icon("sparkles")} Draft with Vera</a><a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent("why replying to Aisha at Grab is today's top move")}#messages">Why this one? ${icon("arrow-right")}</a></footer>
             </article>
             <aside>
               <span>Why Vera picked this</span>
@@ -8789,7 +8713,7 @@ function renderAutopilot() {
             <article>
               <span>${index + 1}</span>
               <div><div class="cg-pipeline-impact-title"><h3>${title}</h3><em class="cg-urgency cg-urgency-${urgency.toLowerCase()}">${urgency}</em></div><p>${body}</p><small><b>${icon("trending-up")} ${lift}</b><b>${icon("clock")} ${time}</b></small></div>
-              <a href="vera.html#chat">${icon("sparkles")} ${action}</a>
+              <a href="posts.html?topic=${encodeURIComponent(title)}#messages">${icon("sparkles")} ${action}</a>
             </article>
           `).join("")}
         </section>
@@ -8834,7 +8758,7 @@ function renderAutopilot() {
                       <i><em style="width:${score}%"></em></i>
                       <p>${note}</p>
                       ${vera ? `<blockquote>${icon("sparkles")} ${vera}</blockquote>` : ""}
-                      <footer><span>Next - ${next}</span><a href="vera.html#chat">Do it ${icon("chevron-right")}</a></footer>
+                      <footer><span>Next - ${next}</span><a href="posts.html?topic=${encodeURIComponent(`${next} for ${name}`)}#messages">Do it ${icon("chevron-right")}</a></footer>
                     </section>
                   `).join("")}
                 </article>
@@ -8848,7 +8772,7 @@ function renderAutopilot() {
             <span class="cg-section-kicker">${icon("chart-no-axes-column-increasing")} Week in review</span>
             <h2>Your job search is <em>accelerating.</em></h2>
             <p>Offer probability rose <strong>+12%</strong> this week. Vera credits your improved resume and faster recruiter replies.</p>
-            <a class="btn btn-primary" href="vera.html#chat">${icon("sparkles")} Plan next week with Vera</a>
+            <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("planning next week's job search")}#messages">${icon("sparkles")} Plan next week with Vera</a>
           </article>
           <div>
             ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "+12%"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening"]].map(([label, value]) => `<section><span>${label}</span><strong>${value}</strong></section>`).join("")}
@@ -8864,7 +8788,7 @@ function renderAutopilot() {
             <article>
               <div><h3>${company}</h3><p>${person}</p><i><em style="width:${strength}%"></em></i><small>Strength ${strength}</small></div>
               <div><p>${icon("eye")} ${signal}</p><p>${context}</p><p>${probability}</p></div>
-              <a href="vera.html#chat">${icon("sparkles")} ${action}</a>
+              <a href="posts.html?topic=${encodeURIComponent(`${action} for ${person} at ${company}`)}#messages">${icon("sparkles")} ${action}</a>
             </article>
           `).join("")}
         </section>
@@ -8890,7 +8814,7 @@ function renderAutopilot() {
           </article>
           <article class="cg-pipeline-followups">
             <header><h2>${icon("briefcase")} Vera's follow-up desk</h2><span>4 drafts ready</span></header>
-            ${followUps.map(([name, body, action, ic]) => `<section><div><h3>${name}</h3><p>${body}</p></div><span>${icon(ic)}</span><a href="vera.html#chat">${icon("sparkles")} ${action}</a></section>`).join("")}
+            ${followUps.map(([name, body, action, ic]) => `<section><div><h3>${name}</h3><p>${body}</p></div><span>${icon(ic)}</span><a href="posts.html?topic=${encodeURIComponent(`${action} for ${name}`)}#messages">${icon("sparkles")} ${action}</a></section>`).join("")}
           </article>
         </section>
 
@@ -9343,13 +9267,7 @@ function renderPosts() {
     ];
     const activeThread = inboxThreads.find(thread => thread.id === activePostsThread) || inboxThreads[0];
 
-    const veraQuickPrompts = [
-      "What should I do this week?",
-      "Which skill gap should I close first?",
-      "What should I do about my active application?",
-      "Compare my saved roles by career impact",
-      "Review my next application strategy"
-    ];
+    const veraQuickPrompts = VERA_QUICK_PROMPTS;
     const threadPanel = activeThread.id === "vera" ? `
           <header>
             <div><h2>Coach Vera</h2><p>Your AI career coach  - always online</p></div>
