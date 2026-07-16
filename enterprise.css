@@ -6202,10 +6202,19 @@ body[data-page="profile"]:has(.cg-grow) .container.os-layout {
   gap: 10px;
   margin: 0;
   padding: 13px 16px;
+  border: 0;
   border-radius: 14px;
   color: #fffaf2;
   background: rgba(255, 255, 255, 0.08);
+  font: inherit;
   font-weight: 750;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.cg-interview-checklist p:hover {
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .cg-interview-checklist p.done {
@@ -14618,6 +14627,19 @@ html body .cg-interview-checklist.cg-interview-checklist :is(.btn, .btn *) {
   color: #07382f !important;
   -webkit-text-fill-color: #07382f !important;
   opacity: 1 !important;
+}
+
+html body .cg-interview-checklist.cg-interview-checklist .btn.btn {
+  color: #07382f !important;
+  -webkit-text-fill-color: #07382f !important;
+  background: #fffaf2 !important;
+  border-color: #fffaf2 !important;
+  opacity: 1 !important;
+}
+
+html body .cg-interview-checklist.cg-interview-checklist .btn.btn * {
+  color: #07382f !important;
+  -webkit-text-fill-color: #07382f !important;
 }
 
 html body .cg-grow-coach :is(input::placeholder, textarea::placeholder) {

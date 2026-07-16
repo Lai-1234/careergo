@@ -434,6 +434,9 @@ function readState() {
     savedOrgs: [],
     missionProgress: {},
     marketPlan: null,
+    growGoals: null,
+    growMovesStarted: [],
+    interviewChecklist: null,
     guidedTour: { dashboard: { status: "new", step: 0 } },
     reviews: DATA.reviews,
     chat: [],
@@ -575,6 +578,9 @@ function normalizeState(state) {
     comparedJobs: Array.isArray(state.comparedJobs) ? state.comparedJobs : [],
     savedOrgs: Array.isArray(state.savedOrgs) ? state.savedOrgs : [],
     marketPlan: state.marketPlan && typeof state.marketPlan === "object" ? state.marketPlan : null,
+    growGoals: state.growGoals && typeof state.growGoals === "object" ? state.growGoals : null,
+    growMovesStarted: Array.isArray(state.growMovesStarted) ? state.growMovesStarted : [],
+    interviewChecklist: Array.isArray(state.interviewChecklist) ? state.interviewChecklist : null,
     posts: Array.isArray(state.posts) ? state.posts : DATA.communityPosts
   });
 }
@@ -5152,6 +5158,27 @@ function reviewStars(rating) {
   return `<span class="cg-review-stars" aria-label="${(Number(rating) || 0).toFixed(1)} out of 5">${[1, 2, 3, 4, 5].map(step => `<b class="${step <= rounded ? "filled" : ""}">${icon("star")}</b>`).join("")}</span>`;
 }
 
+function historyTrendSvg(scores, width = 600) {
+  const height = 190, padX = 60, topY = 30, bottomY = 140;
+  const min = Math.min(...scores), max = Math.max(...scores), range = (max - min) || 1;
+  const points = scores.map((score, index) => ({
+    x: scores.length === 1 ? width / 2 : padX + (index * (width - padX * 2)) / (scores.length - 1),
+    y: bottomY - ((score - min) / range) * (bottomY - topY),
+    score
+  }));
+  const linePoints = points.map(p => `${p.x},${p.y}`).join(" ");
+  return `<svg class="cg-history-trend" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mock interview score trend: ${scores.join(", ")}">
+    <polyline points="${linePoints}"></polyline>
+    ${points.map((p, index) => `
+      <g>
+        <circle cx="${p.x}" cy="${p.y}" r="7"></circle>
+        <text x="${p.x}" y="${p.y - 20}" text-anchor="middle" class="cg-history-value">${p.score}%</text>
+        <text x="${p.x}" y="${height - 15}" text-anchor="middle" class="cg-history-label">Attempt ${index + 1}</text>
+      </g>
+    `).join("")}
+  </svg>`;
+}
+
 const OPEN_ROLE_POOL = {
   Banking: ["Product Analyst", "Data Analyst", "Digital Banking Associate", "Risk Analyst"],
   Technology: ["Product Manager", "Data Analyst", "Software Engineer", "Growth Associate"],
@@ -6558,6 +6585,59 @@ function renderEmployerOnboarding() {
   renderStep();
 }
 
+function openAdjustGoalsModal() {
+  const state = readState();
+  const goals = state.growGoals || {};
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <form class="modal card" data-adjust-goals-form>
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Growth journey</div>
+          <h2>Adjust your goals</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="form-grid">
+        <label>Target role <input class="field" name="role" value="${goals.role || ""}" placeholder="e.g. Product Manager, KL"></label>
+        <label>Target offer date <input class="field" name="targetDate" type="date" value="${goals.targetDate || ""}"></label>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-primary" type="submit">${icon("check")} Save goals</button>
+        <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+      </div>
+    </form>
+  `;
+  document.body.appendChild(backdrop);
+  function close() {
+    backdrop.remove();
+    document.removeEventListener("keydown", onEsc);
+  }
+  function onEsc(event) {
+    if (event.key === "Escape") close();
+  }
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", close));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) close();
+  });
+  document.addEventListener("keydown", onEsc);
+  qs("[data-adjust-goals-form]", backdrop).addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = readState();
+    next.growGoals = {
+      role: String(form.get("role") || "").trim(),
+      targetDate: String(form.get("targetDate") || "").trim()
+    };
+    writeState(next);
+    close();
+    showToast("Growth goals updated.");
+    renderGrow();
+  });
+  createIcons();
+}
+
 function renderGrow() {
   const root = qs("[data-grow]");
   if (!root) return;
@@ -6586,10 +6666,25 @@ function renderGrow() {
     ["Milestone 4", "Application sprint", "5 applications  - 2 warm intros via Vera.", "~4 weeks", "Median offer RM 10.2k  - 3 expected interviews", 0, ""]
   ];
   const moves = [
-    ["Practice", "3h  - Beginner", "SQL for Product Managers", "DataLemur", "Chosen because: 78% of your saved PM roles list SQL as required.", [["Interview readiness", "+8%"], ["New matching jobs", "+31"], ["Skill gap closed", "Data fluency"]]],
-    ["Course", "6h  - Intermediate", "Product Strategy sprint", "Reforge", "Chosen because: Completes Milestone 1 and matches your Grab & Setel targets.", [["Interview readiness", "+11%"], ["Pay band shift", "+RM 900"], ["Milestone", "Closes M1"]]],
-    ["Essay pack", "45m  - Any", "Write a crisp problem statement", "Vera curated", "Chosen because: Your written comms is your strongest signal - publish once to lock Top 18%.", [["Callback rate", "x1.4"], ["Portfolio proof", "+1 artifact"], ["Milestone", "Feeds M3"]]]
+    ["move-sql", "Practice", "3h  - Beginner", "SQL for Product Managers", "DataLemur", "Chosen because: 78% of your saved PM roles list SQL as required.", [["Interview readiness", "+8%"], ["New matching jobs", "+31"], ["Skill gap closed", "Data fluency"]]],
+    ["move-strategy", "Course", "6h  - Intermediate", "Product Strategy sprint", "Reforge", "Chosen because: Completes Milestone 1 and matches your Grab & Setel targets.", [["Interview readiness", "+11%"], ["Pay band shift", "+RM 900"], ["Milestone", "Closes M1"]]],
+    ["move-essay", "Essay pack", "45m  - Any", "Write a crisp problem statement", "Vera curated", "Chosen because: Your written comms is your strongest signal - publish once to lock Top 18%.", [["Callback rate", "x1.4"], ["Portfolio proof", "+1 artifact"], ["Milestone", "Feeds M3"]]]
   ];
+  const growGoals = state.growGoals || {};
+  const growMovesStarted = Array.isArray(state.growMovesStarted) ? state.growMovesStarted : [];
+  const checklistItems = [
+    ["resume-tailored", "Resume tailored to Grab PM JD"],
+    ["company-research", "Company research completed"],
+    ["star-stories", "STAR stories prepared (5)"],
+    ["mock-interview", "Mock interview completed"],
+    ["interviewer-questions", "Questions for interviewer prepared"],
+    ["portfolio-rehearsed", "Portfolio case rehearsed out loud"]
+  ];
+  const defaultChecklistDone = ["resume-tailored", "company-research", "star-stories", "mock-interview"];
+  const checklistDone = Array.isArray(state.interviewChecklist) ? state.interviewChecklist : defaultChecklistDone;
+  const checklistDoneCount = checklistItems.filter(([id]) => checklistDone.includes(id)).length;
+  const checklistPercent = Math.round((checklistDoneCount / checklistItems.length) * 100);
+  const checklistRemaining = checklistItems.length - checklistDoneCount;
   const practiceItems = [
     ["Mock interview", "15 min", "15-min PM mock - marketplace pricing", "Product thinking", "+4% readiness"],
     ["Case study", "25 min", "Design a driver-incentive experiment", "Experiment design", "+3% readiness"],
@@ -6661,12 +6756,12 @@ function renderGrow() {
         <header>
           <div>
             <span class="cg-section-kicker">Goals</span>
-            <h2>Your growth journey - Product Manager, KL</h2>
+            <h2>Your growth journey - ${growGoals.role || "Product Manager, KL"}</h2>
             <p class="cg-h2-sub">Milestones between you and your target role, with the current one highlighted.</p>
           </div>
-          <button class="btn btn-ghost" type="button">${icon("target")} Adjust goals</button>
+          <button class="btn btn-ghost" type="button" data-adjust-goals>${icon("target")} Adjust goals</button>
         </header>
-        <div class="cg-grow-progress"><i></i><span>18% overall  - est. offer by mid-August</span><b>${icon("flame")} 6-day streak</b></div>
+        <div class="cg-grow-progress"><i></i><span>18% overall  - est. offer by ${growGoals.targetDate ? new Date(growGoals.targetDate).toLocaleDateString("en-US", { month: "long", day: "numeric" }) : "mid-August"}</span><b>${icon("flame")} 6-day streak</b></div>
         <div class="cg-milestone-list">
           ${milestones.map(([label, title, body, time, result, progress, stateLabel], index) => `
             <article class="cg-milestone-card">
@@ -6681,18 +6776,14 @@ function renderGrow() {
           `).join("")}
         </div>
         <article class="cg-interview-checklist">
-          <header><span>${icon("clipboard-check")} Interview in 3 days  - Grab PM</span><div><i><em style="width:67%"></em></i><b>4/6  - 67% ready</b></div></header>
+          <header><span>${icon("clipboard-check")} Interview in 3 days  - Grab PM</span><div><i><em style="width:${checklistPercent}%"></em></i><b>${checklistDoneCount}/${checklistItems.length}  - ${checklistPercent}% ready</b></div></header>
           <div>
-            ${[
-              ["Resume tailored to Grab PM JD", true],
-              ["Company research completed", true],
-              ["STAR stories prepared (5)", true],
-              ["Mock interview completed", true],
-              ["Questions for interviewer prepared", false],
-              ["Portfolio case rehearsed out loud", false]
-            ].map(([item, done]) => `<p class="${done ? "done" : ""}">${icon(done ? "check-circle-2" : "circle")} ${item}</p>`).join("")}
+            ${checklistItems.map(([id, item]) => {
+              const done = checklistDone.includes(id);
+              return `<p class="${done ? "done" : ""}" data-checklist-item="${id}" role="button" tabindex="0" aria-pressed="${done}">${icon(done ? "check-circle-2" : "circle")} ${item}</p>`;
+            }).join("")}
           </div>
-          <footer><span>Finish the last two to reach <strong>81%</strong> ready.</span><a class="btn btn-ghost" href="#interview-coach">Continue preparation ${icon("arrow-right")}</a></footer>
+          <footer><span>${checklistRemaining > 0 ? `Finish the last ${checklistRemaining} to reach <strong>81%</strong> ready.` : `All prep steps done - you're on track for <strong>81%</strong> ready.`}</span><a class="btn btn-ghost" href="#interview-coach">Continue preparation ${icon("arrow-right")}</a></footer>
         </article>
       </section>
 
@@ -6740,29 +6831,7 @@ function renderGrow() {
         <div class="cg-interview-history-grid">
           <article class="cg-mock-history">
             <h3>${icon("history")} Mock interview history</h3>
-            ${(() => {
-              const scores = [58, 67, 76];
-              const width = 600, height = 190, padX = 60, topY = 30, bottomY = 140;
-              const min = Math.min(...scores), max = Math.max(...scores), range = (max - min) || 1;
-              const points = scores.map((score, index) => ({
-                x: scores.length === 1 ? width / 2 : padX + (index * (width - padX * 2)) / (scores.length - 1),
-                y: bottomY - ((score - min) / range) * (bottomY - topY),
-                score
-              }));
-              const linePoints = points.map(p => `${p.x},${p.y}`).join(" ");
-              return `
-                <svg class="cg-history-trend" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mock interview score trend: ${scores.join(", ")}">
-                  <polyline points="${linePoints}"></polyline>
-                  ${points.map((p, index) => `
-                    <g>
-                      <circle cx="${p.x}" cy="${p.y}" r="7"></circle>
-                      <text x="${p.x}" y="${p.y - 20}" text-anchor="middle" class="cg-history-value">${p.score}%</text>
-                      <text x="${p.x}" y="${height - 15}" text-anchor="middle" class="cg-history-label">Attempt ${index + 1}</text>
-                    </g>
-                  `).join("")}
-                </svg>
-              `;
-            })()}
+            ${historyTrendSvg([58, 67, 76])}
             <p><span>Latest feedback</span>"Strong framing. Tighten prioritization + numbers."</p>
           </article>
           <article class="cg-company-coaching">
@@ -6784,16 +6853,19 @@ function renderGrow() {
       <section class="cg-grow-section">
         <div class="cg-grow-section-head"><div><h2>Recommended Growth</h2><p class="cg-h2-sub">The learning moves with the highest return for your target role right now.</p></div><a href="vera.html#skills">Browse all</a></div>
         <div class="cg-move-grid">
-          ${moves.map(([kind, time, title, source, why, metrics]) => `
-            <article class="cg-move-card">
+          ${moves.map(([id, kind, time, title, source, why, metrics]) => {
+            const started = growMovesStarted.includes(id);
+            return `
+            <article class="cg-move-card ${started ? "started" : ""}">
               <header><span>${kind}</span><small>${icon("clock")} ${time}</small></header>
               <h3>${title}</h3>
               <p>${icon("book-open")} ${source}</p>
               <div class="cg-move-why">${icon("lightbulb")} ${why}</div>
               <dl>${metrics.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
-              <button class="btn btn-primary" type="button">${icon("play")} Start</button>
+              <button class="btn btn-primary" type="button" data-grow-move-start="${id}">${icon(started ? "check" : "play")} ${started ? "In progress" : "Start"}</button>
             </article>
-          `).join("")}
+          `;
+          }).join("")}
         </div>
       </section>
 
@@ -6815,10 +6887,44 @@ function renderGrow() {
       section.style.display = !chosen || section.dataset.company === chosen ? "" : "none";
     });
   });
+  qs("[data-adjust-goals]", root)?.addEventListener("click", () => openAdjustGoalsModal());
+  qsa("[data-grow-move-start]", root).forEach(btn => btn.addEventListener("click", () => {
+    const id = btn.dataset.growMoveStart;
+    const next = readState();
+    next.growMovesStarted = Array.isArray(next.growMovesStarted) ? next.growMovesStarted : [];
+    if (!next.growMovesStarted.includes(id)) next.growMovesStarted.push(id);
+    writeState(next);
+    showToast("Added to your active learning moves.");
+    renderGrow();
+  }));
+  function toggleChecklistItem(id) {
+    const next = readState();
+    const current = Array.isArray(next.interviewChecklist) ? next.interviewChecklist : defaultChecklistDone;
+    next.interviewChecklist = current.includes(id) ? current.filter(item => item !== id) : [...current, id];
+    writeState(next);
+    renderGrow();
+  }
+  qsa("[data-checklist-item]", root).forEach(item => {
+    item.addEventListener("click", () => toggleChecklistItem(item.dataset.checklistItem));
+    item.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        toggleChecklistItem(item.dataset.checklistItem);
+      }
+    });
+  });
   createIcons();
   wireVeraWidget(root);
   if (location.hash === "#interview-coach") {
     window.setTimeout(() => qs("#interview-coach", root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+  }
+  const historySvg = qs(".cg-history-trend", root);
+  if (historySvg) {
+    const measuredWidth = Math.round(historySvg.getBoundingClientRect().width);
+    if (measuredWidth > 0 && Math.abs(measuredWidth - 600) > 4) {
+      historySvg.outerHTML = historyTrendSvg([58, 67, 76], measuredWidth);
+      createIcons();
+    }
   }
   return;
   root.innerHTML = appShell("intelligence", `
