@@ -3599,21 +3599,58 @@ function universityRequirementChecks(uni, profile) {
 function universityRequirementsPanel(uni, profile) {
   const checks = universityRequirementChecks(uni, profile);
   if (!checks.length) return "";
-  const statusIcon = { ok: "check-circle-2", gap: "alert-triangle", info: "info" };
   const met = checks.filter(check => check.status === "ok").length;
   return `
-    <details class="cg-uni-requirements">
-      <summary>${icon("clipboard-list")} Entry requirements <b>${met}/${checks.length} matched</b> <i>${icon("chevron-down")}</i></summary>
-      <ul>
-        ${checks.map(check => `
-          <li class="${check.status}">
-            ${icon(statusIcon[check.status])}
-            <div><strong>${check.label}</strong><p>${check.note}</p></div>
-          </li>
-        `).join("")}
-      </ul>
-    </details>
+    <button type="button" class="cg-uni-requirements-trigger" data-uni-requirements="${uni.id}">
+      ${icon("clipboard-list")} Entry requirements <b>${met}/${checks.length} matched</b> ${icon("chevron-right")}
+    </button>
   `;
+}
+
+function openUniversityRequirementsModal(uniId) {
+  const uni = DATA.universities.find(item => item.id === uniId);
+  if (!uni) return;
+  const checks = universityRequirementChecks(uni, readState().profile);
+  const statusIcon = { ok: "check-circle-2", gap: "alert-triangle", info: "info" };
+  const met = checks.filter(check => check.status === "ok").length;
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-org-browse-modal cg-uni-requirements-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">${uni.name}</div>
+          <h2>Entry requirements</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <p class="cg-uni-requirements-match">${icon("clipboard-list")} <b>${met}/${checks.length} matched</b> against your profile</p>
+      <div class="cg-uni-requirements">
+        <ul>
+          ${checks.map(check => `
+            <li class="${check.status}">
+              ${icon(statusIcon[check.status])}
+              <div><strong>${check.label}</strong><p>${check.note}</p></div>
+            </li>
+          `).join("")}
+        </ul>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  function close() {
+    backdrop.remove();
+    document.removeEventListener("keydown", onEsc);
+  }
+  function onEsc(event) {
+    if (event.key === "Escape") close();
+  }
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", close));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) close();
+  });
+  document.addEventListener("keydown", onEsc);
+  createIcons();
 }
 
 function renderJobsPage() {
@@ -3638,6 +3675,7 @@ function renderJobsPage() {
   if (state.session.loggedIn && isDiscoverPage && needsOnboarding(root)) return;
   if (isDiscoverPage) {
     const topPick = DATA.jobs.find(job => job.id === "job-ai-product") || DATA.jobs[0];
+    const topPickSaved = state.savedJobs.includes(topPick.id);
     const marketPulse = [
       ["In your market", "Hiring +34%", "AI Product roles", "RM 145k / year", "67% remote-friendly", "312 new openings", "teal"],
       ["Missing from your profile", "Hiring +62%", "Prompt engineering", "RM 9,500 / month", "82% remote-friendly", "48 new openings", "blue"],
@@ -3727,10 +3765,10 @@ function renderJobsPage() {
           <p class="cg-h2-sub">The one role Vera rates highest against your skills, roadmap, and salary target this week.</p>
           <article class="cg-top-pick-card">
             <div class="cg-top-pick-main">
-              <div class="cg-pill-row"><span class="dark">${icon("sparkles")} Vera found this</span><span>${icon("flame")} 91% roadmap match</span><small>Posted 2 days ago - 34 applicants</small></div>
-              <h3>Senior Product Manager, AI Platform</h3>
-              <p class="cg-role-line">${icon("building-2")} Setel (PETRONAS Digital) - ${icon("map-pin")} Kuala Lumpur - Hybrid</p>
-              <p class="cg-salary"><span>Estimated annual salary (Malaysia)</span> RM 140,000 - RM 168,000 <small>/ year</small></p>
+              <div class="cg-pill-row"><span class="dark">${icon("sparkles")} Vera found this</span><span>${icon("flame")} ${topPick.match}% roadmap match</span><small>Posted ${topPick.posted} - 34 applicants</small></div>
+              <h3>${topPick.title}</h3>
+              <p class="cg-role-line">${icon("building-2")} ${topPick.company} - ${icon("map-pin")} ${topPick.location} - ${topPick.type}</p>
+              <p class="cg-salary"><span>Estimated annual salary (Malaysia)</span> ${topPick.salary} <small>/ year</small></p>
               <div class="cg-why-card">
                 <span>${icon("sparkles")} Why Vera recommends this</span>
                 <p>${icon("check-circle-2")} You completed SQL for PM this month.</p>
@@ -3738,14 +3776,14 @@ function renderJobsPage() {
                 <p>${icon("check-circle-2")} You saved 3 AI-native startups recently.</p>
               </div>
               <div class="cg-action-row">
-                <a class="btn btn-primary" href="discover.html?job=${topPick.id}">Explore role ${icon("arrow-up-right")}</a>
-                <button class="btn btn-ghost" type="button">${icon("bookmark")} Save</button>
+                <button type="button" class="btn btn-primary" data-toppick-explore>Explore role ${icon("arrow-up-right")}</button>
+                <button class="btn btn-ghost" type="button" data-toppick-save>${icon(topPickSaved ? "bookmark-check" : "bookmark")} ${topPickSaved ? "Saved" : "Save"}</button>
                 <a class="btn btn-ghost" href="posts.html?topic=Tell me more about this role#messages">Ask Vera more</a>
               </div>
             </div>
             <aside class="cg-top-pick-side">
-              <div><span>Career match</span><strong>91%</strong><small>based on your roadmap</small></div>
-              <div><span>${icon("target")} Skills you already have</span><p><b>Product discovery</b><b>User research</b><b>SQL for PM</b><b>Design systems</b></p><span>${icon("lightbulb")} Skills to strengthen</span><p><em>LLM product design</em><em>Prompt evaluation</em></p></div>
+              <div><span>Career match</span><strong>${topPick.match}%</strong><small>based on your roadmap</small></div>
+              <div><span>${icon("target")} Skills you already have</span><p>${topPick.skills.map(skill => `<b>${skill}</b>`).join("")}</p><span>${icon("lightbulb")} Skills to strengthen</span><p><em>LLM product design</em><em>Prompt evaluation</em></p></div>
               <div class="mini"><span>Interview difficulty</span><strong>Medium</strong><small>3 rounds - case study</small></div>
               <div class="mini"><span>Success odds after roadmap</span><strong>76%</strong><small>if you finish Grow plan</small></div>
               <div class="mini"><span>Applicant strength</span><strong>Top 22%</strong><small>vs. this role</small></div>
@@ -3816,7 +3854,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><div class="cg-section-kicker">Where your career could go next</div><h2>Career Paths</h2><p class="cg-h2-sub">Directions your profile could realistically take next, with salary and demand for each.</p></div>
-            <a class="cg-discover-link-btn" href="posts.html?topic=career paths#messages">Explore all career paths ${icon("arrow-right")}</a>
+            <button type="button" class="cg-discover-link-btn" data-discover-browse="paths">Explore all career paths ${icon("arrow-right")}</button>
           </div>
           <div class="cg-direction-grid">
             ${roleDirections.map(([title, sub, match, salary, demand, why]) => `
@@ -3834,7 +3872,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><div class="cg-section-kicker">Programmes that could accelerate you</div><h2>Recommended Programmes</h2><p class="cg-h2-sub">Courses and certificates ranked by the career return Vera expects for you.</p></div>
-            <a class="cg-discover-link-btn" href="posts.html?topic=programmes#messages">Explore all programmes ${icon("arrow-right")}</a>
+            <button type="button" class="cg-discover-link-btn" data-discover-browse="programs">Explore all programmes ${icon("arrow-right")}</button>
           </div>
           <div class="cg-program-card-grid">
             ${programs.map(([name, sub, tag, cost, duration, why]) => `
@@ -3850,7 +3888,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><div class="cg-section-kicker">Who inspires this path</div><h2>Mentors You can reach out to</h2><p class="cg-h2-sub">People a few steps ahead of you on a similar route, ranked by path overlap.</p></div>
-            <a class="cg-discover-link-btn" href="posts.html#messages">Browse all mentors ${icon("arrow-right")}</a>
+            <button type="button" class="cg-discover-link-btn" data-discover-browse="mentors">Browse all mentors ${icon("arrow-right")}</button>
           </div>
           <div class="cg-mentor-grid">
             ${mentors.map(([name, years, path, why, overlap]) => `
@@ -3873,6 +3911,26 @@ function renderJobsPage() {
         }
       });
     });
+    qs("[data-toppick-explore]", root)?.addEventListener("click", () => openApplicationDetailsModal(topPick.id));
+    qs("[data-toppick-save]", root)?.addEventListener("click", event => {
+      const next = readState();
+      const nowSaved = !next.savedJobs.includes(topPick.id);
+      next.savedJobs = nowSaved ? [...next.savedJobs, topPick.id] : next.savedJobs.filter(id => id !== topPick.id);
+      if (!next.applicationRecords) next.applicationRecords = {};
+      if (nowSaved) next.applicationRecords[topPick.id] = next.applicationRecords[topPick.id] || createApplicationRecord(topPick.id, "saved");
+      else if (!next.applications.includes(topPick.id)) delete next.applicationRecords[topPick.id];
+      writeState(next);
+      event.currentTarget.innerHTML = `${icon(nowSaved ? "bookmark-check" : "bookmark")} ${nowSaved ? "Saved" : "Save"}`;
+      createIcons();
+      showToast(nowSaved ? "Role saved to your dashboard." : "Role removed from saved jobs.");
+    });
+    qsa("[data-discover-browse]", root).forEach(button => button.addEventListener("click", () => {
+      const kind = button.dataset.discoverBrowse;
+      if (kind === "paths") openDiscoverListModal("All career paths", roleDirections.map(discoverPathCard).join(""));
+      if (kind === "programs") openDiscoverListModal("All recommended programmes", programs.map(discoverProgramCard).join(""));
+      if (kind === "mentors") openDiscoverListModal("All mentors", mentors.map(discoverMentorCard).join(""));
+    }));
+    qsa("[data-uni-requirements]", root).forEach(button => button.addEventListener("click", () => openUniversityRequirementsModal(button.dataset.uniRequirements)));
     return;
   }
   if (state.session.loggedIn && document.body.dataset.page === "workspace-jobs") {
@@ -4607,6 +4665,88 @@ function buildOrgCatalog() {
     programme: org.type === "University" ? (org.tags?.[0] || "Career outcomes") : (org.tags?.[1] || "Verified")
   }));
   return { companies, universities, catalog };
+}
+
+function discoverPathCard([title, sub, match, salary, demand, why]) {
+  return `
+    <article class="cg-org-browse-card">
+      <span class="cg-org-browse-logo">${match.replace(" match", "")}</span>
+      <div class="cg-org-browse-body">
+        <h3>${title}</h3>
+        <p>${sub}</p>
+        <div class="cg-org-browse-tags"><span>${salary}</span><span>${demand} demand</span></div>
+        <p class="cg-org-browse-signal">${icon("sparkles")} ${why}</p>
+      </div>
+      <div class="cg-org-browse-actions">
+        <a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(`Tell me more about the ${title} path`)}#messages">${icon("sparkles")} Ask Vera</a>
+      </div>
+    </article>
+  `;
+}
+
+function discoverProgramCard([name, sub, tag, cost, duration, why]) {
+  return `
+    <article class="cg-org-browse-card">
+      <span class="cg-org-browse-logo">${icon("graduation-cap")}</span>
+      <div class="cg-org-browse-body">
+        <h3>${name}</h3>
+        <p>${sub}</p>
+        <div class="cg-org-browse-tags"><span>${cost}</span><span>${duration}</span></div>
+        <p class="cg-org-browse-signal">${icon("sparkles")} ${why}</p>
+      </div>
+      <div class="cg-org-browse-actions">
+        <a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(`Tell me more about ${name}`)}#messages">${icon("sparkles")} Ask Vera</a>
+      </div>
+    </article>
+  `;
+}
+
+function discoverMentorCard([name, years, path, why, overlap]) {
+  return `
+    <article class="cg-org-browse-card">
+      <span class="cg-org-browse-logo">${name.charAt(0)}</span>
+      <div class="cg-org-browse-body">
+        <h3>${name}</h3>
+        <p>${years} &middot; ${path}</p>
+        <div class="cg-org-browse-tags"><span>${overlap}</span></div>
+        <p class="cg-org-browse-signal">${icon("sparkles")} ${why}</p>
+      </div>
+      <div class="cg-org-browse-actions">
+        <a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(`Show me a path like ${name}`)}#messages">${icon("message-circle")} See path</a>
+      </div>
+    </article>
+  `;
+}
+
+function openDiscoverListModal(title, cardsHtml) {
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-org-browse-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Discover</div>
+          <h2>${title}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="cg-org-browse-list">${cardsHtml}</div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  function close() {
+    backdrop.remove();
+    document.removeEventListener("keydown", onEsc);
+  }
+  function onEsc(event) {
+    if (event.key === "Escape") close();
+  }
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", close));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) close();
+  });
+  document.addEventListener("keydown", onEsc);
+  createIcons();
 }
 
 function openOrgBrowserModal(kind) {
