@@ -11350,6 +11350,36 @@ html body[data-page="edit-career-data"] .cg-edit-wide {
   grid-column: 1 / -1 !important;
 }
 
+html body[data-page="edit-career-data"] .cg-onboard-field-shell input {
+  padding-right: 40px !important;
+}
+
+html body[data-page="edit-career-data"] .cg-edit-password-action {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
+
+html body[data-page="edit-career-data"] .cg-edit-password-action p {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  color: #5b6a66 !important;
+  -webkit-text-fill-color: #5b6a66 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+}
+
+html body[data-page="edit-career-data"] .cg-edit-password-action p svg {
+  width: 14px !important;
+  height: 14px !important;
+  flex-shrink: 0 !important;
+}
+
 html body[data-page="edit-career-data"] label {
   display: grid !important;
   gap: 6px !important;
@@ -12979,6 +13009,239 @@ html body:is([data-page="public-profile"], [data-page="settings"]) .btn-ghost {
 
   html body[data-page="public-profile"] .cg-profile-score-grid,
   html body[data-page="settings"] .cg-settings-tile-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Settings page - spec retrofit (scoped to settings only, does not touch public-profile) */
+html body[data-page="settings"]:not(#_) {
+  background: #f7f3ea !important;
+}
+
+html body[data-page="settings"]:not(#_) .container.os-layout,
+html body[data-page="settings"]:not(#_) main > .container {
+  width: min(1240px, calc(100% - 48px)) !important;
+  max-width: 1240px !important;
+  padding: 0 !important;
+}
+
+html body[data-page="settings"]:not(#_) .os-main {
+  padding: 40px 0 !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-page {
+  gap: 32px !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-hero {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 24px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-hero p {
+  max-width: 620px !important;
+  color: #5b6a66 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-tile-grid {
+  gap: 12px !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-tile-grid article {
+  min-height: 0 !important;
+  padding: 16px !important;
+  border: 1px solid #e4dfd3 !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-tile-grid article > span {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 14px !important;
+  background: #c8dddf !important;
+  color: #1f5560 !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-tile-grid article > span svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke-width: 2px !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-tile-grid small {
+  color: #5b6a66 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.16em !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-tile-grid strong {
+  margin-top: 4px !important;
+  color: #1b2e28 !important;
+  font-family: var(--cg-shot-serif) !important;
+  font-size: 28px !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.1 !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-tile-grid p {
+  margin-top: 4px !important;
+  color: #5b6a66 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-layout {
+  gap: 24px !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-wide {
+  gap: 16px !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-card {
+  gap: 16px !important;
+  padding: 16px !important;
+  border: 1px solid #e4dfd3 !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-card h2 {
+  margin: 2px 0 4px !important;
+  color: #1b2e28 !important;
+  font-family: var(--cg-shot-serif) !important;
+  font-size: 22px !important;
+  font-weight: 400 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.01em !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-card p {
+  color: #5b6a66 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-card label {
+  gap: 6px !important;
+  color: #1b2e28 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-card textarea {
+  min-height: 96px !important;
+  padding: 12px 16px !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-toggle-row {
+  min-height: 0 !important;
+  padding: 16px !important;
+  border: 1px solid #e4dfd3 !important;
+  border-radius: 10px !important;
+  background: #eeeae0 !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-toggle-row strong {
+  color: #1b2e28 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-toggle-row small {
+  color: #5b6a66 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-toggle-row input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 36px !important;
+  height: 20px !important;
+  margin: 0 !important;
+  border: 1px solid #e4dfd3 !important;
+  border-radius: 999px !important;
+  background: #e4dfd3 !important;
+  accent-color: unset !important;
+  cursor: pointer;
+  transition: background 150ms ease !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-toggle-row input[type="checkbox"]::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 1px !important;
+  left: 1px !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+  transition: transform 150ms ease !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-toggle-row input[type="checkbox"]:checked {
+  background: #1f5560 !important;
+  border-color: #1f5560 !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-toggle-row input[type="checkbox"]:checked::before {
+  transform: translateX(16px) !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-data-row span,
+html body[data-page="settings"]:not(#_) .cg-settings-data-row a {
+  min-height: 30px !important;
+  padding: 0 12px !important;
+  color: #1f5560 !important;
+  border: 1px solid #e4dfd3 !important;
+  background: #c8dddf !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  transition: background 150ms ease, border-color 150ms ease !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-data-row a {
+  background: #ffffff !important;
+}
+
+html body[data-page="settings"]:not(#_) .cg-settings-data-row a:hover {
+  border-color: #1f5560 !important;
+  background: #c8dddf !important;
+}
+
+@media (max-width: 980px) {
+  html body[data-page="settings"]:not(#_) .cg-settings-hero,
+  html body[data-page="settings"]:not(#_) .cg-settings-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  html body[data-page="settings"]:not(#_) .cg-settings-tile-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html body[data-page="settings"]:not(#_) .cg-settings-tile-grid {
     grid-template-columns: 1fr !important;
   }
 }

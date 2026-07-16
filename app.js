@@ -5372,6 +5372,7 @@ function openReviewModal(target, onSubmitted) {
 
 let dashboardTaskFilter = "";
 let activePostsThread = "";
+let activeInboxFilter = "All";
 let dashboardFocusSnoozed = false;
 
 function renderDashboard() {
@@ -7575,6 +7576,7 @@ function renderProfile() {
   `;
   const projects = [
     {
+      id: "marketpulse",
       title: "MarketPulse - fair-pay salary intelligence",
       label: "Pinned",
       verified: true,
@@ -7582,9 +7584,11 @@ function renderProfile() {
       meta: [["Role", "Full-stack + ML"], ["Duration", "3 months"], ["Team", "2"]],
       impact: "12k+ salary data points modeled",
       chips: ["FastAPI", "PostgreSQL", "React", "XGBoost"],
-      tone: "dark"
+      tone: "dark",
+      links: { code: "https://github.com/mira-tan/marketpulse", demo: "https://marketpulse-demo.vercel.app" }
     },
     {
+      id: "kubu",
       title: "Kubu - student mentor matching",
       label: "Vera verified",
       verified: true,
@@ -7592,8 +7596,10 @@ function renderProfile() {
       meta: [["Role", "Founding Engineer"], ["Duration", "6 months"], ["Team", "4"]],
       impact: "1,200 sign-ups in 8 weeks",
       chips: ["TypeScript", "Supabase", "Tailwind"],
-      tone: "mint"
-    }
+      tone: "mint",
+      links: { code: "https://github.com/mira-tan/kubu", demo: "https://kubu-app.vercel.app" }
+    },
+    ...(Array.isArray(state.portfolioProjects) ? state.portfolioProjects : [])
   ];
   const roles = [
     {
@@ -7627,7 +7633,8 @@ function renderProfile() {
     ["Video", "UMHack demo", "dark"],
     ["Design", "Kubu onboarding", "mint"],
     ["Certificate", "Kaggle certificate", "dark"],
-    ["Slides", "IEEE presentation", "aqua"]
+    ["Slides", "IEEE presentation", "aqua"],
+    ...(Array.isArray(state.portfolioGallery) ? state.portfolioGallery : [])
   ];
   const activities = [
     ["rocket", "Shipped Vera-Lite v0.4", "2 days ago - Project"],
@@ -7676,7 +7683,7 @@ function renderProfile() {
           <section class="cg-up-section">
             <div class="cg-up-section-head">
               <div><span class="cg-up-kicker">Portfolio proof</span><h2>Proof employers can scan in seconds.</h2></div>
-              <a class="cg-up-mini-btn" href="edit-career-data.html">${icon("plus")} Add proof</a>
+              <button type="button" class="cg-up-mini-btn" data-add-proof>${icon("plus")} Add proof</button>
             </div>
             <div class="cg-up-project-grid">
               ${projects.map(project => `
@@ -7687,14 +7694,14 @@ function renderProfile() {
                       ${project.verified ? `<span>${icon("sparkles")} Vera verified</span>` : ""}
                     </div>
                     <h3>${esc(project.title)}</h3>
-                    <a href="#" aria-label="Open project">${icon("arrow-up-right")}</a>
+                    <a href="#" data-project-case-study="${esc(project.id)}" aria-label="Open project">${icon("arrow-up-right")}</a>
                   </div>
                   <div class="cg-up-project-body">
                     <p>${esc(project.body)}</p>
                     <dl>${project.meta.map(([key, value]) => `<div><dt>${esc(key)}</dt><dd>${esc(value)}</dd></div>`).join("")}</dl>
                     <strong>Impact - ${esc(project.impact)}</strong>
                     <div class="cg-up-chip-row">${project.chips.map(chip).join("")}</div>
-                    <footer><span>${icon("github")} Code</span><span>${icon("external-link")} Demo</span><span>${icon("file-text")} Case study</span><a href="#">Read ${icon("arrow-right")}</a></footer>
+                    <footer>${project.links.code ? `<a href="${esc(project.links.code)}" target="_blank" rel="noopener">${icon("github")} Code</a>` : ""}${project.links.demo ? `<a href="${esc(project.links.demo)}" target="_blank" rel="noopener">${icon("external-link")} Demo</a>` : ""}<a href="#" data-project-case-study="${esc(project.id)}">${icon("file-text")} Case study</a><a href="#" data-project-case-study="${esc(project.id)}">Read ${icon("arrow-right")}</a></footer>
                   </div>
                 </article>
               `).join("")}
@@ -7742,15 +7749,15 @@ function renderProfile() {
           <section class="cg-up-section">
             <div class="cg-up-section-head">
               <div><span class="cg-up-kicker">Portfolio gallery</span><h2>Visual work</h2></div>
-              <a class="cg-up-mini-btn" href="edit-career-data.html">${icon("plus")} Upload</a>
+              <button type="button" class="cg-up-mini-btn" data-upload-gallery>${icon("plus")} Upload</button>
             </div>
             <div class="cg-up-gallery">
               ${gallery.map(([label, title, tone]) => `
                 <article class="cg-up-gallery-card ${tone}">
                   <span>${esc(label)}</span>
-                  ${label === "Video" ? `<button type="button" aria-label="Play video">${icon("play")}</button>` : ""}
+                  ${label === "Video" ? `<button type="button" aria-label="Play video" data-gallery-preview="${esc(title)}">${icon("play")}</button>` : ""}
                   <strong>${esc(title)}</strong>
-                  <i>${icon("arrow-up-right")}</i>
+                  <a href="#" aria-label="Open ${esc(title)}" data-gallery-preview="${esc(title)}">${icon("arrow-up-right")}</a>
                 </article>
               `).join("")}
             </div>
@@ -7823,6 +7830,215 @@ function renderProfile() {
   `);
 
   qs("[data-generate-resume]", root)?.addEventListener("click", () => openResumeModal());
+  qsa("[data-project-case-study]", root).forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    const project = projects.find(item => item.id === link.dataset.projectCaseStudy);
+    if (project) openProjectCaseStudyModal(project);
+  }));
+  qs("[data-add-proof]", root)?.addEventListener("click", () => openAddProofModal(() => renderProfile()));
+  qs("[data-upload-gallery]", root)?.addEventListener("click", () => openUploadGalleryModal(() => renderProfile()));
+  qsa("[data-gallery-preview]", root).forEach(trigger => trigger.addEventListener("click", event => {
+    event.preventDefault();
+    const match = gallery.find(([, title]) => title === trigger.dataset.galleryPreview);
+    if (match) openGalleryPreviewModal(match);
+  }));
+  createIcons();
+}
+
+function openGalleryPreviewModal([label, title, tone]) {
+  const esc2 = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-gallery-preview-modal" role="dialog" aria-label="${esc2(title)} preview">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">${esc2(label)}</div>
+          <h2>${esc2(title)}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="cg-gallery-preview-art cg-up-gallery-card ${esc2(tone || "")}">${icon(label === "Video" ? "play" : label === "Certificate" ? "award" : label === "Slides" ? "presentation" : "image")}</div>
+      <p class="cg-project-modal-body">${icon("info")} This is a preview placeholder - the full ${esc2(label).toLowerCase()} file lives in your uploaded portfolio media.</p>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  createIcons();
+}
+
+function openUploadGalleryModal(onAdded) {
+  const categories = ["Screenshot", "Video", "Design", "Certificate", "Slides"];
+  const tones = ["mint", "aqua", "dark"];
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-project-modal cg-add-proof-modal" role="dialog" aria-label="Upload to portfolio gallery">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Portfolio gallery</div>
+          <h2>Upload</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <form data-upload-gallery-form>
+        <label>File <small>(screenshot, video, slides, or certificate)</small>
+          <input type="file" name="file" accept="image/*,video/*,.pdf,.ppt,.pptx" data-gallery-file>
+        </label>
+        <div class="cg-add-proof-grid-2">
+          <label>Title<input name="title" required placeholder="e.g. Design system audit"></label>
+          <label>Category
+            <select name="label">${categories.map(cat => `<option value="${cat}">${cat}</option>`).join("")}</select>
+          </label>
+        </div>
+        <div class="hero-actions compact-actions">
+          <button type="submit" class="btn btn-primary">${icon("upload")} Upload</button>
+          <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+        </div>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  qs("[data-upload-gallery-form]", backdrop)?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const file = qs("[data-gallery-file]", backdrop)?.files?.[0];
+    const title = String(form.get("title") || "").trim() || file?.name || "Untitled upload";
+    const label = String(form.get("label") || "Screenshot");
+    const next = readState();
+    next.portfolioGallery = Array.isArray(next.portfolioGallery) ? next.portfolioGallery : [];
+    const tone = tones[next.portfolioGallery.length % tones.length];
+    next.portfolioGallery.unshift([label, title, tone]);
+    writeState(next);
+    showToast("Added to your portfolio gallery.");
+    backdrop.remove();
+    onAdded?.();
+  });
+  createIcons();
+}
+
+function openAddProofModal(onAdded) {
+  const esc2 = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-project-modal cg-add-proof-modal" role="dialog" aria-label="Add portfolio proof">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Portfolio proof</div>
+          <h2>Add proof</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <form data-add-proof-form>
+        <label>Project title<input name="title" required placeholder="e.g. CareerGo mobile redesign"></label>
+        <label>Description<textarea name="body" required placeholder="What did you build, and why does it matter?"></textarea></label>
+        <div class="cg-add-proof-grid-3">
+          <label>Role<input name="role" placeholder="Full-stack"></label>
+          <label>Duration<input name="duration" placeholder="3 months"></label>
+          <label>Team<input name="team" placeholder="2"></label>
+        </div>
+        <label>Impact<input name="impact" placeholder="e.g. 12k+ data points modeled"></label>
+        <label>Tech / tools <small>(comma separated)</small><input name="chips" placeholder="React, Node, PostgreSQL"></label>
+        <div class="cg-add-proof-grid-2">
+          <label>Code link<input name="code" type="url" placeholder="https://github.com/..."></label>
+          <label>Demo link<input name="demo" type="url" placeholder="https://..."></label>
+        </div>
+        <div class="hero-actions compact-actions">
+          <button type="submit" class="btn btn-primary">${icon("plus")} Add to profile</button>
+          <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+        </div>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  qs("[data-add-proof-form]", backdrop)?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const title = String(form.get("title") || "").trim();
+    const body = String(form.get("body") || "").trim();
+    if (!title || !body) return showToast("Add a title and description first.", "note");
+    const meta = [
+      ["Role", String(form.get("role") || "").trim()],
+      ["Duration", String(form.get("duration") || "").trim()],
+      ["Team", String(form.get("team") || "").trim()]
+    ].filter(([, value]) => value);
+    const chips = String(form.get("chips") || "").split(",").map(item => item.trim()).filter(Boolean);
+    const code = String(form.get("code") || "").trim();
+    const demo = String(form.get("demo") || "").trim();
+    const next = readState();
+    next.portfolioProjects = Array.isArray(next.portfolioProjects) ? next.portfolioProjects : [];
+    next.portfolioProjects.unshift({
+      id: `user-project-${Date.now()}`,
+      title,
+      label: "New",
+      verified: false,
+      body,
+      meta,
+      impact: String(form.get("impact") || "").trim() || "Added by you",
+      chips,
+      tone: "",
+      links: { code, demo }
+    });
+    writeState(next);
+    showToast("Proof added to your profile.");
+    backdrop.remove();
+    onAdded?.();
+  });
+  createIcons();
+}
+
+function openProjectCaseStudyModal(project) {
+  const esc2 = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-project-modal" role="dialog" aria-label="${esc2(project.title)} case study">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">${project.verified ? "Vera verified case study" : "Case study"}</div>
+          <h2>${esc2(project.title)}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <p class="cg-project-modal-body">${esc2(project.body)}</p>
+      <dl class="cg-project-modal-meta">${project.meta.map(([key, value]) => `<div><dt>${esc2(key)}</dt><dd>${esc2(value)}</dd></div>`).join("")}</dl>
+      <div class="cg-note">${icon("sparkles")} Impact - ${esc2(project.impact)}</div>
+      <div class="cg-up-chip-row">${project.chips.map(c => `<span class="cg-up-chip">${esc2(c)}</span>`).join("")}</div>
+      <div class="hero-actions compact-actions">
+        ${project.links.code ? `<a class="btn btn-primary" href="${esc2(project.links.code)}" target="_blank" rel="noopener">${icon("github")} View code</a>` : ""}
+        ${project.links.demo ? `<a class="btn ${project.links.code ? "btn-ghost" : "btn-primary"}" href="${esc2(project.links.demo)}" target="_blank" rel="noopener">${icon("external-link")} Open demo</a>` : ""}
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
   createIcons();
 }
 
@@ -8206,6 +8422,37 @@ function renderEditCareerData() {
 
           <section class="cg-edit-card">
             <header>
+              <span>${icon("shield-check")}</span>
+              <div><small>Security</small><h2>Password and login</h2></div>
+            </header>
+            <div class="cg-edit-grid">
+              <label class="cg-edit-wide">Current password
+                <span class="cg-onboard-field-shell">
+                  <input id="security-current-password" name="currentPassword" type="password" autocomplete="current-password" placeholder="Enter current password">
+                  <button type="button" class="cg-onboard-eye" data-toggle-password="security-current-password" aria-label="Show current password">${icon("eye")}</button>
+                </span>
+              </label>
+              <label>New password
+                <span class="cg-onboard-field-shell">
+                  <input id="security-new-password" name="newPassword" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters">
+                  <button type="button" class="cg-onboard-eye" data-toggle-password="security-new-password" aria-label="Show new password">${icon("eye")}</button>
+                </span>
+              </label>
+              <label>Confirm new password
+                <span class="cg-onboard-field-shell">
+                  <input id="security-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Re-enter new password">
+                  <button type="button" class="cg-onboard-eye" data-toggle-password="security-confirm-password" aria-label="Show confirm password">${icon("eye")}</button>
+                </span>
+              </label>
+              <div class="cg-edit-wide cg-edit-password-action">
+                <p>${icon("info")} Use at least 8 characters. You will need your current password to confirm the change.</p>
+                <button type="button" class="btn btn-ghost" data-update-password>${icon("shield-check")} Update password</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="cg-edit-card">
+            <header>
               <span>${icon("graduation-cap")}</span>
               <div><small>Education</small><h2>School and background</h2></div>
             </header>
@@ -8371,6 +8618,40 @@ function renderEditCareerData() {
     showToast("Career data saved.");
     renderEditCareerData();
   });
+
+  qs("[data-update-password]")?.addEventListener("click", () => {
+    const currentInput = qs("#security-current-password");
+    const newInput = qs("#security-new-password");
+    const confirmInput = qs("#security-confirm-password");
+    const currentPassword = String(currentInput?.value || "");
+    const newPassword = String(newInput?.value || "");
+    const confirmPassword = String(confirmInput?.value || "");
+    const next = readState();
+    const account = (next.auth?.users || []).find(user => user.id === next.session.currentUserId);
+    if (!account) {
+      showToast("We could not find your account. Try logging in again.", "info");
+      return;
+    }
+    if (account.password && account.password !== currentPassword) {
+      showToast("Current password is incorrect.", "info");
+      return;
+    }
+    if (newPassword.length < 8) {
+      showToast("New password must be at least 8 characters.", "info");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      showToast("New passwords do not match.", "info");
+      return;
+    }
+    account.password = newPassword;
+    writeState(next);
+    showToast("Password updated.");
+    if (currentInput) currentInput.value = "";
+    if (newInput) newInput.value = "";
+    if (confirmInput) confirmInput.value = "";
+  });
+  wireOnboardPasswordToggle(root);
   createIcons();
 }
 
@@ -9530,8 +9811,10 @@ function renderPosts() {
       time: "Yesterday"
     }
   ];
+  const statePostsById = new Map((state.posts || []).map(post => [post.id, post]));
+  const mergedReferencePosts = referenceFeedPosts.map(reference => statePostsById.has(reference.id) ? { ...reference, ...statePostsById.get(reference.id) } : reference);
   const userPosts = (state.posts || []).filter(post => !referenceFeedPosts.some(reference => reference.id === post.id));
-  const enrichedPosts = [...referenceFeedPosts, ...userPosts].map((post, index) => ({
+  const enrichedPosts = [...mergedReferencePosts, ...userPosts].map((post, index) => ({
     category: ["discussion", "milestone", "hiring", "discussion", "milestone"][index % 5],
     time: ["2h", "4h", "Yesterday", "2d"][index % 4],
     baseComments: Number.isFinite(Number(post.comments)) ? Number(post.comments) : 32 + index * 7,
@@ -9612,11 +9895,27 @@ function renderPosts() {
         ]
       }
     ];
+    const humanThreadReplies = state.humanThreadReplies && typeof state.humanThreadReplies === "object" ? state.humanThreadReplies : {};
+    humanThreads.forEach(thread => {
+      const sent = Array.isArray(humanThreadReplies[thread.id]) ? humanThreadReplies[thread.id] : [];
+      if (sent.length) {
+        thread.messages = [...thread.messages, ...sent];
+        thread.preview = sent[sent.length - 1].text;
+        thread.time = "Just now";
+        thread.unread = "";
+      }
+    });
+    const inboxFilters = ["All", "Recruiters", "Mentors", "Hiring", "Connections"];
+    const inboxFilterTag = { Recruiters: "Recruiter", Mentors: "Mentor", Hiring: "Hiring manager", Connections: "Connection" };
+    if (!inboxFilters.includes(activeInboxFilter)) activeInboxFilter = "All";
     const inboxThreads = [
       { id: "vera", name: "Coach Vera", role: "Your AI career coach", tag: "Coach", preview: veraMessages[veraMessages.length - 1]?.text || "Ask me anything about your career.", time: "now", unread: "" },
       ...humanThreads
     ];
     const activeThread = inboxThreads.find(thread => thread.id === activePostsThread) || inboxThreads[0];
+    const visibleThreads = activeInboxFilter === "All"
+      ? inboxThreads
+      : inboxThreads.filter(thread => thread.tag === inboxFilterTag[activeInboxFilter]);
 
     const veraQuickPrompts = VERA_QUICK_PROMPTS;
     const threadPanel = activeThread.id === "vera" ? `
@@ -9645,13 +9944,13 @@ function renderPosts() {
               <article class="cg-vera-suggests">
                 <span>${icon("sparkles")} Vera suggests</span>
                 <p>${activeThread.veraSuggest}</p>
-                <footer><button type="button">Use draft</button><button type="button">Rewrite</button></footer>
+                <footer><button type="button" data-vera-suggest-use>Use draft</button><button type="button" data-vera-suggest-rewrite>Rewrite</button></footer>
               </article>
             ` : ""}
           </section>
-          <form class="cg-message-composer">
-            <input placeholder="Write a message...">
-            <button type="button">${icon("send")} Send</button>
+          <form class="cg-message-composer" data-human-thread-composer>
+            <input placeholder="Write a message..." data-human-thread-input>
+            <button type="submit">${icon("send")} Send</button>
           </form>
     `;
 
@@ -9662,10 +9961,10 @@ function renderPosts() {
           <h1>Inbox</h1>
           <label class="cg-inbox-search">${icon("search")}<input placeholder="Search people or messages"></label>
           <div class="cg-inbox-filters">
-            ${["All", "Recruiters", "Mentors", "Hiring", "Connections"].map((label, index) => `<button class="${index === 0 ? "active" : ""}" type="button">${label}</button>`).join("")}
+            ${inboxFilters.map(label => `<button class="${label === activeInboxFilter ? "active" : ""}" type="button" data-inbox-filter="${label}">${label}</button>`).join("")}
           </div>
           <div class="cg-thread-list">
-            ${inboxThreads.map(thread => `
+            ${visibleThreads.length ? visibleThreads.map(thread => `
               <article class="cg-thread-card ${thread.id === activeThread.id ? "active" : ""}" data-thread-id="${thread.id}">
                 <span class="cg-feed-avatar">${postInitials(thread.name)}</span>
                 <div>
@@ -9675,7 +9974,7 @@ function renderPosts() {
                 </div>
                 ${thread.unread ? `<i>${thread.unread}</i>` : ""}
               </article>
-            `).join("")}
+            `).join("") : `<p class="cg-inbox-empty">No conversations in this category yet.</p>`}
           </div>
           <p class="cg-inbox-foot">Looking to message someone new? Go to <a href="posts.html#network">Network</a>.</p>
         </aside>
@@ -9691,6 +9990,40 @@ function renderPosts() {
       activePostsThread = card.dataset.threadId;
       renderPosts();
     }));
+    qsa("[data-inbox-filter]", root).forEach(button => button.addEventListener("click", () => {
+      activeInboxFilter = button.dataset.inboxFilter;
+      renderPosts();
+    }));
+    const humanComposer = qs("[data-human-thread-composer]", root);
+    const humanInput = qs("[data-human-thread-input]", root);
+    if (humanComposer && humanInput) {
+      humanComposer.addEventListener("submit", event => {
+        event.preventDefault();
+        const trimmed = humanInput.value.trim();
+        if (!trimmed) return;
+        const next = readState();
+        next.humanThreadReplies = next.humanThreadReplies && typeof next.humanThreadReplies === "object" ? next.humanThreadReplies : {};
+        const list = Array.isArray(next.humanThreadReplies[activeThread.id]) ? next.humanThreadReplies[activeThread.id] : [];
+        next.humanThreadReplies[activeThread.id] = [...list, { dir: "outgoing", text: trimmed }];
+        writeState(next);
+        showToast(`Message sent to ${activeThread.name}.`);
+        renderPosts();
+      });
+    }
+    qs("[data-vera-suggest-use]", root)?.addEventListener("click", () => {
+      if (!humanInput) return;
+      humanInput.value = String(activeThread.veraSuggest || "").replace(/^"|"$/g, "");
+      humanInput.focus();
+      showToast("Draft added - edit and send.");
+    });
+    qs("[data-vera-suggest-rewrite]", root)?.addEventListener("click", () => {
+      if (!humanInput) return;
+      const draft = String(activeThread.veraSuggest || "").replace(/^"|"$/g, "");
+      const shorter = draft.split(". ")[0].trim();
+      humanInput.value = shorter.endsWith(".") ? shorter : `${shorter}.`;
+      humanInput.focus();
+      showToast("Vera shortened the draft - edit and send.");
+    });
     function sendVeraThreadMessage(text) {
       const trimmed = text.trim();
       if (!trimmed) return;
@@ -9945,9 +10278,19 @@ function renderPosts() {
     });
   });
   qsa("[data-feed-tab-link]", root).forEach(link => link.addEventListener("click", () => window.setTimeout(renderPosts, 0)));
+  const findOrSeedPost = (next, id) => {
+    let post = next.posts.find(item => item.id === id);
+    if (!post) {
+      const seed = referenceFeedPosts.find(item => item.id === id);
+      if (!seed) return null;
+      post = { ...seed, commentsList: [], commentsOpen: false, saved: false, liked: false };
+      next.posts.push(post);
+    }
+    return post;
+  };
   qsa("[data-like-post]", root).forEach(button => button.addEventListener("click", () => {
     const next = readState();
-    const post = next.posts.find(item => item.id === button.dataset.likePost);
+    const post = findOrSeedPost(next, button.dataset.likePost);
     if (!post) return;
     post.liked = !post.liked;
     post.reactions = Math.max(0, (post.reactions || 0) + (post.liked ? 1 : -1));
@@ -9956,7 +10299,7 @@ function renderPosts() {
   }));
   qsa("[data-save-post]", root).forEach(button => button.addEventListener("click", () => {
     const next = readState();
-    const post = next.posts.find(item => item.id === button.dataset.savePost);
+    const post = findOrSeedPost(next, button.dataset.savePost);
     if (!post) return;
     post.saved = !post.saved;
     writeState(next);
@@ -9965,7 +10308,7 @@ function renderPosts() {
   }));
   qsa("[data-comment-toggle]", root).forEach(button => button.addEventListener("click", () => {
     const next = readState();
-    const post = next.posts.find(item => item.id === button.dataset.commentToggle);
+    const post = findOrSeedPost(next, button.dataset.commentToggle);
     if (!post) return;
     post.commentsOpen = !post.commentsOpen;
     writeState(next);
@@ -9976,7 +10319,7 @@ function renderPosts() {
     const comment = String(new FormData(form).get("comment") || "").trim();
     if (!comment) return;
     const next = readState();
-    const post = next.posts.find(item => item.id === form.dataset.commentForm);
+    const post = findOrSeedPost(next, form.dataset.commentForm);
     if (!post) return;
     post.commentsList = Array.isArray(post.commentsList) ? post.commentsList : [];
     post.commentsList.push({ author: getUserName(next), body: comment, time: "Just now" });
