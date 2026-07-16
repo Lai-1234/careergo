@@ -1,7 +1,7 @@
 /* explore.html - public Explore/Jobs page, layered after enterprise.css */
 
 html body[data-page="explore"] .explore-page {
-  background: var(--home-v2-background, #f8f7f4);
+  background: var(--home-v2-background, #f7f3ea);
 }
 
 html body[data-page="explore"] .eyebrow.explore-eyebrow {
@@ -23,7 +23,7 @@ html body[data-page="explore"] .explore-eyebrow span {
 /* Hero */
 
 html body[data-page="explore"] .explore-hero {
-  padding: clamp(64px, 8vw, 96px) 0 48px;
+  padding: 48px 0 32px;
   text-align: center;
 }
 
@@ -35,14 +35,14 @@ html body[data-page="explore"] .explore-hero-inner {
 html body[data-page="explore"] .explore-hero h1 {
   max-width: 720px;
   margin: 18px 0 0;
-  font-size: clamp(40px, 5.5vw, 64px) !important;
+  font-size: clamp(36px, 3.6vw, 44px) !important;
 }
 
 html body[data-page="explore"] .explore-hero p {
   max-width: 620px;
   margin: 20px 0 0;
-  font-size: 18px !important;
-  line-height: 1.6 !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
 }
 
 html body[data-page="explore"] .explore-search {
@@ -56,7 +56,7 @@ html body[data-page="explore"] .explore-trending-row {
 /* Section rhythm */
 
 html body[data-page="explore"] .explore-section {
-  padding-block: clamp(56px, 6vw, 80px);
+  padding-block: 40px;
 }
 
 html body[data-page="explore"] .explore-section-head {
@@ -90,9 +90,9 @@ html body[data-page="explore"] :is(.explore-opportunity-card, .explore-trending-
   color: inherit;
   text-decoration: none;
   background: var(--home-v2-card, #fff);
-  border: 1px solid var(--home-v2-border, #e5e7eb);
-  border-radius: 16px;
-  padding: 20px;
+  border: 1px solid var(--home-v2-border, #e4dfd3);
+  border-radius: 18px;
+  padding: 16px;
   box-shadow: var(--home-v2-shadow-soft);
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
@@ -121,7 +121,7 @@ html body[data-page="explore"] .explore-card-top {
 html body[data-page="explore"] .explore-opportunity-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: 12px;
 }
 
 html body[data-page="explore"] .explore-match-pill {
@@ -210,7 +210,7 @@ html body[data-page="explore"] .explore-note {
 html body[data-page="explore"] .explore-trending-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
+  gap: 12px;
 }
 
 html body[data-page="explore"] .explore-trending-tag {
@@ -268,7 +268,7 @@ html body[data-page="explore"] .explore-growth {
 html body[data-page="explore"] .explore-company-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 html body[data-page="explore"] .explore-company-card {
@@ -317,7 +317,7 @@ html body[data-page="explore"] .explore-open-pill svg {
 html body[data-page="explore"] .explore-program-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
+  gap: 12px;
 }
 
 html body[data-page="explore"] .explore-program-card .explore-card-top svg {
@@ -366,7 +366,7 @@ html body[data-page="explore"] .explore-program-card a svg {
 html body[data-page="explore"] .explore-collection-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: 12px;
 }
 
 html body[data-page="explore"] .explore-collection-card .explore-card-top {

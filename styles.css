@@ -12409,8 +12409,8 @@ html body:is([data-page="home"], [data-page="about"], [data-page="community"], [
 /* Login redesign */
 body[data-page="login"] {
   background:
-    radial-gradient(circle at 82% 20%, rgba(77, 182, 172, 0.14), transparent 30%),
-    linear-gradient(180deg, #f8f7f4 0%, #f2f3ed 100%);
+    radial-gradient(circle at 82% 20%, rgba(166, 203, 209, 0.18), transparent 30%),
+    linear-gradient(180deg, #f7f3ea 0%, #efe8d8 100%) !important;
 }
 
 body[data-page="login"] .login-redesign {
@@ -12426,13 +12426,13 @@ body[data-page="login"] .login-redesign {
 
 body[data-page="login"] .login-story-card {
   min-height: 560px;
-  padding: 32px;
-  border: 1px solid rgba(15, 41, 59, 0.08);
-  border-radius: 24px;
+  padding: 16px;
+  border: 1px solid #e4dfd3;
+  border-radius: 18px;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.82)),
-    radial-gradient(circle at 82% 18%, rgba(77, 182, 172, 0.13), transparent 36%);
-  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04), 0 24px 48px -16px rgba(15, 76, 92, 0.14);
+    radial-gradient(circle at 82% 18%, rgba(166, 203, 209, 0.16), transparent 36%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -12440,33 +12440,33 @@ body[data-page="login"] .login-story-card {
 
 body[data-page="login"] .login-eyebrow {
   margin: 0 0 16px;
-  color: #64748b;
+  color: #5b6a66;
   font-family: "Inter", system-ui, sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   line-height: 1.4;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 body[data-page="login"] .login-story-card h1,
 body[data-page="login"] .login-form-heading h2 {
   margin: 0;
-  color: #1e293b;
-  font-family: "Fraunces", Georgia, serif;
-  font-size: clamp(38px, 4vw, 50px);
-  font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  color: #1b2e28 !important;
+  font-family: "Fraunces", Georgia, serif !important;
+  font-size: clamp(36px, 3.6vw, 44px) !important;
+  font-weight: 400 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.01em !important;
 }
 
 body[data-page="login"] .login-story-copy,
 body[data-page="login"] .login-form-heading p:not(.login-eyebrow) {
   margin: 20px 0 0;
   max-width: 560px;
-  color: #64748b;
-  font-size: 16px;
-  line-height: 1.6;
+  color: #5b6a66;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 body[data-page="login"] .vera-coach-note {
@@ -12474,7 +12474,7 @@ body[data-page="login"] .vera-coach-note {
   align-items: center;
   gap: 16px;
   padding: 16px;
-  border: 1px solid rgba(15, 41, 59, 0.08);
+  border: 1px solid #e4dfd3;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.76);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
@@ -12485,24 +12485,24 @@ body[data-page="login"] .vera-coach-note img {
   height: 58px;
   border-radius: 999px;
   padding: 6px;
-  border: 1px solid rgba(77, 182, 172, 0.35);
-  background: #f8f7f4;
+  border: 1px solid rgba(166, 203, 209, 0.5);
+  background: #f7f3ea;
   object-fit: contain;
 }
 
 body[data-page="login"] .vera-coach-note p {
   margin: 0 0 4px;
-  color: #64748b;
-  font-size: 12px;
+  color: #5b6a66;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 body[data-page="login"] .vera-coach-note span {
-  color: #1e293b;
+  color: #1b2e28;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 body[data-page="login"] .login-form-column {
@@ -12511,11 +12511,11 @@ body[data-page="login"] .login-form-column {
 
 body[data-page="login"] .login-form-card {
   margin-top: 34px;
-  padding: 32px;
-  border: 1px solid rgba(15, 41, 59, 0.08);
-  border-radius: 24px;
+  padding: 16px;
+  border: 1px solid #e4dfd3;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04), 0 24px 48px -16px rgba(15, 76, 92, 0.14);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 body[data-page="login"] .login-social-stack {
@@ -12526,8 +12526,8 @@ body[data-page="login"] .login-social-stack {
 body[data-page="login"] .login-social-button,
 body[data-page="login"] .login-submit {
   width: 100%;
-  height: 44px;
-  border-radius: 14px;
+  height: 40px;
+  border-radius: 8px;
   font-family: "Inter", system-ui, sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -12539,14 +12539,14 @@ body[data-page="login"] .login-social-button {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  border: 1px solid #e5e7eb;
-  color: #1e293b;
-  background: #f8f7f4;
+  border: 1px solid #e4dfd3;
+  color: #1b2e28;
+  background: #ffffff;
 }
 
 body[data-page="login"] .login-social-button span {
   min-width: 18px;
-  color: #0b6d65;
+  color: #1f5560;
   font-size: 12px;
   font-weight: 600;
 }
@@ -12557,9 +12557,9 @@ body[data-page="login"] .login-divider {
   gap: 16px;
   align-items: center;
   margin: 28px 0;
-  color: #64748b;
-  font-size: 12px;
-  letter-spacing: 0.18em;
+  color: #5b6a66;
+  font-size: 11px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -12567,14 +12567,14 @@ body[data-page="login"] .login-divider::before,
 body[data-page="login"] .login-divider::after {
   content: "";
   height: 1px;
-  background: #e5e7eb;
+  background: #e4dfd3;
 }
 
 body[data-page="login"] .login-field {
   display: grid;
   gap: 10px;
   margin-top: 18px;
-  color: #1e293b;
+  color: #1b2e28 !important;
   font-size: 13px;
   font-weight: 500;
 }
@@ -12587,40 +12587,40 @@ body[data-page="login"] .login-field > span:first-child {
 
 body[data-page="login"] .login-field a,
 body[data-page="login"] .login-create-account a {
-  color: #0b6d65;
+  color: #1f5560;
   font-weight: 500;
   text-decoration: none;
 }
 
 body[data-page="login"] .login-input-shell {
-  height: 44px;
+  height: 40px;
   display: grid;
   grid-template-columns: 18px 1fr auto;
   align-items: center;
   gap: 10px;
   padding: 0 14px;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  background: #f8f7f4;
+  border: 1px solid #e4dfd3;
+  border-radius: 8px;
+  background: #ffffff;
 }
 
 body[data-page="login"] .login-input-shell svg {
   width: 16px;
   height: 16px;
-  color: #64748b;
+  color: #5b6a66;
 }
 
 body[data-page="login"] .login-input-shell input {
   width: 100%;
   border: 0;
   outline: 0;
-  color: #1e293b;
+  color: #1b2e28 !important;
   background: transparent;
   font: 400 14px/1.4 "Inter", system-ui, sans-serif;
 }
 
 body[data-page="login"] .login-input-shell input::placeholder {
-  color: #64748b;
+  color: #5b6a66;
 }
 
 body[data-page="login"] .login-remember {
@@ -12628,14 +12628,14 @@ body[data-page="login"] .login-remember {
   align-items: center;
   gap: 10px;
   margin-top: 18px;
-  color: #64748b;
+  color: #5b6a66;
   font-size: 13px;
 }
 
 body[data-page="login"] .login-remember input {
   width: 16px;
   height: 16px;
-  accent-color: #0b6d65;
+  accent-color: #1f5560;
 }
 
 body[data-page="login"] .login-submit {
@@ -12657,7 +12657,7 @@ body[data-page="login"] .login-submit svg {
 
 body[data-page="login"] .login-create-account {
   margin: 24px 0 0;
-  color: #64748b;
+  color: #5b6a66;
   text-align: center;
   font-size: 14px;
 }
@@ -12681,8 +12681,8 @@ body[data-page="login"] .login-create-account {
 
   body[data-page="login"] .login-story-card,
   body[data-page="login"] .login-form-card {
-    padding: 22px;
-    border-radius: 20px;
+    padding: 16px;
+    border-radius: 18px;
   }
 }
 

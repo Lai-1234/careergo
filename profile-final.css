@@ -30,19 +30,19 @@ body[data-page="profile"] .container.os-layout {
 
 /* User profile redesign from CareerGo user page design system. */
 html body[data-page="profile"] {
-  --up-bg: #f8f4ea;
-  --up-ink: #1f332c;
-  --up-muted: #64748b;
-  --up-line: #e5e7eb;
+  --up-bg: #f7f3ea;
+  --up-ink: #1b2e28;
+  --up-muted: #5b6a66;
+  --up-line: #e4dfd3;
   --up-card: #ffffff;
-  --up-surface: #f2f3f5;
-  --up-teal: #0f4c5c;
-  --up-teal-2: #146c78;
-  --up-accent: #4db6ac;
-  --up-mint: rgba(77, 182, 172, 0.1);
-  --up-shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 8px -2px rgba(15, 23, 42, 0.06);
-  --up-shadow-elegant: 0 1px 2px rgba(15, 76, 92, 0.04), 0 8px 24px -12px rgba(15, 76, 92, 0.12);
-  --up-shadow-lift: 0 2px 4px rgba(15, 23, 42, 0.04), 0 24px 48px -16px rgba(15, 76, 92, 0.18);
+  --up-surface: #eeeae0;
+  --up-teal: #1f5560;
+  --up-teal-2: #173f47;
+  --up-accent: #a6cbd1;
+  --up-mint: rgba(166, 203, 209, 0.15);
+  --up-shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --up-shadow-elegant: 0 18px 40px -24px rgba(27, 46, 40, 0.35);
+  --up-shadow-lift: 0 18px 40px -24px rgba(27, 46, 40, 0.35);
   background: var(--up-bg) !important;
   color: var(--up-ink) !important;
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
@@ -62,8 +62,8 @@ html body[data-page="profile"] .os-main {
 html body[data-page="profile"] :is(h1, h2, h3) {
   font-family: "Fraunces", Georgia, serif !important;
   color: var(--up-ink) !important;
-  font-weight: 500 !important;
-  letter-spacing: -0.02em !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
 }
 
 .cg-user-profile-v2 {
@@ -74,7 +74,7 @@ html body[data-page="profile"] :is(h1, h2, h3) {
 .cg-up-hero {
   overflow: hidden;
   border: 1px solid var(--up-line);
-  border-radius: 28px;
+  border-radius: 22px;
   background: var(--up-card);
   box-shadow: var(--up-shadow-lift);
 }
@@ -83,10 +83,10 @@ html body[data-page="profile"] :is(h1, h2, h3) {
   position: relative;
   min-height: 180px;
   background:
-    linear-gradient(135deg, rgba(15, 76, 92, 0.06), rgba(77, 182, 172, 0.12)),
-    radial-gradient(circle at 17% 10%, rgba(77, 182, 172, 0.22), transparent 260px),
-    radial-gradient(circle at 74% 28%, rgba(20, 108, 120, 0.16), transparent 320px),
-    #f2f3f5;
+    linear-gradient(135deg, rgba(31, 85, 96, 0.06), rgba(166, 203, 209, 0.12)),
+    radial-gradient(circle at 17% 10%, rgba(166, 203, 209, 0.22), transparent 260px),
+    radial-gradient(circle at 74% 28%, rgba(31, 85, 96, 0.16), transparent 320px),
+    #eeeae0;
 }
 
 .cg-up-cover::after {
@@ -109,9 +109,9 @@ html body[data-page="profile"] :is(h1, h2, h3) {
   place-items: center;
   width: 104px;
   height: 104px;
-  border: 6px solid rgba(77, 182, 172, 0.28);
+  border: 6px solid rgba(166, 203, 209, 0.28);
   border-radius: 999px;
-  background: linear-gradient(135deg, #0f4c5c, #4db6ac);
+  background: linear-gradient(135deg, #1f5560, #a6cbd1);
   color: #f8f4ea;
   font-family: "Fraunces", Georgia, serif;
   font-size: 30px;
@@ -148,26 +148,26 @@ html body[data-page="profile"] :is(h1, h2, h3) {
   align-items: center;
   gap: 6px;
   margin-bottom: 10px;
-  color: #64748b;
+  color: var(--up-muted);
   font-size: 11px;
   font-weight: 500;
   line-height: 1.4;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 .cg-up-identity h1 {
   margin: 0;
-  font-size: clamp(48px, 6vw, 72px);
+  font-size: clamp(36px, 3.6vw, 44px);
   line-height: 1.05;
 }
 
 .cg-up-identity p {
   margin: 10px 0 0;
-  color: #41534c;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.6;
+  color: var(--up-muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 .cg-up-meta,
@@ -210,7 +210,7 @@ html body[data-page="profile"] :is(h1, h2, h3) {
   gap: 8px;
   min-height: 40px;
   padding: 0 18px;
-  border-radius: 999px;
+  border-radius: 8px;
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -406,13 +406,16 @@ html body[data-page="profile"] :is(h1, h2, h3) {
   bottom: 20px;
   margin: 0;
   color: #f8f4ea !important;
-  font-size: 22px;
-  line-height: 1.15;
+  font-size: 14px;
+  line-height: 1.3;
 }
 
 html body[data-page="profile"] .cg-up-project-art h3 {
   color: #f8f4ea !important;
   -webkit-text-fill-color: #f8f4ea !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
 }
 
 .cg-up-project-art a {
@@ -423,7 +426,7 @@ html body[data-page="profile"] .cg-up-project-art h3 {
 }
 
 .cg-up-project-body {
-  padding: 20px;
+  padding: 16px;
 }
 
 .cg-up-project-body p,
@@ -522,16 +525,19 @@ html body[data-page="profile"] .cg-up-project-art h3 {
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #0f4c5c, #146c78);
+  background: linear-gradient(135deg, #1f5560, #173f47);
   color: #f8f4ea;
   font-weight: 700;
 }
 
-.cg-up-role-card h3,
-.cg-up-edu-card h3 {
+html body[data-page="profile"] .cg-up-role-card h3,
+html body[data-page="profile"] .cg-up-edu-card h3 {
   margin: 0;
-  font-size: 22px;
-  line-height: 1.15;
+  color: #1b2e28 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.3;
 }
 
 .cg-up-role-card strong {
