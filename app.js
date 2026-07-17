@@ -5732,7 +5732,7 @@ function renderDashboard() {
             <h2>Vera's Recommended Roles</h2>
             <p class="cg-h2-sub">Matched to your skills, salary target, and the roles you keep saving.</p>
           </div>
-          <a href="discover.html">See More ${icon("chevron-right")}</a>
+          <a href="recommended-roles.html">See More ${icon("chevron-right")}</a>
         </div>
         <div class="cg-role-grid">
           ${topJobs.map(job => {
@@ -5818,6 +5818,104 @@ function renderDashboard() {
   }));
   wireVeraWidget(root);
   initDashboardTour();
+}
+
+const RECOMMENDED_ROLES = [
+  { id: "rr-linear", company: "Linear", title: "Product Manager, Growth", match: 94, location: "San Francisco", mode: "Remote", salary: "$180k - 210k", insight: "Matches your PM roadmap - Design-adjacent - Series C", warmIntro: false },
+  { id: "rr-notion", company: "Notion", title: "Associate PM", match: 88, location: "New York", mode: "Hybrid", salary: "$150k - 175k", insight: "Warm intro available - APM-friendly team", warmIntro: true },
+  { id: "rr-perplexity", company: "Perplexity", title: "PM, AI Products", match: 82, location: "Remote", mode: "Remote", salary: "$170k - 200k", insight: "Your LLM eval posts align - Fast-moving team", warmIntro: false },
+  { id: "rr-setel", company: "Setel", title: "Senior PM, Payments", match: 91, location: "Kuala Lumpur", mode: "Hybrid", salary: "RM 14k - 18k", insight: "AI-native squad - Matches saved roles", warmIntro: false },
+  { id: "rr-carsome", company: "Carsome", title: "Product Manager, Marketplace", match: 87, location: "Kuala Lumpur", mode: "On-site", salary: "RM 12k - 16k", insight: "3 alumni from your uni in PM", warmIntro: false },
+  { id: "rr-storehub", company: "StoreHub", title: "PM, Merchant Growth", match: 85, location: "Remote (MY)", mode: "Remote", salary: "RM 11k - 15k", insight: "Async culture matches your style", warmIntro: false },
+  { id: "rr-figma", company: "Figma", title: "Product Manager, Platform", match: 80, location: "Remote", mode: "Remote", salary: "$160k - 190k", insight: "Design-tool fluency valued - Warm intro via Priya", warmIntro: true },
+  { id: "rr-grab", company: "Grab", title: "Senior PM, Fintech", match: 78, location: "Kuala Lumpur", mode: "Hybrid", salary: "RM 13k - 17k", insight: "Fintech domain match - Saved company", warmIntro: false },
+  { id: "rr-stripe", company: "Stripe", title: "PM, APAC Payments", match: 90, location: "Remote (SEA)", mode: "Remote", salary: "$175k - 205k", insight: "Already in your pipeline - Round 2 booked", warmIntro: true }
+];
+
+let recommendedRolesFilter = "all";
+
+function renderRecommendedRoles() {
+  const root = qs("[data-recommended-roles]");
+  if (!root) return;
+  if (!requireAccount(root, "see roles picked by Vera")) return;
+  if (needsOnboarding(root)) return;
+  const state = readState();
+  const filters = [
+    ["all", "All 42"],
+    ["top", "Top match (>90)"],
+    ["warm", "Warm intros"],
+    ["remote", "Remote"],
+    ["hybrid", "Hybrid"],
+    ["saved", "Saved"]
+  ];
+  const filtered = RECOMMENDED_ROLES.filter(role => {
+    if (recommendedRolesFilter === "top") return role.match > 90;
+    if (recommendedRolesFilter === "warm") return role.warmIntro;
+    if (recommendedRolesFilter === "remote") return role.mode === "Remote";
+    if (recommendedRolesFilter === "hybrid") return role.mode === "Hybrid";
+    if (recommendedRolesFilter === "saved") return state.savedJobs.includes(role.id);
+    return true;
+  });
+  root.innerHTML = `
+    <section class="cg-rp">
+      <a class="cg-rp-back" href="dashboard.html">${icon("arrow-left")} Back</a>
+      <header class="cg-rp-hero">
+        <div>
+          <span class="cg-section-kicker">For you</span>
+          <h1>Roles picked by <em>Vera.</em></h1>
+          <p>42 roles curated for your Product Management journey - ranked by fit, warm intros, and trajectory. Vera refreshes this list every morning.</p>
+        </div>
+        <span class="pill cg-rp-ai-pill">${icon("bot")} Ranked by AI match</span>
+      </header>
+
+      <div class="cg-rp-filters">
+        <div class="cg-rp-filter-pills">
+          ${filters.map(([key, label]) => `<button type="button" class="pill${recommendedRolesFilter === key ? " active" : ""}" data-rp-filter="${key}">${label}</button>`).join("")}
+        </div>
+        <button type="button" class="btn btn-ghost" data-rp-more-filters>${icon("sliders-horizontal")} More filters</button>
+      </div>
+      <p class="cg-rp-count">Showing ${filtered.length} of 42</p>
+
+      <div class="cg-rp-grid">
+        ${filtered.length ? filtered.map(role => {
+          const isSaved = state.savedJobs.includes(role.id);
+          return `
+          <article class="cg-rp-card">
+            <div class="cg-rp-card-head">
+              <span class="cg-rp-mono">${role.company.charAt(0)}</span>
+              <div class="cg-rp-card-id"><small>${role.company}</small><h3>${role.title}</h3></div>
+              <span class="cg-rp-match"><strong>${role.match}</strong><small>Match</small></span>
+            </div>
+            <p class="cg-rp-meta">${icon("map-pin")} ${role.location} &middot; ${role.mode} &middot; ${role.salary}</p>
+            <p class="cg-rp-insight">${icon("sparkles")} ${role.insight}</p>
+            <div class="cg-rp-actions">
+              <a class="btn btn-primary" href="discover.html">View role ${icon("chevron-right")}</a>
+              <button type="button" class="btn btn-ghost" data-rp-save="${role.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save"}</button>
+            </div>
+          </article>
+        `;
+        }).join("") : `<p class="cg-rp-empty">No roles match this filter yet.</p>`}
+      </div>
+      ${veraWidgetMarkup()}
+    </section>
+  `;
+  createIcons();
+  wireVeraWidget(root);
+  qsa("[data-rp-filter]", root).forEach(btn => btn.addEventListener("click", () => {
+    recommendedRolesFilter = btn.dataset.rpFilter;
+    renderRecommendedRoles();
+  }));
+  qs("[data-rp-more-filters]", root)?.addEventListener("click", () => showToast("More filters are coming soon."));
+  qsa("[data-rp-save]", root).forEach(btn => btn.addEventListener("click", () => {
+    const roleId = btn.dataset.rpSave;
+    const role = RECOMMENDED_ROLES.find(item => item.id === roleId);
+    const next = readState();
+    const nowSaved = next.savedJobs.includes(roleId);
+    next.savedJobs = nowSaved ? next.savedJobs.filter(id => id !== roleId) : [...next.savedJobs, roleId];
+    writeState(syncCurrentUser(next));
+    showToast(nowSaved ? "Role removed from saved jobs." : `Saved ${role?.title || "role"} at ${role?.company || "this company"}.`);
+    renderRecommendedRoles();
+  }));
 }
 
 function normalizeSkillToken(value) {
@@ -11073,6 +11171,7 @@ function init() {
   renderDirectoryPage(document.body.dataset.directory || "");
   renderDiscoverOrgDirectory();
   renderDashboard();
+  renderRecommendedRoles();
   renderVera();
   renderAuth();
   renderCandidateOnboarding();
