@@ -3837,7 +3837,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><h2>Featured Companies</h2><p class="cg-h2-sub">Employers Vera is watching for you - tap a card for ratings and reviews.</p></div>
-            <button type="button" class="cg-discover-link-btn" data-org-browse-open="companies">More Companies ${icon("arrow-right")}</button>
+            <a class="cg-discover-link-btn" href="discover-companies.html">More Companies ${icon("arrow-right")}</a>
           </div>
           <div class="cg-featured-org-grid">
             ${featuredCompanies.map(([id, name, sub, tag, roles, why]) => `
@@ -3853,7 +3853,7 @@ function renderJobsPage() {
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
             <div><h2>Featured Universities</h2><p class="cg-h2-sub">Institutions that fit your path - open Entry requirements on each card to check your eligibility.</p></div>
-            <button type="button" class="cg-discover-link-btn" data-org-browse-open="universities">More Universities ${icon("arrow-right")}</button>
+            <a class="cg-discover-link-btn" href="discover-universities.html">More Universities ${icon("arrow-right")}</a>
           </div>
           <div class="cg-featured-org-grid">
             ${universities.map(({ uni, why }) => `
@@ -4950,6 +4950,75 @@ function openOrgBrowserModal(kind) {
   createIcons();
 }
 
+function renderDiscoverOrgDirectory() {
+  const root = qs("[data-discover-org-directory]");
+  if (!root) return;
+  const isCompanies = root.dataset.discoverOrgDirectory !== "universities";
+  if (!requireAccount(root, isCompanies ? "browse every company Vera is tracking" : "browse every university Vera is tracking")) return;
+  const { companies, universities } = buildOrgCatalog();
+  const items = isCompanies ? companies : universities;
+  root.innerHTML = `
+    <section class="cg-discover cg-discover-v2">
+      <header class="cg-discover-hero">
+        <h1>${isCompanies ? "All companies" : "All universities"}.</h1>
+        <p>${isCompanies ? "Every employer Vera is tracking for your Product Management search in Malaysia." : "Every institution Vera is tracking for your career path in Malaysia."}</p>
+        <form class="cg-discover-search" data-org-directory-search-form>
+          ${icon("search")}
+          <input name="q" data-org-directory-search placeholder="Search ${isCompanies ? "companies" : "universities"} by name, industry, or location...">
+        </form>
+      </header>
+      <section class="cg-discover-section">
+        <div class="cg-discover-section-head">
+          <div><h2>${isCompanies ? "Companies" : "Universities"}</h2><p class="cg-h2-sub" data-org-directory-count></p></div>
+          <a class="cg-discover-link-btn" href="discover.html">${icon("arrow-left")} Back to Discover</a>
+        </div>
+        <div class="cg-featured-org-grid" data-org-directory-grid></div>
+      </section>
+    </section>
+  `;
+  const grid = qs("[data-org-directory-grid]", root);
+  const countNode = qs("[data-org-directory-count]", root);
+  const searchInput = qs("[data-org-directory-search]", root);
+
+  function renderGrid() {
+    const query = (searchInput?.value || "").trim().toLowerCase();
+    const filtered = items.filter(org => {
+      if (!query) return true;
+      const hay = [org.name, org.industry, org.location, org.signal, ...(org.tags || [])].join(" ").toLowerCase();
+      return hay.includes(query);
+    });
+    countNode.textContent = `${filtered.length} shown`;
+    grid.innerHTML = filtered.map(org => isCompanies ? `
+      <article class="cg-featured-org-card" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} reviews and details">
+        <header><span>${org.name.charAt(0)}</span><div><h3>${org.name}</h3><p>${org.industry} - ${org.location}</p></div></header>
+        <b>${(org.tags || [])[0] || "Verified"}</b><strong>${org.open} open role${org.open === 1 ? "" : "s"}</strong>
+        <footer>${icon("sparkles")} ${org.signal}</footer>
+      </article>
+    ` : `
+      <article class="cg-featured-org-card university" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} details">
+        <header><span>${icon("graduation-cap")}</span><div><h3>${org.name}</h3><p>${icon("map-pin")} ${org.location}</p></div></header>
+        <b>${org.salary}</b>
+        <footer>${icon("sparkles")} ${org.signal}</footer>
+      </article>
+    `).join("") || `<p class="cg-org-browse-empty">No matches yet. Try a different search.</p>`;
+    qsa("[data-org-detail]", grid).forEach(card => {
+      card.addEventListener("click", () => openOrgDetailModal(card.dataset.orgDetail));
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openOrgDetailModal(card.dataset.orgDetail);
+        }
+      });
+    });
+    createIcons();
+  }
+
+  qs("[data-org-directory-search-form]", root)?.addEventListener("submit", event => event.preventDefault());
+  searchInput?.addEventListener("input", renderGrid);
+  renderGrid();
+  createIcons();
+}
+
 function renderDirectoryPage(kind) {
   const root = qs("[data-directory-page]");
   if (!root) return;
@@ -5621,7 +5690,7 @@ function renderDashboard() {
               <div class="cg-job-head">
                 <span class="cg-company-mark">${job.company.charAt(0)}</span>
                 <div><small>${job.company}</small><h3>${job.title}</h3></div>
-                <span class="cg-match"><strong>${job.match}</strong><small>Match</small></span>
+                <span class="cg-match" style="--match-score: ${job.match}"><strong>${job.match}</strong><small>Match</small></span>
               </div>
               <p class="cg-role-meta">${icon("badge-dollar-sign")} ${job.salary} ${icon("map-pin")} ${job.location} <span>${job.type}</span></p>
               <ul>
@@ -10810,6 +10879,7 @@ function init() {
   renderCommunityPage();
   renderJobsPage();
   renderDirectoryPage(document.body.dataset.directory || "");
+  renderDiscoverOrgDirectory();
   renderDashboard();
   renderVera();
   renderAuth();

@@ -30,6 +30,7 @@ Primary files:
 
 - Public marketing pages: `index.html`, `explore.html`, `companies.html`, `universities.html`, `community.html`, `login.html`, `register.html`
 - Logged-in workspace pages: `dashboard.html`, `discover.html`, `grow.html`, `market.html`, `autopilot.html`, `posts.html`, `profile.html`, `settings.html`, `saved.html`, `edit-career-data.html`, `vera.html`
+- Discover sub-pages (logged-in only, `data-page="discover"`): `discover-companies.html`, `discover-universities.html` — full "browse all" grids opened from the "More Companies" / "More Universities" links on `discover.html`. Distinct from the public `companies.html`/`universities.html` directory pages; do not merge them.
 - Shared public/user styling: `enterprise.css`
 - Directory browser styling: `directory-final.css`
 - Feed styling: `feed-final.css`
