@@ -293,7 +293,8 @@ const DATA = {
     { id: "r13", targetId: "monash", author: "Business Graduate", rating: 4.3, title: "International curriculum, global options", body: "The Australian curriculum and transfer options opened doors abroad. Budget for the fees and the academic intensity.", date: "Apr 2026" },
     { id: "r14", targetId: "monash", author: "Second Year Student", rating: 4.0, title: "Research-led teaching is genuine", body: "Lecturers bring live research into class. Assessment standards are strict, so keep up from week one.", date: "Feb 2026" },
     { id: "r15", targetId: "apu", author: "Software Engineering Graduate", rating: 4.1, title: "Career-focused computing programmes", body: "Industry projects and the dual-degree option helped my first job search. The pace is fast, especially in final year.", date: "May 2026" },
-    { id: "r16", targetId: "apu", author: "Current IT Student", rating: 3.9, title: "Strong labs, plan your commute", body: "Good facilities and hands-on modules. The Bukit Jalil campus is great but factor in travel time if you live far.", date: "Jan 2026" }
+    { id: "r16", targetId: "apu", author: "Current IT Student", rating: 3.9, title: "Strong labs, plan your commute", body: "Good facilities and hands-on modules. The Bukit Jalil campus is great but factor in travel time if you live far.", date: "Jan 2026" },
+    { id: "r17", targetId: "carsome", author: "PM - 2 yrs", rating: 4, title: "Real marketplace complexity", body: "Learned a lot about cross-side dynamics.", pros: "Scope, autonomy.", watch: "Ops-heavy problem space.", date: "May 2026" }
   ],
   profile: null,
   futures: [
@@ -4730,11 +4731,11 @@ function orgInitials(name) {
 
 function buildOrgCatalog() {
   const extraCompanies = [
-    { id: "shell", name: "Shell", industry: "Energy", location: "Kuala Lumpur", rating: 4.4, reviews: 612, open: 10, signal: "Structured graduate rotations", tags: ["Verified", "Graduates' Choice", "Hiring at scale"], summary: "Global energy employer with commercial rotations, digital product work, and established graduate pathways.", salary: "RM 5k - 14k / month", size: "10,000+ employees", type: "Company" },
-    { id: "setel", name: "Setel", industry: "Fintech", location: "Kuala Lumpur", rating: 4.3, reviews: 288, open: 4, signal: "AI-native product squad", tags: ["Verified", "Fast responders", "Product"], summary: "Fintech product team close to PETRONAS Digital, useful for PMs who want payments and mobility products.", salary: "RM 9k - 14k / month", size: "250+ employees", type: "Company" },
-    { id: "carsome", name: "Carsome", industry: "Marketplace", location: "Kuala Lumpur", rating: 4.2, reviews: 356, open: 3, signal: "Regional marketplace scale", tags: ["Fast growing", "Hybrid", "Product"], summary: "Regional marketplace company with operations, analytics, product growth, and customer platform roles.", salary: "RM 10k - 15k / month", size: "1,000+ employees", type: "Company" },
-    { id: "storehub", name: "StoreHub", industry: "SaaS", location: "Kuala Lumpur", rating: 4.2, reviews: 204, open: 2, signal: "Remote-first craft culture", tags: ["Remote-first", "SaaS", "Async"], summary: "Craft-led SaaS company with strong SMB product problems and close user feedback loops.", salary: "RM 8k - 12k / month", size: "300+ employees", type: "Company" },
-    { id: "aerodyne", name: "Aerodyne", industry: "AI", location: "Kuala Lumpur", rating: 4.1, reviews: 172, open: 5, signal: "Drone and AI platform work", tags: ["AI", "Global HQ", "Product"], summary: "Malaysia-born AI and drone company with global operations, data-heavy products, and technical PM paths.", salary: "RM 11k - 16k / month", size: "800+ employees", type: "Company" }
+    { id: "shell", name: "Shell", industry: "Energy", location: "Kuala Lumpur", rating: 4.4, reviews: 612, open: 10, signal: "Structured graduate rotations", tags: ["Verified", "Graduates' Choice", "Hiring at scale"], summary: "Global energy employer with commercial rotations, digital product work, and established graduate pathways.", salary: "RM 5k - 14k / month", size: "10,000+ employees", type: "Company", highlights: ["Global rotations build broad commercial experience.", "Structured graduate pathway reduces early-career risk."], watchouts: ["Large-company pace can feel slow for fast movers."] },
+    { id: "setel", name: "Setel", industry: "Fintech", location: "Kuala Lumpur", rating: 4.3, reviews: 288, open: 4, signal: "AI-native product squad", tags: ["Verified", "Fast responders", "Product"], summary: "Fintech product team close to PETRONAS Digital, useful for PMs who want payments and mobility products.", salary: "RM 9k - 14k / month", size: "250+ employees", type: "Company", highlights: ["Fintech and mobility products give real ownership.", "Close proximity to PETRONAS Digital widens your network."], watchouts: ["Small team means limited backup during crunch."] },
+    { id: "carsome", name: "Carsome", industry: "Marketplace", location: "Kuala Lumpur", rating: 4.2, reviews: 356, open: 3, signal: "Regional marketplace scale", tags: ["Fast growing", "Hybrid", "Product"], summary: "Regional marketplace company with operations, analytics, product growth, and customer platform roles.", salary: "RM 10k - 15k / month", size: "1,000+ employees", type: "Company", highlights: ["Marketplace patterns will stretch your product skills.", "Alumni network here is real leverage."], watchouts: ["Ops-heavy problem space - comfort with logistics matters."] },
+    { id: "storehub", name: "StoreHub", industry: "SaaS", location: "Kuala Lumpur", rating: 4.2, reviews: 204, open: 2, signal: "Remote-first craft culture", tags: ["Remote-first", "SaaS", "Async"], summary: "Craft-led SaaS company with strong SMB product problems and close user feedback loops.", salary: "RM 8k - 12k / month", size: "300+ employees", type: "Company", highlights: ["Remote-first culture rewards clear async writing.", "Small teams mean fast, visible impact."], watchouts: ["Less structure than a bigger company - you set your own rhythm."] },
+    { id: "aerodyne", name: "Aerodyne", industry: "AI", location: "Kuala Lumpur", rating: 4.1, reviews: 172, open: 5, signal: "Drone and AI platform work", tags: ["AI", "Global HQ", "Product"], summary: "Malaysia-born AI and drone company with global operations, data-heavy products, and technical PM paths.", salary: "RM 11k - 16k / month", size: "800+ employees", type: "Company", highlights: ["Drone and AI platform work is genuinely technical.", "Global footprint gives cross-market exposure."], watchouts: ["Domain knowledge in aviation and data takes time to build."] }
   ];
   const extraUniversities = [
     { id: "sunway", name: "Sunway University", industry: "Private University", location: "Selangor", rating: 4.4, reviews: 438, open: 18, signal: "Fintech partnerships", tags: ["91% employment", "Industry links", "Business"], summary: "Private university with strong employer links, business programmes, and a growing tech ecosystem.", salary: "91% employed in 6 months", size: "18,000 students", type: "University" },
@@ -5381,7 +5382,8 @@ function openOrgDetailModal(orgId) {
         <strong>${Number(org.rating).toFixed(1)}</strong>
         ${reviewStars(org.rating)}
         <span>${org.reviews} review signals</span>
-        <button class="btn btn-primary" type="button" data-write-review>${icon("pen-line")} Write a review</button>
+        <a class="btn btn-primary" href="company-profile.html?org=${org.id}">${icon("arrow-up-right")} View full profile</a>
+        <button class="btn btn-ghost" type="button" data-write-review>${icon("pen-line")} Write a review</button>
       </div>
       ${openRoles.length ? `
         <div class="cg-org-detail-roles">
@@ -5490,6 +5492,355 @@ function openReviewModal(target, onSubmitted) {
     else location.reload();
   });
   createIcons();
+}
+
+const INDUSTRY_DEPARTMENTS = {
+  Banking: "Retail Banking &middot; Risk &middot; Digital &middot; Operations",
+  Technology: "Product &middot; Engineering &middot; Growth &middot; Operations &middot; Finance",
+  "Energy Tech": "Data & AI &middot; Enterprise Platforms &middot; Operations",
+  Energy: "Commercial &middot; Digital &middot; Operations &middot; Sustainability",
+  Fintech: "Product &middot; Payments &middot; Risk &middot; Engineering",
+  Marketplace: "Product &middot; Engineering &middot; Growth &middot; Operations &middot; Finance",
+  SaaS: "Product &middot; Engineering &middot; Customer Success &middot; Growth",
+  AI: "AI Research &middot; Product &middot; Platform Engineering &middot; Operations",
+  "Private University": "Business &middot; Technology &middot; Design &middot; Student Affairs",
+  "Business School": "Faculty &middot; Admissions &middot; Careers &middot; Alumni Relations"
+};
+const INDUSTRY_SKILLS = {
+  Banking: "Stakeholder management, Risk analysis, Communication",
+  Technology: "Product sense, Analytics, Cross-functional",
+  "Energy Tech": "Data literacy, Enterprise workflows, Stakeholder alignment",
+  Energy: "Commercial analysis, Stakeholder management, Reporting",
+  Fintech: "Payments domain, Risk thinking, Cross-functional",
+  Marketplace: "Marketplace intuition, Analytics, Cross-functional",
+  SaaS: "Customer empathy, Product craft, Async communication",
+  AI: "ML literacy, Data intuition, Technical communication"
+};
+const INDUSTRY_TOOLS = {
+  Banking: "Excel, Tableau, SQL",
+  Technology: "Figma, Jira, Amplitude",
+  "Energy Tech": "Power BI, SQL, Confluence",
+  Energy: "Excel, SAP, Power BI",
+  Fintech: "SQL, Metabase, Jira",
+  Marketplace: "Amplitude, Metabase, Jira",
+  SaaS: "Figma, Linear, Mixpanel",
+  AI: "Python notebooks, MLflow, Jira"
+};
+
+function orgWorkMode(org) {
+  const tags = (org.tags || []).join(" ").toLowerCase();
+  if (tags.includes("remote-first") || tags.includes("async")) return "Remote";
+  if (tags.includes("on-site") || tags.includes("onsite")) return "On-site";
+  return "Hybrid";
+}
+
+function orgHiringPct(org) {
+  return Math.min(28, 6 + Math.round((org.open || 0) * 3));
+}
+
+function orgGrowingTag(org) {
+  return (org.tags || []).find(tag => /fast|growing|scale|hiring/i.test(tag)) || "Actively hiring";
+}
+
+function orgOffices(org) {
+  const offices = [org.location];
+  if (/1,000\+|5,000\+|10,000\+/.test(org.size || "")) offices.push("Jakarta", "Bangkok");
+  return offices;
+}
+
+function parseSalaryBand(salaryText) {
+  const match = String(salaryText || "").match(/RM\s*([\d.]+)k\s*-\s*([\d.]+)k/i);
+  if (!match) return null;
+  return { min: Math.round(Number(match[1]) * 1000), max: Math.round(Number(match[2]) * 1000) };
+}
+
+function formatRM(value) {
+  return `RM ${Math.round(value).toLocaleString("en-MY")}`;
+}
+
+function roleSalaryLabel(org, title, realJobSalary) {
+  if (realJobSalary) return realJobSalary;
+  const band = parseSalaryBand(org.salary);
+  if (!band) return org.salary || "Ask Vera";
+  const multiplier = /senior|lead|principal/i.test(title) ? 1.3 : /analyst|associate|intern/i.test(title) ? 0.8 : 1;
+  return `${formatRM(band.min * multiplier)} - ${formatRM(band.max * multiplier)}`;
+}
+
+function roleMatchLabel(job, index) {
+  if (job) return job.match;
+  return Math.max(58, 88 - index * 11);
+}
+
+function similarOrgsFor(org, catalog) {
+  const sameIndustry = catalog.filter(item => item.id !== org.id && item.type === org.type && item.industry === org.industry);
+  const rest = catalog.filter(item => item.id !== org.id && item.type === org.type && item.industry !== org.industry).reverse();
+  return [...sameIndustry, ...rest].slice(0, 3);
+}
+
+function renderCompanyProfile() {
+  const root = qs("[data-company-profile]");
+  if (!root) return;
+  if (!requireAccount(root, "see full company profiles")) return;
+  const { catalog } = buildOrgCatalog();
+  const orgId = new URLSearchParams(location.search).get("org");
+  const org = catalog.find(item => item.id === orgId);
+  if (!org) {
+    root.innerHTML = `
+      <div class="locked-state-wrap">
+        <div class="locked-state glass-card">
+          <div class="eyebrow"><span class="spark">*</span> Company not found</div>
+          <h1 class="section-title">We could not find that company profile.</h1>
+          <p class="section-sub">It may have been removed, or the link is out of date.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="discover-companies.html">${icon("arrow-left")} Back to companies</a></div>
+        </div>
+      </div>
+    `;
+    createIcons();
+    return;
+  }
+  const state = readState();
+  const isCompany = org.type !== "University";
+  const isSaved = (state.savedOrgs || []).includes(org.id);
+  const workMode = orgWorkMode(org);
+  const hiringPct = orgHiringPct(org);
+  const growingTag = orgGrowingTag(org);
+  const reviews = [...(state.reviews || []), ...DATA.reviews]
+    .filter((review, index, all) => all.findIndex(item => item.id === review.id) === index)
+    .filter(review => review.targetId === org.id);
+  const openRoles = isCompany ? openRolesForOrg(org) : [];
+  const departments = INDUSTRY_DEPARTMENTS[org.industry] || "Product &middot; Operations &middot; Growth";
+  const commonRolesList = [...new Set(openRoles.map(role => role.title))].slice(0, 3);
+  const commonRoles = commonRolesList.length ? commonRolesList.join(" &middot; ") : (OPEN_ROLE_POOL[org.industry] || DEFAULT_OPEN_ROLES).slice(0, 3).join(" &middot; ");
+  const offices = orgOffices(org);
+  const salaryBand = parseSalaryBand(org.salary);
+  const skills = INDUSTRY_SKILLS[org.industry] || "Analytics, Communication, Cross-functional";
+  const tools = INDUSTRY_TOOLS[org.industry] || "Slack, Notion, Jira";
+  const cultureRow = {
+    mentorship: /mentor|graduate/i.test((org.tags || []).join(" ")) ? "Structured pairing." : "Ad-hoc.",
+    workLife: workMode === "Remote" ? "Flexible, async-friendly." : "Balanced with sprint peaks."
+  };
+  const similar = similarOrgsFor(org, catalog);
+
+  root.innerHTML = `
+    <section class="cg-cp">
+      <a class="cg-cp-back" href="discover-companies.html">${icon("arrow-left")} Companies</a>
+
+      <article class="cg-cp-hero">
+        <div class="cg-cp-hero-top">
+          <span class="cg-cp-mono">${orgInitials(org.name)}</span>
+          <div class="cg-cp-hero-id">
+            <span class="cg-section-kicker">${isCompany ? "Company profile" : "University profile"}</span>
+            <h1>${org.name}</h1>
+            <p class="cg-cp-hero-meta">${icon("building-2")} ${org.industry} &middot; ${icon("map-pin")} ${org.location} &middot; ${org.size} &middot; ${workMode}</p>
+          </div>
+          <div class="cg-cp-hero-actions">
+            ${isCompany ? `<a class="btn btn-primary" href="#open-roles">View ${org.open} open role${org.open === 1 ? "" : "s"} ${icon("arrow-right")}</a>` : ""}
+            <button type="button" class="btn btn-ghost" data-cp-save="${org.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save"}</button>
+            ${isCompany ? `<a class="pill cg-cp-autopilot-pill" href="autopilot.html#autopilot-console">${icon("bot")} Monitor with Autopilot</a>` : ""}
+          </div>
+        </div>
+        <div class="cg-cp-hero-stats">
+          <span>${icon("star")} <strong>${Number(org.rating).toFixed(1)}</strong> &middot; ${org.reviews} reviews</span>
+          <span>${icon("trending-up")} ${hiringPct}% hiring</span>
+          <span class="pill">${growingTag}</span>
+        </div>
+        <div class="cg-cp-vera">
+          <span class="cg-cp-vera-label">${icon("bot")} Vera's read</span>
+          <p>${org.highlights?.length ? org.highlights.slice(0, 2).join(" ") : (org.summary || org.signal)}</p>
+          ${org.watchouts?.length ? `<p class="cg-cp-vera-watch"><b>Watch:</b> ${org.watchouts[0]}</p>` : ""}
+        </div>
+      </article>
+
+      <div class="cg-cp-row">
+        <article class="cg-cp-card cg-cp-overview">
+          <h2>Overview</h2>
+          <p>${org.summary}</p>
+          <div class="cg-cp-overview-grid">
+            <div><span class="cg-cp-label">What they do</span><p>${org.summary}</p></div>
+            <div><span class="cg-cp-label">Who they hire</span><p>${commonRolesList.length ? `${commonRolesList.join(", ")} roles.` : "Product, growth, and operations roles."}</p></div>
+          </div>
+        </article>
+        <aside class="cg-cp-card cg-cp-glance">
+          <span class="cg-section-kicker">At a glance</span>
+          <div class="cg-cp-glance-row"><span>Open roles</span><strong>${org.open}</strong></div>
+          <div class="cg-cp-glance-row"><span>Size</span><strong>${org.size}</strong></div>
+          <div class="cg-cp-glance-row"><span>Work mode</span><strong>${workMode}</strong></div>
+          <div class="cg-cp-glance-row"><span>Hiring</span><strong>${icon("trending-up")} ${hiringPct}%</strong></div>
+          <div class="cg-cp-glance-row"><span>Rating</span><strong>${Number(org.rating).toFixed(1)} / 5</strong></div>
+        </aside>
+      </div>
+
+      ${isCompany ? `
+      <div class="cg-cp-row">
+        <article class="cg-cp-card">
+          <div class="cg-cp-two-col">
+            <div>
+              <span class="cg-cp-label">Departments</span><p>${departments}</p>
+              <span class="cg-cp-label">Common roles</span><p>${commonRoles}</p>
+            </div>
+            <div><span class="cg-cp-label">Offices</span><p>${offices.join(" &middot; ")}</p></div>
+          </div>
+        </article>
+        <aside class="cg-cp-card cg-cp-autopilot-card">
+          <span class="cg-section-kicker">${icon("bot")} Autopilot</span>
+          <p>Let Autopilot monitor new roles at ${org.name} and surface them when they match your rules.</p>
+          <a class="btn btn-primary" href="autopilot.html#autopilot-console">Set up Autopilot rule ${icon("arrow-right")}</a>
+        </aside>
+      </div>
+
+      <section class="cg-cp-roles" id="open-roles">
+        <span class="cg-section-kicker">Open roles</span>
+        <h2>${org.open} role${org.open === 1 ? "" : "s"} at ${org.name}</h2>
+        <div class="cg-cp-role-list">
+          ${openRoles.map((role, index) => {
+            const job = role.real ? role.job : null;
+            const match = roleMatchLabel(job, index);
+            const salary = roleSalaryLabel(org, role.title, job?.salary);
+            return `
+            <article class="cg-cp-role-row">
+              <div>
+                <h3>${role.title} <span class="cg-cp-role-match">${match}% match</span></h3>
+                <p>${icon("map-pin")} ${org.location} &middot; ${workMode} &middot; ${icon("briefcase")} ${salary}</p>
+              </div>
+              <div class="cg-cp-role-actions">
+                <button type="button" class="btn btn-ghost" data-cp-role-save="${job ? job.id : `${org.id}-${index}`}">${icon("bookmark")} Save</button>
+                ${job ? `<button type="button" class="btn btn-primary" data-cp-role-apply="${job.id}">${icon("send")} Apply ${icon("arrow-right")}</button>` : `<a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent(`the ${role.title} role at ${org.name}`)}#messages">${icon("sparkles")} Ask Vera ${icon("arrow-right")}</a>`}
+              </div>
+            </article>
+          `;
+          }).join("")}
+        </div>
+        <p class="cg-cp-roles-footer">${icon("bot")} <a href="autopilot.html#autopilot-console">Autopilot: monitor similar roles at ${org.name}</a></p>
+      </section>
+
+      <div class="cg-cp-row">
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Requirements</span>
+          <h2>What they look for</h2>
+          <div class="cg-cp-kv"><span>Education</span><strong>Bachelor's or equivalent experience.</strong></div>
+          <div class="cg-cp-kv"><span>Experience</span><strong>2+ years typical for PM.</strong></div>
+          <div class="cg-cp-kv"><span>Portfolio</span><strong>Optional for PM.</strong></div>
+          <div class="cg-cp-kv"><span>Language</span><strong>English.</strong></div>
+          <div class="cg-cp-kv"><span>Skills</span><strong>${skills}</strong></div>
+          <div class="cg-cp-kv"><span>Tools</span><strong>${tools}</strong></div>
+        </article>
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Hiring process</span>
+          <h2>What to expect</h2>
+          <ol class="cg-cp-steps">
+            <li><b>1</b><div><strong>Application review</strong><span>1 week.</span></div></li>
+            <li><b>2</b><div><strong>Recruiter screen</strong><span>30 min.</span></div></li>
+            <li><b>3</b><div><strong>Manager interview</strong><span>45 min.</span></div></li>
+            <li><b>4</b><div><strong>Case</strong><span>Take-home.</span></div></li>
+            <li><b>5</b><div><strong>Panel</strong><span>2 interviews.</span></div></li>
+          </ol>
+        </article>
+      </div>
+
+      <div class="cg-cp-row">
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Salary</span>
+          <h2>Typical bands</h2>
+          ${salaryBand ? `
+            <div class="cg-cp-kv"><span>PM</span><strong>${formatRM(salaryBand.min)} - ${formatRM(salaryBand.max)}</strong></div>
+            <div class="cg-cp-kv"><span>Senior PM</span><strong>${formatRM(salaryBand.min * 1.3)} - ${formatRM(salaryBand.max * 1.3)}</strong></div>
+          ` : `<p class="muted">Ask Vera for a benchmark on this employer.</p>`}
+        </article>
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Benefits</span>
+          <h2>What comes with the role</h2>
+          <div class="cg-cp-benefits">
+            <span>${icon("check-circle")} Medical</span>
+            <span>${icon("check-circle")} ${workMode}</span>
+            <span>${icon("check-circle")} Learning budget</span>
+            <span>${icon("check-circle")} Bonus</span>
+          </div>
+        </article>
+      </div>
+
+      <article class="cg-cp-card">
+        <span class="cg-section-kicker">Growth &amp; culture</span>
+        <h2>How teams operate here</h2>
+        <div class="cg-cp-culture-grid">
+          <div><span class="cg-cp-label">Mentorship</span><p>${cultureRow.mentorship}</p></div>
+          <div><span class="cg-cp-label">Training</span><p>Internal knowledge shares.</p></div>
+          <div><span class="cg-cp-label">Promotion</span><p>Every ~18 months.</p></div>
+          <div><span class="cg-cp-label">Work-life</span><p>${cultureRow.workLife}</p></div>
+          <div><span class="cg-cp-label">Management</span><p>OKRs; regular 1:1s.</p></div>
+          <div><span class="cg-cp-label">Overtime</span><p>Occasional.</p></div>
+        </div>
+      </article>
+      ` : ""}
+
+      <section class="cg-cp-reviews">
+        <span class="cg-section-kicker">Reviews</span>
+        <h2>What ${org.reviews} people say</h2>
+        <div class="cg-cp-review-list">
+          ${reviews.length ? reviews.map(review => `
+            <article class="cg-cp-review-card">
+              <header><span>${review.author}</span>${reviewStars(review.rating)}</header>
+              <h3>${review.title}</h3>
+              <p>${review.body}</p>
+              ${review.pros ? `<p class="cg-cp-review-pros"><b>Pros:</b> ${review.pros}</p>` : ""}
+              ${review.watch ? `<p class="cg-cp-review-watch"><b>Watch:</b> ${review.watch}</p>` : ""}
+            </article>
+          `).join("") : `<p class="cg-cp-review-empty">No reviews yet. Be the first to share your experience.</p>`}
+        </div>
+        <button type="button" class="btn btn-ghost" data-cp-write-review>${icon("pen-line")} Write a review</button>
+      </section>
+
+      ${similar.length ? `
+      <section class="cg-cp-similar">
+        <span class="cg-section-kicker">Similar ${isCompany ? "companies" : "universities"}</span>
+        <h2>Also worth exploring</h2>
+        <div class="cg-cp-similar-grid">
+          ${similar.map(item => `
+            <a class="cg-cp-similar-card" href="company-profile.html?org=${item.id}">
+              <span class="cg-cp-mono small">${orgInitials(item.name)}</span>
+              <div><h3>${item.name}</h3><p>${item.industry}</p></div>
+              <small>${item.signal}</small>
+            </a>
+          `).join("")}
+        </div>
+      </section>
+      ` : ""}
+
+      ${veraWidgetMarkup()}
+    </section>
+  `;
+  createIcons();
+  wireVeraWidget(root);
+  qs("[data-cp-save]", root)?.addEventListener("click", () => {
+    const next = readState();
+    next.savedOrgs = Array.isArray(next.savedOrgs) ? next.savedOrgs : [];
+    next.savedOrgs = next.savedOrgs.includes(org.id) ? next.savedOrgs.filter(id => id !== org.id) : [...next.savedOrgs, org.id];
+    writeState(next);
+    showToast(next.savedOrgs.includes(org.id) ? "Saved for comparison." : "Removed from saved.");
+    renderCompanyProfile();
+  });
+  qs("[data-cp-write-review]", root)?.addEventListener("click", () => {
+    openReviewModal(org, () => renderCompanyProfile());
+  });
+  qsa("[data-cp-role-apply]", root).forEach(btn => btn.addEventListener("click", () => {
+    const jobId = btn.dataset.cpRoleApply;
+    const job = DATA.jobs.find(item => item.id === jobId);
+    updateApplicationStage(jobId, "applied");
+    showToast(job ? `Applied to ${job.title} at ${job.company}.` : "Application added to your tracker.");
+    renderCompanyProfile();
+  }));
+  qsa("[data-cp-role-save]", root).forEach(btn => btn.addEventListener("click", () => {
+    const jobId = btn.dataset.cpRoleSave;
+    const job = DATA.jobs.find(item => item.id === jobId);
+    if (job) {
+      const next = readState();
+      const nowSaved = next.savedJobs.includes(jobId);
+      next.savedJobs = nowSaved ? next.savedJobs.filter(id => id !== jobId) : [...next.savedJobs, jobId];
+      writeState(next);
+      showToast(nowSaved ? "Role removed from saved jobs." : "Role saved to your dashboard.");
+    } else {
+      showToast("Role saved. Vera will track it for you.");
+    }
+  }));
 }
 
 let dashboardTaskFilter = "";
@@ -11170,6 +11521,7 @@ function init() {
   renderJobsPage();
   renderDirectoryPage(document.body.dataset.directory || "");
   renderDiscoverOrgDirectory();
+  renderCompanyProfile();
   renderDashboard();
   renderRecommendedRoles();
   renderVera();
