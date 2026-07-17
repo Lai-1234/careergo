@@ -441,7 +441,32 @@ function readState() {
     reviews: DATA.reviews,
     chat: [],
     notifications: [],
-    autopilotRules: { salary: "", location: "", threshold: 75, scanOnly: true, exclude: "" },
+    autopilotRules: {
+      salary: "", location: "", threshold: 75, scanOnly: true, exclude: "",
+      roleTargets: "Product Manager, Data Analyst, Software Engineer",
+      experienceLevels: ["Junior", "Mid-level"],
+      employmentTypes: ["Full-time"],
+      minSalary: "5000",
+      currency: "MYR",
+      rulesLocation: "Kuala Lumpur",
+      workArrangement: ["Remote", "Hybrid"],
+      relocate: "No",
+      companySize: ["Startup", "SME"],
+      industries: ["Fintech", "AI"],
+      cultureSignals: ["Mentorship", "Work-life"],
+      preferredCompanies: "Grab, Setel, StoreHub",
+      avoidCompanies: "",
+      avoidIndustries: "Direct sales",
+      avoidKeywords: "commission-only, unpaid internship",
+      strictness: "Balanced",
+      requiredSkills: "SQL, Product sense",
+      niceToHave: "Figma, Amplitude",
+      portfolioRequired: "No",
+      acceptVague: "No",
+      excludedRoles: "Sales, Telemarketing",
+      excludedIndustries: "Gambling, MLM",
+      actionMode: "recommend"
+    },
     autopilotLog: [],
     posts: DATA.communityPosts
   };
@@ -581,6 +606,34 @@ function normalizeState(state) {
     growGoals: state.growGoals && typeof state.growGoals === "object" ? state.growGoals : null,
     growMovesStarted: Array.isArray(state.growMovesStarted) ? state.growMovesStarted : [],
     interviewChecklist: Array.isArray(state.interviewChecklist) ? state.interviewChecklist : null,
+    autopilotRules: {
+      salary: "", location: "", threshold: 75, scanOnly: true, exclude: "",
+      roleTargets: "Product Manager, Data Analyst, Software Engineer",
+      experienceLevels: ["Junior", "Mid-level"],
+      employmentTypes: ["Full-time"],
+      minSalary: "5000",
+      currency: "MYR",
+      rulesLocation: "Kuala Lumpur",
+      workArrangement: ["Remote", "Hybrid"],
+      relocate: "No",
+      companySize: ["Startup", "SME"],
+      industries: ["Fintech", "AI"],
+      cultureSignals: ["Mentorship", "Work-life"],
+      preferredCompanies: "Grab, Setel, StoreHub",
+      avoidCompanies: "",
+      avoidIndustries: "Direct sales",
+      avoidKeywords: "commission-only, unpaid internship",
+      strictness: "Balanced",
+      requiredSkills: "SQL, Product sense",
+      niceToHave: "Figma, Amplitude",
+      portfolioRequired: "No",
+      acceptVague: "No",
+      excludedRoles: "Sales, Telemarketing",
+      excludedIndustries: "Gambling, MLM",
+      actionMode: "recommend",
+      ...(state.autopilotRules || {})
+    },
+    autopilotLog: Array.isArray(state.autopilotLog) ? state.autopilotLog : [],
     posts: Array.isArray(state.posts) ? state.posts : DATA.communityPosts
   });
 }
@@ -9385,6 +9438,8 @@ function runAutopilot() {
   renderAutopilot();
 }
 
+let pipelineActiveTab = "applications";
+
 function renderAutopilot() {
   const root = qs("[data-autopilot]");
   if (!root) return;
@@ -9445,75 +9500,52 @@ function renderAutopilot() {
       "Applications sent on Tuesday morning get replies 1.8x faster than the rest of the week for your archetype.",
       "Every offer in your pipeline is at a Malaysian company that pays above your current Fair Pay range."
     ];
+    const esc = value => String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
     const apRules = state.autopilotRules || {};
-    const apScanOnly = Boolean(apRules.scanOnly);
-    const apQueue = autopilotQueue(state);
-    const apEligible = apQueue.filter(item => item.eligible);
-    const apLog = Array.isArray(state.autopilotLog) ? state.autopilotLog : [];
+    const selected = (list, value) => (Array.isArray(list) ? list : []).includes(value);
+    const apMatches = [
+      { title: "Product Analyst", company: "Grab", match: 86, mode: "Queue for review", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 5,500 - RM 7,500", found: "Found 2 hours ago", why: "Matches your salary floor, product analytics interest and hybrid preference.", watch: "Requires SQL case study." },
+      { title: "Associate Product Manager", company: "Setel", match: 91, mode: "Save automatically", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 8,000 - RM 11,000", found: "Found 4 hours ago", why: "Fintech match + hybrid + saved company. Above match threshold.", watch: "" },
+      { title: "Product Manager, Growth", company: "Carsome", match: 82, mode: "Queue for review", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 11,000 - RM 15,000", found: "Found Yesterday", why: "Strong marketplace fit; alumni signal.", watch: "Company size preference uncertain (2,000+)." },
+      { title: "AI Product Manager", company: "Aerodyne", match: 90, mode: "Recommend only", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 15,000 - RM 20,000", found: "Found Yesterday", why: "AI product exposure closes your top skill gap.", watch: "" },
+      { title: "Senior Product Manager (Remote)", company: "StoreHub", match: 89, mode: "Queue for review", location: "Remote", workMode: "MY - Remote", salary: "RM 13,000 - RM 17,000", found: "Found 2 days ago", why: "Remote-first + async matches your working style.", watch: "" }
+    ];
+    const apActivityLog = [
+      { time: "2:14 PM", status: "Skipped", tone: "tan", title: "Product Analyst at Grab", body: "Salary below RM 5,000 floor." },
+      { time: "1:30 PM", status: "Saved", tone: "teal", title: "Data Analyst at Maybank", body: "Matched salary, location and SQL requirement." },
+      { time: "12:05 PM", status: "Queued", tone: "tan", title: "Product Associate at Shopee", body: "Strong match but company size preference uncertain." },
+      { time: "10:48 AM", status: "Scanned", tone: "tan", title: "Growth PM at iflix", body: "Below match threshold (68%)." },
+      { time: "09:20 AM", status: "Recommended", tone: "teal", title: "AI Product Manager at Aerodyne", body: "Above 85% match; matches saved AI PM path." },
+      { time: "Yesterday", status: "Applied", tone: "teal", title: "APM at Setel", body: "Auto-apply enabled for saved companies at 90%+ match." },
+      { time: "Yesterday", status: "Dismissed", tone: "tan", title: "Sales PM at Anonymous", body: "Company missing name - required rule." },
+      { time: "2 days ago", status: "Rule changed", tone: "tan", title: "Ruleset updated", body: "Raised salary floor from RM 4,500 to RM 5,000." }
+    ];
+    const apActionModes = [
+      { key: "recommend", title: "Recommend only", body: "Autopilot finds matches and shows them to you." },
+      { key: "save", title: "Save automatically", body: "Autopilot saves jobs that meet your rules." },
+      { key: "queue", title: "Queue for review", body: "Autopilot prepares applications but asks you before applying." },
+      { key: "autoapply", title: "Auto-apply", body: "Autopilot applies only when all required rules are met." }
+    ];
+    const apStrictnessCaptions = { Strict: "Only near-perfect matches.", Balanced: "Strong matches with minor gaps.", Open: "Wider net, more roles to review." };
+    if (location.hash === "#autopilot-console") pipelineActiveTab = "autopilot";
     root.innerHTML = appShell("autopilot", `
       <section class="cg-pipeline">
+        <div class="cg-pipeline-tabs" data-pipeline-tabs>
+          <button type="button" class="${pipelineActiveTab === "applications" ? "active" : ""}" data-pipeline-view="applications">Applications</button>
+          <button type="button" class="${pipelineActiveTab === "autopilot" ? "active" : ""}" data-pipeline-view="autopilot">Autopilot</button>
+          <button type="button" class="${pipelineActiveTab === "followups" ? "active" : ""}" data-pipeline-view="followups">Follow-ups</button>
+        </div>
+
+        <div class="cg-pipeline-view${pipelineActiveTab === "applications" ? " active" : ""}" data-pipeline-panel-view="applications">
         <header class="cg-pipeline-hero">
           <h1>Your <em>Application Pipeline.</em></h1>
           <p>Vera is tracking 12 relationships, 3 recruiters who opened your profile this week, and 2 offers within striking distance. Predicted first offer: <strong>28 Nov - 64% confidence.</strong></p>
           <a class="btn btn-primary" href="discover.html">${icon("plus")} Add application</a>
         </header>
-
-        <section class="cg-pipeline-autopilot" id="autopilot-console" data-autopilot-console>
-          <header>
-            <span>${icon("bot")} Vera Autopilot</span>
-            <small>${apScanOnly ? "Scan-only mode - Vera waits for your approval" : "Live - Vera applies within your rules"}</small>
-          </header>
-          <div class="cg-autopilot-grid">
-            <article class="cg-autopilot-control">
-              <h2>Vera applies <em>for you.</em></h2>
-              <p>Autopilot reads your profile - skills, target role, and salary preferences - scans new roles, and submits applications that pass your rules. Every application uses a tailored resume and can be withdrawn in one click.</p>
-              <div class="cg-autopilot-actions">
-                <button type="button" class="cg-autopilot-switch${apScanOnly ? "" : " on"}" data-autopilot-toggle role="switch" aria-checked="${!apScanOnly}">
-                  <i></i><span>${apScanOnly ? "Autopilot off - scan only" : "Autopilot on"}</span>
-                </button>
-                <button type="button" class="btn btn-primary" data-autopilot-run>${icon("radar")} ${apScanOnly ? "Scan matches now" : "Run Autopilot now"}</button>
-              </div>
-              <form class="cg-autopilot-rules" data-autopilot-rules>
-                <span class="cg-section-kicker">${icon("shield-check")} Your rules</span>
-                <div>
-                  <label>Min salary (RM / year)<input name="salary" type="number" min="0" value="${apRules.salary || ""}" placeholder="e.g. 60000"></label>
-                  <label>Location / mode<input name="location" value="${apRules.location || ""}" placeholder="e.g. Kuala Lumpur, Hybrid"></label>
-                  <label>Min match %<input name="threshold" type="number" min="60" max="98" value="${apRules.threshold || 75}"></label>
-                  <label>Exclude keywords<input name="exclude" value="${apRules.exclude || ""}" placeholder="e.g. Onsite, Sales"></label>
-                </div>
-                <button class="btn btn-ghost" type="submit">${icon("save")} Save rules</button>
-              </form>
-            </article>
-            <aside class="cg-autopilot-queue">
-              <header><span>${icon("list-checks")} Match queue</span><small>${apEligible.length} pass your rules</small></header>
-              ${apQueue.length ? apQueue.slice(0, 6).map(({ job, eligible, reasons, hits }) => `
-                <article class="${eligible ? "ready" : "blocked"}">
-                  <div><h3>${job.title}</h3><p>${job.company} - ${job.salary} - ${job.location}</p></div>
-                  <span class="cg-autopilot-match">${job.match}%</span>
-                  <p class="cg-autopilot-reason">${eligible ? (hits.length ? `${icon("check-circle-2")} Your profile covers ${hits.slice(0, 3).join(", ")}.` : `${icon("check-circle-2")} Fits your target role, salary, and location rules.`) : `${icon("alert-triangle")} ${reasons[0]}`}</p>
-                  <div class="cg-autopilot-item-actions">
-                    ${eligible ? `<button class="btn btn-primary" type="button" data-autopilot-apply="${job.id}">${icon("send")} Apply now</button>` : ""}
-                    <button class="btn btn-ghost" type="button" data-autopilot-skip="${job.id}">${eligible ? "Skip" : "Dismiss"}</button>
-                  </div>
-                </article>
-              `).join("") : `<p class="cg-autopilot-empty">Queue is clear. Vera is watching for new roles that pass your rules.</p>`}
-            </aside>
-          </div>
-          <footer class="cg-autopilot-log">
-            <span class="cg-section-kicker">${icon("history")} Autopilot activity</span>
-            ${apLog.length ? `<div>${apLog.slice(0, 6).map(entry => `
-              <article>
-                <span class="pill ${entry.status === "applied" ? "green" : entry.status === "withdrawn" ? "gold" : "red"}">${entry.status === "applied" ? "Applied by Vera" : entry.status === "withdrawn" ? "Withdrawn" : "Skipped"}</span>
-                <div><h3>${entry.title} - ${entry.company}</h3><p>${entry.reason}</p></div>
-                <small>${autopilotTimeLabel(entry.at)}</small>
-                <div class="cg-autopilot-log-actions">
-                  ${entry.status === "applied" ? `<button class="btn btn-ghost" type="button" data-autopilot-resume="${entry.jobId}">${icon("file-text")} View resume</button>` : ""}
-                  ${entry.status === "applied" && state.applicationRecords?.[entry.jobId]?.stage === "applied" ? `<button class="btn btn-ghost" type="button" data-autopilot-undo="${entry.jobId}">${icon("undo-2")} Withdraw</button>` : ""}
-                </div>
-              </article>
-            `).join("")}</div>` : `<p>No activity yet. Run a scan or turn Autopilot on and Vera will log every application, skip, and reason here.</p>`}
-          </footer>
-        </section>
 
         <section class="cg-pipeline-one-move">
           <header><span>${icon("flame")} The one move today</span><small>Beats the next-best action by 2.3x</small></header>
@@ -9606,19 +9638,6 @@ function renderAutopilot() {
           <footer>${icon("info")} Recommended focus next week - <strong>Practice SQL interviews.</strong> Vera has a 4-day plan queued in Grow. <a href="grow.html">Open plan ${icon("arrow-right")}</a></footer>
         </section>
 
-        <section class="cg-pipeline-relationships">
-          <span class="cg-section-kicker">${icon("heart")} Relationships, not applications</span>
-          <h2>Who to nurture. When to reach out.</h2>
-          <p>Vera watches recruiter behaviour across your pipeline and tells you exactly when a warm signal is worth acting on.</p>
-          ${relationships.map(([company, person, strength, signal, context, probability, action], index) => `
-            <article>
-              <div><h3>${company}</h3><p>${person}</p><i><em style="width:${strength}%"></em></i><small>Strength ${strength}</small></div>
-              <div><p>${icon("eye")} ${signal}</p><p>${context}</p><p>${probability}</p></div>
-              <a href="posts.html?topic=${encodeURIComponent(`${action} for ${person} at ${company}`)}#messages">${icon("sparkles")} ${action}</a>
-            </article>
-          `).join("")}
-        </section>
-
         <section class="cg-pipeline-interview">
           <span class="cg-section-kicker">${icon("target")} Interview journey - Stripe</span>
           <h2>You're 2 steps from an offer.</h2>
@@ -9631,6 +9650,198 @@ function renderAutopilot() {
             <article><span>Behavioral</span><p>STAR structure landed. Weak area: conflict resolution.</p></article>
             <article><span>Product case (next)</span><p>Vera has 3 targeted drills based on Stripe's rubric.</p></article>
           </div>
+        </section>
+
+        <section class="cg-pipeline-ripple">
+          <span class="cg-section-kicker">${icon("zap")} How one action ripples through CareerGo</span>
+          <h2>Finish SQL in Grow. Watch every other page shift.</h2>
+          <p class="cg-h2-sub">One completed skill updates your missions, market value, pipeline odds, and daily brief.</p>
+          <div>
+            <article><span>Grow</span><p>SQL sprint becomes today's mission - 4 days of drills queued.</p></article>
+            <article><span>Worth</span><p>Career Value rises +RM 900 / month within 3 weeks.</p></article>
+            <article class="active"><span>Pipeline</span><p>+21% pass rate at Stripe Round 2 - unlocks Setel + BigPay.</p></article>
+            <article><span>Today</span><p>Interview readiness moves from 68 -> 79 by Friday.</p></article>
+          </div>
+        </section>
+        </div>
+
+        <div class="cg-pipeline-view cg-ap-view${pipelineActiveTab === "autopilot" ? " active" : ""}" data-pipeline-panel-view="autopilot">
+        <section class="cg-ap-matches">
+          <header>
+            <div>
+              <span class="cg-section-kicker">${icon("bot")} Autopilot found for you</span>
+              <h1>${apMatches.length} roles matched your rules</h1>
+            </div>
+            <button type="button" class="pill" data-ap-toast="Showing roles sorted by match percentage.">${icon("sliders-horizontal")} Sorted by match</button>
+          </header>
+          <div class="cg-ap-match-list">
+            ${apMatches.map(role => `
+              <article class="cg-ap-match-card">
+                <div class="cg-ap-match-head">
+                  <div class="cg-ap-match-title">
+                    <h3>${role.title}</h3>
+                    <span class="cg-ap-sep">&middot;</span>
+                    <span class="cg-ap-company">${role.company}</span>
+                    <span class="cg-ap-match-pct">${role.match}% match</span>
+                    <span class="pill">${role.mode}</span>
+                  </div>
+                  <span class="cg-ap-found">${role.found}</span>
+                </div>
+                <div class="cg-ap-match-meta">
+                  <span>${icon("map-pin")} ${role.location} &middot; ${role.workMode}</span>
+                  <span>${icon("briefcase")} ${role.salary}</span>
+                </div>
+                <div class="cg-ap-why">
+                  <span class="cg-ap-why-label">${icon("bot")} Why it matched</span>
+                  <p>${role.why}${role.watch ? ` <b>Watch:</b> ${role.watch}` : ""}</p>
+                </div>
+                <div class="cg-ap-match-actions">
+                  <a class="btn btn-primary" href="discover.html">View job ${icon("chevron-right")}</a>
+                  <button class="btn btn-ghost" type="button" data-ap-toast="Saved to your shortlist.">Save</button>
+                  <button class="btn btn-ghost" type="button" data-ap-toast="Vera queued a tailored application.">Apply</button>
+                  <button class="btn btn-ghost" type="button" data-ap-toast="Vera will not surface this role again.">Dismiss</button>
+                  <button class="btn btn-ghost" type="button" data-ap-toast="Opened the rule that matched this role.">Edit rule</button>
+                </div>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-ap-ruleset" id="autopilot-console">
+          <span class="cg-section-kicker">${icon("shield-check")} Ruleset</span>
+          <h1>Tell Autopilot exactly what you want</h1>
+          <form data-autopilot-ruleset-form>
+            <article class="cg-ap-rule-card">
+              <h3>1. Role Targets</h3>
+              <label class="cg-ap-field">Target roles<input name="roleTargets" value="${esc(apRules.roleTargets)}"></label>
+              <div class="cg-ap-field-group">
+                <div><span class="cg-ap-label">Experience level</span><div class="cg-ap-pillgroup" data-select-group="experienceLevels" data-select-mode="multi">
+                  ${["Entry", "Junior", "Mid-level", "Senior"].map(v => `<button type="button" class="pill${selected(apRules.experienceLevels, v) ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
+                </div></div>
+                <div><span class="cg-ap-label">Employment type</span><div class="cg-ap-pillgroup" data-select-group="employmentTypes" data-select-mode="multi">
+                  ${["Internship", "Full-time", "Part-time", "Contract", "Graduate programme"].map(v => `<button type="button" class="pill${selected(apRules.employmentTypes, v) ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
+                </div></div>
+              </div>
+            </article>
+
+            <article class="cg-ap-rule-card">
+              <h3>2. Salary &amp; Location</h3>
+              <div class="cg-ap-field-row">
+                <label class="cg-ap-field">Minimum salary<input name="minSalary" value="${esc(apRules.minSalary)}"></label>
+                <label class="cg-ap-field">Currency<input name="currency" value="${esc(apRules.currency)}"></label>
+              </div>
+              <label class="cg-ap-field">Location<input name="rulesLocation" value="${esc(apRules.rulesLocation)}"></label>
+              <div class="cg-ap-field-group">
+                <div><span class="cg-ap-label">Work arrangement</span><div class="cg-ap-pillgroup" data-select-group="workArrangement" data-select-mode="multi">
+                  ${["Remote", "Hybrid", "On-site"].map(v => `<button type="button" class="pill${selected(apRules.workArrangement, v) ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
+                </div></div>
+                <div><span class="cg-ap-label">Willing to relocate</span><div class="cg-ap-pillgroup" data-select-group="relocate" data-select-mode="single">
+                  ${["Yes", "No"].map(v => `<button type="button" class="pill${apRules.relocate === v ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
+                </div></div>
+              </div>
+            </article>
+
+            <article class="cg-ap-rule-card">
+              <h3>3. Work Preferences</h3>
+              <div><span class="cg-ap-label">Company size</span><div class="cg-ap-pillgroup" data-select-group="companySize" data-select-mode="multi">
+                ${["Startup", "SME", "Large company", "MNC", "GLC"].map(v => `<button type="button" class="pill${selected(apRules.companySize, v) ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
+              </div></div>
+              <div><span class="cg-ap-label">Preferred industries</span><div class="cg-ap-pillgroup" data-select-group="industries" data-select-mode="multi">
+                ${["Fintech", "SaaS", "AI", "Marketplace", "E-commerce"].map(v => `<button type="button" class="pill${selected(apRules.industries, v) ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
+              </div></div>
+              <div><span class="cg-ap-label">Culture signals</span><div class="cg-ap-pillgroup" data-select-group="cultureSignals" data-select-mode="multi">
+                ${["Mentorship", "Training", "Work-life", "Fast growth", "Remote flex"].map(v => `<button type="button" class="pill${selected(apRules.cultureSignals, v) ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
+              </div></div>
+            </article>
+
+            <article class="cg-ap-rule-card">
+              <h3>4. Company Preferences</h3>
+              <label class="cg-ap-field">Preferred companies<input name="preferredCompanies" value="${esc(apRules.preferredCompanies)}"></label>
+              <label class="cg-ap-field">Avoid companies<input name="avoidCompanies" value="${esc(apRules.avoidCompanies)}" placeholder="-"></label>
+              <label class="cg-ap-field">Avoid industries<input name="avoidIndustries" value="${esc(apRules.avoidIndustries)}"></label>
+              <label class="cg-ap-field">Avoid keywords<input name="avoidKeywords" value="${esc(apRules.avoidKeywords)}"></label>
+            </article>
+
+            <article class="cg-ap-rule-card">
+              <h3>5. Match Rules</h3>
+              <div><span class="cg-ap-label">Strictness</span>
+                <div class="cg-ap-strictness-row">
+                  <div class="cg-ap-pillgroup" data-select-group="strictness" data-select-mode="single">
+                    ${["Strict", "Balanced", "Open"].map(v => `<button type="button" class="pill${apRules.strictness === v ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
+                  </div>
+                  <small data-strictness-caption>${apStrictnessCaptions[apRules.strictness] || ""}</small>
+                </div>
+              </div>
+              <label class="cg-ap-field">Minimum match threshold<input name="threshold" type="number" min="50" max="99" value="${esc(apRules.threshold || 75)}"></label>
+              <label class="cg-ap-field">Required skills<input name="requiredSkills" value="${esc(apRules.requiredSkills)}"></label>
+              <label class="cg-ap-field">Nice-to-have<input name="niceToHave" value="${esc(apRules.niceToHave)}"></label>
+              <div class="cg-ap-field-group">
+                <div><span class="cg-ap-label">Portfolio required?</span><div class="cg-ap-pillgroup" data-select-group="portfolioRequired" data-select-mode="single">
+                  ${["Yes", "No"].map(v => `<button type="button" class="pill${apRules.portfolioRequired === v ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
+                </div></div>
+                <div><span class="cg-ap-label">Accept vague descriptions?</span><div class="cg-ap-pillgroup" data-select-group="acceptVague" data-select-mode="single">
+                  ${["Yes", "No"].map(v => `<button type="button" class="pill${apRules.acceptVague === v ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
+                </div></div>
+              </div>
+            </article>
+
+            <article class="cg-ap-rule-card">
+              <h3>6. Exclusions</h3>
+              <label class="cg-ap-field">Excluded roles / titles<input name="excludedRoles" value="${esc(apRules.excludedRoles)}"></label>
+              <label class="cg-ap-field">Excluded industries<input name="excludedIndustries" value="${esc(apRules.excludedIndustries)}"></label>
+            </article>
+
+            <article class="cg-ap-rule-card">
+              <h3>7. Action Mode</h3>
+              <div class="cg-ap-mode-grid" data-select-group="actionMode" data-select-mode="single">
+                ${apActionModes.map(m => `
+                  <button type="button" class="cg-ap-mode-card${apRules.actionMode === m.key ? " active" : ""}" data-select-value="${m.key}">
+                    <strong>${apRules.actionMode === m.key ? `${icon("check")} ` : ""}${m.title}</strong>
+                    <p>${m.body}</p>
+                  </button>
+                `).join("")}
+              </div>
+            </article>
+
+            <div class="cg-ap-save-row">
+              <button class="btn btn-primary" type="submit">Save rules ${icon("arrow-right")}</button>
+              <span>Rules apply on next scan. You can pause Autopilot anytime.</span>
+            </div>
+          </form>
+        </section>
+
+        <section class="cg-ap-activity">
+          <span class="cg-section-kicker">${icon("history")} Autopilot activity</span>
+          <h1>A transparent record of what Autopilot did</h1>
+          <div class="cg-ap-log">
+            ${apActivityLog.map(entry => `
+              <article>
+                <small>${entry.time}</small>
+                <span class="pill cg-ap-status-${entry.tone}">${entry.status}</span>
+                <div><h3>${entry.title}</h3><p>${entry.body}</p></div>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="cg-ap-safety">
+          <span>${icon("shield-check")} Safety</span>
+          <p>Autopilot will never apply to excluded companies, industries, roles below your salary floor, roles below your match threshold or roles missing key information. You can pause Autopilot or change any rule anytime.</p>
+        </section>
+        </div>
+
+        <div class="cg-pipeline-view${pipelineActiveTab === "followups" ? " active" : ""}" data-pipeline-panel-view="followups">
+        <section class="cg-pipeline-relationships">
+          <span class="cg-section-kicker">${icon("heart")} Relationships, not applications</span>
+          <h2>Who to nurture. When to reach out.</h2>
+          <p>Vera watches recruiter behaviour across your pipeline and tells you exactly when a warm signal is worth acting on.</p>
+          ${relationships.map(([company, person, strength, signal, context, probability, action], index) => `
+            <article>
+              <div><h3>${company}</h3><p>${person}</p><i><em style="width:${strength}%"></em></i><small>Strength ${strength}</small></div>
+              <div><p>${icon("eye")} ${signal}</p><p>${context}</p><p>${probability}</p></div>
+              <a href="posts.html?topic=${encodeURIComponent(`${action} for ${person} at ${company}`)}#messages">${icon("sparkles")} ${action}</a>
+            </article>
+          `).join("")}
         </section>
 
         <section class="cg-pipeline-calendar-grid">
@@ -9650,18 +9861,7 @@ function renderAutopilot() {
           <p class="cg-h2-sub">Patterns Vera spotted across your pipeline, profile views, and market data.</p>
           <div>${signals.map(signal => `<article><span>${icon("trending-up")}</span><p>${signal}</p></article>`).join("")}</div>
         </section>
-
-        <section class="cg-pipeline-ripple">
-          <span class="cg-section-kicker">${icon("zap")} How one action ripples through CareerGo</span>
-          <h2>Finish SQL in Grow. Watch every other page shift.</h2>
-          <p class="cg-h2-sub">One completed skill updates your missions, market value, pipeline odds, and daily brief.</p>
-          <div>
-            <article><span>Grow</span><p>SQL sprint becomes today's mission - 4 days of drills queued.</p></article>
-            <article><span>Worth</span><p>Career Value rises +RM 900 / month within 3 weeks.</p></article>
-            <article class="active"><span>Pipeline</span><p>+21% pass rate at Stripe Round 2 - unlocks Setel + BigPay.</p></article>
-            <article><span>Today</span><p>Interview readiness moves from 68 -> 79 by Friday.</p></article>
-          </div>
-        </section>
+        </div>
       </section>
       ${veraWidgetMarkup()}
     `);
@@ -9670,61 +9870,53 @@ function renderAutopilot() {
       window.setTimeout(() => qs("#autopilot-console", root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
     }
     wireVeraWidget(root);
-    qs("[data-autopilot-toggle]", root)?.addEventListener("click", () => {
-      const next = readState();
-      const enabling = Boolean(next.autopilotRules.scanOnly);
-      next.autopilotRules = { ...next.autopilotRules, scanOnly: !enabling };
-      writeState(syncCurrentUser(next));
-      if (enabling) {
-        showToast("Autopilot is on. Vera will apply within your rules.");
-        runAutopilot();
-      } else {
-        showToast("Autopilot paused. Vera keeps scanning but will not apply.");
+    qsa("[data-pipeline-view]", root).forEach(btn => btn.addEventListener("click", () => {
+      pipelineActiveTab = btn.dataset.pipelineView;
+      qsa("[data-pipeline-view]", root).forEach(b => b.classList.toggle("active", b === btn));
+      qsa("[data-pipeline-panel-view]", root).forEach(panel => panel.classList.toggle("active", panel.dataset.pipelinePanelView === pipelineActiveTab));
+    }));
+    qsa("[data-select-group]", root).forEach(group => {
+      const key = group.dataset.selectGroup;
+      const mode = group.dataset.selectMode;
+      qsa("[data-select-value]", group).forEach(btn => btn.addEventListener("click", () => {
+        const current = readState();
+        const rules = current.autopilotRules || {};
+        if (mode === "single") {
+          current.autopilotRules = { ...rules, [key]: btn.dataset.selectValue };
+        } else {
+          const list = Array.isArray(rules[key]) ? rules[key] : [];
+          const value = btn.dataset.selectValue;
+          current.autopilotRules = { ...rules, [key]: list.includes(value) ? list.filter(v => v !== value) : [...list, value] };
+        }
+        writeState(syncCurrentUser(current));
         renderAutopilot();
-      }
+      }));
     });
-    qs("[data-autopilot-run]", root)?.addEventListener("click", () => runAutopilot());
-    qs("[data-autopilot-rules]", root)?.addEventListener("submit", event => {
+    qs("[data-autopilot-ruleset-form]", root)?.addEventListener("submit", event => {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
       const next = readState();
       next.autopilotRules = {
         ...next.autopilotRules,
-        salary: String(form.get("salary") || "").trim(),
-        location: String(form.get("location") || "").trim(),
+        roleTargets: String(form.get("roleTargets") || "").trim(),
+        minSalary: String(form.get("minSalary") || "").trim(),
+        currency: String(form.get("currency") || "").trim(),
+        rulesLocation: String(form.get("rulesLocation") || "").trim(),
+        preferredCompanies: String(form.get("preferredCompanies") || "").trim(),
+        avoidCompanies: String(form.get("avoidCompanies") || "").trim(),
+        avoidIndustries: String(form.get("avoidIndustries") || "").trim(),
+        avoidKeywords: String(form.get("avoidKeywords") || "").trim(),
         threshold: Number(form.get("threshold")) || 75,
-        exclude: String(form.get("exclude") || "").trim()
+        requiredSkills: String(form.get("requiredSkills") || "").trim(),
+        niceToHave: String(form.get("niceToHave") || "").trim(),
+        excludedRoles: String(form.get("excludedRoles") || "").trim(),
+        excludedIndustries: String(form.get("excludedIndustries") || "").trim()
       };
       writeState(syncCurrentUser(next));
       showToast("Autopilot rules saved.");
       renderAutopilot();
     });
-    qsa("[data-autopilot-apply]", root).forEach(btn => btn.addEventListener("click", () => {
-      autopilotApplyJob(btn.dataset.autopilotApply);
-      showToast("Vera applied with a tailored resume.");
-      renderAutopilot();
-    }));
-    qsa("[data-autopilot-skip]", root).forEach(btn => btn.addEventListener("click", () => {
-      const next = readState();
-      const job = DATA.jobs.find(item => item.id === btn.dataset.autopilotSkip);
-      if (!job) return;
-      if (!next.ignoredJobs.includes(job.id)) next.ignoredJobs.push(job.id);
-      logAutopilotEvent(next, { jobId: job.id, title: job.title, company: job.company, status: "skipped", reason: "You asked Vera to skip this role." });
-      writeState(syncCurrentUser(next));
-      showToast("Role skipped. Vera will not apply to it.");
-      renderAutopilot();
-    }));
-    qsa("[data-autopilot-resume]", root).forEach(btn => btn.addEventListener("click", () => openResumeModal(btn.dataset.autopilotResume)));
-    qsa("[data-autopilot-undo]", root).forEach(btn => btn.addEventListener("click", () => {
-      const jobId = btn.dataset.autopilotUndo;
-      const job = DATA.jobs.find(item => item.id === jobId);
-      updateApplicationStage(jobId, "saved");
-      const next = readState();
-      logAutopilotEvent(next, { jobId, title: job?.title || "Role", company: job?.company || "", status: "withdrawn", reason: "Application withdrawn - moved back to Saved." });
-      writeState(syncCurrentUser(next));
-      showToast("Application withdrawn.");
-      renderAutopilot();
-    }));
+    qsa("[data-ap-toast]", root).forEach(btn => btn.addEventListener("click", () => showToast(btn.dataset.apToast)));
     qsa("[data-pipeline-stage]", root).forEach(btn => btn.addEventListener("click", () => {
       const index = btn.getAttribute("data-pipeline-stage");
       qsa("[data-pipeline-stage]", root).forEach(b => b.classList.toggle("active", b === btn));
