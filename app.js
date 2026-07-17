@@ -8864,10 +8864,11 @@ function renderMarket() {
           <span class="cg-worth-pill">${icon("flame")} Vera believes you're underpriced</span>
           <div class="cg-worth-hero-grid">
             <div>
-              <h1><span>RM</span>8,950<small>/ month</small></h1>
+              <h1><span>RM</span>8,300-9,800<small>/ month</small></h1>
+              <p>Typical range for Product Managers with your profile in Malaysia - exact offers vary by company, industry, and negotiation.</p>
             </div>
             <div class="cg-worth-side">
-              <b>${icon("trending-up")} +RM 50 since yesterday</b>
+              <b>${icon("trending-up")} Trending up since yesterday</b>
             </div>
           </div>
           <article class="cg-worth-vera-note">
@@ -8943,7 +8944,11 @@ function renderMarket() {
             <span class="cg-section-kicker">${icon("scale")} Salary negotiation - Grab Malaysia</span>
             <h2>Vera thinks you can ask for <em>RM 10,300.</em></h2>
             <div class="cg-worth-offer-grid">
-              ${[["Expected offer", "RM 9,200"], ["Fair market value", "RM 10,100"], ["Suggested ask", "RM 10,300"], ["Confidence", "72%"]].map(([label, value], index) => `<div class="${index === 2 ? "active" : ""}"><span>${label}</span><strong>${value}</strong></div>`).join("")}
+              ${[["Expected offer", "RM 9,200"], ["Fair market value", "RM 10,100"], ["Suggested ask", "RM 10,300"]].map(([label, value], index) => `<div class="${index === 2 ? "active" : ""}"><span>${label}</span><strong>${value}</strong></div>`).join("")}
+            </div>
+            <div class="cg-worth-confidence">
+              <div class="cg-worth-confidence-head"><span>Confidence</span><strong>72%</strong></div>
+              ${worthDriverPie([["Verified market data", 30], ["Skill match to role", 26], ["Pipeline leverage", 16]])}
             </div>
             <div class="cg-worth-slider"><i><em></em><b></b></i><div><span>Lowball - RM 8,400</span><span>Fair - RM 10,100</span><span>Ambitious - RM 11,500</span></div></div>
             <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("generating negotiation points for my next offer")}#messages">${icon("sparkles")} Generate negotiation points</a>

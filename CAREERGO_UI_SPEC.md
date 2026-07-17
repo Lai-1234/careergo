@@ -1,10 +1,6 @@
 # CareerGo — UI Implementation Specification
 
-> **Adaptation note (read first):** this document was originally written against a React/Tailwind/shadcn/TanStack-Router reference build (`src/routes/**`, `src/components/**`, Tailwind utility classes, OKLCH tokens). This repository is a static, multi-page HTML/CSS/JS prototype (`*.html` + `enterprise.css` + `app.js` — see `CLAUDE.md`), not that React app. The file paths, component names, and Tailwind class names below do **not** exist in this repo and should not be searched for or imported literally.
->
-> What is binding here, and carries over directly, is the **design values**: the color tokens, spacing scale, typography ramp, radius/shadow scale, card/button/input measurements, density rules, and the "implement exactly, do not redesign" mandate. `CLAUDE.md`'s "UI Design Specification — Source Of Truth" and "Design System" sections are this document translated into plain CSS custom properties and pixel values for `enterprise.css`. When rebuilding or auditing a page, treat *this* file as the numeric reference and `CLAUDE.md` as the translated, repo-applicable version.
-
-Status: Frozen. This document describes the current, approved UI. It is a build spec, not a redesign brief. Every measurable property below is normative: reproduce it exactly. Values are sourced from `src/styles.css`, `src/components/**`, and `src/routes/**` as currently shipped (in the original reference build).
+Status: Frozen. This document describes the current, approved UI. It is a build spec, not a redesign brief. Every measurable property below is normative: reproduce it exactly. Values are sourced from `src/styles.css`, `src/components/**`, and `src/routes/**` as currently shipped.
 
 Coordinate system: all sizes in CSS pixels unless suffixed. Tailwind class names are the source of truth; the pixel values in parentheses translate the Tailwind default scale (1 unit = 4px) for engineers not using Tailwind. Colors are OKLCH per the design system; hex fallbacks are approximate and MUST NOT replace the OKLCH tokens in code.
 
@@ -402,8 +398,6 @@ Non-negotiable. Any deviation is a bug.
 13. Do not raise card shadows above `shadow-sm` at rest.
 14. Do not center-align body copy. Left-align only.
 15. Pixel accuracy is required. When in doubt, screenshot the current preview and diff.
-
-*(Constraints 10 and 12 are React/Tailwind-specific and don't literally apply to this static-HTML repo — there is no router and icons load via the `lucide` CDN script, not an npm package. The intent — no extra dependencies, no icon-library mixing, no substituting Vera's mark — still applies.)*
 
 ---
 
