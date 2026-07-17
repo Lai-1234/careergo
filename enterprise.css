@@ -1381,7 +1381,7 @@ body .topbar .brand .brand-logo {
 }
 
 .tool-card {
-  padding: 22px !important;
+  padding: 16px !important;
 }
 
 .card:hover,
@@ -2183,14 +2183,14 @@ body .hero-actions .btn-ghost {
   gap: 24px !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout>.public-discovery-intro {
+body[data-page="discover"] .jobs-page-layout>.public-discovery-intro {
   grid-column: 1 / -1 !important;
   margin: 0 !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout>.public-discovery-intro+.jobs-filter-bar,
-body[data-page="jobs"] .jobs-page-layout>.jobs-filter-bar,
-body[data-page="jobs"] .jobs-page-layout>.jobs-split {
+body[data-page="discover"] .jobs-page-layout>.public-discovery-intro+.jobs-filter-bar,
+body[data-page="discover"] .jobs-page-layout>.jobs-filter-bar,
+body[data-page="discover"] .jobs-page-layout>.jobs-split {
   margin-top: 0 !important;
 }
 
@@ -3629,20 +3629,20 @@ body[data-page="home"] .home-cta-panel a:hover {
   }
 }
 
-body[data-page="jobs"] .jobs-page-layout {
+body[data-page="discover"] .jobs-page-layout {
   gap: 24px !important;
   grid-template-columns: minmax(0, 1fr) !important;
   align-items: stretch !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout>.public-discovery-intro,
-body[data-page="jobs"] .jobs-page-layout>.jobs-filter-bar,
-body[data-page="jobs"] .jobs-page-layout>.jobs-split {
+body[data-page="discover"] .jobs-page-layout>.public-discovery-intro,
+body[data-page="discover"] .jobs-page-layout>.jobs-filter-bar,
+body[data-page="discover"] .jobs-page-layout>.jobs-split {
   grid-column: 1 / -1 !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout>.public-discovery-intro+.jobs-filter-bar,
-body[data-page="jobs"] .jobs-page-layout>.jobs-filter-bar {
+body[data-page="discover"] .jobs-page-layout>.public-discovery-intro+.jobs-filter-bar,
+body[data-page="discover"] .jobs-page-layout>.jobs-filter-bar {
   position: relative !important;
   top: auto !important;
   z-index: 20 !important;
@@ -3652,41 +3652,41 @@ body[data-page="jobs"] .jobs-page-layout>.jobs-filter-bar {
   border-radius: 22px !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout>.jobs-split {
+body[data-page="discover"] .jobs-page-layout>.jobs-split {
   margin-top: 0 !important;
   display: grid !important;
   grid-template-columns: minmax(330px, 0.9fr) minmax(460px, 1.1fr) !important;
   gap: 24px !important;
 }
 
-body[data-page="jobs"] [data-job-detail] {
+body[data-page="discover"] [data-job-detail] {
   scroll-margin-top: calc(var(--cg-topbar) + 18px);
 }
 
-body[data-page="jobs"] .detail-section.info-card-row {
+body[data-page="discover"] .detail-section.info-card-row {
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr) !important;
   align-items: stretch !important;
 }
 
-body[data-page="jobs"] .company-review-preview,
-body[data-page="jobs"] .market-demand-card {
+body[data-page="discover"] .company-review-preview,
+body[data-page="discover"] .market-demand-card {
   min-height: 100%;
   padding: 24px !important;
   border-radius: 22px !important;
 }
 
-body[data-page="jobs"] .company-review-preview {
+body[data-page="discover"] .company-review-preview {
   gap: 18px !important;
 }
 
-body[data-page="jobs"] .company-review-head {
+body[data-page="discover"] .company-review-head {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start !important;
   gap: 18px !important;
 }
 
-body[data-page="jobs"] .company-review-head h3 {
+body[data-page="discover"] .company-review-head h3 {
   max-width: 13ch;
   margin-top: 4px !important;
   font-size: clamp(22px, 2.2vw, 31px) !important;
@@ -3694,66 +3694,66 @@ body[data-page="jobs"] .company-review-head h3 {
   letter-spacing: -0.02em;
 }
 
-body[data-page="jobs"] .company-rating-stack {
+body[data-page="discover"] .company-rating-stack {
   justify-items: end !important;
   gap: 7px !important;
   padding: 6px 0 0;
 }
 
-body[data-page="jobs"] .company-rating-stack .rating {
+body[data-page="discover"] .company-rating-stack .rating {
   min-height: 44px !important;
   padding: 0 14px !important;
   border-radius: 999px !important;
   font-size: 18px !important;
 }
 
-body[data-page="jobs"] .company-rating-stack>span:not(.rating) {
+body[data-page="discover"] .company-rating-stack>span:not(.rating) {
   color: #1B3A34 !important;
   font-size: 15px !important;
   font-weight: 900 !important;
 }
 
-body[data-page="jobs"] .company-review-preview>p {
+body[data-page="discover"] .company-review-preview>p {
   margin: 0 !important;
   font-size: 16px !important;
   line-height: 1.6 !important;
 }
 
-body[data-page="jobs"] .company-score-strip {
+body[data-page="discover"] .company-score-strip {
   gap: 10px !important;
 }
 
-body[data-page="jobs"] .company-score-strip span {
+body[data-page="discover"] .company-score-strip span {
   min-height: 70px !important;
   padding: 12px 10px !important;
   border-radius: 14px !important;
   text-align: center;
 }
 
-body[data-page="jobs"] .company-score-strip strong {
+body[data-page="discover"] .company-score-strip strong {
   font-size: 20px !important;
   line-height: 1 !important;
 }
 
-body[data-page="jobs"] .company-review-quote {
+body[data-page="discover"] .company-review-quote {
   padding: 16px !important;
   border-left: 0 !important;
   border-radius: 18px !important;
 }
 
-body[data-page="jobs"] .company-review-quote strong {
+body[data-page="discover"] .company-review-quote strong {
   font-size: 17px !important;
   line-height: 1.1;
 }
 
-body[data-page="jobs"] .company-review-link {
+body[data-page="discover"] .company-review-link {
   min-height: 52px !important;
   margin-top: auto;
   border-radius: 16px !important;
   font-size: 15px !important;
 }
 
-body[data-page="jobs"] .market-demand-card {
+body[data-page="discover"] .market-demand-card {
   display: grid;
   align-content: start;
   gap: 18px;
@@ -3762,46 +3762,46 @@ body[data-page="jobs"] .market-demand-card {
     #fff !important;
 }
 
-body[data-page="jobs"] .market-demand-head {
+body[data-page="discover"] .market-demand-head {
   display: grid;
   align-items: start;
   justify-items: start;
   gap: 16px;
 }
 
-body[data-page="jobs"] .market-demand-head h3 {
+body[data-page="discover"] .market-demand-head h3 {
   margin: 4px 0 0 !important;
   font-size: clamp(22px, 2vw, 28px) !important;
   line-height: 1.1;
 }
 
-body[data-page="jobs"] .market-demand-card>p {
+body[data-page="discover"] .market-demand-card>p {
   margin: 0 !important;
   font-size: 17px !important;
   line-height: 1.62 !important;
 }
 
-body[data-page="jobs"] .market-demand-meter {
+body[data-page="discover"] .market-demand-meter {
   height: 10px;
   overflow: hidden;
   border-radius: 999px;
   background: rgba(27, 58, 52, 0.08);
 }
 
-body[data-page="jobs"] .market-demand-meter span {
+body[data-page="discover"] .market-demand-meter span {
   display: block;
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, #0b6d65, #1B3A34);
 }
 
-body[data-page="jobs"] .market-demand-grid {
+body[data-page="discover"] .market-demand-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
   gap: 10px;
 }
 
-body[data-page="jobs"] .market-demand-grid span {
+body[data-page="discover"] .market-demand-grid span {
   display: grid;
   gap: 4px;
   min-height: 76px;
@@ -3815,48 +3815,48 @@ body[data-page="jobs"] .market-demand-grid span {
   font-weight: 800;
 }
 
-body[data-page="jobs"] .market-demand-grid strong {
+body[data-page="discover"] .market-demand-grid strong {
   color: #1B3A34 !important;
   font-size: 15px;
   line-height: 1.1;
 }
 
-body[data-page="jobs"] .detail-panel .company-score-strip {
+body[data-page="discover"] .detail-panel .company-score-strip {
   grid-template-columns: repeat(auto-fit, minmax(74px, 1fr));
 }
 
 @media (max-width: 760px) {
-  body[data-page="jobs"] .detail-section.info-card-row {
+  body[data-page="discover"] .detail-section.info-card-row {
     grid-template-columns: 1fr !important;
   }
 
-  body[data-page="jobs"] .company-review-head,
-  body[data-page="jobs"] .market-demand-head {
+  body[data-page="discover"] .company-review-head,
+  body[data-page="discover"] .market-demand-head {
     grid-template-columns: 1fr;
     display: grid !important;
   }
 
-  body[data-page="jobs"] .company-rating-stack {
+  body[data-page="discover"] .company-rating-stack {
     justify-items: start !important;
   }
 
-  body[data-page="jobs"] .market-demand-grid {
+  body[data-page="discover"] .market-demand-grid {
     grid-template-columns: 1fr !important;
   }
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-title {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-title {
   margin: 0 0 16px !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack {
   display: flex !important;
   flex-flow: row nowrap !important;
   align-items: center !important;
   gap: 12px !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar :is(.field, .custom-select-field, .range-field, .check-field, .btn) {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar :is(.field, .custom-select-field, .range-field, .check-field, .btn) {
   width: auto !important;
   min-width: 0 !important;
   min-height: 48px !important;
@@ -3864,47 +3864,47 @@ body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar :is(.field, .custom-se
   grid-column: auto !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack>.field:first-child {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack>.field:first-child {
   flex: 1.45 1 260px !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack>.custom-select-field {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack>.custom-select-field {
   flex: 0.62 1 118px !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack>.range-field {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack>.range-field {
   flex: 0.92 1 190px !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack>.check-field {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack>.check-field {
   flex: 0 0 138px !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack>.btn-wide {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack>.btn-wide {
   flex: 0 0 auto !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .range-field {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .range-field {
   padding-inline: 14px !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .check-field {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .check-field {
   justify-content: center !important;
   padding-inline: 14px !important;
   white-space: nowrap !important;
 }
 
-body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .btn-wide {
+body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .btn-wide {
   padding-inline: 18px !important;
   white-space: nowrap !important;
 }
 
-body[data-page="jobs"] .jobs-workspace>.jobs-filter-bar,
-body[data-page="jobs"] .jobs-workspace>.jobs-main {
+body[data-page="discover"] .jobs-workspace>.jobs-filter-bar,
+body[data-page="discover"] .jobs-workspace>.jobs-main {
   grid-column: 1 / -1 !important;
 }
 
-body[data-page="jobs"] .jobs-workspace>.jobs-filter-bar {
+body[data-page="discover"] .jobs-workspace>.jobs-filter-bar {
   position: relative !important;
   top: auto !important;
   width: 100% !important;
@@ -3912,14 +3912,14 @@ body[data-page="jobs"] .jobs-workspace>.jobs-filter-bar {
   border-radius: 20px !important;
 }
 
-body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack {
+body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack {
   display: flex !important;
   flex-flow: row nowrap !important;
   align-items: center !important;
   gap: 12px !important;
 }
 
-body[data-page="jobs"] .jobs-workspace .jobs-filter-bar :is(.field, .custom-select-field, .range-field, .check-field, .btn) {
+body[data-page="discover"] .jobs-workspace .jobs-filter-bar :is(.field, .custom-select-field, .range-field, .check-field, .btn) {
   width: auto !important;
   min-width: 0 !important;
   min-height: 48px !important;
@@ -3927,77 +3927,77 @@ body[data-page="jobs"] .jobs-workspace .jobs-filter-bar :is(.field, .custom-sele
   grid-column: auto !important;
 }
 
-body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack>.field:first-child {
+body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack>.field:first-child {
   flex: 1.45 1 240px !important;
 }
 
-body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack>.custom-select-field {
+body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack>.custom-select-field {
   flex: 0.62 1 112px !important;
 }
 
-body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack>.range-field {
+body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack>.range-field {
   flex: 0.92 1 190px !important;
 }
 
-body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack>.check-field {
+body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack>.check-field {
   flex: 0 0 138px !important;
 }
 
-body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack>.btn-wide {
+body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack>.btn-wide {
   flex: 0 0 auto !important;
 }
 
 @media (max-width: 1180px) {
 
-  body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack,
-  body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack {
+  body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack,
+  body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack {
     flex-wrap: wrap !important;
   }
 
-  body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .range-field,
-  body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .range-field {
+  body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .range-field,
+  body[data-page="discover"] .jobs-workspace .jobs-filter-bar .range-field {
     grid-column: span 2;
   }
 }
 
 @media (max-width: 900px) {
-  body[data-page="jobs"] .jobs-page-layout>.jobs-split {
+  body[data-page="discover"] .jobs-page-layout>.jobs-split {
     grid-template-columns: 1fr !important;
   }
 
-  body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack,
-  body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack {
+  body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack,
+  body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack {
     flex-direction: column !important;
   }
 
-  body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .range-field,
-  body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .range-field {
+  body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .range-field,
+  body[data-page="discover"] .jobs-workspace .jobs-filter-bar .range-field {
     grid-column: auto;
   }
 
-  body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack>*,
-  body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack>* {
+  body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack>*,
+  body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack>* {
     flex: none !important;
     width: 100% !important;
     max-width: 100% !important;
   }
 
-  body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack> :is(.field, .custom-select-field, .check-field, .btn-wide),
-  body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack> :is(.field, .custom-select-field, .check-field, .btn-wide) {
+  body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack> :is(.field, .custom-select-field, .check-field, .btn-wide),
+  body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack> :is(.field, .custom-select-field, .check-field, .btn-wide) {
     flex-basis: 52px !important;
     height: 52px !important;
     min-height: 52px !important;
   }
 
-  body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack>.field:first-child,
-  body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack>.field:first-child {
+  body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack>.field:first-child,
+  body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack>.field:first-child {
     flex: 0 0 52px !important;
     height: 52px !important;
     min-height: 52px !important;
   }
 
-  body[data-page="jobs"] .jobs-page-layout .jobs-filter-bar .filter-stack>.range-field,
-  body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack>.range-field {
+  body[data-page="discover"] .jobs-page-layout .jobs-filter-bar .filter-stack>.range-field,
+  body[data-page="discover"] .jobs-workspace .jobs-filter-bar .filter-stack>.range-field {
     flex-basis: 74px !important;
     height: 74px !important;
     min-height: 74px !important;
@@ -4005,7 +4005,7 @@ body[data-page="jobs"] .jobs-workspace .jobs-filter-bar .filter-stack>.btn-wide 
 }
 
 html body:has(.cg-workspace-tabs):is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="profile"],
   [data-page="market"],
   [data-page="autopilot"],
@@ -4022,7 +4022,7 @@ html body:has(.cg-workspace-tabs):is([data-page="dashboard"],
 }
 
 html body:has(.cg-workspace-tabs):is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="profile"],
   [data-page="market"],
   [data-page="autopilot"],
@@ -4035,7 +4035,7 @@ html body:has(.cg-workspace-tabs):is([data-page="dashboard"],
 }
 
 html body:has(.cg-workspace-tabs):is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="profile"],
   [data-page="market"],
   [data-page="autopilot"],
@@ -4045,7 +4045,7 @@ html body:has(.cg-workspace-tabs):is([data-page="dashboard"],
 }
 
 html body:has(.cg-workspace-tabs):is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="profile"],
   [data-page="market"],
   [data-page="autopilot"],
@@ -5103,11 +5103,16 @@ html body[data-page="discover"] .cg-discover-v2 .cg-mentor-grid {
   }
 }
 
-body[data-page="profile"]:has(.cg-grow) .container.os-layout {
-  width: min(1460px, calc(100% - 76px)) !important;
-  max-width: none !important;
+body[data-page="grow"]:has(.cg-grow) .container.os-layout {
+  width: min(1240px, calc(100% - 48px)) !important;
+  max-width: 1240px !important;
+  margin: 0 auto !important;
   display: block !important;
-  padding: 0 !important;
+  padding: 40px 0 96px !important;
+}
+
+body[data-page="grow"]:has(.cg-grow) .os-main {
+  display: block !important;
 }
 
 .cg-grow {
@@ -6288,11 +6293,10 @@ body[data-page="market"]:has(.cg-worth) .container.os-layout {
 
 .cg-worth-hero {
   display: grid;
-  gap: 28px;
-  min-height: 760px;
-  padding: 56px 62px;
+  gap: 20px;
+  padding: 32px 36px;
   overflow: hidden;
-  border-radius: 28px;
+  border-radius: 24px;
   color: #fffaf2;
   background:
     radial-gradient(circle at 78% 10%, rgba(101, 181, 172, 0.14), transparent 360px),
@@ -6343,12 +6347,12 @@ body[data-page="market"]:has(.cg-worth) .container.os-layout {
 }
 
 .cg-worth-hero-grid>div>p {
-  max-width: 650px;
-  margin: 28px 0 22px;
-  color: rgba(255, 250, 242, 0.78);
-  font-size: 18px;
-  font-weight: 650;
-  line-height: 1.62;
+  max-width: 560px;
+  margin: 10px 0 0;
+  color: rgba(255, 250, 242, 0.68);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .cg-worth-meta {
@@ -6411,8 +6415,8 @@ body[data-page="market"]:has(.cg-worth) .container.os-layout {
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr);
   gap: 16px;
-  padding: 24px;
-  border-radius: 20px;
+  padding: 20px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -6445,8 +6449,8 @@ body[data-page="market"]:has(.cg-worth) .container.os-layout {
 .cg-worth-range {
   display: grid;
   gap: 14px;
-  padding: 24px 30px;
-  border-radius: 20px;
+  padding: 20px 24px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -6930,27 +6934,52 @@ body[data-page="market"] .cg-worth .cg-worth-roi-grid h3 {
 
 .cg-worth-negotiation {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.9fr);
-  gap: 24px;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.9fr);
+  align-items: stretch;
+  gap: 20px;
 }
 
 .cg-worth-negotiation>article,
 .cg-worth-negotiation>aside {
-  padding: 34px;
+  padding: 24px;
   border: 1px solid rgba(14, 44, 37, 0.1);
-  border-radius: 24px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.78);
   box-shadow: 0 18px 44px rgba(35, 29, 18, 0.055);
 }
 
 .cg-worth-negotiation .cg-grow-coach {
   min-height: auto;
-  padding: 38px;
+  padding: 24px;
   border: 0;
-  border-radius: 24px;
+  border-radius: 18px;
   background:
     radial-gradient(circle at 95% 10%, rgba(101, 181, 172, 0.18), transparent 280px),
     linear-gradient(135deg, #07382f 0%, #052f29 100%);
+}
+
+.cg-worth-negotiation .cg-worth-coach-message {
+  gap: 12px;
+}
+
+.cg-worth-negotiation .cg-worth-coach-avatar {
+  width: 36px;
+  height: 36px;
+}
+
+.cg-worth-negotiation .cg-worth-coach-avatar img {
+  width: 26px;
+  height: 26px;
+}
+
+.cg-worth-negotiation .cg-chat-bubble {
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.cg-worth-negotiation .cg-grow-chat {
+  margin-top: 4px;
 }
 
 .cg-worth-coach-message {
@@ -6995,8 +7024,8 @@ body[data-page="market"] .cg-worth .cg-worth-roi-grid h3 {
 }
 
 .cg-worth-negotiation h2 {
-  margin-top: 16px;
-  font-size: clamp(34px, 3.2vw, 48px);
+  margin-top: 8px;
+  font-size: clamp(20px, 2vw, 26px);
 }
 
 .cg-worth-negotiation h2 em {
@@ -7006,15 +7035,15 @@ body[data-page="market"] .cg-worth .cg-worth-roi-grid h3 {
 
 .cg-worth-offer-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  margin: 28px 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
 }
 
 .cg-worth-offer-grid div {
-  padding: 18px;
+  padding: 14px;
   border: 1px solid rgba(14, 44, 37, 0.1);
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgba(248, 244, 235, 0.72);
 }
 
@@ -7024,7 +7053,7 @@ body[data-page="market"] .cg-worth .cg-worth-roi-grid h3 {
 
 .cg-worth-offer-grid span {
   color: #68756f;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 850;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -7032,18 +7061,54 @@ body[data-page="market"] .cg-worth .cg-worth-roi-grid h3 {
 
 .cg-worth-offer-grid strong {
   display: block;
-  margin-top: 10px;
+  margin-top: 8px;
   color: var(--cg-shot-ink);
   font-family: var(--cg-shot-serif);
-  font-size: 25px;
+  font-size: 19px;
+}
+
+.cg-worth-confidence {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid rgba(14, 44, 37, 0.1);
+  border-radius: 12px;
+  background: rgba(248, 244, 235, 0.72);
+}
+
+.cg-worth-confidence-head {
+  display: grid;
+  gap: 2px;
+}
+
+.cg-worth-confidence-head span {
+  color: #68756f;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.cg-worth-confidence-head strong {
+  color: var(--cg-shot-ink);
+  font-family: var(--cg-shot-serif);
+  font-size: 19px;
+}
+
+.cg-worth-confidence .cg-worth-pie svg {
+  width: 44px;
+  height: 44px;
 }
 
 .cg-worth-slider {
   display: grid;
-  gap: 12px;
-  margin-bottom: 28px;
-  padding: 20px;
-  border-radius: 16px;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 14px;
+  border-radius: 14px;
   background: rgba(248, 244, 235, 0.72);
 }
 
@@ -8799,8 +8864,8 @@ html body[data-page="autopilot"] .cg-pipeline-review.cg-pipeline-review .btn-pri
 }
 
 @media (max-width: 720px) {
-  body[data-page="profile"]:has(.cg-grow) .container.os-layout {
-    width: min(100% - 28px, 1460px) !important;
+  body[data-page="grow"]:has(.cg-grow) .container.os-layout {
+    width: min(100% - 28px, 1240px) !important;
   }
 
   body[data-page="market"]:has(.cg-worth) .container.os-layout {
@@ -9648,7 +9713,7 @@ body[data-page="dashboard"] .cg-vera-status {
 }
 
 body[data-page="dashboard"] .cg-kpi-grid {
-  gap: 14px !important;
+  gap: 12px !important;
 }
 
 body[data-page="dashboard"] .cg-kpi-card,
@@ -9932,18 +9997,18 @@ body[data-page="dashboard"] .cg-long-card.tone-3 {
   }
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) {
   color: var(--cg-shot-ink) !important;
   background:
     radial-gradient(circle at 50% 0%, rgba(165, 197, 185, 0.3), transparent 390px),
     linear-gradient(180deg, var(--cg-shot-bg) 0%, var(--cg-shot-bg) 100%) !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) main {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) main {
   background: transparent !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .topbar:has(.cg-workspace-tabs) {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .topbar:has(.cg-workspace-tabs) {
   min-height: 78px !important;
   height: 78px !important;
   border-bottom: 1px solid rgba(14, 44, 37, 0.1) !important;
@@ -9952,7 +10017,7 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   backdrop-filter: blur(18px) !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .topbar:has(.cg-workspace-tabs) .nav-inner {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .topbar:has(.cg-workspace-tabs) .nav-inner {
   width: min(1460px, calc(100% - 76px)) !important;
   height: 78px !important;
   min-height: 78px !important;
@@ -9962,7 +10027,7 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   gap: 26px !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-top-brand {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-top-brand {
   display: inline-flex !important;
   align-items: center !important;
   gap: 12px !important;
@@ -9970,7 +10035,7 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   text-decoration: none !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-brand-mark {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-brand-mark {
   display: grid !important;
   place-items: center !important;
   width: 34px !important;
@@ -9981,12 +10046,12 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   box-shadow: 0 10px 24px rgba(7, 56, 47, 0.18) !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-brand-mark svg {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-brand-mark svg {
   width: 18px !important;
   height: 18px !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .brand-text strong {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .brand-text strong {
   color: var(--cg-shot-ink) !important;
   font-family: var(--cg-shot-serif) !important;
   font-size: 24px !important;
@@ -9994,14 +10059,14 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   letter-spacing: -0.02em !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-workspace-tabs {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-workspace-tabs {
   justify-self: start !important;
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-workspace-tabs a {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-workspace-tabs a {
   min-height: 42px !important;
   display: inline-flex !important;
   align-items: center !important;
@@ -10015,14 +10080,14 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   background: transparent !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-workspace-tabs a.active,
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-workspace-tabs a:hover {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-workspace-tabs a.active,
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-workspace-tabs a:hover {
   color: #fffaf2 !important;
   background: var(--cg-shot-green) !important;
   box-shadow: 0 10px 22px rgba(7, 56, 47, 0.18) !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-search {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-search {
   justify-self: end !important;
   width: min(310px, 100%) !important;
   min-height: 40px !important;
@@ -10034,7 +10099,7 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65) !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-search input {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-search input {
   height: 100% !important;
   color: #46534e !important;
   background: transparent !important;
@@ -10044,7 +10109,7 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   font-weight: 600 !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-search kbd {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-search kbd {
   display: inline-flex !important;
   align-items: center !important;
   height: 24px !important;
@@ -10058,14 +10123,14 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   font-weight: 700 !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-user-actions {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-user-actions {
   justify-self: end !important;
   display: inline-flex !important;
   align-items: center !important;
   gap: 14px !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .notification-trigger {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .notification-trigger {
   width: 34px !important;
   min-width: 34px !important;
   height: 34px !important;
@@ -10077,7 +10142,7 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   box-shadow: none !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-avatar-trigger {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-avatar-trigger {
   width: 46px !important;
   min-width: 46px !important;
   height: 46px !important;
@@ -10090,32 +10155,32 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   box-shadow: 0 10px 24px rgba(7, 56, 47, 0.18) !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-avatar-trigger span {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-avatar-trigger span {
   color: #fffaf2 !important;
   font-size: 17px !important;
   font-weight: 850 !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .container.os-layout,
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) main>.container,
-body[data-page="jobs"] main[data-jobs-page]>.container.os-layout {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .container.os-layout,
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) main>.container,
+body[data-page="discover"] main[data-jobs-page]>.container.os-layout {
   width: min(1460px, calc(100% - 76px)) !important;
   max-width: none !important;
   display: block !important;
   padding: 0 !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .workspace-rail,
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .sidebar-overlay,
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .os-module-header {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .workspace-rail,
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .sidebar-overlay,
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .os-module-header {
   display: none !important;
 }
 
-body:has(.cg-workspace-tabs):is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .page-hero {
+body:has(.cg-workspace-tabs):is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .page-hero {
   display: none !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .os-main {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .os-main {
   width: 100% !important;
   max-width: none !important;
   display: grid !important;
@@ -10123,7 +10188,7 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   padding: 46px 0 56px !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.dashboard-hero, .compact-dashboard-hero, .market-hero, .profile-intel-hero, .jobs-hero-card) {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.dashboard-hero, .compact-dashboard-hero, .market-hero, .profile-intel-hero, .jobs-hero-card) {
   min-height: 210px !important;
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
@@ -10135,14 +10200,14 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   box-shadow: none !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.dashboard-hero, .compact-dashboard-hero, .market-hero, .profile-intel-hero, .jobs-hero-card)::before {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.dashboard-hero, .compact-dashboard-hero, .market-hero, .profile-intel-hero, .jobs-hero-card)::before {
   content: "" !important;
   display: none !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .eyebrow,
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .section-kicker,
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-overline {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .eyebrow,
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .section-kicker,
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-overline {
   color: #68756f !important;
   font-family: var(--cg-shot-sans) !important;
   font-size: 12px !important;
@@ -10151,34 +10216,34 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   text-transform: uppercase !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.section-title, h1, h2, h3, .card-title) {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.section-title, h1, h2, h3, .card-title) {
   color: var(--cg-shot-ink) !important;
   font-family: var(--cg-shot-serif) !important;
   font-weight: 650 !important;
   letter-spacing: -0.035em !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.dashboard-hero, .compact-dashboard-hero, .market-hero, .profile-intel-hero, .jobs-hero-card) .section-title {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.dashboard-hero, .compact-dashboard-hero, .market-hero, .profile-intel-hero, .jobs-hero-card) .section-title {
   max-width: 870px !important;
   margin: 18px 0 8px !important;
   font-size: clamp(54px, 5vw, 78px) !important;
   line-height: 0.99 !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .section-sub,
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(p, .muted, small, li, td) {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .section-sub,
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(p, .muted, small, li, td) {
   color: #5b6963 !important;
   font-family: var(--cg-shot-sans) !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .section-sub {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .section-sub {
   max-width: 820px !important;
   font-size: 17px !important;
   font-weight: 600 !important;
   line-height: 1.65 !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.glass-card, .card, .list-card, .detail-panel, .filters, .score-tile, .market-worth-card, .market-scenario-card, .application-kpi-card, .plan-summary-card, .market-value-plan, .profile-card, .tool-card, .cg-feed-post, .cg-feed-composer, .cg-feed-aside section, .cg-follow-card) {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.glass-card, .card, .list-card, .detail-panel, .filters, .score-tile, .market-worth-card, .market-scenario-card, .application-kpi-card, .plan-summary-card, .market-value-plan, .profile-card, .tool-card, .cg-feed-post, .cg-feed-composer, .cg-feed-aside section, .cg-follow-card) {
   color: var(--cg-shot-ink) !important;
   border: 1px solid rgba(14, 44, 37, 0.1) !important;
   border-radius: 20px !important;
@@ -10186,7 +10251,7 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   box-shadow: 0 18px 44px rgba(35, 29, 18, 0.055) !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.btn-primary, .btn-cyan, .search-button, .note-save-button) {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.btn-primary, .btn-cyan, .search-button, .note-save-button) {
   min-height: 42px !important;
   padding: 0 23px !important;
   color: #fffaf2 !important;
@@ -10198,7 +10263,7 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   font-weight: 850 !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.btn-ghost, .pill, .tab-row button, .pipeline-stage, .application-stage-actions button) {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.btn-ghost, .pill, .tab-row button, .pipeline-stage, .application-stage-actions button) {
   color: #34443d !important;
   border-color: rgba(14, 44, 37, 0.11) !important;
   border-radius: 999px !important;
@@ -10207,13 +10272,13 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   font-weight: 800 !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.pill.active, .tab-row button.active, .pipeline-stage.active, .application-stage-actions button.active) {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.pill.active, .tab-row button.active, .pipeline-stage.active, .application-stage-actions button.active) {
   color: #fffaf2 !important;
   border-color: var(--cg-shot-green) !important;
   background: var(--cg-shot-green) !important;
 }
 
-body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(input, textarea, select, .custom-select-trigger) {
+body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(input, textarea, select, .custom-select-trigger) {
   color: #34443d !important;
   border-color: rgba(14, 44, 37, 0.11) !important;
   border-radius: 16px !important;
@@ -10221,47 +10286,47 @@ body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-p
   box-shadow: none !important;
 }
 
-body[data-page="jobs"] .jobs-workspace {
+body[data-page="discover"] .jobs-workspace {
   display: grid !important;
   grid-template-columns: 300px minmax(0, 1fr) !important;
   gap: 24px !important;
   align-items: start !important;
 }
 
-body[data-page="jobs"] .jobs-filter-bar {
+body[data-page="discover"] .jobs-filter-bar {
   position: sticky !important;
   top: 96px !important;
   padding: 24px !important;
   background: rgba(255, 255, 255, 0.58) !important;
 }
 
-body[data-page="jobs"] .jobs-main {
+body[data-page="discover"] .jobs-main {
   display: grid !important;
   gap: 20px !important;
 }
 
-body[data-page="jobs"] .jobs-split {
+body[data-page="discover"] .jobs-split {
   display: grid !important;
   grid-template-columns: minmax(0, 0.88fr) minmax(420px, 1.12fr) !important;
   gap: 22px !important;
 }
 
-body[data-page="jobs"] .list-stack {
+body[data-page="discover"] .list-stack {
   gap: 14px !important;
 }
 
-body[data-page="jobs"] [data-job-list] .list-card {
+body[data-page="discover"] [data-job-list] .list-card {
   min-height: 150px !important;
   padding: 24px !important;
   text-align: left !important;
 }
 
-body[data-page="jobs"] [data-job-list] .list-card.active,
-body[data-page="jobs"] [data-job-list] .list-card:hover {
+body[data-page="discover"] [data-job-list] .list-card.active,
+body[data-page="discover"] [data-job-list] .list-card:hover {
   background: linear-gradient(135deg, rgba(216, 239, 235, 0.88), rgba(255, 255, 255, 0.78)) !important;
 }
 
-body[data-page="jobs"] .detail-panel {
+body[data-page="discover"] .detail-panel {
   position: sticky !important;
   top: 96px !important;
   max-height: calc(100vh - 116px) !important;
@@ -10269,18 +10334,18 @@ body[data-page="jobs"] .detail-panel {
   overflow: auto !important;
 }
 
-body[data-page="jobs"] .detail-head h2 {
+body[data-page="discover"] .detail-head h2 {
   font-size: clamp(34px, 3.1vw, 48px) !important;
 }
 
-body[data-page="jobs"] .vera-box {
+body[data-page="discover"] .vera-box {
   border-radius: 20px !important;
   background:
     radial-gradient(circle at 100% 0%, rgba(106, 165, 157, 0.2), transparent 220px),
     linear-gradient(135deg, #07382f, #00483f) !important;
 }
 
-body[data-page="jobs"] .vera-box :is(h3, p, strong, span) {
+body[data-page="discover"] .vera-box :is(h3, p, strong, span) {
   color: #fffaf2 !important;
 }
 
@@ -10548,17 +10613,17 @@ body[data-page="posts"] .cg-trend strong {
 }
 
 @media (max-width: 1180px) {
-  body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .topbar:has(.cg-workspace-tabs) .nav-inner {
+  body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .topbar:has(.cg-workspace-tabs) .nav-inner {
     width: min(100% - 32px, 1460px) !important;
     grid-template-columns: auto 1fr auto !important;
   }
 
-  body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-search {
+  body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-search {
     display: none !important;
   }
 
-  body[data-page="jobs"] .jobs-workspace,
-  body[data-page="jobs"] .jobs-split,
+  body[data-page="discover"] .jobs-workspace,
+  body[data-page="discover"] .jobs-split,
   body[data-page="autopilot"] .applications-workspace,
   body[data-page="posts"] .cg-feed-shell {
     grid-template-columns: 1fr !important;
@@ -10571,36 +10636,36 @@ body[data-page="posts"] .cg-trend strong {
 }
 
 @media (max-width: 760px) {
-  body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .topbar:has(.cg-workspace-tabs) {
+  body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .topbar:has(.cg-workspace-tabs) {
     height: auto !important;
     min-height: 76px !important;
   }
 
-  body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .topbar:has(.cg-workspace-tabs) .nav-inner {
+  body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .topbar:has(.cg-workspace-tabs) .nav-inner {
     display: flex !important;
     flex-wrap: wrap !important;
     height: auto !important;
     padding: 12px 0 !important;
   }
 
-  body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-workspace-tabs {
+  body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-workspace-tabs {
     order: 3 !important;
     width: 100% !important;
     overflow-x: auto !important;
   }
 
-  body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .container.os-layout,
-  body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) main>.container {
+  body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .container.os-layout,
+  body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) main>.container {
     width: min(100% - 28px, 1460px) !important;
   }
 
-  body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.dashboard-hero, .compact-dashboard-hero, .market-hero, .profile-intel-hero, .jobs-hero-card) {
+  body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.dashboard-hero, .compact-dashboard-hero, .market-hero, .profile-intel-hero, .jobs-hero-card) {
     grid-template-columns: 1fr !important;
     min-height: auto !important;
     padding-top: 28px !important;
   }
 
-  body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.dashboard-hero, .compact-dashboard-hero, .market-hero, .profile-intel-hero, .jobs-hero-card) .section-title {
+  body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) :is(.dashboard-hero, .compact-dashboard-hero, .market-hero, .profile-intel-hero, .jobs-hero-card) .section-title {
     font-size: 42px !important;
   }
 
@@ -10611,8 +10676,8 @@ body[data-page="posts"] .cg-trend strong {
     grid-template-columns: 1fr !important;
   }
 
-  body[data-page="jobs"] .jobs-filter-bar,
-  body[data-page="jobs"] .detail-panel,
+  body[data-page="discover"] .jobs-filter-bar,
+  body[data-page="discover"] .detail-panel,
   body[data-page="posts"] .cg-feed-aside {
     position: static !important;
     max-height: none !important;
@@ -10680,15 +10745,15 @@ html body .topbar:has(.nav-links):not(:has(.workspace-search)) .nav-actions .btn
   }
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) h2 {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) h2 {
   font-size: clamp(28px, 3vw, 36px) !important;
   line-height: 1.1 !important;
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main>.container.os-layout,
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main>.container,
-html body[data-page="jobs"] main[data-jobs-page],
-html body[data-page="jobs"] main[data-jobs-page]>.container.os-layout {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="market"], [data-page="autopilot"]) main>.container.os-layout,
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="market"], [data-page="autopilot"]) main>.container,
+html body[data-page="discover"] main[data-jobs-page],
+html body[data-page="discover"] main[data-jobs-page]>.container.os-layout {
   width: min(1240px, calc(100% - 48px)) !important;
   max-width: 1240px !important;
   margin-inline: auto !important;
@@ -10696,7 +10761,7 @@ html body[data-page="jobs"] main[data-jobs-page]>.container.os-layout {
   padding-right: 0 !important;
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) .os-main {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="market"], [data-page="autopilot"]) .os-main {
   width: 100% !important;
   max-width: none !important;
   margin-inline: 0 !important;
@@ -10716,10 +10781,10 @@ html body[data-page="autopilot"] .cg-pipeline {
 
 @media (max-width: 760px) {
 
-  html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main>.container.os-layout,
-  html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main>.container,
-  html body[data-page="jobs"] main[data-jobs-page],
-  html body[data-page="jobs"] main[data-jobs-page]>.container.os-layout {
+  html body:is([data-page="dashboard"], [data-page="discover"], [data-page="market"], [data-page="autopilot"]) main>.container.os-layout,
+  html body:is([data-page="dashboard"], [data-page="discover"], [data-page="market"], [data-page="autopilot"]) main>.container,
+  html body[data-page="discover"] main[data-jobs-page],
+  html body[data-page="discover"] main[data-jobs-page]>.container.os-layout {
     width: min(100% - 28px, 1240px) !important;
   }
 }
@@ -14051,7 +14116,7 @@ html body[data-page="dashboard"] {
   }
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) {
   --ivory: #f7f3ea !important;
   --ivory-deep: #efe8d8 !important;
   --forest: #1b2e28 !important;
@@ -14084,7 +14149,7 @@ html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"
   font-feature-settings: "ss01", "cv11" !important;
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) main> :is(.container, .os-layout, .os-main, .cg-dashboard, .directory-page-layout, .public-profile-shell) {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) main> :is(.container, .os-layout, .os-main, .cg-dashboard, .directory-page-layout, .public-profile-shell) {
   width: min(1240px, calc(100% - 48px)) !important;
   max-width: 1240px !important;
   margin-inline: auto !important;
@@ -14092,7 +14157,7 @@ html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"
   padding-bottom: 96px !important;
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(h1, h2, h3, .section-title, .cg-section-title, .cg-feed-hero h1, .profile-name, .stat-value, .metric-value) {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(h1, h2, h3, .section-title, .cg-section-title, .cg-feed-hero h1, .profile-name, .stat-value, .metric-value) {
   color: #1b2e28 !important;
   -webkit-text-fill-color: #1b2e28 !important;
   font-family: "Fraunces", ui-serif, Georgia, serif !important;
@@ -14100,12 +14165,12 @@ html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"
   letter-spacing: -0.01em !important;
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) h1 {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) h1 {
   font-size: clamp(36px, 3.6vw, 44px) !important;
   line-height: 1.05 !important;
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(p, li, .section-sub, .muted, .small, .cg-body, .cg-feed-body) {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(p, li, .section-sub, .muted, .small, .cg-body, .cg-feed-body) {
   color: #5f7573 !important;
   -webkit-text-fill-color: #5f7573 !important;
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
@@ -14115,7 +14180,7 @@ html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"
   letter-spacing: 0 !important;
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.section-kicker, .eyebrow, .cg-overline, .job-detail-label, .stats-label, .profile-label, .field-label) {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.section-kicker, .eyebrow, .cg-overline, .job-detail-label, .stats-label, .profile-label, .field-label) {
   color: #5f7573 !important;
   -webkit-text-fill-color: #5f7573 !important;
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
@@ -14126,7 +14191,7 @@ html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"
   text-transform: uppercase !important;
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.glass-card, .card, .list-card, .detail-panel, .application-control, .score-tile, .timeline-item, .cg-kpi-card, .cg-autopilot-card, .cg-task-section, .cg-application-card, .cg-role-card, .cg-long-card, .cg-feed-post, .cg-feed-composer, .cg-follow-card, .profile-card, .settings-card, .career-form-card, .directory-card, .public-discovery-card) {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.glass-card, .card, .list-card, .detail-panel, .application-control, .score-tile, .timeline-item, .cg-kpi-card, .cg-autopilot-card, .cg-task-section, .cg-application-card, .cg-role-card, .cg-long-card, .cg-feed-post, .cg-feed-composer, .cg-follow-card, .profile-card, .settings-card, .career-form-card, .directory-card, .public-discovery-card) {
   border: 1px solid rgba(227, 220, 200, 0.8) !important;
   border-radius: 18px !important;
   background: #ffffff !important;
@@ -14135,14 +14200,14 @@ html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"
   transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.7, 0.2, 1), border-color 220ms cubic-bezier(0.2, 0.7, 0.2, 1) !important;
 }
 
-html body:is([data-page="dashboard"], [data-page="jobs"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.glass-card, .card, .list-card, .detail-panel, .application-control, .score-tile, .timeline-item, .cg-kpi-card, .cg-autopilot-card, .cg-task-section, .cg-application-card, .cg-role-card, .cg-long-card, .cg-feed-post, .cg-follow-card, .profile-card, .settings-card, .career-form-card, .directory-card, .public-discovery-card):hover {
+html body:is([data-page="dashboard"], [data-page="discover"], [data-page="companies"], [data-page="universities"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="saved"], [data-page="profile"], [data-page="public-profile"], [data-page="settings"], [data-page="edit-career-data"], [data-page="vera"]) :is(.glass-card, .card, .list-card, .detail-panel, .application-control, .score-tile, .timeline-item, .cg-kpi-card, .cg-autopilot-card, .cg-task-section, .cg-application-card, .cg-role-card, .cg-long-card, .cg-feed-post, .cg-follow-card, .profile-card, .settings-card, .career-form-card, .directory-card, .public-discovery-card):hover {
   border-color: rgba(36, 92, 99, 0.25) !important;
   box-shadow: 0 1px 2px rgba(31, 51, 44, 0.04), 0 18px 40px -24px rgba(31, 51, 44, 0.35) !important;
   transform: translateY(-2px) !important;
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14197,7 +14262,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14214,7 +14279,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14231,7 +14296,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14251,7 +14316,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14272,7 +14337,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14290,7 +14355,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14308,7 +14373,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14325,7 +14390,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14347,7 +14412,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14371,7 +14436,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14393,7 +14458,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14412,7 +14477,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14429,7 +14494,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14446,7 +14511,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14467,7 +14532,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14487,7 +14552,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14508,7 +14573,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14527,7 +14592,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14545,7 +14610,7 @@ html body:is([data-page="dashboard"],
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="companies"],
   [data-page="universities"],
   [data-page="grow"],
@@ -14653,7 +14718,7 @@ html body[data-page="dashboard"] .cg-avatar-trigger span {
 @media (max-width: 760px) {
 
   html body:is([data-page="dashboard"],
-    [data-page="jobs"],
+    [data-page="discover"],
     [data-page="companies"],
     [data-page="universities"],
     [data-page="grow"],
@@ -15212,7 +15277,7 @@ html body[data-page="dashboard"] :is(.cg-kpi-card, .cg-task-card, .cg-applicatio
   outline-offset: 3px !important;
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) {
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) {
   --cg-card-border-soft: rgba(14, 44, 37, 0.11);
   --cg-card-shadow-soft: 0 18px 44px rgba(35, 29, 18, 0.06);
   --cg-card-shadow-lift: 0 28px 64px rgba(35, 29, 18, 0.105);
@@ -15220,7 +15285,7 @@ html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [d
   --cg-card-glow-gold: rgba(248, 235, 196, 0.28);
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-top-pick,
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-top-pick,
   .cg-question-card,
   .cg-market-card,
   .cg-collection-card,
@@ -15268,7 +15333,7 @@ html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [d
   box-shadow: var(--cg-card-shadow-soft) !important;
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-top-pick,
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-top-pick,
   .cg-question-card,
   .cg-market-card,
   .cg-collection-card,
@@ -15304,14 +15369,14 @@ html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [d
     radial-gradient(circle at 8% 0%, var(--cg-card-glow-teal), transparent 240px) !important;
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) .cg-pipeline-memory {
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) .cg-pipeline-memory {
   overflow: hidden !important;
   background:
     radial-gradient(circle at 92% 0%, rgba(101, 181, 172, 0.18), transparent 320px),
     linear-gradient(120deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-question-card,
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-question-card,
   .cg-market-card,
   .cg-collection-card,
   .cg-direction-card,
@@ -15333,7 +15398,7 @@ html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [d
     radial-gradient(circle at 100% 0%, rgba(216, 239, 235, 0.3), transparent 180px) !important;
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-top-pick,
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-top-pick,
   .cg-question-card,
   .cg-market-card,
   .cg-collection-card,
@@ -15370,7 +15435,7 @@ html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [d
   opacity: 0.88 !important;
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-top-pick,
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-top-pick,
   .cg-question-card,
   .cg-market-card,
   .cg-collection-card,
@@ -15400,7 +15465,7 @@ html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [d
   z-index: 1 !important;
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-question-card,
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-question-card,
   .cg-market-card,
   .cg-collection-card,
   .cg-direction-card,
@@ -15419,7 +15484,7 @@ html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [d
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease !important;
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-question-card,
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-question-card,
   .cg-market-card,
   .cg-collection-card,
   .cg-direction-card,
@@ -15440,7 +15505,7 @@ html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [d
   box-shadow: var(--cg-card-shadow-lift) !important;
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-card-icon,
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-card-icon,
   .cg-question-card > span,
   .cg-market-card > span,
   .cg-worth-driver-grid article > span,
@@ -15516,7 +15581,7 @@ html body[data-page="autopilot"] .cg-pipeline-board {
   filter: drop-shadow(0 14px 34px rgba(35, 29, 18, 0.035)) !important;
 }
 
-html body:is([data-page="jobs"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-question-card,
+html body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"]) :is(.cg-question-card,
   .cg-market-card,
   .cg-collection-card,
   .cg-direction-card,
@@ -16251,6 +16316,7 @@ html body[data-page="profile"] .cg-timeline-dot {
 html body[data-page="market"] .cg-worth-hero-grid {
   grid-template-columns: 1fr !important;
   align-items: start !important;
+  gap: 16px !important;
 }
 
 html body[data-page="market"] .cg-worth-hero h1 {
@@ -16280,8 +16346,8 @@ html body[data-page="market"] .cg-worth-hero h1 small {
 
 html body[data-page="market"] .cg-worth-side {
   align-self: start !important;
-  gap: 24px !important;
-  margin-top: 12px !important;
+  gap: 16px !important;
+  margin-top: 4px !important;
 }
 
 html body[data-page="autopilot"] .cg-pipeline-kpis article.dark {
@@ -16330,7 +16396,7 @@ html body[data-page="autopilot"] .cg-pipeline-kpis article:not(.dark) p {
 }
 
 html body:is([data-page="dashboard"],
-  [data-page="jobs"],
+  [data-page="discover"],
   [data-page="profile"],
   [data-page="market"],
   [data-page="autopilot"],
@@ -16650,16 +16716,16 @@ body[data-page="universities"] .org-detail-action-wide {
 
 @media (min-width: 1021px) {
 
-  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail),
-  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail:hover),
-  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail:focus-within) {
+  body:not([data-page="home"]):not([data-page="discover"]) .os-layout:has(.workspace-rail),
+  body:not([data-page="home"]):not([data-page="discover"]) .os-layout:has(.workspace-rail:hover),
+  body:not([data-page="home"]):not([data-page="discover"]) .os-layout:has(.workspace-rail:focus-within) {
     width: min(1280px, calc(100% - 56px)) !important;
     padding-left: 112px !important;
     grid-template-columns: 76px minmax(0, 1fr) !important;
     gap: 22px !important;
   }
 
-  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card {
+  body:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card {
     left: calc((100vw - min(1280px, calc(100vw - 56px))) / 2 + 4px) !important;
     top: calc(var(--cg-topbar) + 34px) !important;
     bottom: 28px !important;
@@ -16667,17 +16733,17 @@ body[data-page="universities"] .org-detail-action-wide {
     max-height: calc(100vh - var(--cg-topbar) - 62px);
   }
 
-  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card:hover,
-  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card:focus-within {
+  body:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card:hover,
+  body:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card:focus-within {
     width: 218px !important;
   }
 }
 
 @media (min-width: 1021px) {
 
-  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail),
-  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail:hover),
-  body:not([data-page="home"]):not([data-page="jobs"]) .os-layout:has(.workspace-rail:focus-within) {
+  body:not([data-page="home"]):not([data-page="discover"]) .os-layout:has(.workspace-rail),
+  body:not([data-page="home"]):not([data-page="discover"]) .os-layout:has(.workspace-rail:hover),
+  body:not([data-page="home"]):not([data-page="discover"]) .os-layout:has(.workspace-rail:focus-within) {
     width: min(calc(var(--cg-wide) + var(--cg-rail-open) + 28px), calc(100% - 56px)) !important;
     padding-left: 0 !important;
     grid-template-columns: var(--cg-rail-open) minmax(0, var(--cg-wide)) !important;
@@ -16685,11 +16751,11 @@ body[data-page="universities"] .org-detail-action-wide {
     justify-content: center !important;
   }
 
-  body:not([data-page="home"]):not([data-page="jobs"]) .os-main {
+  body:not([data-page="home"]):not([data-page="discover"]) .os-main {
     grid-column: 2 !important;
   }
 
-  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card {
+  body:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card {
     position: fixed !important;
     left: calc((100vw - min(calc(var(--cg-wide) + var(--cg-rail-open) + 28px), calc(100vw - 56px))) / 2) !important;
     top: calc(var(--cg-topbar) + 28px) !important;
@@ -16699,17 +16765,17 @@ body[data-page="universities"] .org-detail-action-wide {
     justify-self: start !important;
   }
 
-  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card:hover,
-  body:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card:focus-within {
+  body:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card:hover,
+  body:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card:focus-within {
     width: var(--cg-rail-open) !important;
   }
 }
 
 @media (min-width: 1021px) {
 
-  body[data-page="jobs"] .os-layout:has(.workspace-rail),
-  body[data-page="jobs"] .os-layout:has(.workspace-rail:hover),
-  body[data-page="jobs"] .os-layout:has(.workspace-rail:focus-within) {
+  body[data-page="discover"] .os-layout:has(.workspace-rail),
+  body[data-page="discover"] .os-layout:has(.workspace-rail:hover),
+  body[data-page="discover"] .os-layout:has(.workspace-rail:focus-within) {
     width: min(calc(var(--cg-wide) + var(--cg-rail-open) + 28px), calc(100% - 56px)) !important;
     padding-left: 0 !important;
     grid-template-columns: var(--cg-rail-open) minmax(0, var(--cg-wide)) !important;
@@ -16717,11 +16783,11 @@ body[data-page="universities"] .org-detail-action-wide {
     justify-content: center !important;
   }
 
-  body[data-page="jobs"] .os-main {
+  body[data-page="discover"] .os-main {
     grid-column: 2 !important;
   }
 
-  body[data-page="jobs"] .workspace-rail.glass-card {
+  body[data-page="discover"] .workspace-rail.glass-card {
     position: fixed !important;
     left: calc((100vw - min(calc(var(--cg-wide) + var(--cg-rail-open) + 28px), calc(100vw - 56px))) / 2) !important;
     top: calc(var(--cg-topbar) + 28px) !important;
@@ -16731,8 +16797,8 @@ body[data-page="universities"] .org-detail-action-wide {
     justify-self: start !important;
   }
 
-  body[data-page="jobs"] .workspace-rail.glass-card:hover,
-  body[data-page="jobs"] .workspace-rail.glass-card:focus-within {
+  body[data-page="discover"] .workspace-rail.glass-card:hover,
+  body[data-page="discover"] .workspace-rail.glass-card:focus-within {
     width: var(--cg-rail-open) !important;
   }
 }
@@ -18905,15 +18971,15 @@ html body .topbar:has(.workspace-search) .account-menu-trigger[aria-expanded="tr
 
 @media (min-width: 1021px) {
 
-  body[data-page="dashboard"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  body[data-page="profile"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  body[data-page="vera"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  body[data-page="market"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  body[data-page="autopilot"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  body[data-page="saved"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  body[data-page="companies"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  body[data-page="universities"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  body[data-page="jobs"] .workspace-rail.glass-card,
+  body[data-page="dashboard"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  body[data-page="profile"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  body[data-page="vera"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  body[data-page="market"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  body[data-page="autopilot"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  body[data-page="saved"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  body[data-page="companies"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  body[data-page="universities"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  body[data-page="discover"] .workspace-rail.glass-card,
   body[data-page="dashboard"] .workspace-rail.glass-card,
   body[data-page="profile"] .workspace-rail.glass-card,
   body[data-page="vera"] .workspace-rail.glass-card,
@@ -19128,7 +19194,7 @@ html body :is(.progress span, .market-breakdown-bar i, .market-worth-card .progr
   }
 
   html body:not([data-page="home"]) .workspace-rail.glass-card,
-  body[data-page="jobs"] .workspace-rail.glass-card,
+  body[data-page="discover"] .workspace-rail.glass-card,
   body[data-page="dashboard"] .workspace-rail.glass-card,
   body[data-page="profile"] .workspace-rail.glass-card,
   body[data-page="vera"] .workspace-rail.glass-card,
@@ -19266,15 +19332,15 @@ html body :is(.progress span, .market-breakdown-bar i, .market-worth-card .progr
 
 @media (min-width: 1021px) {
 
-  html body[data-page="dashboard"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="profile"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="vera"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="market"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="autopilot"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="saved"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="companies"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="universities"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="jobs"] .workspace-rail.glass-card {
+  html body[data-page="dashboard"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="profile"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="vera"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="market"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="autopilot"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="saved"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="companies"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="universities"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="discover"] .workspace-rail.glass-card {
     left: 0 !important;
   }
 }
@@ -19345,9 +19411,9 @@ body[data-page="market"] .comparison-table td:nth-child(4) {
   width: 18% !important;
 }
 
-body[data-page="jobs"] .jobs-workspace>.jobs-filter-bar,
-body[data-page="jobs"] .jobs-page-layout>.jobs-filter-bar,
-body[data-page="jobs"] .jobs-page-layout>.public-discovery-intro+.jobs-filter-bar {
+body[data-page="discover"] .jobs-workspace>.jobs-filter-bar,
+body[data-page="discover"] .jobs-page-layout>.jobs-filter-bar,
+body[data-page="discover"] .jobs-page-layout>.public-discovery-intro+.jobs-filter-bar {
   padding: 24px 28px !important;
   border-color: rgba(20, 32, 51, 0.10) !important;
   background:
@@ -19355,7 +19421,7 @@ body[data-page="jobs"] .jobs-page-layout>.public-discovery-intro+.jobs-filter-ba
   box-shadow: 0 20px 46px rgba(20, 32, 51, 0.08) !important;
 }
 
-body[data-page="jobs"] .jobs-filter-bar .filter-title {
+body[data-page="discover"] .jobs-filter-bar .filter-title {
   margin-bottom: 18px !important;
   color: #173b35 !important;
   font-size: 0.82rem !important;
@@ -19363,40 +19429,40 @@ body[data-page="jobs"] .jobs-filter-bar .filter-title {
   letter-spacing: 0.14em !important;
 }
 
-body[data-page="jobs"] .jobs-filter-bar .filter-stack {
+body[data-page="discover"] .jobs-filter-bar .filter-stack {
   align-items: center !important;
   gap: 14px !important;
 }
 
-body[data-page="jobs"] .jobs-filter-bar :is(.field, .custom-select-field, .range-field, .check-field) {
+body[data-page="discover"] .jobs-filter-bar :is(.field, .custom-select-field, .range-field, .check-field) {
   min-height: 62px !important;
   border-color: rgba(20, 32, 51, 0.12) !important;
   background: rgba(255, 255, 255, 0.92) !important;
   box-shadow: 0 14px 30px rgba(20, 32, 51, 0.055) !important;
 }
 
-body[data-page="jobs"] .jobs-filter-bar :is(.field, .custom-select-field):focus-within {
+body[data-page="discover"] .jobs-filter-bar :is(.field, .custom-select-field):focus-within {
   border-color: rgba(15, 89, 105, 0.34) !important;
   box-shadow:
     0 0 0 4px rgba(47, 154, 155, 0.10),
     0 18px 34px rgba(20, 32, 51, 0.075) !important;
 }
 
-body[data-page="jobs"] .jobs-filter-bar .field input,
-body[data-page="jobs"] .jobs-filter-bar .custom-select-trigger {
+body[data-page="discover"] .jobs-filter-bar .field input,
+body[data-page="discover"] .jobs-filter-bar .custom-select-trigger {
   color: #173b35 !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 
-body[data-page="jobs"] .jobs-filter-bar .field input::placeholder {
+body[data-page="discover"] .jobs-filter-bar .field input::placeholder {
   color: #0b6d65 !important;
   opacity: 0.9 !important;
 }
 
-body[data-page="jobs"] .jobs-filter-bar :is(.field, .custom-select-field)>svg,
-body[data-page="jobs"] .jobs-filter-bar .field>i,
-body[data-page="jobs"] .jobs-filter-bar .custom-select-field>i {
+body[data-page="discover"] .jobs-filter-bar :is(.field, .custom-select-field)>svg,
+body[data-page="discover"] .jobs-filter-bar .field>i,
+body[data-page="discover"] .jobs-filter-bar .custom-select-field>i {
   color: #173b35 !important;
   stroke: currentColor !important;
   opacity: 1 !important;
@@ -19545,7 +19611,7 @@ html body .custom-select-field.open .custom-select-trigger [data-custom-select-v
   box-shadow: none !important;
 }
 
-body[data-page="jobs"] .jobs-filter-bar .custom-select-trigger [data-custom-select-value] {
+body[data-page="discover"] .jobs-filter-bar .custom-select-trigger [data-custom-select-value] {
   display: inline-flex !important;
   align-items: center !important;
   min-width: 2.6ch !important;
@@ -19556,15 +19622,15 @@ body[data-page="jobs"] .jobs-filter-bar .custom-select-trigger [data-custom-sele
 @media (min-width: 1021px) {
 
   html body:not([data-page="home"]) .workspace-rail.glass-card,
-  html body[data-page="dashboard"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="profile"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="vera"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="market"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="autopilot"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="saved"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="companies"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="universities"]:not([data-page="home"]):not([data-page="jobs"]) .workspace-rail.glass-card,
-  html body[data-page="jobs"] .workspace-rail.glass-card {
+  html body[data-page="dashboard"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="profile"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="vera"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="market"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="autopilot"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="saved"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="companies"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="universities"]:not([data-page="home"]):not([data-page="discover"]) .workspace-rail.glass-card,
+  html body[data-page="discover"] .workspace-rail.glass-card {
     height: auto !important;
     min-height: 0 !important;
     max-height: calc(100vh - var(--cg-topbar) - 56px) !important;
@@ -20743,12 +20809,12 @@ html body[data-page="dashboard"] .cg-vera-search kbd::before {
   font-weight: 500 !important;
 }
 
-html body:is([data-page="grow"], [data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main>.workspace-page-container,
+html body:is([data-page="grow"], [data-page="dashboard"], [data-page="discover"], [data-page="market"], [data-page="autopilot"]) main>.workspace-page-container,
 html body[data-page="dashboard"] main>.container.os-layout.workspace-page-container,
 html body[data-page="market"]:has(.cg-worth) main>.container.os-layout.workspace-page-container,
 html body[data-page="autopilot"]:has(.cg-pipeline) main>.container.os-layout.workspace-page-container,
-html body[data-page="jobs"] main.workspace-page-container[data-jobs-page],
-html body[data-page="jobs"] main[data-jobs-page]>.workspace-page-container {
+html body[data-page="discover"] main.workspace-page-container[data-jobs-page],
+html body[data-page="discover"] main[data-jobs-page]>.workspace-page-container {
   width: min(1240px, calc(100% - 48px)) !important;
   max-width: 1240px !important;
   margin-inline: auto !important;
@@ -20758,12 +20824,12 @@ html body[data-page="jobs"] main[data-jobs-page]>.workspace-page-container {
 
 @media (max-width: 1180px) {
 
-  html body:is([data-page="grow"], [data-page="dashboard"], [data-page="jobs"], [data-page="market"], [data-page="autopilot"]) main>.workspace-page-container,
+  html body:is([data-page="grow"], [data-page="dashboard"], [data-page="discover"], [data-page="market"], [data-page="autopilot"]) main>.workspace-page-container,
   html body[data-page="dashboard"] main>.container.os-layout.workspace-page-container,
   html body[data-page="market"]:has(.cg-worth) main>.container.os-layout.workspace-page-container,
   html body[data-page="autopilot"]:has(.cg-pipeline) main>.container.os-layout.workspace-page-container,
-  html body[data-page="jobs"] main.workspace-page-container[data-jobs-page],
-  html body[data-page="jobs"] main[data-jobs-page]>.workspace-page-container {
+  html body[data-page="discover"] main.workspace-page-container[data-jobs-page],
+  html body[data-page="discover"] main[data-jobs-page]>.workspace-page-container {
     width: min(100% - 32px, 1240px) !important;
   }
 }
