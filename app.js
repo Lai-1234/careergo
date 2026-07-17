@@ -6733,7 +6733,6 @@ function renderGrow() {
   root.innerHTML = appShell("intelligence", `
     <section class="cg-grow">
       <header class="cg-grow-hero">
-        <span class="cg-section-kicker">Growth</span>
         <h1>Your next move, <em>coached by Vera.</em></h1>
         <p>I watch what the market rewards for the roles you're chasing, then coach you toward the smallest move with the biggest career return.</p>
       </header>
@@ -9385,7 +9384,6 @@ function renderAutopilot() {
     root.innerHTML = appShell("autopilot", `
       <section class="cg-pipeline">
         <header class="cg-pipeline-hero">
-          <span class="cg-pipeline-pill">${icon("radio")} Pipeline - live</span>
           <h1>Your <em>Application Pipeline.</em></h1>
           <p>Vera is tracking 12 relationships, 3 recruiters who opened your profile this week, and 2 offers within striking distance. Predicted first offer: <strong>28 Nov - 64% confidence.</strong></p>
           <a class="btn btn-primary" href="discover.html">${icon("plus")} Add application</a>

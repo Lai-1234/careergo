@@ -5149,6 +5149,7 @@ body[data-page="grow"]:has(.cg-grow) .os-main {
 }
 
 .cg-grow-hero h1 {
+  margin: 0 0 -14px;
   font-size: clamp(64px, 6.2vw, 92px);
   line-height: 0.96;
 }
@@ -5166,6 +5167,14 @@ body[data-page="grow"]:has(.cg-grow) .os-main {
   font-size: 18px;
   font-weight: 600;
   line-height: 1.6;
+}
+
+html body[data-page="grow"] .cg-grow-hero {
+  max-width: none !important;
+}
+
+html body[data-page="grow"] .cg-grow-hero p {
+  max-width: none !important;
 }
 
 .cg-grow-stats {
@@ -7400,6 +7409,7 @@ body[data-page="autopilot"]:has(.cg-pipeline) .container.os-layout {
 }
 
 .cg-pipeline-hero h1 {
+  margin: 0 0 -14px;
   font-size: clamp(58px, 5.6vw, 82px);
   line-height: 0.98;
 }
@@ -8435,7 +8445,7 @@ body[data-page="autopilot"] .cg-pipeline .cg-pipeline-impact h3 {
 
 .cg-pipeline-steps .done b,
 .cg-pipeline-steps .current b {
-  color: #fffaf2;
+  color: #fffaf2 !important;
   background: var(--cg-shot-green);
 }
 
@@ -11628,7 +11638,7 @@ html body[data-page="discover"] .cg-discover-v2 .cg-discover-kicker small {
 html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero h1 {
   max-width: 640px !important;
   font-size: clamp(36px, 3.6vw, 44px) !important;
-  margin: 0 !important;
+  margin: 0 0 -18px !important;
   color: #1b2e28 !important;
   -webkit-text-fill-color: #1b2e28 !important;
   font-family: var(--cg-shot-serif) !important;
@@ -11645,7 +11655,7 @@ html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero h1 em {
 }
 
 html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero>p:not(.cg-discover-network-note) {
-  max-width: 720px !important;
+  max-width: none !important;
   margin: 0 !important;
   color: #5b6a66 !important;
   -webkit-text-fill-color: #5b6a66 !important;
@@ -16309,6 +16319,10 @@ html body[data-page="market"] .cg-worth-hero-grid {
   gap: 16px !important;
 }
 
+html body[data-page="market"] .cg-worth-hero-grid>div>p {
+  max-width: none !important;
+}
+
 html body[data-page="market"] .cg-worth-hero h1 {
   display: flex !important;
   align-items: baseline !important;
@@ -16490,8 +16504,14 @@ html body[data-page="autopilot"] .cg-pipeline-hero {
   max-width: none !important;
 }
 
-html body[data-page="autopilot"] .cg-pipeline-hero :is(.cg-pipeline-pill, h1, p) {
+html body[data-page="autopilot"] .cg-pipeline-hero :is(.cg-pipeline-pill, h1) {
   grid-column: 1 !important;
+}
+
+html body[data-page="autopilot"] .cg-pipeline-hero p {
+  grid-column: 1 / -1 !important;
+  max-width: none !important;
+  line-height: 1.4 !important;
 }
 
 html body[data-page="autopilot"] .cg-pipeline-hero>.btn {
