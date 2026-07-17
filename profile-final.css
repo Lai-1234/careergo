@@ -120,7 +120,8 @@ html body[data-page="profile"] :is(h1, h2, h3) {
   box-shadow: var(--up-shadow-lift);
 }
 
-.cg-up-camera {
+.cg-up-camera,
+html body[data-page="profile"] .cg-up-camera {
   position: absolute;
   right: 24px;
   bottom: 24px;
@@ -133,6 +134,7 @@ html body[data-page="profile"] :is(h1, h2, h3) {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.82);
   color: var(--up-teal);
+  cursor: pointer;
 }
 
 .cg-up-identity {

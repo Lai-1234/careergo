@@ -1289,7 +1289,6 @@ function requireAccount(root, purpose = "open this workspace") {
       </div>
     </div>
   `;
-  qs("[data-enter-demo]", root)?.addEventListener("click", startDemoDashboard);
   createIcons();
   return false;
 }
@@ -1344,6 +1343,7 @@ function bindGlobalActions() {
     writeState(next);
     location.href = "index.html";
   }));
+  qsa("[data-enter-demo]").forEach(btn => btn.addEventListener("click", startDemoDashboard));
 }
 
 function bindAccountMenu() {
@@ -3723,8 +3723,8 @@ function renderJobsPage() {
     root.innerHTML = `
       <section class="cg-discover cg-discover-v2">
         <header class="cg-discover-hero">
-          <div class="cg-discover-kicker"><span>${icon("sparkles")} Discover</span><small>${icon("map-pin")} Malaysia - Kuala Lumpur - Tuned for your Product Management journey</small></div>
           <h1>Discover</h1>
+          <p>Roles, companies, universities, and mentors tuned to Kuala Lumpur's Product Management market and your career goals.</p>
           <form class="cg-discover-search" data-discover-search-form>
             ${icon("search")}
             <input name="topic" data-discover-search-input aria-label="Ask Vera about Discover" placeholder="Search companies, jobs, universities, industries, salaries...">
@@ -6154,7 +6154,6 @@ function renderLegacyLoginAuth(root, mode) {
     showToast("Welcome back.");
     location.href = selectedAuthRole === "employer" ? "employer-app.html" : next.onboarding.candidateDone ? "dashboard.html" : "onboarding.html";
   });
-  qs("[data-enter-demo]", root)?.addEventListener("click", startDemoDashboard);
   createIcons();
 }
 
@@ -6205,9 +6204,9 @@ function renderCreateAccountWizard(root) {
         <h1>Create your CareerGo account.</h1>
         <p class="cg-onboard-sub">Save your progress and continue from any device.</p>
         <form class="cg-onboard-card" data-account-form>
-          <button class="cg-onboard-social" type="button">${icon("chrome")} Continue with Google</button>
-          <button class="cg-onboard-social" type="button">${icon("linkedin")} Continue with LinkedIn</button>
-          <button class="cg-onboard-social" type="button">${icon("github")} Continue with GitHub</button>
+          <button class="cg-onboard-social" type="button" data-enter-demo>${icon("chrome")} Continue with Google</button>
+          <button class="cg-onboard-social" type="button" data-enter-demo>${icon("linkedin")} Continue with LinkedIn</button>
+          <button class="cg-onboard-social" type="button" data-enter-demo>${icon("github")} Continue with GitHub</button>
           <div class="cg-onboard-divider"><span>OR</span></div>
           <label class="cg-onboard-field">
             <span>${isEmployer ? "Work email" : "Email"}</span>
@@ -6252,6 +6251,7 @@ function renderCreateAccountWizard(root) {
       wizardStep = 0;
       renderStep();
     });
+    qsa("[data-enter-demo]", root).forEach(btn => btn.addEventListener("click", startDemoDashboard));
     qs("[data-account-form]", root)?.addEventListener("submit", event => {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
@@ -7644,12 +7644,13 @@ function renderProfile() {
     ["zap", "Reached 1,000 followers on CareerGo", "1 month ago - Milestone"]
   ];
 
+  const avatarUrl = profile.personal.avatarDataUrl || "";
   root.innerHTML = appShell("", `
     <section class="cg-user-profile-v2">
       <header class="cg-up-hero">
         <div class="cg-up-cover">
-          <div class="cg-up-avatar">${initials}</div>
-          <button class="cg-up-camera" type="button" aria-label="Upload photo">${icon("camera")}</button>
+          <div class="cg-up-avatar" ${avatarUrl ? `style="background-image:url('${esc(avatarUrl)}');background-size:cover;background-position:center"` : ""}>${avatarUrl ? "" : initials}</div>
+          <button class="cg-up-camera" type="button" aria-label="Upload photo" data-upload-photo>${icon("camera")}</button>
         </div>
         <div class="cg-up-identity">
           <div>
@@ -7711,7 +7712,7 @@ function renderProfile() {
           <section class="cg-up-section">
             <div class="cg-up-section-head"><div><span class="cg-up-kicker">Experience</span><h2>Roles & impact</h2></div></div>
             <div class="cg-up-role-list">
-              ${roles.map(role => `
+              ${roles.map((role, index) => `
                 <article class="cg-up-role-card">
                   <div class="cg-up-logo-tile">${esc(role.initials)}</div>
                   <div>
@@ -7720,7 +7721,7 @@ function renderProfile() {
                     <strong>${esc(role.body)}</strong>
                     <div class="cg-up-chip-row">${role.chips.map(chip).join("")}</div>
                   </div>
-                  <a href="#" aria-label="Open role">${icon("arrow-up-right")}</a>
+                  <a href="#" aria-label="Open role" data-role-detail="${index}">${icon("arrow-up-right")}</a>
                 </article>
               `).join("")}
             </div>
@@ -7767,7 +7768,7 @@ function renderProfile() {
             <div class="cg-up-section-head"><div><span class="cg-up-kicker">Activity</span><h2>Recent professional activity</h2></div></div>
             <article class="cg-up-activity-card">
               ${activities.map(([iconName, title, meta], index) => `
-                <a href="#">
+                <a href="#" data-activity-detail="${index}">
                   <span class="${index === 0 ? "active" : ""}">${icon(iconName)}</span>
                   <div><strong>${esc(title)}</strong><small>${esc(meta)}</small></div>
                   ${icon("arrow-up-right")}
@@ -7842,6 +7843,130 @@ function renderProfile() {
     const match = gallery.find(([, title]) => title === trigger.dataset.galleryPreview);
     if (match) openGalleryPreviewModal(match);
   }));
+  qs("[data-upload-photo]", root)?.addEventListener("click", () => openUploadPhotoModal(() => renderProfile()));
+  qsa("[data-role-detail]", root).forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    const role = roles[Number(link.dataset.roleDetail)];
+    if (role) openRoleDetailModal(role);
+  }));
+  qsa("[data-activity-detail]", root).forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    const activity = activities[Number(link.dataset.activityDetail)];
+    if (activity) openActivityDetailModal(activity);
+  }));
+  createIcons();
+}
+
+function openUploadPhotoModal(onUploaded) {
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-project-modal cg-add-proof-modal" role="dialog" aria-label="Upload profile photo">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Profile photo</div>
+          <h2>Upload photo</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <form data-upload-photo-form>
+        <label>Photo <small>(JPG or PNG, shown as your profile avatar)</small>
+          <input type="file" name="photo" accept="image/*" required data-photo-file>
+        </label>
+        <div class="hero-actions compact-actions">
+          <button type="submit" class="btn btn-primary">${icon("upload")} Save photo</button>
+          <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+        </div>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  qs("[data-upload-photo-form]", backdrop)?.addEventListener("submit", event => {
+    event.preventDefault();
+    const file = qs("[data-photo-file]", backdrop)?.files?.[0];
+    if (!file) {
+      showToast("Choose a photo first.", "info");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const next = readState();
+      next.profile.personal.avatarDataUrl = String(reader.result || "");
+      writeState(next);
+      showToast("Profile photo updated.");
+      backdrop.remove();
+      onUploaded?.();
+    };
+    reader.onerror = () => showToast("Could not read that file. Try a different photo.", "info");
+    reader.readAsDataURL(file);
+  });
+  createIcons();
+}
+
+function openRoleDetailModal(role) {
+  const esc2 = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-project-modal" role="dialog" aria-label="${esc2(role.title)} at ${esc2(role.org)}">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">${esc2(role.org)}</div>
+          <h2>${esc2(role.title)}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="cg-project-modal-body">
+        <p><strong>${esc2(role.date)}</strong></p>
+        <p>${esc2(role.body)}</p>
+        <div class="cg-up-chip-row">${role.chips.map(item => `<span class="cg-up-chip">${esc2(item)}</span>`).join("")}</div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  createIcons();
+}
+
+function openActivityDetailModal([iconName, title, meta]) {
+  const esc2 = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const [metaWhen, metaType, metaExtra] = String(meta || "").split(" - ");
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-project-modal" role="dialog" aria-label="${esc2(title)}">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">${esc2(metaType || "Activity")}</div>
+          <h2>${esc2(title)}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="cg-project-modal-body">
+        <p>${icon(iconName)} ${esc2(metaWhen || meta)}${metaExtra ? ` - ${esc2(metaExtra)}` : ""}</p>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
   createIcons();
 }
 
@@ -10418,7 +10543,7 @@ function renderEmployerPortal() {
       </nav>
     </section>
     <div class="os-main">
-      <section class="glass-card"><div class="eyebrow"><span class="spark">*</span> Hiring cockpit</div><h1 class="section-title">Fit, pipeline, reputation, and action in one place.</h1><div class="metric-strip"><div class="metric"><strong>257</strong><span>Applicants</span></div><div class="metric"><strong>71</strong><span>Qualified</span></div><div class="metric"><strong>21d</strong><span>Time to hire</span></div><div class="metric"><strong>86%</strong><span>Offer acceptance</span></div></div></section>
+      <section class="glass-card" id="cockpit"><div class="eyebrow"><span class="spark">*</span> Hiring cockpit</div><h1 class="section-title">Fit, pipeline, reputation, and action in one place.</h1><div class="metric-strip"><div class="metric"><strong>257</strong><span>Applicants</span></div><div class="metric"><strong>71</strong><span>Qualified</span></div><div class="metric"><strong>21d</strong><span>Time to hire</span></div><div class="metric"><strong>86%</strong><span>Offer acceptance</span></div></div></section>
       <section class="glass-card employer-search" id="candidates">
         <div class="section-head"><div><div class="section-kicker">Candidate Search</div><h2 class="section-title mini">Find job seekers by fit, skills, stage, and evidence.</h2></div><span class="pill cyan">Privacy-aware</span></div>
         <div class="candidate-filter-bar">
@@ -10431,11 +10556,11 @@ function renderEmployerPortal() {
         </div>
       </section>
       <section class="content-grid" id="talent-pool"><div class="glass-card"><div class="section-kicker">Talent Pool</div>${talentPool.map(candidate => `<div class="list-card"><div class="list-card-top"><div><h3>${safeCandidateName(candidate)}</h3><div class="muted small">${candidate.role} - ${candidate.availability}</div></div><span class="pill gold">${candidate.stage}</span></div></div>`).join("")}</div><div class="glass-card vera-box"><h2 class="section-title mini">Fit explanation</h2><p class="muted">CareerGo explains why a person may fit a role using visible skills, portfolio evidence, career stage, availability, and role interest. Private profile fields stay hidden.</p></div></section>
-      <section class="content-grid" id="roles"><div class="glass-card"><div class="section-kicker">Job Posts</div>${DATA.employerRoles.map(role => `<div class="list-card"><div class="list-card-top"><div><h3>${role.title}</h3><div class="muted small">${role.applicants} applicants - ${role.qualified} qualified</div></div><span class="pill ${role.status === "Active" ? "green" : "gold"}">${role.status}</span></div></div>`).join("")}</div><form class="glass-card form-grid" id="company-profile"><h2 class="section-title mini">Company Profile</h2><label>Company <input value="${employer.company || ""}" placeholder="Company name"></label><label>Brand note <textarea placeholder="Describe your hiring brand and candidate promise">${employer.hiringGoal || ""}</textarea></label><button class="btn btn-primary" type="button">${icon("save")} Save profile</button></form></section>
-      <section class="glass-card" id="applicants"><div class="section-head"><div><div class="section-kicker">Applicants</div><h2 class="section-title mini">Review applicants by fit and pipeline stage.</h2></div><button class="btn btn-cyan">${icon("user-plus")} Invite candidates</button></div><div class="grid-3">${DATA.candidates.map(candidate => candidateCard(candidate, true)).join("")}</div></section>
+      <section class="content-grid" id="roles"><div class="glass-card"><div class="section-kicker">Job Posts</div>${DATA.employerRoles.map(role => `<div class="list-card"><div class="list-card-top"><div><h3>${role.title}</h3><div class="muted small">${role.applicants} applicants - ${role.qualified} qualified</div></div><span class="pill ${role.status === "Active" ? "green" : "gold"}">${role.status}</span></div></div>`).join("")}</div><form class="glass-card form-grid" id="company-profile" data-employer-profile-form><h2 class="section-title mini">Company Profile</h2><label>Company <input name="company" value="${employer.company || ""}" placeholder="Company name"></label><label>Brand note <textarea name="hiringGoal" placeholder="Describe your hiring brand and candidate promise">${employer.hiringGoal || ""}</textarea></label><button class="btn btn-primary" type="submit">${icon("save")} Save profile</button></form></section>
+      <section class="glass-card" id="applicants"><div class="section-head"><div><div class="section-kicker">Applicants</div><h2 class="section-title mini">Review applicants by fit and pipeline stage.</h2></div><button class="btn btn-cyan" type="button" data-invite-all-applicants>${icon("user-plus")} Invite candidates</button></div><div class="grid-3">${DATA.candidates.map(candidate => candidateCard(candidate, true)).join("")}</div></section>
       <section class="glass-card" id="pipeline"><div class="section-kicker">Hiring pipeline</div><div class="kanban">${pipeline.map(stage => `<div class="kanban-col"><h3>${stage}</h3>${DATA.candidates.filter(c => c.stage === stage || (stage === "Saved" && c.stage === "Saved")).map(c => `<div class="review-card"><strong>${c.name}</strong><p class="muted small">${c.role} - ${c.fit}% fit</p></div>`).join("") || `<div class="review-card"><p class="muted small">No candidates yet</p></div>`}</div>`).join("")}</div></section>
       <section class="content-grid" id="analytics"><div class="glass-card"><div class="section-kicker">Analytics</div><div class="metric-strip"><div class="metric"><strong>34%</strong><span>Qualified rate</span></div><div class="metric"><strong>11</strong><span>Saved candidates</span></div><div class="metric"><strong>4.2</strong><span>Candidate experience</span></div></div></div><div class="glass-card" id="settings"><div class="section-kicker">Settings</div><h2 class="section-title mini">Hiring preferences</h2><p class="muted">Set screening priorities, privacy rules, interview stages, and notification preferences.</p></div></section>
-      <section class="content-grid" id="assistant"><div class="glass-card"><div class="section-kicker">Posts and updates</div>${DATA.communityPosts.slice(0, 2).map(post => `<div class="list-card"><h3>${post.title}</h3><p class="muted">${post.body}</p></div>`).join("")}</div><div class="glass-card vera-box"><h2 class="section-title mini">AI hiring assistant</h2><p class="muted">Vera can summarize candidates, draft outreach, generate interview questions, and explain pipeline bottlenecks.</p><div class="hero-actions"><button class="btn btn-primary">${icon("sparkles")} Draft outreach</button><button class="btn btn-cyan">${icon("list-checks")} Interview questions</button></div></div></section>
+      <section class="content-grid" id="assistant"><div class="glass-card"><div class="section-kicker">Posts and updates</div>${DATA.communityPosts.slice(0, 2).map(post => `<div class="list-card"><h3>${post.title}</h3><p class="muted">${post.body}</p></div>`).join("")}</div><div class="glass-card vera-box"><h2 class="section-title mini">AI hiring assistant</h2><p class="muted">Vera can summarize candidates, draft outreach, generate interview questions, and explain pipeline bottlenecks.</p><div class="hero-actions"><button class="btn btn-primary" type="button" data-vera-draft-outreach>${icon("sparkles")} Draft outreach</button><button class="btn btn-cyan" type="button" data-vera-interview-questions>${icon("list-checks")} Interview questions</button></div></div></section>
     </div>
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
   `;
@@ -10472,6 +10597,29 @@ function renderEmployerPortal() {
     bindCandidateActions(candidateList);
   }
   candidateInputs.forEach(input => input.addEventListener("input", renderCandidateResults));
+
+  qs("[data-employer-profile-form]", root)?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = readState();
+    next.employerProfile = {
+      ...(next.employerProfile || {}),
+      company: String(form.get("company") || "").trim(),
+      hiringGoal: String(form.get("hiringGoal") || "").trim(),
+      updatedAt: nowStamp()
+    };
+    writeState(next);
+    showToast("Company profile saved.");
+  });
+  qs("[data-invite-all-applicants]", root)?.addEventListener("click", () => {
+    showToast(`Invite drafted for ${DATA.candidates.length} qualified applicants.`);
+  });
+  qs("[data-vera-draft-outreach]", root)?.addEventListener("click", () => {
+    showToast("Vera drafted outreach messages for your shortlisted candidates.");
+  });
+  qs("[data-vera-interview-questions]", root)?.addEventListener("click", () => {
+    showToast("Vera generated interview questions based on your active roles.");
+  });
 }
 
 function safeCandidateName(candidate) {

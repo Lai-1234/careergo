@@ -10787,10 +10787,7 @@ html body:is([data-page="home"], [data-page="about"], [data-page="community"], [
   box-shadow: 0 14px 36px rgba(7, 56, 47, 0.18) !important;
 }
 
-html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"], [data-page="explore"]) :is(.btn,
-  a.btn,
-  button.btn,
-  .btn-primary,
+html body:is([data-page="home"], [data-page="about"], [data-page="community"], [data-page="job-seeker"], [data-page="employers"], [data-page="explore"]) :is(.btn-primary,
   .btn-cyan,
   .btn-gold,
   .cta-gold,
@@ -10807,9 +10804,7 @@ html body:is([data-page="home"], [data-page="about"], [data-page="community"], [
   .chat-send,
   .application-detail-action.primary,
   .notification-footer,
-  .company-review-link,
-  .pill.cyan,
-  .pill.gold):hover {
+  .company-review-link):hover {
   background: linear-gradient(135deg, #0b6d65 0%, #004a41 100%) !important;
   transform: translateY(-2px) !important;
 }
@@ -10894,10 +10889,7 @@ html body:is([data-page="home"], [data-page="explore"], [data-page="companies"],
   box-shadow: 0 14px 36px rgba(7, 56, 47, 0.22) !important;
 }
 
-html body:is([data-page="home"], [data-page="explore"], [data-page="companies"], [data-page="universities"], [data-page="community"]) :is(.btn,
-  a.btn,
-  button.btn,
-  .btn-primary,
+html body:is([data-page="home"], [data-page="explore"], [data-page="companies"], [data-page="universities"], [data-page="community"]) :is(.btn-primary,
   .btn-cyan,
   .btn-gold,
   .open-os-btn,
@@ -10914,8 +10906,6 @@ html body:is([data-page="home"], [data-page="explore"], [data-page="companies"],
   .application-detail-action.primary,
   .notification-footer,
   .company-review-link,
-  .pill.cyan,
-  .pill.gold,
   .account-menu-trigger):hover {
   background: linear-gradient(135deg, #0b6d65 0%, #004a41 100%) !important;
   transform: translateY(-2px) !important;
@@ -20401,9 +20391,19 @@ html body[data-page="home"] :is(.home-paybar span, .progress-fill, .bar-fill, .s
 }
 
 html body[data-page="home"] .home-bars span {
-  background: linear-gradient(180deg, #146c78 0%, #0f4c5c 100%) !important;
+  background: linear-gradient(90deg, #0f4c5c 0%, #4db6ac 100%) !important;
+  background-size: 214px 100% !important;
+  background-repeat: no-repeat !important;
   border-radius: 9999px !important;
 }
+
+html body[data-page="home"] .home-bars span:nth-child(1) { background-position: 0 0 !important; }
+html body[data-page="home"] .home-bars span:nth-child(2) { background-position: -32px 0 !important; }
+html body[data-page="home"] .home-bars span:nth-child(3) { background-position: -64px 0 !important; }
+html body[data-page="home"] .home-bars span:nth-child(4) { background-position: -96px 0 !important; }
+html body[data-page="home"] .home-bars span:nth-child(5) { background-position: -128px 0 !important; }
+html body[data-page="home"] .home-bars span:nth-child(6) { background-position: -160px 0 !important; }
+html body[data-page="home"] .home-bars span:nth-child(7) { background-position: -192px 0 !important; }
 
 html body[data-page="dashboard"] .topbar:has(.cg-workspace-tabs),
 html body[data-page="dashboard"] .topbar:has(.workspace-search) {
