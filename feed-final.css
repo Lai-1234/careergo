@@ -48,7 +48,7 @@ html body[data-page="posts"]:not(#_):has(.cg-messages-shell) main > .container {
 }
 
 html body[data-page="posts"]:not(#_) .cg-messages-shell {
-  margin: 40px auto !important;
+  margin: 20px auto !important;
   max-width: 1160px !important;
 }
 

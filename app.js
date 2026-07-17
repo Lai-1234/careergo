@@ -1460,7 +1460,7 @@ function workspaceTopNav() {
     const isWorkspaceTabActive = key => {
       if (key === "discover") return page === "discover";
       if (key === "grow") return page === "grow";
-      if (key === "posts") return ["posts", "saved"].includes(page);
+      if (key === "posts") return page === "saved" || (page === "posts" && location.hash !== "#messages");
       return page === key;
     };
     const initials = String(getFirstName(state) || "A").slice(0, 2).toUpperCase();
@@ -2937,7 +2937,8 @@ function setActiveNav() {
   }
   const page = document.body.dataset.page || "home";
   qsa("[data-nav]").forEach(link => {
-    link.classList.toggle("active", link.dataset.nav === page);
+    const isPostsMessages = link.dataset.nav === "posts" && page === "posts" && location.hash === "#messages";
+    link.classList.toggle("active", link.dataset.nav === page && !isPostsMessages);
   });
 }
 
@@ -10065,7 +10066,7 @@ function renderAutopilot() {
               <h2>Reply to Aisha at <em>Grab</em> before 6 PM.</h2>
               <p>She opened your last note 2 hours ago and rated your intro 4.5/5. Grab's recruiters typically ghost after 48h of silence - you have roughly 9 hours of goodwill left.</p>
               <div><span>${icon("trending-up")} +14% interview odds</span><span>${icon("clock")} 5 min</span><span>${icon("target")} 88% reply probability</span></div>
-              <footer><a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("drafting a reply to Aisha at Grab")}#messages">${icon("sparkles")} Draft with Vera</a><a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent("why replying to Aisha at Grab is today's top move")}#messages">Why this one? ${icon("arrow-right")}</a></footer>
+              <footer><a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("drafting a reply to Aisha at Grab")}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Draft with Vera</a><a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent("why replying to Aisha at Grab is today's top move")}#messages">Why this one? ${icon("arrow-right")}</a></footer>
             </article>
             <aside>
               <span>Why Vera picked this</span>
@@ -10147,20 +10148,6 @@ function renderAutopilot() {
             ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "+12%"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening"]].map(([label, value]) => `<section><span>${label}</span><strong>${value}</strong></section>`).join("")}
           </div>
           <footer>${icon("info")} Recommended focus next week - <strong>Practice SQL interviews.</strong> Vera has a 4-day plan queued in Grow. <a href="grow.html">Open plan ${icon("arrow-right")}</a></footer>
-        </section>
-
-        <section class="cg-pipeline-interview">
-          <span class="cg-section-kicker">${icon("target")} Interview journey - Stripe</span>
-          <h2>You're 2 steps from an offer.</h2>
-          <small>Est. decision - 18 days</small>
-          <div class="cg-pipeline-steps">
-            ${["Recruiter chat", "Behavioral", "Product case", "Technical", "Team match", "Offer"].map((label, index) => `<article class="${index < 2 ? "done" : index === 2 ? "current" : ""}"><b>${index < 2 ? icon("check") : index + 1}</b><i></i><span>${label}</span>${index === 2 ? "<small>You are here</small>" : ""}</article>`).join("")}
-          </div>
-          <div class="cg-pipeline-feedback">
-            <article class="active"><span>Recruiter chat</span><p>Priya rated your intro 4.5/5 - flagged strong storytelling.</p></article>
-            <article><span>Behavioral</span><p>STAR structure landed. Weak area: conflict resolution.</p></article>
-            <article><span>Product case (next)</span><p>Vera has 3 targeted drills based on Stripe's rubric.</p></article>
-          </div>
         </section>
 
         <section class="cg-pipeline-ripple">
@@ -10828,7 +10815,10 @@ function renderPosts() {
   if (document.body.dataset.postsHashReady !== "true") {
     document.body.dataset.postsHashReady = "true";
     window.addEventListener("hashchange", () => {
-      if (document.body.dataset.page === "posts") renderPosts();
+      if (document.body.dataset.page === "posts") {
+        renderPosts();
+        setActiveNav();
+      }
     });
   }
   const state = readState();
@@ -11010,7 +11000,7 @@ function renderPosts() {
             ${activeThread.messages.map(msg => `<p class="${msg.dir}${msg.delivered ? " delivered" : ""}">${msg.text}${msg.delivered ? `<small>${icon("check-check")} Delivered</small>` : ""}</p>`).join("")}
             ${activeThread.veraSuggest ? `
               <article class="cg-vera-suggests">
-                <span>${icon("sparkles")} Vera suggests</span>
+                <span><img src="assets/vera-ai-coach.png" alt="Vera"> Vera suggests</span>
                 <p>${activeThread.veraSuggest}</p>
                 <footer><button type="button" data-vera-suggest-use>Use draft</button><button type="button" data-vera-suggest-rewrite>Rewrite</button></footer>
               </article>

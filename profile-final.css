@@ -472,7 +472,7 @@ html body[data-page="profile"] .cg-up-hire-card > div > p {
   margin: 4px 0 0;
   color: var(--up-ink);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.35;
 }
 
@@ -549,7 +549,7 @@ html body[data-page="profile"] .cg-up-hire-card > div > p {
   border-radius: 14px;
   background: linear-gradient(135deg, #1f5560, #173f47);
   color: #f8f4ea;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 html body[data-page="profile"] .cg-up-role-card h3,
@@ -680,7 +680,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
 .cg-up-activity-card strong {
   display: block;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .cg-up-activity-card small {
@@ -919,7 +919,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   border: 1px solid var(--profile-line);
   border-radius: 24px;
   background: var(--profile-card);
-  box-shadow: 0 18px 44px rgba(31, 42, 34, 0.065);
+  box-shadow: 0 3px 8px rgba(31, 42, 34, 0.065);
 }
 
 .cg-profile-hero-card {
@@ -986,8 +986,8 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   color: #fffaf2;
   font-family: var(--cg-shot-serif, Georgia, serif);
   font-size: 50px;
-  font-weight: 700;
-  box-shadow: 0 18px 34px rgba(7, 56, 47, 0.16);
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(7, 56, 47, 0.16);
 }
 
 .cg-profile-avatar-wrap button {
@@ -1023,7 +1023,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   margin: 10px 0 0;
   color: #344a43;
   font-size: 18px;
-  font-weight: 750;
+  font-weight: 600;
 }
 
 .cg-profile-meta {
@@ -1033,7 +1033,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   margin-top: 14px;
   color: var(--profile-muted);
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 500;
 }
 
 .cg-profile-meta span,
@@ -1066,7 +1066,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   padding: 0 20px;
   border-radius: 999px;
   font-size: 15px;
-  font-weight: 850;
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -1074,7 +1074,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   border: 1px solid var(--profile-ink);
   background: var(--profile-ink);
   color: #fffaf2;
-  box-shadow: 0 18px 34px rgba(7, 56, 47, 0.16);
+  box-shadow: 0 3px 6px rgba(7, 56, 47, 0.16);
 }
 
 .cg-profile-secondary,
@@ -1133,13 +1133,13 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   margin: 0;
   color: var(--profile-muted);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
 }
 
 .cg-profile-nudges a {
   color: #087a68;
-  font-weight: 850;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -1173,7 +1173,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   margin: 0;
   color: var(--profile-ink);
   font-size: 20px;
-  font-weight: 850;
+  font-weight: 600;
 }
 
 .cg-profile-side-card header button {
@@ -1187,7 +1187,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   gap: 8px;
   margin-top: 12px;
   color: #087a68;
-  font-weight: 800;
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -1228,7 +1228,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
 .cg-next-steps section p {
   color: #334b43;
   font-size: 14px;
-  font-weight: 750;
+  font-weight: 600;
 }
 
 .cg-next-steps section a {
@@ -1261,7 +1261,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
 .cg-profile-form-card small {
   color: #718078;
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
 }
@@ -1278,7 +1278,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   border-radius: 999px;
   background: var(--profile-mint);
   color: var(--profile-ink);
-  font-weight: 850;
+  font-weight: 600;
 }
 
 .cg-profile-suggested > div {
@@ -1369,7 +1369,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   gap: 7px;
   color: #5f716b;
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -1385,7 +1385,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   color: #223c35;
   font-family: var(--cg-shot-sans, Inter, sans-serif);
   font-size: 15px;
-  font-weight: 650;
+  font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
   outline: 0;
@@ -1468,7 +1468,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
 .cg-profile-savebar > span {
   color: #4d625b;
   font-size: 14px;
-  font-weight: 750;
+  font-weight: 600;
 }
 
 @media (max-width: 1100px) {

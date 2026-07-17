@@ -106,7 +106,7 @@ html body[data-page="explore"] .explore-avatar {
   border-radius: 999px;
   background: var(--home-v2-surface, #f2f3f5);
   color: var(--home-v2-primary, #0b6d65);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 15px;
 }
 
@@ -130,7 +130,7 @@ html body[data-page="explore"] .explore-match-pill {
   background: rgba(77, 182, 172, 0.16);
   color: var(--home-v2-primary, #0b6d65);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 html body[data-page="explore"] .explore-company-name {
@@ -220,7 +220,7 @@ html body[data-page="explore"] .explore-trending-tag {
   margin-bottom: 14px;
   color: var(--home-v2-primary, #0b6d65);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -255,7 +255,7 @@ html body[data-page="explore"] .explore-trending-card dt {
 html body[data-page="explore"] .explore-trending-card dd {
   margin: 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--home-v2-foreground, #1e293b);
 }
 
@@ -332,7 +332,7 @@ html body[data-page="explore"] .explore-badge {
   background: var(--home-v2-surface, #f2f3f5);
   color: var(--home-v2-foreground, #1e293b);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -353,7 +353,7 @@ html body[data-page="explore"] .explore-program-card a {
   gap: 6px;
   color: var(--home-v2-primary, #0b6d65) !important;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 html body[data-page="explore"] .explore-program-card a svg {
@@ -413,7 +413,7 @@ html body[data-page="explore"] .explore-page .explore-cta-panel {
   color: #ffffff !important;
   background: linear-gradient(120deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
   border-color: transparent !important;
-  box-shadow: 0 28px 70px rgba(15, 89, 105, 0.18) !important;
+  box-shadow: 0 5px 13px rgba(15, 89, 105, 0.18) !important;
 }
 
 html body[data-page="explore"] .explore-page .explore-cta-panel h2,
