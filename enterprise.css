@@ -7989,8 +7989,8 @@ body[data-page="autopilot"] .cg-pipeline .cg-autopilot-queue article h3 {
 .cg-ap-match-title h3 {
   margin: 0;
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 700;
   color: #1b2e28;
 }
 
@@ -8000,8 +8000,8 @@ body[data-page="autopilot"] .cg-pipeline .cg-autopilot-queue article h3 {
 
 .cg-ap-company {
   color: #1f5560;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .cg-ap-match-pct {
@@ -8097,8 +8097,8 @@ body[data-page="autopilot"] .cg-pipeline .cg-autopilot-queue article h3 {
 
 .cg-ap-rule-card h3 {
   margin: 0;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .cg-ap-field {
@@ -8257,8 +8257,8 @@ body[data-page="autopilot"] .cg-pipeline .cg-autopilot-queue article h3 {
 .cg-ap-log h3 {
   margin: 0;
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 700;
   color: #1b2e28;
 }
 
@@ -8309,6 +8309,13 @@ body[data-page="autopilot"] .cg-ap-log .cg-ap-status-tan {
   color: #5b6a66;
   font-size: 13px;
   line-height: 1.5;
+}
+
+/* Bold, enlarged emphasis for card/role titles - beats the sitewide forced h1-h3 weight reset */
+body[data-page="autopilot"] .cg-pipeline .cg-ap-match-title h3,
+body[data-page="autopilot"] .cg-pipeline .cg-ap-rule-card h3,
+body[data-page="autopilot"] .cg-pipeline .cg-ap-log h3 {
+  font-weight: 700 !important;
 }
 
 @media (max-width: 720px) {
