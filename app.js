@@ -635,6 +635,9 @@ function normalizeState(state) {
       ...(state.autopilotRules || {})
     },
     autopilotLog: Array.isArray(state.autopilotLog) ? state.autopilotLog : [],
+    autopilotSavedRoles: Array.isArray(state.autopilotSavedRoles) ? state.autopilotSavedRoles : [],
+    autopilotAppliedRoles: Array.isArray(state.autopilotAppliedRoles) ? state.autopilotAppliedRoles : [],
+    autopilotDismissedRoles: Array.isArray(state.autopilotDismissedRoles) ? state.autopilotDismissedRoles : [],
     posts: Array.isArray(state.posts) ? state.posts : DATA.communityPosts
   });
 }
@@ -5014,6 +5017,7 @@ function renderDiscoverOrgDirectory() {
   root.innerHTML = `
     <section class="cg-discover cg-discover-v2">
       <header class="cg-discover-hero">
+        <a class="cg-back-link" href="discover.html">${icon("arrow-left")} Discover</a>
         <h1>${isCompanies ? "All companies" : "All universities"}.</h1>
         <p>${isCompanies ? "Every employer Vera is tracking for your Product Management search in Malaysia." : "Every institution Vera is tracking for your career path in Malaysia."}</p>
         <form class="cg-discover-search" data-org-directory-search-form>
@@ -9889,6 +9893,70 @@ function runAutopilot() {
 
 let pipelineActiveTab = "applications";
 
+const AUTOPILOT_MATCHES = [
+  { id: "ap-grab-product-analyst", org: "grab", title: "Product Analyst", company: "Grab", match: 86, mode: "Queue for review", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 5,500 - RM 7,500", found: "Found 2 hours ago", why: "Matches your salary floor, product analytics interest and hybrid preference.", watch: "Requires SQL case study." },
+  { id: "ap-setel-apm", org: "setel", title: "Associate Product Manager", company: "Setel", match: 91, mode: "Save automatically", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 8,000 - RM 11,000", found: "Found 4 hours ago", why: "Fintech match + hybrid + saved company. Above match threshold.", watch: "" },
+  { id: "ap-carsome-pm-growth", org: "carsome", title: "Product Manager, Growth", company: "Carsome", match: 82, mode: "Queue for review", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 11,000 - RM 15,000", found: "Found Yesterday", why: "Strong marketplace fit; alumni signal.", watch: "Company size preference uncertain (2,000+)." },
+  { id: "ap-aerodyne-ai-pm", org: "aerodyne", title: "AI Product Manager", company: "Aerodyne", match: 90, mode: "Recommend only", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 15,000 - RM 20,000", found: "Found Yesterday", why: "AI product exposure closes your top skill gap.", watch: "" },
+  { id: "ap-storehub-senior-pm", org: "storehub", title: "Senior Product Manager (Remote)", company: "StoreHub", match: 89, mode: "Queue for review", location: "Remote", workMode: "MY - Remote", salary: "RM 13,000 - RM 17,000", found: "Found 2 days ago", why: "Remote-first + async matches your working style.", watch: "" }
+];
+
+function apRoleActionState(state, roleId) {
+  return {
+    saved: (state.autopilotSavedRoles || []).includes(roleId),
+    applied: (state.autopilotAppliedRoles || []).includes(roleId)
+  };
+}
+
+function pushAutopilotLog(state, entry) {
+  return [entry, ...(Array.isArray(state.autopilotLog) ? state.autopilotLog : [])].slice(0, 8);
+}
+
+function toggleApSaveRole(role) {
+  const next = readState();
+  const list = Array.isArray(next.autopilotSavedRoles) ? next.autopilotSavedRoles : [];
+  const isSaved = list.includes(role.id);
+  next.autopilotSavedRoles = isSaved ? list.filter(id => id !== role.id) : [...list, role.id];
+  if (!isSaved) {
+    next.autopilotLog = pushAutopilotLog(next, { time: "Just now", status: "Saved", tone: "teal", title: `${role.title} at ${role.company}`, body: "Added to your shortlist from Autopilot matches." });
+  }
+  writeState(syncCurrentUser(next));
+  showToast(isSaved ? "Removed from your shortlist." : "Saved to your shortlist.");
+}
+
+function applyApRole(role) {
+  const next = readState();
+  const applied = Array.isArray(next.autopilotAppliedRoles) ? next.autopilotAppliedRoles : [];
+  if (applied.includes(role.id)) {
+    showToast("Already queued for application.");
+    return;
+  }
+  next.autopilotAppliedRoles = [...applied, role.id];
+  const saved = Array.isArray(next.autopilotSavedRoles) ? next.autopilotSavedRoles : [];
+  if (!saved.includes(role.id)) next.autopilotSavedRoles = [...saved, role.id];
+  next.autopilotLog = pushAutopilotLog(next, { time: "Just now", status: "Queued", tone: "tan", title: `${role.title} at ${role.company}`, body: "Vera prepared a tailored application - review it before it sends." });
+  writeState(syncCurrentUser(next));
+  showToast(`Vera queued a tailored application for ${role.title} at ${role.company}.`);
+}
+
+function dismissApRole(role) {
+  const next = readState();
+  const dismissed = Array.isArray(next.autopilotDismissedRoles) ? next.autopilotDismissedRoles : [];
+  if (dismissed.includes(role.id)) return;
+  next.autopilotDismissedRoles = [...dismissed, role.id];
+  next.autopilotLog = pushAutopilotLog(next, { time: "Just now", status: "Dismissed", tone: "tan", title: `${role.title} at ${role.company}`, body: "Vera will not surface this role again." });
+  writeState(syncCurrentUser(next));
+  showToast("Vera will not surface this role again.");
+}
+
+function apRuleCardFor(role) {
+  const text = `${role.why || ""} ${role.watch || ""}`.toLowerCase();
+  if (/salary|remote|hybrid|location|relocate|on-site/.test(text)) return 2;
+  if (/compan(y|ies) size|industry|fintech|culture|marketplace|alumni/.test(text)) return 3;
+  if (/skill|threshold|match|portfolio|exposure/.test(text)) return 5;
+  return 1;
+}
+
 function renderAutopilot() {
   const root = qs("[data-autopilot]");
   if (!root) return;
@@ -9956,13 +10024,7 @@ function renderAutopilot() {
       .replace(/>/g, "&gt;");
     const apRules = state.autopilotRules || {};
     const selected = (list, value) => (Array.isArray(list) ? list : []).includes(value);
-    const apMatches = [
-      { title: "Product Analyst", company: "Grab", match: 86, mode: "Queue for review", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 5,500 - RM 7,500", found: "Found 2 hours ago", why: "Matches your salary floor, product analytics interest and hybrid preference.", watch: "Requires SQL case study." },
-      { title: "Associate Product Manager", company: "Setel", match: 91, mode: "Save automatically", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 8,000 - RM 11,000", found: "Found 4 hours ago", why: "Fintech match + hybrid + saved company. Above match threshold.", watch: "" },
-      { title: "Product Manager, Growth", company: "Carsome", match: 82, mode: "Queue for review", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 11,000 - RM 15,000", found: "Found Yesterday", why: "Strong marketplace fit; alumni signal.", watch: "Company size preference uncertain (2,000+)." },
-      { title: "AI Product Manager", company: "Aerodyne", match: 90, mode: "Recommend only", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 15,000 - RM 20,000", found: "Found Yesterday", why: "AI product exposure closes your top skill gap.", watch: "" },
-      { title: "Senior Product Manager (Remote)", company: "StoreHub", match: 89, mode: "Queue for review", location: "Remote", workMode: "MY - Remote", salary: "RM 13,000 - RM 17,000", found: "Found 2 days ago", why: "Remote-first + async matches your working style.", watch: "" }
-    ];
+    const apMatches = AUTOPILOT_MATCHES.filter(role => !(state.autopilotDismissedRoles || []).includes(role.id));
     const apActivityLog = [
       { time: "2:14 PM", status: "Skipped", tone: "tan", title: "Product Analyst at Grab", body: "Salary below RM 5,000 floor." },
       { time: "1:30 PM", status: "Saved", tone: "teal", title: "Data Analyst at Maybank", body: "Matched salary, location and SQL requirement." },
@@ -10124,7 +10186,9 @@ function renderAutopilot() {
             <button type="button" class="pill" data-ap-toast="Showing roles sorted by match percentage.">${icon("sliders-horizontal")} Sorted by match</button>
           </header>
           <div class="cg-ap-match-list">
-            ${apMatches.map(role => `
+            ${apMatches.length ? apMatches.map(role => {
+              const { saved, applied } = apRoleActionState(state, role.id);
+              return `
               <article class="cg-ap-match-card">
                 <div class="cg-ap-match-head">
                   <div class="cg-ap-match-title">
@@ -10145,14 +10209,15 @@ function renderAutopilot() {
                   <p>${role.why}${role.watch ? ` <b>Watch:</b> ${role.watch}` : ""}</p>
                 </div>
                 <div class="cg-ap-match-actions">
-                  <a class="btn btn-primary" href="discover.html">View job ${icon("chevron-right")}</a>
-                  <button class="btn btn-ghost" type="button" data-ap-toast="Saved to your shortlist.">Save</button>
-                  <button class="btn btn-ghost" type="button" data-ap-toast="Vera queued a tailored application.">Apply</button>
-                  <button class="btn btn-ghost" type="button" data-ap-toast="Vera will not surface this role again.">Dismiss</button>
-                  <button class="btn btn-ghost" type="button" data-ap-toast="Opened the rule that matched this role.">Edit rule</button>
+                  <a class="btn btn-primary" href="job-detail.html?role=${encodeURIComponent(role.id)}">View job ${icon("chevron-right")}</a>
+                  <button class="btn btn-ghost" type="button" data-ap-save="${role.id}">${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save"}</button>
+                  <button class="btn btn-ghost" type="button" data-ap-apply="${role.id}"${applied ? " disabled" : ""}>${icon(applied ? "check" : "send")} ${applied ? "Applied" : "Apply"}</button>
+                  <button class="btn btn-ghost" type="button" data-ap-dismiss="${role.id}">${icon("x")} Dismiss</button>
+                  <button class="btn btn-ghost" type="button" data-ap-edit-rule="${role.id}">${icon("settings-2")} Edit rule</button>
                 </div>
               </article>
-            `).join("")}
+            `;
+            }).join("") : `<p class="cg-ap-matches-empty">${icon("check-circle-2")} You've reviewed every match. Vera keeps scanning and will surface new roles here.</p>`}
           </div>
         </section>
 
@@ -10160,7 +10225,7 @@ function renderAutopilot() {
           <span class="cg-section-kicker">${icon("shield-check")} Ruleset</span>
           <h1>Tell Autopilot exactly what you want</h1>
           <form data-autopilot-ruleset-form>
-            <article class="cg-ap-rule-card">
+            <article class="cg-ap-rule-card" data-rule-card="1">
               <h3>1. Role Targets</h3>
               <label class="cg-ap-field">Target roles<input name="roleTargets" value="${esc(apRules.roleTargets)}"></label>
               <div class="cg-ap-field-group">
@@ -10173,7 +10238,7 @@ function renderAutopilot() {
               </div>
             </article>
 
-            <article class="cg-ap-rule-card">
+            <article class="cg-ap-rule-card" data-rule-card="2">
               <h3>2. Salary &amp; Location</h3>
               <div class="cg-ap-field-row">
                 <label class="cg-ap-field">Minimum salary<input name="minSalary" value="${esc(apRules.minSalary)}"></label>
@@ -10190,7 +10255,7 @@ function renderAutopilot() {
               </div>
             </article>
 
-            <article class="cg-ap-rule-card">
+            <article class="cg-ap-rule-card" data-rule-card="3">
               <h3>3. Work Preferences</h3>
               <div><span class="cg-ap-label">Company size</span><div class="cg-ap-pillgroup" data-select-group="companySize" data-select-mode="multi">
                 ${["Startup", "SME", "Large company", "MNC", "GLC"].map(v => `<button type="button" class="pill${selected(apRules.companySize, v) ? " active" : ""}" data-select-value="${v}">${v}</button>`).join("")}
@@ -10203,7 +10268,7 @@ function renderAutopilot() {
               </div></div>
             </article>
 
-            <article class="cg-ap-rule-card">
+            <article class="cg-ap-rule-card" data-rule-card="4">
               <h3>4. Company Preferences</h3>
               <label class="cg-ap-field">Preferred companies<input name="preferredCompanies" value="${esc(apRules.preferredCompanies)}"></label>
               <label class="cg-ap-field">Avoid companies<input name="avoidCompanies" value="${esc(apRules.avoidCompanies)}" placeholder="-"></label>
@@ -10211,7 +10276,7 @@ function renderAutopilot() {
               <label class="cg-ap-field">Avoid keywords<input name="avoidKeywords" value="${esc(apRules.avoidKeywords)}"></label>
             </article>
 
-            <article class="cg-ap-rule-card">
+            <article class="cg-ap-rule-card" data-rule-card="5">
               <h3>5. Match Rules</h3>
               <div><span class="cg-ap-label">Strictness</span>
                 <div class="cg-ap-strictness-row">
@@ -10234,13 +10299,13 @@ function renderAutopilot() {
               </div>
             </article>
 
-            <article class="cg-ap-rule-card">
+            <article class="cg-ap-rule-card" data-rule-card="6">
               <h3>6. Exclusions</h3>
               <label class="cg-ap-field">Excluded roles / titles<input name="excludedRoles" value="${esc(apRules.excludedRoles)}"></label>
               <label class="cg-ap-field">Excluded industries<input name="excludedIndustries" value="${esc(apRules.excludedIndustries)}"></label>
             </article>
 
-            <article class="cg-ap-rule-card">
+            <article class="cg-ap-rule-card" data-rule-card="7">
               <h3>7. Action Mode</h3>
               <div class="cg-ap-mode-grid" data-select-group="actionMode" data-select-mode="single">
                 ${apActionModes.map(m => `
@@ -10263,7 +10328,7 @@ function renderAutopilot() {
           <span class="cg-section-kicker">${icon("history")} Autopilot activity</span>
           <h1>A transparent record of what Autopilot did</h1>
           <div class="cg-ap-log">
-            ${apActivityLog.map(entry => `
+            ${[...(Array.isArray(state.autopilotLog) ? state.autopilotLog : []), ...apActivityLog].map(entry => `
               <article>
                 <small>${entry.time}</small>
                 <span class="pill cg-ap-status-${entry.tone}">${entry.status}</span>
@@ -10366,6 +10431,35 @@ function renderAutopilot() {
       renderAutopilot();
     });
     qsa("[data-ap-toast]", root).forEach(btn => btn.addEventListener("click", () => showToast(btn.dataset.apToast)));
+    qsa("[data-ap-save]", root).forEach(btn => btn.addEventListener("click", () => {
+      const role = apMatches.find(item => item.id === btn.dataset.apSave);
+      if (!role) return;
+      toggleApSaveRole(role);
+      renderAutopilot();
+    }));
+    qsa("[data-ap-apply]", root).forEach(btn => btn.addEventListener("click", () => {
+      const role = apMatches.find(item => item.id === btn.dataset.apApply);
+      if (!role || apRoleActionState(readState(), role.id).applied) return;
+      applyApRole(role);
+      renderAutopilot();
+    }));
+    qsa("[data-ap-dismiss]", root).forEach(btn => btn.addEventListener("click", () => {
+      const role = apMatches.find(item => item.id === btn.dataset.apDismiss);
+      if (!role) return;
+      dismissApRole(role);
+      renderAutopilot();
+    }));
+    qsa("[data-ap-edit-rule]", root).forEach(btn => btn.addEventListener("click", () => {
+      const role = apMatches.find(item => item.id === btn.dataset.apEditRule);
+      const cardNumber = role ? apRuleCardFor(role) : 1;
+      const card = qs(`[data-rule-card="${cardNumber}"]`, root);
+      if (card) {
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+        card.classList.add("cg-ap-flash");
+        window.setTimeout(() => card.classList.remove("cg-ap-flash"), 1600);
+      }
+      showToast("Opened the rule that matched this role.");
+    }));
     qsa("[data-pipeline-stage]", root).forEach(btn => btn.addEventListener("click", () => {
       const index = btn.getAttribute("data-pipeline-stage");
       qsa("[data-pipeline-stage]", root).forEach(b => b.classList.toggle("active", b === btn));
@@ -10589,6 +10683,142 @@ function renderAutopilot() {
   qs("[data-scan]").addEventListener("click", () => showToast("Autopilot scanned roles and kept everything in review mode."));
   qs("[data-apply-agent]").addEventListener("click", () => showToast("Autopilot prepared applications that match your rules."));
   createIcons();
+}
+
+function apRoleRequirements(role, org) {
+  const seniorish = /senior|lead|principal/i.test(role.title);
+  const juniorish = /analyst|associate|intern/i.test(role.title);
+  return {
+    education: "Bachelor's or equivalent experience.",
+    experience: seniorish ? "5+ years, with prior team or project leadership." : juniorish ? "1-3 years, or a strong internship/project track record." : "2+ years in a similar role.",
+    portfolio: /designer|research/i.test(role.title) ? "Required - share 2-3 case studies." : "Optional, but strengthens your application.",
+    skills: INDUSTRY_SKILLS[org?.industry] || "Analytics, Communication, Cross-functional",
+    tools: INDUSTRY_TOOLS[org?.industry] || "Slack, Notion, Jira"
+  };
+}
+
+function renderAutopilotJobDetail() {
+  const root = qs("[data-ap-job-detail]");
+  if (!root) return;
+  if (!requireAccount(root, "view this job's requirements")) return;
+  const roleId = new URLSearchParams(location.search).get("role");
+  const role = AUTOPILOT_MATCHES.find(item => item.id === roleId);
+  if (!role) {
+    root.innerHTML = `
+      <div class="locked-state-wrap">
+        <div class="locked-state glass-card">
+          <div class="eyebrow"><span class="spark">*</span> Role not found</div>
+          <h1 class="section-title">We could not find that matched role.</h1>
+          <p class="section-sub">It may have been dismissed, or the link is out of date.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="autopilot.html#autopilot-console">${icon("arrow-left")} Back to Autopilot</a></div>
+        </div>
+      </div>
+    `;
+    createIcons();
+    return;
+  }
+  const state = readState();
+  const { catalog } = buildOrgCatalog();
+  const org = catalog.find(item => item.id === role.org);
+  const { saved, applied } = apRoleActionState(state, role.id);
+  const req = apRoleRequirements(role, org);
+
+  root.innerHTML = `
+    <section class="cg-cp cg-apjob">
+      <a class="cg-cp-back" href="autopilot.html#autopilot-console">${icon("arrow-left")} Autopilot</a>
+
+      <article class="cg-cp-hero">
+        <div class="cg-cp-hero-top">
+          <span class="cg-cp-mono">${orgInitials(role.company)}</span>
+          <div class="cg-cp-hero-id">
+            <span class="cg-section-kicker">${role.company} &middot; ${role.match}% match</span>
+            <h1>${role.title}</h1>
+            <p class="cg-cp-hero-meta">${icon("map-pin")} ${role.location} &middot; ${role.workMode} &middot; ${icon("briefcase")} ${role.salary}</p>
+          </div>
+          <div class="cg-cp-hero-actions">
+            <button type="button" class="btn btn-ghost" data-apjob-save>${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save"}</button>
+            <button type="button" class="btn btn-primary" data-apjob-apply${applied ? " disabled" : ""}>${icon(applied ? "check" : "send")} ${applied ? "Applied" : "Apply"}</button>
+          </div>
+        </div>
+        <div class="cg-cp-hero-stats">
+          <span class="pill">${role.mode}</span>
+          <span>${icon("clock")} ${role.found}</span>
+          ${org ? `<a class="pill" href="company-profile.html?org=${org.id}">${icon("building-2")} ${org.name} profile</a>` : ""}
+        </div>
+        <div class="cg-cp-vera">
+          <span class="cg-cp-vera-label">${icon("bot")} Why it matched</span>
+          <p>${role.why}</p>
+          ${role.watch ? `<p class="cg-cp-vera-watch"><b>Watch:</b> ${role.watch}</p>` : ""}
+        </div>
+      </article>
+
+      <div class="cg-cp-row">
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Requirements</span>
+          <h2>What they look for</h2>
+          <div class="cg-cp-kv"><span>Education</span><strong>${req.education}</strong></div>
+          <div class="cg-cp-kv"><span>Experience</span><strong>${req.experience}</strong></div>
+          <div class="cg-cp-kv"><span>Portfolio</span><strong>${req.portfolio}</strong></div>
+          <div class="cg-cp-kv"><span>Skills</span><strong>${req.skills}</strong></div>
+          <div class="cg-cp-kv"><span>Tools</span><strong>${req.tools}</strong></div>
+        </article>
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Conditions</span>
+          <h2>Employment details</h2>
+          <div class="cg-cp-kv"><span>Employment type</span><strong>Full-time</strong></div>
+          <div class="cg-cp-kv"><span>Work arrangement</span><strong>${role.workMode}</strong></div>
+          <div class="cg-cp-kv"><span>Location</span><strong>${role.location}</strong></div>
+          <div class="cg-cp-kv"><span>Salary</span><strong>${role.salary}</strong></div>
+          <div class="cg-cp-kv"><span>Autopilot mode</span><strong>${role.mode}</strong></div>
+        </article>
+      </div>
+
+      <div class="cg-cp-row">
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Hiring process</span>
+          <h2>What to expect</h2>
+          <ol class="cg-cp-steps">
+            <li><b>1</b><div><strong>Application review</strong><span>1 week.</span></div></li>
+            <li><b>2</b><div><strong>Recruiter screen</strong><span>30 min.</span></div></li>
+            <li><b>3</b><div><strong>Manager interview</strong><span>45 min.</span></div></li>
+            <li><b>4</b><div><strong>Case</strong><span>Take-home.</span></div></li>
+            <li><b>5</b><div><strong>Panel</strong><span>2 interviews.</span></div></li>
+          </ol>
+        </article>
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Benefits</span>
+          <h2>What comes with the role</h2>
+          <div class="cg-cp-benefits">
+            <span>${icon("check-circle")} Medical</span>
+            <span>${icon("check-circle")} ${role.workMode}</span>
+            <span>${icon("check-circle")} Learning budget</span>
+            <span>${icon("check-circle")} Bonus</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="cg-apjob-footer">
+        <button type="button" class="btn btn-ghost" data-apjob-dismiss>${icon("x")} Dismiss this match</button>
+      </div>
+
+      ${veraWidgetMarkup()}
+    </section>
+  `;
+  createIcons();
+  wireVeraWidget(root);
+  qs("[data-apjob-save]", root)?.addEventListener("click", () => {
+    toggleApSaveRole(role);
+    renderAutopilotJobDetail();
+  });
+  qs("[data-apjob-apply]", root)?.addEventListener("click", () => {
+    if (apRoleActionState(readState(), role.id).applied) return;
+    applyApRole(role);
+    renderAutopilotJobDetail();
+  });
+  qs("[data-apjob-dismiss]", root)?.addEventListener("click", () => {
+    dismissApRole(role);
+    location.href = "autopilot.html#autopilot-console";
+  });
 }
 
 function renderPosts() {
@@ -11536,6 +11766,7 @@ function init() {
   renderSavedItems();
   renderMarket();
   renderAutopilot();
+  renderAutopilotJobDetail();
   renderPosts();
   renderEmployerPortal();
   renderEmployers();
