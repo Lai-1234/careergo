@@ -1,3 +1,15 @@
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 body[data-page="home"] {
   color: var(--home-ink) !important;
   background: var(--home-paper) !important;
@@ -12701,17 +12713,102 @@ html body[data-page="discover"] .cg-discover-v2 .cg-market-card>a {
 }
 
 html body[data-page="discover"] .cg-discover-v2 .cg-bars {
+  position: relative !important;
   display: flex !important;
   align-items: end !important;
   gap: 7px !important;
   height: 58px !important;
-  margin: 0 0 16px !important;
+  margin: 0 0 8px !important;
+  border-bottom: 1px solid rgba(14, 44, 37, 0.14) !important;
+}
+
+html body[data-page="discover"] .cg-discover-v2 .cg-bars::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 50% !important;
+  border-top: 1px dashed rgba(14, 44, 37, 0.12) !important;
+  pointer-events: none !important;
 }
 
 html body[data-page="discover"] .cg-discover-v2 .cg-bars i {
+  position: relative !important;
   flex: 1 1 0 !important;
   min-width: 8px !important;
   border-radius: 7px 7px 3px 3px !important;
+  cursor: pointer !important;
+  transition: opacity 150ms ease !important;
+}
+
+html body[data-page="discover"] .cg-discover-v2 .cg-bars i:hover,
+html body[data-page="discover"] .cg-discover-v2 .cg-bars i:focus-visible {
+  opacity: 0.8 !important;
+  outline: none !important;
+}
+
+html body[data-page="discover"] .cg-discover-v2 .cg-bars i[data-tooltip]::after {
+  content: attr(data-tooltip) !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: calc(100% + 8px) !important;
+  transform: translateX(-50%) translateY(4px) !important;
+  padding: 6px 9px !important;
+  border-radius: 8px !important;
+  background: #1b2e28 !important;
+  color: #f7f3ea !important;
+  -webkit-text-fill-color: #f7f3ea !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
+  white-space: nowrap !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 150ms ease, transform 150ms ease !important;
+  z-index: 5 !important;
+}
+
+html body[data-page="discover"] .cg-discover-v2 .cg-bars i[data-tooltip]::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 100% !important;
+  transform: translateX(-50%) !important;
+  border: 5px solid transparent !important;
+  border-top-color: #1b2e28 !important;
+  margin-bottom: -1px !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 150ms ease !important;
+  z-index: 5 !important;
+}
+
+html body[data-page="discover"] .cg-discover-v2 .cg-bars i[data-tooltip]:hover::after,
+html body[data-page="discover"] .cg-discover-v2 .cg-bars i[data-tooltip]:hover::before,
+html body[data-page="discover"] .cg-discover-v2 .cg-bars i[data-tooltip]:focus-visible::after,
+html body[data-page="discover"] .cg-discover-v2 .cg-bars i[data-tooltip]:focus-visible::before {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(-50%) translateY(0) !important;
+}
+
+html body[data-page="discover"] .cg-discover-v2 .cg-bars-caption {
+  margin: 0 0 16px !important;
+  color: #465c55 !important;
+  -webkit-text-fill-color: #465c55 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  line-height: 1.35 !important;
+}
+
+html body[data-page="discover"] .cg-discover-v2 .cg-bars-caption strong {
+  color: #1b2e28 !important;
+  -webkit-text-fill-color: #1b2e28 !important;
+  font-weight: 600 !important;
 }
 
 html body[data-page="discover"] .cg-discover-v2 .cg-market-card dl,
@@ -15851,8 +15948,50 @@ html body[data-page="dashboard"] .cg-task-card:hover {
 }
 
 html body[data-page="dashboard"] .cg-task-card .cg-check {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   box-shadow: inset 0 0 0 2px rgba(14, 44, 37, 0.08), 0 1px 3px rgba(35, 29, 18, 0.05) !important;
   background: rgba(255, 255, 255, 0.72) !important;
+}
+
+html body[data-page="dashboard"] .cg-task-card .cg-check svg {
+  width: 13px !important;
+  height: 13px !important;
+  stroke-width: 3 !important;
+  color: #fff !important;
+}
+
+html body[data-page="dashboard"] .cg-task-card.complete .cg-check {
+  background: #1F5560 !important;
+  box-shadow: none !important;
+}
+
+html body[data-page="dashboard"] .cg-task-card.in-progress .cg-check {
+  box-shadow: inset 0 0 0 2px rgba(31, 85, 96, 0.35) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+}
+
+html body[data-page="dashboard"] .cg-task-card.in-progress .cg-check::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #1F5560;
+}
+
+html body[data-page="dashboard"] .cg-task-status {
+  padding: 5px 9px !important;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: #1d4f48 !important;
+  background: rgba(216, 239, 235, 0.9) !important;
+}
+
+html body[data-page="dashboard"] .cg-task-card .btn:disabled {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
 }
 
 html body[data-page="dashboard"] .cg-task-meta span:first-child {
@@ -21757,6 +21896,81 @@ html body[data-page="discover"] .cg-org-browse-empty{padding:32px 0;text-align:c
   html body[data-page="discover"] .cg-org-browse-actions{grid-area:actions;flex-direction:row;align-items:center;justify-content:space-between;margin-top:10px}
 }
 /* End Discover in-workspace directory browser */
+
+/* Daily mission task-detail modal */
+.cg-mission-modal {
+  display: grid;
+  gap: 16px;
+  width: min(560px, 100%);
+}
+
+.cg-mission-modal-body {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  background: #F8F7F4;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #3f4f49;
+}
+
+.cg-mission-steps {
+  display: grid;
+  gap: 8px;
+}
+
+.cg-mission-steps p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  font-size: 13.5px;
+  color: #3f4f49;
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+
+.cg-mission-steps p svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: #94a3b8;
+}
+
+.cg-mission-steps p:hover {
+  border-color: rgba(31, 85, 96, 0.28);
+}
+
+.cg-mission-steps p.done {
+  border-color: rgba(31, 85, 96, 0.35);
+  background: rgba(200, 221, 223, 0.35);
+  color: #1E293B;
+}
+
+.cg-mission-steps p.done svg {
+  color: #1F5560;
+}
+
+.cg-mission-notes {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3f4f49;
+}
+
+.cg-mission-notes textarea {
+  resize: vertical;
+}
+
+.cg-mission-modal .hero-actions .btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 
 /* Organization detail + reviews modal */
 .cg-org-detail-modal {

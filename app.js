@@ -434,6 +434,7 @@ function readState() {
     comparedJobs: [],
     savedOrgs: [],
     missionProgress: {},
+    missionStreak: { count: 0, lastDate: "" },
     marketPlan: null,
     growGoals: null,
     growMovesStarted: [],
@@ -813,6 +814,9 @@ function applyDemoAccount(state) {
     "pm3": 20,
     "tour-profile": 60
   };
+  if (!state.missionStreak || !state.missionStreak.lastDate) {
+    state.missionStreak = { count: 12, lastDate: new Date().toISOString().slice(0, 10) };
+  }
   state.guidedTour = { dashboard: { status: "new", step: 0, startedAt: "" } };
   state.notifications = [
     { id: "n-demo", title: "Demo mode", body: "This judge preview uses a realistic personalized profile. You can explore safely." },
@@ -825,6 +829,44 @@ function startDemoDashboard() {
   const next = applyDemoAccount(readState());
   writeState(next);
   location.href = "dashboard.html";
+}
+
+function wireStaticLoginForm() {
+  const form = qs(".login-form-card");
+  if (!form || form.dataset.wired) return;
+  form.dataset.wired = "true";
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const email = String(data.get("email") || "").trim().toLowerCase();
+    const password = String(data.get("password") || "");
+    const next = readState();
+    const redirectTarget = sanitizeRedirectPath(new URLSearchParams(location.search).get("redirect"));
+    const goToDestination = () => {
+      location.href = redirectTarget || (next.onboarding.candidateDone ? "dashboard.html" : "onboarding.html");
+    };
+    if (!email && !password) {
+      applyDemoAccount(next);
+      writeState(next);
+      showToast("Demo workspace opened.");
+      goToDestination();
+      return;
+    }
+    if (!email || !password) {
+      showToast("Enter both email and password, or leave both empty for the judge preview.", "info");
+      return;
+    }
+    const user = next.auth.users.find(item => item.email === email && item.password === password);
+    if (!user) {
+      showToast("No matching account found on this device.", "info");
+      return;
+    }
+    next.session = { loggedIn: true, role: user.role || "candidate", currentUserId: user.id, name: user.fullName };
+    if (user.profile) next.profile = normalizeProfile(user.profile);
+    writeState(next);
+    showToast("Welcome back.");
+    goToDestination();
+  });
 }
 
 function ensureDemoDashboardSession() {
@@ -1141,28 +1183,29 @@ function starterMissions(profile) {
   ];
 }
 
-function bindMissionActions() {
+function recordMissionStreak(state) {
+  const today = new Date().toISOString().slice(0, 10);
+  const streak = state.missionStreak || { count: 0, lastDate: "" };
+  if (streak.lastDate === today) {
+    state.missionStreak = streak;
+    return state.missionStreak;
+  }
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const count = streak.lastDate === yesterday ? streak.count + 1 : 1;
+  state.missionStreak = { count, lastDate: today };
+  return state.missionStreak;
+}
+
+function bindMissionActions(taskLookup = {}) {
   qsa("[data-complete-mission]").forEach(button => {
     button.addEventListener("click", event => {
       event.preventDefault();
       event.stopPropagation();
       const id = button.dataset.completeMission;
-      const state = readState();
-      state.missionProgress = { ...state.missionProgress, [id]: 100 };
-      state.notifications = [
-        { id: `n-${id}`, title: "Mission completed", body: "CareerGo updated your mission progress." },
-        ...state.notifications.filter(item => item.id !== `n-${id}`)
-      ].slice(0, 5);
-      writeState(syncCurrentUser(state));
-      const card = qs(`[data-mission-card="${id}"]`);
-      if (card) {
-        card.classList.add("complete");
-        const bar = qs(".progress span", card);
-        if (bar) bar.style.width = "100%";
-      }
-      button.innerHTML = `${icon("check")} Done`;
-      createIcons();
-      showToast("Mission marked complete.");
+      if ((readState().missionProgress[id] || 0) >= 100) return;
+      const task = taskLookup[id];
+      if (!task) return;
+      openMissionModal(task);
     });
   });
 }
@@ -1298,6 +1341,18 @@ function positionTourCard(card, target) {
 
   card.style.left = `${left}px`;
   card.style.top = `${top}px`;
+}
+
+function sanitizeRedirectPath(raw) {
+  if (!raw) return "";
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9/_-]*\.html(\?[^\s]*)?(#[^\s]*)?$/.test(raw)) return "";
+  if (raw.includes("://") || raw.startsWith("//")) return "";
+  return raw;
+}
+
+function loginRedirectHref(target) {
+  const safeTarget = sanitizeRedirectPath(target);
+  return safeTarget ? `login.html?redirect=${encodeURIComponent(safeTarget)}` : "login.html";
 }
 
 function requireAccount(root, purpose = "open this workspace") {
@@ -2753,6 +2808,24 @@ function progressBar(value) {
   return `<div class="progress" aria-label="${value}% complete"><span style="width:${Math.max(0, Math.min(100, value))}%"></span></div>`;
 }
 
+function marketWeekLabels(count = 12) {
+  const now = new Date();
+  return Array.from({ length: count }, (_, i) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - (count - 1 - i) * 7);
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  });
+}
+
+function marketWeeklySeries(startValue, endValue, seed, count = 12) {
+  const amplitude = Math.max(1, (endValue - startValue) * 0.12);
+  return Array.from({ length: count }, (_, i) => {
+    const linear = startValue + (endValue - startValue) * (i / (count - 1));
+    const wiggle = i === count - 1 ? 0 : Math.sin(i * 1.7 + seed) * amplitude;
+    return Math.max(1, Math.round(linear + wiggle));
+  });
+}
+
 function money(value) {
   return `RM${Number(value).toLocaleString("en-MY")}`;
 }
@@ -3730,11 +3803,12 @@ function renderJobsPage() {
     const topPick = DATA.jobs.find(job => job.id === "job-ai-product") || DATA.jobs[0];
     const topPickSaved = state.savedJobs.includes(topPick.id);
     const marketPulse = [
-      ["In your market", "Hiring +34%", "AI Product roles", "RM 145k / year", "67% remote-friendly", "312 new openings", "teal"],
-      ["Missing from your profile", "Hiring +62%", "Prompt engineering", "RM 9,500 / month", "82% remote-friendly", "48 new openings", "blue"],
-      ["Matches your background", "Hiring +21%", "Design-first PMs", "RM 132k / year", "54% remote-friendly", "96 new openings", "gold"],
-      ["Your region", "Hiring +12%", "KL fintech product hubs", "RM 128k / year", "38% remote-friendly", "204 new openings", "rose"]
+      ["In your market", "Hiring +34%", "AI Product roles", "RM 145k / year", "67% remote-friendly", "312 new openings", "teal", 38],
+      ["Missing from your profile", "Hiring +62%", "Prompt engineering", "RM 9,500 / month", "82% remote-friendly", "48 new openings", "blue", 9],
+      ["Matches your background", "Hiring +21%", "Design-first PMs", "RM 132k / year", "54% remote-friendly", "96 new openings", "gold", 16],
+      ["Your region", "Hiring +12%", "KL fintech product hubs", "RM 128k / year", "38% remote-friendly", "204 new openings", "rose", 26]
     ];
+    const marketWeeks = marketWeekLabels(12);
     const barRamp = {
       teal: ["#b9d9d4", "#a0cbc6", "#87beb8", "#6eb0aa", "#56a39c", "#3d958e", "#248880", "#0b7a72"],
       blue: ["#cae4ee", "#b5d5e3", "#a0c7d8", "#8bb8cd", "#75a9c2", "#609ab7", "#4b8cac", "#367da1"],
@@ -3871,14 +3945,31 @@ function renderJobsPage() {
           <h2>Market Pulse in Malaysia</h2>
           <p class="cg-h2-sub">What's hiring, paying, and growing around you right now - refreshed from live postings.</p>
           <div class="cg-market-grid">
-            ${marketPulse.map(([tag, trend, title, salary, remote, openings, tone], index) => `
+            ${marketPulse.map(([tag, trend, title, salary, remote, openings, tone, latestWeekly], index) => {
+              const trendPct = Number((trend.match(/-?\d+(\.\d+)?/) || [0])[0]);
+              const startWeekly = Math.max(1, Math.round(latestWeekly / (1 + trendPct / 100)));
+              const series = marketWeeklySeries(startWeekly, latestWeekly, index);
+              const seriesMin = Math.min(...series);
+              const seriesRange = Math.max(1, Math.max(...series) - seriesMin);
+              const heightFor = value => 10 + Math.round(((value - seriesMin) / seriesRange) * 38);
+              const chartSummary = `Hiring trend ${trendPct >= 0 ? "up" : "down"} ${Math.abs(trendPct)}% over the last 12 weeks, from ${series[0]} to ${series[series.length - 1]} postings a week.`;
+              return `
               <article class="cg-market-card tone-${tone}">
                 <div><span>${icon("zap")} ${tag}</span><small>${icon("trending-up")} ${trend}</small></div>
                 <h3>${title}</h3><a href="posts.html?topic=${encodeURIComponent(title)}#messages" aria-label="Explore ${title}">${icon("arrow-up-right")}</a>
-                <div class="cg-bars">${Array.from({ length: 12 }, (_, i) => { const step = (i + index) % 8; return `<i style="height:${14 + step * 5}px;background:${barRamp[tone][step]}"></i>`; }).join("")}</div>
+                <div class="cg-bars">
+                  <span class="sr-only">${chartSummary}</span>
+                  ${series.map((value, i) => {
+                    const isCurrent = i === series.length - 1;
+                    const barLabel = `Week of ${marketWeeks[i]}${isCurrent ? " (this week)" : ""}: ${value} postings`;
+                    return `<i tabindex="0" role="img" class="${isCurrent ? "is-current" : ""}" style="height:${heightFor(value)}px;background:${isCurrent ? barRamp[tone][7] : barRamp[tone][2]}" data-tooltip="${barLabel}" aria-label="${barLabel}"></i>`;
+                  }).join("")}
+                </div>
+                <p class="cg-bars-caption">Last 12 weeks - <strong>${latestWeekly} postings this week</strong></p>
                 <dl><dt>Avg. salary (MY)</dt><dd>${salary}</dd><dt>Remote share</dt><dd>${remote}</dd><dt>Openings</dt><dd>${openings}</dd></dl>
               </article>
-            `).join("")}
+            `;
+            }).join("")}
           </div>
         </section>
 
@@ -3903,6 +3994,7 @@ function renderJobsPage() {
                 <header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${sub}</p></div></header>
                 <b>${tag}</b><strong>${roles}</strong>
                 <footer>${icon("sparkles")} ${why}</footer>
+                <button type="button" class="btn btn-primary btn-wide" data-org-cta="${id}">View company ${icon("arrow-right")}</button>
               </article>
             `).join("")}
           </div>
@@ -3915,11 +4007,12 @@ function renderJobsPage() {
           </div>
           <div class="cg-featured-org-grid">
             ${universities.map(({ uni, why }) => `
-              <article class="cg-featured-org-card university">
+              <article class="cg-featured-org-card university" data-org-detail="${uni.id}" tabindex="0" aria-label="Open ${uni.name} reviews and details">
                 <header><span>${icon("graduation-cap")}</span><div><h3>${uni.name}</h3><p>${icon("map-pin")} ${uni.location}</p></div></header>
                 <b>${uni.salary}</b>
                 <footer>${icon("sparkles")} ${why}</footer>
                 ${universityRequirementsPanel(uni, state.profile)}
+                <button type="button" class="btn btn-primary btn-wide" data-org-cta="${uni.id}">View university ${icon("arrow-right")}</button>
               </article>
             `).join("")}
           </div>
@@ -3985,6 +4078,18 @@ function renderJobsPage() {
         }
       });
     });
+    qsa("[data-org-cta]", root).forEach(button => {
+      const triggerOrgDetail = event => {
+        event.stopPropagation();
+        if (event.type === "keydown") {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+        }
+        openOrgDetailModal(button.dataset.orgCta);
+      };
+      button.addEventListener("click", triggerOrgDetail);
+      button.addEventListener("keydown", triggerOrgDetail);
+    });
     qs("[data-toppick-explore]", root)?.addEventListener("click", () => openApplicationDetailsModal(topPick.id));
     qs("[data-toppick-save]", root)?.addEventListener("click", event => {
       const next = readState();
@@ -4004,7 +4109,10 @@ function renderJobsPage() {
       if (kind === "programs") openDiscoverListModal("All recommended programmes", programs.map(discoverProgramCard).join(""));
       if (kind === "mentors") openDiscoverListModal("All mentors", mentors.map(discoverMentorCard).join(""));
     }));
-    qsa("[data-uni-requirements]", root).forEach(button => button.addEventListener("click", () => openUniversityRequirementsModal(button.dataset.uniRequirements)));
+    qsa("[data-uni-requirements]", root).forEach(button => button.addEventListener("click", event => {
+      event.stopPropagation();
+      openUniversityRequirementsModal(button.dataset.uniRequirements);
+    }));
     qs("[data-discover-opportunities-toggle]", root)?.addEventListener("click", event => {
       const btn = event.currentTarget;
       const pressed = btn.getAttribute("aria-pressed") === "true";
@@ -5238,7 +5346,9 @@ function renderDirectoryPage(kind) {
             <footer>
               <button type="button" data-directory-detail="${org.id}">${icon("message-square-text")} Reviews</button>
               <button type="button" data-directory-save="${org.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save"}</button>
-              <a href="posts.html?topic=${encodeURIComponent(`${org.name} ${org.type.toLowerCase()} research`)}#messages">${icon("sparkles")} Ask Vera</a>
+              ${readState().session.loggedIn
+                ? `<a href="posts.html?topic=${encodeURIComponent(`${org.name} ${org.type.toLowerCase()} research`)}#messages">${icon("sparkles")} Ask Vera</a>`
+                : `<a href="#" data-auth-prompt="ask Vera about ${org.name}">${icon("sparkles")} Ask Vera</a>`}
             </footer>
           </div>
         </article>
@@ -5258,6 +5368,7 @@ function renderDirectoryPage(kind) {
       renderCards();
       showToast(next.savedOrgs.includes(id) ? "Saved for comparison." : "Removed from saved.");
     }));
+    bindProtectedPrompts(grid);
     createIcons();
   }
 
@@ -5368,6 +5479,7 @@ function openOrgDetailModal(orgId) {
     ? [["Culture", org.scores.culture], ["Growth", org.scores.growth], ["Pay", org.scores.pay], ["Balance", org.scores.balance]]
     : [];
   const openRoles = org.type !== "University" ? openRolesForOrg(org) : [];
+  const loggedIn = Boolean(readState().session.loggedIn);
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop";
   backdrop.innerHTML = `
@@ -5387,8 +5499,10 @@ function openOrgDetailModal(orgId) {
         <strong>${Number(org.rating).toFixed(1)}</strong>
         ${reviewStars(org.rating)}
         <span>${org.reviews} review signals</span>
-        <a class="btn btn-primary" href="company-profile.html?org=${org.id}">${icon("arrow-up-right")} View full profile</a>
-        <button class="btn btn-ghost" type="button" data-write-review>${icon("pen-line")} Write a review</button>
+        ${loggedIn
+          ? `<a class="btn btn-primary" href="company-profile.html?org=${org.id}">${icon("arrow-up-right")} View full profile</a>`
+          : `<a class="btn btn-primary" href="${loginRedirectHref(`company-profile.html?org=${org.id}`)}">${icon("arrow-up-right")} View full profile</a>`}
+        <button class="btn btn-primary" type="button" data-write-review>${icon("pen-line")} Write a review</button>
       </div>
       ${openRoles.length ? `
         <div class="cg-org-detail-roles">
@@ -5401,7 +5515,9 @@ function openOrgDetailModal(orgId) {
           ` : `
             <article>
               <div><h4>${role.title}</h4><p>${org.location} - ${org.salary}</p></div>
-              <a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(`Tell me more about the ${role.title} role at ${org.name}`)}#messages">${icon("sparkles")} Ask Vera</a>
+              ${loggedIn
+                ? `<a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent(`Tell me more about the ${role.title} role at ${org.name}`)}#messages">${icon("sparkles")} Ask Vera</a>`
+                : `<button type="button" class="btn btn-primary" data-auth-prompt="ask Vera about the ${role.title} role at ${org.name}">${icon("sparkles")} Ask Vera</button>`}
             </article>
           `).join("")}
           ${org.open > openRoles.length ? `<p class="cg-org-detail-roles-more">+${org.open - openRoles.length} more roles - ask Vera for the full list.</p>` : ""}
@@ -5435,6 +5551,7 @@ function openOrgDetailModal(orgId) {
   backdrop.addEventListener("click", event => {
     if (event.target === backdrop) backdrop.remove();
   });
+  bindProtectedPrompts(backdrop);
   qs("[data-write-review]", backdrop)?.addEventListener("click", () => {
     openReviewModal(org, () => {
       backdrop.remove();
@@ -5585,7 +5702,10 @@ function similarOrgsFor(org, catalog) {
 function renderCompanyProfile() {
   const root = qs("[data-company-profile]");
   if (!root) return;
-  if (!requireAccount(root, "see full company profiles")) return;
+  if (!readState().session.loggedIn) {
+    location.href = loginRedirectHref(`company-profile.html${location.search}`);
+    return;
+  }
   const { catalog } = buildOrgCatalog();
   const orgId = new URLSearchParams(location.search).get("org");
   const org = catalog.find(item => item.id === orgId);
@@ -5848,6 +5968,115 @@ function renderCompanyProfile() {
   }));
 }
 
+const MISSION_MODAL_STEPS = {
+  Interview: [
+    "Practice the core story or case out loud once",
+    "Write down two follow-up questions you might get"
+  ],
+  Learning: [
+    "Name the specific skill gap you're closing",
+    "Finish one practice exercise or resource on it"
+  ],
+  Application: [
+    "Review the role or company notes for context",
+    "Take the next outreach or application action"
+  ],
+  Networking: [
+    "Find one specific detail about the contact or company",
+    "Send or draft a short, specific note"
+  ]
+};
+
+function openMissionModal(task) {
+  const mission = task.mission;
+  if (!mission) return;
+  const category = task.category || (task.meta || "").split(" - ")[0];
+  const steps = MISSION_MODAL_STEPS[category] || MISSION_MODAL_STEPS.Application;
+  const checked = new Set();
+
+  const current = readState();
+  if (!((current.missionProgress[mission.id] || 0) > 0)) {
+    current.missionProgress = { ...current.missionProgress, [mission.id]: 50 };
+    writeState(current);
+    renderDashboard();
+  }
+
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-mission-modal" role="dialog" aria-label="${task.title}">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">${task.meta}</div>
+          <h2>${task.title}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close>${icon("x")}</button>
+      </div>
+      <p class="cg-mission-modal-body">${icon("sparkles")} ${task.body}</p>
+      <div class="cg-mission-steps">
+        ${steps.map((step, index) => `
+          <p data-mission-step="${index}" role="button" tabindex="0" aria-pressed="false">${icon("circle")} ${step}</p>
+        `).join("")}
+      </div>
+      <label class="cg-mission-notes">
+        <span>Notes for your record (optional)</span>
+        <textarea class="field" rows="3" placeholder="What did you actually do?"></textarea>
+      </label>
+      <div class="hero-actions">
+        <button class="btn btn-primary" type="button" data-mission-confirm disabled>${icon("check")} Mark as done</button>
+        <button class="btn btn-ghost" type="button" data-close>Not yet</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+
+  const confirmBtn = qs("[data-mission-confirm]", backdrop);
+  const syncConfirmState = () => {
+    confirmBtn.disabled = checked.size < steps.length;
+  };
+  qsa("[data-mission-step]", backdrop).forEach(row => {
+    const toggle = () => {
+      const index = Number(row.dataset.missionStep);
+      const isDone = checked.has(index);
+      if (isDone) checked.delete(index); else checked.add(index);
+      row.classList.toggle("done", !isDone);
+      row.setAttribute("aria-pressed", String(!isDone));
+      row.innerHTML = `${icon(!isDone ? "check-circle-2" : "circle")} ${steps[index]}`;
+      createIcons();
+      syncConfirmState();
+    };
+    row.addEventListener("click", toggle);
+    row.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        toggle();
+      }
+    });
+  });
+
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+
+  confirmBtn.addEventListener("click", () => {
+    if (confirmBtn.disabled) return;
+    const next = readState();
+    next.missionProgress = { ...next.missionProgress, [mission.id]: 100 };
+    recordMissionStreak(next);
+    next.notifications = [
+      { id: `n-${mission.id}`, title: "Mission completed", body: "CareerGo updated your mission progress." },
+      ...next.notifications.filter(item => item.id !== `n-${mission.id}`)
+    ].slice(0, 5);
+    writeState(syncCurrentUser(next));
+    backdrop.remove();
+    showToast("Mission marked complete.");
+    renderDashboard();
+  });
+
+  createIcons();
+}
+
 let dashboardTaskFilter = "";
 let activePostsThread = "";
 let activeInboxFilter = "All";
@@ -5932,6 +6161,8 @@ function renderDashboard() {
     .map((task, index) => ({ ...task, originalIndex: index, category: task.meta.split(" - ")[0] }))
     .filter(task => !dashboardTaskFilter || task.category === dashboardTaskFilter)
     .sort((a, b) => taskPriorityRank[a.priority] - taskPriorityRank[b.priority]);
+  const taskLookup = {};
+  const streakCount = state.missionStreak?.count || 0;
   const applicationCards = (trackedJobs.length
     ? trackedJobs.slice(0, 2)
     : topJobs.slice(0, 2).map(job => ({ job, record: createApplicationRecord(job.id, "saved") })));
@@ -6055,7 +6286,7 @@ function renderDashboard() {
             <h2>Explore something today!</h2>
             <p class="cg-h2-sub">Small daily missions that build proof for your target role.</p>
           </div>
-          <span class="cg-streak">${icon("flame")} Streak - 12 days</span>
+          <span class="cg-streak">${icon("flame")} Streak - ${streakCount} day${streakCount === 1 ? "" : "s"}</span>
         </div>
         <div class="cg-task-filters">
           ${taskCategories.map(cat => `<button type="button" class="pill ${dashboardTaskFilter === cat ? "active" : ""}" data-task-filter="${cat}">${cat}</button>`).join("")}
@@ -6063,18 +6294,20 @@ function renderDashboard() {
         <div class="cg-task-grid">
           ${visibleTasks.map(task => {
             const mission = task.mission || visibleBeginnerMissions[task.originalIndex % Math.max(1, visibleBeginnerMissions.length)];
-            const progress = mission ? (state.missionProgress[mission.id] || 0) : 0;
-            const done = progress >= 100;
+            const savedProgress = mission ? (state.missionProgress[mission.id] || 0) : 0;
+            const status = savedProgress >= 100 ? "done" : savedProgress > 0 ? "in-progress" : "not-started";
+            const barValue = status === "done" ? 100 : status === "in-progress" ? savedProgress : task.progress;
+            if (mission) taskLookup[mission.id] = { ...task, mission };
             return `
-              <article class="cg-task-card ${done ? "complete" : ""}" data-mission-card="${mission?.id || ""}">
-                <span class="cg-check"></span>
+              <article class="cg-task-card ${status === "done" ? "complete" : ""} ${status === "in-progress" ? "in-progress" : ""}" data-mission-card="${mission?.id || ""}">
+                <span class="cg-check">${status === "done" ? icon("check") : ""}</span>
                 <div>
-                  <div class="cg-task-meta"><span>${task.meta}</span></div>
+                  <div class="cg-task-meta"><span>${task.meta}</span>${status === "in-progress" ? `<span class="cg-task-status">In progress</span>` : ""}</div>
                   <h3>${task.title}</h3>
                   <p>${icon("sparkles")} ${task.body}</p>
-                  ${progressBar(done ? 100 : task.progress)}
+                  ${progressBar(barValue)}
                 </div>
-                ${mission ? `<button class="btn btn-ghost" type="button" data-complete-mission="${mission.id}">${done ? "Done" : "Start"} ${icon("arrow-up-right")}</button>` : `<a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(task.title || "this task")}#messages">Start ${icon("arrow-up-right")}</a>`}
+                ${mission ? `<button class="btn btn-ghost" type="button" data-complete-mission="${mission.id}" ${status === "done" ? "disabled" : ""}>${status === "done" ? `${icon("check")} Done` : status === "in-progress" ? `Continue ${icon("arrow-up-right")}` : `Start ${icon("arrow-up-right")}`}</button>` : `<a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(task.title || "this task")}#messages">Start ${icon("arrow-up-right")}</a>`}
               </article>
             `;
           }).join("")}
@@ -6137,7 +6370,7 @@ function renderDashboard() {
     </section>
   `);
   createIcons();
-  bindMissionActions();
+  bindMissionActions(taskLookup);
   qsa("[data-task-filter]", root).forEach(btn => btn.addEventListener("click", () => {
     dashboardTaskFilter = dashboardTaskFilter === btn.dataset.taskFilter ? "" : btn.dataset.taskFilter;
     renderDashboard();
@@ -6736,11 +6969,14 @@ function renderLegacyLoginAuth(root, mode) {
 function renderCreateAccountWizard(root) {
   let wizardStep = 0;
   let selectedRole = normalizeAuthRole(getInitialAuthRole());
+  const redirectTarget = sanitizeRedirectPath(new URLSearchParams(location.search).get("redirect"));
+  if (redirectTarget) sessionStorage.setItem("cg-post-auth-redirect", redirectTarget);
+  const loginHref = redirectTarget ? loginRedirectHref(redirectTarget) : "login.html";
 
   function renderStep() {
     persistAuthRole(selectedRole);
     const isEmployer = selectedRole === "employer";
-    const topRight = `<a href="login.html">Log in</a>`;
+    const topRight = `<a href="${loginHref}">Log in</a>`;
     root.innerHTML = wizardStep === 0 ? `
       ${onboardWizardChrome(0, topRight)}
       <section class="cg-onboard-shell cg-onboard-shell-wide">
@@ -6769,7 +7005,7 @@ function renderCreateAccountWizard(root) {
         </div>
         <p class="cg-onboard-vera-line"><img src="assets/vera-ai-coach.png" alt=""> Vera will personalise CareerGo around the path you choose.</p>
         <footer class="cg-onboard-footer">
-          <a href="login.html">Already have an account? Log in</a>
+          <a href="${loginHref}">Already have an account? Log in</a>
           <button class="cg-onboard-btn-primary" type="button" data-wizard-continue>Continue ${icon("arrow-right")}</button>
         </footer>
       </section>
@@ -6804,7 +7040,7 @@ function renderCreateAccountWizard(root) {
         <p class="cg-onboard-terms">By creating an account, you agree to CareerGo's <a href="about.html">Terms</a> and <a href="about.html">Privacy Policy</a>.</p>
         <footer class="cg-onboard-footer">
           <button class="cg-onboard-link" type="button" data-wizard-back>${icon("arrow-left")} Back</button>
-          <a href="login.html">Already have an account? Log in</a>
+          <a href="${loginHref}">Already have an account? Log in</a>
         </footer>
       </section>
     `;
@@ -7036,7 +7272,9 @@ function renderCandidateOnboarding() {
       syncCurrentUser(next);
       writeState(next);
       showToast("Career Intelligence Profile generated.");
-      location.href = "dashboard.html";
+      const redirectTarget = sessionStorage.getItem("cg-post-auth-redirect");
+      sessionStorage.removeItem("cg-post-auth-redirect");
+      location.href = redirectTarget || "dashboard.html";
     }
     qs("[data-go-dashboard]", root)?.addEventListener("click", finishOnboarding);
     qs("[data-finish-later]", root)?.addEventListener("click", finishOnboarding);
@@ -11733,6 +11971,7 @@ function initGlobalBackToTop() {
 function init() {
   ensureBrandFonts();
   ensureDemoDashboardSession();
+  wireStaticLoginForm();
   renderNavigation();
   renderFeatured();
   renderJobSeekerEntry();
