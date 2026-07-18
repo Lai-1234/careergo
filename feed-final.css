@@ -15,8 +15,8 @@ html body[data-page="posts"]:not(#_) .topbar {
   position: sticky !important;
   top: 0 !important;
   z-index: 1000 !important;
-  height: 78px !important;
-  min-height: 78px !important;
+  height: 64px !important;
+  min-height: 64px !important;
   border-bottom: 1px solid rgba(14, 44, 37, 0.1) !important;
   background: rgba(248, 244, 235, 0.9) !important;
   box-shadow: none !important;

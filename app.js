@@ -2826,6 +2826,63 @@ function marketWeeklySeries(startValue, endValue, seed, count = 12) {
   });
 }
 
+let marketTooltipEl = null;
+
+function getMarketTooltip() {
+  if (marketTooltipEl && document.body.contains(marketTooltipEl)) return marketTooltipEl;
+  marketTooltipEl = document.createElement("div");
+  marketTooltipEl.className = "cg-bar-tooltip";
+  marketTooltipEl.setAttribute("role", "tooltip");
+  marketTooltipEl.innerHTML = `<span class="cg-bar-tooltip-text"></span><i class="cg-bar-tooltip-arrow"></i>`;
+  document.body.appendChild(marketTooltipEl);
+  return marketTooltipEl;
+}
+
+function showMarketTooltip(bar) {
+  const label = bar.dataset.tooltip;
+  if (!label) return;
+  const tooltip = getMarketTooltip();
+  qs(".cg-bar-tooltip-text", tooltip).textContent = label;
+  tooltip.classList.add("is-visible");
+  tooltip.classList.remove("is-below");
+
+  const margin = 8;
+  const gap = 10;
+  const barRect = bar.getBoundingClientRect();
+  const tipRect = tooltip.getBoundingClientRect();
+  const barCenterX = barRect.left + barRect.width / 2;
+
+  let left = barCenterX - tipRect.width / 2;
+  left = Math.max(margin, Math.min(left, window.innerWidth - tipRect.width - margin));
+
+  let top = barRect.top - tipRect.height - gap;
+  let below = false;
+  if (top < margin) {
+    top = barRect.bottom + gap;
+    below = true;
+  }
+  tooltip.classList.toggle("is-below", below);
+  tooltip.style.left = `${Math.round(left)}px`;
+  tooltip.style.top = `${Math.round(top)}px`;
+
+  const arrow = qs(".cg-bar-tooltip-arrow", tooltip);
+  const arrowLeft = Math.max(10, Math.min(barCenterX - left, tipRect.width - 10));
+  arrow.style.left = `${Math.round(arrowLeft)}px`;
+}
+
+function hideMarketTooltip() {
+  marketTooltipEl?.classList.remove("is-visible");
+}
+
+function bindMarketTooltips(root) {
+  qsa(".cg-bars i[data-tooltip]", root).forEach(bar => {
+    bar.addEventListener("mouseenter", () => showMarketTooltip(bar));
+    bar.addEventListener("mouseleave", hideMarketTooltip);
+    bar.addEventListener("focus", () => showMarketTooltip(bar));
+    bar.addEventListener("blur", hideMarketTooltip);
+  });
+}
+
 function money(value) {
   return `RM${Number(value).toLocaleString("en-MY")}`;
 }
@@ -3978,7 +4035,7 @@ function renderJobsPage() {
           <p class="cg-h2-sub">Hand-built groups of companies and roles that fit your next step, not generic tags.</p>
           <div class="cg-collection-grid">
             ${collections.map(([count, title, copy, why, size]) => `
-              <article class="cg-collection-card ${size}"><span>${count}</span><i>${icon("arrow-up-right")}</i><h3>${title}</h3><p>${copy}</p><footer><b>${icon("sparkles")} Why this</b> ${why}</footer></article>
+              <article class="cg-collection-card ${size}" data-collection-kind="${/companies/i.test(count) ? "companies" : "roles"}" tabindex="0" aria-label="Open ${title}"><span>${count}</span><i>${icon("arrow-up-right")}</i><h3>${title}</h3><p>${copy}</p><footer><b>${icon("sparkles")} Why this</b> ${why}</footer></article>
             `).join("")}
           </div>
         </section>
@@ -4068,6 +4125,7 @@ function renderJobsPage() {
     `;
     createIcons();
     wireVeraWidget(root);
+    bindMarketTooltips(root);
     qsa("[data-org-browse-open]", root).forEach(button => button.addEventListener("click", () => openOrgBrowserModal(button.dataset.orgBrowseOpen)));
     qsa("[data-org-detail]", root).forEach(card => {
       card.addEventListener("click", () => openOrgDetailModal(card.dataset.orgDetail));
@@ -4109,6 +4167,33 @@ function renderJobsPage() {
       if (kind === "programs") openDiscoverListModal("All recommended programmes", programs.map(discoverProgramCard).join(""));
       if (kind === "mentors") openDiscoverListModal("All mentors", mentors.map(discoverMentorCard).join(""));
     }));
+    qsa("[data-collection-kind]", root).forEach(card => {
+      const openCollection = () => {
+        const collectionTitle = qs("h3", card)?.textContent || "Collection";
+        if (card.dataset.collectionKind === "companies") {
+          openOrgBrowserModal("companies");
+          return;
+        }
+        openDiscoverListModal(collectionTitle, DATA.jobs.map(discoverRoleCard).join(""), backdrop => {
+          qsa("[data-org-browse-role]", backdrop).forEach(item => {
+            item.addEventListener("click", () => openApplicationDetailsModal(item.dataset.orgBrowseRole));
+            item.addEventListener("keydown", event => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openApplicationDetailsModal(item.dataset.orgBrowseRole);
+              }
+            });
+          });
+        });
+      };
+      card.addEventListener("click", openCollection);
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openCollection();
+        }
+      });
+    });
     qsa("[data-uni-requirements]", root).forEach(button => button.addEventListener("click", event => {
       event.stopPropagation();
       openUniversityRequirementsModal(button.dataset.uniRequirements);
@@ -4920,7 +5005,24 @@ function discoverMentorCard([name, years, path, why, overlap]) {
   `;
 }
 
-function openDiscoverListModal(title, cardsHtml) {
+function discoverRoleCard(job) {
+  return `
+    <article class="cg-org-browse-card" data-org-browse-role="${job.id}" tabindex="0" aria-label="Open ${job.title} details">
+      <span class="cg-org-browse-logo">${job.company.charAt(0)}</span>
+      <div class="cg-org-browse-body">
+        <h3>${job.title}</h3>
+        <p>${job.company} &middot; ${job.location} &middot; ${job.salary}</p>
+        <div class="cg-org-browse-tags"><span>${job.match}% match</span><span>${job.type}</span></div>
+        <p class="cg-org-browse-signal">${icon("sparkles")} ${(job.why && job.why[0]) || "Matches your profile."}</p>
+      </div>
+      <div class="cg-org-browse-actions">
+        <b>${job.posted}</b>
+      </div>
+    </article>
+  `;
+}
+
+function openDiscoverListModal(title, cardsHtml, onRender) {
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop";
   backdrop.innerHTML = `
@@ -4948,6 +5050,7 @@ function openDiscoverListModal(title, cardsHtml) {
     if (event.target === backdrop) close();
   });
   document.addEventListener("keydown", onEsc);
+  if (typeof onRender === "function") onRender(backdrop);
   createIcons();
 }
 
@@ -5397,42 +5500,97 @@ function reviewStars(rating) {
   return `<span class="cg-review-stars" aria-label="${(Number(rating) || 0).toFixed(1)} out of 5">${[1, 2, 3, 4, 5].map(step => `<b class="${step <= rounded ? "filled" : ""}">${icon("star")}</b>`).join("")}</span>`;
 }
 
-function historyTrendSvg(scores, width = 600) {
+function historyTrendSummary(attempts) {
+  const first = attempts[0], last = attempts[attempts.length - 1];
+  const verb = last.score > first.score ? "improved" : last.score < first.score ? "declined" : "held steady";
+  return `Mock interview scores ${verb} from ${first.score}% to ${last.score}% over ${attempts.length} attempt${attempts.length === 1 ? "" : "s"}.`;
+}
+
+function historyTrendSvg(attempts, width = 600) {
   const height = 190, padX = 60, topY = 30, bottomY = 140;
-  const min = Math.min(...scores), max = Math.max(...scores), range = (max - min) || 1;
-  const points = scores.map((score, index) => ({
-    x: scores.length === 1 ? width / 2 : padX + (index * (width - padX * 2)) / (scores.length - 1),
-    y: bottomY - ((score - min) / range) * (bottomY - topY),
-    score
+  const points = attempts.map((attempt, index) => ({
+    ...attempt,
+    x: attempts.length === 1 ? width / 2 : padX + (index * (width - padX * 2)) / (attempts.length - 1),
+    y: bottomY - (attempt.score / 100) * (bottomY - topY)
   }));
   const linePoints = points.map(p => `${p.x},${p.y}`).join(" ");
-  return `<svg class="cg-history-trend" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mock interview score trend: ${scores.join(", ")}">
+  const gridlines = [0, 25, 50, 75, 100].map(mark => {
+    const y = bottomY - (mark / 100) * (bottomY - topY);
+    return `<line x1="${padX}" y1="${y}" x2="${width - 20}" y2="${y}" stroke="#1b2e28" stroke-opacity="${mark === 0 ? 0.16 : 0.08}" stroke-width="1" ${mark === 0 ? "" : 'stroke-dasharray="4 4"'}/>
+      <text x="${padX - 10}" y="${y + 4}" text-anchor="end" class="cg-history-axis-label">${mark}%</text>`;
+  }).join("");
+  return `<svg class="cg-history-trend" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">
+    <g aria-hidden="true">${gridlines}</g>
     <polyline points="${linePoints}"></polyline>
-    ${points.map((p, index) => `
+    ${points.map((p, index) => {
+      const parts = [`Attempt ${index + 1}`, p.dateLabel, `${p.score}%`].filter(Boolean).join(" - ");
+      const tooltip = p.feedback ? `${parts} - “${p.feedback}”` : parts;
+      return `
       <g>
-        <circle cx="${p.x}" cy="${p.y}" r="7"></circle>
-        <text x="${p.x}" y="${p.y - 20}" text-anchor="middle" class="cg-history-value">${p.score}%</text>
-        <text x="${p.x}" y="${height - 15}" text-anchor="middle" class="cg-history-label">Attempt ${index + 1}</text>
+        <circle cx="${p.x}" cy="${p.y}" r="7" tabindex="0" role="img" aria-label="${tooltip}" data-tooltip="${tooltip}"></circle>
+        <text x="${p.x}" y="${Math.max(22, p.y - 20)}" text-anchor="${index === 0 ? "start" : index === points.length - 1 ? "end" : "middle"}" class="cg-history-value" aria-hidden="true">${p.score}%</text>
+        <text x="${p.x}" y="${height - 15}" text-anchor="middle" class="cg-history-label" aria-hidden="true">Attempt ${index + 1}</text>
       </g>
-    `).join("")}
+    `;
+    }).join("")}
   </svg>`;
+}
+
+function bindHistoryTooltips(root) {
+  qsa(".cg-history-trend circle[data-tooltip]", root).forEach(point => {
+    point.addEventListener("mouseenter", () => showMarketTooltip(point));
+    point.addEventListener("mouseleave", hideMarketTooltip);
+    point.addEventListener("focus", () => showMarketTooltip(point));
+    point.addEventListener("blur", hideMarketTooltip);
+  });
+}
+
+function worthTimelineGrowthPct(points) {
+  const first = points[0].value;
+  const last = points[points.length - 1].value;
+  return Math.round(((last - first) / first) * 100);
+}
+
+function worthTimelineSummary(points) {
+  const first = points[0];
+  const last = points[points.length - 1];
+  const growthPct = worthTimelineGrowthPct(points);
+  const milestones = points.slice(1).map(p => `${p.display} at ${p.label} (${p.body})`).join(", ");
+  return `Projected Career Value grows from ${first.display} (${first.label}) to ${last.display} (${last.label}), a ${growthPct}% increase across milestones: ${milestones}.`;
+}
+
+function worthTimelineCaption(points) {
+  const first = points[0];
+  const last = points[points.length - 1];
+  const growthPct = worthTimelineGrowthPct(points);
+  return `<strong>${first.display} to ${last.display} (+${growthPct}%)</strong> projected. Checkpoints shown are roadmap milestones, not evenly spaced in time.`;
 }
 
 function worthTimelineSvg(points, width = 1200, height = 360) {
   const padX = 16;
   const topPad = 46;
   const bottomPad = 24;
+  const plotTop = topPad;
+  const plotBottom = height - bottomPad;
   const values = points.map(p => p.value);
   const min = Math.min(...values), max = Math.max(...values), range = (max - min) || 1;
   const scaled = points.map(p => ({
     ...p,
     x: padX + (p.xPct / 100) * (width - padX * 2),
-    y: height - bottomPad - ((p.value - min) / range) * (height - topPad - bottomPad)
+    y: plotBottom - ((p.value - min) / range) * (plotBottom - plotTop)
   }));
+  const firstX = scaled[0].x;
+  const lastX = scaled[scaled.length - 1].x;
   const linePoints = scaled.map(p => `${p.x},${p.y}`).join(" ");
-  const areaPath = `M${scaled.map(p => `${p.x} ${p.y}`).join(" L")} L${width} ${height} L0 ${height} Z`;
-  return `<svg class="cg-worth-chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Career value projection: ${points.map(p => `${p.label} ${p.display}`).join(", ")}">
+  const areaPath = `M${scaled.map(p => `${p.x} ${p.y}`).join(" L")} L${lastX} ${plotBottom} L${firstX} ${plotBottom} Z`;
+  const gridlines = [0.2, 0.4, 0.6, 0.8].map(frac => {
+    const y = plotBottom - frac * (plotBottom - plotTop);
+    return `<line x1="${firstX}" y1="${y}" x2="${lastX}" y2="${y}" stroke="#1b2e28" stroke-opacity="0.08" stroke-width="1" stroke-dasharray="4 4"/>`;
+  }).join("");
+  const baseline = `<line x1="${firstX}" y1="${plotBottom}" x2="${lastX}" y2="${plotBottom}" stroke="#1b2e28" stroke-opacity="0.14" stroke-width="1"/>`;
+  return `<svg class="cg-worth-chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${worthTimelineSummary(points)}">
     <defs><linearGradient id="worthFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0b6d65" stop-opacity=".28"/><stop offset="100%" stop-color="#0b6d65" stop-opacity="0"/></linearGradient></defs>
+    <g aria-hidden="true">${gridlines}${baseline}</g>
     <path d="${areaPath}" fill="url(#worthFill)"/>
     <polyline points="${linePoints}" fill="none" stroke="#0b5d58" stroke-width="5"/>
     ${scaled.map((p, i) => `
@@ -7532,6 +7690,12 @@ function renderGrow() {
     ["Behavioral", "20 min", "3 STAR stories - conflict & prioritization", "Communication", "+2% readiness"],
     ["SQL drill", "30 min", "Joins, window functions, cohort query", "SQL fluency", "+7% readiness"]
   ];
+  const mockInterviewFeedback = "Strong framing. Tighten prioritization + numbers.";
+  const mockInterviewAttempts = [
+    { score: 58, dateLabel: "3 weeks ago" },
+    { score: 67, dateLabel: "2 weeks ago" },
+    { score: 76, dateLabel: "This week", feedback: mockInterviewFeedback }
+  ];
   const readinessRows = [
     ["Communication", 82, "teal"],
     ["Product thinking", 75, "teal"],
@@ -7671,8 +7835,9 @@ function renderGrow() {
         <div class="cg-interview-history-grid">
           <article class="cg-mock-history">
             <h3>${icon("history")} Mock interview history</h3>
-            ${historyTrendSvg([58, 67, 76])}
-            <p><span>Latest feedback</span>"Strong framing. Tighten prioritization + numbers."</p>
+            ${historyTrendSvg(mockInterviewAttempts)}
+            <span class="sr-only">${historyTrendSummary(mockInterviewAttempts)}</span>
+            <p><span>Latest feedback</span>"${mockInterviewFeedback}"</p>
           </article>
           <article class="cg-company-coaching">
             <header>
@@ -7762,10 +7927,11 @@ function renderGrow() {
   if (historySvg) {
     const measuredWidth = Math.round(historySvg.getBoundingClientRect().width);
     if (measuredWidth > 0 && Math.abs(measuredWidth - 600) > 4) {
-      historySvg.outerHTML = historyTrendSvg([58, 67, 76], measuredWidth);
+      historySvg.outerHTML = historyTrendSvg(mockInterviewAttempts, measuredWidth);
       createIcons();
     }
   }
+  bindHistoryTooltips(root);
   return;
   root.innerHTML = appShell("intelligence", `
     <section class="glass-card dashboard-hero profile-intel-hero">
@@ -9664,7 +9830,7 @@ function renderMarket() {
       ["Fair pay confidence", "High", "234 verified data points", ""]
     ];
     const worthTimelinePoints = [
-      { xPct: 0, value: 8900, display: "8.9k", label: "Today", body: "where you are" },
+      { xPct: 0, value: 8900, display: "RM 8.9k", label: "Today", body: "where you are" },
       { xPct: 24, value: 9700, display: "RM 9.7k", label: "Week 3", body: "Complete SQL sprint" },
       { xPct: 47, value: 10300, display: "RM 10.3k", label: "Week 6", body: "Publish portfolio case" },
       { xPct: 70, value: 11200, display: "RM 11.2k", label: "Month 3", body: "First PM interview cycle" },
@@ -9794,6 +9960,8 @@ function renderMarket() {
             ${worthTimelineSvg(worthTimelinePoints)}
             ${worthTimelinePoints.map(p => `<div class="cg-worth-point" style="left:${p.xPct}%"><span>${p.label}</span><small>${p.body}</small></div>`).join("")}
           </div>
+          <p class="cg-worth-chart-caption">${worthTimelineCaption(worthTimelinePoints)}</p>
+          <p class="sr-only">${worthTimelineSummary(worthTimelinePoints)}</p>
         </section>
 
         <section class="cg-worth-section">
