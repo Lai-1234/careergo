@@ -12833,8 +12833,6 @@ function renderEmployerTalentPipeline(root, params = {}) {
   let filtersOpen = false;
   let stageFilterX = "all", sourceFilterX = "all", ownerFilterX = "all", minFit = 0;
   let specialFilter = null;
-  let sortOpen = false;
-  let sortBy = "fit";
   let viewMode = "board";
   let openDrawerId = params.id || null;
   let drawerTab = "overview";
@@ -12861,9 +12859,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
       if (specialFilter === "needs-action" && !candidateNeedsAction(c)) return false;
       return true;
     });
-    if (sortBy === "fit") list.sort((a, b) => b.fit - a.fit);
-    else if (sortBy === "name") list.sort((a, b) => a.name.localeCompare(b.name));
-    else if (sortBy === "stage") list.sort((a, b) => EMPLOYER_TALENT_PIPELINE_STAGES.indexOf(a.stage) - EMPLOYER_TALENT_PIPELINE_STAGES.indexOf(b.stage));
+    list.sort((a, b) => b.fit - a.fit);
     return list;
   }
 
@@ -13227,9 +13223,41 @@ function renderEmployerTalentPipeline(root, params = {}) {
             ${openRoles.map(r => `<option value="${r.id}" ${roleFilter === r.id ? "selected" : ""}>${r.title}</option>`).join("")}
           </select>
           <input type="text" data-pipeline-search placeholder="Search..." value="${query}">
-          <button type="button" class="btn btn-ghost btn-sm" data-pipeline-filters-toggle>${icon("filter")} Filter</button>
-          <button type="button" class="btn btn-ghost btn-sm" data-pipeline-sort-toggle>${icon("arrow-up-down")} Sort</button>
           <button type="button" class="btn btn-ghost btn-sm emp-vera-accent-btn" data-pipeline-vera-open>${icon("sparkles")} Vera</button>
+        </div>
+      </div>
+
+      <div class="emp-status-bar">
+        <button type="button" class="emp-status-item ${specialFilter === null ? "active" : ""}" data-snapshot-metric="all">${icon("users")}<strong>${activeCount}</strong><span>Candidates</span></button>
+        <button type="button" class="emp-status-item" data-snapshot-metric="interviews">${icon("calendar")}<strong>${interviewsThisWeek}</strong><span>Interviews Today</span></button>
+        <button type="button" class="emp-status-item ${specialFilter === "feedback" ? "active" : ""}" data-snapshot-metric="feedback">${icon("message-square")}<strong>${feedbackWaitingCount}</strong><span>Feedback Pending</span></button>
+        <button type="button" class="emp-status-item ${specialFilter === "offers" ? "active" : ""}" data-snapshot-metric="offers">${icon("badge-check")}<strong>${offersOutstandingCount}</strong><span>Offers Waiting</span></button>
+        ${specialFilter ? `<button type="button" class="emp-status-item-clear" data-attention-clear>${icon("x")} Clear filter</button>` : ""}
+      </div>
+
+      ${actionItems.length ? `
+        <div class="emp-today-priority">
+          <div class="emp-today-priority-head">
+            <span>Today's Priority</span>
+            ${actionItems.length > 3 ? `<button type="button" data-action-center-view-all>View All ${icon("arrow-right")}</button>` : ""}
+          </div>
+          <ul class="emp-today-priority-list">
+            ${actionItems.slice(0, 3).map(item => `<li><button type="button" data-action-item="${item.candidate.id}">${escapeHtml(item.text)}</button></li>`).join("")}
+          </ul>
+        </div>
+      ` : ""}
+
+      <div class="emp-pipeline-section-head">
+        <div>
+          <h2>Candidate Pipeline</h2>
+          <p>See every active candidate, understand what needs to happen next, and move hiring forward.</p>
+        </div>
+        <div class="emp-pipeline-toolbar">
+          <div class="emp-pipeline-view-toggle">
+            <button type="button" class="${viewMode === "board" ? "active" : ""}" data-pipeline-view="board">Board</button>
+            <button type="button" class="${viewMode === "list" ? "active" : ""}" data-pipeline-view="list">List</button>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" data-pipeline-filters-toggle>${icon("filter")} Filter</button>
         </div>
       </div>
 
@@ -13256,66 +13284,6 @@ function renderEmployerTalentPipeline(root, params = {}) {
           <button type="button" class="btn btn-ghost btn-sm" data-pipeline-clear-filters>Clear filters</button>
         </div>
       ` : ""}
-
-      ${sortOpen ? `
-        <div class="card emp-pipeline-filters">
-          <label>Sort by<select data-pipeline-sort>
-            ${[["fit", "Role fit (high to low)"], ["name", "Candidate name (A–Z)"], ["stage", "Stage"]].map(([v, l]) => `<option value="${v}" ${sortBy === v ? "selected" : ""}>${l}</option>`).join("")}
-          </select></label>
-        </div>
-      ` : ""}
-
-      <div class="emp-status-bar">
-        <button type="button" class="emp-status-item ${specialFilter === null ? "active" : ""}" data-snapshot-metric="all">${icon("users")}<strong>${activeCount}</strong><span>Candidates</span></button>
-        <button type="button" class="emp-status-item" data-snapshot-metric="interviews">${icon("calendar")}<strong>${interviewsThisWeek}</strong><span>Interviews Today</span></button>
-        <button type="button" class="emp-status-item ${specialFilter === "feedback" ? "active" : ""}" data-snapshot-metric="feedback">${icon("message-square")}<strong>${feedbackWaitingCount}</strong><span>Feedback Pending</span></button>
-        <button type="button" class="emp-status-item ${specialFilter === "offers" ? "active" : ""}" data-snapshot-metric="offers">${icon("badge-check")}<strong>${offersOutstandingCount}</strong><span>Offers Waiting</span></button>
-        ${specialFilter ? `<button type="button" class="emp-status-item-clear" data-attention-clear>${icon("x")} Clear filter</button>` : ""}
-      </div>
-
-      ${actionItems.length ? `
-        <div class="card emp-action-center">
-          <div class="emp-action-center-head">
-            <h3>${icon("list-checks")} Today's Actions (${actionItems.length})</h3>
-            ${actionItems.length > 5 ? `<button type="button" data-action-center-view-all>View All ${icon("arrow-right")}</button>` : ""}
-          </div>
-          <ul class="emp-action-center-list">
-            ${actionItems.slice(0, 5).map(item => `<li><button type="button" data-action-item="${item.candidate.id}">${escapeHtml(item.text)}</button></li>`).join("")}
-          </ul>
-        </div>
-      ` : ""}
-
-      <div class="card emp-vera-priority-panel">
-        <div class="emp-callout-label emp-vera-accent">${icon("sparkles")} Vera Hiring Assistant</div>
-        <p class="emp-field-help">AI recommendations based on your hiring pipeline.</p>
-        ${priorityCandidate ? `
-          <p class="emp-vera-priority-greeting">Good morning, ${getFirstName()}. ${actionItems.length} item${actionItems.length === 1 ? "" : "s"} need${actionItems.length === 1 ? "s" : ""} your attention.</p>
-          <div class="emp-vera-priority-card">
-            <div class="emp-vera-priority-card-head"><strong>${priorityCandidate.name}</strong><span class="pill green">${priorityCandidate.fit}% Match</span></div>
-            <p class="emp-cand-evidence">${icon("check")} ${priorityCandidate.strength}</p>
-            <p class="emp-vera-priority-next">${nextActionText(priorityCandidate)}</p>
-            <button type="button" class="btn btn-primary btn-sm" data-action-item="${priorityCandidate.id}">Review Candidate</button>
-          </div>
-        ` : `
-          <p class="emp-vera-priority-greeting">Good morning, ${getFirstName()}. No urgent tasks right now — here are today's hiring insights.</p>
-          <div class="emp-vera-priority-card">
-            <p>${offerAcceptanceRate === null ? "No decided offers yet this cycle." : `Offer acceptance is running at <strong>${offerAcceptanceRate}%</strong>.`} ${stalledCount ? `${stalledCount} candidate${stalledCount === 1 ? "" : "s"} stalled in interview.` : "No candidates are stalled in interview."}</p>
-          </div>
-        `}
-      </div>
-
-      <p class="emp-pipeline-health">${offerAcceptanceRate === null ? "No decided offers yet" : `Offer acceptance: <strong>${offerAcceptanceRate}%</strong>`} · Stalled in interview: <strong>${stalledCount}</strong></p>
-
-      <div class="emp-pipeline-section-head">
-        <div>
-          <h2>Candidate Pipeline</h2>
-          <p>See every active candidate, understand what needs to happen next, and move hiring forward.</p>
-        </div>
-        <div class="emp-pipeline-view-toggle">
-          <button type="button" class="${viewMode === "board" ? "active" : ""}" data-pipeline-view="board">Board</button>
-          <button type="button" class="${viewMode === "list" ? "active" : ""}" data-pipeline-view="list">List</button>
-        </div>
-      </div>
 
       ${viewMode === "board" ? renderBoard(list) : renderListView(list)}
 
@@ -13350,8 +13318,6 @@ function renderEmployerTalentPipeline(root, params = {}) {
       draw();
     }));
     qsa("[data-pipeline-view]", root).forEach(btn => btn.addEventListener("click", () => { viewMode = btn.dataset.pipelineView; draw(); }));
-    qs("[data-pipeline-sort-toggle]", root)?.addEventListener("click", () => { sortOpen = !sortOpen; draw(); });
-    qs("[data-pipeline-sort]", root)?.addEventListener("change", e => { sortBy = e.target.value; draw(); });
     qs("[data-pipeline-vera-open]", root)?.addEventListener("click", () => openRolesVeraModal("What needs my attention in this pipeline today?"));
     qsa("[data-action-item]", root).forEach(el => el.addEventListener("click", () => {
       openDrawerId = el.dataset.actionItem;
