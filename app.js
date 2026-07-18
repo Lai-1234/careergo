@@ -13637,6 +13637,19 @@ function renderEmployerTalentPipeline(root, params = {}) {
   }
 
   function draw() {
+    // This page replaces root's entire subtree below, which destroys whatever
+    // DOM node currently has focus (e.g. a card expanded via keyboard) and
+    // drops focus back to <body> - breaking keyboard navigation on every
+    // redraw. Capture a stable selector for the focused element before the
+    // replace and restore focus to its equivalent after re-render.
+    const focusedEl = document.activeElement;
+    let focusRestoreSelector = null;
+    if (focusedEl && root.contains(focusedEl)) {
+      for (const attr of ["data-candidate-menu", "data-candidate-primary", "data-drag-candidate", "data-vera-why"]) {
+        if (focusedEl.hasAttribute(attr)) { focusRestoreSelector = `[${attr}="${CSS.escape(focusedEl.getAttribute(attr))}"]`; break; }
+      }
+    }
+
     const list = filtered();
     const openRoles = DATA.employerRoles.filter(r => ["Open", "Paused"].includes(r.status));
 
@@ -13711,6 +13724,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
     `;
     createIcons();
     bind();
+    if (focusRestoreSelector) qs(focusRestoreSelector, root)?.focus();
   }
 
   function bind() {
