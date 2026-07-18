@@ -13598,6 +13598,26 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-feed-context-card { display: none; }
 }
 
+/* ---------- Talent Pipeline redesign — Phase 6 (responsive) ----------
+   Desktop (default): horizontal-scroll Kanban, one column per stage.
+   Tablet (<=1180px): same columns, wrapped into a 2-up grid instead of scrolling.
+   Mobile (<=640px): single stacked column per stage - functions as a list,
+   so the Board/List toggle (whose List view is a wide data table) is hidden. */
+@media (max-width: 1180px) {
+  .emp-pipeline-board { flex-wrap: wrap; overflow-x: visible; padding-bottom: 0; }
+  .emp-pipeline-col { flex: 1 1 calc(50% - 6px); width: calc(50% - 6px); }
+}
+@media (max-width: 640px) {
+  .emp-pipeline-header-actions { width: 100%; }
+  .emp-pipeline-header-actions select,
+  .emp-pipeline-header-actions input[type="text"] { flex: 1 1 auto; min-width: 0; width: auto; }
+  .emp-status-bar { overflow-x: auto; }
+  .emp-pipeline-view-toggle { display: none; }
+  .emp-pipeline-board { flex-direction: column; }
+  .emp-pipeline-col { width: 100%; flex: 1 1 auto; }
+  .emp-cand-quick-actions { display: none; }
+}
+
 /* ============================================================
    Roles page redesign + shared modal system (Employer OS)
    Reuses --emp-* tokens defined above; scoped under .emp-app-shell.
