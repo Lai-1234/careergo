@@ -11149,6 +11149,33 @@ function openDraftRequirementsReview(draft) {
   `, { label: "Vera's requirement review" });
 }
 
+function openMarketRateModal(draft) {
+  const benchmark = computeSalaryBenchmark(draft);
+  openEmpModal("market-rate-review", `
+    <h2>${icon("sparkles")} Vera's market rate check</h2>
+    ${!benchmark ? `
+      <p>Market benchmark data is only available for MYR right now. Switch the currency to MYR to see how this role's salary range compares.</p>
+    ` : benchmark.verdict === "none" ? `
+      <p>Add a salary range to see how it compares to the typical range for ${escapeHtml(draft.seniority)} (RM ${benchmark.benchmarkMin.toLocaleString()} - RM ${benchmark.benchmarkMax.toLocaleString()} / month).</p>
+    ` : `
+      <div class="emp-intel-section">
+        <h3 class="emp-intel-heading">Typical range for ${escapeHtml(draft.seniority)}</h3>
+        <div class="emp-stat-row"><span>Market range</span><strong>RM ${benchmark.benchmarkMin.toLocaleString()} - RM ${benchmark.benchmarkMax.toLocaleString()} / month</strong></div>
+        <div class="emp-stat-row"><span>This role's midpoint</span><strong>RM ${benchmark.offeredMid.toLocaleString()} / month</strong></div>
+      </div>
+      <div class="emp-callout ${benchmark.verdict === "below" ? "emp-callout-warn" : ""}">
+        <p>${icon(benchmark.verdict === "below" ? "alert-triangle" : "check")} ${
+          benchmark.verdict === "below" ? `Below the typical range - consider raising the range to stay competitive for ${escapeHtml(draft.seniority)} candidates.`
+          : benchmark.verdict === "above" ? `Above the typical range - you may attract more applicants, or this may signal a very senior hire.`
+          : `Within the typical range for ${escapeHtml(draft.seniority)}.`
+        }</p>
+      </div>
+    `}
+    <p class="emp-vera-principle">${icon("shield-check")} Based on mock market data for this prototype. You decide the final range.</p>
+    <div class="emp-compose-actions"><button type="button" class="btn btn-primary" data-emp-modal-close>Got it</button></div>
+  `, { label: "Vera's market rate check" });
+}
+
 function renderRequiredDocumentsControl(draft) {
   const docs = [["resume", "Resume"], ["coverLetter", "Cover letter"], ["portfolio", "Portfolio"]];
   return `
@@ -12123,11 +12150,19 @@ function renderEmployerRoleBuilder(root, roleId) {
     });
   }
 
+  // One consistent Vera entry point per step: same component, same visual
+  // treatment (outlined pill, sparkle icon), positioned directly under the
+  // step's heading/subtitle - only the label and trigger attribute vary.
+  function renderAskVeraButton(label, triggerAttr, extra = "") {
+    return `<button type="button" class="btn btn-ghost btn-sm emp-vera-accent-btn" ${triggerAttr} ${extra}>${icon("sparkles")} ${escapeHtml(label)}</button>`;
+  }
+
   function renderWizardStepContent(step) {
     switch (step) {
       case 0:
         return `
           <div class="emp-form-section-head"><h2>${icon("briefcase")} Role Basics</h2><p>Start with the essentials candidates and your team need to understand this role.</p></div>
+          ${renderAskVeraButton("Draft this role with Vera", "data-emp-create-vera")}
           <div class="emp-form-grid-2">
             <label>Role title<input type="text" data-field-title value="${escapeHtml(draft.title)}" placeholder="e.g. Backend Engineer"></label>
             <label>Department<input type="text" data-field-department value="${escapeHtml(draft.department)}" placeholder="e.g. Engineering"></label>
@@ -12154,7 +12189,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       case 1:
         return `
           <div class="emp-form-section-head"><h2>${icon("list-checks")} Role Details</h2><p>Explain why this role exists, what they'll own, and how success is measured.</p></div>
-          <button type="button" class="btn btn-ghost btn-sm emp-vera-accent-btn" data-generate-role-details ${draft.title.trim() ? "" : "disabled"} ${draft.title.trim() ? "" : `title="Add a role title first"`}>${icon("sparkles")} Generate with Vera</button>
+          ${renderAskVeraButton("Generate with Vera", "data-generate-role-details", draft.title.trim() ? "" : `disabled title="Add a role title first"`)}
           <label>Why this role exists <span class="emp-optional-tag">Optional</span><textarea data-field-rolePurpose rows="2" placeholder="What gap or need this role fills">${escapeHtml(draft.rolePurpose)}</textarea></label>
           <label>Role summary<textarea data-field-roleSummary rows="3" placeholder="Describe the role in 2-4 sentences. Focus on the purpose of the position.">${escapeHtml(draft.roleSummary)}</textarea></label>
           <div>
@@ -12173,6 +12208,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       case 2:
         return `
           <div class="emp-form-section-head"><h2>${icon("users")} Candidate Profile</h2><p>Separate what's essential from what's preferred or trainable.</p></div>
+          ${renderAskVeraButton("Ask Vera to review requirements", "data-review-requirements")}
           ${renderRequirementWarnings(draft)}
           <div><span class="emp-tags-label">Must-have — failure to meet may affect eligibility</span>${renderTagInput("mustHaveSkills", draft.mustHaveSkills)}</div>
           <div><span class="emp-tags-label">Preferred — improves fit, won't automatically reject candidates</span>${renderTagInput("niceToHaveSkills", draft.niceToHaveSkills)}</div>
@@ -12190,11 +12226,11 @@ function renderEmployerRoleBuilder(root, roleId) {
             <label>Availability requirement <span class="emp-optional-tag">Optional</span><input type="text" data-field-availabilityRequirement value="${escapeHtml(draft.availabilityRequirement)}" placeholder="e.g. Immediate, 1 month notice"></label>
             <label>Work authorization <span class="emp-optional-tag">Optional</span><input type="text" data-field-workAuthorization value="${escapeHtml(draft.workAuthorization)}" placeholder="e.g. Must be authorized to work in Malaysia"></label>
           </div>
-          <button type="button" class="btn btn-ghost btn-sm" data-review-requirements>${icon("sparkles")} Ask Vera to review requirements</button>
         `;
       case 3:
         return `
           <div class="emp-form-section-head"><h2>${icon("wallet")} Offer</h2><p>Set compensation, benefits, and schedule detail.</p></div>
+          ${renderAskVeraButton("Ask Vera about market rate", "data-ask-vera-market-rate")}
 
           <h3 class="emp-form-subhead">Compensation</h3>
           <div class="emp-salary-row">
@@ -12368,6 +12404,8 @@ function renderEmployerRoleBuilder(root, roleId) {
     return `
       <div class="emp-publish-layout">
         <div class="emp-publish-left">
+          <div class="emp-form-section-head"><h2>${icon("eye")} Preview & Publish</h2><p>Review everything before publishing this role.</p></div>
+          ${renderAskVeraButton("Ask Vera about this role", "data-ask-vera-publish-tab")}
           <div class="card">
             ${renderHiringAndPublishExtras(draft)}
           </div>
@@ -12493,6 +12531,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       if (publishActiveTab === "preview") { draft.previewReviewed = true; persistDraft(); }
       draw();
     }));
+    qs("[data-ask-vera-publish-tab]", root)?.addEventListener("click", () => { publishActiveTab = "vera"; draw(); });
 
     bindHiringStagesEditor();
     bindRequiredDocumentsControl();
@@ -12661,6 +12700,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       bindField("[data-field-workAuthorization]", "workAuthorization");
       qs("[data-review-requirements]", root)?.addEventListener("click", () => openDraftRequirementsReview(draft));
     } else if (activeStep === 3) {
+      qs("[data-ask-vera-market-rate]", root)?.addEventListener("click", () => openMarketRateModal(draft));
       bindSalaryField("min");
       bindSalaryField("max");
       bindSalarySelect("period");

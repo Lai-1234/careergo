@@ -13043,7 +13043,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; font-size: 13px; font-family: inherit;
 }
 .emp-pipeline-header-actions input[type="text"] { width: 180px; }
-.emp-vera-accent-btn { border-color: var(--emp-ai, var(--line)) !important; color: var(--emp-ai, inherit) !important; }
+.emp-vera-accent-btn { border-color: var(--emp-ai, var(--line)) !important; color: var(--emp-ai, inherit) !important; justify-self: start; width: fit-content; }
 
 
 .emp-vera-accent { color: var(--emp-ai, var(--soft)) !important; }
