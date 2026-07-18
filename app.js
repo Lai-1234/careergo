@@ -11295,6 +11295,62 @@ function scanJobPostingLanguage(draft) {
   return { biasHits: scanBiasLanguage(combinedText), reading: computeReadingLevel(combinedText), hasText: combinedText.trim().length > 0 };
 }
 
+function renderSalaryBenchmarkCard(draft) {
+  const benchmark = computeSalaryBenchmark(draft);
+  const label = `<div class="emp-callout-label emp-vera-accent">${icon("sparkles")} Vera's market check</div>`;
+  if (!benchmark) {
+    return `<div class="emp-callout emp-vera-benchmark">${label}<p class="emp-empty-hint">Market benchmark data is only available for MYR right now.</p></div>`;
+  }
+  const { benchmarkMin, benchmarkMax, offeredMid, verdict } = benchmark;
+  const verdictText = {
+    none: `Add a salary range to see how it compares to the typical range for ${draft.seniority}.`,
+    below: `Below the typical range for ${draft.seniority} — consider raising the range to stay competitive.`,
+    within: `Within the typical range for ${draft.seniority}.`,
+    above: `Above the typical range for ${draft.seniority} — you may attract more applicants, or this may signal a very senior hire.`
+  }[verdict];
+  if (verdict === "none") {
+    return `<div class="emp-callout emp-vera-benchmark">${label}<p>${verdictText}</p></div>`;
+  }
+  const visualMin = benchmarkMin * 0.6;
+  const visualMax = benchmarkMax * 1.4;
+  const pct = v => Math.min(100, Math.max(0, Math.round(((v - visualMin) / (visualMax - visualMin)) * 100)));
+  const markerPct = Math.min(98, Math.max(2, pct(offeredMid)));
+  const bandStartPct = pct(benchmarkMin);
+  const bandEndPct = pct(benchmarkMax);
+  return `
+    <div class="emp-callout emp-vera-benchmark">
+      ${label}
+      <div class="emp-benchmark-bar">
+        <div class="emp-benchmark-track">
+          <span class="emp-benchmark-band" style="left:${bandStartPct}%; width:${bandEndPct - bandStartPct}%"></span>
+          <span class="emp-benchmark-marker emp-benchmark-marker-${verdict}" style="left:${markerPct}%"></span>
+        </div>
+        <div class="emp-benchmark-labels"><span>RM ${benchmarkMin.toLocaleString()}</span><span>Typical range for ${draft.seniority}</span><span>RM ${benchmarkMax.toLocaleString()}</span></div>
+      </div>
+      <p>${verdictText}</p>
+    </div>
+  `;
+}
+
+function renderLanguageCheckSection(draft) {
+  const lang = scanJobPostingLanguage(draft);
+  if (!lang.hasText) {
+    return `
+      <div class="emp-intel-section">
+        <h3 class="emp-intel-heading">Language check</h3>
+        <p class="emp-empty-hint">Add a role summary or responsibilities to run a language check.</p>
+      </div>
+    `;
+  }
+  return `
+    <div class="emp-intel-section">
+      <h3 class="emp-intel-heading">Language check</h3>
+      <p class="emp-field-help">Reading level: <strong>Grade ${lang.reading.grade}</strong> — ${lang.reading.label}</p>
+      ${lang.biasHits.length ? lang.biasHits.map(h => `<div class="emp-callout emp-callout-warn"><p>${icon("alert-triangle")} "${escapeHtml(h.term)}" may read as biased — consider "${escapeHtml(h.suggestion)}" instead.</p></div>`).join("") : `<p class="emp-cand-evidence">${icon("check")} No flagged language found.</p>`}
+    </div>
+  `;
+}
+
 function computeDraftVeraReview(draft) {
   const strengths = [];
   const needsAttention = [];
@@ -11747,6 +11803,7 @@ function renderEmployerRoleBuilder(root, roleId) {
   const visitedSteps = new Set([0]);
   const advancedOpen = { roleBasics: false, compensation: false };
   let saveTimer = null;
+  let roleDetailsGenerateSeed = 0;
   const dismissedSuggestions = new Set();
   const appliedSuggestions = new Set();
 
@@ -11811,7 +11868,12 @@ function renderEmployerRoleBuilder(root, roleId) {
   function bindSalaryField(sub) {
     const el = qs(`[data-field-salary-${sub}]`, root);
     if (!el) return;
-    el.addEventListener("input", () => { draft.salary[sub] = el.value === "" ? null : Number(el.value); scheduleAutosave(); });
+    el.addEventListener("input", () => {
+      draft.salary[sub] = el.value === "" ? null : Number(el.value);
+      scheduleAutosave();
+      const benchmarkCard = qs(".emp-vera-benchmark", root);
+      if (benchmarkCard) { benchmarkCard.outerHTML = renderSalaryBenchmarkCard(draft); createIcons(); }
+    });
     el.addEventListener("blur", flushAndPersist);
   }
 
@@ -12020,6 +12082,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       case 1:
         return `
           <div class="emp-form-section-head"><h2>${icon("list-checks")} Role Details</h2><p>Explain why this role exists, what they'll own, and how success is measured.</p></div>
+          <button type="button" class="btn btn-ghost btn-sm emp-vera-accent-btn" data-generate-role-details ${draft.title.trim() ? "" : "disabled"} ${draft.title.trim() ? "" : `title="Add a role title first"`}>${icon("sparkles")} Generate with Vera</button>
           <label>Why this role exists <span class="emp-optional-tag">Optional</span><textarea data-field-rolePurpose rows="2" placeholder="What gap or need this role fills">${escapeHtml(draft.rolePurpose)}</textarea></label>
           <label>Role summary<textarea data-field-roleSummary rows="3" placeholder="Describe the role in 2-4 sentences. Focus on the purpose of the position.">${escapeHtml(draft.roleSummary)}</textarea></label>
           <div>
@@ -12072,6 +12135,7 @@ function renderEmployerRoleBuilder(root, roleId) {
             <label>Salary visibility<select data-field-salary-visibility>${["Visible to candidates", "Hidden until applied", "Hidden entirely"].map(o => `<option ${draft.salary.visibility === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-salary-negotiable ${draft.salary.negotiable ? "checked" : ""}> Negotiable</label>
           </div>
+          ${renderSalaryBenchmarkCard(draft)}
           <details class="emp-advanced-disclosure" data-advanced="compensation" ${advancedOpen.compensation ? "open" : ""}>
             <summary>Advanced — additional compensation</summary>
             ${renderAdditionalCompensationEditor(draft)}
@@ -12198,6 +12262,7 @@ function renderEmployerRoleBuilder(root, roleId) {
             <button type="button" class="btn btn-ghost btn-sm" data-vera-review-apply-all>Apply all selected changes</button>
           </div>
         </div>` : ""}
+      ${renderLanguageCheckSection(draft)}
       <p class="emp-vera-principle">${icon("shield-check")} The final hiring and publishing decision remains with you.</p>
       ${ri && ri.talentAvailability && ri.talentAvailability !== "Not enough data" ? `
         <div class="card emp-role-intelligence" style="margin-top:16px;">
@@ -12481,6 +12546,27 @@ function renderEmployerRoleBuilder(root, roleId) {
       bindField("[data-field-stakeholders]", "stakeholders");
       bindField("[data-field-tools]", "tools");
       bindField("[data-field-travelExpectations]", "travelExpectations");
+      qs("[data-generate-role-details]", root)?.addEventListener("click", () => {
+        if (!draft.title.trim()) return;
+        const prevSummary = draft.roleSummary;
+        const prevResponsibilities = draft.responsibilities.slice();
+        const generatedSummary = generateRoleSummary(draft, roleDetailsGenerateSeed);
+        const generatedResponsibilities = generateResponsibilities(draft, roleDetailsGenerateSeed);
+        roleDetailsGenerateSeed += 1;
+        draft.roleSummary = generatedSummary;
+        const hasExistingResponsibilities = draft.responsibilities.some(r => r.trim());
+        draft.responsibilities = hasExistingResponsibilities
+          ? [...draft.responsibilities, ...generatedResponsibilities.filter(r => !draft.responsibilities.includes(r))].slice(0, 8)
+          : generatedResponsibilities;
+        persistDraft();
+        draw();
+        showUndoToast("Vera generated a role summary and responsibilities.", () => {
+          draft.roleSummary = prevSummary;
+          draft.responsibilities = prevResponsibilities;
+          persistDraft();
+          draw();
+        });
+      });
     } else if (activeStep === 2) {
       bindTagInput("mustHaveSkills");
       bindTagInput("niceToHaveSkills");
