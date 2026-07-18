@@ -12502,6 +12502,24 @@ function pickPriorityCandidate(candidates) {
 }
 function offerStatusTone(status) { return { Draft: "", Sent: "gold", Viewed: "gold", Countered: "cyan", Accepted: "green", Declined: "red" }[status] || ""; }
 
+function computeMatchBreakdown(c) {
+  // Deterministic pseudo-random offsets seeded by candidate id, so the same
+  // candidate always shows the same sub-score breakdown across renders/sessions
+  // (no per-role sub-scores exist in the mock data to compute this "for real").
+  let seed = 0;
+  for (let i = 0; i < c.id.length; i++) seed = (seed * 31 + c.id.charCodeAt(i)) >>> 0;
+  const rand = () => { seed = (seed * 1103515245 + 12345) >>> 0; return (seed % 1000) / 1000; };
+  const clamp = v => Math.max(40, Math.min(99, Math.round(v)));
+  const offset = () => Math.round((rand() - 0.5) * 24);
+  return {
+    skills: clamp(c.fit + offset()),
+    experience: clamp(c.fit + offset()),
+    education: clamp(c.fit + offset()),
+    culture: clamp(c.fit + offset()),
+    salary: clamp(c.fit + offset())
+  };
+}
+
 function primaryActionFor(c) {
   switch (c.stage) {
     case "New": return { label: "Review", action: "review" };
@@ -14489,6 +14507,7 @@ if (typeof module !== "undefined" && module.exports) {
     makeEmployerRoleDraft,
     estimateCandidatePool,
     pickPriorityCandidate,
+    computeMatchBreakdown,
     isRoleBasicsComplete,
     isRoleSummaryAdded,
     isResponsibilitiesAdded,
