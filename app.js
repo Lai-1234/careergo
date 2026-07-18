@@ -11232,6 +11232,69 @@ function estimateCandidatePool(draft) {
   return Math.max(3, Math.round(base * skillPenalty * thresholdPenalty));
 }
 
+const SALARY_BENCHMARK_BY_SENIORITY = {
+  "Internship": [800, 1500], "Entry level": [2500, 3800], "Junior": [3500, 5000], "Mid-level": [5000, 8000],
+  "Senior": [8000, 13000], "Lead": [12000, 18000], "Manager": [14000, 20000], "Director": [20000, 30000], "Executive": [28000, 45000]
+};
+
+function normalizeSalaryToMonthly(amount, period) {
+  if (amount === null || amount === undefined || amount === "") return null;
+  if (period === "Annual") return amount / 12;
+  if (period === "Hourly") return amount * 173;
+  return amount;
+}
+
+function computeSalaryBenchmark(draft) {
+  if (draft.salary.currency !== "MYR") return null;
+  const [benchmarkMin, benchmarkMax] = SALARY_BENCHMARK_BY_SENIORITY[draft.seniority] || SALARY_BENCHMARK_BY_SENIORITY["Mid-level"];
+  const min = normalizeSalaryToMonthly(draft.salary.min, draft.salary.period);
+  const max = normalizeSalaryToMonthly(draft.salary.max, draft.salary.period);
+  if (min == null && max == null) return { benchmarkMin, benchmarkMax, offeredMid: null, verdict: "none" };
+  const mid = min != null && max != null ? (min + max) / 2 : (min ?? max);
+  const verdict = mid < benchmarkMin ? "below" : mid > benchmarkMax ? "above" : "within";
+  return { benchmarkMin, benchmarkMax, offeredMid: Math.round(mid), verdict };
+}
+
+const BIAS_LANGUAGE_TERMS = [
+  ["rockstar", "skilled professional"], ["ninja", "specialist"], ["guru", "expert"],
+  ["young", "early-career"], ["energetic", "motivated"], ["guys", "team"],
+  ["manpower", "staffing"], ["dominant", "confident"], ["aggressive", "proactive"],
+  ["fearless", "confident"], ["digital native", "digitally fluent"], ["work hard play hard", "fast-paced, collaborative environment"]
+];
+
+function scanBiasLanguage(text) {
+  const hits = [];
+  BIAS_LANGUAGE_TERMS.forEach(([term, suggestion]) => {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (new RegExp(`\\b${escaped}\\b`, "i").test(text)) hits.push({ term, suggestion });
+  });
+  return hits;
+}
+
+function countSyllables(word) {
+  const w = word.toLowerCase().replace(/[^a-z]/g, "");
+  if (!w) return 0;
+  const matches = w.match(/[aeiouy]+/g);
+  let count = matches ? matches.length : 1;
+  if (w.endsWith("e") && count > 1) count -= 1;
+  return Math.max(1, count);
+}
+
+function computeReadingLevel(text) {
+  const sentences = (text.match(/[.!?]+/g) || [text]).length || 1;
+  const words = text.split(/\s+/).filter(Boolean);
+  if (!words.length) return { grade: 0, label: "No text yet" };
+  const syllables = words.reduce((sum, w) => sum + countSyllables(w), 0);
+  const grade = Math.max(0, Math.round(0.39 * (words.length / sentences) + 11.8 * (syllables / words.length) - 15.59));
+  const label = grade <= 8 ? "Clear and accessible" : grade <= 12 ? "Moderately dense" : "Dense — consider simplifying";
+  return { grade, label };
+}
+
+function scanJobPostingLanguage(draft) {
+  const combinedText = [draft.roleSummary, ...(draft.responsibilities || [])].filter(Boolean).join(". ");
+  return { biasHits: scanBiasLanguage(combinedText), reading: computeReadingLevel(combinedText), hasText: combinedText.trim().length > 0 };
+}
+
 function computeDraftVeraReview(draft) {
   const strengths = [];
   const needsAttention = [];
@@ -14820,6 +14883,11 @@ if (typeof module !== "undefined" && module.exports) {
     getPublishReadinessChecks,
     getDraftReadiness,
     getReadinessPredicates,
-    computeDraftVeraReview
+    computeDraftVeraReview,
+    computeSalaryBenchmark,
+    scanBiasLanguage,
+    countSyllables,
+    computeReadingLevel,
+    scanJobPostingLanguage
   };
 }
