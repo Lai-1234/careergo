@@ -12495,6 +12495,11 @@ const INTERVIEW_TYPES_PIPELINE = ["Recruiter Screen", "Technical Interview", "Po
 function feedbackWaiting(c) { return !!(c.interview && c.interview.feedbackSubmitted < c.interview.feedbackTotal); }
 function offerOutstanding(c) { return !!(c.offer && ["Sent", "Viewed", "Countered"].includes(c.offer.status)); }
 function candidateNeedsAction(c) { return c.stage === "New" || feedbackWaiting(c) || offerOutstanding(c); }
+function pickPriorityCandidate(candidates) {
+  const needingAction = candidates.filter(c => !c.archived && candidateNeedsAction(c));
+  if (!needingAction.length) return null;
+  return needingAction.slice().sort((a, b) => b.fit - a.fit)[0];
+}
 function offerStatusTone(status) { return { Draft: "", Sent: "gold", Viewed: "gold", Countered: "cyan", Accepted: "green", Declined: "red" }[status] || ""; }
 
 function primaryActionFor(c) {
@@ -14433,6 +14438,7 @@ if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     makeEmployerRoleDraft,
     estimateCandidatePool,
+    pickPriorityCandidate,
     isRoleBasicsComplete,
     isRoleSummaryAdded,
     isResponsibilitiesAdded,
