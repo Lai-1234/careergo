@@ -11117,7 +11117,7 @@ function isCandidateRequirementsComplete(draft) { return draft.mustHaveSkills.le
 function isSalaryAndLocationComplete(draft) { return !!(draft.salary.min && draft.salary.max && hasText(draft.location)); }
 function isBenefitsReviewed(draft) { return draft.benefits.length > 0; }
 function isHiringProcessConfigured(draft) { return draft.hiringStages.length > 0; }
-function isApplicationMethodConfigured(draft) { return hasText(draft.contactPerson) || hasText(draft.applicationDeadline) || !!draft.resumeRequired; }
+function isApplicationMethodConfigured(draft) { return hasText(draft.contactPerson) || hasText(draft.applicationDeadline) || draft.requiredDocumentTypes.resume === "Required"; }
 function isCompanyIntroductionAvailable(draft) { return hasText(draft.companySummary); }
 function isAccommodationStatementReviewed(draft) { return hasText(draft.accommodationStatement); }
 function isDistributionChannelsSelected(draft) { return draft.distributionChannels.length > 0; }
