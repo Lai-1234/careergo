@@ -12536,6 +12536,33 @@ function primaryActionFor(c) {
   }
 }
 
+function generateInterviewQuestions(c) {
+  const primarySkill = c.skills[0] || "this role";
+  const secondarySkill = c.skills[1] || primarySkill;
+  return [
+    `Walk me through a project where you applied ${primarySkill}.`,
+    `Tell me about a time ${secondarySkill} mattered under a tight deadline.`,
+    `What's a mistake you made in a past role, and what did you change afterward?`
+  ];
+}
+
+function summarizeCandidateResume(c) {
+  const topSkills = c.skills.slice(0, 2).join(" and ") || "a relevant skill set";
+  return `${c.name} brings ${c.experience} relevant to ${c.role}, with standout strength in ${topSkills}. ${c.strength}`;
+}
+
+function openCandidateAiModal(title, bodyHtml) {
+  openEmpModal("candidate-ai", `
+    <div class="emp-create-vera-head">
+      <div><span class="emp-vera-context">Vera</span><h2>${escapeHtml(title)}</h2></div>
+      <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+    </div>
+    ${bodyHtml}
+    <p class="emp-vera-principle">${icon("shield-check")} Generated from this candidate's profile. Review before using.</p>
+    <div class="emp-compose-actions"><button type="button" class="btn btn-primary" data-emp-modal-close>Close</button></div>
+  `, { label: title });
+}
+
 function menuActionsFor(c) {
   const items = [];
   if (c.stage === "New") items.push(["Shortlist", "shortlist"], ["Reject", "reject"]);
@@ -12621,25 +12648,51 @@ function renderEmployerTalentPipeline(root, params = {}) {
   function renderCandidateCard(c) {
     const primary = primaryActionFor(c);
     const menu = menuActionsFor(c);
+    const role = DATA.employerRoles.find(r => r.id === c.roleId);
+    const missingSkills = role ? (role.mustHaveSkills || []).filter(s => !c.skills.includes(s)).slice(0, 2) : [];
+    const topSkills = c.skills.slice(0, 3);
+    const insight = [c.strength, c.concern].filter(Boolean).join(" ");
+    const breakdown = computeMatchBreakdown(c);
+    const matchTone = c.fit >= 85 ? "green" : c.fit >= 70 ? "gold" : "";
     return `
       <div class="card emp-cand-card" data-candidate-card="${c.id}">
-        <div class="emp-cand-card-head">
-          <strong>${c.name}</strong>
-          <span class="pill ${c.fit >= 85 ? "green" : c.fit >= 70 ? "gold" : ""}">${c.fit}% fit</span>
+        <div class="emp-cand-card-top">
+          <div class="emp-cand-identity">
+            <strong class="emp-cand-name">${escapeHtml(c.name)}</strong>
+            <p class="emp-cand-position">${escapeHtml(c.role)}</p>
+            <p class="emp-cand-location">${escapeHtml(c.location)}</p>
+          </div>
+          <div class="emp-cand-match" data-match-hover="${c.id}">
+            <span class="pill ${matchTone}">${c.fit}% Match</span>
+            <div class="emp-cand-match-popover" data-match-popover="${c.id}" hidden>
+              ${[["skills", "Skills"], ["experience", "Experience"], ["education", "Education"], ["culture", "Culture"], ["salary", "Salary"]].map(([key, label]) => `<div class="emp-match-row"><span>${label}</span><strong>${breakdown[key]}</strong></div>`).join("")}
+            </div>
+          </div>
         </div>
-        <p class="emp-cand-meta">${c.role} · ${c.location}</p>
-        <p class="emp-cand-evidence">${icon("check")} ${c.strength}</p>
-        ${c.concern ? `<p class="emp-cand-concern">${icon("alert-triangle")} ${c.concern}</p>` : ""}
-        ${renderStageDetail(c)}
-        <div class="emp-cand-next"><span class="emp-tags-label">Next</span> ${nextActionText(c)}</div>
+        ${topSkills.length || missingSkills.length ? `
+          <div class="emp-cand-skill-rows">
+            ${topSkills.length ? `<div class="emp-cand-skill-row"><span>Top</span><div class="pill-row">${topSkills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div></div>` : ""}
+            ${missingSkills.length ? `<div class="emp-cand-skill-row"><span>Missing</span><div class="pill-row">${missingSkills.map(s => `<span class="pill red">${escapeHtml(s)}</span>`).join("")}</div></div>` : ""}
+          </div>
+        ` : ""}
+        ${insight ? `<p class="emp-cand-insight">${escapeHtml(insight)}</p>` : ""}
+        <div class="emp-cand-next-action"><span>Next Action</span><strong>${escapeHtml(nextActionText(c))}</strong></div>
         <div class="emp-cand-actions">
           <button type="button" class="btn btn-primary btn-sm" data-candidate-primary="${c.id}">${primary.label}</button>
           ${menu.length ? `
-            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-candidate-menu="${c.id}">${icon("more-horizontal")}</button>
+            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-candidate-menu="${c.id}">More</button>
             <div class="emp-actions-menu" data-candidate-menu-panel="${c.id}" hidden>
               ${menu.map(([label, action]) => `<button type="button" data-candidate-action="${action}" data-candidate-id="${c.id}">${label}</button>`).join("")}
             </div>
           ` : ""}
+        </div>
+        <div class="emp-cand-quick-actions">
+          <button type="button" data-quick-action="resume" data-candidate-id="${c.id}" aria-label="Review Resume">${icon("file-text")}</button>
+          <button type="button" data-quick-action="open-profile" data-candidate-id="${c.id}" aria-label="Open Profile">${icon("user")}</button>
+          <button type="button" data-quick-action="move-stage" data-candidate-id="${c.id}" aria-label="Move Stage">${icon("move")}</button>
+          <button type="button" data-quick-action="message" data-candidate-id="${c.id}" aria-label="Message Candidate">${icon("mail")}</button>
+          <button type="button" data-quick-action="interview-questions" data-candidate-id="${c.id}" aria-label="Generate Interview Questions">${icon("help-circle")}</button>
+          <button type="button" data-quick-action="summarize" data-candidate-id="${c.id}" aria-label="Summarize Resume">${icon("sparkles")}</button>
         </div>
       </div>
     `;
@@ -13047,6 +13100,32 @@ function renderEmployerTalentPipeline(root, params = {}) {
       const c = DATA.candidates.find(cand => cand.id === btn.dataset.candidateId);
       runCandidateAction(c, btn.dataset.candidateAction);
     }));
+
+    qsa("[data-quick-action]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      const c = DATA.candidates.find(cand => cand.id === btn.dataset.candidateId);
+      if (!c) return;
+      const action = btn.dataset.quickAction;
+      if (action === "resume") { openDrawerId = c.id; drawerTab = "application"; draw(); }
+      else if (action === "open-profile") { openDrawerId = c.id; drawerTab = "overview"; draw(); }
+      else if (action === "move-stage") {
+        const panel = qs(`[data-candidate-menu-panel="${c.id}"]`, root);
+        if (panel) { qsa("[data-candidate-menu-panel]", root).forEach(p => p.hidden = true); panel.hidden = false; }
+      }
+      else if (action === "message") showToast("Candidate messaging is coming in a future update.", "info");
+      else if (action === "interview-questions") {
+        openCandidateAiModal(`Interview questions for ${c.name}`, `<ol class="emp-ai-question-list">${generateInterviewQuestions(c).map(q => `<li>${escapeHtml(q)}</li>`).join("")}</ol>`);
+      }
+      else if (action === "summarize") {
+        openCandidateAiModal(`Resume summary — ${c.name}`, `<p>${escapeHtml(summarizeCandidateResume(c))}</p>`);
+      }
+    }));
+
+    qsa("[data-match-hover]", root).forEach(el => {
+      const popover = qs(`[data-match-popover="${el.dataset.matchHover}"]`, el);
+      el.addEventListener("mouseenter", () => { if (popover) popover.hidden = false; });
+      el.addEventListener("mouseleave", () => { if (popover) popover.hidden = true; });
+    });
 
     qs("[data-drawer-close]", root)?.addEventListener("click", () => { openDrawerId = null; draw(); });
     qsa("[data-drawer-tab]", root).forEach(btn => btn.addEventListener("click", () => { drawerTab = btn.dataset.drawerTab; draw(); }));
