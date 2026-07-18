@@ -470,6 +470,7 @@ function readState() {
       actionMode: "recommend"
     },
     autopilotLog: [],
+    autopilotPaused: false,
     posts: DATA.communityPosts
   };
   try {
@@ -636,6 +637,7 @@ function normalizeState(state) {
       ...(state.autopilotRules || {})
     },
     autopilotLog: Array.isArray(state.autopilotLog) ? state.autopilotLog : [],
+    autopilotPaused: Boolean(state.autopilotPaused),
     autopilotSavedRoles: Array.isArray(state.autopilotSavedRoles) ? state.autopilotSavedRoles : [],
     autopilotAppliedRoles: Array.isArray(state.autopilotAppliedRoles) ? state.autopilotAppliedRoles : [],
     autopilotDismissedRoles: Array.isArray(state.autopilotDismissedRoles) ? state.autopilotDismissedRoles : [],
@@ -2808,6 +2810,34 @@ function progressBar(value) {
   return `<div class="progress" aria-label="${value}% complete"><span style="width:${Math.max(0, Math.min(100, value))}%"></span></div>`;
 }
 
+function pipelineMomentumStatus(score) {
+  if (score >= 85) return { label: "Strong", tone: "strong" };
+  if (score >= 60) return { label: "Steady", tone: "steady" };
+  if (score >= 45) return { label: "Slipping", tone: "slipping" };
+  return { label: "Stalled", tone: "stalled" };
+}
+
+function miniProgressRing(percent, size = 34) {
+  const clamped = Math.max(0, Math.min(100, percent));
+  const radius = (size - 4) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - clamped / 100);
+  return `
+    <svg class="cg-kpi-ring" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="${clamped}% complete">
+      <circle cx="${size / 2}" cy="${size / 2}" r="${radius}" fill="none" stroke="rgba(11,109,101,0.16)" stroke-width="3"></circle>
+      <circle cx="${size / 2}" cy="${size / 2}" r="${radius}" fill="none" stroke="#0b6d65" stroke-width="3" stroke-linecap="round" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" transform="rotate(-90 ${size / 2} ${size / 2})"></circle>
+    </svg>
+  `;
+}
+
+function miniSparkline() {
+  return `
+    <svg class="cg-kpi-sparkline" viewBox="0 0 60 24" width="60" height="24" preserveAspectRatio="none" role="img" aria-label="Trending up">
+      <polyline points="0,20 12,17 24,18 36,10 48,8 60,2" fill="none" stroke="#0b6d65" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+    </svg>
+  `;
+}
+
 function marketWeekLabels(count = 12) {
   const now = new Date();
   return Array.from({ length: count }, (_, i) => {
@@ -3965,7 +3995,6 @@ function renderJobsPage() {
         </section>
 
         <section class="cg-discover-feature" id="vera-top-pick">
-          <div class="cg-section-kicker">Vera's top pick this week</div>
           <h2>Vera's Top Pick</h2>
           <p class="cg-h2-sub">The one role Vera rates highest against your skills, roadmap, and salary target this week.</p>
           <article class="cg-top-pick-card">
@@ -3998,7 +4027,6 @@ function renderJobsPage() {
         </section>
 
         <section class="cg-discover-section" id="market-pulse">
-          <div class="cg-section-kicker">Market pulse - Malaysia</div>
           <h2>Market Pulse in Malaysia</h2>
           <p class="cg-h2-sub">What's hiring, paying, and growing around you right now - refreshed from live postings.</p>
           <div class="cg-market-grid">
@@ -4077,7 +4105,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
-            <div><div class="cg-section-kicker">Where your career could go next</div><h2>Career Paths</h2><p class="cg-h2-sub">Directions your profile could realistically take next, with salary and demand for each.</p></div>
+            <div><h2>Career Paths</h2><p class="cg-h2-sub">Directions your profile could realistically take next, with salary and demand for each.</p></div>
             <button type="button" class="cg-discover-link-btn" data-discover-browse="paths">Explore all career paths ${icon("arrow-right")}</button>
           </div>
           <div class="cg-direction-grid">
@@ -4095,7 +4123,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
-            <div><div class="cg-section-kicker">Programmes that could accelerate you</div><h2>Recommended Programmes</h2><p class="cg-h2-sub">Courses and certificates ranked by the career return Vera expects for you.</p></div>
+            <div><h2>Recommended Programmes</h2><p class="cg-h2-sub">Courses and certificates ranked by the career return Vera expects for you.</p></div>
             <button type="button" class="cg-discover-link-btn" data-discover-browse="programs">Explore all programmes ${icon("arrow-right")}</button>
           </div>
           <div class="cg-program-card-grid">
@@ -4111,7 +4139,7 @@ function renderJobsPage() {
 
         <section class="cg-discover-section">
           <div class="cg-discover-section-head">
-            <div><div class="cg-section-kicker">Who inspires this path</div><h2>Mentors You can reach out to</h2><p class="cg-h2-sub">People a few steps ahead of you on a similar route, ranked by path overlap.</p></div>
+            <div><h2>Mentors You can reach out to</h2><p class="cg-h2-sub">People a few steps ahead of you on a similar route, ranked by path overlap.</p></div>
             <button type="button" class="cg-discover-link-btn" data-discover-browse="mentors">Browse all mentors ${icon("arrow-right")}</button>
           </div>
           <div class="cg-mentor-grid">
@@ -4932,13 +4960,33 @@ function buildOrgCatalog() {
     { id: "setel", name: "Setel", industry: "Fintech", location: "Kuala Lumpur", rating: 4.3, reviews: 288, open: 4, signal: "AI-native product squad", tags: ["Verified", "Fast responders", "Product"], summary: "Fintech product team close to PETRONAS Digital, useful for PMs who want payments and mobility products.", salary: "RM 9k - 14k / month", size: "250+ employees", type: "Company", highlights: ["Fintech and mobility products give real ownership.", "Close proximity to PETRONAS Digital widens your network."], watchouts: ["Small team means limited backup during crunch."] },
     { id: "carsome", name: "Carsome", industry: "Marketplace", location: "Kuala Lumpur", rating: 4.2, reviews: 356, open: 3, signal: "Regional marketplace scale", tags: ["Fast growing", "Hybrid", "Product"], summary: "Regional marketplace company with operations, analytics, product growth, and customer platform roles.", salary: "RM 10k - 15k / month", size: "1,000+ employees", type: "Company", highlights: ["Marketplace patterns will stretch your product skills.", "Alumni network here is real leverage."], watchouts: ["Ops-heavy problem space - comfort with logistics matters."] },
     { id: "storehub", name: "StoreHub", industry: "SaaS", location: "Kuala Lumpur", rating: 4.2, reviews: 204, open: 2, signal: "Remote-first craft culture", tags: ["Remote-first", "SaaS", "Async"], summary: "Craft-led SaaS company with strong SMB product problems and close user feedback loops.", salary: "RM 8k - 12k / month", size: "300+ employees", type: "Company", highlights: ["Remote-first culture rewards clear async writing.", "Small teams mean fast, visible impact."], watchouts: ["Less structure than a bigger company - you set your own rhythm."] },
-    { id: "aerodyne", name: "Aerodyne", industry: "AI", location: "Kuala Lumpur", rating: 4.1, reviews: 172, open: 5, signal: "Drone and AI platform work", tags: ["AI", "Global HQ", "Product"], summary: "Malaysia-born AI and drone company with global operations, data-heavy products, and technical PM paths.", salary: "RM 11k - 16k / month", size: "800+ employees", type: "Company", highlights: ["Drone and AI platform work is genuinely technical.", "Global footprint gives cross-market exposure."], watchouts: ["Domain knowledge in aviation and data takes time to build."] }
+    { id: "aerodyne", name: "Aerodyne", industry: "AI", location: "Kuala Lumpur", rating: 4.1, reviews: 172, open: 5, signal: "Drone and AI platform work", tags: ["AI", "Global HQ", "Product"], summary: "Malaysia-born AI and drone company with global operations, data-heavy products, and technical PM paths.", salary: "RM 11k - 16k / month", size: "800+ employees", type: "Company", highlights: ["Drone and AI platform work is genuinely technical.", "Global footprint gives cross-market exposure."], watchouts: ["Domain knowledge in aviation and data takes time to build."] },
+    { id: "public-bank", name: "Public Bank", industry: "Banking", location: "Kuala Lumpur", rating: 4.2, reviews: 534, open: 11, signal: "Conservative, stable career track", tags: ["Stable", "Graduate friendly", "Banking"], summary: "One of Malaysia's largest banking groups, known for prudent management, steady promotion cycles, and strong retail banking presence.", salary: "RM 3.8k - 10k / month", size: "18,000+ employees", type: "Company" },
+    { id: "rhb", name: "RHB Bank", industry: "Banking", location: "Kuala Lumpur", rating: 4.0, reviews: 412, open: 8, signal: "Digital banking transformation roles", tags: ["Banking", "Digital", "ASEAN"], summary: "Regional banking group investing heavily in digital transformation, analytics, and customer experience roles.", salary: "RM 4k - 11k / month", size: "10,000+ employees", type: "Company" },
+    { id: "hong-leong-bank", name: "Hong Leong Bank", industry: "Banking", location: "Kuala Lumpur", rating: 4.1, reviews: 389, open: 7, signal: "Tech-forward banking culture", tags: ["Banking", "Digital", "Fintech"], summary: "Malaysian banking group recognised for its digital banking app and fintech partnerships, with growing product and data teams.", salary: "RM 4.2k - 11.5k / month", size: "8,000+ employees", type: "Company" },
+    { id: "iflix", name: "iflix", industry: "Streaming", location: "Kuala Lumpur", rating: 3.9, reviews: 148, open: 2, signal: "Content and product experimentation", tags: ["Media", "Streaming", "Product"], summary: "Southeast Asian streaming pioneer with product, content operations, and data teams focused on emerging-market viewing habits.", salary: "RM 6k - 13k / month", size: "200+ employees", type: "Company" },
+    { id: "propertyguru", name: "PropertyGuru Malaysia", industry: "PropTech", location: "Kuala Lumpur", rating: 4.1, reviews: 176, open: 4, signal: "Regional proptech product scale", tags: ["PropTech", "Product", "Regional"], summary: "Leading property technology platform with product, growth, and data science teams shaping how Malaysians search for property.", salary: "RM 7k - 14k / month", size: "400+ employees", type: "Company" },
+    { id: "petronas-group", name: "Petronas", industry: "Energy", location: "Kuala Lumpur", rating: 4.3, reviews: 1024, open: 22, signal: "National energy leader, deep graduate programme", tags: ["Energy", "Graduate friendly", "Stable"], summary: "Malaysia's national oil and gas company, offering large-scale structured graduate programmes across engineering, commercial, and digital functions.", salary: "RM 5k - 16k / month", size: "40,000+ employees", type: "Company" },
+    { id: "sime-darby", name: "Sime Darby Berhad", industry: "Conglomerate", location: "Kuala Lumpur", rating: 4.0, reviews: 298, open: 9, signal: "Diversified industrial and trading roles", tags: ["Industrial", "Trading", "Stable"], summary: "Diversified Malaysian conglomerate spanning industrial equipment, motors, property, and logistics, with structured management trainee tracks.", salary: "RM 4.5k - 12k / month", size: "20,000+ employees", type: "Company" },
+    { id: "maxis", name: "Maxis", industry: "Telco", location: "Kuala Lumpur", rating: 4.1, reviews: 467, open: 10, signal: "5G and digital services push", tags: ["Telco", "Digital", "5G"], summary: "Malaysia's leading telco investing in 5G rollout, digital services, and enterprise solutions, with strong product and data roles.", salary: "RM 5k - 13k / month", size: "4,000+ employees", type: "Company" },
+    { id: "celcomdigi", name: "CelcomDigi", industry: "Telco", location: "Shah Alam", rating: 4.0, reviews: 401, open: 12, signal: "Post-merger scale and digital growth", tags: ["Telco", "Merger scale", "Digital"], summary: "Malaysia's largest telco by subscribers following the Celcom-Digi merger, with growing product, data, and network technology teams.", salary: "RM 4.8k - 12.5k / month", size: "3,500+ employees", type: "Company" },
+    { id: "u-mobile", name: "U Mobile", industry: "Telco", location: "Kuala Lumpur", rating: 3.9, reviews: 187, open: 6, signal: "Challenger brand, fast decisions", tags: ["Telco", "Fast paced", "Challenger"], summary: "Challenger telco known for agile decision-making, value-driven plans, and lean product teams compared to the larger incumbents.", salary: "RM 4.5k - 11k / month", size: "1,500+ employees", type: "Company" },
+    { id: "axiata", name: "Axiata Group", industry: "Telco", location: "Kuala Lumpur", rating: 4.0, reviews: 256, open: 7, signal: "Regional telco and digital portfolio", tags: ["Telco", "Regional", "Digital"], summary: "Regional telecommunications group with digital businesses spanning fintech, infrastructure, and connectivity across Asia.", salary: "RM 5k - 13.5k / month", size: "12,000+ employees", type: "Company" },
+    { id: "astro", name: "Astro Malaysia", industry: "Media", location: "Petaling Jaya", rating: 3.9, reviews: 312, open: 5, signal: "Content, streaming, and ad-tech roles", tags: ["Media", "Streaming", "Content"], summary: "Malaysia's leading media group spanning pay-TV, streaming, radio, and content production, with growing digital ad-tech teams.", salary: "RM 4.5k - 11k / month", size: "3,000+ employees", type: "Company" },
+    { id: "airasia", name: "AirAsia (Capital A)", industry: "Aviation & Tech", location: "Sepang", rating: 3.8, reviews: 389, open: 8, signal: "Airline-to-super-app transformation", tags: ["Aviation", "Super app", "Fast paced"], summary: "Low-cost airline group turned digital super-app business, with product, data, and logistics teams building beyond travel.", salary: "RM 5k - 14k / month", size: "8,000+ employees", type: "Company" },
+    { id: "tnb", name: "Tenaga Nasional (TNB)", industry: "Utilities", location: "Kuala Lumpur", rating: 4.1, reviews: 543, open: 13, signal: "Energy transition and grid digitalisation", tags: ["Utilities", "Energy transition", "Stable"], summary: "Malaysia's national electricity utility, expanding into renewable energy and grid digitalisation with new data and engineering roles.", salary: "RM 4.5k - 12k / month", size: "30,000+ employees", type: "Company" }
   ];
   const extraUniversities = [
     { id: "sunway", name: "Sunway University", industry: "Private University", location: "Selangor", rating: 4.4, reviews: 438, open: 18, signal: "Fintech partnerships", tags: ["91% employment", "Industry links", "Business"], summary: "Private university with strong employer links, business programmes, and a growing tech ecosystem.", salary: "91% employed in 6 months", size: "18,000 students", type: "University" },
     { id: "asb", name: "Asia School of Business", industry: "Business School", location: "Kuala Lumpur", rating: 4.5, reviews: 196, open: 9, signal: "MIT-linked executive education", tags: ["MIT-linked", "Exec Ed", "Leadership"], summary: "Business school focused on leadership, analytics, and regional management programmes.", salary: "88% employed in 6 months", size: "1,200 learners", type: "University" },
-    { id: "apu-malaysia", name: "APU Malaysia", industry: "Private University", location: "Kuala Lumpur", rating: 4.1, reviews: 318, open: 14, signal: "AI programme partners", tags: ["Technology", "AI", "Employability"], summary: "Technology-focused university with computing, AI, and business IT pathways.", salary: "80% employed in 6 months", size: "13,000 students", type: "University" },
-    { id: "iim-bangalore", name: "IIM Bangalore", industry: "Business School", location: "Online", rating: 4.6, reviews: 524, open: 7, signal: "Product leadership alumni", tags: ["Online", "Leadership", "Product"], summary: "Executive programmes and alumni networks useful for product, strategy, and leadership transitions.", salary: "Global alumni network", size: "Executive cohorts", type: "University" }
+    { id: "iim-bangalore", name: "IIM Bangalore", industry: "Business School", location: "Online", rating: 4.6, reviews: 524, open: 7, signal: "Product leadership alumni", tags: ["Online", "Leadership", "Product"], summary: "Executive programmes and alumni networks useful for product, strategy, and leadership transitions.", salary: "Global alumni network", size: "Executive cohorts", type: "University" },
+    { id: "ukm", name: "Universiti Kebangsaan Malaysia (UKM)", industry: "Public University", location: "Bangi", rating: 4.3, reviews: 412, open: 20, signal: "Strong research output", tags: ["Public", "Research", "STEM"], summary: "Public research university with strong programmes in science, engineering, and Islamic studies, and a large national alumni base.", salary: "84% employed in 6 months", size: "27,000 students", type: "University" },
+    { id: "usm", name: "Universiti Sains Malaysia (USM)", industry: "Public University", location: "Penang", rating: 4.3, reviews: 388, open: 19, signal: "APEX research university status", tags: ["Public", "Research", "Sciences"], summary: "One of Malaysia's APEX research universities, known for strong sciences, pharmacy, and engineering programmes based in Penang.", salary: "83% employed in 6 months", size: "25,000 students", type: "University" },
+    { id: "upm", name: "Universiti Putra Malaysia (UPM)", industry: "Public University", location: "Serdang", rating: 4.2, reviews: 356, open: 17, signal: "Agriculture and applied sciences leader", tags: ["Public", "Agriculture", "Applied sciences"], summary: "Leading public university for agriculture, veterinary science, and applied sciences, with growing business and computer science faculties.", salary: "82% employed in 6 months", size: "24,000 students", type: "University" },
+    { id: "inti", name: "INTI International University", industry: "Private University", location: "Nilai", rating: 4.0, reviews: 214, open: 10, signal: "American degree transfer pathways", tags: ["Private", "Twinning", "Business"], summary: "Private university known for American degree transfer programmes, business, and IT pathways with strong industry placement support.", salary: "78% employed in 6 months", size: "8,000 students", type: "University" },
+    { id: "mmu", name: "Multimedia University (MMU)", industry: "Private University", location: "Cyberjaya", rating: 4.1, reviews: 267, open: 13, signal: "Engineering and multimedia specialism", tags: ["Private", "Engineering", "Technology"], summary: "Technology-focused private university in the heart of Cyberjaya, with strong engineering, multimedia, and computer science programmes.", salary: "81% employed in 6 months", size: "10,000 students", type: "University" },
+    { id: "ucsi", name: "UCSI University", industry: "Private University", location: "Kuala Lumpur", rating: 4.0, reviews: 231, open: 12, signal: "Practice-oriented education model", tags: ["Private", "Practice-based", "Business"], summary: "Private university with a practice-oriented education philosophy, strong hospitality, pharmacy, and business programmes.", salary: "79% employed in 6 months", size: "12,000 students", type: "University" },
+    { id: "heriot-watt", name: "Heriot-Watt University Malaysia", industry: "Private University", location: "Putrajaya", rating: 4.2, reviews: 156, open: 8, signal: "UK-accredited engineering and business degrees", tags: ["Private", "UK-accredited", "Engineering"], summary: "Malaysian branch campus of the UK's Heriot-Watt University, offering UK-accredited engineering, business, and design degrees.", salary: "80% employed in 6 months", size: "3,000 students", type: "University" }
   ];
   const companies = [...DATA.companies, ...extraCompanies]
     .filter((org, index, all) => all.findIndex(item => item.id === org.id) === index)
@@ -5239,38 +5287,97 @@ function renderDiscoverOrgDirectory() {
       </header>
       <section class="cg-discover-section">
         <div class="cg-discover-section-head">
-          <div><h2>${isCompanies ? "Companies" : "Universities"}</h2><p class="cg-h2-sub" data-org-directory-count></p></div>
+          <div><h2>${isCompanies ? "Companies" : "Universities"}</h2></div>
           <a class="cg-discover-link-btn" href="discover.html">${icon("arrow-left")} Back to Discover</a>
         </div>
+        <div class="cg-org-filters" aria-label="${isCompanies ? "Company" : "University"} filters">
+          <select data-org-directory-sort aria-label="Sort">
+            <option value="top">Top rated</option>
+            <option value="open">Most ${isCompanies ? "openings" : "programmes"}</option>
+            <option value="reviews">Most signals</option>
+          </select>
+          <select data-org-directory-filter="industry" aria-label="Filter ${isCompanies ? "sector" : "institution type"}"><option value="">${isCompanies ? "All sectors" : "All institution types"}</option></select>
+          <select data-org-directory-filter="location" aria-label="Filter location"><option value="">All locations</option></select>
+          <select data-org-directory-filter="rating" aria-label="Filter rating">
+            <option value="">Any rating</option><option value="4.5">4.5+</option><option value="4.3">4.3+</option><option value="4.1">4.1+</option>
+          </select>
+          <select data-org-directory-filter="tag" aria-label="Filter signal"><option value="">All signals</option></select>
+        </div>
+        <div class="cg-org-chips">
+          <button type="button" data-org-chip="Verified">${icon("badge-check")} Verified only</button>
+          <button type="button" data-org-chip="Graduates">${icon("award")} Graduates' Choice</button>
+          <button type="button" data-org-chip="Fast">${icon("zap")} Fast responders</button>
+        </div>
+        <p class="cg-org-count"><strong data-org-directory-count>0</strong> shown &middot; ${isCompanies ? "Companies" : "Universities"} &middot; sorted by <span data-org-directory-sort-label>top rated</span></p>
         <div class="cg-featured-org-grid" data-org-directory-grid></div>
       </section>
     </section>
   `;
   const grid = qs("[data-org-directory-grid]", root);
   const countNode = qs("[data-org-directory-count]", root);
+  const sortLabelNode = qs("[data-org-directory-sort-label]", root);
   const searchInput = qs("[data-org-directory-search]", root);
+  const sortSelect = qs("[data-org-directory-sort]", root);
+  const filterControls = qsa("[data-org-directory-filter]", root);
+  const chipButtons = qsa("[data-org-chip]", root);
+  const sortLabels = { top: "top rated", open: isCompanies ? "most openings" : "most programmes", reviews: "most signals" };
+
+  function syncFilterOptions() {
+    const industrySelect = qs('[data-org-directory-filter="industry"]', root);
+    const locationSelect = qs('[data-org-directory-filter="location"]', root);
+    const tagSelect = qs('[data-org-directory-filter="tag"]', root);
+    const fill = (select, placeholder, values) => {
+      const previous = select.value;
+      select.innerHTML = `<option value="">${placeholder}</option>${values.map(value => `<option value="${value}">${value}</option>`).join("")}`;
+      if (values.includes(previous)) select.value = previous;
+    };
+    fill(industrySelect, isCompanies ? "All sectors" : "All institution types", [...new Set(items.map(org => org.industry))].sort());
+    fill(locationSelect, "All locations", [...new Set(items.map(org => org.location))].sort());
+    fill(tagSelect, "All signals", [...new Set(items.flatMap(org => org.tags || []))].sort());
+  }
+
+  function currentItems() {
+    const query = (searchInput?.value || "").trim().toLowerCase();
+    const selected = Object.fromEntries(filterControls.map(control => [control.dataset.orgDirectoryFilter, control.value]));
+    const activeChip = qs("[data-org-chip].active", root)?.dataset.orgChip || "";
+    let filtered = items.filter(org => {
+      const hay = [org.name, org.industry, org.location, org.signal, org.summary, ...(org.tags || [])].join(" ").toLowerCase();
+      if (query && !hay.includes(query)) return false;
+      if (selected.industry && org.industry !== selected.industry) return false;
+      if (selected.location && org.location !== selected.location) return false;
+      if (selected.rating && Number(org.rating) < Number(selected.rating)) return false;
+      if (selected.tag && !(org.tags || []).includes(selected.tag)) return false;
+      if (activeChip && !hay.includes(activeChip.toLowerCase())) return false;
+      return true;
+    });
+    const sort = sortSelect?.value || "top";
+    filtered = filtered.sort((a, b) => {
+      if (sort === "open") return Number(b.open || 0) - Number(a.open || 0);
+      if (sort === "reviews") return Number(b.reviews || 0) - Number(a.reviews || 0);
+      return Number(b.rating || 0) - Number(a.rating || 0);
+    });
+    return filtered;
+  }
 
   function renderGrid() {
-    const query = (searchInput?.value || "").trim().toLowerCase();
-    const filtered = items.filter(org => {
-      if (!query) return true;
-      const hay = [org.name, org.industry, org.location, org.signal, ...(org.tags || [])].join(" ").toLowerCase();
-      return hay.includes(query);
-    });
-    countNode.textContent = `${filtered.length} shown`;
+    const filtered = currentItems();
+    countNode.textContent = String(filtered.length);
+    if (sortLabelNode) sortLabelNode.textContent = sortLabels[sortSelect?.value || "top"];
     grid.innerHTML = filtered.map(org => isCompanies ? `
       <article class="cg-featured-org-card" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} reviews and details">
         <header><span>${org.name.charAt(0)}</span><div><h3>${org.name}</h3><p>${org.industry} - ${org.location}</p></div></header>
         <b>${(org.tags || [])[0] || "Verified"}</b><strong>${org.open} open role${org.open === 1 ? "" : "s"}</strong>
         <footer>${icon("sparkles")} ${org.signal}</footer>
+        <button type="button" class="btn btn-primary btn-wide" data-org-cta="${org.id}">View company ${icon("arrow-right")}</button>
       </article>
     ` : `
       <article class="cg-featured-org-card university" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} details">
         <header><span>${icon("graduation-cap")}</span><div><h3>${org.name}</h3><p>${icon("map-pin")} ${org.location}</p></div></header>
         <b>${org.salary}</b>
         <footer>${icon("sparkles")} ${org.signal}</footer>
+        <button type="button" class="btn btn-primary btn-wide" data-org-cta="${org.id}">View university ${icon("arrow-right")}</button>
       </article>
-    `).join("") || `<p class="cg-org-browse-empty">No matches yet. Try a different search.</p>`;
+    `).join("") || `<p class="cg-org-browse-empty">No matches yet. Try clearing a filter or searching a broader term.</p>`;
     qsa("[data-org-detail]", grid).forEach(card => {
       card.addEventListener("click", () => openOrgDetailModal(card.dataset.orgDetail));
       card.addEventListener("keydown", event => {
@@ -5280,11 +5387,32 @@ function renderDiscoverOrgDirectory() {
         }
       });
     });
+    qsa("[data-org-cta]", grid).forEach(button => {
+      const triggerOrgDetail = event => {
+        event.stopPropagation();
+        if (event.type === "keydown") {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+        }
+        openOrgDetailModal(button.dataset.orgCta);
+      };
+      button.addEventListener("click", triggerOrgDetail);
+      button.addEventListener("keydown", triggerOrgDetail);
+    });
     createIcons();
   }
 
   qs("[data-org-directory-search-form]", root)?.addEventListener("submit", event => event.preventDefault());
   searchInput?.addEventListener("input", renderGrid);
+  sortSelect?.addEventListener("input", renderGrid);
+  filterControls.forEach(control => control.addEventListener("input", renderGrid));
+  chipButtons.forEach(button => button.addEventListener("click", () => {
+    const wasActive = button.classList.contains("active");
+    chipButtons.forEach(item => item.classList.remove("active"));
+    if (!wasActive) button.classList.add("active");
+    renderGrid();
+  }));
+  syncFilterOptions();
   renderGrid();
   createIcons();
 }
@@ -6345,9 +6473,13 @@ function renderDashboard() {
           <a class="cg-kpi-card tone-${index + 1}" href="${index === 3 ? "discover.html#tracker" : index === 1 ? "market.html" : "grow.html"}">
             <span class="cg-card-icon">${icon(ic)}</span>
             <span class="cg-kpi-label">${label}</span>
-            <strong>${value}</strong>
-            <small>${detail}</small>
-            ${index === 3 ? `<span class="cg-mini-bars"><i></i><i></i><i></i></span>` : progressBar(progress)}
+            ${index === 0 || index === 1
+              ? `<div class="cg-kpi-value-row"><strong>${value}</strong>${index === 0 ? miniProgressRing(progress) : miniSparkline()}</div>`
+              : `<strong>${value}</strong>`}
+            ${index === 3
+              ? `<div class="cg-kpi-detail-row"><small>${detail}</small><span class="cg-mini-bars"><i></i><i></i><i></i></span></div>`
+              : `<small>${detail}</small>`}
+            ${index === 2 ? `<div class="cg-kpi-progress-row">${progressBar(progress)}<small class="cg-kpi-progress-label">${value}</small></div>` : ""}
           </a>
         `).join("")}
       </section>
@@ -6365,13 +6497,13 @@ function renderDashboard() {
             </div>
           ` : `
             <div class="cg-focus-meta">
-              <span>${icon("sparkles")} Today's focus - by Vera</span>
+              <span><img class="cg-focus-meta-icon" src="assets/vera-ai-coach.png" alt="Vera AI"> Today's focus &middot; by Vera</span>
               <span>${icon("clock")} 45 min - Deep work</span>
             </div>
             <h2>Hi, I'm Vera, your AI career coach.</h2>
             <p>${focusDetail}</p>
             <div class="cg-action-row">
-              <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("today's focus")}#messages">${icon("sparkles")} Start with Vera</a>
+              <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("today's focus")}#messages">Start with Vera ${icon("arrow-up-right")}</a>
               <button type="button" class="btn btn-ghost" data-snooze-focus>${icon("moon")} Snooze</button>
               <span class="cg-confidence">${icon("gauge")} Confidence: ${intel.confidence}</span>
             </div>
@@ -6379,12 +6511,15 @@ function renderDashboard() {
         </article>
         <article class="cg-autopilot-card">
           <div class="cg-section-line">
-            <div>
-              <span class="cg-overline">${icon("bot")} Autopilot</span>
-              <h2>Vera worked while you slept.</h2>
-              <p class="cg-h2-sub">Overnight scans, saved matches, and drafts waiting for your review.</p>
+            <div class="cg-autopilot-heading">
+              <span class="cg-autopilot-icon"><img src="assets/vera-ai-coach.png" alt="Vera AI"></span>
+              <div>
+                <span class="cg-overline">Autopilot</span>
+                <h2>Vera worked while you slept.</h2>
+                <p class="cg-h2-sub">Overnight scans, saved matches, and drafts waiting for your review.</p>
+              </div>
             </div>
-            <span class="cg-pill">High confidence</span>
+            <span class="cg-pill">${icon("zap")} High confidence</span>
           </div>
           <div class="cg-activity-list">
             ${[
@@ -6392,7 +6527,7 @@ function renderDashboard() {
               ["check-circle-2", `Saved ${savedJobs.length || 6} that match your roadmap`, "03:41"],
               ["send", "Drafted 2 outreach notes to hiring managers", "05:04"],
               ["badge-dollar-sign", "Refreshed your Fair Pay benchmark (+6%)", "05:22"]
-            ].map(([ic, text, time]) => `<div class="cg-activity-item"><span>${icon(ic)}</span><p>${text}</p><time>${time}</time></div>`).join("")}
+            ].map(([ic, text, time], index, arr) => `<div class="cg-activity-item${index === arr.length - 1 ? " is-last" : ""}"><span class="cg-activity-dot">${icon(ic)}</span><p>${text}</p><time>${time}</time></div>`).join("")}
           </div>
           <div class="cg-action-row compact-actions">
             <a class="btn btn-primary" href="autopilot.html">Review 8 items ${icon("chevron-right")}</a>
@@ -7685,10 +7820,10 @@ function renderGrow() {
   const checklistPercent = Math.round((checklistDoneCount / checklistItems.length) * 100);
   const checklistRemaining = checklistItems.length - checklistDoneCount;
   const practiceItems = [
-    ["Mock interview", "15 min", "15-min PM mock - marketplace pricing", "Product thinking", "+4% readiness"],
-    ["Case study", "25 min", "Design a driver-incentive experiment", "Experiment design", "+3% readiness"],
-    ["Behavioral", "20 min", "3 STAR stories - conflict & prioritization", "Communication", "+2% readiness"],
-    ["SQL drill", "30 min", "Joins, window functions, cohort query", "SQL fluency", "+7% readiness"]
+    ["Mock interview", "15 min", "15-min PM mock — marketplace pricing", "Product thinking", "+4% readiness", "mic"],
+    ["Case study", "25 min", "Design a driver-incentive experiment", "Experiment design", "+3% readiness", "target"],
+    ["Behavioral", "20 min", "3 STAR stories — conflict & prioritization", "Communication", "+2% readiness", "message-square"],
+    ["SQL drill", "30 min", "Joins, window functions, cohort query", "SQL fluency", "+7% readiness", "zap"]
   ];
   const mockInterviewFeedback = "Strong framing. Tighten prioritization + numbers.";
   const mockInterviewAttempts = [
@@ -7793,13 +7928,13 @@ function renderGrow() {
 
       <section class="cg-interview-coach" id="interview-coach">
         <div class="cg-grow-section-head">
-          <div><h2>Interview Coach-Powered by Vera</h2><p class="cg-h2-sub">Practice drills, readiness scores, and prep plans tuned to each company's interview style.</p></div>
+          <div><h2 class="cg-interview-coach-title">Interview Coach &middot; Powered by Vera</h2><p class="cg-h2-sub">Walk into every interview already prepared.</p></div>
           <span class="cg-soft-pill">${icon("shield-check")} Adaptive to each company</span>
         </div>
         <div class="cg-interview-top">
           <article class="cg-upcoming-interview">
             <small>${icon("calendar-clock")} Upcoming interview</small>
-            <header><div><h3>Product Manager</h3><p>${icon("building-2")} Grab Malaysia  - Round 2  - Hiring Manager + Case</p></div><time>Tuesday, 9 Jul  - 10:00 AM<span>3 days remaining</span></time></header>
+            <header><div><h3>Product Manager</h3><p>${icon("building-2")} Grab Malaysia &middot; Round 2 &middot; Hiring Manager + Case</p></div><time>Tuesday, 9 Jul &middot; 10:00 AM<span>3 days remaining</span></time></header>
             <div class="cg-interview-kpis">
               <div><span>Interview readiness</span><strong>74%</strong></div>
               <div><span>Difficulty</span><strong>High</strong></div>
@@ -7808,10 +7943,10 @@ function renderGrow() {
             <footer><p>Closing SQL + metric gaps this week is expected to lift readiness to 81% by interview day.</p><a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("today's SQL and metrics prep plan for Grab PM")}#messages">Start today's plan ${icon("arrow-right")}</a></footer>
           </article>
           <article class="cg-vera-focus">
-            <small>${icon("sparkles")} Vera's focus for Grab</small>
-            <p>I compared Grab's PM interview style with your current profile. Today's highest-impact prep is SQL and product metrics - your weakest areas and the two topics Grab tests in almost every PM loop.</p>
+            <small><span class="cg-vera-focus-icon"><img src="assets/vera-ai-coach.png" alt="Vera AI"></span> Vera's focus for Grab</small>
+            <p>I compared Grab's PM interview style with your current profile. Today's highest-impact prep is SQL and product metrics &mdash; your weakest areas and the two topics Grab tests in almost every PM loop.</p>
             <ul>
-              <li>Grab often opens with a marketplace pricing prompt - practice one today.</li>
+              <li>Grab often opens with a marketplace pricing prompt &mdash; practice one today.</li>
               <li>Expect a live SQL round: joins + one window function.</li>
               <li>Behavioral panel favours "conflict + prioritization" STAR stories.</li>
             </ul>
@@ -7821,8 +7956,8 @@ function renderGrow() {
           <article class="cg-practice-panel">
             <header><h3>${icon("play")} Today's interview practice</h3><span>~90 min total</span></header>
             <div class="cg-practice-cards">
-              ${practiceItems.map(([kind, time, title, focus, lift]) => `
-                <div class="cg-practice-card"><header><span>${kind}</span><small>${icon("clock")} ${time}</small></header><h4>${title}</h4><p>${focus}<b>${lift}</b></p><a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent(`practice: ${title}`)}#messages">${icon("play")} Start practice</a></div>
+              ${practiceItems.map(([kind, time, title, focus, lift, kindIcon]) => `
+                <div class="cg-practice-card"><header><span>${icon(kindIcon)} ${kind}</span><small>${icon("clock")} ${time}</small></header><h4>${title}</h4><p>${focus}<b>${lift}</b></p><a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent(`practice: ${title}`)}#messages">${icon("play")} Start practice</a></div>
               `).join("")}
             </div>
           </article>
@@ -10380,20 +10515,20 @@ function renderAutopilot() {
     ].sort((a, b) => urgencyRank[a[5]] - urgencyRank[b[5]]);
     const pipelineColumns = [
       ["Saved", "3", [
-        ["Setel", "PM - Loyalty - Kuala Lu...", "Health - Warm", 74, "Strong archetype match", "Your resume matches 88% - apply before Fri.", "Apply this week", "2 days ago"],
-        ["Carsome", "Senior PM - KL - hybrid", "Health - Warm", 61, "Competitive posting", "", "Tailor resume", "5 days ago"]
+        ["Setel", "PM - Loyalty - Kuala Lumpur", 74, "Strong archetype match", "Your resume matches 88% - apply before Fri.", "Apply this week", "2 days ago"],
+        ["Carsome", "Senior PM - KL - hybrid", 61, "Competitive posting", "", "Tailor resume", "5 days ago"]
       ]],
       ["Applied", "5", [
-        ["Grab Malaysia", "PM - Payments - KL", "Health - Healthy", 92, "Recruiter engaged", "Recruiter viewed your profile yesterday.", "Reply today", "3 days ago"],
-        ["Shopee MY", "PM - Growth - KL", "Health - Slowing", 58, "Applied 4d ago", "Shopee usually replies within 7 days.", "Wait 3 more days", "4 days ago"],
-        ["BigPay", "Product Lead - KL - hyb...", "Health - Cold", 38, "No activity in 12d", "Silent past their typical 10-day window.", "Archive or nudge", "2 weeks ago"]
+        ["Grab Malaysia", "PM - Payments - KL", 92, "Recruiter engaged", "Recruiter viewed your profile yesterday.", "Reply today", "3 days ago"],
+        ["Shopee MY", "PM - Growth - KL", 58, "Applied 4d ago", "Shopee usually replies within 7 days.", "Wait 3 more days", "4 days ago"],
+        ["BigPay", "Product Lead - KL - hybrid", 38, "No activity in 12d", "Silent past their typical 10-day window.", "Archive or nudge", "2 weeks ago"]
       ]],
       ["Interviewing", "3", [
-        ["Stripe", "PM - APAC - Remote MY", "Health - Healthy", 88, "Round 2 - Tue 2:30", "Most candidates fail on Round 2 case.", "Prep product sense", "1 week ago"],
-        ["Airtable", "PM - Platform - Remote", "Health - Warm", 71, "Take-home due Fri", "Take-home weighting is 60% of decision.", "Submit by EOD", "2 weeks ago"]
+        ["Stripe", "PM - APAC - Remote MY", 88, "Round 2 - Tue 2:30", "Most candidates fail on Round 2 case.", "Prep product sense", "1 week ago"],
+        ["Airtable", "PM - Platform - Remote", 71, "Take-home due Fri", "Take-home weighting is 60% of decision.", "Submit by EOD", "2 weeks ago"]
       ]],
       ["Offer", "1", [
-        ["Aerodyne", "Senior PM - Cyberjaya", "Health - Healthy", 95, "RM 1,400 below Fair Pay", "Counter with RM 10,300 - 72% acceptance.", "Negotiate on Mon", "3 weeks ago"]
+        ["Aerodyne", "Senior PM - Cyberjaya", 95, "RM 1,400 below Fair Pay", "Counter with RM 10,300 - 72% acceptance.", "Negotiate on Mon", "3 weeks ago"]
       ]]
     ];
     const memory = [
@@ -10449,6 +10584,20 @@ function renderAutopilot() {
       { key: "autoapply", title: "Auto-apply", body: "Autopilot applies only when all required rules are met." }
     ];
     const apStrictnessCaptions = { Strict: "Only near-perfect matches.", Balanced: "Strong matches with minor gaps.", Open: "Wider net, more roles to review." };
+    const apPaused = Boolean(state.autopilotPaused);
+    const apScanned = 128;
+    const apStrongMatches = apMatches.filter(role => role.match >= 85).length;
+    const apSavedCount = (state.autopilotSavedRoles || []).length;
+    const apAppliedCount = (state.autopilotAppliedRoles || []).length;
+    const apNeedsReview = apMatches.filter(role => role.mode === "Queue for review").length;
+    const apLastScan = (apMatches[0]?.found || "Found recently").replace(/^Found /, "");
+    const apRestrictiveFilters = [
+      apRules.workArrangement?.length === 1 ? apRules.workArrangement[0].toLowerCase() + "-only" : null,
+      apRules.minSalary ? `RM ${esc(apRules.minSalary)} salary floor` : null
+    ].filter(Boolean).join(" and ");
+    const apInsight = apRestrictiveFilters
+      ? `Your ${apRestrictiveFilters} rule${apRestrictiveFilters.includes(" and ") ? "s" : ""} may be filtering out roles that are otherwise a strong fit. Loosening it slightly could surface more matches this week.`
+      : `Your ${(apRules.strictness || "Balanced").toLowerCase()} match rules and ${apRules.threshold || 75}% threshold currently return ${apMatches.length} role${apMatches.length === 1 ? "" : "s"}. Widening the threshold a little could surface more.`;
     if (location.hash === "#autopilot-console") pipelineActiveTab = "autopilot";
     root.innerHTML = appShell("autopilot", `
       <section class="cg-pipeline">
@@ -10484,14 +10633,27 @@ function renderAutopilot() {
         </section>
 
         <section class="cg-pipeline-impact">
-          <header><div><h2>Vera - today's highest impact</h2><p class="cg-h2-sub">The four actions most likely to move your pipeline today, ranked by urgency.</p></div><small>${icon("clock")} ~3 hr total</small></header>
-          ${impactTasks.map(([title, body, lift, time, action, urgency], index) => `
-            <article>
-              <span>${index + 1}</span>
-              <div><div class="cg-pipeline-impact-title"><h3>${title}</h3><em class="cg-urgency cg-urgency-${urgency.toLowerCase()}">${urgency}</em></div><p>${body}</p><small><b>${icon("trending-up")} ${lift}</b><b>${icon("clock")} ${time}</b></small></div>
-              <a href="posts.html?topic=${encodeURIComponent(title)}#messages">${icon("sparkles")} ${action}</a>
-            </article>
-          `).join("")}
+          <header class="cg-pipeline-impact-toggle-row" data-pipeline-impact-toggle role="button" tabindex="0" aria-expanded="false" aria-controls="cg-pipeline-impact-list">
+            <div class="cg-pipeline-impact-heading">
+              <span class="cg-pipeline-impact-icon"><img src="assets/vera-ai-coach.png" alt="Vera AI"></span>
+              <span class="cg-pipeline-impact-eyebrow">Vera &middot; Today's highest impact</span>
+            </div>
+            <div class="cg-pipeline-impact-header-right">
+              <small>${icon("clock")} ~3 hr total</small>
+              <span class="cg-pipeline-impact-chevron">${icon("chevron-down")}</span>
+            </div>
+          </header>
+          <div class="cg-pipeline-impact-list" id="cg-pipeline-impact-list">
+            <div class="cg-pipeline-impact-list-inner">
+              ${impactTasks.map(([title, body, lift, time, action], index) => `
+                <article>
+                  <span>${index + 1}</span>
+                  <div><h3>${title}</h3><p>${body}</p><small><b>${icon("trending-up")} ${lift}</b><b>${icon("clock")} ${time}</b></small></div>
+                  <a href="posts.html?topic=${encodeURIComponent(title)}#messages">${icon("sparkles")} ${action}</a>
+                </article>
+              `).join("")}
+            </div>
+          </div>
         </section>
 
         <section class="cg-pipeline-kpis">
@@ -10511,8 +10673,11 @@ function renderAutopilot() {
           <footer>Vera - your offer probability is up <strong>+12%</strong> this week, mostly because your resume quality score jumped and Grab's recruiter engaged. If you keep this pace, expect <strong>2 offers by 28 Nov</strong> (64% confidence, widens as more evidence comes in).</footer>
         </section>
 
+        <div class="cg-pipeline-board-head">
+          <h2>Live pipeline</h2>
+          <span>Auto-scored by Vera - updated 3 min ago</span>
+        </div>
         <section class="cg-pipeline-board-section">
-          <div class="cg-pipeline-board-head"><h2>Live pipeline</h2><span>Auto-scored by Vera - updated 3 min ago</span></div>
           <div class="cg-pipeline-board">
             <nav class="cg-pipeline-stage-nav">
               ${pipelineColumns.map(([stage, count], index) => `
@@ -10527,16 +10692,34 @@ function renderAutopilot() {
             <div class="cg-pipeline-stage-panel">
               ${pipelineColumns.map(([stage, count, cards], index) => `
                 <article class="cg-pipeline-column${index === 0 ? " active" : ""}" data-pipeline-panel="${index}">
-                  ${cards.map(([name, role, health, score, note, vera, next, timeline]) => `
-                    <section>
-                      <div><span>${icon("building-2")}</span><h4>${name}</h4><p>${role}</p></div>
-                      <div class="cg-pipeline-card-meta"><small>${health} <b>${score}%</b></small><span class="cg-pipeline-timeline">${icon("clock")} ${timeline}</span></div>
-                      <i><em style="width:${score}%"></em></i>
-                      <p>${note}</p>
-                      ${vera ? `<blockquote>${icon("sparkles")} ${vera}</blockquote>` : ""}
-                      <footer><span>Next - ${next}</span><a href="posts.html?topic=${encodeURIComponent(`${next} for ${name}`)}#messages">Do it ${icon("chevron-right")}</a></footer>
+                  ${cards.map(([name, role, score, note, vera, next, timeline], cardIndex) => {
+                    const detailId = `cg-pipeline-card-${stage.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${cardIndex}`;
+                    const momentum = pipelineMomentumStatus(score);
+                    return `
+                    <section class="cg-pipeline-card">
+                      <button type="button" class="cg-pipeline-card-summary" data-pipeline-card-toggle aria-expanded="false" aria-controls="${detailId}">
+                        <span class="cg-pipeline-card-icon">${icon("building-2")}</span>
+                        <span class="cg-pipeline-card-heading"><h4>${name}</h4><p>${role}</p></span>
+                        <span class="cg-pipeline-card-score" title="Momentum reflects recruiter response time, days since last contact, and role competitiveness.">
+                          <i class="cg-pipeline-momentum-dot tone-${momentum.tone}"></i>
+                          <small>Momentum - ${momentum.label}</small>
+                          <b>${score}%</b>
+                        </span>
+                        <span class="cg-pipeline-card-next">Next - ${next}</span>
+                        <span class="cg-pipeline-card-chevron">${icon("chevron-down")}</span>
+                      </button>
+                      <div class="cg-pipeline-card-detail" id="${detailId}">
+                        <div class="cg-pipeline-card-detail-inner">
+                          <span class="cg-pipeline-timeline">${icon("clock")} ${timeline}</span>
+                          <i><em style="width:${score}%"></em></i>
+                          <p>${note}</p>
+                          ${vera ? `<blockquote>${icon("sparkles")} ${vera}</blockquote>` : ""}
+                          <footer><span>Next - ${next}</span><a href="posts.html?topic=${encodeURIComponent(`${next} for ${name}`)}#messages">Do it ${icon("chevron-right")}</a></footer>
+                        </div>
+                      </div>
                     </section>
-                  `).join("")}
+                  `;
+                  }).join("")}
                 </article>
               `).join("")}
             </div>
@@ -10551,7 +10734,7 @@ function renderAutopilot() {
             <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("planning next week's job search")}#messages">${icon("sparkles")} Plan next week with Vera</a>
           </article>
           <div>
-            ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "+12%"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening"]].map(([label, value]) => `<section><span>${label}</span><strong>${value}</strong></section>`).join("")}
+            ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "+12%", "up", "teal"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening", null, "amber"]].map(([label, value, ic, tone]) => `<section><span>${label}</span><strong class="${tone ? `tone-${tone}` : ""}">${ic ? icon("arrow-up") : ""}${value}</strong></section>`).join("")}
           </div>
           <footer>${icon("info")} Recommended focus next week - <strong>Practice SQL interviews.</strong> Vera has a 4-day plan queued in Grow. <a href="grow.html">Open plan ${icon("arrow-right")}</a></footer>
         </section>
@@ -10570,6 +10753,40 @@ function renderAutopilot() {
         </div>
 
         <div class="cg-pipeline-view cg-ap-view${pipelineActiveTab === "autopilot" ? " active" : ""}" data-pipeline-panel-view="autopilot">
+        <section class="cg-ap-hero">
+          <span class="cg-ap-hero-badge">${icon("bot")} Autopilot</span>
+          <h1>Let CareerGo <em>search</em> while you focus.</h1>
+          <p>Set your rules once. Autopilot scans opportunities, filters out noise and surfaces only the roles that genuinely match your standards. You stay in control - Autopilot never applies unless you tell it to.</p>
+          <div class="cg-ap-status-card">
+            <div class="cg-ap-status-row">
+              <div class="cg-ap-status-left">
+                <span class="cg-ap-status-pill${apPaused ? " is-paused" : ""}">${icon(apPaused ? "pause" : "radio")} Autopilot ${apPaused ? "paused" : "ON"}</span>
+                <span class="cg-ap-status-scan">${icon("clock")} Last scan &middot; ${apLastScan}</span>
+              </div>
+              <div class="cg-ap-status-actions">
+                <button type="button" class="btn btn-ghost" data-ap-pause-toggle>${icon(apPaused ? "play" : "pause")} ${apPaused ? "Resume" : "Pause"}</button>
+                <a class="btn btn-ghost" href="#autopilot-console" data-ap-scroll-to="autopilot-console">${icon("settings-2")} Edit rules</a>
+                <a class="btn btn-ghost" href="#autopilot-activity-log" data-ap-scroll-to="autopilot-activity-log">${icon("history")} Activity log</a>
+              </div>
+            </div>
+            <div class="cg-ap-stat-row">
+              <div><span>Scanned</span><strong>${apScanned}</strong></div>
+              <div><span>Strong matches</span><strong>${apStrongMatches}</strong></div>
+              <div><span>Saved</span><strong>${apSavedCount}</strong></div>
+              <div><span>Applied</span><strong>${apAppliedCount}</strong></div>
+              <div><span>Needs review</span><strong>${apNeedsReview}</strong></div>
+            </div>
+            <div class="cg-ap-insight" data-ap-insight>
+              <span class="cg-ap-insight-label">${icon("sparkles")} Vera noticed</span>
+              <p>${apInsight}</p>
+              <div class="cg-ap-insight-actions">
+                <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("adjusting my Autopilot rules to surface more matches")}#messages">Draft rule change</a>
+                <button type="button" class="btn btn-ghost" data-ap-insight-dismiss>Not now</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="cg-ap-matches">
           <header>
             <div>
@@ -10598,8 +10815,9 @@ function renderAutopilot() {
                   <span>${icon("briefcase")} ${role.salary}</span>
                 </div>
                 <div class="cg-ap-why">
-                  <span class="cg-ap-why-label">${icon("bot")} Why it matched</span>
-                  <p>${role.why}${role.watch ? ` <b>Watch:</b> ${role.watch}` : ""}</p>
+                  <span class="cg-ap-why-label"><span class="cg-ap-why-icon"><img src="assets/vera-ai-coach.png" alt="Vera AI"></span> Why it matched</span>
+                  <p>${role.why}</p>
+                  ${role.watch ? `<p class="cg-ap-watch"><b>Watch:</b> ${role.watch}</p>` : ""}
                 </div>
                 <div class="cg-ap-match-actions">
                   <a class="btn btn-primary" href="job-detail.html?role=${encodeURIComponent(role.id)}">View job ${icon("chevron-right")}</a>
@@ -10717,7 +10935,7 @@ function renderAutopilot() {
           </form>
         </section>
 
-        <section class="cg-ap-activity">
+        <section class="cg-ap-activity" id="autopilot-activity-log">
           <span class="cg-section-kicker">${icon("history")} Autopilot activity</span>
           <h1>A transparent record of what Autopilot did</h1>
           <div class="cg-ap-log">
@@ -10853,11 +11071,46 @@ function renderAutopilot() {
       }
       showToast("Opened the rule that matched this role.");
     }));
+    qs("[data-ap-pause-toggle]", root)?.addEventListener("click", () => {
+      const next = readState();
+      next.autopilotPaused = !next.autopilotPaused;
+      next.autopilotLog = pushAutopilotLog(next, next.autopilotPaused
+        ? { time: "Just now", status: "Rule changed", tone: "tan", title: "Autopilot paused", body: "Vera will stop scanning until you resume." }
+        : { time: "Just now", status: "Rule changed", tone: "teal", title: "Autopilot resumed", body: "Vera is scanning for new matches again." });
+      writeState(syncCurrentUser(next));
+      renderAutopilot();
+    });
+    qsa("[data-ap-scroll-to]", root).forEach(link => link.addEventListener("click", event => {
+      event.preventDefault();
+      qs(`#${link.dataset.apScrollTo}`, root)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
+    qs("[data-ap-insight-dismiss]", root)?.addEventListener("click", () => {
+      qs("[data-ap-insight]", root)?.remove();
+    });
     qsa("[data-pipeline-stage]", root).forEach(btn => btn.addEventListener("click", () => {
       const index = btn.getAttribute("data-pipeline-stage");
       qsa("[data-pipeline-stage]", root).forEach(b => b.classList.toggle("active", b === btn));
       qsa("[data-pipeline-panel]", root).forEach(panel => panel.classList.toggle("active", panel.getAttribute("data-pipeline-panel") === index));
     }));
+    qsa("[data-pipeline-card-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const card = btn.closest(".cg-pipeline-card");
+      const open = card.classList.toggle("is-open");
+      btn.setAttribute("aria-expanded", String(open));
+    }));
+    qsa("[data-pipeline-impact-toggle]", root).forEach(header => {
+      const toggleImpact = () => {
+        const section = header.closest(".cg-pipeline-impact");
+        const open = section.classList.toggle("is-open");
+        header.setAttribute("aria-expanded", String(open));
+      };
+      header.addEventListener("click", toggleImpact);
+      header.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          toggleImpact();
+        }
+      });
+    });
     return;
   }
   const tracked = getTrackedJobs(state);
