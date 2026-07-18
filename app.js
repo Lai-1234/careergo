@@ -11149,22 +11149,6 @@ function openDraftRequirementsReview(draft) {
   `, { label: "Vera's requirement review" });
 }
 
-function renderAdditionalCompensationEditor(draft) {
-  return `
-    <div data-addcomp-list>
-      ${draft.additionalCompensation.map((c, i) => `
-        <div class="emp-resp-row">
-          <input type="text" data-addcomp-field="type" data-addcomp-index="${i}" value="${escapeHtml(c.type)}" placeholder="e.g. Signing bonus" list="emp-addcomp-type-options">
-          <input type="text" data-addcomp-field="value" data-addcomp-index="${i}" value="${escapeHtml(c.value)}" placeholder="e.g. RM 5,000 one-time">
-          <button type="button" class="btn btn-ghost btn-sm" data-addcomp-remove="${i}" aria-label="Remove">${icon("x")}</button>
-        </div>
-      `).join("")}
-    </div>
-    <datalist id="emp-addcomp-type-options">${["Bonus", "Commission", "Allowances", "Overtime policy", "Equity"].map(t => `<option value="${escapeHtml(t)}">`).join("")}</datalist>
-    <button type="button" class="btn btn-ghost btn-sm" data-addcomp-add>${icon("plus")} Add compensation item</button>
-  `;
-}
-
 function renderRequiredDocumentsControl(draft) {
   const docs = [["resume", "Resume"], ["coverLetter", "Cover letter"], ["portfolio", "Portfolio"]];
   return `
@@ -12114,24 +12098,6 @@ function renderEmployerRoleBuilder(root, roleId) {
     });
   }
 
-  function bindAdditionalCompensationEditor() {
-    qsa("[data-addcomp-field]", root).forEach(input => {
-      input.addEventListener("input", () => {
-        draft.additionalCompensation[Number(input.dataset.addcompIndex)][input.dataset.addcompField] = input.value;
-        scheduleAutosave();
-      });
-      input.addEventListener("blur", flushAndPersist);
-    });
-    qsa("[data-addcomp-remove]", root).forEach(btn => btn.addEventListener("click", () => {
-      draft.additionalCompensation.splice(Number(btn.dataset.addcompRemove), 1);
-      persistDraft(); draw();
-    }));
-    qs("[data-addcomp-add]", root)?.addEventListener("click", () => {
-      draft.additionalCompensation.push({ type: "", value: "" });
-      persistDraft(); draw();
-    });
-  }
-
   function bindRequiredDocumentsControl() {
     qsa("[data-doc-toggle]", root).forEach(group => {
       const key = group.dataset.docToggle;
@@ -12244,7 +12210,13 @@ function renderEmployerRoleBuilder(root, roleId) {
           ${renderSalaryBenchmarkCard(draft)}
           <details class="emp-advanced-disclosure" data-advanced="compensation" ${advancedOpen.compensation ? "open" : ""}>
             <summary>Advanced — additional compensation</summary>
-            ${renderAdditionalCompensationEditor(draft)}
+            <div class="emp-form-grid-2">
+              <label>Bonus <span class="emp-optional-tag">Optional</span><input type="text" data-field-bonus value="${escapeHtml(draft.bonus)}" placeholder="e.g. Annual performance bonus"></label>
+              <label>Commission <span class="emp-optional-tag">Optional</span><input type="text" data-field-commission value="${escapeHtml(draft.commission)}" placeholder="e.g. 5% of closed deals"></label>
+              <label>Allowances <span class="emp-optional-tag">Optional</span><input type="text" data-field-allowances value="${escapeHtml(draft.allowances)}" placeholder="e.g. Transport, phone"></label>
+              <label>Overtime policy <span class="emp-optional-tag">Optional</span><input type="text" data-field-overtimePolicy value="${escapeHtml(draft.overtimePolicy)}" placeholder="e.g. Paid at 1.5x"></label>
+              <label>Equity <span class="emp-optional-tag">Optional</span><input type="text" data-field-equity value="${escapeHtml(draft.equity)}" placeholder="e.g. 0.1% - 0.5% ESOP"></label>
+            </div>
           </details>
 
           <h3 class="emp-form-subhead">Benefits</h3>
@@ -12695,7 +12667,11 @@ function renderEmployerRoleBuilder(root, roleId) {
       bindSalarySelect("currency");
       bindSalarySelect("visibility");
       bindSalaryCheckbox("negotiable");
-      bindAdditionalCompensationEditor();
+      bindField("[data-field-bonus]", "bonus");
+      bindField("[data-field-commission]", "commission");
+      bindField("[data-field-allowances]", "allowances");
+      bindField("[data-field-overtimePolicy]", "overtimePolicy");
+      bindField("[data-field-equity]", "equity");
       qsa("[data-benefit]", root).forEach(cb => cb.addEventListener("change", () => {
         const b = cb.dataset.benefit;
         if (cb.checked) { if (!draft.benefits.includes(b)) draft.benefits.push(b); }
