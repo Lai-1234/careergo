@@ -10168,6 +10168,12 @@ body :is(.page-hero, .dashboard-hero, .market-hero, .os-module-header, .glass-ca
   border-left: 5px solid #2FAE7A !important;
 }
 
+.toast-undo-btn {
+  display: inline-block; margin-top: 8px; border: 1px solid rgba(250, 247, 242, 0.5) !important; background: none !important;
+  color: #FAF7F2 !important; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 999px; cursor: pointer;
+}
+.toast-undo-btn:hover { background: rgba(250, 247, 242, 0.12) !important; }
+
 .topbar .btn,
 .topbar .btn-ghost,
 .topbar .account-menu-trigger,
@@ -13065,11 +13071,19 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   display: flex; align-items: center; gap: 6px; margin: 0 0 8px; padding: 4px 0;
   font-size: 13px; font-weight: 700;
 }
-.emp-pipeline-col-body { display: grid; gap: 8px; }
+.emp-pipeline-col-body { display: grid; gap: 8px; min-height: 40px; border-radius: 12px; transition: background 150ms; }
+.emp-pipeline-col-body.emp-drop-target { background: rgba(7, 56, 47, 0.06); outline: 2px dashed var(--emp-teal, var(--line)); outline-offset: 4px; }
 
-.emp-cand-card { padding: 12px; display: grid; gap: 8px; cursor: pointer; position: relative; transition: box-shadow 150ms, transform 150ms; }
+.emp-cand-card { padding: 12px; display: grid; gap: 8px; cursor: pointer; position: relative; transition: box-shadow 150ms, transform 150ms, opacity 150ms; }
 .emp-cand-card:hover { box-shadow: var(--emp-shadow-card-hover, 0 12px 28px rgba(15,23,42,0.12)); transform: translateY(-1px); }
+.emp-cand-card:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 2px; }
 .emp-cand-card.emp-cand-card-menu-open { z-index: 30; }
+.emp-cand-card.emp-cand-card-dragging { opacity: 0.4; }
+.emp-cand-card.emp-cand-card-moved { animation: empCandCardMoved 900ms ease-out; }
+@keyframes empCandCardMoved {
+  0% { box-shadow: 0 0 0 3px rgba(7, 56, 47, 0.35); }
+  100% { box-shadow: var(--emp-shadow-card, 0 1px 2px rgba(15,23,42,0.05)); }
+}
 .emp-cand-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .emp-cand-identity { min-width: 0; }
 .emp-cand-name { display: block; font-size: 14px; font-weight: 700; }

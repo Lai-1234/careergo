@@ -2803,6 +2803,25 @@ function showToast(message, type = "success") {
   setTimeout(() => toast.remove(), 3600);
 }
 
+function showUndoToast(message, onUndo) {
+  let stack = qs("[data-toast-stack]");
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.className = "toast-stack";
+    stack.dataset.toastStack = "";
+    document.body.appendChild(stack);
+  }
+  const toast = document.createElement("div");
+  toast.className = "toast success";
+  toast.innerHTML = `<strong>Done</strong><span>${message}</span><button type="button" class="toast-undo-btn">Undo</button>`;
+  qs(".toast-undo-btn", toast).addEventListener("click", () => {
+    onUndo();
+    toast.remove();
+  });
+  stack.appendChild(toast);
+  setTimeout(() => toast.remove(), 5000);
+}
+
 function showSignupPrompt(reason = "unlock CareerGo personalization") {
   const existing = qs("[data-signup-prompt]");
   if (existing) existing.remove();
@@ -12571,6 +12590,7 @@ function menuActionsFor(c) {
   if (c.stage === "Final Review") items.push(["Compare candidates", "compare"], ["Make offer", "make-offer"], ["Reject", "reject"]);
   if (c.stage === "Offer" && c.offer?.status !== "Accepted") items.push(["Follow up", "follow-up"]);
   items.push(["View profile", "review"]);
+  EMPLOYER_TALENT_PIPELINE_STAGES.filter(s => s !== c.stage).forEach(s => items.push([`Move to ${s}`, `move:${s}`]));
   return items;
 }
 
@@ -12616,6 +12636,8 @@ function renderEmployerTalentPipeline(root, params = {}) {
   let openDrawerId = params.id || null;
   let drawerTab = "overview";
   let pendingAction = null;
+  let lastMovedId = null;
+  let dragCandidateId = null;
 
   function activeList() { return DATA.candidates.filter(c => !c.archived); }
 
@@ -12655,7 +12677,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
     const breakdown = computeMatchBreakdown(c);
     const matchTone = c.fit >= 85 ? "green" : c.fit >= 70 ? "gold" : "";
     return `
-      <div class="card emp-cand-card" data-candidate-card="${c.id}">
+      <div class="card emp-cand-card ${c.id === lastMovedId ? "emp-cand-card-moved" : ""}" data-candidate-card="${c.id}" draggable="true" data-drag-candidate="${c.id}" tabindex="0" role="button" aria-label="${escapeHtml(c.name)} — press left or right arrow to move between stages">
         <div class="emp-cand-card-top">
           <div class="emp-cand-identity">
             <strong class="emp-cand-name">${escapeHtml(c.name)}</strong>
@@ -12706,7 +12728,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
           return `
             <div class="emp-pipeline-col">
               <h3>${stage} <span class="pill">${stageCandidates.length}</span></h3>
-              <div class="emp-pipeline-col-body">
+              <div class="emp-pipeline-col-body" data-drop-stage="${stage}">
                 ${stageCandidates.length ? stageCandidates.map(c => renderCandidateCard(c)).join("") : `<p class="emp-empty-hint">No candidates.</p>`}
               </div>
             </div>
@@ -12887,12 +12909,26 @@ function renderEmployerTalentPipeline(root, params = {}) {
     return "";
   }
 
+  function moveStageWithUndo(c, stage, label) {
+    if (c.stage === stage) return;
+    const previousStage = c.stage;
+    moveStage(c, stage, label);
+    lastMovedId = c.id;
+    draw();
+    showUndoToast(`${c.name} moved to ${stage}.`, () => {
+      moveStage(c, previousStage, "Reverted");
+      lastMovedId = c.id;
+      draw();
+    });
+  }
+
   function runCandidateAction(c, action) {
+    if (action.startsWith("move:")) { moveStageWithUndo(c, action.slice(5)); return; }
     switch (action) {
       case "review": openDrawerId = c.id; drawerTab = "overview"; draw(); break;
-      case "shortlist": moveStage(c, "Shortlisted"); draw(); showToast(`${c.name} shortlisted.`); break;
+      case "shortlist": moveStageWithUndo(c, "Shortlisted"); break;
       case "schedule": case "reschedule": pendingAction = { type: "schedule", id: c.id }; draw(); break;
-      case "move-final": moveStage(c, "Final Review"); draw(); showToast(`${c.name} moved to Final Review.`); break;
+      case "move-final": moveStageWithUndo(c, "Final Review"); break;
       case "make-offer": case "send-offer": pendingAction = { type: "offer", id: c.id }; draw(); break;
       case "review-counter": pendingAction = { type: "counter", id: c.id }; draw(); break;
       case "follow-up": showToast(`Follow-up reminder sent for ${c.name}.`); break;
@@ -13070,11 +13106,50 @@ function renderEmployerTalentPipeline(root, params = {}) {
     qs("[data-action-center-view-all]", root)?.addEventListener("click", () => { specialFilter = "needs-action"; draw(); });
 
     qsa("[data-candidate-card]", root).forEach(el => el.addEventListener("click", event => {
-      if (event.target.closest("[data-candidate-primary], [data-candidate-menu], [data-candidate-action]")) return;
+      if (event.target.closest("[data-candidate-primary], [data-candidate-menu], [data-candidate-action], [data-quick-action], [data-match-hover]")) return;
       openDrawerId = el.dataset.candidateCard;
       drawerTab = "overview";
       draw();
     }));
+
+    qsa("[data-drag-candidate]", root).forEach(el => {
+      el.addEventListener("dragstart", event => {
+        dragCandidateId = el.dataset.dragCandidate;
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", dragCandidateId);
+        el.classList.add("emp-cand-card-dragging");
+      });
+      el.addEventListener("dragend", () => {
+        el.classList.remove("emp-cand-card-dragging");
+        dragCandidateId = null;
+        qsa("[data-drop-stage]", root).forEach(zone => zone.classList.remove("emp-drop-target"));
+      });
+      el.addEventListener("keydown", event => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const c = DATA.candidates.find(cand => cand.id === el.dataset.dragCandidate);
+        if (!c) return;
+        const idx = EMPLOYER_TALENT_PIPELINE_STAGES.indexOf(c.stage);
+        const nextIdx = event.key === "ArrowRight" ? idx + 1 : idx - 1;
+        if (nextIdx < 0 || nextIdx >= EMPLOYER_TALENT_PIPELINE_STAGES.length) return;
+        moveStageWithUndo(c, EMPLOYER_TALENT_PIPELINE_STAGES[nextIdx]);
+      });
+    });
+    qsa("[data-drop-stage]", root).forEach(zone => {
+      zone.addEventListener("dragover", event => {
+        if (!dragCandidateId) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+        zone.classList.add("emp-drop-target");
+      });
+      zone.addEventListener("dragleave", () => zone.classList.remove("emp-drop-target"));
+      zone.addEventListener("drop", event => {
+        event.preventDefault();
+        zone.classList.remove("emp-drop-target");
+        const c = DATA.candidates.find(cand => cand.id === dragCandidateId);
+        if (c) moveStageWithUndo(c, zone.dataset.dropStage);
+      });
+    });
 
     qsa("[data-candidate-menu]", root).forEach(btn => btn.addEventListener("click", event => {
       event.stopPropagation();
