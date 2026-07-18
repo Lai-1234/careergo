@@ -12864,13 +12864,14 @@ function answerPipelineQuery(question, candidates, roles) {
 
   m = q.match(/missing ([a-z0-9 .+#]+?)$/);
   if (m) {
-    const skill = m[1].trim();
+    const skillLower = m[1].trim();
     const missing = candidates.filter(c => {
       const role = roleFor(c);
-      return role && (role.mustHaveSkills || []).some(s => s.toLowerCase() === skill) && !c.skills.some(s => s.toLowerCase() === skill);
+      return role && (role.mustHaveSkills || []).some(s => s.toLowerCase() === skillLower) && !c.skills.some(s => s.toLowerCase() === skillLower);
     });
-    if (!missing.length) return { answer: `No candidates are missing ${skill}.`, matchedCandidateIds: [] };
-    return { answer: `Missing ${skill}: ${missing.map(c => c.name).join(", ")}.`, matchedCandidateIds: missing.map(c => c.id) };
+    if (!missing.length) return { answer: `No candidates are missing ${skillLower}.`, matchedCandidateIds: [] };
+    const canonicalSkill = (roleFor(missing[0]).mustHaveSkills || []).find(s => s.toLowerCase() === skillLower) || skillLower;
+    return { answer: `Missing ${canonicalSkill}: ${missing.map(c => c.name).join(", ")}.`, matchedCandidateIds: missing.map(c => c.id) };
   }
 
   if (/fresh graduate/.test(q)) {
@@ -12881,10 +12882,11 @@ function answerPipelineQuery(question, candidates, roles) {
 
   m = q.match(/(?:strongest|best) ([a-z0-9 .+#]+?)(?: developer| engineer| candidate)?$/);
   if (m) {
-    const skill = m[1].trim();
-    const matching = candidates.filter(c => c.skills.some(s => s.toLowerCase().includes(skill))).sort((a, b) => b.fit - a.fit);
-    if (!matching.length) return { answer: `No candidates list ${skill} as a skill.`, matchedCandidateIds: [] };
-    return { answer: `Strongest ${skill}: ${matching[0].name} (${matching[0].fit}% match).`, matchedCandidateIds: [matching[0].id] };
+    const skillLower = m[1].trim();
+    const matching = candidates.filter(c => c.skills.some(s => s.toLowerCase().includes(skillLower))).sort((a, b) => b.fit - a.fit);
+    if (!matching.length) return { answer: `No candidates list ${skillLower} as a skill.`, matchedCandidateIds: [] };
+    const canonicalSkill = matching[0].skills.find(s => s.toLowerCase().includes(skillLower)) || skillLower;
+    return { answer: `Strongest ${canonicalSkill}: ${matching[0].name} (${matching[0].fit}% match).`, matchedCandidateIds: [matching[0].id] };
   }
 
   if (/interview first|recommend next|next hiring action/.test(q)) {
@@ -13073,8 +13075,9 @@ function renderEmployerTalentPipeline(root, params = {}) {
   let lastMovedId = null;
   let dragCandidateId = null;
   let veraPanelOpen = false;
-  let veraFabActiveAction = null;
-  let veraFabResultHtml = "";
+  let veraPanelTab = "ask";
+  let veraAskInput = "";
+  let veraAskAnswer = null;
   const expandedCandidateIds = new Set();
   let openMenuId = null;
   let menuSubview = null;
@@ -13458,16 +13461,48 @@ function renderEmployerTalentPipeline(root, params = {}) {
     draw();
   }
 
+  function renderVeraAskTab(list) {
+    const suggestions = ["Who is ready for offer?", "Who should I interview first?", "Summarize the pipeline", "Which candidates are risky?"];
+    const matchedCandidates = veraAskAnswer ? veraAskAnswer.matchedCandidateIds.map(id => list.find(c => c.id === id)).filter(Boolean) : [];
+    return `
+      <form class="emp-vera-ask-form" data-vera-ask-form>
+        <input type="text" data-vera-ask-input placeholder="Ask about this pipeline..." value="${escapeHtml(veraAskInput)}" autocomplete="off">
+        <button type="submit" class="btn btn-primary btn-sm" aria-label="Ask">${icon("send")}</button>
+      </form>
+      ${veraAskAnswer ? `
+        <div class="emp-vera-fab-result">
+          ${matchedCandidates.length ? `<div class="emp-vera-ask-chips">${matchedCandidates.map(c => `<button type="button" class="pill" data-action-item="${c.id}">${escapeHtml(c.name)}</button>`).join("")}</div>` : ""}
+          <p>${escapeHtml(veraAskAnswer.answer).replace(/\n/g, "<br>")}</p>
+        </div>
+      ` : `
+        <div class="emp-vera-ask-suggestions">
+          ${suggestions.map(s => `<button type="button" data-vera-ask-suggestion="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join("")}
+        </div>
+      `}
+      <p class="emp-vera-principle">${icon("shield-check")} Answered from candidate data already in this pipeline.</p>
+    `;
+  }
+
+  function renderVeraInsightsTab(list) {
+    const insights = computePipelineInsights(list, DATA.employerRoles);
+    return `
+      <div class="emp-vera-insights-list">
+        ${insights.map(card => `
+          <div class="emp-vera-insight-card">
+            <div class="emp-vera-insight-head">
+              <strong>${escapeHtml(card.title)}</strong>
+              <span class="pill ${card.confidence === "High" ? "green" : card.confidence === "Medium" ? "gold" : ""}">${card.confidence}</span>
+            </div>
+            <p>${escapeHtml(card.why)}</p>
+            <button type="button" class="btn btn-ghost btn-sm" data-vera-insight-action="${escapeHtml(JSON.stringify(card.action))}">${escapeHtml(card.action.label)}</button>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
   function renderVeraFab(list) {
     const context = pickVeraContextCandidate(list, openDrawerId);
-    const actions = [
-      ["summarize", "Summarize Resume", "file-text"],
-      ["compare", "Compare With Top Candidates", "bar-chart-2"],
-      ["questions", "Generate Interview Questions", "help-circle"],
-      ["explain-score", "Explain Match Score", "percent"],
-      ["next-stage", "Recommend Next Stage", "arrow-right-circle"],
-      ["draft-email", "Draft Candidate Email", "mail"]
-    ];
     return `
       <button type="button" class="emp-vera-fab" data-vera-fab-toggle aria-label="Ask Vera about this pipeline" aria-expanded="${veraPanelOpen}">
         ${icon(veraPanelOpen ? "x" : "sparkles")}
@@ -13476,19 +13511,16 @@ function renderEmployerTalentPipeline(root, params = {}) {
         <div class="emp-vera-fab-panel" role="dialog" aria-label="Vera assistant">
           <div class="emp-vera-fab-head">
             <div>
-              <span class="emp-vera-fab-eyebrow">${icon("sparkles")} Ask Vera</span>
+              <span class="emp-vera-fab-eyebrow">${icon("sparkles")} Vera</span>
               <h3>${context ? escapeHtml(context.name) : "Talent Pipeline"}</h3>
             </div>
             <button type="button" class="btn btn-ghost btn-sm" data-vera-fab-close aria-label="Close">${icon("x")}</button>
           </div>
-          ${context ? `
-            <p class="emp-vera-fab-subtitle">Looking at <strong>${escapeHtml(context.name)}</strong> · ${escapeHtml(context.role)} · ${context.fit}% match</p>
-            <div class="emp-vera-fab-actions">
-              ${actions.map(([key, label, ic]) => `<button type="button" class="emp-vera-fab-chip ${veraFabActiveAction === key ? "active" : ""}" data-vera-fab-action="${key}">${icon(ic)}<span>${label}</span></button>`).join("")}
-            </div>
-            <div class="emp-vera-fab-result">${veraFabResultHtml || `<p class="emp-empty-hint">Pick an action above and Vera will generate it from ${escapeHtml(context.name.split(" ")[0])}'s profile.</p>`}</div>
-            <p class="emp-vera-principle">${icon("shield-check")} Generated from candidate data already in this pipeline. Review before using.</p>
-          ` : `<p class="emp-empty-hint">No candidates in view — adjust filters to give Vera something to look at.</p>`}
+          <div class="emp-subtabs emp-vera-fab-tabs">
+            <button type="button" class="emp-subtab ${veraPanelTab === "ask" ? "active" : ""}" data-vera-fab-tab="ask">Ask</button>
+            <button type="button" class="emp-subtab ${veraPanelTab === "insights" ? "active" : ""}" data-vera-fab-tab="insights">Insights</button>
+          </div>
+          ${veraPanelTab === "ask" ? renderVeraAskTab(list) : renderVeraInsightsTab(list)}
         </div>
       ` : ""}
     `;
@@ -13629,6 +13661,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
     qsa("[data-action-item]", root).forEach(el => el.addEventListener("click", () => {
       openDrawerId = el.dataset.actionItem;
       drawerTab = "overview";
+      veraPanelOpen = false;
       draw();
     }));
     qs("[data-action-center-view-all]", root)?.addEventListener("click", () => { specialFilter = "needs-action"; draw(); });
@@ -13731,7 +13764,6 @@ function renderEmployerTalentPipeline(root, params = {}) {
     qs("[data-vera-fab-toggle]", root)?.addEventListener("click", event => {
       event.stopPropagation();
       veraPanelOpen = !veraPanelOpen;
-      if (veraPanelOpen) { veraFabActiveAction = null; veraFabResultHtml = ""; }
       draw();
     });
     qs("[data-vera-fab-close]", root)?.addEventListener("click", event => {
@@ -13740,26 +13772,34 @@ function renderEmployerTalentPipeline(root, params = {}) {
       draw();
     });
     qs(".emp-vera-fab-panel", root)?.addEventListener("click", event => event.stopPropagation());
-    qsa("[data-vera-fab-action]", root).forEach(btn => btn.addEventListener("click", event => {
+    qsa("[data-vera-fab-tab]", root).forEach(btn => btn.addEventListener("click", event => {
       event.stopPropagation();
-      const c = pickVeraContextCandidate(filtered(), openDrawerId);
-      if (!c) return;
-      const key = btn.dataset.veraFabAction;
-      veraFabActiveAction = key;
-      if (key === "summarize") {
-        veraFabResultHtml = `<p>${escapeHtml(summarizeCandidateResume(c))}</p>`;
-      } else if (key === "questions") {
-        veraFabResultHtml = `<ol class="emp-ai-question-list">${generateInterviewQuestions(c).map(q => `<li>${escapeHtml(q)}</li>`).join("")}</ol>`;
-      } else if (key === "explain-score") {
-        veraFabResultHtml = `<p>${escapeHtml(explainMatchScoreText(c))}</p>`;
-      } else if (key === "compare") {
-        veraFabResultHtml = `<ul class="emp-vera-fab-compare-list">${compareWithTopCandidatesText(c, filtered()).map(line => `<li>${escapeHtml(line)}</li>`).join("")}</ul>`;
-      } else if (key === "next-stage") {
-        veraFabResultHtml = `<p>${escapeHtml(recommendNextStageText(c))}</p>`;
-      } else if (key === "draft-email") {
-        const draft = draftCandidateEmailText(c);
-        veraFabResultHtml = `<p class="emp-vera-fab-email-subject"><strong>Subject:</strong> ${escapeHtml(draft.subject)}</p>${draft.body.split("\n\n").map(p => `<p>${escapeHtml(p)}</p>`).join("")}`;
-      }
+      veraPanelTab = btn.dataset.veraFabTab;
+      draw();
+    }));
+    qs("[data-vera-ask-form]", root)?.addEventListener("submit", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const input = qs("[data-vera-ask-input]", root);
+      veraAskInput = input ? input.value : "";
+      if (!veraAskInput.trim()) return;
+      veraAskAnswer = answerPipelineQuery(veraAskInput, filtered(), DATA.employerRoles);
+      draw();
+    });
+    qsa("[data-vera-ask-suggestion]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      veraAskInput = btn.dataset.veraAskSuggestion;
+      veraAskAnswer = answerPipelineQuery(veraAskInput, filtered(), DATA.employerRoles);
+      draw();
+    }));
+    qsa("[data-vera-insight-action]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      let action;
+      try { action = JSON.parse(btn.dataset.veraInsightAction); } catch (e) { return; }
+      if (action.type === "open-candidate" && action.id) { openDrawerId = action.id; drawerTab = "overview"; }
+      else if (action.type === "filter-stage" && action.stage) { stageFilterX = action.stage; }
+      else if (action.type === "filter-skill" && action.skill) { query = action.skill; }
+      veraPanelOpen = false;
       draw();
     }));
     document.addEventListener("click", () => { if (veraPanelOpen) { veraPanelOpen = false; draw(); } });

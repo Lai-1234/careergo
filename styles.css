@@ -13183,17 +13183,23 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   color: var(--emp-ai, #6f5fc4);
 }
 .emp-vera-fab-eyebrow svg { width: 11px; height: 11px; }
-.emp-vera-fab-subtitle { margin: 0 0 12px; font-size: 12px; color: var(--emp-muted, var(--muted)); line-height: 1.5; }
-.emp-vera-fab-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-.emp-vera-fab-chip {
-  display: flex; align-items: center; gap: 6px; text-align: left;
-  padding: 8px 10px; border-radius: 10px; border: 1px solid var(--emp-line, var(--line));
-  background: #fff; cursor: pointer; font-size: 11.5px; line-height: 1.3; color: var(--emp-ink, var(--text));
-  transition: border-color 0.12s ease, background 0.12s ease;
+.emp-vera-fab-tabs { margin: 0 0 12px; }
+.emp-vera-fab-tabs .emp-subtab { padding: 6px 12px; font-size: 12px; }
+.emp-vera-ask-form { display: flex; gap: 8px; margin-bottom: 10px; }
+.emp-vera-ask-form input {
+  flex: 1; padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px;
+  font-size: 13px; font-family: inherit;
 }
-.emp-vera-fab-chip svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--emp-ai, #6f5fc4); }
-.emp-vera-fab-chip:hover { border-color: var(--emp-ai, #6f5fc4); background: rgba(111, 95, 196, 0.06); }
-.emp-vera-fab-chip.active { border-color: var(--emp-ai, #6f5fc4); background: rgba(111, 95, 196, 0.1); }
+.emp-vera-ask-form .btn { padding: 8px 12px; min-height: 0; }
+.emp-vera-ask-suggestions { display: grid; gap: 6px; margin-bottom: 10px; }
+.emp-vera-ask-suggestions button {
+  text-align: left; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--emp-line, var(--line));
+  background: #fff; cursor: pointer; font-size: 12px; color: var(--emp-muted, var(--muted));
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+.emp-vera-ask-suggestions button:hover { border-color: var(--emp-ai, #6f5fc4); color: var(--emp-ai, #6f5fc4); }
+.emp-vera-ask-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.emp-vera-ask-chips .pill { cursor: pointer; border: none; }
 .emp-vera-fab-result {
   padding: 12px; border-radius: 12px; background: rgba(111, 95, 196, 0.06);
   font-size: 13px; line-height: 1.55; margin-bottom: 10px; min-height: 40px;
@@ -13201,11 +13207,15 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-vera-fab-result p { margin: 0 0 8px; }
 .emp-vera-fab-result p:last-child { margin-bottom: 0; }
 .emp-vera-fab-result ul, .emp-vera-fab-result ol { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
-.emp-vera-fab-email-subject { padding-bottom: 8px; margin-bottom: 8px !important; border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-vera-insights-list { display: grid; gap: 10px; margin-bottom: 4px; }
+.emp-vera-insight-card { padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; }
+.emp-vera-insight-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.emp-vera-insight-head strong { font-size: 13px; }
+.emp-vera-insight-card p { margin: 0 0 8px; font-size: 12px; line-height: 1.5; color: var(--emp-muted, var(--muted)); }
+.emp-vera-insight-card .btn { padding: 6px 10px; min-height: 0; font-size: 12px; }
 @media (max-width: 640px) {
   .emp-vera-fab { right: 16px; bottom: 16px; }
   .emp-vera-fab-panel { right: 16px; bottom: 84px; width: calc(100vw - 32px); }
-  .emp-vera-fab-actions { grid-template-columns: 1fr; }
 }
 .emp-scorecard-card { padding: 12px 14px; margin-bottom: 8px; border: 1px solid var(--line); }
 .emp-scorecard-card p { margin: 4px 0 0; font-size: 12px; line-height: 1.5; }
