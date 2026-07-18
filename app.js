@@ -11861,7 +11861,6 @@ function renderEmployerRoleBuilder(root, roleId) {
             <label>Team structure <span class="emp-optional-tag">Optional</span><input type="text" data-field-teamStructure value="${escapeHtml(draft.teamStructure)}" placeholder="e.g. Team of 6 engineers"></label>
             <label>Key stakeholders <span class="emp-optional-tag">Optional</span><input type="text" data-field-stakeholders value="${escapeHtml(draft.stakeholders)}" placeholder="e.g. Product, Design"></label>
             <label>Tools & technologies <span class="emp-optional-tag">Optional</span><input type="text" data-field-tools value="${escapeHtml(draft.tools)}" placeholder="e.g. React, Node.js, AWS"></label>
-            <label>Working hours <span class="emp-optional-tag">Optional</span><input type="text" data-field-workingHours value="${escapeHtml(draft.workingHours)}" placeholder="e.g. 9am-6pm, flexible"></label>
             <label>Travel expectations <span class="emp-optional-tag">Optional</span><input type="text" data-field-travelExpectations value="${escapeHtml(draft.travelExpectations)}" placeholder="e.g. None, or up to 10%"></label>
           </div>
         `;
@@ -12224,7 +12223,6 @@ function renderEmployerRoleBuilder(root, roleId) {
       bindField("[data-field-teamStructure]", "teamStructure");
       bindField("[data-field-stakeholders]", "stakeholders");
       bindField("[data-field-tools]", "tools");
-      bindField("[data-field-workingHours]", "workingHours");
       bindField("[data-field-travelExpectations]", "travelExpectations");
     } else if (activeStep === 2) {
       bindTagInput("mustHaveSkills");
