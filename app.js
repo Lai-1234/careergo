@@ -10893,6 +10893,20 @@ function makeEmployerRoleDraft(existing) {
     else if (key === "salary") merged.salary = { ...base.salary, ...(existing.salary || {}) };
     else merged[key] = existing[key];
   });
+  // domainKnowledge/behaviouralCompetencies/accessibilityConsiderations were retired as
+  // standalone Step 3 fields; fold any previously-entered content into rolePurpose so it
+  // stays visible instead of becoming an orphaned, unrendered key on the draft. Runs after
+  // the generic copy loop above (which would otherwise overwrite rolePurpose with the
+  // unmigrated value) and is guarded by a substring check, not a one-time flag, so
+  // re-running this merge on an already-migrated draft is idempotent.
+  const legacyNotes = [
+    ["Domain knowledge", existing.domainKnowledge], ["Behavioural competencies", existing.behaviouralCompetencies],
+    ["Accessibility considerations", existing.accessibilityConsiderations]
+  ].filter(([, value]) => value && String(value).trim() && !String(existing.rolePurpose || "").includes(value));
+  if (legacyNotes.length) {
+    const basePurpose = existing.rolePurpose ? String(existing.rolePurpose) : "";
+    merged.rolePurpose = [basePurpose, ...legacyNotes.map(([label, value]) => `${label}: ${value}`)].filter(Boolean).join("\n\n");
+  }
   return merged;
 }
 
@@ -11153,6 +11167,17 @@ function getReadinessPredicates(draft) {
   checks.forEach(c => { result[c.key] = c.status === "Complete"; });
   result.readiness = getDraftReadiness(draft);
   return result;
+}
+
+const CANDIDATE_POOL_BASE_BY_SENIORITY = {
+  "Internship": 400, "Entry level": 320, "Junior": 260, "Mid-level": 180,
+  "Senior": 110, "Lead": 60, "Manager": 45, "Director": 20, "Executive": 10
+};
+function estimateCandidatePool(draft) {
+  const base = CANDIDATE_POOL_BASE_BY_SENIORITY[draft.seniority] || 150;
+  const skillPenalty = Math.pow(0.82, draft.mustHaveSkills.length);
+  const thresholdPenalty = 1 - ((draft.matchThreshold - 50) / 100);
+  return Math.max(3, Math.round(base * skillPenalty * thresholdPenalty));
 }
 
 function computeDraftVeraReview(draft) {
@@ -11871,19 +11896,19 @@ function renderEmployerRoleBuilder(root, roleId) {
           <div><span class="emp-tags-label">Must-have — failure to meet may affect eligibility</span>${renderTagInput("mustHaveSkills", draft.mustHaveSkills)}</div>
           <div><span class="emp-tags-label">Preferred — improves fit, won't automatically reject candidates</span>${renderTagInput("niceToHaveSkills", draft.niceToHaveSkills)}</div>
           <div><span class="emp-tags-label">Trainable — can be learned after joining</span>${renderTagInput("trainableSkills", draft.trainableSkills)}</div>
+          <label>Match threshold<select data-field-matchThreshold>
+            ${[[60, "Broad pool — 60%"], [70, "Balanced — 70%"], [80, "Focused — 80%"], [90, "Very selective — 90%"]].map(([v, l]) => `<option value="${v}" ${draft.matchThreshold === v ? "selected" : ""}>${l}</option>`).join("")}
+          </select></label>
+          <p class="emp-field-help">~${estimateCandidatePool(draft)} candidates at this threshold.</p>
           <div class="emp-form-grid-2">
             <label>Minimum experience<select data-field-minExperience>${["No experience required", "Less than 1 year", "1-2 years", "3-5 years", "5+ years"].map(o => `<option ${draft.minExperience === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-equivalentExperienceAccepted ${draft.equivalentExperienceAccepted ? "checked" : ""}> Equivalent project/portfolio evidence accepted</label>
             <label>Education or certification <span class="emp-optional-tag">Optional</span><input type="text" data-field-educationOrCertification value="${escapeHtml(draft.educationOrCertification)}" placeholder="e.g. Bachelor's degree preferred"></label>
             <label>Required licences <span class="emp-optional-tag">Optional</span><input type="text" data-field-requiredLicences value="${escapeHtml(draft.requiredLicences)}"></label>
             <label>Language requirements <span class="emp-optional-tag">Optional</span><input type="text" data-field-languageRequirements value="${escapeHtml(draft.languageRequirements)}" placeholder="e.g. Fluent English"></label>
-            <label>Portfolio / work sample<select data-field-portfolioRequirement>${["Optional", "Preferred", "Required"].map(o => `<option ${draft.portfolioRequirement === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
-            <label>Domain knowledge <span class="emp-optional-tag">Optional</span><input type="text" data-field-domainKnowledge value="${escapeHtml(draft.domainKnowledge)}"></label>
-            <label>Behavioural competencies <span class="emp-optional-tag">Optional</span><input type="text" data-field-behaviouralCompetencies value="${escapeHtml(draft.behaviouralCompetencies)}"></label>
             <label>Availability requirement <span class="emp-optional-tag">Optional</span><input type="text" data-field-availabilityRequirement value="${escapeHtml(draft.availabilityRequirement)}" placeholder="e.g. Immediate, 1 month notice"></label>
             <label>Work authorization <span class="emp-optional-tag">Optional</span><input type="text" data-field-workAuthorization value="${escapeHtml(draft.workAuthorization)}" placeholder="e.g. Must be authorized to work in Malaysia"></label>
           </div>
-          <label>Accessibility considerations <span class="emp-optional-tag">Optional</span><textarea data-field-accessibilityConsiderations rows="2" placeholder="Any accessibility notes candidates should know">${escapeHtml(draft.accessibilityConsiderations)}</textarea></label>
           <button type="button" class="btn btn-ghost btn-sm" data-review-requirements>${icon("sparkles")} Ask Vera to review requirements</button>
         `;
       case 3:
@@ -12228,17 +12253,14 @@ function renderEmployerRoleBuilder(root, roleId) {
       bindTagInput("mustHaveSkills");
       bindTagInput("niceToHaveSkills");
       bindTagInput("trainableSkills");
+      qs("[data-field-matchThreshold]", root)?.addEventListener("change", e => { draft.matchThreshold = Number(e.target.value); persistDraft(); draw(); });
       qs("[data-field-minExperience]", root)?.addEventListener("change", e => { draft.minExperience = e.target.value; persistDraft(); draw(); });
       bindCheckbox("[data-field-equivalentExperienceAccepted]", "equivalentExperienceAccepted");
       bindField("[data-field-educationOrCertification]", "educationOrCertification");
       bindField("[data-field-requiredLicences]", "requiredLicences");
       bindField("[data-field-languageRequirements]", "languageRequirements");
-      bindSelect("[data-field-portfolioRequirement]", "portfolioRequirement");
-      bindField("[data-field-domainKnowledge]", "domainKnowledge");
-      bindField("[data-field-behaviouralCompetencies]", "behaviouralCompetencies");
       bindField("[data-field-availabilityRequirement]", "availabilityRequirement");
       bindField("[data-field-workAuthorization]", "workAuthorization");
-      bindField("[data-field-accessibilityConsiderations]", "accessibilityConsiderations");
       qs("[data-review-requirements]", root)?.addEventListener("click", () => openDraftRequirementsReview(draft));
     } else if (activeStep === 3) {
       bindSalaryField("min");
@@ -14302,6 +14324,7 @@ if (typeof document !== "undefined") {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     makeEmployerRoleDraft,
+    estimateCandidatePool,
     isRoleBasicsComplete,
     isRoleSummaryAdded,
     isResponsibilitiesAdded,

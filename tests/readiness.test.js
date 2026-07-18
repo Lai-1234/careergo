@@ -68,6 +68,22 @@ test("Vera role review readiness matches getReadinessPredicates readiness for th
   assert.equal(review.readiness, predicates.readiness);
 });
 
+test("estimateCandidatePool decreases as must-have count or match threshold increases", () => {
+  const base = app.makeEmployerRoleDraft();
+  base.mustHaveSkills = ["SQL"];
+  base.matchThreshold = 60;
+  const low = app.estimateCandidatePool(base);
+
+  const moreSkills = { ...base, mustHaveSkills: ["SQL", "Python", "AWS", "Docker", "Kubernetes"] };
+  assert.ok(app.estimateCandidatePool(moreSkills) < low);
+
+  const higherThreshold = { ...base, matchThreshold: 90 };
+  assert.ok(app.estimateCandidatePool(higherThreshold) < low);
+
+  assert.ok(Number.isInteger(app.estimateCandidatePool(base)));
+  assert.ok(app.estimateCandidatePool(base) >= 3);
+});
+
 test("application method configured reads requiredDocumentTypes.resume instead of the retired resumeRequired field", () => {
   const draft = app.makeEmployerRoleDraft();
   draft.requiredDocumentTypes.resume = "Optional";
