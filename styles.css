@@ -12420,7 +12420,7 @@ body[data-page="home"] .home-metrics span {
   --emp-bg: #f8f4eb;
   --emp-ink: #082f27;
   --emp-muted: #607069;
-  --emp-line: rgba(14, 44, 37, 0.12);
+  --emp-line: rgba(7, 56, 47, 0.08);
   --emp-green: #07382f;
   --emp-green-2: #052f29;
   --emp-green-nav: #1f332c;
@@ -12462,6 +12462,20 @@ body[data-page="home"] .home-metrics span {
    that depend on it. */
 .emp-app-shell.emp-app-shell :is(h1, h2, h3) { font-family: var(--emp-serif) !important; color: var(--emp-ink) !important; font-weight: 650 !important; letter-spacing: -0.02em; }
 .emp-app-shell.emp-app-shell :is(p, span, small, li, time, label, input, textarea, select, button) { font-family: var(--emp-sans) !important; }
+
+/* Placeholders must always read as empty-state hint text, never as filled
+   content: regular weight, neutral, never bold, never brand green. Wins over
+   the unscoped global `input::placeholder{color:#2FAE7A!important}` rule
+   earlier in this file (same specificity, so source order would otherwise
+   let that one win) via the doubled .emp-app-shell.emp-app-shell bump used
+   throughout this section. Also covers the Create-with-Vera modal, which
+   renders outside .emp-app-shell in [data-emp-modal-root]. */
+.emp-app-shell.emp-app-shell :is(input, textarea, select)::placeholder,
+[data-emp-modal-root] :is(input, textarea)::placeholder {
+  color: var(--emp-muted) !important;
+  font-weight: 400 !important;
+  opacity: 1 !important;
+}
 
 /* Shared component tokens — every current and future Employer page inherits
    these automatically (Roles, Talent Pipeline, Company Profile, Feed, Settings)
@@ -12517,6 +12531,9 @@ body[data-page="home"] .home-metrics span {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
+/* Keeps native scroll-into-view (tab focus, in-page jumps) from landing a
+   target under the 64px sticky header. */
+html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-app-header-inner {
   width: min(var(--emp-container-max), calc(100% - 48px));
   max-width: var(--emp-container-max);
@@ -12851,32 +12868,49 @@ body[data-page="home"] .home-metrics span {
 .emp-wizard-step.active { border-color: rgba(37, 99, 235, 0.4); color: var(--blue); background: rgba(37, 99, 235, 0.06); }
 .emp-wizard-step.done .emp-wizard-step-index { background: #059669; color: #fff; }
 .emp-wizard-body { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: start; }
-.emp-wizard-form { padding: 22px; display: grid; gap: 16px; }
-.emp-wizard-form label { display: grid; gap: 6px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.emp-wizard-form { max-width: 1180px; margin-inline: auto; padding: 22px; display: grid; gap: 16px; }
+.emp-wizard-form label {
+  display: grid; grid-template-columns: 1fr auto; align-items: baseline;
+  column-gap: 8px; row-gap: 6px; font-size: 13px; font-weight: 700; color: var(--emp-muted);
+}
+/* Explicit full-span placement, not flex-basis:100%: the control's own
+   max-width (520px) would otherwise leave room for it to sit beside the
+   label/Optional-tag row instead of wrapping to its own row. */
+.emp-wizard-form label > :is(input, textarea, select) { grid-column: 1 / -1; }
 .emp-wizard-form input, .emp-wizard-form textarea, .emp-wizard-form select {
-  padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 14px; font-family: inherit; color: var(--text);
+  max-width: 520px; padding: 12px 14px; border: 1px solid var(--emp-line); border-radius: 10px;
+  font-size: 14px; line-height: 1.4; font-family: inherit; font-weight: 400; color: var(--emp-ink);
+}
+.emp-wizard-form select {
+  appearance: none; -webkit-appearance: none; padding-right: 34px;
+  /* !important: a global, unscoped `input,select,textarea{background:...!important}`
+     rule elsewhere in this file (a leftover dark-theme pass) uses the `background`
+     shorthand, which silently resets background-image to none on every select
+     unless matched here. */
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNjA3MDY5IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTUgOGw1IDUgNS01Ii8+PC9zdmc+") !important;
+  background-repeat: no-repeat !important; background-position: right 12px center !important; background-size: 14px !important;
 }
 .emp-wizard-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
-.emp-preview-note { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+.emp-preview-note { margin: 0; font-size: 14px; color: var(--emp-muted); line-height: 1.5; }
 .emp-role-intelligence { padding: 20px 22px; }
 .emp-callout-label {
   display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-  font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--soft);
+  font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--emp-muted);
 }
 .emp-callout-label.warn { color: #b45309; }
-.emp-callout { padding: 12px 0; border-top: 1px solid var(--line); margin-top: 12px; }
+.emp-callout { padding: 12px 0; border-top: 1px solid var(--emp-line); margin-top: 12px; }
 .emp-callout p { margin: 0; font-size: 13px; line-height: 1.5; }
-.emp-stat-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid var(--line); }
-.emp-stat-row span { color: var(--muted); }
+.emp-stat-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid var(--emp-line); }
+.emp-stat-row span { color: var(--emp-muted); }
 .emp-tags { margin-top: 10px; }
-.emp-tags-label { display: block; margin-bottom: 6px; font-size: var(--emp-label); color: var(--soft); text-transform: uppercase; }
-.emp-vera-principle { display: flex; gap: 6px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: var(--emp-label); font-style: italic; color: var(--soft); }
+.emp-tags-label { display: block; margin-bottom: 6px; font-size: var(--emp-label); color: var(--emp-muted); text-transform: uppercase; }
+.emp-vera-principle { display: flex; gap: 6px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--emp-line); font-size: var(--emp-label); font-style: italic; color: var(--emp-muted); }
 .emp-form-section-head { margin-bottom: 4px; }
 .emp-form-section-head h2 { margin: 0 0 4px; font-size: var(--emp-title-md); font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.emp-form-section-head h2 svg { width: 16px; height: 16px; color: var(--blue); }
-.emp-form-section-head p { margin: 0; font-size: var(--emp-body-sm); color: var(--muted); }
-.emp-optional-tag { text-transform: none; font-weight: 500; color: var(--soft); font-size: 11px; margin-left: 6px; }
-.emp-tag-input { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; display: grid; gap: 8px; }
+.emp-form-section-head h2 svg { width: 16px; height: 16px; color: var(--emp-green); }
+.emp-form-section-head p { margin: 0; font-size: var(--emp-body-sm); color: var(--emp-muted); }
+.emp-optional-tag { text-transform: none; font-weight: 500; color: var(--emp-muted); font-size: 11px; flex: 0 0 auto; }
+.emp-tag-input { border: 1px solid var(--emp-line); border-radius: 12px; padding: 8px 10px; display: grid; gap: 8px; }
 .emp-tag-pill { display: inline-flex; align-items: center; gap: 4px; }
 .emp-tag-pill button { display: inline-flex; border: none; background: none; padding: 0; cursor: pointer; color: inherit; }
 .emp-tag-input input { border: none; padding: 4px 2px; font-size: var(--emp-body); font-family: inherit; }
@@ -12884,11 +12918,11 @@ body[data-page="home"] .home-metrics span {
 .emp-resp-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
 .emp-resp-row input { flex: 1; }
 .emp-salary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.emp-field-help { margin: -8px 0 4px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.emp-field-help { margin: -8px 0 4px; font-size: 12px; line-height: 1.5; color: var(--emp-muted); }
 .emp-publish-checklist { padding: 18px 22px; margin-bottom: 20px; }
 .emp-checklist { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
-.emp-checklist li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-.emp-checklist li.done { color: var(--text); }
+.emp-checklist li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--emp-muted); }
+.emp-checklist li.done { color: var(--emp-ink); }
 .emp-checklist li.warn { color: #b45309; }
 .emp-publish-buttons { display: flex; gap: 8px; }
 .emp-job-preview { padding: 20px 22px; }
@@ -13516,7 +13550,7 @@ body[data-page="home"] .home-metrics span {
 .emp-form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
 .emp-form-subhead {
   margin: 22px 0 2px; padding-top: 18px; border-top: 1px solid var(--emp-line, var(--line));
-  font-size: 13px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--emp-muted, var(--soft));
+  font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--emp-muted, var(--soft));
 }
 .emp-wizard-form > .emp-form-subhead:first-child { border-top: 0; padding-top: 0; margin-top: 4px; }
 .emp-checkbox-inline { display: flex !important; align-items: center; gap: 8px; flex-direction: row-reverse; justify-content: flex-end; font-weight: 500 !important; }
@@ -13524,7 +13558,14 @@ body[data-page="home"] .home-metrics span {
 .emp-resp-row { align-items: center; }
 .emp-resp-reorder { display: flex; flex-direction: column; gap: 2px; }
 .emp-resp-reorder .btn { padding: 2px 6px; min-height: 0; }
-.emp-stage-editor-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; }
+.emp-stage-editor-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.emp-stage-editor-row.emp-stage-dragging { opacity: 0.5; }
+.emp-drag-handle {
+  display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  width: 28px; height: 28px; padding: 0; border: 0; background: none;
+  color: var(--emp-muted); cursor: grab;
+}
+.emp-drag-handle:active { cursor: grabbing; }
 .emp-stage-editor-fields { flex: 1; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 8px; }
 .emp-stage-editor-fields input { padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-size: 13px; font-family: inherit; }
 .emp-distribution-list { display: grid; gap: 8px; margin: 10px 0 16px; }
@@ -13539,16 +13580,17 @@ body[data-page="home"] .home-metrics span {
 
 .emp-save-indicator { font-size: 13px; color: var(--emp-muted, var(--muted)); }
 .emp-save-indicator.emp-save-error { color: #b91c1c; font-weight: 700; }
+.emp-save-indicator--inline { align-self: center; white-space: nowrap; }
 .emp-save-retry {
   border: 0; background: none; padding: 0 0 0 6px; color: #b91c1c; font-weight: 700; font-size: 13px;
   text-decoration: underline; cursor: pointer;
 }
 
-.emp-publish-layout { display: grid; grid-template-columns: 1fr 1.35fr; gap: 20px; align-items: start; }
+.emp-publish-layout { display: grid; grid-template-columns: 1fr 1.35fr; gap: 20px; align-items: start; max-width: 1180px; margin-inline: auto; }
 .emp-publish-left { min-width: 0; }
 .emp-publish-right { min-width: 0; }
-.emp-role-intelligence--wide { min-height: 380px; max-height: 620px; overflow-y: auto; }
-.emp-vera-readiness { margin: 0 0 14px; font-size: 15px; color: var(--muted); }
+.emp-role-intelligence--wide { min-height: 380px; }
+.emp-vera-readiness { margin: 0 0 14px; font-size: 15px; color: var(--emp-muted); }
 .emp-vera-readiness strong { font-size: 20px; color: var(--emp-green, var(--text)); }
 .emp-suggestion-actions--wrap { flex-wrap: wrap; }
 
@@ -13563,6 +13605,25 @@ body[data-page="home"] .home-metrics span {
 .emp-check-needs-attention svg { color: #b45309; }
 .emp-check-optional .emp-check-status { color: var(--emp-muted, var(--soft)); background: rgba(96, 112, 105, 0.1); }
 .emp-check-optional svg { color: var(--emp-muted, var(--soft)); }
+
+.emp-wizard-step-index svg { width: 12px; height: 12px; }
+.emp-wizard-step-dot { width: 8px; height: 8px; border-radius: 50%; background: #b45309; display: inline-block; }
+
+.emp-advanced-disclosure { margin: 8px 0 4px; }
+.emp-advanced-disclosure summary { cursor: pointer; font-size: 13px; font-weight: 700; color: var(--emp-muted); padding: 6px 0; list-style: none; }
+.emp-advanced-disclosure summary::-webkit-details-marker { display: none; }
+.emp-advanced-disclosure summary::before { content: "▸"; display: inline-block; margin-right: 6px; transition: transform 150ms; }
+.emp-advanced-disclosure[open] summary::before { transform: rotate(90deg); }
+
+.emp-required-docs { display: grid; gap: 8px; margin: 10px 0 16px; }
+.emp-required-doc-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1px solid var(--emp-line); border-radius: 10px; }
+.emp-required-doc-toggle { display: flex; border: 1px solid var(--emp-line); border-radius: 999px; overflow: hidden; }
+.emp-required-doc-toggle button { border: 0; background: none; padding: 6px 14px; font-size: 12px; font-weight: 700; color: var(--emp-muted); cursor: pointer; }
+.emp-required-doc-toggle button.active { background: var(--emp-green); color: var(--emp-cream-text); }
+
+.emp-tab-strip { display: flex; gap: 4px; border-bottom: 1px solid var(--emp-line); margin-bottom: 16px; }
+.emp-tab-strip button { border: 0; background: none; padding: 10px 16px; font-size: 13px; font-weight: 700; color: var(--emp-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.emp-tab-strip button.active { color: var(--emp-green); border-bottom-color: var(--emp-green); }
 
 .emp-create-vera-btn { border-color: var(--emp-teal, var(--line)) !important; }
 
@@ -13620,6 +13681,5 @@ body[data-page="home"] .home-metrics span {
   .emp-form-grid-2, .emp-checkbox-grid { grid-template-columns: 1fr; }
   .emp-stage-editor-fields { grid-template-columns: 1fr 1fr; }
   .emp-publish-layout { grid-template-columns: 1fr; }
-  .emp-role-intelligence--wide { max-height: none; }
 }
 
