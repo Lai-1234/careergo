@@ -11889,6 +11889,14 @@ function openCreateWithVeraModal(draft, onApplied) {
 }
 
 function renderEmployerRoleBuilder(root, roleId) {
+  // Same redraw-on-every-interaction architecture as the Talent Pipeline:
+  // root.innerHTML gets replaced on every field edit/step change, so the
+  // global count-up number animation's MutationObserver treats every numeric
+  // element (including the tiny step-index digits) as newly added and
+  // re-animates it from 0 every time, even when the value didn't change -
+  // the confirmed cause of the flashing on this page. See the identical fix
+  // and its comment in renderEmployerTalentPipeline.
+  root.setAttribute("data-no-number-animation", "");
   let existing = roleId ? DATA.employerRoles.find(r => r.id === roleId) : null;
   const draftId = existing ? existing.id : `draft-${Date.now()}`;
   const seedState = readState();
@@ -11899,7 +11907,6 @@ function renderEmployerRoleBuilder(root, roleId) {
   }
   let activeStep = 0;
   let publishActiveTab = "preview";
-  const visitedSteps = new Set([0]);
   const advancedOpen = { roleBasics: false, compensation: false };
   let saveTimer = null;
   let roleDetailsGenerateSeed = 0;
@@ -12573,7 +12580,10 @@ function renderEmployerRoleBuilder(root, roleId) {
           const stepPredicates = getReadinessPredicates(draft);
           return EMPLOYER_ROLE_BUILDER_STEPS.map((label, i) => {
             const complete = isStepComplete(i, stepPredicates);
-            const showDot = !complete && visitedSteps.has(i);
+            // Derived purely from current field-completion state (isStepComplete,
+            // evaluated fresh every render) - never from navigation history. A
+            // step's dot is now identical no matter which step you view it from.
+            const showDot = !complete;
             return `
               <button type="button" class="emp-wizard-step ${i === activeStep ? "active" : ""} ${complete ? "done" : ""}" data-emp-step="${i}">
                 <span class="emp-wizard-step-index">${complete ? icon("check") : i + 1}</span>
@@ -12604,11 +12614,10 @@ function renderEmployerRoleBuilder(root, roleId) {
     }));
     qsa("[data-emp-step]", root).forEach(btn => btn.addEventListener("click", () => {
       activeStep = Number(btn.dataset.empStep);
-      visitedSteps.add(activeStep);
       draw();
     }));
-    qs("[data-emp-prev]", root)?.addEventListener("click", () => { activeStep = Math.max(0, activeStep - 1); visitedSteps.add(activeStep); draw(); });
-    qs("[data-emp-next]", root)?.addEventListener("click", () => { activeStep = Math.min(EMPLOYER_ROLE_BUILDER_STEPS.length - 1, activeStep + 1); visitedSteps.add(activeStep); draw(); });
+    qs("[data-emp-prev]", root)?.addEventListener("click", () => { activeStep = Math.max(0, activeStep - 1); draw(); });
+    qs("[data-emp-next]", root)?.addEventListener("click", () => { activeStep = Math.min(EMPLOYER_ROLE_BUILDER_STEPS.length - 1, activeStep + 1); draw(); });
     qs("[data-emp-nav]", root)?.addEventListener("click", event => {
       event.preventDefault();
       employerNavigateTo("roles");
