@@ -13094,7 +13094,9 @@ body[data-page="home"] .home-metrics span {
 .emp-vera-answer-points li {
   display: grid;
   grid-template-columns: 22px 1fr;
-  gap: 8px;
+  grid-template-rows: auto auto;
+  column-gap: 8px;
+  row-gap: 0;
   font-size: 13px;
   line-height: 1.45;
   counter-increment: vera-points;
@@ -13103,6 +13105,8 @@ body[data-page="home"] .home-metrics span {
   content: counter(vera-points);
   display: grid;
   place-items: center;
+  grid-column: 1;
+  grid-row: 1 / 3;
   width: 22px;
   height: 22px;
   border-radius: 999px;
@@ -13111,8 +13115,11 @@ body[data-page="home"] .home-metrics span {
   font-size: 11px;
   font-weight: 800;
 }
-.emp-vera-answer-points strong { display: block; margin-bottom: 2px; }
-.emp-vera-answer-points span { color: var(--muted); }
+/* Explicit placement avoids grid auto-flow wrapping the body <span> into the
+   22px badge column after the ::before pseudo-element and <strong> fill the
+   first row — without this it wraps one word per line. */
+.emp-vera-answer-points li strong { display: block; margin-bottom: 2px; grid-column: 2; grid-row: 1; }
+.emp-vera-answer-points li span { color: var(--muted); grid-column: 2; grid-row: 2; }
 .emp-vera-recommendation {
   margin-top: 14px;
   padding: 12px;
@@ -13367,5 +13374,252 @@ body[data-page="home"] .home-metrics span {
   .emp-feed-nav-list { display: flex; overflow-x: auto; gap: 4px; }
   .emp-feed-nav-item { flex-shrink: 0; }
   .emp-feed-context-card { display: none; }
+}
+
+/* ============================================================
+   Roles page redesign + shared modal system (Employer OS)
+   Reuses --emp-* tokens defined above; scoped under .emp-app-shell.
+   ============================================================ */
+.emp-app-shell.emp-app-shell button { box-sizing: border-box; transform: none; }
+.emp-app-shell.emp-app-shell button:active { transform: translateY(1px); }
+
+/* Root-cause fix for the button-growth bug: app.js runs a shared press/ripple
+   animation (initGlobalInteractionAnimations) on every page, including this one,
+   which appends a `.interaction-ripple` <span> into the clicked button on every
+   click. Its `position: absolute` rule only exists in enterprise.css, which
+   employer-app.html deliberately does not load (to avoid leaking candidate-page
+   CSS into the Employer OS). Without that rule the ripple rendered in normal
+   flow, so every click made the button's content box — and therefore the
+   button itself — larger, compounding on repeated clicks. Restating just the
+   positioning rule here (not the whole file) keeps the existing animation
+   working without importing enterprise.css. */
+/* [data-emp-modal-root] is included alongside .emp-app-shell here because
+   ensureEmpModalRoot() appends the modal host directly to document.body
+   (needed for fixed positioning/stacking), not inside .emp-app-shell — so
+   the descendant selector above never reached ripples on buttons inside any
+   Employer OS modal (Create with Vera, role preview, etc). Same root cause
+   as the original fix, just a second, sibling location it didn't cover. */
+.emp-app-shell .interaction-ripple,
+[data-emp-modal-root] .interaction-ripple {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.16;
+  transform: scale(0);
+  animation: emp-interactionRipple 520ms ease-out forwards;
+}
+.emp-app-shell :is(button, a.btn, [role="button"], .btn, .pill) > :not(.interaction-ripple),
+[data-emp-modal-root] :is(button, a.btn, [role="button"], .btn, .pill) > :not(.interaction-ripple) {
+  position: relative;
+  z-index: 1;
+}
+.emp-app-shell :is(button, a.btn, [role="button"], .btn, .pill).is-pressed {
+  transform: translateY(1px) scale(0.985) !important;
+}
+@keyframes emp-interactionRipple {
+  to { opacity: 0; transform: scale(2.6); }
+}
+
+.emp-view-header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.emp-app-shell.emp-app-shell .emp-subtab.active { background: var(--emp-green-nav) !important; color: var(--emp-cream-text) !important; border-color: var(--emp-green-nav) !important; }
+.emp-app-shell.emp-app-shell .emp-wizard-step.active { border-color: var(--emp-green) !important; color: var(--emp-green) !important; background: rgba(7, 56, 47, 0.06) !important; }
+.emp-app-shell.emp-app-shell .emp-wizard-step.done .emp-wizard-step-index { background: var(--emp-teal) !important; color: #fff !important; }
+.emp-app-shell.emp-app-shell .emp-table-row:hover { background: rgba(7, 56, 47, 0.04) !important; }
+.emp-app-shell.emp-app-shell .emp-actions-menu button:hover { background: rgba(7, 56, 47, 0.06) !important; }
+.emp-app-shell.emp-app-shell .emp-momentum-next { color: var(--emp-green) !important; }
+.emp-app-shell.emp-app-shell .emp-preview-device-toggle button.active,
+.emp-app-shell.emp-app-shell .emp-pipeline-view-toggle button.active { background: rgba(7, 56, 47, 0.08) !important; color: var(--emp-green) !important; }
+.emp-app-shell.emp-app-shell .emp-vera-starters button:hover { border-color: var(--emp-teal) !important; background: rgba(106, 165, 157, 0.08) !important; }
+.emp-app-shell.emp-app-shell .emp-job-preview-salary,
+.emp-app-shell.emp-app-shell .emp-form-section-head h2 svg { color: var(--emp-green) !important; }
+.emp-app-shell.emp-app-shell .progress { background: rgba(7, 56, 47, 0.1) !important; }
+.emp-app-shell.emp-app-shell .progress span { background: linear-gradient(90deg, var(--emp-teal), var(--emp-green)) !important; }
+
+.emp-role-title-link {
+  border: 0; background: none; padding: 0; margin: 0; cursor: pointer;
+  font: inherit; font-weight: 700; color: var(--emp-ink, var(--text)); text-align: left; text-decoration: none;
+}
+.emp-role-title-link:hover { text-decoration: underline; color: var(--emp-green, var(--text)); }
+.emp-completion-cell { display: flex; align-items: center; gap: 8px; min-width: 120px; }
+.emp-completion-cell .progress { flex: 1; }
+.emp-completion-cell span { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+
+/* Shared single-instance modal system: check-existing/focus-if-open/remove-fully-on-close
+   is handled in JS (openEmpModal/closeEmpModal); this only supplies the chrome. */
+.emp-modal-backdrop {
+  position: fixed; inset: 0; z-index: 90; display: grid; place-items: center;
+  padding: 24px; background: rgba(8, 20, 16, 0.42); backdrop-filter: blur(2px);
+}
+.emp-modal-card {
+  width: min(640px, 100%); max-height: min(85vh, 720px); overflow-y: auto;
+  padding: 24px 28px; border-radius: var(--emp-radius-card, 20px);
+  background: #fff; box-shadow: var(--emp-shadow-hero, 0 26px 64px rgba(7, 56, 47, 0.22));
+  outline: none;
+}
+.emp-modal-card h2 { margin: 0 0 8px; font-size: var(--emp-title-lg, 22px); }
+.emp-confirm-modal p { margin: 0 0 4px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+.emp-app-shell.emp-app-shell .btn-danger {
+  color: #fff !important; background: #b91c1c !important; border-color: #b91c1c !important;
+}
+.emp-app-shell.emp-app-shell .btn-danger:hover { background: #991b1b !important; }
+
+/* Ask Vera — Roles page assistant modal (distinct from the global right-side drawer) */
+.emp-roles-vera-card { width: min(680px, 100%); max-height: min(82vh, 680px); display: flex; flex-direction: column; padding: 0; }
+.emp-roles-vera-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding: 22px 26px 16px; border-bottom: 1px solid var(--emp-line, var(--line)); flex: 0 0 auto;
+}
+.emp-roles-vera-head h2 { margin: 4px 0 6px; }
+.emp-roles-vera-head p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; max-width: 52ch; }
+.emp-roles-vera-scroll { flex: 1 1 auto; overflow-y: auto; padding: 18px 26px; }
+.emp-roles-vera-starters { display: grid; gap: 7px; }
+.emp-roles-vera-starters button {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px;
+  background: #fff; color: var(--text); text-align: left; font-family: inherit; font-size: 13px; cursor: pointer;
+}
+.emp-roles-vera-compose {
+  flex: 0 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 8px;
+  padding: 14px 26px 20px; border-top: 1px solid var(--emp-line, var(--line));
+}
+.emp-roles-vera-compose textarea {
+  min-height: 52px; resize: vertical; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line));
+  border-radius: 12px; font-family: inherit; font-size: 13px; line-height: 1.45;
+}
+.emp-roles-vera-compose .btn { align-self: end; }
+
+/* Role results / summary modal */
+.emp-results-card { width: min(680px, 100%); }
+.emp-results-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.emp-results-head h2 { margin: 4px 0 0; }
+.emp-results-funnel { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 18px; }
+.emp-results-stage { text-align: center; padding: 12px 8px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; }
+.emp-results-stage strong { display: block; font-size: 20px; }
+.emp-results-stage span { display: block; margin-top: 4px; font-size: 11px; color: var(--soft); }
+.emp-results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.emp-results-grid p { margin: 2px 0 0; font-size: 13px; line-height: 1.5; }
+
+@media (max-width: 640px) {
+  .emp-view-header-top { flex-direction: column; align-items: stretch; }
+  .emp-view-header-actions { justify-content: stretch; }
+  .emp-view-header-actions .btn { flex: 1; }
+  .emp-results-funnel { grid-template-columns: repeat(2, 1fr); }
+  .emp-results-grid { grid-template-columns: 1fr; }
+  .emp-modal-card { padding: 18px; }
+  .emp-roles-vera-head, .emp-roles-vera-scroll, .emp-roles-vera-compose { padding-left: 16px; padding-right: 16px; }
+}
+
+/* ============================================================
+   Create Role wizard redesign (Employer OS)
+   ============================================================ */
+.emp-form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+.emp-form-subhead {
+  margin: 22px 0 2px; padding-top: 18px; border-top: 1px solid var(--emp-line, var(--line));
+  font-size: 13px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--emp-muted, var(--soft));
+}
+.emp-wizard-form > .emp-form-subhead:first-child { border-top: 0; padding-top: 0; margin-top: 4px; }
+.emp-checkbox-inline { display: flex !important; align-items: center; gap: 8px; flex-direction: row-reverse; justify-content: flex-end; font-weight: 500 !important; }
+.emp-checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 14px; margin: 10px 0 4px; }
+.emp-resp-row { align-items: center; }
+.emp-resp-reorder { display: flex; flex-direction: column; gap: 2px; }
+.emp-resp-reorder .btn { padding: 2px 6px; min-height: 0; }
+.emp-stage-editor-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; }
+.emp-stage-editor-fields { flex: 1; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 8px; }
+.emp-stage-editor-fields input { padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-size: 13px; font-family: inherit; }
+.emp-distribution-list { display: grid; gap: 8px; margin: 10px 0 16px; }
+.emp-distribution-row {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+  border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; flex-wrap: wrap;
+}
+.emp-distribution-row .check-field { flex: 1 1 200px; margin: 0; }
+.emp-distribution-state { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; color: var(--emp-muted, var(--soft)); text-transform: uppercase; }
+.emp-company-reuse-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.emp-company-reuse-row p { margin: 0; }
+
+.emp-save-indicator { font-size: 13px; color: var(--emp-muted, var(--muted)); }
+.emp-save-indicator.emp-save-error { color: #b91c1c; font-weight: 700; }
+.emp-save-retry {
+  border: 0; background: none; padding: 0 0 0 6px; color: #b91c1c; font-weight: 700; font-size: 13px;
+  text-decoration: underline; cursor: pointer;
+}
+
+.emp-publish-layout { display: grid; grid-template-columns: 1fr 1.35fr; gap: 20px; align-items: start; }
+.emp-publish-left { min-width: 0; }
+.emp-publish-right { min-width: 0; }
+.emp-role-intelligence--wide { min-height: 380px; max-height: 620px; overflow-y: auto; }
+.emp-vera-readiness { margin: 0 0 14px; font-size: 15px; color: var(--muted); }
+.emp-vera-readiness strong { font-size: 20px; color: var(--emp-green, var(--text)); }
+.emp-suggestion-actions--wrap { flex-wrap: wrap; }
+
+.emp-checklist--status li { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 8px; padding: 7px 0; }
+.emp-checklist--status svg { width: 15px; height: 15px; }
+.emp-check-status { font-size: 11px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; }
+.emp-check-complete .emp-check-status { color: #0a7a4c; background: rgba(10, 122, 76, 0.12); }
+.emp-check-complete svg { color: #0a7a4c; }
+.emp-check-missing .emp-check-status { color: #b91c1c; background: rgba(185, 28, 28, 0.1); }
+.emp-check-missing svg { color: #b91c1c; }
+.emp-check-needs-attention .emp-check-status { color: #b45309; background: rgba(180, 83, 9, 0.12); }
+.emp-check-needs-attention svg { color: #b45309; }
+.emp-check-optional .emp-check-status { color: var(--emp-muted, var(--soft)); background: rgba(96, 112, 105, 0.1); }
+.emp-check-optional svg { color: var(--emp-muted, var(--soft)); }
+
+.emp-create-vera-btn { border-color: var(--emp-teal, var(--line)) !important; }
+
+.emp-preview-modal-card { width: min(720px, 100%); max-height: min(85vh, 760px); overflow-y: auto; }
+.emp-preview-modal-card .emp-preview-toolbar { align-items: center; }
+.emp-preview-modal-card .emp-preview-toolbar h2 { margin: 0; font-size: var(--emp-title-lg, 20px); }
+
+.emp-create-vera-card { width: min(680px, 100%); max-height: min(85vh, 700px); overflow-y: auto; }
+.emp-create-vera-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.emp-create-vera-head h2 { margin: 4px 0 6px; }
+.emp-create-vera-head p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.emp-create-vera-input {
+  width: 100%; min-height: 150px; padding: 12px 14px; border: 1px solid var(--emp-line, var(--line));
+  border-radius: 12px; font-family: inherit; font-size: 14px; line-height: 1.55; resize: vertical;
+}
+.emp-create-vera-sections { display: grid; gap: 10px; margin-top: 4px; }
+.emp-create-vera-section-row { padding: 12px 14px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; }
+.emp-create-vera-section-row.emp-cvs-accept { border-color: rgba(10, 122, 76, 0.4); background: rgba(10, 122, 76, 0.05); }
+.emp-create-vera-section-row.emp-cvs-skip { opacity: 0.55; }
+.emp-cvs-field { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+.emp-cvs-decision-tag { font-size: 10px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: rgba(7, 56, 47, 0.08); color: var(--emp-green, var(--text)); }
+.emp-cvs-compare { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-bottom: 6px; flex-wrap: wrap; }
+.emp-cvs-reason { margin: 0 0 10px; font-size: 12px; color: var(--emp-muted, var(--soft)); line-height: 1.5; }
+.emp-cvs-actions { display: flex; gap: 8px; }
+
+.emp-cv-transcript { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; margin-bottom: 14px; padding-right: 4px; }
+.emp-cv-bubble { max-width: 80%; padding: 9px 13px; border-radius: 14px; font-size: 13px; line-height: 1.5; }
+.emp-cv-bubble-vera { align-self: flex-start; background: rgba(7, 56, 47, 0.06); color: var(--emp-ink, var(--text)); border-bottom-left-radius: 4px; }
+.emp-cv-bubble-employer { align-self: flex-end; background: var(--emp-green, #07382f); color: var(--emp-cream-text, #fff); border-bottom-right-radius: 4px; }
+
+.emp-cv-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.emp-cv-chip { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line)); background: transparent; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 150ms, border-color 150ms, color 150ms; }
+.emp-cv-chip:hover { border-color: var(--emp-teal, var(--line)); }
+.emp-cv-chip.active { background: var(--emp-green, #07382f); border-color: var(--emp-green, #07382f); color: var(--emp-cream-text, #fff); }
+
+.emp-cv-salary-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.emp-cv-salary-row input { flex: 1; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; font-size: 14px; }
+.emp-cv-salary-prefix, .emp-cv-salary-suffix { font-size: 12px; color: var(--emp-muted, var(--muted)); white-space: nowrap; }
+
+.emp-cv-text-input { margin-bottom: 14px; }
+.emp-cv-text-input input { width: 100%; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; font-size: 14px; }
+
+.emp-cv-tags-input { margin-bottom: 14px; }
+.emp-cv-tag-add-row { display: flex; gap: 8px; margin-top: 8px; }
+.emp-cv-tag-add-row input { flex: 1; padding: 9px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; font-size: 13px; }
+
+.emp-cv-nav { justify-content: flex-end; }
+.emp-cv-nav [data-cv-back] { margin-right: auto; }
+
+.emp-cv-generating { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 36px 12px; text-align: center; color: var(--emp-muted, var(--muted)); }
+.emp-cv-generating-spinner { animation: emp-cv-spin 1.1s linear infinite; color: var(--emp-green, #07382f); }
+@keyframes emp-cv-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+@media (max-width: 900px) {
+  .emp-form-grid-2, .emp-checkbox-grid { grid-template-columns: 1fr; }
+  .emp-stage-editor-fields { grid-template-columns: 1fr 1fr; }
+  .emp-publish-layout { grid-template-columns: 1fr; }
+  .emp-role-intelligence--wide { max-height: none; }
 }
 

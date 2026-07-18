@@ -498,6 +498,8 @@ const DATA = {
     {
       id: "er1", title: "Product Design Intern", status: "Open", closeReason: null,
       applicants: 84, qualified: 21, strongMatches: 9, talentSupply: "Good", daysOpen: 7, health: "Healthy",
+      newApplicants: 12, interviews: 4, offers: 1, hires: 0, openings: 1,
+      owner: "Mira", lastUpdated: "5 hours ago",
       department: "Design", employmentType: "Internship", reportsTo: "Design Lead",
       roleSummary: "Support the design team on end-to-end product design work across research, prototyping, and design systems.",
       responsibilities: ["Conduct user research and usability tests", "Design and prototype product flows in Figma", "Contribute to and maintain the design system"],
@@ -520,6 +522,8 @@ const DATA = {
     {
       id: "er2", title: "Junior Data Analyst", status: "Open", closeReason: null,
       applicants: 126, qualified: 34, strongMatches: 8, talentSupply: "Strong", daysOpen: 12, health: "Needs attention",
+      newApplicants: 18, interviews: 6, offers: 0, hires: 0, openings: 1,
+      owner: "Jason", lastUpdated: "2 hours ago",
       department: "Data & Analytics", employmentType: "Full-time", reportsTo: "Analytics Manager",
       roleSummary: "Own recurring reporting and ad-hoc analysis that helps the business understand what's working.",
       responsibilities: ["Build and maintain dashboards in Power BI", "Write SQL queries against the marketplace warehouse", "Partner with product and marketing on ad-hoc analysis"],
@@ -548,6 +552,7 @@ const DATA = {
     {
       id: "er3", title: "Graduate UX Researcher", status: "Draft", closeReason: null,
       applicants: 0, qualified: 0, strongMatches: 0, talentSupply: "Good", daysOpen: 0, health: "Healthy",
+      owner: "Mira", lastUpdated: "3 hours ago", veraCheckCount: 2,
       department: "Design", employmentType: "Graduate programme", reportsTo: "Research Lead",
       roleSummary: "", responsibilities: [], successLooksLike: "",
       mustHaveSkills: [], niceToHaveSkills: [], minExperience: "No experience required", educationOrCertification: "",
@@ -565,6 +570,8 @@ const DATA = {
     {
       id: "er4", title: "Software Engineer", status: "Open", closeReason: null,
       applicants: 84, qualified: 29, strongMatches: 11, talentSupply: "Strong", daysOpen: 7, health: "Healthy",
+      newApplicants: 9, interviews: 5, offers: 2, hires: 1, openings: 2,
+      owner: "Jason", lastUpdated: "1 day ago",
       department: "Engineering", employmentType: "Full-time", reportsTo: "Engineering Manager",
       roleSummary: "Build and ship customer-facing features across our web platform, from API to UI.",
       responsibilities: ["Build features across the React front end and Node.js API", "Write and maintain automated tests", "Participate in code review and technical design discussions"],
@@ -586,6 +593,7 @@ const DATA = {
     {
       id: "er5", title: "Backend Engineer", status: "Paused", closeReason: null,
       applicants: 58, qualified: 19, strongMatches: 6, talentSupply: "Tight", daysOpen: 21, health: "Needs attention",
+      owner: "Jason", lastUpdated: "2 days ago", pausedSince: "4 days ago", pauseReason: "Requirements under review", lastActivity: "2 days ago",
       department: "Engineering", employmentType: "Full-time", reportsTo: "Engineering Manager",
       roleSummary: "Own core backend services powering payments and order processing.",
       responsibilities: ["Design and build distributed backend services in Java", "Operate Kafka-based event pipelines", "Improve system reliability and on-call practices"],
@@ -617,6 +625,16 @@ const DATA = {
     {
       id: "er6", title: "Marketing Coordinator", status: "Closed", closeReason: "Position filled",
       applicants: 72, qualified: 25, strongMatches: 10, talentSupply: "Good", daysOpen: 18, health: "Healthy",
+      owner: "Aisyah", lastUpdated: "10 days ago", closedDate: "10 days ago", timeToHire: "18 days",
+      interviews: 9, offers: 1, hires: 1,
+      results: {
+        reviewed: 72, shortlisted: 25, interviewed: 9, offersSent: 1, offersAccepted: 1,
+        finalHire: "Farah Aziz", timeToHire: "18 days",
+        sourcingChannel: "CareerGo direct apply (61% of applicants)",
+        dropOffStage: "Screening call — 18 candidates did not proceed after the first screen.",
+        retrospective: "Candidate supply and quality were both strong for this role. The screening-call drop-off was mostly candidates without hands-on campaign-execution experience, which the job post didn't filter for.",
+        improvement: "Add \"has run at least one end-to-end campaign\" as a must-have next time to reduce screening-stage drop-off."
+      },
       department: "Marketing", employmentType: "Full-time", reportsTo: "Marketing Manager",
       roleSummary: "Coordinate campaign execution across social, email, and events.",
       responsibilities: ["Plan and execute monthly campaign calendars", "Coordinate with design and content freelancers", "Report on campaign performance"],
@@ -637,6 +655,7 @@ const DATA = {
     {
       id: "er7", title: "Office Administrator", status: "Archived", closeReason: "Role changed",
       applicants: 41, qualified: 12, strongMatches: 4, talentSupply: "Good", daysOpen: 35, health: "Needs attention",
+      owner: "Aisyah", lastUpdated: "2 months ago", previousStatus: "Closed", archivedDate: "2 months ago", retentionPeriod: "Data retained for 12 months from archive date",
       department: "Operations", employmentType: "Full-time", reportsTo: "Operations Manager",
       roleSummary: "Manage day-to-day office operations and vendor coordination.",
       responsibilities: ["Coordinate office vendors and supplies", "Support onboarding logistics for new hires"],
@@ -9184,6 +9203,305 @@ function getEmployerVeraStructuredResponse(prompt, context) {
   };
 }
 
+/* ---------- Ask Vera — Roles page assistant (separate modal from the global drawer) ---------- */
+function buildRoleFocusVeraAnswer(role) {
+  if (role.status === "Draft") {
+    const c = calculateDraftCompletion(role);
+    return {
+      eyebrow: "Draft role review",
+      title: `${role.title} is ${c.percent}% complete`,
+      points: [
+        ["What's missing", c.missing.length ? c.missing.join(", ") : "Nothing — ready for a final preview."],
+        ["Owner", role.owner || "Unassigned"],
+        ["Last edited", role.lastUpdated || "—"]
+      ],
+      move: c.missing.length ? `Fill in "${c.missing[0]}" next — it has the largest effect on completion.` : "Preview the job post and publish when ready.",
+      impact: `Completing the remaining ${c.missing.length} section${c.missing.length === 1 ? "" : "s"} will make this role ready to publish.`,
+      actions: [["Continue setup", "role-builder", role.id], ["Preview draft", "role-builder", role.id]]
+    };
+  }
+  if (role.status === "Paused") {
+    return {
+      eyebrow: "Paused role",
+      title: `${role.title} is paused`,
+      points: [
+        ["Why it's paused", role.pauseReason || "No reason recorded."],
+        ["Retained candidates", `${role.applicants} applicants, ${role.strongMatches} strong matches still on file.`],
+        ["Paused since", role.pausedSince || "—"]
+      ],
+      move: "Review the requirement that triggered the pause, then resume hiring.",
+      impact: "Resuming keeps the existing candidate pool instead of restarting sourcing.",
+      actions: [["Edit role", "role-builder", role.id], ["Resume from Roles list", "roles", null]]
+    };
+  }
+  if (role.status === "Closed") {
+    const r = getRoleResultsData(role);
+    return {
+      eyebrow: "Closed-role retrospective",
+      title: `${role.title}: ${r.finalHire}`,
+      points: [
+        ["Funnel", `${r.reviewed} reviewed → ${r.shortlisted} shortlisted → ${r.interviewed} interviewed → ${r.offersAccepted} hired.`],
+        ["Time to hire", r.timeToHire],
+        ["Drop-off stage", r.dropOffStage]
+      ],
+      move: r.improvement,
+      impact: "Applying this to the next similar role should reduce avoidable drop-off.",
+      actions: [["View full results", "roles", null]]
+    };
+  }
+  if (role.status === "Archived") {
+    return {
+      eyebrow: "Archived role",
+      title: `${role.title} — historical summary`,
+      points: [
+        ["Previous status", role.previousStatus || "—"],
+        ["Total applicants", String(role.applicants || 0)],
+        ["Archived date", role.archivedDate || "—"]
+      ],
+      move: "Restore this role from the Archived tab if you want to reopen hiring.",
+      impact: "Archived roles keep their history but are not actively hiring.",
+      actions: [["Open Roles", "roles", null]]
+    };
+  }
+  const h = getOpenRoleHealth(role);
+  const suggestion = role.roleIntelligence?.suggestions?.[0];
+  return {
+    eyebrow: "Role analysis",
+    title: `${role.title} has ${role.applicants || 0} applicants, but ${h.label.toLowerCase()}`,
+    points: [
+      ["What the data shows", h.reason],
+      ["Requirement check", role.roleIntelligence?.potentialIssue || "No specific requirement issue detected."],
+      ["Uncertainty", "Vera is reasoning from current applicant and match data — the hiring team makes the final call."]
+    ],
+    move: suggestion ? suggestion.recommendation : "Review the current requirements against the applicant pool.",
+    impact: suggestion ? suggestion.expectedEffect : "Adjusting the requirement should widen the qualified candidate pool.",
+    actions: [
+      ["Edit requirement", "role-builder", role.id],
+      ["View affected candidates", "pipeline", null],
+      ["Compare with other roles", "roles", null]
+    ]
+  };
+}
+
+function getRolesVeraResponse(promptText, focusRoleId) {
+  const text = (promptText || "").toLowerCase();
+  const roles = DATA.employerRoles;
+  const focusRole = focusRoleId ? roles.find(r => r.id === focusRoleId) : null;
+  const openRoles = roles.filter(r => r.status === "Open");
+  const rankedOpen = openRoles.map(r => ({ r, health: getOpenRoleHealth(r) }));
+  const worstOpen = rankedOpen.find(x => x.health.label !== "On track") || rankedOpen[0];
+
+  if (focusRole) return buildRoleFocusVeraAnswer(focusRole);
+
+  const mentioned = roles.find(r => text.includes(r.title.toLowerCase()));
+  if (mentioned) return buildRoleFocusVeraAnswer(mentioned);
+
+  if (text.includes("draft")) {
+    const draft = roles.find(r => r.status === "Draft");
+    if (draft) {
+      const completion = calculateDraftCompletion(draft);
+      return {
+        eyebrow: "Draft role review",
+        title: `${draft.title} is ${completion.percent}% complete`,
+        points: [
+          ["What's missing", completion.missing.length ? completion.missing.join(", ") : "Nothing — this draft is ready for a final preview."],
+          ["Owner", draft.owner || "Unassigned"],
+          ["Last edited", draft.lastUpdated || "—"]
+        ],
+        move: completion.missing.length ? `Fill in "${completion.missing[0]}" next — it has the largest effect on completion.` : "Preview the job post and publish when ready.",
+        impact: `Completing the remaining ${completion.missing.length} section${completion.missing.length === 1 ? "" : "s"} will make this role ready to publish.`,
+        actions: [["Continue setup", "role-builder", draft.id], ["Preview draft", "role-builder", draft.id]]
+      };
+    }
+  }
+
+  if (text.includes("supply") || text.includes("strongest")) {
+    const best = openRoles.slice().sort((a, b) => (b.strongMatches / Math.max(1, b.applicants)) - (a.strongMatches / Math.max(1, a.applicants)))[0];
+    if (best) {
+      return {
+        eyebrow: "Candidate supply",
+        title: `${best.title} has the strongest candidate supply`,
+        points: [
+          ["Match quality", `${best.strongMatches} strong matches out of ${best.applicants} applicants.`],
+          ["Talent availability", best.talentSupply || "—"],
+          ["Days open", `${best.daysOpen} days`]
+        ],
+        move: "Prioritise moving strong matches on this role to interview while supply is high.",
+        impact: "Roles with high match density tend to fill faster and with less screening effort.",
+        actions: [["View candidates", "pipeline", null], ["Open role", "role-builder", best.id]]
+      };
+    }
+  }
+
+  if (text.includes("paused") && text.includes("resume")) {
+    const paused = roles.filter(r => r.status === "Paused");
+    if (paused.length) {
+      const pick = paused[0];
+      return {
+        eyebrow: "Paused roles",
+        title: `${pick.title} is the best candidate to resume`,
+        points: [
+          ["Why it's paused", pick.pauseReason || "No reason recorded."],
+          ["Retained candidates", `${pick.applicants} applicants, ${pick.strongMatches} strong matches still on file.`],
+          ["Paused since", pick.pausedSince || "—"]
+        ],
+        move: "Review the requirement that triggered the pause, then resume hiring.",
+        impact: "Resuming keeps the existing candidate pool instead of restarting sourcing.",
+        actions: [["Review role", "role-builder", pick.id], ["Resume from Roles list", "roles", null]]
+      };
+    }
+  }
+
+  if (text.includes("closed") || text.includes("summar")) {
+    const closed = roles.filter(r => r.status === "Closed");
+    if (closed.length) {
+      const results = getRoleResultsData(closed[0]);
+      return {
+        eyebrow: "Closed-role results",
+        title: `${closed[0].title}: ${results.finalHire}`,
+        points: [
+          ["Funnel", `${results.reviewed} reviewed → ${results.shortlisted} shortlisted → ${results.interviewed} interviewed → ${results.offersAccepted} hired.`],
+          ["Time to hire", results.timeToHire],
+          ["Drop-off stage", results.dropOffStage]
+        ],
+        move: results.improvement,
+        impact: "Applying this to the next similar role should reduce avoidable drop-off.",
+        actions: [["View results", "roles", null]]
+      };
+    }
+  }
+
+  if (text.includes("compare")) {
+    const sorted = openRoles.slice().sort((a, b) => b.strongMatches - a.strongMatches);
+    return {
+      eyebrow: "Open roles compared",
+      title: "How your open roles compare",
+      points: sorted.slice(0, 3).map(r => [r.title, `${r.strongMatches} strong matches, ${r.daysOpen} days open, health: ${getOpenRoleHealth(r).label}.`]),
+      move: sorted[0] ? `${sorted[0].title} has the most momentum right now.` : "No open roles to compare yet.",
+      impact: "Use this to decide where to spend recruiter time this week.",
+      actions: [["Open strongest role", "role-builder", sorted[0]?.id || null]]
+    };
+  }
+
+  if (text.includes("requirement")) {
+    const flagged = roles.find(r => (r.roleIntelligence?.concerns || []).length > 0);
+    if (flagged) {
+      return {
+        eyebrow: "Requirement review",
+        title: `${flagged.title} requirements may be too strict`,
+        points: (flagged.roleIntelligence.concerns || []).slice(0, 3).map(c => [c.issue, c.why]),
+        move: flagged.roleIntelligence.suggestions?.[0]?.recommendation || "Review must-have requirements against the applicant pool.",
+        impact: flagged.roleIntelligence.suggestions?.[0]?.expectedEffect || "Loosening non-essential requirements should widen the candidate pool.",
+        actions: [["Edit requirement", "role-builder", flagged.id], ["View affected candidates", "pipeline", null]]
+      };
+    }
+  }
+
+  if (worstOpen) return buildRoleFocusVeraAnswer(worstOpen.r, worstOpen.health);
+
+  return {
+    eyebrow: "Roles overview",
+    title: "What needs attention across your roles",
+    points: [
+      ["Open roles", `${openRoles.length} open, ${roles.filter(r => r.status === "Draft").length} draft, ${roles.filter(r => r.status === "Paused").length} paused.`],
+      ["Biggest risk", "No roles currently need attention."],
+      ["Drafts", roles.filter(r => r.status === "Draft").length ? "At least one draft role is not yet published." : "No drafts waiting."]
+    ],
+    move: "Hiring is on track across your roles.",
+    impact: "Keeping requirements realistic is the fastest way to grow candidate supply.",
+    actions: [["Open Roles", "roles", null]]
+  };
+}
+
+const ROLES_VERA_STARTERS = [
+  "Which role needs attention first?",
+  "Why is Junior Data Analyst underperforming?",
+  "Review my role requirements",
+  "Which role has the strongest candidate supply?",
+  "Help me improve a draft role",
+  "Compare my open roles",
+  "Which paused role should I resume?",
+  "Summarize closed-role results",
+  "Suggest the next action for each role"
+];
+
+let rolesVeraFocusRoleId = null;
+let rolesVeraLastPrompt = "";
+
+function renderRolesVeraModalContent(promptText, focusRoleId) {
+  const focusRole = focusRoleId ? DATA.employerRoles.find(r => r.id === focusRoleId) : null;
+  return `
+    <div class="emp-roles-vera-head">
+      <div>
+        ${focusRole ? `<span class="emp-vera-context">Role context: ${escapeHtml(focusRole.title)}</span>` : `<span class="emp-vera-context">All roles</span>`}
+        <h2>Vera for hiring roles</h2>
+        <p>Ask about role performance, requirements, candidate supply, applicant quality, or hiring bottlenecks.</p>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+    </div>
+    <div class="emp-roles-vera-scroll" data-roles-vera-scroll>
+      ${!promptText ? `
+        <div class="emp-vera-starters emp-roles-vera-starters">
+          <span class="emp-tags-label">Try asking</span>
+          ${ROLES_VERA_STARTERS.map(s => `<button type="button" data-roles-vera-suggestion="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join("")}
+        </div>
+      ` : renderEmployerVeraResponse(getRolesVeraResponse(promptText, focusRoleId))}
+    </div>
+    <form class="emp-vera-compose emp-roles-vera-compose" data-roles-vera-form>
+      <textarea name="prompt" rows="2" placeholder="Ask Vera about your roles...">${escapeHtml(promptText || "")}</textarea>
+      <button type="submit" class="btn btn-primary" data-roles-vera-submit>${icon("send")} Ask</button>
+    </form>
+  `;
+}
+
+function bindRolesVeraModal(host) {
+  const card = qs(".emp-modal-card", host);
+  if (!card) return;
+  qs("[data-roles-vera-form]", card)?.addEventListener("submit", event => {
+    event.preventDefault();
+    const submitBtn = qs("[data-roles-vera-submit]", card);
+    if (submitBtn?.disabled) return;
+    const form = new FormData(event.currentTarget);
+    const val = String(form.get("prompt") || "").trim();
+    if (!val) return;
+    if (submitBtn) submitBtn.disabled = true;
+    rolesVeraLastPrompt = val;
+    refreshRolesVeraModal(host);
+  });
+  qsa("[data-roles-vera-suggestion]", card).forEach(btn => btn.addEventListener("click", () => {
+    if (btn.disabled) return;
+    qsa("[data-roles-vera-suggestion]", card).forEach(b => b.disabled = true);
+    rolesVeraLastPrompt = btn.dataset.rolesVeraSuggestion;
+    refreshRolesVeraModal(host);
+  }));
+  qsa("[data-vera-nav]", card).forEach(btn => btn.addEventListener("click", () => {
+    if (btn.disabled) return;
+    qsa("[data-vera-nav]", card).forEach(b => b.disabled = true);
+    const view = btn.dataset.veraNav; const id = btn.dataset.veraId && btn.dataset.veraId !== "null" ? btn.dataset.veraId : null;
+    closeEmpModal();
+    if (view && view !== "roles") employerNavigateTo(view, id ? { id } : {});
+    else if (view === "roles") employerNavigateTo("roles", {}, { force: true });
+  }));
+}
+
+function refreshRolesVeraModal(host) {
+  const card = qs(".emp-modal-card", host);
+  if (!card) return;
+  card.innerHTML = renderRolesVeraModalContent(rolesVeraLastPrompt, rolesVeraFocusRoleId);
+  createIcons();
+  bindRolesVeraModal(host);
+}
+
+function openRolesVeraModal(promptSeed = "", focusRoleId = null) {
+  rolesVeraFocusRoleId = focusRoleId;
+  rolesVeraLastPrompt = promptSeed;
+  openEmpModal("roles-vera", renderRolesVeraModalContent(promptSeed, focusRoleId), {
+    label: "Vera for hiring roles",
+    className: "emp-roles-vera-card",
+    onOpen: bindRolesVeraModal
+  });
+}
+
 function renderEmployerVeraResponse(response) {
   return `
     <div class="emp-vera-answer-card">
@@ -9570,22 +9888,42 @@ const ROLE_STATUS_PILL_CLASS = { Open: "green", Draft: "gold", Paused: "cyan", C
 const ROLE_MOMENTUM_CLASS = { "On Track": "green", "Needs Attention": "gold", "At Risk": "red" };
 
 const ROLE_STATUS_PRIMARY = {
-  Draft: "Continue setup", Open: "View candidates", Paused: "Resume hiring", Closed: "View results", Archived: "View results"
+  Draft: "Continue setup", Open: "View candidates", Paused: "Resume hiring", Closed: "View results", Archived: "View summary"
 };
 
 const ROLE_STATUS_MENU = {
-  Draft: [["Continue setup", "edit"], ["Preview draft", "preview"], ["Duplicate", "duplicate"], ["Delete draft", "delete"]],
-  Open: [["View candidates", "candidates"], ["Preview public post", "preview"], ["Edit role", "edit"], ["Duplicate role", "duplicate"], ["Pause hiring", "pause"], ["Close role", "close"]],
-  Paused: [["Resume hiring", "resume"], ["View candidates", "candidates"], ["Edit role", "edit"], ["Close role", "close"]],
-  Closed: [["View results", "results"], ["View candidates", "candidates"], ["Reopen role", "reopen"], ["Duplicate role", "duplicate"], ["Archive", "archive"]],
-  Archived: [["View results", "results"]]
+  Draft: [["Continue setup", "edit"], ["Preview draft", "preview"], ["Ask Vera", "ask-vera"], ["Save as template", "save-template"], ["Duplicate", "duplicate"], ["Delete draft", "delete"]],
+  Open: [["Edit role", "edit"], ["Preview job", "preview"], ["View candidates", "candidates"], ["Share role", "share"], ["Pause hiring", "pause"], ["Close role", "close"], ["Duplicate role", "duplicate"], ["Ask Vera", "ask-vera"]],
+  Paused: [["Resume hiring", "resume"], ["Edit role", "edit"], ["Preview job", "preview"], ["Review existing candidates", "candidates"], ["Close role", "close"], ["Archive role", "archive"], ["Ask Vera", "ask-vera"]],
+  Closed: [["View results", "results"], ["Duplicate as new role", "duplicate"], ["Reopen role", "reopen"], ["Export summary", "export-summary"], ["Archive role", "archive"], ["Ask Vera for retrospective", "ask-vera"]],
+  Archived: [["View summary", "results"], ["Restore role", "restore"], ["Duplicate", "duplicate"], ["Export data", "export-summary"], ["Permanently delete", "permanent-delete"]]
 };
 
 const ROLE_CLOSE_REASONS = ["Position filled", "Hiring paused indefinitely", "Role changed", "Duplicate role", "Other"];
+const ROLE_PAUSE_REASONS = ["Requirements under review", "Budget on hold", "Reassessing hiring plan", "Waiting on stakeholder decision", "Other"];
 
-function changeRoleStatus(role, newStatus, reason = null) {
+function changeRoleStatus(role, newStatus, meta = {}) {
+  const prevStatus = role.status;
   role.status = newStatus;
-  role.closeReason = newStatus === "Closed" ? reason : null;
+  role.lastUpdated = "Just now";
+  if (newStatus === "Closed") {
+    role.closeReason = meta.reason || role.closeReason || "Other";
+    role.closedDate = "Just now";
+    role.pauseReason = null; role.pausedSince = null;
+  } else if (newStatus === "Paused") {
+    role.pauseReason = meta.reason || role.pauseReason || "Other";
+    role.pausedSince = "Just now";
+    role.lastActivity = "Just now";
+  } else if (newStatus === "Open") {
+    role.closeReason = null;
+    role.pauseReason = null; role.pausedSince = null;
+  } else if (newStatus === "Archived") {
+    role.previousStatus = prevStatus;
+    role.archivedDate = "Just now";
+    role.retentionPeriod = "Data retained for 12 months from archive date";
+  } else if (newStatus === "Draft" && prevStatus === "Archived") {
+    role.previousStatus = null; role.archivedDate = null;
+  }
 }
 
 function duplicateEmployerRole(role) {
@@ -9593,151 +9931,569 @@ function duplicateEmployerRole(role) {
   copy.id = `er-${Date.now()}`;
   copy.title = `${role.title} (Copy)`;
   copy.status = "Draft";
-  copy.closeReason = null;
+  copy.closeReason = null; copy.pauseReason = null; copy.pausedSince = null; copy.lastActivity = null;
+  copy.closedDate = null; copy.archivedDate = null; copy.previousStatus = null; copy.retentionPeriod = null;
+  copy.results = null;
   copy.applicants = 0; copy.qualified = 0; copy.strongMatches = 0; copy.daysOpen = 0;
+  copy.newApplicants = 0; copy.interviews = 0; copy.offers = 0; copy.hires = 0;
+  copy.owner = role.owner || "You"; copy.lastUpdated = "Just now";
   DATA.employerRoles.push(copy);
   return copy;
 }
 
+const DRAFT_REQUIRED_SECTIONS = [
+  { label: "Role basics", check: r => !!(r.title && r.department && r.employmentType) },
+  { label: "Role description", check: r => !!(r.roleSummary && r.roleSummary.trim().length > 20) },
+  { label: "Responsibilities", check: r => (r.responsibilities || []).filter(x => x.trim()).length >= 3 },
+  { label: "Candidate requirements", check: r => (r.mustHaveSkills || []).length > 0 && !!r.minExperience },
+  { label: "Compensation and benefits", check: r => !!(r.salary && r.salary.min && r.salary.max) },
+  { label: "Location and work arrangement", check: r => !!(r.location && r.workMode) },
+  { label: "Hiring process", check: r => (r.hiringStages || []).length > 0 },
+  { label: "Application method", check: r => !!(r.applicationDeadline || r.contactPerson) },
+  { label: "Company information", check: r => !!(r.companySummary || r.useCompanyProfile) },
+  { label: "Preview validation", check: r => !!r.previewReviewed }
+];
+
+function calculateDraftCompletion(roleOrDraft) {
+  const sections = DRAFT_REQUIRED_SECTIONS.map(s => ({ label: s.label, done: !!s.check(roleOrDraft) }));
+  const doneCount = sections.filter(s => s.done).length;
+  const percent = Math.round((doneCount / sections.length) * 100);
+  return { percent, missing: sections.filter(s => !s.done).map(s => s.label), sections };
+}
+
+function getOpenRoleHealth(role) {
+  const momentum = computeHiringMomentum(role);
+  if (!momentum || momentum.status === "On Track") {
+    return { label: "On track", reason: momentum ? momentum.summary : "Hiring is progressing normally." };
+  }
+  const applicants = role.applicants || 0;
+  const qualifiedRate = applicants > 0 ? (role.qualified || 0) / applicants : 1;
+  const matchRate = applicants > 0 ? (role.strongMatches || 0) / applicants : 1;
+  if (role.talentSupply === "Tight" || matchRate < 0.08) {
+    return { label: "Low candidate supply", reason: `Only ${role.strongMatches} suitable candidates match out of ${applicants} applicants.` };
+  }
+  if (qualifiedRate < 0.3) {
+    return { label: "Too many unqualified applicants", reason: `Only ${role.qualified} of ${applicants} applicants meet the must-have requirements.` };
+  }
+  if ((role.interviews || 0) >= 4 && (role.offers || 0) === 0 && (role.daysOpen || 0) >= 10) {
+    return { label: "Interview bottleneck", reason: `${role.interviews} candidates have been interviewed with no offer decision after ${role.daysOpen} days.` };
+  }
+  if ((role.offers || 0) > 0 && (role.hires || 0) === 0 && (role.daysOpen || 0) >= 14) {
+    return { label: "Offer stage delay", reason: `An offer has been sent but not yet accepted after ${role.daysOpen} days open.` };
+  }
+  return { label: "Needs attention", reason: momentum.summary };
+}
+
+function getRoleResultsData(role) {
+  if (role.results) return role.results;
+  const reviewed = role.applicants || 0;
+  const shortlisted = role.qualified || Math.round(reviewed * 0.35);
+  const interviewed = role.interviews || Math.round(shortlisted * 0.4);
+  const offersSent = role.offers || (role.hires ? role.hires : 0);
+  const offersAccepted = role.hires || 0;
+  return {
+    reviewed, shortlisted, interviewed, offersSent, offersAccepted,
+    finalHire: offersAccepted > 0 ? "Candidate hired" : "No hire recorded",
+    timeToHire: role.timeToHire || (role.daysOpen ? `${role.daysOpen} days` : "—"),
+    sourcingChannel: "CareerGo direct apply",
+    dropOffStage: interviewed > 0 ? "Screening call" : "Application review",
+    retrospective: "Vera does not have enough recorded activity on this role for a detailed retrospective yet.",
+    improvement: "Add more structured screening questions next time to surface stronger signal earlier."
+  };
+}
+
+/* ---------- Shared modal system: single-instance, Escape/backdrop close, focus return ---------- */
+let empModalReturnFocus = null;
+
+function ensureEmpModalRoot() {
+  let host = qs("[data-emp-modal-root]");
+  if (!host) {
+    host = document.createElement("div");
+    host.dataset.empModalRoot = "";
+    document.body.appendChild(host);
+  }
+  if (!host.dataset.empModalBound) {
+    host.dataset.empModalBound = "1";
+    host.addEventListener("click", event => {
+      if (event.target.closest("[data-emp-modal-backdrop]") === event.target) closeEmpModal();
+    });
+  }
+  return host;
+}
+
+function closeEmpModal() {
+  const host = qs("[data-emp-modal-root]");
+  if (!host || !host.dataset.openModalId) return;
+  host.innerHTML = "";
+  delete host.dataset.openModalId;
+  const restore = empModalReturnFocus;
+  empModalReturnFocus = null;
+  if (restore && document.body.contains(restore)) restore.focus();
+}
+
+function openEmpModal(id, html, opts = {}) {
+  const host = ensureEmpModalRoot();
+  if (host.dataset.openModalId === id) {
+    qs(".emp-modal-card", host)?.focus();
+    return;
+  }
+  if (host.dataset.openModalId) closeEmpModal();
+  empModalReturnFocus = document.activeElement;
+  host.dataset.openModalId = id;
+  host.innerHTML = `
+    <div class="emp-modal-backdrop" data-emp-modal-backdrop>
+      <div class="emp-modal-card ${opts.className || ""}" role="dialog" aria-modal="true" aria-label="${escapeHtml(opts.label || "Dialog")}" tabindex="-1">
+        ${html}
+      </div>
+    </div>
+  `;
+  createIcons();
+  qs(".emp-modal-card", host)?.focus();
+  qsa("[data-emp-modal-close]", host).forEach(btn => btn.addEventListener("click", () => closeEmpModal()));
+  if (opts.onOpen) opts.onOpen(host);
+}
+
+if (!window.__empModalGlobalKeyReady) {
+  window.__empModalGlobalKeyReady = true;
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    const host = qs("[data-emp-modal-root]");
+    if (host && host.dataset.openModalId) closeEmpModal();
+  });
+}
+
+function openEmpConfirm({ title, body, confirmLabel = "Confirm", cancelLabel = "Cancel", danger = false, onConfirm }) {
+  openEmpModal("confirm", `
+    <div class="emp-confirm-modal">
+      <h2>${escapeHtml(title)}</h2>
+      <p>${body}</p>
+      <div class="emp-compose-actions">
+        <button type="button" class="btn btn-ghost" data-emp-modal-close>${escapeHtml(cancelLabel)}</button>
+        <button type="button" class="btn ${danger ? "btn-danger" : "btn-primary"}" data-emp-confirm-action>${escapeHtml(confirmLabel)}</button>
+      </div>
+    </div>
+  `, {
+    label: title,
+    onOpen: host => {
+      qs("[data-emp-confirm-action]", host)?.addEventListener("click", () => {
+        closeEmpModal();
+        onConfirm();
+      });
+    }
+  });
+}
+
+/* ---------- Roles table: status-specific columns, single delegated listener ---------- */
+const ROLE_STATUS_FILTERS = ["All", "Open", "Draft", "Paused", "Closed", "Archived"];
+
+function getRoleTableHeaders(filter) {
+  switch (filter) {
+    case "Open": return ["Role", "Applicants", "New", "Strong matches", "Hiring health", "Days open", "Recommended action"];
+    case "Draft": return ["Role", "Completion", "Missing information", "Last edited", "Draft owner", "Vera check"];
+    case "Paused": return ["Role", "Applicants retained", "Strong matches retained", "Paused since", "Pause reason", "Last activity", "Recommended next action"];
+    case "Closed": return ["Role", "Total applicants", "Strong matches", "Interviews", "Hires made", "Time to hire", "Closed date"];
+    case "Archived": return ["Role", "Previous status", "Total applicants", "Final outcome", "Archived date", "Retention period"];
+    default: return ["Role", "Status", "Applicants", "Strong matches", "Hiring health", "Last updated", "Recommended next action"];
+  }
+}
+
+function roleTitleCell(role) {
+  return `<td><button type="button" class="emp-role-title-link" data-action="open-role" data-role-id="${role.id}">${escapeHtml(role.title)}</button></td>`;
+}
+
+function roleActionCells(role) {
+  const menu = ROLE_STATUS_MENU[role.status] || [];
+  return `
+    <td class="emp-table-actions"><button type="button" class="btn btn-primary btn-sm" data-action="primary" data-role-id="${role.id}">${ROLE_STATUS_PRIMARY[role.status]}</button></td>
+    <td class="emp-table-actions">
+      ${menu.length ? `
+        <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-action="toggle-menu" data-role-id="${role.id}" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${escapeHtml(role.title)}">${icon("more-horizontal")}</button>
+        <div class="emp-actions-menu" data-emp-role-menu-panel="${role.id}" role="menu" hidden>
+          ${menu.map(([label, act]) => `<button type="button" role="menuitem" data-action="role-action" data-role-action="${act}" data-role-id="${role.id}">${label}</button>`).join("")}
+        </div>
+      ` : ""}
+    </td>
+  `;
+}
+
+function renderAllTabRow(role) {
+  let applicants = "—", strong = "—", health = "—", recommended = "—";
+  if (role.status === "Draft") {
+    const c = calculateDraftCompletion(role);
+    health = "Incomplete";
+    recommended = c.missing[0] || "Ready for preview";
+  } else if (role.status === "Open") {
+    applicants = role.applicants; strong = role.strongMatches;
+    health = getOpenRoleHealth(role).label;
+    const momentum = computeHiringMomentum(role);
+    recommended = momentum ? momentum.nextAction : "Keep monitoring";
+  } else if (role.status === "Paused") {
+    applicants = role.applicants; strong = role.strongMatches;
+    health = "Paused"; recommended = "Review before resuming";
+  } else if (role.status === "Closed") {
+    applicants = role.applicants; strong = role.strongMatches;
+    health = "Completed"; recommended = "Review hiring outcome";
+  } else if (role.status === "Archived") {
+    applicants = role.applicants; strong = role.strongMatches;
+    health = "Archived"; recommended = "—";
+  }
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td><span class="pill ${ROLE_STATUS_PILL_CLASS[role.status]}">${role.status}</span></td>
+      <td>${applicants}</td>
+      <td>${strong}</td>
+      <td>${escapeHtml(String(health))}</td>
+      <td>${escapeHtml(role.lastUpdated || "—")}</td>
+      <td>${escapeHtml(String(recommended))}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderOpenRow(role) {
+  const h = getOpenRoleHealth(role);
+  const momentum = computeHiringMomentum(role);
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td>${role.applicants}</td>
+      <td>${role.newApplicants ? `<span class="pill green">+${role.newApplicants}</span>` : "—"}</td>
+      <td>${role.strongMatches}</td>
+      <td><span class="pill ${h.label === "On track" ? "green" : "gold"}" title="${escapeHtml(h.reason)}">${h.label}</span></td>
+      <td>${role.daysOpen}d</td>
+      <td>${escapeHtml(momentum ? momentum.nextAction : h.reason)}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderDraftRow(role) {
+  const c = calculateDraftCompletion(role);
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td><div class="emp-completion-cell">${progressBar(c.percent)}<span>${c.percent}%</span></div></td>
+      <td>${c.missing.length ? escapeHtml(c.missing.slice(0, 3).join(", ")) : "Nothing — ready to preview"}</td>
+      <td>${escapeHtml(role.lastUpdated || "—")}</td>
+      <td>${escapeHtml(role.owner || "Unassigned")}</td>
+      <td>${role.veraCheckCount ? `${role.veraCheckCount} recommendation${role.veraCheckCount === 1 ? "" : "s"}` : "No open recommendations"}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderPausedRow(role) {
+  const momentum = computeHiringMomentum(role);
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td>${role.applicants}</td>
+      <td>${role.strongMatches}</td>
+      <td>${escapeHtml(role.pausedSince || "—")}</td>
+      <td>${escapeHtml(role.pauseReason || "—")}</td>
+      <td>${escapeHtml(role.lastActivity || "—")}</td>
+      <td>${escapeHtml(momentum ? momentum.nextAction : "Review before resuming")}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderClosedRow(role) {
+  const r = getRoleResultsData(role);
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td>${role.applicants}</td>
+      <td>${role.strongMatches}</td>
+      <td>${role.interviews ?? r.interviewed ?? "—"}</td>
+      <td>${role.hires ?? r.offersAccepted ?? 0}</td>
+      <td>${escapeHtml(role.timeToHire || r.timeToHire || "—")}</td>
+      <td>${escapeHtml(role.closedDate || "—")}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderArchivedRow(role) {
+  const outcome = role.results ? `${role.results.offersAccepted || 0} hire${(role.results.offersAccepted || 0) === 1 ? "" : "s"}` : (role.closeReason || "—");
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td>${escapeHtml(role.previousStatus || "—")}</td>
+      <td>${role.applicants}</td>
+      <td>${escapeHtml(outcome)}</td>
+      <td>${escapeHtml(role.archivedDate || "—")}</td>
+      <td>${escapeHtml(role.retentionPeriod || "—")}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderStatusTabRow(role) {
+  switch (role.status) {
+    case "Open": return renderOpenRow(role);
+    case "Draft": return renderDraftRow(role);
+    case "Paused": return renderPausedRow(role);
+    case "Closed": return renderClosedRow(role);
+    case "Archived": return renderArchivedRow(role);
+    default: return renderAllTabRow(role);
+  }
+}
+
+function clampMenuToViewport(panel) {
+  panel.style.top = ""; panel.style.bottom = "";
+  const rect = panel.getBoundingClientRect();
+  if (rect.bottom > window.innerHeight - 8) {
+    panel.style.top = "auto";
+    panel.style.bottom = "calc(100% + 6px)";
+  }
+}
+
+function openCloseReasonModal(role, onDone) {
+  openEmpModal("close-role", `
+    <h2>Why are you closing "${escapeHtml(role.title)}"?</h2>
+    <p class="emp-preview-note">Closing this role stops new applications. Existing applicants and hiring history will remain available.</p>
+    <div class="emp-close-reasons">
+      ${ROLE_CLOSE_REASONS.map((reason, i) => `<label class="check-field custom-checkbox"><input type="radio" name="close-reason" value="${escapeHtml(reason)}" ${i === 0 ? "checked" : ""}> ${escapeHtml(reason)}</label>`).join("")}
+    </div>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Cancel</button>
+      <button type="button" class="btn btn-primary" data-close-confirm>Close role</button>
+    </div>
+  `, {
+    label: `Close ${role.title}`,
+    onOpen: host => {
+      qs("[data-close-confirm]", host)?.addEventListener("click", () => {
+        const reason = qs('input[name="close-reason"]:checked', host)?.value || "Other";
+        closeEmpModal();
+        changeRoleStatus(role, "Closed", { reason });
+        onDone();
+        showToast(`${role.title} closed.`);
+      });
+    }
+  });
+}
+
+function openPauseReasonModal(role, onDone) {
+  openEmpModal("pause-role", `
+    <h2>Why are you pausing "${escapeHtml(role.title)}"?</h2>
+    <p class="emp-preview-note">Pausing stops new applications temporarily. Existing applicants and strong matches stay attached to this role.</p>
+    <div class="emp-close-reasons">
+      ${ROLE_PAUSE_REASONS.map((reason, i) => `<label class="check-field custom-checkbox"><input type="radio" name="pause-reason" value="${escapeHtml(reason)}" ${i === 0 ? "checked" : ""}> ${escapeHtml(reason)}</label>`).join("")}
+    </div>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Cancel</button>
+      <button type="button" class="btn btn-primary" data-pause-confirm>Pause role</button>
+    </div>
+  `, {
+    label: `Pause ${role.title}`,
+    onOpen: host => {
+      qs("[data-pause-confirm]", host)?.addEventListener("click", () => {
+        const reason = qs('input[name="pause-reason"]:checked', host)?.value || "Other";
+        closeEmpModal();
+        changeRoleStatus(role, "Paused", { reason });
+        onDone();
+        showToast(`${role.title} paused.`);
+      });
+    }
+  });
+}
+
+function openResumeConfirmModal(role, onDone) {
+  openEmpModal("resume-role", `
+    <h2>Resume hiring for "${escapeHtml(role.title)}"?</h2>
+    <p class="emp-preview-note">This role was paused ${escapeHtml(role.pausedSince || "recently")}${role.pauseReason ? ` — reason recorded: "${escapeHtml(role.pauseReason)}".` : "."} Existing applicants and strong matches are retained.</p>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Cancel</button>
+      <button type="button" class="btn btn-ghost" data-resume-edit>Edit role first</button>
+      <button type="button" class="btn btn-primary" data-resume-now>Resume immediately</button>
+    </div>
+  `, {
+    label: `Resume ${role.title}`,
+    onOpen: host => {
+      qs("[data-resume-now]", host)?.addEventListener("click", () => {
+        closeEmpModal();
+        changeRoleStatus(role, "Open");
+        onDone();
+        showToast(`${role.title} reopened for applicants.`);
+      });
+      qs("[data-resume-edit]", host)?.addEventListener("click", () => {
+        closeEmpModal();
+        employerNavigateTo("role-builder", { id: role.id });
+      });
+    }
+  });
+}
+
+function openRestoreModal(role, onDone) {
+  const target = role.previousStatus === "Draft" ? "Draft" : "Closed";
+  openEmpModal("restore-role", `
+    <h2>Restore "${escapeHtml(role.title)}"?</h2>
+    <p class="emp-preview-note">Choose where this role should return to.</p>
+    <div class="emp-close-reasons">
+      <label class="check-field custom-checkbox"><input type="radio" name="restore-target" value="Closed" ${target === "Closed" ? "checked" : ""}> Restore to Closed — hiring already finished</label>
+      <label class="check-field custom-checkbox"><input type="radio" name="restore-target" value="Draft" ${target === "Draft" ? "checked" : ""}> Restore to Draft — continue editing before republishing</label>
+    </div>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Cancel</button>
+      <button type="button" class="btn btn-primary" data-restore-confirm>Restore role</button>
+    </div>
+  `, {
+    label: `Restore ${role.title}`,
+    onOpen: host => {
+      qs("[data-restore-confirm]", host)?.addEventListener("click", () => {
+        const dest = qs('input[name="restore-target"]:checked', host)?.value || "Closed";
+        closeEmpModal();
+        changeRoleStatus(role, dest);
+        onDone();
+        showToast(`${role.title} restored to ${dest}.`);
+      });
+    }
+  });
+}
+
+function openRoleResultsModal(role, onDone) {
+  const r = getRoleResultsData(role);
+  const label = role.status === "Archived" ? "Role summary" : "Hiring results";
+  openEmpModal("role-results", `
+    <div class="emp-results-head">
+      <div><span class="emp-vera-context">${escapeHtml(label)}</span><h2>${escapeHtml(role.title)}</h2></div>
+      <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+    </div>
+    <div class="emp-results-funnel">
+      ${[["Reviewed", r.reviewed], ["Shortlisted", r.shortlisted], ["Interviewed", r.interviewed], ["Offers sent", r.offersSent], ["Offers accepted", r.offersAccepted]].map(([lbl, val]) => `
+        <div class="emp-results-stage"><strong>${val}</strong><span>${lbl}</span></div>
+      `).join("")}
+    </div>
+    <div class="emp-results-grid">
+      <div><span class="emp-tags-label">Final hire</span><p>${escapeHtml(r.finalHire)}</p></div>
+      <div><span class="emp-tags-label">Time to hire</span><p>${escapeHtml(r.timeToHire)}</p></div>
+      <div><span class="emp-tags-label">Most effective sourcing channel</span><p>${escapeHtml(r.sourcingChannel)}</p></div>
+      <div><span class="emp-tags-label">Key drop-off stage</span><p>${escapeHtml(r.dropOffStage)}</p></div>
+    </div>
+    <div class="emp-callout-label">${icon("sparkles")} Vera retrospective</div>
+    <p>${escapeHtml(r.retrospective)}</p>
+    <p class="emp-suggestion-rec">Suggested improvement for the next similar role</p>
+    <p>${escapeHtml(r.improvement)}</p>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Close</button>
+      <button type="button" class="btn btn-primary" data-results-duplicate>${icon("copy")} Duplicate as new role</button>
+    </div>
+  `, {
+    label: `${label}: ${role.title}`,
+    className: "emp-results-card",
+    onOpen: host => {
+      qs("[data-results-duplicate]", host)?.addEventListener("click", () => {
+        closeEmpModal();
+        const copy = duplicateEmployerRole(role);
+        onDone();
+        showToast(`Duplicated as "${copy.title}".`);
+      });
+    }
+  });
+}
+
+let currentRolesClickHandler = null;
+function ensureRolesDelegation(root) {
+  if (root.dataset.rolesDelegated) return;
+  root.dataset.rolesDelegated = "1";
+  root.addEventListener("click", event => { if (currentRolesClickHandler) currentRolesClickHandler(event); });
+}
+
+/* Root cause of the original button-growth / duplicate-menu bug: this outside-click
+   closer used to be registered with document.addEventListener() inside bind(), which
+   re-ran on every draw() (every filter change, every action) — each call permanently
+   added another listener to document that was never removed. Registering it once here,
+   guarded by a global flag, keeps exactly one instance for the life of the page. */
+if (!window.__empRoleMenuGlobalReady) {
+  window.__empRoleMenuGlobalReady = true;
+  document.addEventListener("click", () => {
+    qsa("[data-emp-role-menu-panel]:not([hidden])").forEach(p => {
+      p.hidden = true;
+      qsa(`[data-action="toggle-menu"][data-role-id="${p.dataset.empRoleMenuPanel}"]`).forEach(b => b.setAttribute("aria-expanded", "false"));
+    });
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    qsa("[data-emp-role-menu-panel]:not([hidden])").forEach(p => { p.hidden = true; });
+  });
+}
+
 function renderEmployerRolesList(root) {
   let activeFilter = "All";
-  const ROLE_STATUS_FILTERS = ["All", "Open", "Draft", "Paused", "Closed", "Archived"];
 
   function draw() {
     const roles = DATA.employerRoles.filter(r => activeFilter === "All" || r.status === activeFilter);
+    const headers = [...getRoleTableHeaders(activeFilter), "", ""];
     root.innerHTML = `
       <div class="emp-view-header">
         <div class="emp-view-header-top">
           <div>
             <span class="emp-section-label">Roles</span>
             <h1>Roles in your company</h1>
-            <p>Create, publish and manage every role your company is hiring for.</p>
+            <p>Create, publish, monitor, pause, close, and archive every role your company manages.</p>
           </div>
-          <button type="button" class="btn btn-primary" data-emp-create-role>${icon("plus")} Create role</button>
+          <div class="emp-view-header-actions">
+            <button type="button" class="btn btn-ghost" data-action="ask-vera-global">${icon("sparkles")} Ask Vera</button>
+            <button type="button" class="btn btn-primary" data-action="create-role">${icon("plus")} Create role</button>
+          </div>
         </div>
       </div>
-      <div class="emp-subtabs">
-        ${ROLE_STATUS_FILTERS.map(f => `<button type="button" class="emp-subtab ${activeFilter === f ? "active" : ""}" data-emp-role-filter="${f}">${f}</button>`).join("")}
+      <div class="emp-subtabs" role="tablist" aria-label="Role status">
+        ${ROLE_STATUS_FILTERS.map(f => `<button type="button" class="emp-subtab ${activeFilter === f ? "active" : ""}" role="tab" aria-selected="${activeFilter === f}" data-action="filter" data-filter="${f}">${f}</button>`).join("")}
       </div>
       <div class="card">
         <div class="table-wrap">
           <table class="emp-table">
-            <thead><tr><th>Role</th><th>Status</th><th>Applicants</th><th>Strong matches</th><th>Days open</th><th>Hiring momentum</th><th>Next action</th><th></th><th></th></tr></thead>
+            <thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>
             <tbody>
-              ${roles.length ? roles.map(r => {
-                const momentum = computeHiringMomentum(r);
-                return `
-                <tr class="emp-table-row">
-                  <td>${r.title}</td>
-                  <td class="emp-table-actions">
-                    ${ROLE_STATUS_MENU[r.status].length
-                      ? `<button type="button" class="pill emp-status-pill ${ROLE_STATUS_PILL_CLASS[r.status]}" data-emp-role-menu="${r.id}">${r.status} ${icon("chevron-down")}</button>`
-                      : `<span class="pill ${ROLE_STATUS_PILL_CLASS[r.status]}">${r.status}</span>`}
-                  </td>
-                  <td>${r.status === "Draft" ? "—" : r.applicants}</td>
-                  <td>${r.status === "Draft" ? "—" : r.strongMatches}</td>
-                  <td>${r.status === "Draft" ? "—" : `${r.daysOpen}d`}</td>
-                  <td class="emp-momentum-cell">
-                    ${momentum
-                      ? `<button type="button" class="pill emp-momentum-pill ${ROLE_MOMENTUM_CLASS[momentum.status]}" data-emp-momentum="${r.id}">${momentum.status}</button>
-                         <div class="emp-momentum-pop" data-emp-momentum-pop="${r.id}" hidden>
-                           <strong>${momentum.status}</strong>
-                           <span class="emp-momentum-why-label">Why:</span>
-                           <ul class="emp-momentum-why">${momentum.reasons.map(r2 => `<li>${r2}</li>`).join("")}</ul>
-                           <span class="emp-momentum-next">Suggested next step: ${momentum.nextAction}</span>
-                         </div>`
-                      : `<span class="emp-empty-hint">—</span>`}
-                  </td>
-                  <td>${momentum ? momentum.nextAction : (r.status === "Draft" ? "Complete setup" : "—")}</td>
-                  <td class="emp-table-actions"><button type="button" class="btn btn-primary btn-sm" data-emp-primary="${r.id}">${ROLE_STATUS_PRIMARY[r.status]}</button></td>
-                  <td class="emp-table-actions">
-                    ${ROLE_STATUS_MENU[r.status].length ? `
-                      <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-emp-role-menu="${r.id}">${icon("more-horizontal")}</button>
-                      <div class="emp-actions-menu" data-emp-role-menu-panel="${r.id}" hidden>
-                        ${ROLE_STATUS_MENU[r.status].map(([label, action]) => `<button type="button" data-emp-role-action="${action}" data-emp-role-id="${r.id}">${label}</button>`).join("")}
-                      </div>
-                    ` : ""}
-                  </td>
-                </tr>
-              `; }).join("") : `<tr><td colspan="9"><p class="emp-empty-hint">No roles match this filter.</p></td></tr>`}
+              ${roles.length ? roles.map(r => activeFilter === "All" ? renderAllTabRow(r) : renderStatusTabRow(r)).join("") : `<tr><td colspan="${headers.length}"><p class="emp-empty-hint">No roles match this filter.</p></td></tr>`}
             </tbody>
           </table>
         </div>
       </div>
-      <div class="emp-compose-modal" data-emp-close-modal hidden>
-        <div class="card emp-compose-card">
-          <h2>Why are you closing this role?</h2>
-          <p class="emp-preview-note">Closing this role stops new applications. Existing applicants and hiring history will remain available.</p>
-          <div class="emp-close-reasons">
-            ${ROLE_CLOSE_REASONS.map((reason, i) => `
-              <label class="check-field custom-checkbox"><input type="radio" name="close-reason" value="${reason}" ${i === 0 ? "checked" : ""}> ${reason}</label>
-            `).join("")}
-          </div>
-          <div class="emp-compose-actions">
-            <button type="button" class="btn btn-ghost" data-emp-close-cancel>Cancel</button>
-            <button type="button" class="btn btn-primary" data-emp-close-confirm>Close role</button>
-          </div>
-        </div>
-      </div>
     `;
     createIcons();
-    bind();
   }
 
-  function bind() {
-    qs("[data-emp-create-role]", root)?.addEventListener("click", () => employerNavigateTo("role-builder", {}));
-
-    qsa("[data-emp-role-filter]", root).forEach(btn => btn.addEventListener("click", () => {
-      activeFilter = btn.dataset.empRoleFilter;
-      draw();
-    }));
-
-    qsa("[data-emp-momentum]", root).forEach(btn => {
-      const pop = qs(`[data-emp-momentum-pop="${btn.dataset.empMomentum}"]`, root);
-      btn.addEventListener("click", event => {
-        event.stopPropagation();
-        qsa("[data-emp-momentum-pop]", root).forEach(p => p.hidden = true);
-        pop.hidden = false;
-      });
-      btn.addEventListener("mouseenter", () => {
-        qsa("[data-emp-momentum-pop]", root).forEach(p => p.hidden = true);
-        pop.hidden = false;
-      });
-      btn.parentElement.addEventListener("mouseleave", () => { pop.hidden = true; });
-    });
-
-    qsa("[data-emp-role-menu]", root).forEach(btn => btn.addEventListener("click", event => {
+  function handleClick(event) {
+    const el = event.target.closest("[data-action]");
+    if (!el || !root.contains(el)) return;
+    const action = el.dataset.action;
+    if (action === "create-role") { employerNavigateTo("role-builder", {}); return; }
+    if (action === "ask-vera-global") { openRolesVeraModal("", null); return; }
+    if (action === "filter") { activeFilter = el.dataset.filter; draw(); return; }
+    if (action === "open-role") {
+      const role = DATA.employerRoles.find(r => r.id === el.dataset.roleId);
+      if (!role) return;
+      runRoleAction(role, role.status === "Closed" || role.status === "Archived" ? "results" : "edit");
+      return;
+    }
+    if (action === "toggle-menu") {
       event.stopPropagation();
-      const panel = qs(`[data-emp-role-menu-panel="${btn.dataset.empRoleMenu}"]`, root);
+      const panel = qs(`[data-emp-role-menu-panel="${el.dataset.roleId}"]`, root);
+      if (!panel) return;
       const isHidden = panel.hidden;
-      qsa("[data-emp-role-menu-panel]", root).forEach(p => p.hidden = true);
-      panel.hidden = !isHidden;
-    }));
-
-    document.addEventListener("click", () => {
-      qsa("[data-emp-role-menu-panel], [data-emp-momentum-pop]", root).forEach(p => p.hidden = true);
-    });
-
-    qsa("[data-emp-primary]", root).forEach(btn => btn.addEventListener("click", () => {
-      const role = DATA.employerRoles.find(r => r.id === btn.dataset.empPrimary);
-      runRoleAction(role, role.status === "Draft" ? "edit" : role.status === "Paused" ? "resume" : role.status === "Open" ? "candidates" : "results");
-    }));
-
-    qsa("[data-emp-role-action]", root).forEach(btn => btn.addEventListener("click", () => {
-      const role = DATA.employerRoles.find(r => r.id === btn.dataset.empRoleId);
-      runRoleAction(role, btn.dataset.empRoleAction);
-    }));
-
-    qs("[data-emp-close-cancel]", root)?.addEventListener("click", () => { qs("[data-emp-close-modal]", root).hidden = true; });
-    qs("[data-emp-close-confirm]", root)?.addEventListener("click", () => {
-      const modal = qs("[data-emp-close-modal]", root);
-      const reason = qs('input[name="close-reason"]:checked', root)?.value || "Other";
-      const role = DATA.employerRoles.find(r => r.id === modal.dataset.roleId);
-      changeRoleStatus(role, "Closed", reason);
-      modal.hidden = true;
-      draw();
-      showToast(`${role.title} closed.`);
-    });
+      qsa("[data-emp-role-menu-panel]", root).forEach(p => { p.hidden = true; });
+      qsa('[data-action="toggle-menu"]', root).forEach(b => b.setAttribute("aria-expanded", "false"));
+      if (isHidden) {
+        panel.hidden = false;
+        el.setAttribute("aria-expanded", "true");
+        clampMenuToViewport(panel);
+      }
+      return;
+    }
+    if (action === "role-action") {
+      const role = DATA.employerRoles.find(r => r.id === el.dataset.roleId);
+      if (role) runRoleAction(role, el.dataset.roleAction);
+      return;
+    }
+    if (action === "primary") {
+      const role = DATA.employerRoles.find(r => r.id === el.dataset.roleId);
+      if (role) runRoleAction(role, role.status === "Draft" ? "edit" : role.status === "Paused" ? "resume" : role.status === "Open" ? "candidates" : "results");
+      return;
+    }
   }
 
   function runRoleAction(role, action) {
@@ -9749,7 +10505,7 @@ function renderEmployerRolesList(root) {
         employerNavigateTo("pipeline", { role: role.id });
         break;
       case "results":
-        showToast("Results view opens in a later phase.", "info");
+        openRoleResultsModal(role, draw);
         break;
       case "duplicate": {
         const copy = duplicateEmployerRole(role);
@@ -9758,21 +10514,22 @@ function renderEmployerRolesList(root) {
         break;
       }
       case "delete":
-        if (confirm(`Delete the draft "${role.title}"? This cannot be undone.`)) {
-          DATA.employerRoles.splice(DATA.employerRoles.indexOf(role), 1);
-          draw();
-          showToast("Draft deleted.");
-        }
+        openEmpConfirm({
+          title: `Delete the draft "${role.title}"?`,
+          body: "This cannot be undone.",
+          confirmLabel: "Delete draft", danger: true,
+          onConfirm: () => {
+            DATA.employerRoles.splice(DATA.employerRoles.indexOf(role), 1);
+            draw();
+            showToast("Draft deleted.");
+          }
+        });
         break;
       case "pause":
-        changeRoleStatus(role, "Paused");
-        draw();
-        showToast(`${role.title} paused.`);
+        openPauseReasonModal(role, draw);
         break;
       case "resume":
-        changeRoleStatus(role, "Open");
-        draw();
-        showToast(`${role.title} reopened for applicants.`);
+        openResumeConfirmModal(role, draw);
         break;
       case "reopen":
         changeRoleStatus(role, "Open");
@@ -9784,15 +10541,67 @@ function renderEmployerRolesList(root) {
         draw();
         showToast(`${role.title} archived.`);
         break;
-      case "close": {
-        const modal = qs("[data-emp-close-modal]", root);
-        modal.dataset.roleId = role.id;
-        modal.hidden = false;
+      case "restore":
+        openRestoreModal(role, draw);
+        break;
+      case "permanent-delete":
+        openEmpConfirm({
+          title: `Permanently delete "${role.title}"?`,
+          body: "This removes all role data, applicant history, and results. This cannot be undone.",
+          confirmLabel: "Permanently delete", danger: true,
+          onConfirm: () => {
+            DATA.employerRoles.splice(DATA.employerRoles.indexOf(role), 1);
+            draw();
+            showToast("Role permanently deleted.");
+          }
+        });
+        break;
+      case "close":
+        openCloseReasonModal(role, draw);
+        break;
+      case "save-template": {
+        const state = readState();
+        state.roleTemplates = state.roleTemplates || [];
+        state.roleTemplates.push({ id: `tpl-${Date.now()}`, title: role.title, savedFrom: role.id, savedAt: new Date().toISOString(), draft: makeEmployerRoleDraft(role) });
+        writeState(state);
+        showToast(`"${role.title}" saved as a reusable template.`);
         break;
       }
+      case "export-summary": {
+        const r = getRoleResultsData(role);
+        const lines = [
+          `Hiring summary — ${role.title}`, `Status: ${role.status}`,
+          `Reviewed: ${r.reviewed}`, `Shortlisted: ${r.shortlisted}`, `Interviewed: ${r.interviewed}`,
+          `Offers sent: ${r.offersSent}`, `Offers accepted: ${r.offersAccepted}`,
+          `Final hire: ${r.finalHire}`, `Time to hire: ${r.timeToHire}`,
+          `Sourcing channel: ${r.sourcingChannel}`, `Drop-off stage: ${r.dropOffStage}`
+        ];
+        const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = `${role.title.replace(/\s+/g, "-").toLowerCase()}-summary.txt`;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+        showToast("Summary exported.");
+        break;
+      }
+      case "share": {
+        const link = `${location.origin}${location.pathname}#role-${role.id}`;
+        if (navigator.clipboard?.writeText) {
+          navigator.clipboard.writeText(link).then(() => showToast("Public role link copied.")).catch(() => showToast(`Copy this link: ${link}`, "info"));
+        } else {
+          showToast(`Link: ${link}`, "info");
+        }
+        break;
+      }
+      case "ask-vera":
+        openRolesVeraModal("", role.id);
+        break;
     }
   }
 
+  ensureRolesDelegation(root);
+  currentRolesClickHandler = handleClick;
   draw();
 }
 
@@ -9805,28 +10614,286 @@ const FALLBACK_ROLE_INTELLIGENCE = {
   strengths: [], concerns: [], suggestions: []
 };
 
+const EMPLOYMENT_TYPES = ["Full-time", "Part-time", "Internship", "Contract", "Temporary", "Freelance", "Graduate programme", "Apprenticeship"];
+const SENIORITY_LEVELS = ["Internship", "Entry level", "Junior", "Mid-level", "Senior", "Lead", "Manager", "Director", "Executive"];
+const BENEFIT_OPTIONS = ["Medical coverage", "Dental coverage", "Insurance", "Paid leave", "Flexible working", "Remote-work support", "Training budget", "Certification support", "Equipment provided", "Transport allowance", "Parking", "Meal allowance", "Wellness benefits", "Relocation support"];
+
+const CREATE_VERA_QUESTIONS = [
+  { field: "title", prompt: "What role are you hiring for?", type: "text", required: true, placeholder: "e.g. Backend Engineer" },
+  { field: "seniority", prompt: "What level is this role?", type: "chips", options: SENIORITY_LEVELS },
+  { field: "location", prompt: "Where is this role located?", type: "text", placeholder: "e.g. Kuala Lumpur", autocomplete: () => CREATE_VERA_LOCATIONS },
+  { field: "workMode", prompt: "What's the work arrangement?", type: "chips", options: ["On-site", "Hybrid", "Remote"] },
+  { field: "employmentType", prompt: "What's the employment type?", type: "chips", options: EMPLOYMENT_TYPES },
+  { field: "salary", prompt: "What's the salary range? (RM / month)", type: "salary", required: true },
+  { field: "mustHaveSkills", prompt: "What skills are required?", type: "tags", required: true, autocomplete: () => CREATE_VERA_SKILL_VOCAB },
+  { field: "niceToHaveSkills", prompt: "Any nice-to-have skills?", type: "tags", skippable: true, autocomplete: () => CREATE_VERA_SKILL_VOCAB },
+  { field: "minExperience", prompt: "What's the minimum experience?", type: "chips", options: ["No experience required", "Less than 1 year", "1-2 years", "3-5 years", "5+ years"] },
+  { field: "educationOrCertification", prompt: "Any required education or certification?", type: "text", skippable: true, placeholder: "e.g. Bachelor's degree preferred" },
+  { field: "urgency", prompt: "How urgent is this hire?", type: "chips", options: ["Standard", "Urgent", "Critical"] }
+];
+
+const CREATE_VERA_ARCHETYPES = [
+  {
+    id: "engineer", match: /engineer|developer|programmer/i,
+    summaryVariants: [
+      (a, skill) => `Build and ship ${skill ? `${skill}-powered ` : ""}features across the product, from design to deployment.`,
+      (a, skill) => `Own end-to-end delivery of reliable, well-tested systems${skill ? ` built with ${skill}` : ""}.`
+    ],
+    responsibilityPool: [
+      "Design, build, and maintain core product features.",
+      "Write clean, tested, and well-documented code.",
+      "Participate in code review and technical design discussions.",
+      "Debug and resolve production issues in a timely manner.",
+      "Collaborate with product and design on technical feasibility.",
+      "Improve engineering practices, tooling, and test coverage."
+    ]
+  },
+  {
+    id: "designer", match: /designer|ux|ui\b/i,
+    summaryVariants: [
+      (a, skill) => `Design and prototype product experiences${skill ? ` in ${skill}` : ""}, working closely with product and engineering.`,
+      (a, skill) => `Shape end-to-end user experience${skill ? ` using ${skill}` : ""}, from research through polished UI.`
+    ],
+    responsibilityPool: [
+      "Conduct user research and usability testing.",
+      "Design and prototype product flows and interfaces.",
+      "Contribute to and maintain the design system.",
+      "Collaborate with product and engineering on feasibility.",
+      "Present design rationale to stakeholders.",
+      "Iterate on designs based on user feedback and data."
+    ]
+  },
+  {
+    id: "analyst", match: /analyst|data|bi\b/i,
+    summaryVariants: [
+      (a, skill) => `Turn data into decisions${skill ? ` using ${skill}` : ""}, building dashboards and analysis for the business.`,
+      (a, skill) => `Partner with the business to answer key questions with data${skill ? `, primarily in ${skill}` : ""}.`
+    ],
+    responsibilityPool: [
+      "Build and maintain dashboards and reports.",
+      "Write queries and analyze data to answer business questions.",
+      "Partner with stakeholders to define metrics.",
+      "Present findings and recommendations to the team.",
+      "Ensure data quality and consistency across sources.",
+      "Support ad-hoc analysis for cross-functional teams."
+    ]
+  },
+  {
+    id: "manager", match: /manager|lead|head\b/i,
+    summaryVariants: [
+      (a) => `Lead a team to deliver on ${a.title ? a.title.replace(/manager|lead/i, "").trim() || "key" : "key"} priorities, setting direction and unblocking execution.`,
+      () => `Own team outcomes end-to-end, balancing delivery, people growth, and cross-functional alignment.`
+    ],
+    responsibilityPool: [
+      "Set team priorities and hold the roadmap accountable.",
+      "Coach and develop team members.",
+      "Partner cross-functionally to align on goals.",
+      "Report on progress and remove execution blockers.",
+      "Run planning and performance conversations for the team.",
+      "Represent the team in leadership and stakeholder reviews."
+    ]
+  },
+  {
+    id: "marketing", match: /marketing|campaign|brand/i,
+    summaryVariants: [
+      () => `Plan and execute marketing campaigns that grow the business and strengthen the brand.`,
+      () => `Drive demand and brand awareness through integrated marketing campaigns.`
+    ],
+    responsibilityPool: [
+      "Plan and execute campaign calendars.",
+      "Coordinate with design and content on creative assets.",
+      "Report on campaign performance and ROI.",
+      "Manage budget and vendor relationships.",
+      "Own messaging and positioning for key initiatives.",
+      "Analyze channel performance and optimize spend."
+    ]
+  },
+  {
+    id: "sales", match: /sales|account executive|business development/i,
+    summaryVariants: [
+      () => `Drive revenue growth by building relationships and closing new business.`,
+      () => `Own the full sales cycle, from prospecting through close, to hit revenue targets.`
+    ],
+    responsibilityPool: [
+      "Prospect and qualify new business opportunities.",
+      "Run the sales cycle from pitch to close.",
+      "Maintain accurate pipeline records.",
+      "Build long-term relationships with key accounts.",
+      "Collaborate with marketing on lead quality and handoff.",
+      "Forecast revenue and report on quota attainment."
+    ]
+  },
+  {
+    id: "finance", match: /finance|accounting|account(ant)?\b/i,
+    summaryVariants: [
+      () => `Support financial reporting, budgeting, and compliance for the business.`,
+      () => `Keep the numbers accurate and timely, supporting sound financial decisions.`
+    ],
+    responsibilityPool: [
+      "Support financial reporting and reconciliation.",
+      "Assist with budgeting and forecasting.",
+      "Ensure compliance with financial policies.",
+      "Prepare periodic financial reports.",
+      "Support month-end and year-end close processes.",
+      "Identify and help resolve accounting discrepancies."
+    ]
+  },
+  {
+    id: "support", match: /support|customer|service/i,
+    summaryVariants: [
+      () => `Resolve customer issues and maintain a high standard of service quality.`,
+      () => `Be the front line for customers, solving problems quickly and clearly.`
+    ],
+    responsibilityPool: [
+      "Handle customer inquiries and issues.",
+      "Maintain service quality standards.",
+      "Escalate complex cases appropriately.",
+      "Support process improvement initiatives.",
+      "Document common issues and resolutions.",
+      "Track and report on customer satisfaction metrics."
+    ]
+  },
+  {
+    id: "admin", match: /admin|coordinator|operations|office/i,
+    summaryVariants: [
+      () => `Keep day-to-day operations running smoothly and support the wider team.`,
+      () => `Own operational logistics so the rest of the team can focus on their work.`
+    ],
+    responsibilityPool: [
+      "Coordinate vendors, supplies, and logistics.",
+      "Support onboarding and administrative processes.",
+      "Maintain accurate records and documentation.",
+      "Assist the team with day-to-day operational needs.",
+      "Schedule and coordinate meetings and events.",
+      "Help maintain office/operational compliance."
+    ]
+  }
+];
+
+const CREATE_VERA_FALLBACK_ARCHETYPE = {
+  id: "general",
+  summaryVariants: [
+    (a, skill) => `Take ownership of ${a.title || "this role"}${skill ? `, applying ${skill}` : ""} to help the team achieve its goals.`,
+    (a) => `Drive outcomes for ${a.title || "this role"}, working closely with the wider team.`
+  ],
+  responsibilityPool: [
+    "Own day-to-day delivery for this role.",
+    "Collaborate with the wider team on shared goals.",
+    "Maintain clear communication on progress and blockers.",
+    "Continuously improve ways of working.",
+    "Support cross-functional initiatives as needed.",
+    "Report on progress against goals."
+  ]
+};
+
+function pickCreateVeraArchetype(title) {
+  const t = title || "";
+  return CREATE_VERA_ARCHETYPES.find(a => a.match.test(t)) || CREATE_VERA_FALLBACK_ARCHETYPE;
+}
+
+function generateRoleSummary(answers, seed = 0) {
+  const archetype = pickCreateVeraArchetype(answers.title);
+  const topSkill = (answers.mustHaveSkills || []).slice(0, 2).join(" and ");
+  const variants = archetype.summaryVariants;
+  return variants[seed % variants.length](answers, topSkill);
+}
+
+function generateResponsibilities(answers, seed = 0) {
+  const archetype = pickCreateVeraArchetype(answers.title);
+  const pool = archetype.responsibilityPool;
+  const offset = seed % pool.length;
+  return [0, 1, 2, 3].map(i => pool[(offset + i) % pool.length]);
+}
+
+function generateBenefits(answers, seed = 0) {
+  const benefits = [];
+  const addBenefit = b => { if (!benefits.includes(b) && BENEFIT_OPTIONS.includes(b)) benefits.push(b); };
+  addBenefit("Medical coverage");
+  addBenefit("Paid leave");
+  if (answers.workMode === "Remote") addBenefit("Remote-work support");
+  else if (answers.workMode === "Hybrid") addBenefit("Flexible working");
+  if (["Senior", "Lead", "Manager", "Director", "Executive"].includes(answers.seniority)) addBenefit("Training budget");
+  if (seed % 2 === 1) addBenefit("Certification support");
+  return benefits.slice(0, 4);
+}
+
+function generateRoleContentFromAnswers(answers) {
+  return {
+    roleSummary: generateRoleSummary(answers, 0),
+    responsibilities: generateResponsibilities(answers, 0),
+    benefits: generateBenefits(answers, 0)
+  };
+}
+
+const DISTRIBUTION_CHANNELS_CONFIG = [
+  { key: "CareerGo", state: "Connected" },
+  { key: "LinkedIn", state: "Manual posting required" },
+  { key: "JobStreet", state: "Manual posting required" },
+  { key: "Indeed", state: "Manual posting required" },
+  { key: "Company careers page", state: "Link export available" },
+  { key: "Custom external job board", state: "Manual posting required" }
+];
+const DEFAULT_HIRING_STAGES = [
+  { name: "Application review", duration: "2 days", owner: "", format: "" },
+  { name: "Screening call", duration: "3 days", owner: "", format: "Phone / video" },
+  { name: "Interview", duration: "5 days", owner: "", format: "Video call" },
+  { name: "Offer", duration: "3 days", owner: "", format: "" }
+];
+
 function makeEmployerRoleDraft(existing) {
   const base = {
-    title: "", department: "", employmentType: "Full-time", reportsTo: "",
-    roleSummary: "", responsibilities: [], successLooksLike: "",
-    mustHaveSkills: [], niceToHaveSkills: [],
-    minExperience: "No experience required", educationOrCertification: "",
-    salary: { min: null, max: null, currency: "MYR", period: "Monthly" },
-    location: "", workMode: "Hybrid",
-    matchThreshold: 70, portfolioRequirement: "Optional",
+    // Step 1: Role Basics
+    title: "", department: "", jobCategory: "", seniority: "Entry level", employmentType: "Full-time",
+    openings: 1, reportsTo: "", hiringOwner: "", urgency: "Standard",
+    targetStartDate: "", contractDuration: "", visaSponsorship: "Not available", internalJobId: "",
+    // Step 2: Role Details
+    rolePurpose: "", roleSummary: "", responsibilities: [], firstNinetyDays: "", successLooksLike: "",
+    teamStructure: "", stakeholders: "", tools: "", workingHours: "", travelExpectations: "",
+    // Step 3: Candidate Profile
+    mustHaveSkills: [], niceToHaveSkills: [], trainableSkills: [],
+    minExperience: "No experience required", educationOrCertification: "", equivalentExperienceAccepted: false,
+    languageRequirements: "", portfolioRequirement: "Optional", requiredLicences: "", domainKnowledge: "",
+    behaviouralCompetencies: "", availabilityRequirement: "", workAuthorization: "", accessibilityConsiderations: "",
+    // Step 4: Offer & Hiring Setup
+    salary: { min: null, max: null, currency: "MYR", period: "Monthly", visibility: "Visible to candidates", negotiable: true },
+    bonus: "", commission: "", allowances: "", overtimePolicy: "", equity: "",
+    benefits: [],
+    location: "", workMode: "Hybrid", officeLocation: "", hybridDays: "", workingDays: "", shiftPattern: "",
+    matchThreshold: 70,
+    hiringStages: DEFAULT_HIRING_STAGES.map(s => ({ ...s })),
+    applicationDeadline: "", contactPerson: "", requiredDocuments: "", resumeRequired: true, coverLetterRequired: "Optional",
+    applicationPortfolioLink: "", screeningQuestions: [], candidateConsent: false,
+    requiredDocumentTypes: { resume: "Required", coverLetter: "Optional", portfolio: "Optional" },
+    distributionChannels: ["CareerGo"], externalPostingUrl: "", trackingSource: "", campaignName: "", distributionExpiry: "",
+    companySummary: "", useCompanyProfile: false,
+    accommodationStatement: "Candidates who require an accommodation during the hiring process may contact our recruiting team — we're happy to help.",
+    additionalCompensation: [],
+    previewReviewed: false,
     lastSavedAt: null
   };
   if (!existing) return base;
-  return {
-    ...base, title: existing.title, department: existing.department || "", employmentType: existing.employmentType || "Full-time",
-    reportsTo: existing.reportsTo || "", roleSummary: existing.roleSummary || "",
-    responsibilities: [...(existing.responsibilities || [])], successLooksLike: existing.successLooksLike || "",
-    mustHaveSkills: [...(existing.mustHaveSkills || [])], niceToHaveSkills: [...(existing.niceToHaveSkills || [])],
-    minExperience: existing.minExperience || "No experience required", educationOrCertification: existing.educationOrCertification || "",
-    salary: { ...base.salary, ...(existing.salary || {}) },
-    location: existing.location || "", workMode: existing.workMode || "Hybrid",
-    matchThreshold: existing.matchThreshold || 70, portfolioRequirement: existing.portfolioRequirement || "Optional"
-  };
+  const merged = { ...base };
+  if (!existing.requiredDocumentTypes) {
+    merged.requiredDocumentTypes = {
+      resume: existing.resumeRequired ? "Required" : "Optional",
+      coverLetter: existing.coverLetterRequired === "Required" ? "Required" : "Optional",
+      portfolio: existing.portfolioRequirement === "Required" ? "Required" : "Optional"
+    };
+  }
+  if (!existing.additionalCompensation) {
+    const legacyComp = [
+      ["Bonus", existing.bonus], ["Commission", existing.commission], ["Allowances", existing.allowances],
+      ["Overtime policy", existing.overtimePolicy], ["Equity", existing.equity]
+    ];
+    merged.additionalCompensation = legacyComp.filter(([, value]) => value && String(value).trim()).map(([type, value]) => ({ type, value }));
+  }
+  Object.keys(base).forEach(key => {
+    if (existing[key] === undefined) return;
+    if (Array.isArray(base[key])) merged[key] = Array.isArray(existing[key]) ? existing[key].map(v => typeof v === "object" ? { ...v } : v) : base[key];
+    else if (key === "salary") merged.salary = { ...base.salary, ...(existing.salary || {}) };
+    else merged[key] = existing[key];
+  });
+  return merged;
 }
 
 function formatSavedLabel(iso) {
@@ -9899,7 +10966,7 @@ function renderRoleIntelligencePanel(ri, pendingSuggestions, draft) {
             <p class="emp-suggestion-effect">${s.effectIsEstimated ? "Estimated impact" : "Expected effect"}: ${s.expectedEffect} · Confidence: ${s.confidence}</p>
             <div class="emp-suggestion-actions">
               <button type="button" class="btn btn-ghost btn-sm" data-emp-compare-suggestion="${s.recommendation}">Compare change</button>
-              <button type="button" class="btn btn-primary btn-sm" data-emp-apply-suggestion="${s.recommendation}">Apply suggestion</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-emp-apply-suggestion="${s.recommendation}">Apply suggestion</button>
               <button type="button" class="btn btn-ghost btn-sm" data-emp-keep-suggestion="${s.recommendation}">Keep current</button>
             </div>
           </div>
@@ -9909,6 +10976,621 @@ function renderRoleIntelligencePanel(ri, pendingSuggestions, draft) {
 
     <p class="emp-vera-principle">${icon("shield-check")} Vera advises and explains. You make the final decision.</p>
   `;
+}
+
+function getRequirementWarnings(draft) {
+  const warnings = [];
+  const juniorish = ["Internship", "Entry level", "Junior"].includes(draft.seniority);
+  if (juniorish && ["3-5 years", "5+ years"].includes(draft.minExperience)) {
+    warnings.push(`${draft.minExperience} of experience for a ${draft.seniority.toLowerCase()} role may reduce your available candidate pool.`);
+  }
+  if (draft.mustHaveSkills.length > 8) {
+    warnings.push(`${draft.mustHaveSkills.length} must-have skills is a lot — candidates rarely match every one. Consider moving some to nice-to-have or trainable.`);
+  }
+  if (draft.educationOrCertification && /degree/i.test(draft.educationOrCertification) && juniorish && draft.equivalentExperienceAccepted === false) {
+    warnings.push("A degree requirement with no equivalent-experience option can exclude strong self-taught or bootcamp candidates.");
+  }
+  if (draft.portfolioRequirement === "Required" && !draft.trainableSkills.length && !draft.mustHaveSkills.length) {
+    warnings.push("A required portfolio with no listed skills makes it hard for candidates to know what to submit.");
+  }
+  return warnings;
+}
+
+function renderRequirementWarnings(draft) {
+  const warnings = getRequirementWarnings(draft);
+  if (!warnings.length) return "";
+  return `<div class="emp-callout emp-callout-warn">${warnings.map(w => `<p>${icon("alert-triangle")} ${escapeHtml(w)}</p>`).join("")}</div>`;
+}
+
+function openDraftRequirementsReview(draft) {
+  const warnings = getRequirementWarnings(draft);
+  openEmpModal("draft-requirements-review", `
+    <h2>${icon("sparkles")} Vera's requirement review</h2>
+    ${warnings.length ? `
+      <div class="emp-intel-section">
+        <h3 class="emp-intel-heading">Worth reviewing</h3>
+        ${warnings.map(w => `<div class="emp-callout emp-callout-warn"><p>${icon("alert-triangle")} ${escapeHtml(w)}</p></div>`).join("")}
+      </div>
+    ` : `<p>No obvious requirement issues found — the must-have list and experience bar look reasonable for the stated seniority.</p>`}
+    <p class="emp-vera-principle">${icon("shield-check")} Vera checks for realism, not intent. You decide what to keep.</p>
+    <div class="emp-compose-actions"><button type="button" class="btn btn-primary" data-emp-modal-close>Got it</button></div>
+  `, { label: "Vera's requirement review" });
+}
+
+function renderScreeningQuestionsList(draft) {
+  return `
+    <div data-screening-list>
+      ${draft.screeningQuestions.map((q, i) => `
+        <div class="emp-resp-row">
+          <input type="text" data-screening-index="${i}" value="${escapeHtml(q)}" placeholder="e.g. Do you have a portfolio you can share?">
+          <button type="button" class="btn btn-ghost btn-sm" data-screening-remove="${i}" aria-label="Remove question">${icon("x")}</button>
+        </div>
+      `).join("")}
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm" data-screening-add>${icon("plus")} Add screening question</button>
+  `;
+}
+
+function renderHiringStagesEditor(draft) {
+  return `
+    <div data-stages-list>
+      ${draft.hiringStages.map((s, i) => `
+        <div class="emp-stage-editor-row" data-stage-row="${i}">
+          <button type="button" class="emp-drag-handle" data-stage-drag="${i}" draggable="true" aria-label="Drag to reorder stage">${icon("grip-vertical")}</button>
+          <div class="emp-stage-editor-fields">
+            <input type="text" data-stage-field="name" data-stage-index="${i}" value="${escapeHtml(s.name)}" placeholder="Stage name">
+            <input type="text" data-stage-field="duration" data-stage-index="${i}" value="${escapeHtml(s.duration || "")}" placeholder="Expected duration">
+            <input type="text" data-stage-field="owner" data-stage-index="${i}" value="${escapeHtml(s.owner || "")}" placeholder="Responsible person">
+            <input type="text" data-stage-field="format" data-stage-index="${i}" value="${escapeHtml(s.format || "")}" placeholder="Format, e.g. video call">
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" data-stage-remove="${i}" aria-label="Remove stage">${icon("x")}</button>
+        </div>
+      `).join("")}
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm" data-stage-add>${icon("plus")} Add hiring stage</button>
+  `;
+}
+
+function renderDistributionSection(draft) {
+  return `
+    <p class="emp-field-help">CareerGo publishing happens automatically when you publish this role. The other boards below don't have a live posting integration in this prototype — use copy or export to post manually, and mark them posted once you have.</p>
+    <div class="emp-distribution-list">
+      ${DISTRIBUTION_CHANNELS_CONFIG.map(c => `
+        <div class="emp-distribution-row">
+          <label class="check-field custom-checkbox">
+            <input type="checkbox" data-distribution-channel="${escapeHtml(c.key)}" ${draft.distributionChannels.includes(c.key) ? "checked" : ""}> ${escapeHtml(c.key)}
+          </label>
+          <span class="emp-distribution-state">${c.state}</span>
+          ${c.key !== "CareerGo" ? `<button type="button" class="btn btn-ghost btn-sm" data-copy-posting="${escapeHtml(c.key)}">${icon("copy")} Copy job description</button>` : ""}
+        </div>
+      `).join("")}
+    </div>
+    <div class="emp-form-grid-2">
+      <label>External posting URL <span class="emp-optional-tag">Optional</span><input type="url" data-field-externalPostingUrl value="${escapeHtml(draft.externalPostingUrl)}" placeholder="Paste the link once posted"></label>
+      <label>Tracking source <span class="emp-optional-tag">Optional</span><input type="text" data-field-trackingSource value="${escapeHtml(draft.trackingSource)}"></label>
+      <label>Campaign name <span class="emp-optional-tag">Optional</span><input type="text" data-field-campaignName value="${escapeHtml(draft.campaignName)}"></label>
+      <label>Expiry date <span class="emp-optional-tag">Optional</span><input type="date" data-field-distributionExpiry value="${escapeHtml(draft.distributionExpiry)}"></label>
+    </div>
+  `;
+}
+
+function renderCompanySection(draft) {
+  return `
+    <div class="emp-company-reuse-row">
+      <p class="emp-field-help">Reuse your existing Company Profile instead of retyping company information.</p>
+      <button type="button" class="btn btn-ghost btn-sm" data-use-company-profile>${icon("building-2")} Use company profile details</button>
+    </div>
+    <label>Company introduction<textarea data-field-companySummary rows="3" placeholder="Short company introduction, mission, and why join this team">${escapeHtml(draft.companySummary)}</textarea></label>
+  `;
+}
+
+function buildPlainTextJobPosting(draft) {
+  const lines = [
+    draft.title || "Role title", `${[draft.location, draft.workMode, draft.employmentType].filter(Boolean).join(" · ")}`,
+    draft.salary.min && draft.salary.max ? `${draft.salary.currency} ${draft.salary.min.toLocaleString()} - ${draft.salary.max.toLocaleString()} / ${draft.salary.period.toLowerCase()}` : "",
+    "", "About the role", draft.roleSummary || "",
+    "", "What you'll do", ...draft.responsibilities.filter(r => r.trim()).map(r => `- ${r}`),
+    "", "Must-have skills", draft.mustHaveSkills.join(", "),
+    draft.niceToHaveSkills.length ? `\nNice-to-have: ${draft.niceToHaveSkills.join(", ")}` : ""
+  ];
+  return lines.filter(Boolean).join("\n");
+}
+
+/* ---------- Publication readiness — single source of truth ----------
+   Every checklist row on Step 5 and the "Role readiness: N%" figure in the
+   Vera role review panel derive from these named predicates, not from two
+   independently-tuned formulas. Each predicate reads only from `draft`,
+   the same object the wizard's fields write into.
+
+   `department` is deliberately not part of isRoleBasicsComplete: the
+   "Create with Vera" guided flow (CREATE_VERA_QUESTIONS) never asks about
+   or generates it, so requiring it here made "Role basics complete" show
+   Missing for roles built through the guided flow even when title,
+   seniority, employment type, and urgency were all set. */
+function hasText(v) { return !!(v && String(v).trim()); }
+function countNonEmptyResponsibilities(draft) { return draft.responsibilities.filter(r => r.trim()).length; }
+
+function isRoleBasicsComplete(draft) { return hasText(draft.title) && hasText(draft.employmentType) && hasText(draft.seniority); }
+function isRoleSummaryAdded(draft) { return !!(draft.roleSummary && draft.roleSummary.trim().length > 20); }
+function isResponsibilitiesAdded(draft) { return countNonEmptyResponsibilities(draft) >= 3; }
+function isCandidateRequirementsComplete(draft) { return draft.mustHaveSkills.length > 0 && hasText(draft.minExperience); }
+function isSalaryAndLocationComplete(draft) { return !!(draft.salary.min && draft.salary.max && hasText(draft.location)); }
+function isBenefitsReviewed(draft) { return draft.benefits.length > 0; }
+function isHiringProcessConfigured(draft) { return draft.hiringStages.length > 0; }
+function isApplicationMethodConfigured(draft) { return hasText(draft.contactPerson) || hasText(draft.applicationDeadline) || !!draft.resumeRequired; }
+function isCompanyIntroductionAvailable(draft) { return hasText(draft.companySummary); }
+function isAccommodationStatementReviewed(draft) { return hasText(draft.accommodationStatement); }
+function isDistributionChannelsSelected(draft) { return draft.distributionChannels.length > 0; }
+function isPreviewReviewed(draft) { return !!draft.previewReviewed; }
+
+function getPublishReadinessChecks(draft) {
+  const respCount = countNonEmptyResponsibilities(draft);
+  return [
+    { key: "role_basics_complete", label: "Role basics complete", status: isRoleBasicsComplete(draft) ? "Complete" : "Missing" },
+    { key: "role_summary_added", label: "Role summary added", status: isRoleSummaryAdded(draft) ? "Complete" : "Missing" },
+    { key: "responsibilities_added", label: "Responsibilities added", status: respCount >= 3 ? "Complete" : respCount > 0 ? "Needs attention" : "Missing" },
+    { key: "candidate_requirements_complete", label: "Candidate requirements complete", status: isCandidateRequirementsComplete(draft) ? "Complete" : "Missing" },
+    { key: "salary_and_location_complete", label: "Salary and location complete", status: isSalaryAndLocationComplete(draft) ? "Complete" : "Missing" },
+    { key: "benefits_reviewed", label: "Benefits reviewed", status: isBenefitsReviewed(draft) ? "Complete" : "Optional" },
+    { key: "hiring_process_configured", label: "Hiring process configured", status: isHiringProcessConfigured(draft) ? "Complete" : "Missing" },
+    { key: "application_method_configured", label: "Application method configured", status: isApplicationMethodConfigured(draft) ? "Complete" : "Needs attention" },
+    { key: "company_introduction_available", label: "Company introduction available", status: isCompanyIntroductionAvailable(draft) ? "Complete" : "Optional" },
+    { key: "accommodation_statement_reviewed", label: "Accommodation statement reviewed", status: isAccommodationStatementReviewed(draft) ? "Complete" : "Optional" },
+    { key: "distribution_channels_selected", label: "Distribution channels selected", status: isDistributionChannelsSelected(draft) ? "Complete" : "Needs attention" },
+    { key: "preview_reviewed", label: "Preview reviewed", status: isPreviewReviewed(draft) ? "Complete" : "Needs attention" }
+  ];
+}
+
+function getDraftReadiness(draft) {
+  const checks = getPublishReadinessChecks(draft);
+  const completeCount = checks.filter(c => c.status === "Complete").length;
+  return checks.length ? Math.round((completeCount / checks.length) * 100) : 0;
+}
+
+function getReadinessPredicates(draft) {
+  const checks = getPublishReadinessChecks(draft);
+  const result = {};
+  checks.forEach(c => { result[c.key] = c.status === "Complete"; });
+  result.readiness = getDraftReadiness(draft);
+  return result;
+}
+
+function computeDraftVeraReview(draft) {
+  const strengths = [];
+  const needsAttention = [];
+  const estimatedEffect = [];
+
+  if (draft.salary.min && draft.salary.max) strengths.push("Salary range is visible.");
+  else needsAttention.push({ text: "No salary range set yet.", action: null });
+
+  if (draft.roleSummary && draft.roleSummary.trim().length > 20) strengths.push("Role purpose is clear.");
+  else needsAttention.push({ text: "Role summary is missing or too short.", action: null });
+
+  if (draft.workMode) strengths.push(`${draft.workMode} work arrangement is stated.`);
+
+  const juniorish = ["Internship", "Entry level", "Junior"].includes(draft.seniority);
+  if (juniorish && ["3-5 years", "5+ years"].includes(draft.minExperience)) {
+    needsAttention.push({ text: `${draft.minExperience} of experience conflicts with the ${draft.seniority} seniority.`, action: { label: "Change experience to 1-2 years", type: "set-field", field: "minExperience", value: "1-2 years" } });
+    estimatedEffect.push("Changing the experience requirement may increase the relevant candidate pool.");
+  }
+
+  if (!draft.benefits.length) {
+    needsAttention.push({ text: "No benefits are listed.", action: { label: "Add common benefits", type: "add-benefits" } });
+  } else {
+    strengths.push(`${draft.benefits.length} benefit${draft.benefits.length === 1 ? "" : "s"} listed.`);
+  }
+
+  if (draft.hiringStages.length > 5) {
+    needsAttention.push({ text: `The interview process has ${draft.hiringStages.length} stages.`, action: { label: "Reduce to 4 stages", type: "trim-stages" } });
+    estimatedEffect.push("Reducing the interview process may improve candidate completion.");
+  } else if (draft.hiringStages.length > 0) {
+    strengths.push(`Hiring process has ${draft.hiringStages.length} clear stage${draft.hiringStages.length === 1 ? "" : "s"}.`);
+  }
+
+  if (draft.mustHaveSkills.length > 8) {
+    needsAttention.push({ text: `${draft.mustHaveSkills.length} must-have skills may be too strict.`, action: { label: "Move extra skills to preferred", type: "trim-musthave" } });
+  }
+
+  if (draft.responsibilities.filter(r => r.trim()).length < 3) {
+    needsAttention.push({ text: "Fewer than 3 responsibilities are listed.", action: null });
+  }
+
+  if (!draft.companySummary && !draft.useCompanyProfile) {
+    needsAttention.push({ text: "No company introduction added yet.", action: { label: "Use company profile", type: "use-company" } });
+  }
+
+  return { readiness: getDraftReadiness(draft), strengths, needsAttention, estimatedEffect };
+}
+
+/* ---------- Create with Vera: paste text -> pattern-matched structured suggestions ----------
+   This is regex/keyword matching against a known vocabulary, not a live AI model. It is
+   deliberately conservative: it only ever proposes values, never writes into the draft
+   without an explicit Apply action from the employer. */
+const CREATE_VERA_SKILL_VOCAB = ["Node.js", "SQL", "React", "Python", "Java", "AWS", "Excel", "Figma", "JavaScript", "TypeScript", "Kubernetes", "Docker", "Kafka", "Power BI", "Tableau", "PHP", "C++", "C#", "Go", "Swift", "Vue", "Angular", "MongoDB", "PostgreSQL", "MySQL", "GraphQL", "Salesforce", "SAP", "Photoshop", "Illustrator", "Copywriting", "SEO", "Machine Learning"];
+const CREATE_VERA_LOCATIONS = ["Kuala Lumpur", "Petaling Jaya", "Penang", "Johor Bahru", "Cyberjaya", "Selangor", "Putrajaya", "Shah Alam", "Subang Jaya", "Georgetown", "Ipoh", "Kuching", "Kota Kinabalu"];
+const CREATE_VERA_FIELD_LABELS = {
+  title: "Role title", employmentType: "Employment type", seniority: "Seniority",
+  location: "Location", workMode: "Work mode", salary: "Salary range",
+  mustHaveSkills: "Must-have skills", roleSummary: "Role summary",
+  niceToHaveSkills: "Nice-to-have skills", minExperience: "Minimum experience",
+  educationOrCertification: "Education / certification", urgency: "Hiring urgency",
+  responsibilities: "Responsibilities", benefits: "Benefits"
+};
+
+let createVeraDraftSuggestions = null;
+let createVeraReviewMode = "summary";
+let createVeraDecisions = {};
+let createVeraStep = 0;
+let createVeraAnswers = {};
+let createVeraTranscript = [];
+let createVeraGenerating = false;
+let createVeraRegenerateSeeds = {};
+
+function renderCreateVeraQuestionInput(question) {
+  const prior = createVeraAnswers[question.field];
+  if (question.type === "chips") {
+    return `
+      <div class="emp-cv-chips" data-cv-chip-group>
+        ${question.options.map(opt => `<button type="button" class="emp-cv-chip ${prior === opt ? "active" : ""}" data-cv-chip="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`).join("")}
+      </div>
+    `;
+  }
+  if (question.type === "salary") {
+    const salary = prior || {};
+    return `
+      <div class="emp-cv-salary-row">
+        <span class="emp-cv-salary-prefix">RM</span>
+        <input type="number" min="0" data-cv-salary-min placeholder="Min" value="${salary.min || ""}">
+        <span>–</span>
+        <input type="number" min="0" data-cv-salary-max placeholder="Max" value="${salary.max || ""}">
+        <span class="emp-cv-salary-suffix">/ month</span>
+      </div>
+    `;
+  }
+  if (question.type === "tags") {
+    const tags = prior || [];
+    const options = question.autocomplete ? question.autocomplete() : [];
+    return `
+      <div class="emp-cv-tags-input">
+        <div class="pill-row" data-cv-tag-list>${tags.map(t => `<span class="pill">${escapeHtml(t)} <button type="button" data-cv-tag-remove="${escapeHtml(t)}" aria-label="Remove ${escapeHtml(t)}">${icon("x")}</button></span>`).join("")}</div>
+        <div class="emp-cv-tag-add-row">
+          <input type="text" data-cv-tag-input list="emp-cv-tag-datalist" placeholder="Type a skill and press Add">
+          <button type="button" class="btn btn-ghost btn-sm" data-cv-tag-add>Add</button>
+        </div>
+        <datalist id="emp-cv-tag-datalist">${options.map(s => `<option value="${escapeHtml(s)}">`).join("")}</datalist>
+      </div>
+    `;
+  }
+  const options = question.autocomplete ? question.autocomplete() : null;
+  return `
+    <div class="emp-cv-text-input">
+      <input type="text" data-cv-text-input ${options ? `list="emp-cv-text-datalist"` : ""} placeholder="${escapeHtml(question.placeholder || "")}" value="${escapeHtml(prior || "")}">
+      ${options ? `<datalist id="emp-cv-text-datalist">${options.map(s => `<option value="${escapeHtml(s)}">`).join("")}</datalist>` : ""}
+    </div>
+  `;
+}
+
+function renderCreateVeraConversationPhase() {
+  const total = CREATE_VERA_QUESTIONS.length;
+  const current = createVeraStep < total ? CREATE_VERA_QUESTIONS[createVeraStep] : null;
+
+  const transcriptHtml = createVeraTranscript.map(entry =>
+    `<div class="emp-cv-bubble emp-cv-bubble-${entry.role}">${escapeHtml(entry.text)}</div>`
+  ).join("");
+
+  return `
+    <div class="emp-create-vera-head">
+      <div>
+        <span class="emp-vera-context">Create with Vera</span>
+        <h2>Tell Vera about the role</h2>
+        <p>${current ? `Question ${createVeraStep + 1} of ${total}` : ""}</p>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+    </div>
+    <div class="emp-cv-transcript" data-cv-transcript>
+      ${transcriptHtml}
+      ${current ? `<div class="emp-cv-bubble emp-cv-bubble-vera">${escapeHtml(current.prompt)}</div>` : ""}
+    </div>
+    ${current ? renderCreateVeraQuestionInput(current) : ""}
+    <div class="emp-compose-actions emp-cv-nav">
+      <button type="button" class="btn btn-ghost" data-cv-back ${createVeraStep === 0 ? "disabled" : ""}>Back</button>
+      ${current && current.skippable ? `<button type="button" class="btn btn-ghost" data-cv-skip>Skip</button>` : ""}
+      ${current && current.type !== "chips" ? `<button type="button" class="btn btn-primary" data-cv-next>Next</button>` : ""}
+    </div>
+  `;
+}
+
+function renderCreateVeraGeneratingPhase() {
+  return `
+    <div class="emp-create-vera-head">
+      <div><span class="emp-vera-context">Create with Vera</span><h2>Generating professional job...</h2></div>
+    </div>
+    <div class="emp-cv-generating">
+      <div class="emp-cv-generating-spinner">${icon("sparkles")}</div>
+      <p>Vera is drafting a role summary, responsibilities, and benefits from your answers.</p>
+    </div>
+  `;
+}
+
+function renderCreateVeraReviewPhase(draft, suggestions) {
+  const fields = Object.keys(suggestions);
+  if (!fields.length) {
+    return `
+      <div class="emp-create-vera-head">
+        <div><span class="emp-vera-context">Create with Vera</span><h2>Nothing to suggest yet</h2></div>
+        <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <p>Vera couldn't confidently extract structured details from that text. Try including a role title, location, work mode, or a salary range.</p>
+      <div class="emp-compose-actions">
+        <button type="button" class="btn btn-ghost" data-create-vera-back>Back</button>
+        <button type="button" class="btn btn-primary" data-emp-modal-close>Close</button>
+      </div>
+    `;
+  }
+  if (createVeraReviewMode === "sections") {
+    return `
+      <div class="emp-create-vera-head">
+        <div><span class="emp-vera-context">Create with Vera</span><h2>Review section by section</h2><p>Original or blank value, Vera's suggestion, and why.</p></div>
+        <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="emp-create-vera-sections">
+        ${fields.map(f => {
+          const s = suggestions[f];
+          const current = f === "salary" ? (draft.salary.min && draft.salary.max ? `${draft.salary.currency} ${draft.salary.min}-${draft.salary.max}` : "—") : (Array.isArray(draft[f]) ? (draft[f].length ? draft[f].join(", ") : "—") : (draft[f] || "—"));
+          const suggestedDisplay = f === "salary" ? `${s.value.currency} ${s.value.min.toLocaleString()}-${s.value.max.toLocaleString()}` : Array.isArray(s.value) ? s.value.join(", ") : s.value;
+          const decision = createVeraDecisions[f] || "pending";
+          return `
+            <div class="emp-create-vera-section-row emp-cvs-${decision}">
+              <div class="emp-cvs-field">${escapeHtml(CREATE_VERA_FIELD_LABELS[f] || f)}${decision !== "pending" ? `<span class="emp-cvs-decision-tag">${decision === "accept" ? "Accepted" : "Skipped"}</span>` : ""}</div>
+              <div class="emp-cvs-compare">
+                <span>Current: <strong>${escapeHtml(String(current))}</strong></span>
+                <span>Suggested: <strong>${escapeHtml(String(suggestedDisplay))}</strong></span>
+              </div>
+              <p class="emp-cvs-reason">${escapeHtml(s.reason)}</p>
+              <div class="emp-cvs-actions">
+                <button type="button" class="btn btn-primary btn-sm" data-cvs-accept="${f}">Accept</button>
+                <button type="button" class="btn btn-ghost btn-sm" data-cvs-skip="${f}">Skip</button>
+                ${s.generated ? `<button type="button" class="btn btn-ghost btn-sm" data-cvs-regenerate="${f}">${icon("refresh-cw")} Regenerate</button>` : ""}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+      <div class="emp-compose-actions">
+        <button type="button" class="btn btn-ghost" data-create-vera-back>Back</button>
+        <button type="button" class="btn btn-primary" data-create-vera-apply-decisions>Apply accepted changes</button>
+      </div>
+    `;
+  }
+  return `
+    <div class="emp-create-vera-head">
+      <div><span class="emp-vera-context">Create with Vera</span><h2>Vera generated the following role draft</h2></div>
+      <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+    </div>
+    <ul class="emp-checklist">
+      ${fields.map(f => `<li class="done">${icon("check")} ${escapeHtml(CREATE_VERA_FIELD_LABELS[f] || f)}</li>`).join("")}
+    </ul>
+    <p class="emp-field-help">Nothing is applied yet. Choose how you'd like to review it.</p>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Cancel</button>
+      <button type="button" class="btn btn-ghost" data-create-vera-sections>Review section by section</button>
+      <button type="button" class="btn btn-primary" data-create-vera-apply-all>Apply all</button>
+    </div>
+  `;
+}
+
+function applyCreateVeraSuggestions(draft, suggestions, fields) {
+  fields.forEach(f => {
+    const s = suggestions[f];
+    if (!s) return;
+    if (f === "salary") { draft.salary.min = s.value.min; draft.salary.max = s.value.max; draft.salary.currency = s.value.currency; }
+    else if (f === "mustHaveSkills" || f === "niceToHaveSkills") s.value.forEach(skill => { if (!draft[f].includes(skill)) draft[f].push(skill); });
+    else draft[f] = s.value;
+  });
+}
+
+function validateCreateVeraAnswer(question) {
+  if (!question.required) return true;
+  const value = createVeraAnswers[question.field];
+  if (question.type === "tags") return Array.isArray(value) && value.length > 0;
+  if (question.type === "salary") return Boolean(value && (value.min || value.max));
+  return Boolean(value && String(value).trim());
+}
+
+function formatCreateVeraAnswerForTranscript(question) {
+  const value = createVeraAnswers[question.field];
+  if (question.type === "tags") return (value || []).length ? value.join(", ") : "None";
+  if (question.type === "salary") return value && (value.min || value.max) ? `RM ${value.min || "?"} - RM ${value.max || "?"}` : "Not specified";
+  return value ? String(value) : "Not specified";
+}
+
+function commitCreateVeraAnswer(question, answerText) {
+  createVeraTranscript.push({ role: "vera", text: question.prompt });
+  createVeraTranscript.push({ role: "employer", text: answerText });
+}
+
+function buildCreateVeraSuggestions(answers) {
+  const suggestions = {};
+  const directReason = "You answered this in the conversation.";
+  const addIfPresent = (field, value) => { if (value !== undefined && value !== "" && !(Array.isArray(value) && value.length === 0)) suggestions[field] = { value, reason: directReason }; };
+
+  addIfPresent("title", answers.title);
+  addIfPresent("seniority", answers.seniority);
+  addIfPresent("location", answers.location);
+  addIfPresent("workMode", answers.workMode);
+  addIfPresent("employmentType", answers.employmentType);
+  if (answers.salary && (answers.salary.min || answers.salary.max)) {
+    suggestions.salary = { value: { min: answers.salary.min, max: answers.salary.max, currency: "MYR" }, reason: directReason };
+  }
+  addIfPresent("mustHaveSkills", answers.mustHaveSkills);
+  addIfPresent("niceToHaveSkills", answers.niceToHaveSkills);
+  addIfPresent("minExperience", answers.minExperience);
+  addIfPresent("educationOrCertification", answers.educationOrCertification);
+  addIfPresent("urgency", answers.urgency);
+
+  const generatedReason = "Vera generated this from your answers — edit or regenerate below.";
+  const generated = generateRoleContentFromAnswers(answers);
+  suggestions.roleSummary = { value: generated.roleSummary, reason: generatedReason, generated: true };
+  suggestions.responsibilities = { value: generated.responsibilities, reason: generatedReason, generated: true };
+  suggestions.benefits = { value: generated.benefits, reason: generatedReason, generated: true };
+  return suggestions;
+}
+
+function advanceCreateVeraQuestion(draft, onApplied) {
+  createVeraStep += 1;
+  if (createVeraStep >= CREATE_VERA_QUESTIONS.length) {
+    createVeraGenerating = true;
+    refreshCreateVeraModal(draft, onApplied);
+    setTimeout(() => {
+      createVeraGenerating = false;
+      createVeraDraftSuggestions = buildCreateVeraSuggestions(createVeraAnswers);
+      createVeraReviewMode = "summary";
+      createVeraDecisions = {};
+      refreshCreateVeraModal(draft, onApplied);
+    }, 900);
+  } else {
+    refreshCreateVeraModal(draft, onApplied);
+  }
+}
+
+function addCreateVeraTag(card, question, draft, onApplied) {
+  const input = qs("[data-cv-tag-input]", card);
+  const value = (input?.value || "").trim();
+  if (!value) return;
+  const tags = createVeraAnswers[question.field] || [];
+  if (!tags.includes(value)) tags.push(value);
+  createVeraAnswers[question.field] = tags;
+  refreshCreateVeraModal(draft, onApplied);
+}
+
+function bindCreateVeraConversationEvents(card, draft, onApplied) {
+  const question = CREATE_VERA_QUESTIONS[createVeraStep];
+  if (!question) return;
+
+  qsa("[data-cv-chip]", card).forEach(btn => btn.addEventListener("click", () => {
+    createVeraAnswers[question.field] = btn.dataset.cvChip;
+    commitCreateVeraAnswer(question, btn.dataset.cvChip);
+    advanceCreateVeraQuestion(draft, onApplied);
+  }));
+
+  qs("[data-cv-tag-add]", card)?.addEventListener("click", () => addCreateVeraTag(card, question, draft, onApplied));
+  qs("[data-cv-tag-input]", card)?.addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); addCreateVeraTag(card, question, draft, onApplied); }
+  });
+  qsa("[data-cv-tag-remove]", card).forEach(btn => btn.addEventListener("click", () => {
+    const tags = createVeraAnswers[question.field] || [];
+    createVeraAnswers[question.field] = tags.filter(t => t !== btn.dataset.cvTagRemove);
+    refreshCreateVeraModal(draft, onApplied);
+  }));
+
+  qs("[data-cv-back]", card)?.addEventListener("click", () => {
+    if (createVeraStep === 0) return;
+    createVeraStep -= 1;
+    createVeraTranscript.splice(-2, 2);
+    refreshCreateVeraModal(draft, onApplied);
+  });
+  qs("[data-cv-skip]", card)?.addEventListener("click", () => {
+    createVeraAnswers[question.field] = question.type === "tags" ? [] : "";
+    commitCreateVeraAnswer(question, "Skipped");
+    advanceCreateVeraQuestion(draft, onApplied);
+  });
+  qs("[data-cv-next]", card)?.addEventListener("click", () => {
+    if (question.type === "text") createVeraAnswers[question.field] = (qs("[data-cv-text-input]", card)?.value || "").trim();
+    if (question.type === "salary") {
+      const min = Number(qs("[data-cv-salary-min]", card)?.value || 0) || null;
+      const max = Number(qs("[data-cv-salary-max]", card)?.value || 0) || null;
+      createVeraAnswers.salary = { min, max };
+    }
+    if (!validateCreateVeraAnswer(question)) { showToast("Please answer this question first.", "info"); return; }
+    commitCreateVeraAnswer(question, formatCreateVeraAnswerForTranscript(question));
+    advanceCreateVeraQuestion(draft, onApplied);
+  });
+}
+
+function bindCreateVeraReviewEvents(card, draft, onApplied) {
+  qs("[data-create-vera-back]", card)?.addEventListener("click", () => {
+    createVeraDraftSuggestions = null;
+    createVeraStep = Math.max(0, CREATE_VERA_QUESTIONS.length - 1);
+    createVeraTranscript.splice(-2, 2);
+    refreshCreateVeraModal(draft, onApplied);
+  });
+  qs("[data-create-vera-apply-all]", card)?.addEventListener("click", () => {
+    applyCreateVeraSuggestions(draft, createVeraDraftSuggestions, Object.keys(createVeraDraftSuggestions));
+    closeEmpModal();
+    onApplied();
+    showToast("Applied Vera's suggested role draft.");
+  });
+  qs("[data-create-vera-sections]", card)?.addEventListener("click", () => {
+    createVeraReviewMode = "sections";
+    refreshCreateVeraModal(draft, onApplied);
+  });
+  qsa("[data-cvs-accept]", card).forEach(btn => btn.addEventListener("click", () => {
+    createVeraDecisions[btn.dataset.cvsAccept] = "accept";
+    refreshCreateVeraModal(draft, onApplied);
+  }));
+  qsa("[data-cvs-skip]", card).forEach(btn => btn.addEventListener("click", () => {
+    createVeraDecisions[btn.dataset.cvsSkip] = "skip";
+    refreshCreateVeraModal(draft, onApplied);
+  }));
+  qsa("[data-cvs-regenerate]", card).forEach(btn => btn.addEventListener("click", () => {
+    const f = btn.dataset.cvsRegenerate;
+    createVeraRegenerateSeeds[f] = (createVeraRegenerateSeeds[f] || 0) + 1;
+    const seed = createVeraRegenerateSeeds[f];
+    const value = f === "roleSummary" ? generateRoleSummary(createVeraAnswers, seed)
+      : f === "responsibilities" ? generateResponsibilities(createVeraAnswers, seed)
+      : generateBenefits(createVeraAnswers, seed);
+    createVeraDraftSuggestions[f] = { value, reason: "Vera generated this from your answers — edit or regenerate below.", generated: true };
+    refreshCreateVeraModal(draft, onApplied);
+  }));
+  qs("[data-create-vera-apply-decisions]", card)?.addEventListener("click", () => {
+    const acceptedFields = Object.keys(createVeraDecisions).filter(f => createVeraDecisions[f] === "accept");
+    if (!acceptedFields.length) { showToast("Accept at least one section first.", "info"); return; }
+    applyCreateVeraSuggestions(draft, createVeraDraftSuggestions, acceptedFields);
+    closeEmpModal();
+    onApplied();
+    showToast(`Applied ${acceptedFields.length} accepted section${acceptedFields.length === 1 ? "" : "s"}.`);
+  });
+}
+
+function refreshCreateVeraModal(draft, onApplied) {
+  const host = qs("[data-emp-modal-root]");
+  const card = qs(".emp-modal-card", host);
+  if (!card) return;
+  card.innerHTML = createVeraDraftSuggestions
+    ? renderCreateVeraReviewPhase(draft, createVeraDraftSuggestions)
+    : createVeraGenerating
+      ? renderCreateVeraGeneratingPhase()
+      : renderCreateVeraConversationPhase();
+  createIcons();
+  const transcript = qs("[data-cv-transcript]", card);
+  if (transcript) transcript.scrollTop = transcript.scrollHeight;
+  bindCreateVeraModal(host, draft, onApplied);
+}
+
+function bindCreateVeraModal(host, draft, onApplied) {
+  const card = qs(".emp-modal-card", host);
+  if (!card) return;
+  if (createVeraDraftSuggestions) {
+    bindCreateVeraReviewEvents(card, draft, onApplied);
+  } else if (!createVeraGenerating) {
+    bindCreateVeraConversationEvents(card, draft, onApplied);
+  }
+}
+
+function openCreateWithVeraModal(draft, onApplied) {
+  createVeraStep = 0;
+  createVeraAnswers = {};
+  createVeraTranscript = [];
+  createVeraGenerating = false;
+  createVeraDraftSuggestions = null;
+  createVeraReviewMode = "summary";
+  createVeraDecisions = {};
+  createVeraRegenerateSeeds = {};
+  openEmpModal("create-with-vera", renderCreateVeraConversationPhase(), {
+    label: "Create with Vera",
+    className: "emp-create-vera-card",
+    onOpen: host => bindCreateVeraModal(host, draft, onApplied)
+  });
 }
 
 function renderEmployerRoleBuilder(root, roleId) {
@@ -9921,23 +11603,60 @@ function renderEmployerRoleBuilder(root, roleId) {
     writeState(seedState);
   }
   let activeStep = 0;
+  let saveTimer = null;
   const dismissedSuggestions = new Set();
   const appliedSuggestions = new Set();
 
+  function setSaveIndicator(state) {
+    const labels = qsa("[data-emp-saved-label]", root);
+    const retry = qs("[data-emp-retry-save]", root);
+    if (!labels.length) return;
+    const text = state === "saving" ? "Saving…"
+      : state === "saved" ? formatSavedLabel(draft.lastSavedAt)
+      : state === "unsaved" ? "Unsaved changes"
+      : state === "error" ? "Save failed —"
+      : labels[0].textContent;
+    labels.forEach(label => {
+      label.classList.toggle("emp-save-error", state === "error");
+      label.textContent = text;
+    });
+    if (retry) retry.hidden = state !== "error";
+  }
+
   function persistDraft() {
-    draft.lastSavedAt = new Date().toISOString();
-    const state = readState();
-    state.employerRoleDrafts[draftId] = draft;
-    writeState(state);
-    const label = qs("[data-emp-saved-label]", root);
-    if (label) label.textContent = formatSavedLabel(draft.lastSavedAt);
+    try {
+      draft.lastSavedAt = new Date().toISOString();
+      const state = readState();
+      state.employerRoleDrafts[draftId] = draft;
+      writeState(state);
+      setSaveIndicator("saved");
+    } catch (e) {
+      setSaveIndicator("error");
+    }
+  }
+
+  function scheduleAutosave() {
+    setSaveIndicator("unsaved");
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { setSaveIndicator("saving"); window.setTimeout(persistDraft, 150); }, 900);
+  }
+
+  function flushAndPersist() {
+    if (saveTimer) clearTimeout(saveTimer);
+    persistDraft();
   }
 
   function bindField(selector, field) {
     const el = qs(selector, root);
     if (!el) return;
-    el.addEventListener("input", () => { draft[field] = el.value; });
-    el.addEventListener("blur", persistDraft);
+    el.addEventListener("input", () => { draft[field] = el.value; scheduleAutosave(); });
+    el.addEventListener("blur", flushAndPersist);
+  }
+
+  function bindCheckbox(selector, field) {
+    const el = qs(selector, root);
+    if (!el) return;
+    el.addEventListener("change", () => { draft[field] = el.checked; persistDraft(); });
   }
 
   function bindSelect(selector, field, isNumber) {
@@ -9949,8 +11668,8 @@ function renderEmployerRoleBuilder(root, roleId) {
   function bindSalaryField(sub) {
     const el = qs(`[data-field-salary-${sub}]`, root);
     if (!el) return;
-    el.addEventListener("input", () => { draft.salary[sub] = el.value === "" ? null : Number(el.value); });
-    el.addEventListener("blur", persistDraft);
+    el.addEventListener("input", () => { draft.salary[sub] = el.value === "" ? null : Number(el.value); scheduleAutosave(); });
+    el.addEventListener("blur", flushAndPersist);
   }
 
   function bindSalarySelect(sub) {
@@ -9959,12 +11678,22 @@ function renderEmployerRoleBuilder(root, roleId) {
     el.addEventListener("change", () => { draft.salary[sub] = el.value; persistDraft(); });
   }
 
+  function bindSalaryCheckbox(sub) {
+    const el = qs(`[data-field-salary-${sub}]`, root);
+    if (!el) return;
+    el.addEventListener("change", () => { draft.salary[sub] = el.checked; persistDraft(); });
+  }
+
   function renderResponsibilityList() {
     return `
       <div data-resp-list>
         ${draft.responsibilities.map((r, i) => `
           <div class="emp-resp-row">
-            <input type="text" data-resp-index="${i}" value="${r}" placeholder="e.g. Build and maintain backend services">
+            <div class="emp-resp-reorder">
+              <button type="button" class="btn btn-ghost btn-sm" data-resp-up="${i}" ${i === 0 ? "disabled" : ""} aria-label="Move up">${icon("chevron-up")}</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-resp-down="${i}" ${i === draft.responsibilities.length - 1 ? "disabled" : ""} aria-label="Move down">${icon("chevron-down")}</button>
+            </div>
+            <input type="text" data-resp-index="${i}" value="${escapeHtml(r)}" placeholder="e.g. Build and maintain backend services">
             <button type="button" class="btn btn-ghost btn-sm" data-resp-remove="${i}" aria-label="Remove">${icon("x")}</button>
           </div>
         `).join("")}
@@ -9975,13 +11704,21 @@ function renderEmployerRoleBuilder(root, roleId) {
 
   function bindResponsibilityList() {
     qsa("[data-resp-index]", root).forEach(input => {
-      input.addEventListener("input", () => { draft.responsibilities[Number(input.dataset.respIndex)] = input.value; });
-      input.addEventListener("blur", persistDraft);
+      input.addEventListener("input", () => { draft.responsibilities[Number(input.dataset.respIndex)] = input.value; scheduleAutosave(); });
+      input.addEventListener("blur", flushAndPersist);
     });
     qsa("[data-resp-remove]", root).forEach(btn => btn.addEventListener("click", () => {
       draft.responsibilities.splice(Number(btn.dataset.respRemove), 1);
       persistDraft();
       draw();
+    }));
+    qsa("[data-resp-up]", root).forEach(btn => btn.addEventListener("click", () => {
+      const i = Number(btn.dataset.respUp);
+      if (i > 0) { [draft.responsibilities[i - 1], draft.responsibilities[i]] = [draft.responsibilities[i], draft.responsibilities[i - 1]]; persistDraft(); draw(); }
+    }));
+    qsa("[data-resp-down]", root).forEach(btn => btn.addEventListener("click", () => {
+      const i = Number(btn.dataset.respDown);
+      if (i < draft.responsibilities.length - 1) { [draft.responsibilities[i + 1], draft.responsibilities[i]] = [draft.responsibilities[i], draft.responsibilities[i + 1]]; persistDraft(); draw(); }
     }));
     qs("[data-resp-add]", root)?.addEventListener("click", () => {
       draft.responsibilities.push("");
@@ -10017,49 +11754,196 @@ function renderEmployerRoleBuilder(root, roleId) {
     }));
   }
 
+  function bindHiringStagesEditor() {
+    qsa("[data-stage-field]", root).forEach(input => {
+      input.addEventListener("input", () => {
+        draft.hiringStages[Number(input.dataset.stageIndex)][input.dataset.stageField] = input.value;
+        scheduleAutosave();
+      });
+      input.addEventListener("blur", flushAndPersist);
+    });
+    qsa("[data-stage-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      draft.hiringStages.splice(Number(btn.dataset.stageRemove), 1);
+      persistDraft(); draw();
+    }));
+    let dragFromIndex = null;
+    qsa("[data-stage-drag]", root).forEach(handle => {
+      handle.addEventListener("dragstart", event => {
+        dragFromIndex = Number(handle.dataset.stageDrag);
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", String(dragFromIndex));
+        handle.closest("[data-stage-row]")?.classList.add("emp-stage-dragging");
+      });
+      handle.addEventListener("dragend", () => {
+        handle.closest("[data-stage-row]")?.classList.remove("emp-stage-dragging");
+        dragFromIndex = null;
+      });
+    });
+    qsa("[data-stage-row]", root).forEach(row => {
+      row.addEventListener("dragover", event => {
+        if (dragFromIndex === null) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+      });
+      row.addEventListener("drop", event => {
+        if (dragFromIndex === null) return;
+        event.preventDefault();
+        const toIndex = Number(row.dataset.stageRow);
+        if (toIndex !== dragFromIndex) {
+          const [moved] = draft.hiringStages.splice(dragFromIndex, 1);
+          draft.hiringStages.splice(toIndex, 0, moved);
+          persistDraft(); draw();
+        }
+        dragFromIndex = null;
+      });
+    });
+    qs("[data-stage-add]", root)?.addEventListener("click", () => {
+      draft.hiringStages.push({ name: "", duration: "", owner: "", format: "" });
+      persistDraft(); draw();
+    });
+  }
+
+  function bindScreeningQuestionsList() {
+    qsa("[data-screening-index]", root).forEach(input => {
+      input.addEventListener("input", () => { draft.screeningQuestions[Number(input.dataset.screeningIndex)] = input.value; scheduleAutosave(); });
+      input.addEventListener("blur", flushAndPersist);
+    });
+    qsa("[data-screening-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      draft.screeningQuestions.splice(Number(btn.dataset.screeningRemove), 1);
+      persistDraft(); draw();
+    }));
+    qs("[data-screening-add]", root)?.addEventListener("click", () => {
+      draft.screeningQuestions.push("");
+      persistDraft(); draw();
+    });
+  }
+
   function renderWizardStepContent(step) {
     switch (step) {
       case 0:
         return `
-          <div class="emp-form-section-head"><h2>${icon("briefcase")} Role Basics</h2><p>Start with the essentials candidates need to understand what this role is.</p></div>
-          <label>Role title<input type="text" data-field-title value="${draft.title}" placeholder="e.g. Backend Engineer"></label>
-          <label>Department<input type="text" data-field-department value="${draft.department}" placeholder="e.g. Engineering"></label>
-          <label>Employment type<select data-field-employmentType>${["Full-time", "Part-time", "Contract", "Internship", "Graduate programme"].map(o => `<option ${draft.employmentType === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
-          <label>Reports to <span class="emp-optional-tag">Optional</span><input type="text" data-field-reportsTo value="${draft.reportsTo}" placeholder="e.g. Engineering Manager"></label>
+          <div class="emp-form-section-head"><h2>${icon("briefcase")} Role Basics</h2><p>Start with the essentials candidates and your team need to understand this role.</p></div>
+          <div class="emp-form-grid-2">
+            <label>Role title<input type="text" data-field-title value="${escapeHtml(draft.title)}" placeholder="e.g. Backend Engineer"></label>
+            <label>Internal job ID <span class="emp-optional-tag">Optional</span><input type="text" data-field-internalJobId value="${escapeHtml(draft.internalJobId)}" placeholder="e.g. ENG-2026-014"></label>
+            <label>Department<input type="text" data-field-department value="${escapeHtml(draft.department)}" placeholder="e.g. Engineering"></label>
+            <label>Job category <span class="emp-optional-tag">Optional</span><input type="text" data-field-jobCategory value="${escapeHtml(draft.jobCategory)}" placeholder="e.g. Software Engineering"></label>
+            <label>Seniority<select data-field-seniority>${SENIORITY_LEVELS.map(o => `<option ${draft.seniority === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Employment type<select data-field-employmentType>${EMPLOYMENT_TYPES.map(o => `<option ${draft.employmentType === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Number of openings<input type="number" min="1" data-field-openings value="${draft.openings}"></label>
+            <label>Hiring urgency<select data-field-urgency>${["Standard", "Urgent", "Critical"].map(o => `<option ${draft.urgency === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Reports to <span class="emp-optional-tag">Optional</span><input type="text" data-field-reportsTo value="${escapeHtml(draft.reportsTo)}" placeholder="e.g. Engineering Manager"></label>
+            <label>Hiring owner <span class="emp-optional-tag">Optional</span><input type="text" data-field-hiringOwner value="${escapeHtml(draft.hiringOwner)}" placeholder="Who owns this hire internally"></label>
+            <label>Target start date <span class="emp-optional-tag">Optional</span><input type="date" data-field-targetStartDate value="${draft.targetStartDate}"></label>
+            <label>Visa sponsorship<select data-field-visaSponsorship>${["Not available", "Available", "Case by case"].map(o => `<option ${draft.visaSponsorship === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            ${["Contract", "Temporary", "Internship", "Freelance"].includes(draft.employmentType) ? `<label>Contract duration<input type="text" data-field-contractDuration value="${escapeHtml(draft.contractDuration)}" placeholder="e.g. 6 months"></label>` : ""}
+          </div>
         `;
       case 1:
         return `
-          <div class="emp-form-section-head"><h2>${icon("list-checks")} Role Details</h2><p>Explain what this person will own, work on, and achieve.</p></div>
-          <label>Role summary<textarea data-field-roleSummary rows="3" placeholder="Describe the role in 2-4 sentences. Focus on the purpose of the position.">${draft.roleSummary}</textarea></label>
+          <div class="emp-form-section-head"><h2>${icon("list-checks")} Role Details</h2><p>Explain why this role exists, what they'll own, and how success is measured.</p></div>
+          <label>Why this role exists <span class="emp-optional-tag">Optional</span><textarea data-field-rolePurpose rows="2" placeholder="What gap or need this role fills">${escapeHtml(draft.rolePurpose)}</textarea></label>
+          <label>Role summary<textarea data-field-roleSummary rows="3" placeholder="Describe the role in 2-4 sentences. Focus on the purpose of the position.">${escapeHtml(draft.roleSummary)}</textarea></label>
           <div>
-            <span class="emp-tags-label">Key responsibilities — recommended 3-6</span>
+            <span class="emp-tags-label">Key responsibilities — recommended 3-8</span>
             ${renderResponsibilityList()}
           </div>
-          <label>What success looks like <span class="emp-optional-tag">Optional</span><textarea data-field-successLooksLike rows="2" placeholder="e.g. In the first 6 months, this person should have shipped one major service.">${draft.successLooksLike}</textarea></label>
+          <label>First 90-day outcomes <span class="emp-optional-tag">Optional</span><textarea data-field-firstNinetyDays rows="2" placeholder="What should be true after the first 90 days?">${escapeHtml(draft.firstNinetyDays)}</textarea></label>
+          <label>Long-term success looks like <span class="emp-optional-tag">Optional</span><textarea data-field-successLooksLike rows="2" placeholder="e.g. In the first 6 months, this person should have shipped one major service.">${escapeHtml(draft.successLooksLike)}</textarea></label>
+          <div class="emp-form-grid-2">
+            <label>Team structure <span class="emp-optional-tag">Optional</span><input type="text" data-field-teamStructure value="${escapeHtml(draft.teamStructure)}" placeholder="e.g. Team of 6 engineers"></label>
+            <label>Key stakeholders <span class="emp-optional-tag">Optional</span><input type="text" data-field-stakeholders value="${escapeHtml(draft.stakeholders)}" placeholder="e.g. Product, Design"></label>
+            <label>Tools & technologies <span class="emp-optional-tag">Optional</span><input type="text" data-field-tools value="${escapeHtml(draft.tools)}" placeholder="e.g. React, Node.js, AWS"></label>
+            <label>Working hours <span class="emp-optional-tag">Optional</span><input type="text" data-field-workingHours value="${escapeHtml(draft.workingHours)}" placeholder="e.g. 9am-6pm, flexible"></label>
+            <label>Travel expectations <span class="emp-optional-tag">Optional</span><input type="text" data-field-travelExpectations value="${escapeHtml(draft.travelExpectations)}" placeholder="e.g. None, or up to 10%"></label>
+          </div>
         `;
       case 2:
         return `
-          <div class="emp-form-section-head"><h2>${icon("users")} Candidate Profile</h2><p>Define what is truly essential, what is preferred, and what can be learned.</p></div>
-          <div><span class="emp-tags-label">Must-have skills — used for essential matching</span>${renderTagInput("mustHaveSkills", draft.mustHaveSkills)}</div>
-          <div><span class="emp-tags-label">Nice-to-have skills — improves matching, won't reject candidates</span>${renderTagInput("niceToHaveSkills", draft.niceToHaveSkills)}</div>
-          <label>Minimum experience<select data-field-minExperience>${["No experience required", "Less than 1 year", "1-2 years", "3-5 years", "5+ years"].map(o => `<option ${draft.minExperience === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
-          <label>Education or certification <span class="emp-optional-tag">Optional</span><input type="text" data-field-educationOrCertification value="${draft.educationOrCertification}" placeholder="e.g. Bachelor's degree preferred"></label>
+          <div class="emp-form-section-head"><h2>${icon("users")} Candidate Profile</h2><p>Separate what's essential from what's preferred or trainable.</p></div>
+          ${renderRequirementWarnings(draft)}
+          <div><span class="emp-tags-label">Must-have — failure to meet may affect eligibility</span>${renderTagInput("mustHaveSkills", draft.mustHaveSkills)}</div>
+          <div><span class="emp-tags-label">Preferred — improves fit, won't automatically reject candidates</span>${renderTagInput("niceToHaveSkills", draft.niceToHaveSkills)}</div>
+          <div><span class="emp-tags-label">Trainable — can be learned after joining</span>${renderTagInput("trainableSkills", draft.trainableSkills)}</div>
+          <div class="emp-form-grid-2">
+            <label>Minimum experience<select data-field-minExperience>${["No experience required", "Less than 1 year", "1-2 years", "3-5 years", "5+ years"].map(o => `<option ${draft.minExperience === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-equivalentExperienceAccepted ${draft.equivalentExperienceAccepted ? "checked" : ""}> Equivalent project/portfolio evidence accepted</label>
+            <label>Education or certification <span class="emp-optional-tag">Optional</span><input type="text" data-field-educationOrCertification value="${escapeHtml(draft.educationOrCertification)}" placeholder="e.g. Bachelor's degree preferred"></label>
+            <label>Required licences <span class="emp-optional-tag">Optional</span><input type="text" data-field-requiredLicences value="${escapeHtml(draft.requiredLicences)}"></label>
+            <label>Language requirements <span class="emp-optional-tag">Optional</span><input type="text" data-field-languageRequirements value="${escapeHtml(draft.languageRequirements)}" placeholder="e.g. Fluent English"></label>
+            <label>Portfolio / work sample<select data-field-portfolioRequirement>${["Optional", "Preferred", "Required"].map(o => `<option ${draft.portfolioRequirement === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Domain knowledge <span class="emp-optional-tag">Optional</span><input type="text" data-field-domainKnowledge value="${escapeHtml(draft.domainKnowledge)}"></label>
+            <label>Behavioural competencies <span class="emp-optional-tag">Optional</span><input type="text" data-field-behaviouralCompetencies value="${escapeHtml(draft.behaviouralCompetencies)}"></label>
+            <label>Availability requirement <span class="emp-optional-tag">Optional</span><input type="text" data-field-availabilityRequirement value="${escapeHtml(draft.availabilityRequirement)}" placeholder="e.g. Immediate, 1 month notice"></label>
+            <label>Work authorization <span class="emp-optional-tag">Optional</span><input type="text" data-field-workAuthorization value="${escapeHtml(draft.workAuthorization)}" placeholder="e.g. Must be authorized to work in Malaysia"></label>
+          </div>
+          <label>Accessibility considerations <span class="emp-optional-tag">Optional</span><textarea data-field-accessibilityConsiderations rows="2" placeholder="Any accessibility notes candidates should know">${escapeHtml(draft.accessibilityConsiderations)}</textarea></label>
+          <button type="button" class="btn btn-ghost btn-sm" data-review-requirements>${icon("sparkles")} Ask Vera to review requirements</button>
         `;
       case 3:
         return `
-          <div class="emp-form-section-head"><h2>${icon("wallet")} Offer & Hiring Setup</h2><p>Set the offer and tell CareerGo how you want candidates to be matched.</p></div>
+          <div class="emp-form-section-head"><h2>${icon("wallet")} Offer & Hiring Setup</h2><p>Set compensation, benefits, work arrangement, hiring process, and how candidates apply.</p></div>
+
+          <h3 class="emp-form-subhead">Compensation</h3>
           <div class="emp-salary-row">
-            <label>Minimum (MYR)<input type="number" data-field-salary-min value="${draft.salary.min ?? ""}" placeholder="e.g. 4500"></label>
-            <label>Maximum (MYR)<input type="number" data-field-salary-max value="${draft.salary.max ?? ""}" placeholder="e.g. 7000"></label>
+            <label>Minimum<input type="number" data-field-salary-min value="${draft.salary.min ?? ""}" placeholder="e.g. 4500"></label>
+            <label>Maximum<input type="number" data-field-salary-max value="${draft.salary.max ?? ""}" placeholder="e.g. 7000"></label>
             <label>Pay period<select data-field-salary-period>${["Monthly", "Annual", "Hourly"].map(o => `<option ${draft.salary.period === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
           </div>
-          <label>Location<input type="text" data-field-location value="${draft.location}" placeholder="e.g. Kuala Lumpur"></label>
-          <label>Work mode<select data-field-workMode>${["On-site", "Hybrid", "Remote"].map(o => `<option ${draft.workMode === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+          <div class="emp-form-grid-2">
+            <label>Currency<select data-field-salary-currency>${["MYR", "USD", "SGD"].map(o => `<option ${draft.salary.currency === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Salary visibility<select data-field-salary-visibility>${["Visible to candidates", "Hidden until applied", "Hidden entirely"].map(o => `<option ${draft.salary.visibility === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-salary-negotiable ${draft.salary.negotiable ? "checked" : ""}> Negotiable</label>
+            <label>Bonus <span class="emp-optional-tag">Optional</span><input type="text" data-field-bonus value="${escapeHtml(draft.bonus)}"></label>
+            <label>Commission <span class="emp-optional-tag">Optional</span><input type="text" data-field-commission value="${escapeHtml(draft.commission)}"></label>
+            <label>Allowances <span class="emp-optional-tag">Optional</span><input type="text" data-field-allowances value="${escapeHtml(draft.allowances)}"></label>
+            <label>Overtime policy <span class="emp-optional-tag">Optional</span><input type="text" data-field-overtimePolicy value="${escapeHtml(draft.overtimePolicy)}"></label>
+            <label>Equity <span class="emp-optional-tag">Optional</span><input type="text" data-field-equity value="${escapeHtml(draft.equity)}"></label>
+          </div>
+
+          <h3 class="emp-form-subhead">Benefits</h3>
+          <div class="emp-checkbox-grid">${BENEFIT_OPTIONS.map(b => `<label class="check-field custom-checkbox"><input type="checkbox" data-benefit="${escapeHtml(b)}" ${draft.benefits.includes(b) ? "checked" : ""}> ${b}</label>`).join("")}</div>
+
+          <h3 class="emp-form-subhead">Work arrangement</h3>
+          <div class="emp-form-grid-2">
+            <label>Location<input type="text" data-field-location value="${escapeHtml(draft.location)}" placeholder="e.g. Kuala Lumpur"></label>
+            <label>Work mode<select data-field-workMode>${["On-site", "Hybrid", "Remote"].map(o => `<option ${draft.workMode === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Exact office location <span class="emp-optional-tag">Optional</span><input type="text" data-field-officeLocation value="${escapeHtml(draft.officeLocation)}"></label>
+            <label>Hybrid attendance <span class="emp-optional-tag">Optional</span><input type="text" data-field-hybridDays value="${escapeHtml(draft.hybridDays)}" placeholder="e.g. 3 days in office"></label>
+            <label>Working days <span class="emp-optional-tag">Optional</span><input type="text" data-field-workingDays value="${escapeHtml(draft.workingDays)}" placeholder="e.g. Mon-Fri"></label>
+            <label>Shift pattern <span class="emp-optional-tag">Optional</span><input type="text" data-field-shiftPattern value="${escapeHtml(draft.shiftPattern)}"></label>
+          </div>
           <label>Match threshold<select data-field-matchThreshold>
             ${[[60, "Broad pool — 60%"], [70, "Balanced — 70%"], [80, "Focused — 80%"], [90, "Very selective — 90%"]].map(([v, l]) => `<option value="${v}" ${draft.matchThreshold === v ? "selected" : ""}>${l}</option>`).join("")}
           </select></label>
           <p class="emp-field-help">Candidates above this match level will appear as Strong Matches. Higher threshold: fewer candidates, closer skill alignment. Lower threshold: larger candidate pool, more employer review required.</p>
-          <label>Portfolio evidence<select data-field-portfolioRequirement>${["Optional", "Preferred", "Required"].map(o => `<option ${draft.portfolioRequirement === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+
+          <h3 class="emp-form-subhead">Hiring process</h3>
+          ${renderHiringStagesEditor(draft)}
+
+          <h3 class="emp-form-subhead">Application setup</h3>
+          <div class="emp-form-grid-2">
+            <label>Application deadline <span class="emp-optional-tag">Optional</span><input type="date" data-field-applicationDeadline value="${draft.applicationDeadline}"></label>
+            <label>Contact person <span class="emp-optional-tag">Optional</span><input type="text" data-field-contactPerson value="${escapeHtml(draft.contactPerson)}"></label>
+            <label>Required documents <span class="emp-optional-tag">Optional</span><input type="text" data-field-requiredDocuments value="${escapeHtml(draft.requiredDocuments)}" placeholder="e.g. Resume, portfolio link"></label>
+            <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-resumeRequired ${draft.resumeRequired ? "checked" : ""}> Resume required</label>
+            <label>Cover letter<select data-field-coverLetterRequired>${["Optional", "Required", "Not requested"].map(o => `<option ${draft.coverLetterRequired === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Portfolio link <span class="emp-optional-tag">Optional</span><input type="url" data-field-applicationPortfolioLink value="${escapeHtml(draft.applicationPortfolioLink)}"></label>
+          </div>
+          <div>
+            <span class="emp-tags-label">Screening questions shown at application</span>
+            ${renderScreeningQuestionsList(draft)}
+          </div>
+          <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-candidateConsent ${draft.candidateConsent ? "checked" : ""}> Require a candidate consent checkbox before applying</label>
+
+          <h3 class="emp-form-subhead">Job distribution</h3>
+          ${renderDistributionSection(draft)}
+
+          <h3 class="emp-form-subhead">About the company</h3>
+          ${renderCompanySection(draft)}
+
+          <h3 class="emp-form-subhead">Accessibility & accommodations</h3>
+          <label>Accommodation statement<textarea data-field-accommodationStatement rows="2">${escapeHtml(draft.accommodationStatement)}</textarea></label>
         `;
       default:
         return "";
@@ -10073,6 +11957,7 @@ function renderEmployerRoleBuilder(root, roleId) {
     } else {
       const created = Object.assign({
         id: draftId, applicants: 0, qualified: 0, strongMatches: 0, daysOpen: 0, health: "Healthy", closeReason: null,
+        owner: "You", lastUpdated: "Just now",
         roleIntelligence: FALLBACK_ROLE_INTELLIGENCE
       }, draft, { status });
       DATA.employerRoles.push(created);
@@ -10084,62 +11969,77 @@ function renderEmployerRoleBuilder(root, roleId) {
     employerNavigateTo("roles", {}, { force: true });
   }
 
+  function applyVeraReviewAction(action) {
+    if (action.type === "set-field") draft[action.field] = action.value;
+    else if (action.type === "add-benefits") ["Medical coverage", "Paid leave", "Flexible working"].forEach(b => { if (!draft.benefits.includes(b)) draft.benefits.push(b); });
+    else if (action.type === "trim-stages") draft.hiringStages = draft.hiringStages.slice(0, 4);
+    else if (action.type === "trim-musthave") draft.niceToHaveSkills.push(...draft.mustHaveSkills.splice(6));
+    else if (action.type === "use-company") {
+      const company = DATA.companies.find(c => c.id === "maybank");
+      if (company) { draft.companySummary = company.summary || ""; draft.useCompanyProfile = true; }
+    }
+  }
+
   function renderPreviewPublishStep() {
-    const ri = existing ? existing.roleIntelligence : FALLBACK_ROLE_INTELLIGENCE;
-    const company = DATA.companies.find(c => c.id === "maybank");
-    const checklist = [
-      { label: "Role basics complete", done: !!(draft.title && draft.department) },
-      { label: "Responsibilities added", done: draft.responsibilities.filter(r => r.trim()).length > 0 },
-      { label: "Salary and location complete", done: !!(draft.salary.min && draft.salary.max && draft.location) },
-      { label: "Candidate requirements complete", done: draft.mustHaveSkills.length > 0 && !!draft.minExperience }
-    ];
-    const pendingSuggestions = (ri.suggestions || []).filter(s => !dismissedSuggestions.has(s.recommendation) && !appliedSuggestions.has(s.recommendation));
-    const responsibilities = draft.responsibilities.filter(r => r.trim());
+    const ri = existing ? existing.roleIntelligence : null;
+    const pendingSuggestions = ri ? (ri.suggestions || []).filter(s => !dismissedSuggestions.has(s.recommendation) && !appliedSuggestions.has(s.recommendation)) : [];
+    const checks = getPublishReadinessChecks(draft);
+    const review = computeDraftVeraReview(draft);
+    const statusIcon = s => s === "Complete" ? "check" : s === "Missing" ? "x" : s === "Optional" ? "circle" : "alert-triangle";
 
     return `
-      <div class="card emp-publish-checklist">
-        <div class="emp-callout-label">${icon("list-checks")} Ready to publish</div>
-        <ul class="emp-checklist">
-          ${checklist.map(item => `<li class="${item.done ? "done" : ""}">${icon(item.done ? "check" : "x")} ${item.label}</li>`).join("")}
-          ${pendingSuggestions.length ? `<li class="warn">${icon("alert-triangle")} ${pendingSuggestions.length} Vera recommendation${pendingSuggestions.length === 1 ? "" : "s"} not applied</li>` : ""}
-        </ul>
-        <div class="emp-wizard-actions">
-          <button type="button" class="btn btn-ghost" data-emp-prev>Back</button>
-          <div class="emp-publish-buttons">
-            ${existing
-              ? `<button type="button" class="btn btn-ghost" data-emp-preview-public>Preview public post</button>
-                 <button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} Save changes</button>`
-              : `<button type="button" class="btn btn-ghost" data-emp-save-draft>Save draft</button>
-                 <button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} Publish role</button>`}
-          </div>
-        </div>
-      </div>
-      <div class="emp-wizard-body">
-        <div class="card emp-job-preview">
-          <div class="emp-preview-toolbar">
-            <span class="emp-tags-label">Preview as candidate</span>
-            <div class="emp-preview-device-toggle">
-              <button type="button" class="active" data-emp-preview-device="desktop">Desktop</button>
-              <button type="button" data-emp-preview-device="mobile">Mobile</button>
+      <div class="emp-publish-layout">
+        <div class="emp-publish-left">
+          <div class="card emp-publish-checklist">
+            <div class="emp-callout-label">${icon("list-checks")} Publication readiness</div>
+            <ul class="emp-checklist emp-checklist--status">
+              ${checks.map(c => `<li class="emp-check-${c.status.toLowerCase().replace(/\s+/g, "-")}">${icon(statusIcon(c.status))} <span>${c.label}</span><span class="emp-check-status">${c.status}</span></li>`).join("")}
+            </ul>
+            <div class="emp-wizard-actions">
+              <button type="button" class="btn btn-ghost" data-emp-prev>Back</button>
+              <div class="emp-publish-buttons">
+                <button type="button" class="btn btn-ghost" data-emp-save-draft>Save draft</button>
+                <span class="emp-save-indicator emp-save-indicator--inline" data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>
+                <button type="button" class="btn btn-ghost" data-emp-preview-open>${icon("eye")} Preview job</button>
+                <button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} ${existing && existing.status !== "Draft" ? "Save changes" : "Publish role"}</button>
+              </div>
             </div>
           </div>
-          <div class="emp-job-preview-frame" data-emp-preview-frame>
-            ${renderJobPreviewContent(company, responsibilities)}
-          </div>
         </div>
-        <div class="card emp-role-intelligence">
-          ${renderRoleIntelligencePanel(ri, pendingSuggestions, draft)}
-        </div>
-      </div>
-      <div class="emp-compose-modal" data-emp-public-preview-modal hidden>
-        <div class="card emp-compose-card emp-public-preview-card">
-          <div class="emp-preview-toolbar">
-            <h2>Public post preview</h2>
-            <button type="button" class="btn btn-ghost btn-sm" data-emp-close-public-preview>${icon("x")} Close</button>
+        <div class="emp-publish-right">
+          <div class="card emp-role-intelligence emp-role-intelligence--wide">
+            <div class="emp-callout-label">${icon("sparkles")} Vera role review</div>
+            <p class="emp-vera-readiness">Role readiness: <strong>${review.readiness}%</strong></p>
+            ${review.strengths.length ? `
+              <div class="emp-intel-section">
+                <h3 class="emp-intel-heading">Strengths</h3>
+                <ul class="emp-intel-strengths">${review.strengths.map(s => `<li>${icon("check")} ${escapeHtml(s)}</li>`).join("")}</ul>
+              </div>` : ""}
+            ${review.needsAttention.length ? `
+              <div class="emp-intel-section">
+                <h3 class="emp-intel-heading">Needs attention</h3>
+                ${review.needsAttention.map(n => `<div class="emp-callout emp-callout-warn"><p>${icon("alert-triangle")} ${escapeHtml(n.text)}</p></div>`).join("")}
+              </div>` : ""}
+            ${review.estimatedEffect.length ? `
+              <div class="emp-intel-section">
+                <h3 class="emp-intel-heading">Estimated effect</h3>
+                <ul class="emp-intel-strengths">${review.estimatedEffect.map(e => `<li>${icon("trending-up")} ${escapeHtml(e)}</li>`).join("")}</ul>
+              </div>` : ""}
+            ${review.needsAttention.some(n => n.action) ? `
+              <div class="emp-intel-section">
+                <h3 class="emp-intel-heading">Recommended actions</h3>
+                <div class="emp-suggestion-actions emp-suggestion-actions--wrap">
+                  ${review.needsAttention.filter(n => n.action).map(n => `<button type="button" class="btn btn-ghost btn-sm" data-vera-review-action="${escapeHtml(JSON.stringify(n.action))}">${escapeHtml(n.action.label)}</button>`).join("")}
+                  <button type="button" class="btn btn-ghost btn-sm" data-vera-review-apply-all>Apply all selected changes</button>
+                </div>
+              </div>` : ""}
+            <p class="emp-vera-principle">${icon("shield-check")} The final hiring and publishing decision remains with you.</p>
           </div>
-          <div class="emp-job-preview-frame">
-            ${renderJobPreviewContent(company, responsibilities)}
-          </div>
+          ${ri && ri.talentAvailability && ri.talentAvailability !== "Not enough data" ? `
+            <div class="card emp-role-intelligence" style="margin-top:16px;">
+              ${renderRoleIntelligencePanel(ri, pendingSuggestions, draft)}
+            </div>
+          ` : ""}
         </div>
       </div>
     `;
@@ -10150,22 +12050,53 @@ function renderEmployerRoleBuilder(root, roleId) {
     return `
       <div class="emp-job-preview-company">
         <span class="emp-job-preview-logo">${initial}</span>
-        <strong>${company ? company.name : "Your Company"}</strong>
+        <strong>${company ? escapeHtml(company.name) : "Your Company"}</strong>
         ${company?.verified ? `<span class="pill cyan">Verified</span>` : ""}
       </div>
-      <h2>${draft.title || "Role title"}</h2>
+      <h2>${escapeHtml(draft.title) || "Role title"}</h2>
       <div class="emp-job-preview-meta">${[draft.location, draft.workMode, draft.employmentType].filter(Boolean).join(" · ") || "Location · Work mode · Employment type"}</div>
-      ${draft.salary.min && draft.salary.max ? `<div class="emp-job-preview-salary">RM ${draft.salary.min.toLocaleString()} – RM ${draft.salary.max.toLocaleString()} / ${draft.salary.period.toLowerCase()}</div>` : ""}
+      ${draft.salary.min && draft.salary.max ? `<div class="emp-job-preview-salary">${draft.salary.currency} ${draft.salary.min.toLocaleString()} – ${draft.salary.max.toLocaleString()} / ${draft.salary.period.toLowerCase()}</div>` : ""}
       <h3>About the role</h3>
-      <p>${draft.roleSummary || "Add a role summary in Role Details."}</p>
-      ${responsibilities.length ? `<h3>What you'll do</h3><ul>${responsibilities.map(r => `<li>${r}</li>`).join("")}</ul>` : ""}
-      ${draft.successLooksLike ? `<h3>What success looks like</h3><p>${draft.successLooksLike}</p>` : ""}
-      ${draft.mustHaveSkills.length ? `<h3>Must-have skills</h3><div class="pill-row">${draft.mustHaveSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div>` : ""}
-      ${draft.niceToHaveSkills.length ? `<h3>Nice-to-have</h3><div class="pill-row">${draft.niceToHaveSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div>` : ""}
-      <h3>Work style</h3>
-      <p>${draft.workMode || "Hybrid"}</p>
+      <p>${escapeHtml(draft.roleSummary) || "Add a role summary in Role Details."}</p>
+      ${responsibilities.length ? `<h3>What you'll do</h3><ul>${responsibilities.map(r => `<li>${escapeHtml(r)}</li>`).join("")}</ul>` : ""}
+      ${draft.successLooksLike ? `<h3>What success looks like</h3><p>${escapeHtml(draft.successLooksLike)}</p>` : ""}
+      ${draft.mustHaveSkills.length ? `<h3>Must-have skills</h3><div class="pill-row">${draft.mustHaveSkills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>` : ""}
+      ${draft.niceToHaveSkills.length ? `<h3>Nice-to-have</h3><div class="pill-row">${draft.niceToHaveSkills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>` : ""}
+      ${draft.benefits.length ? `<h3>Benefits</h3><div class="pill-row">${draft.benefits.map(b => `<span class="pill">${escapeHtml(b)}</span>`).join("")}</div>` : ""}
+      ${draft.hiringStages.length ? `<h3>Hiring process</h3><ol>${draft.hiringStages.map(s => `<li>${escapeHtml(s.name || "Stage")}${s.duration ? ` — ${escapeHtml(s.duration)}` : ""}</li>`).join("")}</ol>` : ""}
+      ${draft.companySummary ? `<h3>About ${company ? escapeHtml(company.name) : "the company"}</h3><p>${escapeHtml(draft.companySummary)}</p>` : ""}
+      ${draft.accommodationStatement ? `<h3>Accessibility</h3><p>${escapeHtml(draft.accommodationStatement)}</p>` : ""}
       <button type="button" class="btn btn-primary" disabled>Apply</button>
     `;
+  }
+
+  function openRolePreviewModal() {
+    draft.previewReviewed = true;
+    persistDraft();
+    const company = DATA.companies.find(c => c.id === "maybank");
+    openEmpModal("role-preview", `
+      <div class="emp-preview-toolbar">
+        <h2>Job preview</h2>
+        <div class="emp-preview-device-toggle">
+          <button type="button" class="active" data-emp-preview-device="desktop">Desktop</button>
+          <button type="button" data-emp-preview-device="mobile">Mobile</button>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="emp-job-preview-frame" data-emp-preview-frame>
+        ${renderJobPreviewContent(company, draft.responsibilities.filter(r => r.trim()))}
+      </div>
+    `, {
+      label: "Job preview",
+      className: "emp-preview-modal-card",
+      onOpen: host => {
+        qsa("[data-emp-preview-device]", host).forEach(btn => btn.addEventListener("click", () => {
+          qsa("[data-emp-preview-device]", host).forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          qs("[data-emp-preview-frame]", host)?.classList.toggle("emp-preview-mobile", btn.dataset.empPreviewDevice === "mobile");
+        }));
+      }
+    });
   }
 
   function bindPreviewPublishEvents() {
@@ -10174,8 +12105,8 @@ function renderEmployerRoleBuilder(root, roleId) {
       if (panel) panel.hidden = !panel.hidden;
     }));
     qsa("[data-emp-apply-suggestion]", root).forEach(btn => btn.addEventListener("click", () => {
-      const ri = existing ? existing.roleIntelligence : FALLBACK_ROLE_INTELLIGENCE;
-      const suggestion = (ri.suggestions || []).find(s => s.recommendation === btn.dataset.empApplySuggestion);
+      const ri = existing ? existing.roleIntelligence : null;
+      const suggestion = ri ? (ri.suggestions || []).find(s => s.recommendation === btn.dataset.empApplySuggestion) : null;
       if (suggestion) {
         draft[suggestion.field] = suggestion.suggestedValue;
         appliedSuggestions.add(suggestion.recommendation);
@@ -10188,19 +12119,21 @@ function renderEmployerRoleBuilder(root, roleId) {
       dismissedSuggestions.add(btn.dataset.empKeepSuggestion);
       draw();
     }));
-    qsa("[data-emp-preview-device]", root).forEach(btn => btn.addEventListener("click", () => {
-      qsa("[data-emp-preview-device]", root).forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      qs("[data-emp-preview-frame]", root)?.classList.toggle("emp-preview-mobile", btn.dataset.empPreviewDevice === "mobile");
+    qsa("[data-vera-review-action]", root).forEach(btn => btn.addEventListener("click", () => {
+      applyVeraReviewAction(JSON.parse(btn.dataset.veraReviewAction));
+      persistDraft();
+      draw();
+      showToast("Applied.");
     }));
+    qs("[data-vera-review-apply-all]", root)?.addEventListener("click", () => {
+      computeDraftVeraReview(draft).needsAttention.filter(n => n.action).forEach(n => applyVeraReviewAction(n.action));
+      persistDraft();
+      draw();
+      showToast("Applied all suggested changes.");
+    });
     qs("[data-emp-save-draft]", root)?.addEventListener("click", () => commitDraft("Draft"));
     qs("[data-emp-publish]", root)?.addEventListener("click", () => commitDraft(existing ? existing.status : "Open"));
-    qs("[data-emp-preview-public]", root)?.addEventListener("click", () => {
-      qs("[data-emp-public-preview-modal]", root).hidden = false;
-    });
-    qs("[data-emp-close-public-preview]", root)?.addEventListener("click", () => {
-      qs("[data-emp-public-preview-modal]", root).hidden = true;
-    });
+    qs("[data-emp-preview-open]", root)?.addEventListener("click", openRolePreviewModal);
   }
 
   function draw() {
@@ -10208,9 +12141,18 @@ function renderEmployerRoleBuilder(root, roleId) {
       <div class="emp-view-header">
         <div>
           <h1>${existing ? "Edit your role" : "Create a role"}</h1>
-          <p>${existing ? `${existing.title} · ` : "Set up the role candidates will see and CareerGo will match against. · "}<span data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span></p>
+          <p>
+            ${existing ? `${escapeHtml(existing.title)} · ` : "Set up the role candidates will see and CareerGo will match against. · "}
+            <span class="emp-save-indicator" data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>
+            <button type="button" class="emp-save-retry" data-emp-retry-save hidden>Retry</button>
+          </p>
         </div>
-        <button type="button" class="btn btn-ghost" data-emp-nav="roles">${icon("x")} Cancel</button>
+        <div class="emp-view-header-actions">
+          <button type="button" class="btn btn-ghost emp-create-vera-btn" data-emp-create-vera>${icon("sparkles")} Create with Vera</button>
+          <button type="button" class="btn btn-ghost" data-emp-preview-open>${icon("eye")} Preview job</button>
+          <button type="button" class="btn btn-ghost" data-emp-header-save-draft>Save draft</button>
+          <button type="button" class="btn btn-ghost" data-emp-nav="roles">${icon("x")} Cancel</button>
+        </div>
       </div>
       <div class="emp-wizard-steps">
         ${EMPLOYER_ROLE_BUILDER_STEPS.map((label, i) => `
@@ -10244,29 +12186,114 @@ function renderEmployerRoleBuilder(root, roleId) {
       event.preventDefault();
       employerNavigateTo("roles");
     });
+    qs("[data-emp-retry-save]", root)?.addEventListener("click", persistDraft);
+    qs("[data-emp-preview-open]", root)?.addEventListener("click", openRolePreviewModal);
+    qs("[data-emp-header-save-draft]", root)?.addEventListener("click", () => commitDraft("Draft"));
+    qs("[data-emp-create-vera]", root)?.addEventListener("click", () => openCreateWithVeraModal(draft, () => { persistDraft(); draw(); }));
 
     if (activeStep === 0) {
       bindField("[data-field-title]", "title");
+      bindField("[data-field-internalJobId]", "internalJobId");
       bindField("[data-field-department]", "department");
-      bindSelect("[data-field-employmentType]", "employmentType");
+      bindField("[data-field-jobCategory]", "jobCategory");
+      bindSelect("[data-field-seniority]", "seniority");
+      qs("[data-field-employmentType]", root)?.addEventListener("change", e => { draft.employmentType = e.target.value; persistDraft(); draw(); });
+      qs("[data-field-openings]", root)?.addEventListener("input", e => { draft.openings = Number(e.target.value) || 1; scheduleAutosave(); });
+      qs("[data-field-openings]", root)?.addEventListener("blur", flushAndPersist);
+      bindSelect("[data-field-urgency]", "urgency");
       bindField("[data-field-reportsTo]", "reportsTo");
+      bindField("[data-field-hiringOwner]", "hiringOwner");
+      bindField("[data-field-targetStartDate]", "targetStartDate");
+      bindSelect("[data-field-visaSponsorship]", "visaSponsorship");
+      bindField("[data-field-contractDuration]", "contractDuration");
     } else if (activeStep === 1) {
+      bindField("[data-field-rolePurpose]", "rolePurpose");
       bindField("[data-field-roleSummary]", "roleSummary");
       bindResponsibilityList();
+      bindField("[data-field-firstNinetyDays]", "firstNinetyDays");
       bindField("[data-field-successLooksLike]", "successLooksLike");
+      bindField("[data-field-teamStructure]", "teamStructure");
+      bindField("[data-field-stakeholders]", "stakeholders");
+      bindField("[data-field-tools]", "tools");
+      bindField("[data-field-workingHours]", "workingHours");
+      bindField("[data-field-travelExpectations]", "travelExpectations");
     } else if (activeStep === 2) {
       bindTagInput("mustHaveSkills");
       bindTagInput("niceToHaveSkills");
-      bindSelect("[data-field-minExperience]", "minExperience");
+      bindTagInput("trainableSkills");
+      qs("[data-field-minExperience]", root)?.addEventListener("change", e => { draft.minExperience = e.target.value; persistDraft(); draw(); });
+      bindCheckbox("[data-field-equivalentExperienceAccepted]", "equivalentExperienceAccepted");
       bindField("[data-field-educationOrCertification]", "educationOrCertification");
+      bindField("[data-field-requiredLicences]", "requiredLicences");
+      bindField("[data-field-languageRequirements]", "languageRequirements");
+      bindSelect("[data-field-portfolioRequirement]", "portfolioRequirement");
+      bindField("[data-field-domainKnowledge]", "domainKnowledge");
+      bindField("[data-field-behaviouralCompetencies]", "behaviouralCompetencies");
+      bindField("[data-field-availabilityRequirement]", "availabilityRequirement");
+      bindField("[data-field-workAuthorization]", "workAuthorization");
+      bindField("[data-field-accessibilityConsiderations]", "accessibilityConsiderations");
+      qs("[data-review-requirements]", root)?.addEventListener("click", () => openDraftRequirementsReview(draft));
     } else if (activeStep === 3) {
       bindSalaryField("min");
       bindSalaryField("max");
       bindSalarySelect("period");
+      bindSalarySelect("currency");
+      bindSalarySelect("visibility");
+      bindSalaryCheckbox("negotiable");
+      bindField("[data-field-bonus]", "bonus");
+      bindField("[data-field-commission]", "commission");
+      bindField("[data-field-allowances]", "allowances");
+      bindField("[data-field-overtimePolicy]", "overtimePolicy");
+      bindField("[data-field-equity]", "equity");
+      qsa("[data-benefit]", root).forEach(cb => cb.addEventListener("change", () => {
+        const b = cb.dataset.benefit;
+        if (cb.checked) { if (!draft.benefits.includes(b)) draft.benefits.push(b); }
+        else draft.benefits = draft.benefits.filter(x => x !== b);
+        persistDraft();
+      }));
       bindField("[data-field-location]", "location");
       bindSelect("[data-field-workMode]", "workMode");
+      bindField("[data-field-officeLocation]", "officeLocation");
+      bindField("[data-field-hybridDays]", "hybridDays");
+      bindField("[data-field-workingDays]", "workingDays");
+      bindField("[data-field-shiftPattern]", "shiftPattern");
       bindSelect("[data-field-matchThreshold]", "matchThreshold", true);
-      bindSelect("[data-field-portfolioRequirement]", "portfolioRequirement");
+      bindHiringStagesEditor();
+      bindField("[data-field-applicationDeadline]", "applicationDeadline");
+      bindField("[data-field-contactPerson]", "contactPerson");
+      bindField("[data-field-requiredDocuments]", "requiredDocuments");
+      bindCheckbox("[data-field-resumeRequired]", "resumeRequired");
+      bindSelect("[data-field-coverLetterRequired]", "coverLetterRequired");
+      bindField("[data-field-applicationPortfolioLink]", "applicationPortfolioLink");
+      bindScreeningQuestionsList();
+      bindCheckbox("[data-field-candidateConsent]", "candidateConsent");
+      qsa("[data-distribution-channel]", root).forEach(cb => cb.addEventListener("change", () => {
+        const ch = cb.dataset.distributionChannel;
+        if (cb.checked) { if (!draft.distributionChannels.includes(ch)) draft.distributionChannels.push(ch); }
+        else draft.distributionChannels = draft.distributionChannels.filter(x => x !== ch);
+        persistDraft();
+      }));
+      qsa("[data-copy-posting]", root).forEach(btn => btn.addEventListener("click", () => {
+        const text = buildPlainTextJobPosting(draft);
+        if (navigator.clipboard?.writeText) {
+          navigator.clipboard.writeText(text).then(() => showToast(`Copied job description for ${btn.dataset.copyPosting}.`)).catch(() => showToast("Could not copy — select and copy manually.", "info"));
+        } else showToast("Clipboard is not available in this browser.", "info");
+      }));
+      bindField("[data-field-externalPostingUrl]", "externalPostingUrl");
+      bindField("[data-field-trackingSource]", "trackingSource");
+      bindField("[data-field-campaignName]", "campaignName");
+      bindField("[data-field-distributionExpiry]", "distributionExpiry");
+      qs("[data-use-company-profile]", root)?.addEventListener("click", () => {
+        const company = DATA.companies.find(c => c.id === "maybank");
+        if (!company) { showToast("No company profile found yet.", "info"); return; }
+        draft.companySummary = company.summary || "";
+        draft.useCompanyProfile = true;
+        persistDraft();
+        draw();
+        showToast("Pulled details from your Company Profile.");
+      });
+      bindField("[data-field-companySummary]", "companySummary");
+      bindField("[data-field-accommodationStatement]", "accommodationStatement");
     } else if (activeStep === 4) {
       bindPreviewPublishEvents();
     }
@@ -12261,4 +14288,28 @@ function init() {
   initWorkspaceRailScrollSync();
 }
 
-document.addEventListener("DOMContentLoaded", init);
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", init);
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    makeEmployerRoleDraft,
+    isRoleBasicsComplete,
+    isRoleSummaryAdded,
+    isResponsibilitiesAdded,
+    isCandidateRequirementsComplete,
+    isSalaryAndLocationComplete,
+    isBenefitsReviewed,
+    isHiringProcessConfigured,
+    isApplicationMethodConfigured,
+    isCompanyIntroductionAvailable,
+    isAccommodationStatementReviewed,
+    isDistributionChannelsSelected,
+    isPreviewReviewed,
+    getPublishReadinessChecks,
+    getDraftReadiness,
+    getReadinessPredicates,
+    computeDraftVeraReview
+  };
+}
