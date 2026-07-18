@@ -11923,11 +11923,13 @@ function renderEmployerRoleBuilder(root, roleId) {
   let roleDetailsGenerateSeed = 0;
   const dismissedSuggestions = new Set();
   const appliedSuggestions = new Set();
+  let currentSaveState = "idle";
 
   function setSaveIndicator(state) {
     const labels = qsa("[data-emp-saved-label]", root);
     const retry = qs("[data-emp-retry-save]", root);
     if (!labels.length) return;
+    currentSaveState = state;
     const text = state === "saving" ? "Saving…"
       : state === "saved" ? formatSavedLabel(draft.lastSavedAt)
       : state === "unsaved" ? "Unsaved changes"
@@ -11940,6 +11942,16 @@ function renderEmployerRoleBuilder(root, roleId) {
     if (retry) retry.hidden = state !== "error";
   }
 
+  // The "Saved Xs/Xm ago" text goes stale the moment the clock ticks past
+  // the next formatSavedLabel bucket, since nothing else re-renders it -
+  // refresh it on an interval while this page is on screen. Self-clears
+  // once #employer-view has moved on to a different view (this app has no
+  // page-unmount hook to key off of).
+  const autosaveTicker = setInterval(() => {
+    if (!qs("[data-emp-saved-label]", root)) { clearInterval(autosaveTicker); return; }
+    if (currentSaveState === "saved") setSaveIndicator("saved");
+  }, 15000);
+
   function persistDraft() {
     try {
       draft.lastSavedAt = new Date().toISOString();
@@ -11947,6 +11959,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       state.employerRoleDrafts[draftId] = draft;
       writeState(state);
       setSaveIndicator("saved");
+      refreshStepDots();
     } catch (e) {
       setSaveIndicator("error");
     }
@@ -11954,6 +11967,7 @@ function renderEmployerRoleBuilder(root, roleId) {
 
   function scheduleAutosave() {
     setSaveIndicator("unsaved");
+    refreshStepDots();
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => { setSaveIndicator("saving"); window.setTimeout(persistDraft, 150); }, 900);
   }
@@ -12272,7 +12286,7 @@ function renderEmployerRoleBuilder(root, roleId) {
     }
   }
 
-  function commitDraft(status) {
+  function commitDraft(status, { stay = false } = {}) {
     const state = readState();
     if (existing) {
       Object.assign(existing, draft, { status });
@@ -12288,6 +12302,14 @@ function renderEmployerRoleBuilder(root, roleId) {
     delete state.employerRoleDrafts[draftId];
     writeState(state);
     showToast(status === "Open" ? "Role published." : status === "Draft" ? "Draft saved." : "Role updated.");
+    if (stay) {
+      // "Save draft" now lives in the shared action row on every step, next to
+      // Back/Continue - it must save in place, not boot the user out of the
+      // wizard the way the old one-shot Step-5-only button could get away with.
+      draft.lastSavedAt = new Date().toISOString();
+      setSaveIndicator("saved");
+      return;
+    }
     employerNavigateTo("roles", {}, { force: true });
   }
 
@@ -12309,6 +12331,29 @@ function renderEmployerRoleBuilder(root, roleId) {
     if (stepIndex === 3) return !!(draft.salary.min && draft.salary.max);
     if (stepIndex === 4) return predicates.hiring_process_configured && predicates.application_method_configured && predicates.distribution_channels_selected && predicates.preview_reviewed;
     return false;
+  }
+
+  // Plain text fields (bindField) only call scheduleAutosave/persistDraft, neither
+  // of which runs a full draw() - so without this, the step dots would go stale
+  // mid-typing until some unrelated interaction happened to force a redraw. This
+  // patches just the step nav in place, so it never touches (or steals focus from)
+  // whatever field the user is currently typing into.
+  function refreshStepDots() {
+    const stepPredicates = getReadinessPredicates(draft);
+    qsa(".emp-wizard-step", root).forEach((btn, i) => {
+      const complete = isStepComplete(i, stepPredicates);
+      btn.classList.toggle("done", complete);
+      const indexEl = qs(".emp-wizard-step-index", btn);
+      if (indexEl) indexEl.innerHTML = complete ? icon("check") : String(i + 1);
+      const dot = qs(".emp-wizard-step-dot", btn);
+      if (complete && dot) dot.remove();
+      if (!complete && !dot && indexEl) {
+        const newDot = document.createElement("span");
+        newDot.className = "emp-wizard-step-dot";
+        indexEl.insertAdjacentElement("afterend", newDot);
+      }
+    });
+    createIcons();
   }
 
   function renderHiringAndPublishExtras(draft) {
@@ -12410,15 +12455,7 @@ function renderEmployerRoleBuilder(root, roleId) {
             ${renderHiringAndPublishExtras(draft)}
           </div>
           <div class="card emp-publish-checklist" style="margin-top:16px;">
-            <div class="emp-wizard-actions">
-              <button type="button" class="btn btn-ghost" data-emp-prev>Back</button>
-              <div class="emp-publish-buttons">
-                <button type="button" class="btn btn-ghost" data-emp-save-draft>Save draft</button>
-                <span class="emp-save-indicator emp-save-indicator--inline" data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>
-                <button type="button" class="btn btn-ghost" data-emp-preview-open>${icon("eye")} Preview job</button>
-                <button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} ${existing && existing.status !== "Draft" ? "Save changes" : "Publish role"}</button>
-              </div>
-            </div>
+            ${renderWizardActionRow(`<button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} ${existing && existing.status !== "Draft" ? "Save changes" : "Publish role"}</button>`)}
           </div>
         </div>
         <div class="emp-publish-right">
@@ -12523,9 +12560,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       draw();
       showToast("Applied all suggested changes.");
     });
-    qs("[data-emp-save-draft]", root)?.addEventListener("click", () => commitDraft("Draft"));
     qs("[data-emp-publish]", root)?.addEventListener("click", () => commitDraft(existing ? existing.status : "Open"));
-    qs("[data-emp-preview-open]", root)?.addEventListener("click", openRolePreviewModal);
     qsa("[data-publish-tab]", root).forEach(btn => btn.addEventListener("click", () => {
       publishActiveTab = btn.dataset.publishTab;
       if (publishActiveTab === "preview") { draft.previewReviewed = true; persistDraft(); }
@@ -12568,7 +12603,34 @@ function renderEmployerRoleBuilder(root, roleId) {
     bindField("[data-field-accommodationStatement]", "accommodationStatement");
   }
 
+  // One action row per step, used by every step (Steps 1-4 and Step 5) -
+  // Back / Save draft / autosave label / Preview job, plus a step-specific
+  // final button (Continue, or Publish role on Step 5). This is the ONLY
+  // place these actions appear; the old top header row duplicated Preview
+  // job/Save draft here and Create with Vera in the per-step AskVeraButton.
+  function renderWizardActionRow(finalButtonHtml) {
+    return `
+      <div class="emp-wizard-actions">
+        ${activeStep > 0 ? `<button type="button" class="btn btn-ghost" data-emp-prev>Back</button>` : "<span></span>"}
+        <div class="emp-publish-buttons">
+          <button type="button" class="btn btn-ghost" data-emp-save-draft>Save draft</button>
+          <span class="emp-save-indicator emp-save-indicator--inline" data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>
+          <button type="button" class="btn btn-ghost" data-emp-preview-open>${icon("eye")} Preview job</button>
+          ${finalButtonHtml}
+        </div>
+      </div>
+    `;
+  }
+
   function draw() {
+    // Every field/step change fully replaces root's innerHTML, which drops
+    // keyboard focus to <body> - same architecture as the Talent Pipeline's
+    // draw(), same fix: capture a selector for the focused element (from its
+    // own data-* attributes) before the replace, restore it after.
+    const focusedEl = document.activeElement;
+    const focusRestoreSelector = focusedEl && root.contains(focusedEl) && focusedEl.attributes
+      ? Array.from(focusedEl.attributes).filter(a => a.name.startsWith("data-")).map(a => `[${a.name}="${CSS.escape(a.value)}"]`).join("") || null
+      : null;
     root.innerHTML = `
       <div class="emp-view-header">
         <div>
@@ -12579,12 +12641,7 @@ function renderEmployerRoleBuilder(root, roleId) {
             <button type="button" class="emp-save-retry" data-emp-retry-save hidden>Retry</button>
           </p>
         </div>
-        <div class="emp-view-header-actions">
-          <button type="button" class="btn btn-ghost emp-create-vera-btn" data-emp-create-vera>${icon("sparkles")} Create with Vera</button>
-          <button type="button" class="btn btn-ghost" data-emp-preview-open>${icon("eye")} Preview job</button>
-          <button type="button" class="btn btn-ghost" data-emp-header-save-draft>Save draft</button>
-          <button type="button" class="btn btn-ghost" data-emp-nav="roles">${icon("x")} Cancel</button>
-        </div>
+        <button type="button" class="emp-inline-clear emp-wizard-cancel-link" data-emp-nav="roles">${icon("x")} Cancel</button>
       </div>
       <div class="emp-wizard-steps">
         ${(() => {
@@ -12608,15 +12665,15 @@ function renderEmployerRoleBuilder(root, roleId) {
       ${activeStep === 4 ? renderPreviewPublishStep() : `
         <div class="card emp-wizard-form">
           ${renderWizardStepContent(activeStep)}
-          <div class="emp-wizard-actions">
-            ${activeStep > 0 ? `<button type="button" class="btn btn-ghost" data-emp-prev>Back</button>` : "<span></span>"}
-            <button type="button" class="btn btn-primary" data-emp-next>Continue</button>
-          </div>
+          ${renderWizardActionRow(`<button type="button" class="btn btn-primary" data-emp-next>Continue</button>`)}
         </div>
       `}
     `;
     createIcons();
     bindEvents();
+    if (focusRestoreSelector) {
+      try { qs(focusRestoreSelector, root)?.focus(); } catch (e) { /* selector built from stale attrs, ignore */ }
+    }
   }
 
   function bindEvents() {
@@ -12635,7 +12692,7 @@ function renderEmployerRoleBuilder(root, roleId) {
     });
     qs("[data-emp-retry-save]", root)?.addEventListener("click", persistDraft);
     qs("[data-emp-preview-open]", root)?.addEventListener("click", openRolePreviewModal);
-    qs("[data-emp-header-save-draft]", root)?.addEventListener("click", () => commitDraft("Draft"));
+    qs("[data-emp-save-draft]", root)?.addEventListener("click", () => commitDraft("Draft", { stay: true }));
     qs("[data-emp-create-vera]", root)?.addEventListener("click", () => openCreateWithVeraModal(draft, () => { persistDraft(); draw(); }));
 
     if (activeStep === 0) {

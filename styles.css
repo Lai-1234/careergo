@@ -13843,7 +13843,11 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 
 .emp-publish-layout { display: grid; grid-template-columns: 1fr 1.35fr; gap: 20px; align-items: start; max-width: 1180px; margin-inline: auto; }
 .emp-publish-left { min-width: 0; }
-.emp-publish-right { min-width: 0; }
+/* Sticky under the 64px sticky app header (.emp-app-header) so the
+   Preview/Readiness/Vera panel stays visible while the left column
+   (Hiring Process, Application Setup, Job Distribution, About the
+   Company, Accessibility) scrolls past it. */
+.emp-publish-right { min-width: 0; position: sticky; top: 80px; max-height: calc(100vh - 96px); overflow-y: auto; }
 .emp-role-intelligence--wide { min-height: 380px; }
 .emp-vera-readiness { margin: 0 0 14px; font-size: 15px; color: var(--emp-muted); }
 .emp-vera-readiness strong { font-size: 20px; color: var(--emp-green, var(--text)); }
