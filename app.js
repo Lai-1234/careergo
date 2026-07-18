@@ -11663,6 +11663,7 @@ function renderEmployerRoleBuilder(root, roleId) {
   let activeStep = 0;
   let publishActiveTab = "preview";
   const visitedSteps = new Set([0]);
+  const advancedOpen = { roleBasics: false, compensation: false };
   let saveTimer = null;
   const dismissedSuggestions = new Set();
   const appliedSuggestions = new Set();
@@ -11923,7 +11924,7 @@ function renderEmployerRoleBuilder(root, roleId) {
             <label>Target start date <span class="emp-optional-tag">Optional</span><input type="date" data-field-targetStartDate value="${draft.targetStartDate}"></label>
             <label>Hiring urgency<select data-field-urgency>${["Standard", "Urgent", "Critical"].map(o => `<option ${draft.urgency === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
           </div>
-          <details class="emp-advanced-disclosure">
+          <details class="emp-advanced-disclosure" data-advanced="roleBasics" ${advancedOpen.roleBasics ? "open" : ""}>
             <summary>Advanced</summary>
             <div class="emp-form-grid-2">
               <label>Internal job ID <span class="emp-optional-tag">Optional</span><input type="text" data-field-internalJobId value="${escapeHtml(draft.internalJobId)}" placeholder="e.g. ENG-2026-014"></label>
@@ -11989,7 +11990,7 @@ function renderEmployerRoleBuilder(root, roleId) {
             <label>Salary visibility<select data-field-salary-visibility>${["Visible to candidates", "Hidden until applied", "Hidden entirely"].map(o => `<option ${draft.salary.visibility === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-salary-negotiable ${draft.salary.negotiable ? "checked" : ""}> Negotiable</label>
           </div>
-          <details class="emp-advanced-disclosure">
+          <details class="emp-advanced-disclosure" data-advanced="compensation" ${advancedOpen.compensation ? "open" : ""}>
             <summary>Advanced — additional compensation</summary>
             ${renderAdditionalCompensationEditor(draft)}
           </details>
@@ -12352,6 +12353,9 @@ function renderEmployerRoleBuilder(root, roleId) {
   }
 
   function bindEvents() {
+    qsa("[data-advanced]", root).forEach(details => details.addEventListener("toggle", () => {
+      advancedOpen[details.dataset.advanced] = details.open;
+    }));
     qsa("[data-emp-step]", root).forEach(btn => btn.addEventListener("click", () => {
       activeStep = Number(btn.dataset.empStep);
       visitedSteps.add(activeStep);

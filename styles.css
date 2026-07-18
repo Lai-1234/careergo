@@ -13566,8 +13566,8 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   color: var(--emp-muted); cursor: grab;
 }
 .emp-drag-handle:active { cursor: grabbing; }
-.emp-stage-editor-fields { flex: 1; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 8px; }
-.emp-stage-editor-fields input { padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-size: 13px; font-family: inherit; }
+.emp-stage-editor-fields { flex: 1; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.emp-stage-editor-fields input { min-width: 0; padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-size: 13px; font-family: inherit; }
 .emp-distribution-list { display: grid; gap: 8px; margin: 10px 0 16px; }
 .emp-distribution-row {
   display: flex; align-items: center; gap: 12px; padding: 10px 12px;
