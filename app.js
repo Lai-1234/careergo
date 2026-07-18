@@ -4909,46 +4909,70 @@ function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
 }
 
+function escapeRegExp(value) {
+  return String(value ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function highlightMatch(text, query) {
+  const safeText = escapeHtml(text);
+  const pattern = escapeRegExp(escapeHtml(query.trim()));
+  if (!pattern) return safeText;
+  return safeText.replace(new RegExp(pattern, "gi"), match => `<span class="cg-search-hit">${match}</span>`);
+}
+
 function matchesQuery(parts, query) {
   return parts.filter(Boolean).join(" ").toLowerCase().includes(query);
 }
 
 function searchPublicCatalog(query, limit = 5) {
   const q = query.trim().toLowerCase();
-  if (!q) return { companies: [], jobs: [], universities: [] };
+  if (!q) return { companies: [], jobs: [], universities: [], totals: { companies: 0, jobs: 0, universities: 0 } };
   const { companies, universities } = buildOrgCatalog();
   const orgMatch = org => matchesQuery([org.name, org.industry, org.location, org.summary, org.signal, ...(org.tags || [])], q);
   const jobMatch = job => matchesQuery([job.title, job.company, job.location, job.industry, job.type, job.level, ...(job.skills || [])], q);
+  const matchedCompanies = companies.filter(orgMatch);
+  const matchedJobs = DATA.jobs.filter(jobMatch);
+  const matchedUniversities = universities.filter(orgMatch);
   return {
-    companies: companies.filter(orgMatch).slice(0, limit),
-    jobs: DATA.jobs.filter(jobMatch).slice(0, limit),
-    universities: universities.filter(orgMatch).slice(0, limit)
+    companies: matchedCompanies.slice(0, limit),
+    jobs: matchedJobs.slice(0, limit),
+    universities: matchedUniversities.slice(0, limit),
+    totals: { companies: matchedCompanies.length, jobs: matchedJobs.length, universities: matchedUniversities.length }
   };
 }
 
 function searchWorkspaceCatalog(query, state) {
   const base = searchPublicCatalog(query);
   const q = query.trim().toLowerCase();
-  if (!q) return { ...base, pipeline: [], growth: [], value: [], sections: [] };
+  if (!q) return { ...base, pipeline: [], growth: [], value: [], sections: [], totals: { ...base.totals, pipeline: 0, growth: 0, value: 0, sections: 0 } };
 
-  const pipeline = getTrackedJobs(state)
+  const matchedPipeline = getTrackedJobs(state)
     .filter(item => ["saved", "applied", "interview", "offer"].includes(item.record.stage))
-    .filter(item => matchesQuery([item.job.title, item.job.company, stageMeta(item.record.stage).label], q))
-    .slice(0, 5);
+    .filter(item => matchesQuery([item.job.title, item.job.company, stageMeta(item.record.stage).label], q));
 
-  const growth = personalizedMissions(state.profile || {})
-    .filter(mission => matchesQuery([mission.title, mission.body], q))
-    .slice(0, 5);
+  const matchedGrowth = personalizedMissions(state.profile || {})
+    .filter(mission => matchesQuery([mission.title, mission.body], q));
 
-  const value = CAREER_VALUE_SEARCH_INDEX
-    .filter(item => matchesQuery([item.title, item.body, ...(item.keywords || [])], q))
-    .slice(0, 5);
+  const matchedValue = CAREER_VALUE_SEARCH_INDEX
+    .filter(item => matchesQuery([item.title, item.body, ...(item.keywords || [])], q));
 
-  const sections = WORKSPACE_SEARCH_SECTIONS
-    .filter(section => matchesQuery([section.label, ...(section.keywords || [])], q))
-    .slice(0, 5);
+  const matchedSections = WORKSPACE_SEARCH_SECTIONS
+    .filter(section => matchesQuery([section.label, ...(section.keywords || [])], q));
 
-  return { ...base, pipeline, growth, value, sections };
+  return {
+    ...base,
+    pipeline: matchedPipeline.slice(0, 5),
+    growth: matchedGrowth.slice(0, 5),
+    value: matchedValue.slice(0, 5),
+    sections: matchedSections.slice(0, 5),
+    totals: {
+      ...base.totals,
+      pipeline: matchedPipeline.length,
+      growth: matchedGrowth.length,
+      value: matchedValue.length,
+      sections: matchedSections.length
+    }
+  };
 }
 
 function renderSearchPanelContent(query, scope, state) {
@@ -5007,17 +5031,23 @@ function renderSearchPanelContent(query, scope, state) {
     return `<div class="cg-search-empty">${icon("search")} No matches for "${escapeHtml(q)}"</div>`;
   }
 
+  const totalAvailable = Object.values(results.totals || {}).reduce((sum, n) => sum + n, 0);
+  const totalShown = groups.reduce((sum, group) => sum + group.items.length, 0);
+  const footer = totalAvailable > totalShown
+    ? `<div class="cg-search-footer">Showing top ${totalShown} of ${totalAvailable} match${totalAvailable === 1 ? "" : "es"}</div>`
+    : "";
+
   return groups.map(group => `
     <div class="cg-search-group">
       <span class="cg-search-group-title">${escapeHtml(group.title)}</span>
       ${group.items.map(item => `
         <a class="cg-search-result" href="${item.href}">
           <span class="cg-search-result-icon">${icon(item.icon)}</span>
-          <span class="cg-search-result-body"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.meta)}</small></span>
+          <span class="cg-search-result-body"><strong>${highlightMatch(item.title, q)}</strong><small>${escapeHtml(item.meta)}</small></span>
         </a>
       `).join("")}
     </div>
-  `).join("");
+  `).join("") + footer;
 }
 
 function attachLiveSearch(form, buildResultsHtml) {
@@ -5049,11 +5079,27 @@ function attachLiveSearch(form, buildResultsHtml) {
   input.addEventListener("focus", () => {
     if (input.value.trim()) renderNow();
   });
-  input.addEventListener("keydown", event => {
+  shell.addEventListener("keydown", event => {
     if (event.key === "Escape") {
       panel.hidden = true;
-      input.blur();
+      input.focus();
+      return;
     }
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    if (panel.hidden) return;
+    event.preventDefault();
+    const items = qsa(".cg-search-result", panel);
+    if (!items.length) return;
+    const currentIndex = items.indexOf(document.activeElement);
+    let nextIndex;
+    if (currentIndex === -1) {
+      nextIndex = event.key === "ArrowDown" ? 0 : items.length - 1;
+    } else if (event.key === "ArrowDown") {
+      nextIndex = (currentIndex + 1) % items.length;
+    } else {
+      nextIndex = (currentIndex - 1 + items.length) % items.length;
+    }
+    items[nextIndex].focus();
   });
   form.addEventListener("submit", event => {
     event.preventDefault();
