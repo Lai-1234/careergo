@@ -12764,7 +12764,9 @@ function renderEmployerTalentPipeline(root, params = {}) {
     const role = DATA.employerRoles.find(r => r.id === c.roleId);
     const missing = role ? (role.mustHaveSkills || []).filter(s => !c.skills.includes(s)) : [];
     const primary = primaryActionFor(c);
-    const tabs = [["overview", "Overview"], ["why", "Why This Candidate"], ["application", "Application"], ["timeline", "Timeline"], ["notes", "Notes"], ["activity", "Activity"]];
+    const breakdown = computeMatchBreakdown(c);
+    const matchTone = c.fit >= 85 ? "green" : c.fit >= 70 ? "gold" : "";
+    const tabs = [["overview", "Profile"], ["why", "AI Summary"], ["application", "Documents"], ["timeline", "Timeline"], ["notes", "Notes"], ["activity", "Activity"]];
 
     return `
       <div class="emp-drawer-backdrop" data-drawer-close></div>
@@ -12775,6 +12777,14 @@ function renderEmployerTalentPipeline(root, params = {}) {
             <p class="emp-cand-meta">${c.role} · ${c.location}</p>
           </div>
           <button type="button" class="btn btn-ghost btn-sm" data-drawer-close>${icon("x")}</button>
+        </div>
+        <div class="emp-drawer-score">
+          <div class="emp-drawer-score-head"><span>Hiring Score</span><span class="pill ${matchTone}">${c.fit}% Match</span></div>
+          <div class="emp-drawer-score-rows">
+            ${[["skills", "Skills"], ["experience", "Experience"], ["education", "Education"], ["culture", "Culture"], ["salary", "Salary"]].map(([key, label]) => `
+              <div class="emp-match-row"><span>${label}</span><i><em style="width:${breakdown[key]}%"></em></i><strong>${breakdown[key]}</strong></div>
+            `).join("")}
+          </div>
         </div>
         <div class="emp-drawer-primary"><button type="button" class="btn btn-primary" data-candidate-primary="${c.id}">${primary.label}</button></div>
         <div class="emp-subtabs emp-drawer-tabs">
@@ -12791,6 +12801,8 @@ function renderEmployerTalentPipeline(root, params = {}) {
             <div class="emp-tags"><span class="emp-tags-label">Skills</span><div class="pill-row">${c.skills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
           ` : ""}
           ${drawerTab === "why" ? `
+            <div class="emp-callout-label emp-vera-accent">${icon("sparkles")} AI summary</div>
+            <p>${escapeHtml(summarizeCandidateResume(c))}</p>
             <p class="emp-cand-evidence">${icon("check")} ${c.strength}</p>
             ${c.concern ? `<p class="emp-cand-concern">${icon("alert-triangle")} ${c.concern}</p>` : ""}
             ${missing.length ? `<div class="emp-tags"><span class="emp-tags-label">Missing must-have skills for this role</span><div class="pill-row">${missing.map(s => `<span class="pill red">${s}</span>`).join("")}</div></div>` : `<p class="emp-empty-hint">No missing must-have skills for this role.</p>`}

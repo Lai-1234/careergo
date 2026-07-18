@@ -13147,6 +13147,13 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 }
 .emp-drawer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
 .emp-drawer-head h2 { margin: 0; font-size: var(--emp-title-lg); }
+.emp-drawer-score { padding: 12px 14px; margin-bottom: 14px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; background: rgba(7, 56, 47, 0.03); }
+.emp-drawer-score-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: var(--emp-muted, var(--muted)); text-transform: uppercase; letter-spacing: 0.03em; }
+.emp-drawer-score-rows { display: grid; gap: 5px; }
+.emp-drawer-score-rows .emp-match-row { display: grid; grid-template-columns: 64px 1fr 26px; align-items: center; gap: 8px; font-size: 11px; }
+.emp-drawer-score-rows .emp-match-row i { display: block; height: 4px; border-radius: 999px; background: rgba(7, 56, 47, 0.1); overflow: hidden; font-style: normal; }
+.emp-drawer-score-rows .emp-match-row em { display: block; height: 100%; background: var(--emp-green, #07382f); border-radius: 999px; font-style: normal; }
+.emp-drawer-score-rows .emp-match-row strong { text-align: right; color: var(--emp-ink, var(--text)); }
 .emp-drawer-primary { margin-bottom: 16px; }
 .emp-drawer-primary .btn { width: 100%; }
 .emp-drawer-tabs { flex-wrap: wrap; }
