@@ -11031,6 +11031,22 @@ function openDraftRequirementsReview(draft) {
   `, { label: "Vera's requirement review" });
 }
 
+function renderAdditionalCompensationEditor(draft) {
+  return `
+    <div data-addcomp-list>
+      ${draft.additionalCompensation.map((c, i) => `
+        <div class="emp-resp-row">
+          <input type="text" data-addcomp-field="type" data-addcomp-index="${i}" value="${escapeHtml(c.type)}" placeholder="e.g. Signing bonus" list="emp-addcomp-type-options">
+          <input type="text" data-addcomp-field="value" data-addcomp-index="${i}" value="${escapeHtml(c.value)}" placeholder="e.g. RM 5,000 one-time">
+          <button type="button" class="btn btn-ghost btn-sm" data-addcomp-remove="${i}" aria-label="Remove">${icon("x")}</button>
+        </div>
+      `).join("")}
+    </div>
+    <datalist id="emp-addcomp-type-options">${["Bonus", "Commission", "Allowances", "Overtime policy", "Equity"].map(t => `<option value="${escapeHtml(t)}">`).join("")}</datalist>
+    <button type="button" class="btn btn-ghost btn-sm" data-addcomp-add>${icon("plus")} Add compensation item</button>
+  `;
+}
+
 function renderScreeningQuestionsList(draft) {
   return `
     <div data-screening-list>
@@ -11828,6 +11844,24 @@ function renderEmployerRoleBuilder(root, roleId) {
     });
   }
 
+  function bindAdditionalCompensationEditor() {
+    qsa("[data-addcomp-field]", root).forEach(input => {
+      input.addEventListener("input", () => {
+        draft.additionalCompensation[Number(input.dataset.addcompIndex)][input.dataset.addcompField] = input.value;
+        scheduleAutosave();
+      });
+      input.addEventListener("blur", flushAndPersist);
+    });
+    qsa("[data-addcomp-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      draft.additionalCompensation.splice(Number(btn.dataset.addcompRemove), 1);
+      persistDraft(); draw();
+    }));
+    qs("[data-addcomp-add]", root)?.addEventListener("click", () => {
+      draft.additionalCompensation.push({ type: "", value: "" });
+      persistDraft(); draw();
+    });
+  }
+
   function bindScreeningQuestionsList() {
     qsa("[data-screening-index]", root).forEach(input => {
       input.addEventListener("input", () => { draft.screeningQuestions[Number(input.dataset.screeningIndex)] = input.value; scheduleAutosave(); });
@@ -11913,7 +11947,7 @@ function renderEmployerRoleBuilder(root, roleId) {
         `;
       case 3:
         return `
-          <div class="emp-form-section-head"><h2>${icon("wallet")} Offer & Hiring Setup</h2><p>Set compensation, benefits, work arrangement, hiring process, and how candidates apply.</p></div>
+          <div class="emp-form-section-head"><h2>${icon("wallet")} Offer</h2><p>Set compensation, benefits, and schedule detail.</p></div>
 
           <h3 class="emp-form-subhead">Compensation</h3>
           <div class="emp-salary-row">
@@ -11925,56 +11959,23 @@ function renderEmployerRoleBuilder(root, roleId) {
             <label>Currency<select data-field-salary-currency>${["MYR", "USD", "SGD"].map(o => `<option ${draft.salary.currency === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label>Salary visibility<select data-field-salary-visibility>${["Visible to candidates", "Hidden until applied", "Hidden entirely"].map(o => `<option ${draft.salary.visibility === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-salary-negotiable ${draft.salary.negotiable ? "checked" : ""}> Negotiable</label>
-            <label>Bonus <span class="emp-optional-tag">Optional</span><input type="text" data-field-bonus value="${escapeHtml(draft.bonus)}"></label>
-            <label>Commission <span class="emp-optional-tag">Optional</span><input type="text" data-field-commission value="${escapeHtml(draft.commission)}"></label>
-            <label>Allowances <span class="emp-optional-tag">Optional</span><input type="text" data-field-allowances value="${escapeHtml(draft.allowances)}"></label>
-            <label>Overtime policy <span class="emp-optional-tag">Optional</span><input type="text" data-field-overtimePolicy value="${escapeHtml(draft.overtimePolicy)}"></label>
-            <label>Equity <span class="emp-optional-tag">Optional</span><input type="text" data-field-equity value="${escapeHtml(draft.equity)}"></label>
           </div>
+          <details class="emp-advanced-disclosure">
+            <summary>Advanced — additional compensation</summary>
+            ${renderAdditionalCompensationEditor(draft)}
+          </details>
 
           <h3 class="emp-form-subhead">Benefits</h3>
           <div class="emp-checkbox-grid">${BENEFIT_OPTIONS.map(b => `<label class="check-field custom-checkbox"><input type="checkbox" data-benefit="${escapeHtml(b)}" ${draft.benefits.includes(b) ? "checked" : ""}> ${b}</label>`).join("")}</div>
 
-          <h3 class="emp-form-subhead">Work arrangement</h3>
+          <h3 class="emp-form-subhead">Schedule</h3>
           <div class="emp-form-grid-2">
-            <label>Location<input type="text" data-field-location value="${escapeHtml(draft.location)}" placeholder="e.g. Kuala Lumpur"></label>
-            <label>Work mode<select data-field-workMode>${["On-site", "Hybrid", "Remote"].map(o => `<option ${draft.workMode === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label>Exact office location <span class="emp-optional-tag">Optional</span><input type="text" data-field-officeLocation value="${escapeHtml(draft.officeLocation)}"></label>
             <label>Hybrid attendance <span class="emp-optional-tag">Optional</span><input type="text" data-field-hybridDays value="${escapeHtml(draft.hybridDays)}" placeholder="e.g. 3 days in office"></label>
             <label>Working days <span class="emp-optional-tag">Optional</span><input type="text" data-field-workingDays value="${escapeHtml(draft.workingDays)}" placeholder="e.g. Mon-Fri"></label>
             <label>Shift pattern <span class="emp-optional-tag">Optional</span><input type="text" data-field-shiftPattern value="${escapeHtml(draft.shiftPattern)}"></label>
+            <label>Working hours <span class="emp-optional-tag">Optional</span><input type="text" data-field-workingHours value="${escapeHtml(draft.workingHours)}" placeholder="e.g. 9am-6pm, flexible"></label>
           </div>
-          <label>Match threshold<select data-field-matchThreshold>
-            ${[[60, "Broad pool — 60%"], [70, "Balanced — 70%"], [80, "Focused — 80%"], [90, "Very selective — 90%"]].map(([v, l]) => `<option value="${v}" ${draft.matchThreshold === v ? "selected" : ""}>${l}</option>`).join("")}
-          </select></label>
-          <p class="emp-field-help">Candidates above this match level will appear as Strong Matches. Higher threshold: fewer candidates, closer skill alignment. Lower threshold: larger candidate pool, more employer review required.</p>
-
-          <h3 class="emp-form-subhead">Hiring process</h3>
-          ${renderHiringStagesEditor(draft)}
-
-          <h3 class="emp-form-subhead">Application setup</h3>
-          <div class="emp-form-grid-2">
-            <label>Application deadline <span class="emp-optional-tag">Optional</span><input type="date" data-field-applicationDeadline value="${draft.applicationDeadline}"></label>
-            <label>Contact person <span class="emp-optional-tag">Optional</span><input type="text" data-field-contactPerson value="${escapeHtml(draft.contactPerson)}"></label>
-            <label>Required documents <span class="emp-optional-tag">Optional</span><input type="text" data-field-requiredDocuments value="${escapeHtml(draft.requiredDocuments)}" placeholder="e.g. Resume, portfolio link"></label>
-            <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-resumeRequired ${draft.resumeRequired ? "checked" : ""}> Resume required</label>
-            <label>Cover letter<select data-field-coverLetterRequired>${["Optional", "Required", "Not requested"].map(o => `<option ${draft.coverLetterRequired === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
-            <label>Portfolio link <span class="emp-optional-tag">Optional</span><input type="url" data-field-applicationPortfolioLink value="${escapeHtml(draft.applicationPortfolioLink)}"></label>
-          </div>
-          <div>
-            <span class="emp-tags-label">Screening questions shown at application</span>
-            ${renderScreeningQuestionsList(draft)}
-          </div>
-          <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-candidateConsent ${draft.candidateConsent ? "checked" : ""}> Require a candidate consent checkbox before applying</label>
-
-          <h3 class="emp-form-subhead">Job distribution</h3>
-          ${renderDistributionSection(draft)}
-
-          <h3 class="emp-form-subhead">About the company</h3>
-          ${renderCompanySection(draft)}
-
-          <h3 class="emp-form-subhead">Accessibility & accommodations</h3>
-          <label>Accommodation statement<textarea data-field-accommodationStatement rows="2">${escapeHtml(draft.accommodationStatement)}</textarea></label>
         `;
       default:
         return "";
@@ -12269,60 +12270,18 @@ function renderEmployerRoleBuilder(root, roleId) {
       bindSalarySelect("currency");
       bindSalarySelect("visibility");
       bindSalaryCheckbox("negotiable");
-      bindField("[data-field-bonus]", "bonus");
-      bindField("[data-field-commission]", "commission");
-      bindField("[data-field-allowances]", "allowances");
-      bindField("[data-field-overtimePolicy]", "overtimePolicy");
-      bindField("[data-field-equity]", "equity");
+      bindAdditionalCompensationEditor();
       qsa("[data-benefit]", root).forEach(cb => cb.addEventListener("change", () => {
         const b = cb.dataset.benefit;
         if (cb.checked) { if (!draft.benefits.includes(b)) draft.benefits.push(b); }
         else draft.benefits = draft.benefits.filter(x => x !== b);
         persistDraft();
       }));
-      bindField("[data-field-location]", "location");
-      bindSelect("[data-field-workMode]", "workMode");
       bindField("[data-field-officeLocation]", "officeLocation");
       bindField("[data-field-hybridDays]", "hybridDays");
       bindField("[data-field-workingDays]", "workingDays");
       bindField("[data-field-shiftPattern]", "shiftPattern");
-      bindSelect("[data-field-matchThreshold]", "matchThreshold", true);
-      bindHiringStagesEditor();
-      bindField("[data-field-applicationDeadline]", "applicationDeadline");
-      bindField("[data-field-contactPerson]", "contactPerson");
-      bindField("[data-field-requiredDocuments]", "requiredDocuments");
-      bindCheckbox("[data-field-resumeRequired]", "resumeRequired");
-      bindSelect("[data-field-coverLetterRequired]", "coverLetterRequired");
-      bindField("[data-field-applicationPortfolioLink]", "applicationPortfolioLink");
-      bindScreeningQuestionsList();
-      bindCheckbox("[data-field-candidateConsent]", "candidateConsent");
-      qsa("[data-distribution-channel]", root).forEach(cb => cb.addEventListener("change", () => {
-        const ch = cb.dataset.distributionChannel;
-        if (cb.checked) { if (!draft.distributionChannels.includes(ch)) draft.distributionChannels.push(ch); }
-        else draft.distributionChannels = draft.distributionChannels.filter(x => x !== ch);
-        persistDraft();
-      }));
-      qsa("[data-copy-posting]", root).forEach(btn => btn.addEventListener("click", () => {
-        const text = buildPlainTextJobPosting(draft);
-        if (navigator.clipboard?.writeText) {
-          navigator.clipboard.writeText(text).then(() => showToast(`Copied job description for ${btn.dataset.copyPosting}.`)).catch(() => showToast("Could not copy — select and copy manually.", "info"));
-        } else showToast("Clipboard is not available in this browser.", "info");
-      }));
-      bindField("[data-field-externalPostingUrl]", "externalPostingUrl");
-      bindField("[data-field-trackingSource]", "trackingSource");
-      bindField("[data-field-campaignName]", "campaignName");
-      bindField("[data-field-distributionExpiry]", "distributionExpiry");
-      qs("[data-use-company-profile]", root)?.addEventListener("click", () => {
-        const company = DATA.companies.find(c => c.id === "maybank");
-        if (!company) { showToast("No company profile found yet.", "info"); return; }
-        draft.companySummary = company.summary || "";
-        draft.useCompanyProfile = true;
-        persistDraft();
-        draw();
-        showToast("Pulled details from your Company Profile.");
-      });
-      bindField("[data-field-companySummary]", "companySummary");
-      bindField("[data-field-accommodationStatement]", "accommodationStatement");
+      bindField("[data-field-workingHours]", "workingHours");
     } else if (activeStep === 4) {
       bindPreviewPublishEvents();
     }
