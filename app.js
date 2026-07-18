@@ -11825,19 +11825,26 @@ function renderEmployerRoleBuilder(root, roleId) {
           <div class="emp-form-section-head"><h2>${icon("briefcase")} Role Basics</h2><p>Start with the essentials candidates and your team need to understand this role.</p></div>
           <div class="emp-form-grid-2">
             <label>Role title<input type="text" data-field-title value="${escapeHtml(draft.title)}" placeholder="e.g. Backend Engineer"></label>
-            <label>Internal job ID <span class="emp-optional-tag">Optional</span><input type="text" data-field-internalJobId value="${escapeHtml(draft.internalJobId)}" placeholder="e.g. ENG-2026-014"></label>
             <label>Department<input type="text" data-field-department value="${escapeHtml(draft.department)}" placeholder="e.g. Engineering"></label>
             <label>Job category <span class="emp-optional-tag">Optional</span><input type="text" data-field-jobCategory value="${escapeHtml(draft.jobCategory)}" placeholder="e.g. Software Engineering"></label>
             <label>Seniority<select data-field-seniority>${SENIORITY_LEVELS.map(o => `<option ${draft.seniority === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label>Employment type<select data-field-employmentType>${EMPLOYMENT_TYPES.map(o => `<option ${draft.employmentType === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label>Number of openings<input type="number" min="1" data-field-openings value="${draft.openings}"></label>
-            <label>Hiring urgency<select data-field-urgency>${["Standard", "Urgent", "Critical"].map(o => `<option ${draft.urgency === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
-            <label>Reports to <span class="emp-optional-tag">Optional</span><input type="text" data-field-reportsTo value="${escapeHtml(draft.reportsTo)}" placeholder="e.g. Engineering Manager"></label>
-            <label>Hiring owner <span class="emp-optional-tag">Optional</span><input type="text" data-field-hiringOwner value="${escapeHtml(draft.hiringOwner)}" placeholder="Who owns this hire internally"></label>
+            <label>Location<input type="text" data-field-location value="${escapeHtml(draft.location)}" placeholder="e.g. Kuala Lumpur"></label>
+            <label>Work mode<select data-field-workMode>${["On-site", "Hybrid", "Remote"].map(o => `<option ${draft.workMode === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label>Target start date <span class="emp-optional-tag">Optional</span><input type="date" data-field-targetStartDate value="${draft.targetStartDate}"></label>
-            <label>Visa sponsorship<select data-field-visaSponsorship>${["Not available", "Available", "Case by case"].map(o => `<option ${draft.visaSponsorship === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
-            ${["Contract", "Temporary", "Internship", "Freelance"].includes(draft.employmentType) ? `<label>Contract duration<input type="text" data-field-contractDuration value="${escapeHtml(draft.contractDuration)}" placeholder="e.g. 6 months"></label>` : ""}
+            <label>Hiring urgency<select data-field-urgency>${["Standard", "Urgent", "Critical"].map(o => `<option ${draft.urgency === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
           </div>
+          <details class="emp-advanced-disclosure">
+            <summary>Advanced</summary>
+            <div class="emp-form-grid-2">
+              <label>Internal job ID <span class="emp-optional-tag">Optional</span><input type="text" data-field-internalJobId value="${escapeHtml(draft.internalJobId)}" placeholder="e.g. ENG-2026-014"></label>
+              <label>Reports to <span class="emp-optional-tag">Optional</span><input type="text" data-field-reportsTo value="${escapeHtml(draft.reportsTo)}" placeholder="e.g. Engineering Manager"></label>
+              <label>Hiring owner <span class="emp-optional-tag">Optional</span><input type="text" data-field-hiringOwner value="${escapeHtml(draft.hiringOwner)}" placeholder="Who owns this hire internally"></label>
+              <label>Visa sponsorship<select data-field-visaSponsorship>${["Not available", "Available", "Case by case"].map(o => `<option ${draft.visaSponsorship === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+              ${["Contract", "Temporary", "Internship", "Freelance"].includes(draft.employmentType) ? `<label>Contract duration<input type="text" data-field-contractDuration value="${escapeHtml(draft.contractDuration)}" placeholder="e.g. 6 months"></label>` : ""}
+            </div>
+          </details>
         `;
       case 1:
         return `
@@ -12200,6 +12207,8 @@ function renderEmployerRoleBuilder(root, roleId) {
       qs("[data-field-employmentType]", root)?.addEventListener("change", e => { draft.employmentType = e.target.value; persistDraft(); draw(); });
       qs("[data-field-openings]", root)?.addEventListener("input", e => { draft.openings = Number(e.target.value) || 1; scheduleAutosave(); });
       qs("[data-field-openings]", root)?.addEventListener("blur", flushAndPersist);
+      bindField("[data-field-location]", "location");
+      qs("[data-field-workMode]", root)?.addEventListener("change", e => { draft.workMode = e.target.value; persistDraft(); draw(); });
       bindSelect("[data-field-urgency]", "urgency");
       bindField("[data-field-reportsTo]", "reportsTo");
       bindField("[data-field-hiringOwner]", "hiringOwner");
