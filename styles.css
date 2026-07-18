@@ -12425,6 +12425,7 @@ body[data-page="home"] .home-metrics span {
   --emp-green-2: #052f29;
   --emp-green-nav: #1f332c;
   --emp-teal: #6aa59d;
+  --emp-ai: #6f5fc4;
   --emp-cream-text: #fffaf2;
   --emp-serif: "Fraunces", Georgia, "Times New Roman", serif;
   --emp-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -12982,6 +12983,64 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-pipeline-filters { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 12px; align-items: end; padding: 14px 16px; margin-bottom: 12px; }
 .emp-pipeline-filters label { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--muted); }
 .emp-pipeline-filters select { padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
+
+/* ---------- Talent Pipeline redesign — Phase 1 (compact shell) ---------- */
+.emp-pipeline-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  min-height: 90px; margin-bottom: 16px;
+}
+.emp-pipeline-header h1 { margin: 0 0 2px; font-size: var(--emp-title-lg, 26px); }
+.emp-pipeline-header p { margin: 0; font-size: var(--emp-body-sm, 13px); color: var(--emp-muted, var(--muted)); }
+.emp-pipeline-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.emp-pipeline-header-actions select,
+.emp-pipeline-header-actions input[type="text"] {
+  padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; font-size: 13px; font-family: inherit;
+}
+.emp-pipeline-header-actions input[type="text"] { width: 180px; }
+.emp-vera-accent-btn { border-color: var(--emp-ai, var(--line)) !important; color: var(--emp-ai, inherit) !important; }
+
+.emp-status-bar {
+  display: flex; align-items: stretch; gap: 1px; margin-bottom: 16px;
+  border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; overflow: hidden; max-height: 60px;
+}
+.emp-status-item {
+  flex: 1; display: flex; align-items: center; gap: 8px; padding: 10px 16px; border: 0;
+  background: #fff; cursor: pointer; text-align: left; font: inherit;
+}
+.emp-status-item svg { width: 16px; height: 16px; color: var(--emp-muted, var(--muted)); flex-shrink: 0; }
+.emp-status-item strong { font-size: 18px; color: var(--emp-ink, var(--text)); }
+.emp-status-item span { font-size: 11px; color: var(--emp-muted, var(--muted)); display: block; }
+.emp-status-item.active { background: rgba(7, 56, 47, 0.06); }
+.emp-status-item.active strong { color: var(--emp-green, var(--text)); }
+.emp-status-item-clear {
+  display: flex; align-items: center; gap: 4px; padding: 0 16px; border: 0; background: rgba(185, 28, 28, 0.06);
+  color: #b91c1c; font-size: 12px; font-weight: 700; cursor: pointer;
+}
+
+.emp-action-center { padding: 16px 18px; margin-bottom: 16px; }
+.emp-action-center-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.emp-action-center-head h3 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; font-weight: 700; }
+.emp-action-center-head h3 svg { width: 16px; height: 16px; color: var(--emp-green, var(--text)); }
+.emp-action-center-head button {
+  display: flex; align-items: center; gap: 4px; border: 0; background: none; color: var(--emp-green, var(--text));
+  font-size: 12px; font-weight: 700; cursor: pointer;
+}
+.emp-action-center-head button svg { width: 12px; height: 12px; }
+.emp-action-center-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 2px; }
+.emp-action-center-list button {
+  display: block; width: 100%; text-align: left; border: 0; background: none; padding: 8px 6px; border-radius: 8px;
+  font-size: 13px; color: var(--emp-ink, var(--text)); cursor: pointer;
+}
+.emp-action-center-list button:hover { background: rgba(7, 56, 47, 0.05); }
+
+.emp-vera-priority-panel { padding: 18px 20px; margin-bottom: 20px; border: 1px solid rgba(111, 95, 196, 0.18); }
+.emp-vera-accent { color: var(--emp-ai, var(--soft)) !important; }
+.emp-vera-accent svg { color: var(--emp-ai, var(--soft)); }
+.emp-vera-priority-greeting { margin: 4px 0 12px; font-size: 14px; color: var(--emp-ink, var(--text)); }
+.emp-vera-priority-card { padding: 14px 16px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; background: rgba(111, 95, 196, 0.04); }
+.emp-vera-priority-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.emp-vera-priority-card-head strong { font-size: 15px; }
+.emp-vera-priority-next { margin: 6px 0 12px; font-size: 13px; color: var(--emp-muted, var(--muted)); }
 .emp-attention-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .emp-attention-chip {
   display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(180, 83, 9, 0.25);
