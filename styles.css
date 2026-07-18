@@ -12854,7 +12854,32 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 }
 .emp-actions-menu button:hover { background: rgba(37, 99, 235, 0.06); }
 .emp-actions-menu[hidden], .emp-momentum-pop[hidden] { display: none; }
-.emp-actions-menu-left { left: auto; right: 0; }
+
+/* Shared floating overlay - positioned via JS (openFloatingOverlay /
+   positionFloatingOverlay), fixed to the viewport, appended to
+   document.body outside any card/column DOM. z-index sits above every
+   other layer in this file (drawer 71, modal 90) so it is never trapped
+   behind an ancestor's stacking context. */
+.emp-floating-overlay {
+  position: fixed; z-index: 1000; padding: 6px; border-radius: 12px;
+  border: 1px solid var(--emp-line, var(--line)); background: #fff;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.18);
+  max-height: min(420px, calc(100vh - 16px)); overflow-y: auto;
+  animation: empFloatingOverlayIn 120ms ease;
+}
+@keyframes empFloatingOverlayIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.emp-cand-menu-overlay { display: grid; }
+.emp-cand-menu-overlay button[role="menuitem"] {
+  display: block; width: 100%; text-align: left; padding: 8px 10px; border: none; background: none;
+  border-radius: 8px; font-size: 13px; color: var(--emp-ink, var(--text)); cursor: pointer; font-family: inherit;
+}
+.emp-cand-menu-overlay button[role="menuitem"]:hover,
+.emp-cand-menu-overlay button[role="menuitem"]:focus-visible { background: rgba(7, 56, 47, 0.06); outline: none; }
+.emp-menu-divider { height: 1px; margin: 4px 6px; background: var(--emp-line, var(--line)); }
+.emp-vera-why-overlay { padding: 14px; }
 .emp-menu-back {
   display: flex !important; align-items: center; gap: 6px; margin-bottom: 4px; padding-bottom: 8px !important;
   border-bottom: 1px solid var(--emp-line, var(--line)); color: var(--emp-muted, var(--muted)) !important; font-weight: 600 !important;
@@ -13005,10 +13030,6 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-pipeline-role-select { display: grid; gap: 4px; font-size: var(--emp-body-sm); font-weight: 600; color: var(--muted); }
 .emp-pipeline-role-select select { padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; font-size: var(--emp-body); min-width: 220px; }
 .emp-pipeline-controls input[type="text"] { flex: 1; min-width: 200px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; font-size: var(--emp-body); }
-.emp-pipeline-filters { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 12px; align-items: end; padding: 14px 16px; margin-bottom: 12px; }
-.emp-pipeline-filters label { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--muted); }
-.emp-pipeline-filters select { padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
-
 /* ---------- Talent Pipeline redesign — Phase 1 (compact shell) ---------- */
 .emp-pipeline-header {
   display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
@@ -13024,23 +13045,6 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-pipeline-header-actions input[type="text"] { width: 180px; }
 .emp-vera-accent-btn { border-color: var(--emp-ai, var(--line)) !important; color: var(--emp-ai, inherit) !important; }
 
-.emp-status-bar {
-  display: flex; align-items: stretch; gap: 1px; margin-bottom: 16px;
-  border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; overflow: hidden; max-height: 60px;
-}
-.emp-status-item {
-  flex: 1; display: flex; align-items: center; gap: 8px; padding: 10px 16px; border: 0;
-  background: #fff; cursor: pointer; text-align: left; font: inherit;
-}
-.emp-status-item svg { width: 16px; height: 16px; color: var(--emp-muted, var(--muted)); flex-shrink: 0; }
-.emp-status-item strong { font-size: 18px; color: var(--emp-ink, var(--text)); }
-.emp-status-item span { font-size: 11px; color: var(--emp-muted, var(--muted)); display: block; }
-.emp-status-item.active { background: rgba(7, 56, 47, 0.06); }
-.emp-status-item.active strong { color: var(--emp-green, var(--text)); }
-.emp-status-item-clear {
-  display: flex; align-items: center; gap: 4px; padding: 0 16px; border: 0; background: rgba(185, 28, 28, 0.06);
-  color: #b91c1c; font-size: 12px; font-weight: 700; cursor: pointer;
-}
 
 .emp-vera-accent { color: var(--emp-ai, var(--soft)) !important; }
 .emp-vera-accent svg { color: var(--emp-ai, var(--soft)); }
@@ -13060,11 +13064,25 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-pipeline-section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
 .emp-pipeline-section-head h2 { margin: 0 0 4px; font-size: 22px; font-weight: 600; }
 .emp-pipeline-section-head p { margin: 0; font-size: var(--emp-body-sm); color: var(--muted); }
-.emp-pipeline-toolbar { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .emp-pipeline-view-toggle { display: flex; gap: 4px; border: 1px solid var(--line); border-radius: 999px; padding: 3px; flex-shrink: 0; }
 .emp-pipeline-view-toggle button { border: none; background: none; padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; }
 .emp-pipeline-view-toggle button.active { background: rgba(37, 99, 235, 0.08); color: var(--blue); }
-.emp-pipeline-board { display: flex; gap: 8px; overflow-x: auto; align-items: start; padding-bottom: 8px; }
+/* Purely informational - no border/box, no hover, no cursor pointer, no
+   click handler. Text, not UI (this replaces both the old clickable status
+   bar and the Filter button). */
+.emp-pipeline-summary { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 16px; }
+.emp-pipeline-summary-item { display: flex; align-items: center; gap: 8px; }
+.emp-pipeline-summary-item svg { width: 16px; height: 16px; color: var(--emp-muted, var(--muted)); flex-shrink: 0; }
+.emp-pipeline-summary-item strong { font-size: 18px; font-weight: 700; color: var(--emp-ink, var(--text)); }
+.emp-pipeline-summary-item span { font-size: 13px; color: var(--emp-muted, var(--muted)); }
+.emp-inline-clear { border: 0; background: none; padding: 0; color: var(--emp-green, var(--blue)); font-weight: 600; cursor: pointer; text-decoration: underline; }
+/* flex-wrap here (not just in the responsive block below) is a deliberate
+   safety net: 200px x 6 + 8px x 5 gaps is tuned to fit exactly inside the
+   page's 1240px container, so a few sub-pixels of rounding at odd browser
+   zoom levels could push it over. Wrapping instead of scrolling means that
+   edge case degrades to "one column drops to the next line," never a
+   horizontal scrollbar. */
+.emp-pipeline-board { display: flex; flex-wrap: wrap; gap: 8px; align-items: start; }
 /* 200px, not the spec's ~232px target: the page's shared content container
    caps at --emp-container-max (1240px), and 6 columns + 5 gaps only fits
    that width at 200px each - going wider would force horizontal scroll
@@ -13119,15 +13137,22 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-cand-vera-badge svg { width: 12px; height: 12px; }
 .emp-vera-why-btn { border: 0; background: none; padding: 0; display: grid; place-items: center; cursor: pointer; color: var(--emp-ai, #6f5fc4); }
 .emp-vera-why-btn svg { width: 13px; height: 13px; }
-.emp-vera-why-popover {
-  position: absolute; top: calc(100% + 6px); left: 0; z-index: 25; width: 220px;
-  padding: 12px; border-radius: 12px; background: #fff; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
-  border: 1px solid var(--emp-line, var(--line));
-}
-.emp-vera-why-title { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font-size: 12px; font-weight: 700; color: var(--emp-ai, #6f5fc4); }
+/* Content only - position/box (fixed, width, shadow, border, z-index) comes
+   from .emp-floating-overlay, applied by openFloatingOverlay(). */
+.emp-vera-why-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.emp-vera-why-title { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--emp-ai, #6f5fc4); }
 .emp-vera-why-title svg { width: 13px; height: 13px; }
-.emp-vera-why-popover ul { margin: 0 0 8px; padding-left: 16px; font-size: 12px; line-height: 1.5; color: var(--emp-ink, var(--text)); }
-.emp-vera-why-rec { margin: 0; padding-top: 8px; border-top: 1px solid var(--emp-line, var(--line)); font-size: 12px; color: var(--emp-muted, var(--muted)); }
+.emp-vera-why-close { border: 0; background: none; padding: 0; display: grid; place-items: center; cursor: pointer; color: var(--emp-muted, var(--muted)); flex-shrink: 0; }
+.emp-vera-why-close svg { width: 14px; height: 14px; }
+.emp-vera-why-score { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-vera-why-score span { font-size: 12px; color: var(--emp-muted, var(--muted)); }
+.emp-vera-why-score strong { font-size: 18px; font-weight: 700; color: var(--emp-ink, var(--text)); }
+.emp-vera-why-section { margin-bottom: 10px; }
+.emp-vera-why-strengths { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 4px; font-size: 12px; line-height: 1.4; color: var(--emp-ink, var(--text)); }
+.emp-vera-why-strengths li { display: flex; align-items: flex-start; gap: 6px; }
+.emp-vera-why-strengths svg { width: 13px; height: 13px; color: var(--emp-teal, #1D9E75); flex-shrink: 0; margin-top: 1px; }
+.emp-vera-why-reason { margin: 0 0 10px; font-size: 12px; line-height: 1.5; color: var(--emp-muted, var(--muted)); }
+.emp-vera-why-confidence { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--emp-line, var(--line)); font-size: 12px; color: var(--emp-muted, var(--muted)); }
 
 .emp-cand-skill-rows { display: grid; gap: 4px; }
 .emp-cand-skill-row { display: flex; align-items: flex-start; gap: 6px; font-size: 10px; }
@@ -13148,23 +13173,11 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-cand-actions .btn-primary { flex: 1; }
 .emp-ai-question-list { margin: 12px 0; padding-left: 20px; display: grid; gap: 8px; font-size: 14px; line-height: 1.5; }
 
-.emp-vera-fab {
-  position: fixed; right: 24px; bottom: 24px; z-index: 78;
-  width: 56px; height: 56px; border-radius: 999px; border: none; cursor: pointer;
-  display: grid; place-items: center; color: #fff;
-  background: linear-gradient(135deg, var(--emp-ai, #6f5fc4) 0%, #4d3ea3 100%);
-  box-shadow: 0 10px 26px rgba(111, 95, 196, 0.42);
-  animation: empVeraFabGlow 3.2s ease-in-out infinite;
-  transition: transform 0.15s ease;
-}
-.emp-vera-fab:hover { transform: translateY(-2px) scale(1.04); }
-.emp-vera-fab svg { width: 22px; height: 22px; }
-@keyframes empVeraFabGlow {
-  0%, 100% { box-shadow: 0 10px 26px rgba(111, 95, 196, 0.42); }
-  50% { box-shadow: 0 10px 32px rgba(111, 95, 196, 0.66); }
-}
+/* Single Vera entry point on this page: the header pill
+   (data-vera-fab-toggle, in .emp-pipeline-header-actions). This panel
+   drops down from it - no separate floating action button. */
 .emp-vera-fab-panel {
-  position: fixed; right: 24px; bottom: 92px; z-index: 79;
+  position: fixed; top: 110px; right: 24px; z-index: 79;
   width: min(380px, calc(100vw - 48px)); max-height: min(560px, calc(100vh - 140px));
   overflow-y: auto; background: #fff; border-radius: var(--emp-radius-card, 20px);
   box-shadow: var(--emp-shadow-hero, 0 26px 64px rgba(7, 56, 47, 0.22));
@@ -13214,8 +13227,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-vera-insight-card p { margin: 0 0 8px; font-size: 12px; line-height: 1.5; color: var(--emp-muted, var(--muted)); }
 .emp-vera-insight-card .btn { padding: 6px 10px; min-height: 0; font-size: 12px; }
 @media (max-width: 640px) {
-  .emp-vera-fab { right: 16px; bottom: 16px; }
-  .emp-vera-fab-panel { right: 16px; bottom: 84px; width: calc(100vw - 32px); }
+  .emp-vera-fab-panel { top: 96px; right: 16px; width: calc(100vw - 32px); }
 }
 .emp-scorecard-card { padding: 12px 14px; margin-bottom: 8px; border: 1px solid var(--line); }
 .emp-scorecard-card p { margin: 4px 0 0; font-size: 12px; line-height: 1.5; }
@@ -13601,7 +13613,6 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-table { min-width: 640px; }
   .emp-talent-filters { grid-template-columns: 1fr; }
   .emp-kanban { grid-template-columns: repeat(7, 200px); }
-  .emp-pipeline-filters { grid-template-columns: 1fr; }
   .emp-drawer { width: 100vw; }
   .emp-vera-drawer { width: 100vw; padding: 18px; }
   .emp-vera-compose { grid-template-columns: 1fr; }
@@ -13632,7 +13643,6 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-pipeline-header-actions { width: 100%; }
   .emp-pipeline-header-actions select,
   .emp-pipeline-header-actions input[type="text"] { flex: 1 1 auto; min-width: 0; width: auto; }
-  .emp-status-bar { overflow-x: auto; }
   .emp-pipeline-view-toggle { display: none; }
   .emp-pipeline-board { flex-direction: column; }
   .emp-pipeline-col { width: 100%; flex: 1 1 auto; }
