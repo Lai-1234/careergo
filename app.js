@@ -11662,6 +11662,7 @@ function renderEmployerRoleBuilder(root, roleId) {
   }
   let activeStep = 0;
   let publishActiveTab = "preview";
+  const visitedSteps = new Set([0]);
   let saveTimer = null;
   const dismissedSuggestions = new Set();
   const appliedSuggestions = new Set();
@@ -12040,6 +12041,15 @@ function renderEmployerRoleBuilder(root, roleId) {
     }
   }
 
+  function isStepComplete(stepIndex, predicates) {
+    if (stepIndex === 0) return predicates.role_basics_complete && !!(draft.location && draft.location.trim());
+    if (stepIndex === 1) return predicates.role_summary_added && predicates.responsibilities_added;
+    if (stepIndex === 2) return predicates.candidate_requirements_complete;
+    if (stepIndex === 3) return !!(draft.salary.min && draft.salary.max);
+    if (stepIndex === 4) return predicates.hiring_process_configured && predicates.application_method_configured && predicates.distribution_channels_selected && predicates.preview_reviewed;
+    return false;
+  }
+
   function renderHiringAndPublishExtras(draft) {
     return `
       <h3 class="emp-form-subhead">Hiring process</h3>
@@ -12312,11 +12322,20 @@ function renderEmployerRoleBuilder(root, roleId) {
         </div>
       </div>
       <div class="emp-wizard-steps">
-        ${EMPLOYER_ROLE_BUILDER_STEPS.map((label, i) => `
-          <button type="button" class="emp-wizard-step ${i === activeStep ? "active" : ""} ${i < activeStep ? "done" : ""}" data-emp-step="${i}">
-            <span class="emp-wizard-step-index">${i + 1}</span><span>${label}</span>
-          </button>
-        `).join("")}
+        ${(() => {
+          const stepPredicates = getReadinessPredicates(draft);
+          return EMPLOYER_ROLE_BUILDER_STEPS.map((label, i) => {
+            const complete = isStepComplete(i, stepPredicates);
+            const showDot = !complete && visitedSteps.has(i);
+            return `
+              <button type="button" class="emp-wizard-step ${i === activeStep ? "active" : ""} ${complete ? "done" : ""}" data-emp-step="${i}">
+                <span class="emp-wizard-step-index">${complete ? icon("check") : i + 1}</span>
+                ${showDot ? `<span class="emp-wizard-step-dot"></span>` : ""}
+                <span>${label}</span>
+              </button>
+            `;
+          }).join("");
+        })()}
       </div>
       ${activeStep === 4 ? renderPreviewPublishStep() : `
         <div class="card emp-wizard-form">
@@ -12335,10 +12354,11 @@ function renderEmployerRoleBuilder(root, roleId) {
   function bindEvents() {
     qsa("[data-emp-step]", root).forEach(btn => btn.addEventListener("click", () => {
       activeStep = Number(btn.dataset.empStep);
+      visitedSteps.add(activeStep);
       draw();
     }));
-    qs("[data-emp-prev]", root)?.addEventListener("click", () => { activeStep = Math.max(0, activeStep - 1); draw(); });
-    qs("[data-emp-next]", root)?.addEventListener("click", () => { activeStep = Math.min(EMPLOYER_ROLE_BUILDER_STEPS.length - 1, activeStep + 1); draw(); });
+    qs("[data-emp-prev]", root)?.addEventListener("click", () => { activeStep = Math.max(0, activeStep - 1); visitedSteps.add(activeStep); draw(); });
+    qs("[data-emp-next]", root)?.addEventListener("click", () => { activeStep = Math.min(EMPLOYER_ROLE_BUILDER_STEPS.length - 1, activeStep + 1); visitedSteps.add(activeStep); draw(); });
     qs("[data-emp-nav]", root)?.addEventListener("click", event => {
       event.preventDefault();
       employerNavigateTo("roles");
