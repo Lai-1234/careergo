@@ -12773,6 +12773,228 @@ function draftCandidateEmailText(c) {
   return templates[c.stage] || templates.New;
 }
 
+/* ---------- Vera floating panel: Ask query engine ----------
+   Deterministic pattern matching over real candidate/role data - not a real
+   language model, matching this app's existing "mock but honest" convention
+   for every other AI feature. Order matters: more specific patterns run
+   first so a generic name mention doesn't swallow a more precise question. */
+function answerPipelineQuery(question, candidates, roles) {
+  const q = (question || "").trim().toLowerCase();
+  const roleFor = c => roles.find(r => r.id === c.roleId);
+  const findByName = fragment => {
+    const frag = (fragment || "").trim().toLowerCase();
+    if (!frag) return null;
+    return candidates.find(c => c.name.toLowerCase() === frag)
+      || candidates.find(c => frag.includes(c.name.toLowerCase()))
+      || candidates.find(c => c.name.toLowerCase().includes(frag))
+      || null;
+  };
+
+  let m = q.match(/compare (.+?) (?:and|with|vs\.?|to) (.+)/);
+  if (m) {
+    const a = findByName(m[1]);
+    const b = findByName(m[2]);
+    if (a && b) {
+      const lead = a.fit === b.fit ? "They're evenly matched on overall fit." : `${a.fit > b.fit ? a.name : b.name} has the higher overall fit.`;
+      return {
+        answer: `${a.name} (${a.fit}%) vs ${b.name} (${b.fit}%): ${a.name} is strong in ${a.skills.slice(0, 2).join(" and ") || "no listed skills"}; ${b.name} is strong in ${b.skills.slice(0, 2).join(" and ") || "no listed skills"}. ${lead}`,
+        matchedCandidateIds: [a.id, b.id]
+      };
+    }
+  }
+
+  m = q.match(/draft (?:an )?email (?:to|for) (.+)/);
+  if (m) {
+    const c = findByName(m[1]);
+    if (c) {
+      const draft = draftCandidateEmailText(c);
+      return { answer: `Subject: ${draft.subject}\n\n${draft.body}`, matchedCandidateIds: [c.id] };
+    }
+  }
+
+  m = q.match(/(?:generate )?interview questions for (.+)/);
+  if (m) {
+    const c = findByName(m[1]);
+    if (c) return { answer: generateInterviewQuestions(c).join(" "), matchedCandidateIds: [c.id] };
+  }
+
+  m = q.match(/(?:why did |explain )(.+?)(?:'s)?\s*score/);
+  if (m) {
+    const c = findByName(m[1]);
+    if (c) return { answer: explainMatchScoreText(c), matchedCandidateIds: [c.id] };
+  }
+
+  m = q.match(/should i hire (.+)/);
+  if (m) {
+    const c = findByName(m[1]);
+    if (c) {
+      const verdict = c.fit >= 80 && !c.concern
+        ? "yes - strong overall fit with no major concerns."
+        : c.concern ? `worth a closer look first: ${c.concern}` : "borderline - review the full profile before deciding.";
+      return { answer: `${c.name}: ${verdict}`, matchedCandidateIds: [c.id] };
+    }
+  }
+
+  if (/summarize.*pipeline|pipeline summary/.test(q)) {
+    const byStage = {};
+    candidates.forEach(c => { byStage[c.stage] = (byStage[c.stage] || 0) + 1; });
+    const stageText = Object.entries(byStage).map(([s, n]) => `${n} in ${s}`).join(", ");
+    return { answer: `${candidates.length} active candidates: ${stageText}.`, matchedCandidateIds: [] };
+  }
+
+  m = q.match(/summarize (.+?)(?:'s resume)?$/);
+  if (m) {
+    const c = findByName(m[1]);
+    if (c) return { answer: summarizeCandidateResume(c), matchedCandidateIds: [c.id] };
+  }
+
+  if (/ready (for offer|to hire)/.test(q)) {
+    const ready = candidates.filter(c => c.stage === "Offer" || (c.stage === "Final Review" && !(c.finalReview?.openQuestions || []).length));
+    if (!ready.length) return { answer: "No candidates are ready for an offer right now.", matchedCandidateIds: [] };
+    return { answer: `Ready for offer: ${ready.map(c => c.name).join(", ")}.`, matchedCandidateIds: ready.map(c => c.id) };
+  }
+
+  m = q.match(/interview (today|tomorrow|this week)/);
+  if (m) {
+    const when = m[1];
+    const matching = candidates.filter(c => (c.interview?.nextInterview?.date || "").toLowerCase() === when);
+    if (!matching.length) return { answer: `No one has an interview scheduled for ${when}.`, matchedCandidateIds: [] };
+    return { answer: `Interview ${when}: ${matching.map(c => `${c.name} (${c.interview.nextInterview.type} at ${c.interview.nextInterview.time})`).join(", ")}.`, matchedCandidateIds: matching.map(c => c.id) };
+  }
+
+  m = q.match(/missing ([a-z0-9 .+#]+?)$/);
+  if (m) {
+    const skill = m[1].trim();
+    const missing = candidates.filter(c => {
+      const role = roleFor(c);
+      return role && (role.mustHaveSkills || []).some(s => s.toLowerCase() === skill) && !c.skills.some(s => s.toLowerCase() === skill);
+    });
+    if (!missing.length) return { answer: `No candidates are missing ${skill}.`, matchedCandidateIds: [] };
+    return { answer: `Missing ${skill}: ${missing.map(c => c.name).join(", ")}.`, matchedCandidateIds: missing.map(c => c.id) };
+  }
+
+  if (/fresh graduate/.test(q)) {
+    const grads = candidates.filter(c => c.careerStage === "Fresh Graduate").sort((a, b) => b.fit - a.fit);
+    if (!grads.length) return { answer: "No fresh graduates in the current pipeline.", matchedCandidateIds: [] };
+    return { answer: `Strongest fresh graduate: ${grads[0].name} (${grads[0].fit}% match).`, matchedCandidateIds: [grads[0].id] };
+  }
+
+  m = q.match(/(?:strongest|best) ([a-z0-9 .+#]+?)(?: developer| engineer| candidate)?$/);
+  if (m) {
+    const skill = m[1].trim();
+    const matching = candidates.filter(c => c.skills.some(s => s.toLowerCase().includes(skill))).sort((a, b) => b.fit - a.fit);
+    if (!matching.length) return { answer: `No candidates list ${skill} as a skill.`, matchedCandidateIds: [] };
+    return { answer: `Strongest ${skill}: ${matching[0].name} (${matching[0].fit}% match).`, matchedCandidateIds: [matching[0].id] };
+  }
+
+  if (/interview first|recommend next|next hiring action/.test(q)) {
+    const priority = pickPriorityCandidate(candidates);
+    if (!priority) return { answer: "Nothing urgent right now - no candidate needs immediate action.", matchedCandidateIds: [] };
+    return { answer: `${priority.name}: ${recommendNextStageText(priority).replace(/^Recommended next step: /, "")}`, matchedCandidateIds: [priority.id] };
+  }
+
+  if (/risky/.test(q)) {
+    const risky = candidates.filter(c => c.concern || (c.stage === "Interview" && !c.interview?.nextInterview));
+    if (!risky.length) return { answer: "No candidates currently look risky.", matchedCandidateIds: [] };
+    return { answer: `Risky: ${risky.map(c => `${c.name} (${c.concern || "no interview currently scheduled"})`).join("; ")}.`, matchedCandidateIds: risky.map(c => c.id) };
+  }
+
+  if (/few applicants|attracting/.test(q)) {
+    const counts = {};
+    candidates.forEach(c => { counts[c.roleId] = (counts[c.roleId] || 0) + 1; });
+    const thinnest = roles.slice().sort((a, b) => (counts[a.id] || 0) - (counts[b.id] || 0))[0];
+    if (!thinnest) return { answer: "Not enough role data to answer that.", matchedCandidateIds: [] };
+    const count = counts[thinnest.id] || 0;
+    const skillCount = (thinnest.mustHaveSkills || []).length;
+    return { answer: `${thinnest.title} has the fewest candidates (${count})${skillCount > 5 ? ` - its ${skillCount} must-have skills may be narrowing the pool` : ""}.`, matchedCandidateIds: [] };
+  }
+
+  const named = candidates.filter(c => q.includes(c.name.toLowerCase()));
+  if (named.length === 1) {
+    const c = named[0];
+    return { answer: `${c.name} — ${c.role}, ${c.fit}% match, currently in ${c.stage}.`, matchedCandidateIds: [c.id] };
+  }
+  if (named.length > 1) {
+    return { answer: named.map(c => `${c.name} (${c.fit}%, ${c.stage})`).join("; "), matchedCandidateIds: named.map(c => c.id) };
+  }
+
+  return {
+    answer: `I didn't recognize that question. Try things like "find [name]", "who is ready for offer", "compare [name] and [name]", or "summarize the pipeline".`,
+    matchedCandidateIds: []
+  };
+}
+
+/* ---------- Vera floating panel: Hiring Copilot insights ----------
+   Six fixed cards computed from the current filtered pipeline. Confidence is
+   a simple deterministic High/Medium/Low derived from how much underlying
+   data supports each signal - never fabricated precision. */
+function computePipelineInsights(candidates, roles) {
+  const roleFor = c => roles.find(r => r.id === c.roleId);
+
+  const priority = pickPriorityCandidate(candidates);
+  const recommendation = {
+    id: "recommendation", title: "Candidate Recommendation",
+    why: priority ? `${priority.name} (${priority.fit}% match) needs attention: ${priority.strength}` : "No candidate currently needs urgent attention.",
+    confidence: priority && candidates.length >= 3 ? "High" : "Low",
+    action: { label: priority ? `Review ${priority.name}` : "View pipeline", type: "open-candidate", id: priority ? priority.id : null }
+  };
+
+  const stageCounts = {};
+  candidates.forEach(c => { stageCounts[c.stage] = (stageCounts[c.stage] || 0) + 1; });
+  const stalledInterview = candidates.filter(c => c.stage === "Interview" && !c.interview?.nextInterview).length;
+  const busiestStage = Object.entries(stageCounts).sort((a, b) => b[1] - a[1])[0] || null;
+  const bottleneck = {
+    id: "bottleneck", title: "Hiring Bottleneck",
+    why: stalledInterview
+      ? `${stalledInterview} candidate${stalledInterview === 1 ? "" : "s"} stalled in Interview with no next round scheduled.`
+      : busiestStage ? `${busiestStage[0]} has the most candidates (${busiestStage[1]}).` : "No bottleneck detected.",
+    confidence: candidates.length >= 5 ? "High" : candidates.length >= 2 ? "Medium" : "Low",
+    action: { label: "View stage", type: "filter-stage", stage: stalledInterview ? "Interview" : (busiestStage ? busiestStage[0] : null) }
+  };
+
+  const missingCounts = {};
+  candidates.forEach(c => {
+    const role = roleFor(c);
+    (role?.mustHaveSkills || []).forEach(skill => {
+      if (!c.skills.some(s => s.toLowerCase() === skill.toLowerCase())) missingCounts[skill] = (missingCounts[skill] || 0) + 1;
+    });
+  });
+  const topGap = Object.entries(missingCounts).sort((a, b) => b[1] - a[1])[0] || null;
+  const skillGap = {
+    id: "skill-gap", title: "Skill Gap",
+    why: topGap ? `${topGap[0]} is the most common missing must-have skill (${topGap[1]} candidate${topGap[1] === 1 ? "" : "s"}).` : "No common skill gaps found.",
+    confidence: topGap && topGap[1] >= 3 ? "High" : topGap && topGap[1] >= 2 ? "Medium" : "Low",
+    action: { label: "View affected candidates", type: "filter-skill", skill: topGap ? topGap[0] : null }
+  };
+
+  const withSalary = candidates.filter(c => c.salaryExpectation && /RM/.test(c.salaryExpectation));
+  const salary = {
+    id: "salary", title: "Salary Competitiveness",
+    why: withSalary.length ? `${withSalary.length} of ${candidates.length} candidates listed a salary expectation - compare these against the role's benchmark range before making an offer.` : "No salary expectations recorded yet.",
+    confidence: withSalary.length >= 3 ? "Medium" : "Low",
+    action: { label: "Review compensation", type: "open-role" }
+  };
+
+  const lateStageCount = candidates.filter(c => ["Final Review", "Offer"].includes(c.stage)).length;
+  const weeks = lateStageCount ? Math.max(1, 3 - lateStageCount) : 4;
+  const timeToHire = {
+    id: "time-to-hire", title: "Time-to-Hire Prediction",
+    why: `Based on the current stage mix, expect roughly ${weeks} more week${weeks === 1 ? "" : "s"} to your next hire.`,
+    confidence: candidates.length >= 4 ? "Medium" : "Low",
+    action: { label: "View pipeline", type: "view-board" }
+  };
+
+  const hiredOrOffered = candidates.filter(c => ["Offer", "Hired"].includes(c.stage)).length;
+  const health = {
+    id: "pipeline-health", title: "Pipeline Health",
+    why: `${candidates.length} active candidates, ${hiredOrOffered} at offer stage or beyond.`,
+    confidence: "High",
+    action: { label: "View all candidates", type: "view-board" }
+  };
+
+  return [recommendation, bottleneck, skillGap, salary, timeToHire, health];
+}
+
 function openCandidateAiModal(title, bodyHtml) {
   openEmpModal("candidate-ai", `
     <div class="emp-create-vera-head">
@@ -15023,6 +15245,8 @@ if (typeof module !== "undefined" && module.exports) {
     scanBiasLanguage,
     countSyllables,
     computeReadingLevel,
-    scanJobPostingLanguage
+    scanJobPostingLanguage,
+    answerPipelineQuery,
+    computePipelineInsights
   };
 }
