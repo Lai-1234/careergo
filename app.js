@@ -13158,6 +13158,15 @@ function renderStageDetail(c) {
 }
 
 function renderEmployerTalentPipeline(root, params = {}) {
+  // This page redraws its whole subtree (root.innerHTML = ...) on every
+  // interaction - menu open/close, card expand, filter change, drag. The
+  // global count-up number animation (initGlobalNumberAnimations) detects
+  // "new" numeric elements via a MutationObserver, so on every one of those
+  // redraws every number on the page (even ones whose value didn't change)
+  // gets treated as newly added and re-animated from 0 - a visible flash on
+  // every click. Opting this page's root out is a targeted fix at the root
+  // cause, not a page-wide change to the animation system other pages rely on.
+  root.setAttribute("data-no-number-animation", "");
   let roleFilter = params.role || "all";
   let query = "";
   let stageFilterX = "all";
@@ -13841,6 +13850,11 @@ function renderEmployerTalentPipeline(root, params = {}) {
       draw();
     }));
     document.addEventListener("click", () => { if (veraPanelOpen) { veraPanelOpen = false; draw(); } });
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      if (veraPanelOpen) { veraPanelOpen = false; draw(); return; }
+      if (openDrawerId) { openDrawerId = null; draw(); }
+    });
 
     qs("[data-drawer-close]", root)?.addEventListener("click", () => { openDrawerId = null; draw(); });
     qsa("[data-drawer-tab]", root).forEach(btn => btn.addEventListener("click", () => { drawerTab = btn.dataset.drawerTab; draw(); }));

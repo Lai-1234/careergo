@@ -13096,7 +13096,10 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-pipeline-col-body { display: grid; gap: 6px; min-height: 40px; border-radius: 12px; transition: background 150ms; }
 .emp-pipeline-col-body.emp-drop-target { background: rgba(7, 56, 47, 0.06); outline: 2px dashed var(--emp-teal, var(--line)); outline-offset: 4px; }
 
-.emp-cand-card { padding: 10px 12px; display: grid; gap: 6px; cursor: pointer; position: relative; border: 1px solid transparent; transition: box-shadow 150ms, transform 150ms, opacity 150ms, border-color 150ms; }
+.emp-cand-card {
+  padding: 10px 12px; min-height: 130px; display: grid; gap: 6px; cursor: pointer; position: relative;
+  border: 1px solid transparent; transition: box-shadow 150ms, transform 150ms, opacity 150ms, border-color 150ms;
+}
 /* z-index: the hover transform below creates a new stacking context for the
    card; without a z-index here that context sits at "auto" (~0), which traps
    the menu's z-index:20 underneath the column header's z-index:2 and blocks
@@ -13170,7 +13173,21 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-cand-notes-preview svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 1px; }
 
 .emp-cand-actions { display: flex; align-items: center; gap: 8px; position: relative; }
-.emp-cand-actions .btn-primary { flex: 1; }
+/* Standardized primary card action: same height/radius/padding/font for
+   every label this button ever shows (Review, Schedule Interview, Open
+   Interview, Compare & Decide, Follow Up, View Onboarding) - it's one
+   component (data-candidate-primary) with a different label per stage, not
+   a different button per label. Hover/active/disabled states are inherited
+   from the shared .btn/.btn-primary rules, not redefined here. */
+.emp-cand-actions .emp-primary-card-action {
+  flex: 1; height: 48px; min-height: 48px; border-radius: 16px;
+  font-size: 14px; font-weight: 600; padding: 0 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.emp-cand-actions .emp-menu-toggle {
+  width: 48px; height: 48px; min-height: 48px; border-radius: 16px; padding: 0; flex-shrink: 0;
+  display: grid; place-items: center;
+}
 .emp-ai-question-list { margin: 12px 0; padding-left: 20px; display: grid; gap: 8px; font-size: 14px; line-height: 1.5; }
 
 /* Single Vera entry point on this page: the header pill
