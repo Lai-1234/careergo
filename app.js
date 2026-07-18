@@ -12787,13 +12787,24 @@ function openCandidateAiModal(title, bodyHtml) {
 
 function menuActionsFor(c) {
   const items = [];
-  if (c.stage === "New") items.push(["Shortlist", "shortlist"], ["Reject", "reject"]);
-  if (c.stage === "Shortlisted") items.push(["Compare", "compare"], ["Reject", "reject"]);
-  if (c.stage === "Interview") items.push(["Reschedule", "reschedule"], ["Move to Final Review", "move-final"], ["Reject", "reject"]);
-  if (c.stage === "Final Review") items.push(["Compare candidates", "compare"], ["Make offer", "make-offer"], ["Reject", "reject"]);
-  if (c.stage === "Offer" && c.offer?.status !== "Accepted") items.push(["Follow up", "follow-up"]);
-  items.push(["View profile", "review"]);
-  EMPLOYER_TALENT_PIPELINE_STAGES.filter(s => s !== c.stage).forEach(s => items.push([`Move to ${s}`, `move:${s}`]));
+  const offerStatus = c.offer?.status;
+  // "View Profile" is left out where the stage's primary CTA already opens the same
+  // drawer view (Review / Open interview / Compare & decide / View onboarding).
+  if (!["New", "Interview", "Final Review", "Hired"].includes(c.stage)) items.push(["View Profile", "view-profile"]);
+  items.push(["Open Resume", "open-resume"]);
+  items.push(["Move Stage", "move-stage"]);
+  items.push(["Send Message", "send-message"]);
+  if (c.stage === "New" || c.stage === "Shortlisted") items.push(["Schedule Interview", "schedule-interview"]);
+  else if (c.stage === "Interview") items.push(["Reschedule Interview", "reschedule-interview"]);
+  items.push(["Generate Interview Questions", "interview-questions"]);
+  // Final Review's primary CTA is already "Compare & decide" - offering it again here
+  // would be the exact kind of duplicate action this menu is meant to avoid.
+  if (c.stage === "Shortlisted") items.push(["Compare Candidate", "compare"]);
+  if (c.stage === "Final Review") items.push(["Make Offer", "make-offer"]);
+  if (c.stage === "Offer" && (offerStatus === "Draft" || offerStatus === "Countered")) items.push(["Follow Up", "follow-up"]);
+  items.push(["Archive", "archive"]);
+  if (c.stage !== "Hired") items.push(["Reject", "reject"]);
+  items.push(["Copy Candidate Link", "copy-link"]);
   return items;
 }
 
@@ -12842,6 +12853,9 @@ function renderEmployerTalentPipeline(root, params = {}) {
   let veraPanelOpen = false;
   let veraFabActiveAction = null;
   let veraFabResultHtml = "";
+  const expandedCandidateIds = new Set();
+  let openMenuId = null;
+  let menuSubview = null;
 
   function activeList() { return DATA.candidates.filter(c => !c.archived); }
 
@@ -12869,7 +12883,28 @@ function renderEmployerTalentPipeline(root, params = {}) {
     c.activity.unshift({ text: `Moved to ${stage}`, date: "Just now" });
   }
 
-  function renderCandidateCard(c) {
+  function renderVeraWhyPopover(c) {
+    const breakdown = computeMatchBreakdown(c);
+    const role = DATA.employerRoles.find(r => r.id === c.roleId);
+    const missing = role ? (role.mustHaveSkills || []).filter(s => !c.skills.includes(s)) : [];
+    const dimLabels = { skills: "Skills", experience: "Experience", education: "Education", culture: "Culture", salary: "Salary" };
+    const topDim = Object.entries(breakdown).sort((a, b) => b[1] - a[1])[0];
+    const bullets = [
+      `${c.fit}% overall match`,
+      `Strong ${dimLabels[topDim[0]].toLowerCase()} fit (${topDim[1]})`,
+      c.strength,
+      missing.length ? `Only missing ${missing.slice(0, 2).join(", ")}` : "No missing must-have skills"
+    ].filter(Boolean);
+    return `
+      <div class="emp-vera-why-popover" data-vera-why-popover="${c.id}" hidden>
+        <p class="emp-vera-why-title">${icon("sparkles")} Why Vera recommends ${escapeHtml(c.name)}</p>
+        <ul>${bullets.map(b => `<li>${escapeHtml(b)}</li>`).join("")}</ul>
+        <p class="emp-vera-why-rec">Recommendation: <strong>${escapeHtml(primaryActionFor(c).label)}</strong></p>
+      </div>
+    `;
+  }
+
+  function renderCandidateCard(c, isRecommended) {
     const primary = primaryActionFor(c);
     const menu = menuActionsFor(c);
     const role = DATA.employerRoles.find(r => r.id === c.roleId);
@@ -12878,51 +12913,59 @@ function renderEmployerTalentPipeline(root, params = {}) {
     const insight = [c.strength, c.concern].filter(Boolean).join(" ");
     const breakdown = computeMatchBreakdown(c);
     const matchTone = c.fit >= 85 ? "green" : c.fit >= 70 ? "gold" : "";
+    const expanded = expandedCandidateIds.has(c.id);
+    const menuOpen = openMenuId === c.id;
+    const showingMoveStage = menuSubview === c.id;
+    const latestNote = c.notes[0];
     return `
-      <div class="card emp-cand-card ${c.id === lastMovedId ? "emp-cand-card-moved" : ""}" data-candidate-card="${c.id}" draggable="true" data-drag-candidate="${c.id}" tabindex="0" role="button" aria-label="${escapeHtml(c.name)} — press left or right arrow to move between stages">
+      <div class="card emp-cand-card ${expanded ? "emp-cand-card-expanded" : ""} ${c.id === lastMovedId ? "emp-cand-card-moved" : ""}" data-candidate-card="${c.id}" draggable="true" data-drag-candidate="${c.id}" tabindex="0" role="button" aria-expanded="${expanded}" aria-label="${escapeHtml(c.name)} — press Enter to ${expanded ? "collapse" : "expand"}, left or right arrow to move between stages">
         <div class="emp-cand-card-top">
           <div class="emp-cand-identity">
             <strong class="emp-cand-name">${escapeHtml(c.name)}</strong>
             <p class="emp-cand-position">${escapeHtml(c.role)}</p>
-            <p class="emp-cand-location">${escapeHtml(c.location)}</p>
+            ${expanded ? `<p class="emp-cand-location">${escapeHtml(c.location)}</p>` : ""}
           </div>
           <div class="emp-cand-match" data-match-hover="${c.id}">
-            <span class="pill ${matchTone}">${c.fit}% Match</span>
+            <span class="emp-cand-match-badge ${matchTone}">${c.fit}%</span>
             <div class="emp-cand-match-popover" data-match-popover="${c.id}" hidden>
               ${[["skills", "Skills"], ["experience", "Experience"], ["education", "Education"], ["culture", "Culture"], ["salary", "Salary"]].map(([key, label]) => `<div class="emp-match-row"><span>${label}</span><strong>${breakdown[key]}</strong></div>`).join("")}
             </div>
           </div>
         </div>
-        ${topSkills.length || missingSkills.length ? `
-          <div class="emp-cand-skill-rows">
-            ${topSkills.length ? `<div class="emp-cand-skill-row"><span>Top</span><div class="pill-row">${topSkills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div></div>` : ""}
-            ${missingSkills.length ? `<div class="emp-cand-skill-row"><span>Missing</span><div class="pill-row">${missingSkills.map(s => `<span class="pill red">${escapeHtml(s)}</span>`).join("")}</div></div>` : ""}
+        ${isRecommended ? `
+          <div class="emp-cand-vera-badge">
+            <span>${icon("sparkles")} Vera Recommended</span>
+            <button type="button" class="emp-vera-why-btn" data-vera-why="${c.id}" aria-label="Why Vera recommends ${escapeHtml(c.name)}">${icon("info")}</button>
+            ${renderVeraWhyPopover(c)}
           </div>
         ` : ""}
-        ${insight ? `<p class="emp-cand-insight">${escapeHtml(insight)}</p>` : ""}
-        <div class="emp-cand-next-action"><span>Next Action</span><strong>${escapeHtml(nextActionText(c))}</strong></div>
-        <div class="emp-cand-actions">
-          <button type="button" class="btn btn-primary btn-sm" data-candidate-primary="${c.id}">${primary.label}</button>
-          ${menu.length ? `
-            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-candidate-menu="${c.id}">More</button>
-            <div class="emp-actions-menu" data-candidate-menu-panel="${c.id}" hidden>
-              ${menu.map(([label, action]) => `<button type="button" data-candidate-action="${action}" data-candidate-id="${c.id}">${label}</button>`).join("")}
+        ${expanded ? `
+          ${topSkills.length || missingSkills.length ? `
+            <div class="emp-cand-skill-rows">
+              ${topSkills.length ? `<div class="pill-row">${topSkills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>` : ""}
+              ${missingSkills.length ? `<div class="emp-cand-skill-row"><span>Missing</span><div class="pill-row">${missingSkills.map(s => `<span class="pill red">${escapeHtml(s)}</span>`).join("")}</div></div>` : ""}
             </div>
           ` : ""}
-        </div>
-        <div class="emp-cand-quick-actions">
-          <button type="button" data-quick-action="resume" data-candidate-id="${c.id}" aria-label="Review Resume">${icon("file-text")}</button>
-          <button type="button" data-quick-action="open-profile" data-candidate-id="${c.id}" aria-label="Open Profile">${icon("user")}</button>
-          <button type="button" data-quick-action="move-stage" data-candidate-id="${c.id}" aria-label="Move Stage">${icon("move")}</button>
-          <button type="button" data-quick-action="message" data-candidate-id="${c.id}" aria-label="Message Candidate">${icon("mail")}</button>
-          <button type="button" data-quick-action="interview-questions" data-candidate-id="${c.id}" aria-label="Generate Interview Questions">${icon("help-circle")}</button>
-          <button type="button" data-quick-action="summarize" data-candidate-id="${c.id}" aria-label="Summarize Resume">${icon("sparkles")}</button>
-        </div>
+          ${insight ? `<p class="emp-cand-insight">${escapeHtml(insight)}</p>` : ""}
+          <div class="emp-cand-next-action">${icon("arrow-right-circle")}<span>${escapeHtml(nextActionText(c))}</span></div>
+          ${latestNote ? `<p class="emp-cand-notes-preview">${icon("sticky-note")} ${c.notes.length} note${c.notes.length === 1 ? "" : "s"} · "${escapeHtml(latestNote.text.length > 60 ? latestNote.text.slice(0, 60) + "…" : latestNote.text)}"</p>` : ""}
+          <div class="emp-cand-actions">
+            <button type="button" class="btn btn-primary btn-sm" data-candidate-primary="${c.id}">${primary.label}</button>
+            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-candidate-menu="${c.id}" aria-haspopup="menu" aria-label="More actions">${icon("more-vertical")}</button>
+            <div class="emp-actions-menu emp-actions-menu-left" data-candidate-menu-panel="${c.id}" ${menuOpen ? "" : "hidden"}>
+              ${showingMoveStage ? `
+                <button type="button" class="emp-menu-back" data-menu-back>${icon("arrow-left")} Back</button>
+                ${EMPLOYER_TALENT_PIPELINE_STAGES.filter(s => s !== c.stage).map(s => `<button type="button" data-candidate-menu-action="move:${s}" data-candidate-id="${c.id}">${s}</button>`).join("")}
+              ` : menu.map(([label, action]) => `<button type="button" data-candidate-menu-action="${action}" data-candidate-id="${c.id}">${label}</button>`).join("")}
+            </div>
+          </div>
+        ` : ""}
       </div>
     `;
   }
 
   function renderBoard(list) {
+    const priorityId = pickPriorityCandidate(list)?.id || null;
     return `
       <div class="emp-pipeline-board">
         ${EMPLOYER_TALENT_PIPELINE_STAGES.map(stage => {
@@ -12931,7 +12974,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
             <div class="emp-pipeline-col">
               <h3>${stage} <span class="pill">${stageCandidates.length}</span></h3>
               <div class="emp-pipeline-col-body" data-drop-stage="${stage}">
-                ${stageCandidates.length ? stageCandidates.map(c => renderCandidateCard(c)).join("") : `<p class="emp-empty-hint">No candidates.</p>`}
+                ${stageCandidates.length ? stageCandidates.map(c => renderCandidateCard(c, c.id === priorityId)).join("") : `<p class="emp-empty-hint">No candidates.</p>`}
               </div>
             </div>
           `;
@@ -13151,6 +13194,48 @@ function renderEmployerTalentPipeline(root, params = {}) {
     }
   }
 
+  function archiveWithUndo(c) {
+    c.archived = true;
+    draw();
+    showUndoToast(`${c.name} archived.`, () => {
+      c.archived = false;
+      draw();
+    });
+  }
+
+  function copyCandidateLink(c) {
+    const url = `${location.origin}${location.pathname}#pipeline/${c.id}`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(() => showToast("Candidate link copied.")).catch(() => showToast("Couldn't copy link.", "error"));
+    } else {
+      showToast("Clipboard not available in this browser.", "error");
+    }
+  }
+
+  function runMenuAction(c, action) {
+    if (action.startsWith("move:")) {
+      openMenuId = null; menuSubview = null;
+      moveStageWithUndo(c, action.slice(5));
+      return;
+    }
+    if (action === "move-stage") { menuSubview = c.id; draw(); return; }
+    openMenuId = null; menuSubview = null;
+    switch (action) {
+      case "view-profile": openDrawerId = c.id; drawerTab = "overview"; break;
+      case "open-resume": openDrawerId = c.id; drawerTab = "application"; break;
+      case "send-message": showToast("Candidate messaging is coming in a future update.", "info"); break;
+      case "schedule-interview": case "reschedule-interview": pendingAction = { type: "schedule", id: c.id }; break;
+      case "interview-questions": openCandidateAiModal(`Interview questions for ${c.name}`, `<ol class="emp-ai-question-list">${generateInterviewQuestions(c).map(q => `<li>${escapeHtml(q)}</li>`).join("")}</ol>`); break;
+      case "compare": showToast("Candidate comparison is coming in the next update.", "info"); break;
+      case "make-offer": pendingAction = { type: "offer", id: c.id }; break;
+      case "follow-up": showToast(`Follow-up reminder sent for ${c.name}.`); break;
+      case "archive": archiveWithUndo(c); return;
+      case "reject": pendingAction = { type: "reject", id: c.id }; break;
+      case "copy-link": copyCandidateLink(c); break;
+    }
+    draw();
+  }
+
   function renderVeraFab(list) {
     const context = pickVeraContextCandidate(list, openDrawerId);
     const actions = [
@@ -13327,9 +13412,9 @@ function renderEmployerTalentPipeline(root, params = {}) {
     qs("[data-action-center-view-all]", root)?.addEventListener("click", () => { specialFilter = "needs-action"; draw(); });
 
     qsa("[data-candidate-card]", root).forEach(el => el.addEventListener("click", event => {
-      if (event.target.closest("[data-candidate-primary], [data-candidate-menu], [data-candidate-action], [data-quick-action], [data-match-hover]")) return;
-      openDrawerId = el.dataset.candidateCard;
-      drawerTab = "overview";
+      if (event.target.closest("[data-candidate-primary], [data-candidate-menu], [data-candidate-menu-action], [data-menu-back], [data-match-hover], [data-vera-why], .emp-vera-why-popover, .emp-actions-menu")) return;
+      const id = el.dataset.candidateCard;
+      if (expandedCandidateIds.has(id)) expandedCandidateIds.delete(id); else expandedCandidateIds.add(id);
       draw();
     }));
 
@@ -13346,6 +13431,14 @@ function renderEmployerTalentPipeline(root, params = {}) {
         qsa("[data-drop-stage]", root).forEach(zone => zone.classList.remove("emp-drop-target"));
       });
       el.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          if (event.target !== el) return;
+          event.preventDefault();
+          const id = el.dataset.dragCandidate;
+          if (expandedCandidateIds.has(id)) expandedCandidateIds.delete(id); else expandedCandidateIds.add(id);
+          draw();
+          return;
+        }
         if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
         event.preventDefault();
         const c = DATA.candidates.find(cand => cand.id === el.dataset.dragCandidate);
@@ -13374,47 +13467,27 @@ function renderEmployerTalentPipeline(root, params = {}) {
 
     qsa("[data-candidate-menu]", root).forEach(btn => btn.addEventListener("click", event => {
       event.stopPropagation();
-      const panel = qs(`[data-candidate-menu-panel="${btn.dataset.candidateMenu}"]`, root);
-      const isHidden = panel.hidden;
-      qsa("[data-candidate-menu-panel]", root).forEach(p => p.hidden = true);
-      qsa(".emp-cand-card", root).forEach(card => card.classList.remove("emp-cand-card-menu-open"));
-      panel.hidden = !isHidden;
-      if (!panel.hidden) btn.closest(".emp-cand-card")?.classList.add("emp-cand-card-menu-open");
+      const id = btn.dataset.candidateMenu;
+      openMenuId = openMenuId === id ? null : id;
+      menuSubview = null;
+      draw();
     }));
-    document.addEventListener("click", () => {
-      qsa("[data-candidate-menu-panel]", root).forEach(p => p.hidden = true);
-      qsa(".emp-cand-card", root).forEach(card => card.classList.remove("emp-cand-card-menu-open"));
+    qs("[data-menu-back]", root)?.addEventListener("click", event => {
+      event.stopPropagation();
+      menuSubview = null;
+      draw();
     });
+    document.addEventListener("click", () => { if (openMenuId) { openMenuId = null; menuSubview = null; draw(); } });
 
     qsa("[data-candidate-primary]", root).forEach(btn => btn.addEventListener("click", event => {
       event.stopPropagation();
       const c = DATA.candidates.find(cand => cand.id === btn.dataset.candidatePrimary);
       runCandidateAction(c, primaryActionFor(c).action);
     }));
-    qsa("[data-candidate-action]", root).forEach(btn => btn.addEventListener("click", event => {
+    qsa("[data-candidate-menu-action]", root).forEach(btn => btn.addEventListener("click", event => {
       event.stopPropagation();
       const c = DATA.candidates.find(cand => cand.id === btn.dataset.candidateId);
-      runCandidateAction(c, btn.dataset.candidateAction);
-    }));
-
-    qsa("[data-quick-action]", root).forEach(btn => btn.addEventListener("click", event => {
-      event.stopPropagation();
-      const c = DATA.candidates.find(cand => cand.id === btn.dataset.candidateId);
-      if (!c) return;
-      const action = btn.dataset.quickAction;
-      if (action === "resume") { openDrawerId = c.id; drawerTab = "application"; draw(); }
-      else if (action === "open-profile") { openDrawerId = c.id; drawerTab = "overview"; draw(); }
-      else if (action === "move-stage") {
-        const panel = qs(`[data-candidate-menu-panel="${c.id}"]`, root);
-        if (panel) { qsa("[data-candidate-menu-panel]", root).forEach(p => p.hidden = true); panel.hidden = false; }
-      }
-      else if (action === "message") showToast("Candidate messaging is coming in a future update.", "info");
-      else if (action === "interview-questions") {
-        openCandidateAiModal(`Interview questions for ${c.name}`, `<ol class="emp-ai-question-list">${generateInterviewQuestions(c).map(q => `<li>${escapeHtml(q)}</li>`).join("")}</ol>`);
-      }
-      else if (action === "summarize") {
-        openCandidateAiModal(`Resume summary — ${c.name}`, `<p>${escapeHtml(summarizeCandidateResume(c))}</p>`);
-      }
+      runMenuAction(c, btn.dataset.candidateMenuAction);
     }));
 
     qsa("[data-match-hover]", root).forEach(el => {
@@ -13422,6 +13495,16 @@ function renderEmployerTalentPipeline(root, params = {}) {
       el.addEventListener("mouseenter", () => { if (popover) popover.hidden = false; });
       el.addEventListener("mouseleave", () => { if (popover) popover.hidden = true; });
     });
+
+    qsa("[data-vera-why]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      const popover = qs(`[data-vera-why-popover="${btn.dataset.veraWhy}"]`, root);
+      if (!popover) return;
+      const isHidden = popover.hidden;
+      qsa("[data-vera-why-popover]", root).forEach(p => p.hidden = true);
+      popover.hidden = !isHidden;
+    }));
+    document.addEventListener("click", () => qsa("[data-vera-why-popover]", root).forEach(p => p.hidden = true));
 
     qs("[data-vera-fab-toggle]", root)?.addEventListener("click", event => {
       event.stopPropagation();

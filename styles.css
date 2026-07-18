@@ -12854,6 +12854,12 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 }
 .emp-actions-menu button:hover { background: rgba(37, 99, 235, 0.06); }
 .emp-actions-menu[hidden], .emp-momentum-pop[hidden] { display: none; }
+.emp-actions-menu-left { left: auto; right: 0; }
+.emp-menu-back {
+  display: flex !important; align-items: center; gap: 6px; margin-bottom: 4px; padding-bottom: 8px !important;
+  border-bottom: 1px solid var(--emp-line, var(--line)); color: var(--emp-muted, var(--muted)) !important; font-weight: 600 !important;
+}
+.emp-menu-back svg { width: 13px; height: 13px; }
 .emp-close-reasons { display: grid; gap: 8px; margin: 14px 0; }
 .emp-stage-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
 .emp-stage-tile { padding: 12px; border: 1px solid var(--line); border-radius: 12px; text-align: center; }
@@ -13058,20 +13064,28 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-pipeline-view-toggle { display: flex; gap: 4px; border: 1px solid var(--line); border-radius: 999px; padding: 3px; flex-shrink: 0; }
 .emp-pipeline-view-toggle button { border: none; background: none; padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; }
 .emp-pipeline-view-toggle button.active { background: rgba(37, 99, 235, 0.08); color: var(--blue); }
-.emp-pipeline-board { display: flex; gap: 12px; overflow-x: auto; align-items: start; padding-bottom: 8px; }
-.emp-pipeline-col { flex: 0 0 280px; width: 280px; min-width: 0; }
+.emp-pipeline-board { display: flex; gap: 8px; overflow-x: auto; align-items: start; padding-bottom: 8px; }
+/* 200px, not the spec's ~232px target: the page's shared content container
+   caps at --emp-container-max (1240px), and 6 columns + 5 gaps only fits
+   that width at 200px each - going wider would force horizontal scroll
+   back in, which is the one thing this layout exists to avoid. */
+.emp-pipeline-col { flex: 0 0 200px; width: 200px; min-width: 0; }
 .emp-pipeline-col h3 {
   position: sticky; top: 0; z-index: 2; background: var(--emp-bg, #f8f4eb);
   display: flex; align-items: center; gap: 6px; margin: 0 0 8px; padding: 4px 0;
-  font-size: 13px; font-weight: 700;
+  font-size: 13px; font-weight: 600;
 }
-.emp-pipeline-col-body { display: grid; gap: 8px; min-height: 40px; border-radius: 12px; transition: background 150ms; }
+.emp-pipeline-col-body { display: grid; gap: 6px; min-height: 40px; border-radius: 12px; transition: background 150ms; }
 .emp-pipeline-col-body.emp-drop-target { background: rgba(7, 56, 47, 0.06); outline: 2px dashed var(--emp-teal, var(--line)); outline-offset: 4px; }
 
-.emp-cand-card { padding: 12px; display: grid; gap: 8px; cursor: pointer; position: relative; transition: box-shadow 150ms, transform 150ms, opacity 150ms; }
-.emp-cand-card:hover { box-shadow: var(--emp-shadow-card-hover, 0 12px 28px rgba(15,23,42,0.12)); transform: translateY(-1px); }
+.emp-cand-card { padding: 10px 12px; display: grid; gap: 6px; cursor: pointer; position: relative; border: 1px solid transparent; transition: box-shadow 150ms, transform 150ms, opacity 150ms, border-color 150ms; }
+/* z-index: the hover transform below creates a new stacking context for the
+   card; without a z-index here that context sits at "auto" (~0), which traps
+   the menu's z-index:20 underneath the column header's z-index:2 and blocks
+   clicks on it. 3 is enough to clear the header (2) while hovered/focused. */
+.emp-cand-card:hover, .emp-cand-card:focus-within { box-shadow: var(--emp-shadow-card-hover, 0 12px 28px rgba(15,23,42,0.12)); transform: translateY(-1px); z-index: 3; }
 .emp-cand-card:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 2px; }
-.emp-cand-card.emp-cand-card-menu-open { z-index: 30; }
+.emp-cand-card.emp-cand-card-expanded { border-color: var(--emp-line, var(--line)); }
 .emp-cand-card.emp-cand-card-dragging { opacity: 0.4; }
 .emp-cand-card.emp-cand-card-moved { animation: empCandCardMoved 900ms ease-out; }
 @keyframes empCandCardMoved {
@@ -13080,10 +13094,16 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 }
 .emp-cand-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .emp-cand-identity { min-width: 0; }
-.emp-cand-name { display: block; font-size: 14px; font-weight: 700; }
+.emp-cand-name { display: block; font-size: 14px; font-weight: 600; }
 .emp-cand-position { margin: 1px 0 0; font-size: 12px; color: var(--emp-muted, var(--muted)); }
-.emp-cand-location { margin: 0; font-size: 11px; color: var(--emp-muted, var(--muted)); }
+.emp-cand-location { margin: 2px 0 0; font-size: 11px; color: var(--emp-muted, var(--muted)); }
 .emp-cand-match { position: relative; flex-shrink: 0; }
+.emp-cand-match-badge {
+  display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 11px; font-weight: 600;
+  color: var(--emp-muted, var(--muted)); background: rgba(15, 23, 42, 0.05);
+}
+.emp-cand-match-badge.green { color: #0f6b4f; background: rgba(15, 107, 79, 0.1); }
+.emp-cand-match-badge.gold { color: #92650c; background: rgba(217, 119, 6, 0.12); }
 .emp-cand-match-popover {
   position: absolute; top: calc(100% + 6px); right: 0; z-index: 20; width: 150px;
   padding: 10px 12px; border-radius: 10px; background: #fff; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
@@ -13092,9 +13112,26 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-match-row { display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; color: var(--emp-muted, var(--muted)); }
 .emp-match-row strong { color: var(--emp-ink, var(--text)); }
 
+.emp-cand-vera-badge {
+  display: flex; align-items: center; gap: 4px; position: relative;
+  font-size: 11px; font-weight: 600; color: var(--emp-ai, #6f5fc4);
+}
+.emp-cand-vera-badge svg { width: 12px; height: 12px; }
+.emp-vera-why-btn { border: 0; background: none; padding: 0; display: grid; place-items: center; cursor: pointer; color: var(--emp-ai, #6f5fc4); }
+.emp-vera-why-btn svg { width: 13px; height: 13px; }
+.emp-vera-why-popover {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 25; width: 220px;
+  padding: 12px; border-radius: 12px; background: #fff; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+  border: 1px solid var(--emp-line, var(--line));
+}
+.emp-vera-why-title { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font-size: 12px; font-weight: 700; color: var(--emp-ai, #6f5fc4); }
+.emp-vera-why-title svg { width: 13px; height: 13px; }
+.emp-vera-why-popover ul { margin: 0 0 8px; padding-left: 16px; font-size: 12px; line-height: 1.5; color: var(--emp-ink, var(--text)); }
+.emp-vera-why-rec { margin: 0; padding-top: 8px; border-top: 1px solid var(--emp-line, var(--line)); font-size: 12px; color: var(--emp-muted, var(--muted)); }
+
 .emp-cand-skill-rows { display: grid; gap: 4px; }
 .emp-cand-skill-row { display: flex; align-items: flex-start; gap: 6px; font-size: 10px; }
-.emp-cand-skill-row > span { flex-shrink: 0; margin-top: 3px; color: var(--emp-muted, var(--muted)); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700; width: 42px; }
+.emp-cand-skill-row > span { flex-shrink: 0; margin-top: 3px; color: #b91c1c; text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700; }
 .emp-cand-skill-row .pill-row { display: flex; flex-wrap: wrap; gap: 4px; }
 .emp-cand-skill-row .pill { font-size: 10px; padding: 2px 8px; }
 
@@ -13102,35 +13139,13 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   margin: 0; font-size: 12px; line-height: 1.4; color: var(--emp-muted, var(--muted));
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
-.emp-cand-next-action { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding-top: 6px; border-top: 1px solid var(--emp-line, var(--line)); }
-.emp-cand-next-action span { color: var(--emp-muted, var(--muted)); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700; font-size: 10px; }
-.emp-cand-next-action strong { color: var(--emp-ink, var(--text)); font-size: 11px; font-weight: 600; }
+.emp-cand-next-action { display: flex; align-items: center; gap: 6px; padding-top: 6px; border-top: 1px solid var(--emp-line, var(--line)); font-size: 12px; color: var(--emp-ink, var(--text)); }
+.emp-cand-next-action svg { width: 13px; height: 13px; color: var(--emp-muted, var(--muted)); flex-shrink: 0; }
+.emp-cand-notes-preview { margin: 0; display: flex; align-items: flex-start; gap: 6px; font-size: 11px; line-height: 1.4; color: var(--emp-muted, var(--muted)); }
+.emp-cand-notes-preview svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 1px; }
 
-.emp-cand-actions { display: flex; align-items: center; gap: 6px; position: relative; }
+.emp-cand-actions { display: flex; align-items: center; gap: 8px; position: relative; }
 .emp-cand-actions .btn-primary { flex: 1; }
-
-/* position:absolute + opacity/visibility only (no height/margin animation): a
-   height-based reveal here reflows every card below it in the column on
-   hover, which both shifts the pointer's target out from under itself (a
-   real, not just Playwright-flagged, "moving target" click problem) and
-   causes the whole column to jump. Overlaying instead keeps the card's own
-   box, and every sibling's position, completely static. */
-.emp-cand-quick-actions {
-  position: absolute; left: 12px; right: 12px; bottom: 8px; z-index: 5;
-  display: flex; justify-content: center; gap: 2px;
-  background: #fff; border-radius: 999px; padding: 3px;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.14);
-  opacity: 0; visibility: hidden; pointer-events: none;
-  transition: opacity 150ms;
-}
-.emp-cand-card:hover .emp-cand-quick-actions,
-.emp-cand-card:focus-within .emp-cand-quick-actions { opacity: 1; visibility: visible; pointer-events: auto; }
-.emp-cand-quick-actions button {
-  border: 0; background: none; width: 26px; height: 26px; display: grid; place-items: center;
-  border-radius: 999px; cursor: pointer; color: var(--emp-muted, var(--muted));
-}
-.emp-cand-quick-actions button:hover { background: rgba(7, 56, 47, 0.08); color: var(--emp-green, var(--text)); }
-.emp-cand-quick-actions svg { width: 13px; height: 13px; }
 .emp-ai-question-list { margin: 12px 0; padding-left: 20px; display: grid; gap: 8px; font-size: 14px; line-height: 1.5; }
 
 .emp-vera-fab {
@@ -13593,13 +13608,15 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 }
 
 /* ---------- Talent Pipeline redesign — Phase 6 (responsive) ----------
-   Desktop (default): horizontal-scroll Kanban, one column per stage.
-   Tablet (<=1180px): same columns, wrapped into a 2-up grid instead of scrolling.
-   Mobile (<=640px): single stacked column per stage - functions as a list,
-   so the Board/List toggle (whose List view is a wide data table) is hidden. */
-@media (max-width: 1180px) {
+   Desktop (default): all 6 stage columns (200px each) fit without horizontal
+   scroll once the shared page container reaches its 1240px cap (viewport
+   >= ~1288px). Tablet (<=1300px): wrapped into a 2-up grid instead of
+   scrolling. Mobile (<=640px): single stacked column per stage - functions as
+   a list, so the Board/List toggle (whose List view is a wide data table) is
+   hidden. */
+@media (max-width: 1300px) {
   .emp-pipeline-board { flex-wrap: wrap; overflow-x: visible; padding-bottom: 0; }
-  .emp-pipeline-col { flex: 1 1 calc(50% - 6px); width: calc(50% - 6px); }
+  .emp-pipeline-col { flex: 1 1 calc(50% - 4px); width: calc(50% - 4px); }
 }
 @media (max-width: 640px) {
   .emp-pipeline-header-actions { width: 100%; }
@@ -13609,7 +13626,6 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-pipeline-view-toggle { display: none; }
   .emp-pipeline-board { flex-direction: column; }
   .emp-pipeline-col { width: 100%; flex: 1 1 auto; }
-  .emp-cand-quick-actions { display: none; }
 }
 
 /* ============================================================
