@@ -12555,6 +12555,16 @@ function primaryActionFor(c) {
   }
 }
 
+function pickVeraContextCandidate(candidates, openDrawerId) {
+  if (openDrawerId) {
+    const active = candidates.find(c => c.id === openDrawerId);
+    if (active) return active;
+  }
+  const priority = pickPriorityCandidate(candidates);
+  if (priority) return priority;
+  return candidates[0] || null;
+}
+
 function generateInterviewQuestions(c) {
   const primarySkill = c.skills[0] || "this role";
   const secondarySkill = c.skills[1] || primarySkill;
@@ -12568,6 +12578,50 @@ function generateInterviewQuestions(c) {
 function summarizeCandidateResume(c) {
   const topSkills = c.skills.slice(0, 2).join(" and ") || "a relevant skill set";
   return `${c.name} brings ${c.experience} relevant to ${c.role}, with standout strength in ${topSkills}. ${c.strength}`;
+}
+
+function explainMatchScoreText(c) {
+  const breakdown = computeMatchBreakdown(c);
+  const labelNames = { skills: "Skills", experience: "Experience", education: "Education", culture: "Culture", salary: "Salary" };
+  const entries = Object.entries(breakdown).sort((a, b) => b[1] - a[1]);
+  const [topKey, topScore] = entries[0];
+  const [lowKey, lowScore] = entries[entries.length - 1];
+  return `${c.name} scores ${c.fit}% overall. Strongest on ${labelNames[topKey]} (${topScore}) — ${c.strength} Weakest area is ${labelNames[lowKey]} (${lowScore}), worth a closer look before advancing.`;
+}
+
+function compareWithTopCandidatesText(c, pool) {
+  const others = pool.filter(x => x.id !== c.id && x.roleId === c.roleId).sort((a, b) => b.fit - a.fit).slice(0, 2);
+  if (!others.length) return [`${c.name} is the only candidate in this role's pipeline right now — no one to compare against yet.`];
+  return [
+    `${c.name} — ${c.fit}% match (this candidate)`,
+    ...others.map(o => `${o.name} — ${o.fit}% match, strong in ${o.skills.slice(0, 2).join(" and ") || "no listed skills"}`)
+  ];
+}
+
+function recommendNextStageText(c) {
+  const primary = primaryActionFor(c);
+  const reasons = {
+    New: "Review the application against the must-have skills before deciding to shortlist.",
+    Shortlisted: "Strong shortlisted candidates should move to interview quickly, before another employer wins them first.",
+    Interview: feedbackWaiting(c) ? "Interview feedback is still coming in — chase the outstanding scorecards before deciding." : "Interview feedback looks complete — ready to compare in Final Review.",
+    "Final Review": "This candidate is ready for a hire / no-hire decision against the other finalists.",
+    Offer: c.offer?.status === "Countered" ? "Candidate countered — review the counter with the hiring manager before responding." : "Offer is outstanding — a follow-up keeps momentum before the candidate cools.",
+    Hired: "Candidate is hired — the next step is onboarding, not pipeline movement."
+  };
+  return `Recommended next step: ${primary.label}. ${reasons[c.stage] || ""}`;
+}
+
+function draftCandidateEmailText(c) {
+  const firstName = c.name.split(" ")[0];
+  const templates = {
+    New: { subject: `Thanks for applying, ${firstName}`, body: `Hi ${firstName},\n\nThanks for applying for the ${c.role} role. We're reviewing your application and will follow up shortly with next steps.\n\nBest,\nHiring Team` },
+    Shortlisted: { subject: `Next steps for your ${c.role} application`, body: `Hi ${firstName},\n\nWe'd like to move forward with your application for ${c.role}. Could you share your availability for a short interview this week?\n\nBest,\nHiring Team` },
+    Interview: { subject: `Interview details — ${c.role}`, body: `Hi ${firstName},\n\nLooking forward to your interview for the ${c.role} role. We'll send a calendar invite with the details shortly.\n\nBest,\nHiring Team` },
+    "Final Review": { subject: `Update on your ${c.role} application`, body: `Hi ${firstName},\n\nYou're now in final review for the ${c.role} role. We expect to make a decision soon and will be in touch.\n\nBest,\nHiring Team` },
+    Offer: { subject: `Your offer for ${c.role}`, body: `Hi ${firstName},\n\nWe're excited to offer you the ${c.role} position. Please review the offer details and let us know if you have any questions.\n\nBest,\nHiring Team` },
+    Hired: { subject: `Welcome to the team, ${firstName}!`, body: `Hi ${firstName},\n\nWelcome aboard! We'll be in touch shortly with onboarding details for your ${c.role} role.\n\nBest,\nHiring Team` }
+  };
+  return templates[c.stage] || templates.New;
 }
 
 function openCandidateAiModal(title, bodyHtml) {
@@ -12638,6 +12692,9 @@ function renderEmployerTalentPipeline(root, params = {}) {
   let pendingAction = null;
   let lastMovedId = null;
   let dragCandidateId = null;
+  let veraPanelOpen = false;
+  let veraFabActiveAction = null;
+  let veraFabResultHtml = "";
 
   function activeList() { return DATA.candidates.filter(c => !c.archived); }
 
@@ -12949,6 +13006,42 @@ function renderEmployerTalentPipeline(root, params = {}) {
     }
   }
 
+  function renderVeraFab(list) {
+    const context = pickVeraContextCandidate(list, openDrawerId);
+    const actions = [
+      ["summarize", "Summarize Resume", "file-text"],
+      ["compare", "Compare With Top Candidates", "bar-chart-2"],
+      ["questions", "Generate Interview Questions", "help-circle"],
+      ["explain-score", "Explain Match Score", "percent"],
+      ["next-stage", "Recommend Next Stage", "arrow-right-circle"],
+      ["draft-email", "Draft Candidate Email", "mail"]
+    ];
+    return `
+      <button type="button" class="emp-vera-fab" data-vera-fab-toggle aria-label="Ask Vera about this pipeline" aria-expanded="${veraPanelOpen}">
+        ${icon(veraPanelOpen ? "x" : "sparkles")}
+      </button>
+      ${veraPanelOpen ? `
+        <div class="emp-vera-fab-panel" role="dialog" aria-label="Vera assistant">
+          <div class="emp-vera-fab-head">
+            <div>
+              <span class="emp-vera-fab-eyebrow">${icon("sparkles")} Ask Vera</span>
+              <h3>${context ? escapeHtml(context.name) : "Talent Pipeline"}</h3>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm" data-vera-fab-close aria-label="Close">${icon("x")}</button>
+          </div>
+          ${context ? `
+            <p class="emp-vera-fab-subtitle">Looking at <strong>${escapeHtml(context.name)}</strong> · ${escapeHtml(context.role)} · ${context.fit}% match</p>
+            <div class="emp-vera-fab-actions">
+              ${actions.map(([key, label, ic]) => `<button type="button" class="emp-vera-fab-chip ${veraFabActiveAction === key ? "active" : ""}" data-vera-fab-action="${key}">${icon(ic)}<span>${label}</span></button>`).join("")}
+            </div>
+            <div class="emp-vera-fab-result">${veraFabResultHtml || `<p class="emp-empty-hint">Pick an action above and Vera will generate it from ${escapeHtml(context.name.split(" ")[0])}'s profile.</p>`}</div>
+            <p class="emp-vera-principle">${icon("shield-check")} Generated from candidate data already in this pipeline. Review before using.</p>
+          ` : `<p class="emp-empty-hint">No candidates in view — adjust filters to give Vera something to look at.</p>`}
+        </div>
+      ` : ""}
+    `;
+  }
+
   function draw() {
     const list = filtered();
     const openRoles = DATA.employerRoles.filter(r => ["Open", "Paused"].includes(r.status));
@@ -13079,6 +13172,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
 
       ${openDrawerId ? renderDrawer(openDrawerId) : ""}
       ${pendingAction ? renderActionModal(pendingAction) : ""}
+      ${renderVeraFab(list)}
     `;
     createIcons();
     bind();
@@ -13213,6 +13307,42 @@ function renderEmployerTalentPipeline(root, params = {}) {
       el.addEventListener("mouseenter", () => { if (popover) popover.hidden = false; });
       el.addEventListener("mouseleave", () => { if (popover) popover.hidden = true; });
     });
+
+    qs("[data-vera-fab-toggle]", root)?.addEventListener("click", event => {
+      event.stopPropagation();
+      veraPanelOpen = !veraPanelOpen;
+      if (veraPanelOpen) { veraFabActiveAction = null; veraFabResultHtml = ""; }
+      draw();
+    });
+    qs("[data-vera-fab-close]", root)?.addEventListener("click", event => {
+      event.stopPropagation();
+      veraPanelOpen = false;
+      draw();
+    });
+    qs(".emp-vera-fab-panel", root)?.addEventListener("click", event => event.stopPropagation());
+    qsa("[data-vera-fab-action]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      const c = pickVeraContextCandidate(filtered(), openDrawerId);
+      if (!c) return;
+      const key = btn.dataset.veraFabAction;
+      veraFabActiveAction = key;
+      if (key === "summarize") {
+        veraFabResultHtml = `<p>${escapeHtml(summarizeCandidateResume(c))}</p>`;
+      } else if (key === "questions") {
+        veraFabResultHtml = `<ol class="emp-ai-question-list">${generateInterviewQuestions(c).map(q => `<li>${escapeHtml(q)}</li>`).join("")}</ol>`;
+      } else if (key === "explain-score") {
+        veraFabResultHtml = `<p>${escapeHtml(explainMatchScoreText(c))}</p>`;
+      } else if (key === "compare") {
+        veraFabResultHtml = `<ul class="emp-vera-fab-compare-list">${compareWithTopCandidatesText(c, filtered()).map(line => `<li>${escapeHtml(line)}</li>`).join("")}</ul>`;
+      } else if (key === "next-stage") {
+        veraFabResultHtml = `<p>${escapeHtml(recommendNextStageText(c))}</p>`;
+      } else if (key === "draft-email") {
+        const draft = draftCandidateEmailText(c);
+        veraFabResultHtml = `<p class="emp-vera-fab-email-subject"><strong>Subject:</strong> ${escapeHtml(draft.subject)}</p>${draft.body.split("\n\n").map(p => `<p>${escapeHtml(p)}</p>`).join("")}`;
+      }
+      draw();
+    }));
+    document.addEventListener("click", () => { if (veraPanelOpen) { veraPanelOpen = false; draw(); } });
 
     qs("[data-drawer-close]", root)?.addEventListener("click", () => { openDrawerId = null; draw(); });
     qsa("[data-drawer-tab]", root).forEach(btn => btn.addEventListener("click", () => { drawerTab = btn.dataset.drawerTab; draw(); }));
@@ -14674,6 +14804,7 @@ if (typeof module !== "undefined" && module.exports) {
     estimateCandidatePool,
     pickPriorityCandidate,
     computeMatchBreakdown,
+    pickVeraContextCandidate,
     isRoleBasicsComplete,
     isRoleSummaryAdded,
     isResponsibilitiesAdded,

@@ -13138,6 +13138,66 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-cand-quick-actions button:hover { background: rgba(7, 56, 47, 0.08); color: var(--emp-green, var(--text)); }
 .emp-cand-quick-actions svg { width: 13px; height: 13px; }
 .emp-ai-question-list { margin: 12px 0; padding-left: 20px; display: grid; gap: 8px; font-size: 14px; line-height: 1.5; }
+
+.emp-vera-fab {
+  position: fixed; right: 24px; bottom: 24px; z-index: 78;
+  width: 56px; height: 56px; border-radius: 999px; border: none; cursor: pointer;
+  display: grid; place-items: center; color: #fff;
+  background: linear-gradient(135deg, var(--emp-ai, #6f5fc4) 0%, #4d3ea3 100%);
+  box-shadow: 0 10px 26px rgba(111, 95, 196, 0.42);
+  animation: empVeraFabGlow 3.2s ease-in-out infinite;
+  transition: transform 0.15s ease;
+}
+.emp-vera-fab:hover { transform: translateY(-2px) scale(1.04); }
+.emp-vera-fab svg { width: 22px; height: 22px; }
+@keyframes empVeraFabGlow {
+  0%, 100% { box-shadow: 0 10px 26px rgba(111, 95, 196, 0.42); }
+  50% { box-shadow: 0 10px 32px rgba(111, 95, 196, 0.66); }
+}
+.emp-vera-fab-panel {
+  position: fixed; right: 24px; bottom: 92px; z-index: 79;
+  width: min(380px, calc(100vw - 48px)); max-height: min(560px, calc(100vh - 140px));
+  overflow-y: auto; background: #fff; border-radius: var(--emp-radius-card, 20px);
+  box-shadow: var(--emp-shadow-hero, 0 26px 64px rgba(7, 56, 47, 0.22));
+  border: 1px solid var(--emp-line, var(--line)); padding: 18px;
+  animation: empVeraFabPanelIn 0.16s ease;
+}
+@keyframes empVeraFabPanelIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.emp-vera-fab-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.emp-vera-fab-head h3 { margin: 2px 0 0; font-size: var(--emp-title-lg, 18px); }
+.emp-vera-fab-eyebrow {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--emp-ai, #6f5fc4);
+}
+.emp-vera-fab-eyebrow svg { width: 11px; height: 11px; }
+.emp-vera-fab-subtitle { margin: 0 0 12px; font-size: 12px; color: var(--emp-muted, var(--muted)); line-height: 1.5; }
+.emp-vera-fab-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.emp-vera-fab-chip {
+  display: flex; align-items: center; gap: 6px; text-align: left;
+  padding: 8px 10px; border-radius: 10px; border: 1px solid var(--emp-line, var(--line));
+  background: #fff; cursor: pointer; font-size: 11.5px; line-height: 1.3; color: var(--emp-ink, var(--text));
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+.emp-vera-fab-chip svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--emp-ai, #6f5fc4); }
+.emp-vera-fab-chip:hover { border-color: var(--emp-ai, #6f5fc4); background: rgba(111, 95, 196, 0.06); }
+.emp-vera-fab-chip.active { border-color: var(--emp-ai, #6f5fc4); background: rgba(111, 95, 196, 0.1); }
+.emp-vera-fab-result {
+  padding: 12px; border-radius: 12px; background: rgba(111, 95, 196, 0.06);
+  font-size: 13px; line-height: 1.55; margin-bottom: 10px; min-height: 40px;
+}
+.emp-vera-fab-result p { margin: 0 0 8px; }
+.emp-vera-fab-result p:last-child { margin-bottom: 0; }
+.emp-vera-fab-result ul, .emp-vera-fab-result ol { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.emp-vera-fab-email-subject { padding-bottom: 8px; margin-bottom: 8px !important; border-bottom: 1px solid var(--emp-line, var(--line)); }
+@media (max-width: 640px) {
+  .emp-vera-fab { right: 16px; bottom: 16px; }
+  .emp-vera-fab-panel { right: 16px; bottom: 84px; width: calc(100vw - 32px); }
+  .emp-vera-fab-actions { grid-template-columns: 1fr; }
+}
 .emp-scorecard-card { padding: 12px 14px; margin-bottom: 8px; border: 1px solid var(--line); }
 .emp-scorecard-card p { margin: 4px 0 0; font-size: 12px; line-height: 1.5; }
 .emp-drawer-backdrop { position: fixed; inset: 0; z-index: 70; background: rgba(15, 23, 42, 0.32); }
