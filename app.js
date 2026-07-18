@@ -11047,6 +11047,23 @@ function renderAdditionalCompensationEditor(draft) {
   `;
 }
 
+function renderRequiredDocumentsControl(draft) {
+  const docs = [["resume", "Resume"], ["coverLetter", "Cover letter"], ["portfolio", "Portfolio"]];
+  return `
+    <div class="emp-required-docs">
+      ${docs.map(([key, label]) => `
+        <div class="emp-required-doc-row">
+          <span>${label}</span>
+          <div class="emp-required-doc-toggle" data-doc-toggle="${key}">
+            <button type="button" class="${draft.requiredDocumentTypes[key] === "Required" ? "active" : ""}" data-doc-value="Required">Required</button>
+            <button type="button" class="${draft.requiredDocumentTypes[key] === "Optional" ? "active" : ""}" data-doc-value="Optional">Optional</button>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderScreeningQuestionsList(draft) {
   return `
     <div data-screening-list>
@@ -11644,6 +11661,7 @@ function renderEmployerRoleBuilder(root, roleId) {
     writeState(seedState);
   }
   let activeStep = 0;
+  let publishActiveTab = "preview";
   let saveTimer = null;
   const dismissedSuggestions = new Set();
   const appliedSuggestions = new Set();
@@ -11862,6 +11880,16 @@ function renderEmployerRoleBuilder(root, roleId) {
     });
   }
 
+  function bindRequiredDocumentsControl() {
+    qsa("[data-doc-toggle]", root).forEach(group => {
+      const key = group.dataset.docToggle;
+      qsa("button", group).forEach(btn => btn.addEventListener("click", () => {
+        draft.requiredDocumentTypes[key] = btn.dataset.docValue;
+        persistDraft(); draw();
+      }));
+    });
+  }
+
   function bindScreeningQuestionsList() {
     qsa("[data-screening-index]", root).forEach(input => {
       input.addEventListener("input", () => { draft.screeningQuestions[Number(input.dataset.screeningIndex)] = input.value; scheduleAutosave(); });
@@ -12012,21 +12040,102 @@ function renderEmployerRoleBuilder(root, roleId) {
     }
   }
 
+  function renderHiringAndPublishExtras(draft) {
+    return `
+      <h3 class="emp-form-subhead">Hiring process</h3>
+      ${renderHiringStagesEditor(draft)}
+
+      <h3 class="emp-form-subhead">Application setup</h3>
+      <div class="emp-form-grid-2">
+        <label>Application deadline <span class="emp-optional-tag">Optional</span><input type="date" data-field-applicationDeadline value="${draft.applicationDeadline}"></label>
+        <label>Contact person <span class="emp-optional-tag">Optional</span><input type="text" data-field-contactPerson value="${escapeHtml(draft.contactPerson)}"></label>
+      </div>
+      ${renderRequiredDocumentsControl(draft)}
+      <div>
+        <span class="emp-tags-label">Screening questions shown at application</span>
+        ${renderScreeningQuestionsList(draft)}
+      </div>
+      <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-candidateConsent ${draft.candidateConsent ? "checked" : ""}> Require a candidate consent checkbox before applying</label>
+
+      <h3 class="emp-form-subhead">Job distribution</h3>
+      ${renderDistributionSection(draft)}
+
+      <h3 class="emp-form-subhead">About the company</h3>
+      ${renderCompanySection(draft)}
+
+      <h3 class="emp-form-subhead">Accessibility & equal opportunity</h3>
+      <label>Accommodation statement<textarea data-field-accommodationStatement rows="2">${escapeHtml(draft.accommodationStatement)}</textarea></label>
+    `;
+  }
+
+  function renderPublishReadinessTab(checks) {
+    const statusIcon = s => s === "Complete" ? "check" : s === "Missing" ? "x" : s === "Optional" ? "circle" : "alert-triangle";
+    return `
+      <div class="emp-callout-label">${icon("list-checks")} Publication readiness</div>
+      <ul class="emp-checklist emp-checklist--status">
+        ${checks.map(c => `<li class="emp-check-${c.status.toLowerCase().replace(/\s+/g, "-")}">${icon(statusIcon(c.status))} <span>${c.label}</span><span class="emp-check-status">${c.status}</span></li>`).join("")}
+      </ul>
+    `;
+  }
+
+  function renderPublishVeraTab(review, ri, pendingSuggestions, draft) {
+    return `
+      <div class="emp-callout-label">${icon("sparkles")} Vera role review</div>
+      <p class="emp-vera-readiness">Role readiness: <strong>${review.readiness}%</strong></p>
+      ${review.strengths.length ? `
+        <div class="emp-intel-section">
+          <h3 class="emp-intel-heading">Strengths</h3>
+          <ul class="emp-intel-strengths">${review.strengths.map(s => `<li>${icon("check")} ${escapeHtml(s)}</li>`).join("")}</ul>
+        </div>` : ""}
+      ${review.needsAttention.length ? `
+        <div class="emp-intel-section">
+          <h3 class="emp-intel-heading">Needs attention</h3>
+          ${review.needsAttention.map(n => `<div class="emp-callout emp-callout-warn"><p>${icon("alert-triangle")} ${escapeHtml(n.text)}</p></div>`).join("")}
+        </div>` : ""}
+      ${review.estimatedEffect.length ? `
+        <div class="emp-intel-section">
+          <h3 class="emp-intel-heading">Estimated effect</h3>
+          <ul class="emp-intel-strengths">${review.estimatedEffect.map(e => `<li>${icon("trending-up")} ${escapeHtml(e)}</li>`).join("")}</ul>
+        </div>` : ""}
+      ${review.needsAttention.some(n => n.action) ? `
+        <div class="emp-intel-section">
+          <h3 class="emp-intel-heading">Recommended actions</h3>
+          <div class="emp-suggestion-actions emp-suggestion-actions--wrap">
+            ${review.needsAttention.filter(n => n.action).map(n => `<button type="button" class="btn btn-ghost btn-sm" data-vera-review-action="${escapeHtml(JSON.stringify(n.action))}">${escapeHtml(n.action.label)}</button>`).join("")}
+            <button type="button" class="btn btn-ghost btn-sm" data-vera-review-apply-all>Apply all selected changes</button>
+          </div>
+        </div>` : ""}
+      <p class="emp-vera-principle">${icon("shield-check")} The final hiring and publishing decision remains with you.</p>
+      ${ri && ri.talentAvailability && ri.talentAvailability !== "Not enough data" ? `
+        <div class="card emp-role-intelligence" style="margin-top:16px;">
+          ${renderRoleIntelligencePanel(ri, pendingSuggestions, draft)}
+        </div>
+      ` : ""}
+    `;
+  }
+
+  function renderPublishPreviewTab(draft) {
+    const company = DATA.companies.find(c => c.id === "maybank");
+    return `
+      <div class="emp-job-preview-frame">
+        ${renderJobPreviewContent(company, draft.responsibilities.filter(r => r.trim()))}
+      </div>
+    `;
+  }
+
   function renderPreviewPublishStep() {
     const ri = existing ? existing.roleIntelligence : null;
     const pendingSuggestions = ri ? (ri.suggestions || []).filter(s => !dismissedSuggestions.has(s.recommendation) && !appliedSuggestions.has(s.recommendation)) : [];
     const checks = getPublishReadinessChecks(draft);
     const review = computeDraftVeraReview(draft);
-    const statusIcon = s => s === "Complete" ? "check" : s === "Missing" ? "x" : s === "Optional" ? "circle" : "alert-triangle";
 
     return `
       <div class="emp-publish-layout">
         <div class="emp-publish-left">
-          <div class="card emp-publish-checklist">
-            <div class="emp-callout-label">${icon("list-checks")} Publication readiness</div>
-            <ul class="emp-checklist emp-checklist--status">
-              ${checks.map(c => `<li class="emp-check-${c.status.toLowerCase().replace(/\s+/g, "-")}">${icon(statusIcon(c.status))} <span>${c.label}</span><span class="emp-check-status">${c.status}</span></li>`).join("")}
-            </ul>
+          <div class="card">
+            ${renderHiringAndPublishExtras(draft)}
+          </div>
+          <div class="card emp-publish-checklist" style="margin-top:16px;">
             <div class="emp-wizard-actions">
               <button type="button" class="btn btn-ghost" data-emp-prev>Back</button>
               <div class="emp-publish-buttons">
@@ -12040,38 +12149,15 @@ function renderEmployerRoleBuilder(root, roleId) {
         </div>
         <div class="emp-publish-right">
           <div class="card emp-role-intelligence emp-role-intelligence--wide">
-            <div class="emp-callout-label">${icon("sparkles")} Vera role review</div>
-            <p class="emp-vera-readiness">Role readiness: <strong>${review.readiness}%</strong></p>
-            ${review.strengths.length ? `
-              <div class="emp-intel-section">
-                <h3 class="emp-intel-heading">Strengths</h3>
-                <ul class="emp-intel-strengths">${review.strengths.map(s => `<li>${icon("check")} ${escapeHtml(s)}</li>`).join("")}</ul>
-              </div>` : ""}
-            ${review.needsAttention.length ? `
-              <div class="emp-intel-section">
-                <h3 class="emp-intel-heading">Needs attention</h3>
-                ${review.needsAttention.map(n => `<div class="emp-callout emp-callout-warn"><p>${icon("alert-triangle")} ${escapeHtml(n.text)}</p></div>`).join("")}
-              </div>` : ""}
-            ${review.estimatedEffect.length ? `
-              <div class="emp-intel-section">
-                <h3 class="emp-intel-heading">Estimated effect</h3>
-                <ul class="emp-intel-strengths">${review.estimatedEffect.map(e => `<li>${icon("trending-up")} ${escapeHtml(e)}</li>`).join("")}</ul>
-              </div>` : ""}
-            ${review.needsAttention.some(n => n.action) ? `
-              <div class="emp-intel-section">
-                <h3 class="emp-intel-heading">Recommended actions</h3>
-                <div class="emp-suggestion-actions emp-suggestion-actions--wrap">
-                  ${review.needsAttention.filter(n => n.action).map(n => `<button type="button" class="btn btn-ghost btn-sm" data-vera-review-action="${escapeHtml(JSON.stringify(n.action))}">${escapeHtml(n.action.label)}</button>`).join("")}
-                  <button type="button" class="btn btn-ghost btn-sm" data-vera-review-apply-all>Apply all selected changes</button>
-                </div>
-              </div>` : ""}
-            <p class="emp-vera-principle">${icon("shield-check")} The final hiring and publishing decision remains with you.</p>
-          </div>
-          ${ri && ri.talentAvailability && ri.talentAvailability !== "Not enough data" ? `
-            <div class="card emp-role-intelligence" style="margin-top:16px;">
-              ${renderRoleIntelligencePanel(ri, pendingSuggestions, draft)}
+            <div class="emp-tab-strip">
+              <button type="button" class="${publishActiveTab === "preview" ? "active" : ""}" data-publish-tab="preview">Preview</button>
+              <button type="button" class="${publishActiveTab === "readiness" ? "active" : ""}" data-publish-tab="readiness">Readiness</button>
+              <button type="button" class="${publishActiveTab === "vera" ? "active" : ""}" data-publish-tab="vera">Vera</button>
             </div>
-          ` : ""}
+            ${publishActiveTab === "preview" ? renderPublishPreviewTab(draft)
+              : publishActiveTab === "readiness" ? renderPublishReadinessTab(checks)
+              : renderPublishVeraTab(review, ri, pendingSuggestions, draft)}
+          </div>
         </div>
       </div>
     `;
@@ -12166,6 +12252,45 @@ function renderEmployerRoleBuilder(root, roleId) {
     qs("[data-emp-save-draft]", root)?.addEventListener("click", () => commitDraft("Draft"));
     qs("[data-emp-publish]", root)?.addEventListener("click", () => commitDraft(existing ? existing.status : "Open"));
     qs("[data-emp-preview-open]", root)?.addEventListener("click", openRolePreviewModal);
+    qsa("[data-publish-tab]", root).forEach(btn => btn.addEventListener("click", () => {
+      publishActiveTab = btn.dataset.publishTab;
+      if (publishActiveTab === "preview") { draft.previewReviewed = true; persistDraft(); }
+      draw();
+    }));
+
+    bindHiringStagesEditor();
+    bindRequiredDocumentsControl();
+    bindField("[data-field-applicationDeadline]", "applicationDeadline");
+    bindField("[data-field-contactPerson]", "contactPerson");
+    bindScreeningQuestionsList();
+    bindCheckbox("[data-field-candidateConsent]", "candidateConsent");
+    qsa("[data-distribution-channel]", root).forEach(cb => cb.addEventListener("change", () => {
+      const ch = cb.dataset.distributionChannel;
+      if (cb.checked) { if (!draft.distributionChannels.includes(ch)) draft.distributionChannels.push(ch); }
+      else draft.distributionChannels = draft.distributionChannels.filter(x => x !== ch);
+      persistDraft();
+    }));
+    qsa("[data-copy-posting]", root).forEach(btn => btn.addEventListener("click", () => {
+      const text = buildPlainTextJobPosting(draft);
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast(`Copied job description for ${btn.dataset.copyPosting}.`)).catch(() => showToast("Could not copy — select and copy manually.", "info"));
+      } else showToast("Clipboard is not available in this browser.", "info");
+    }));
+    bindField("[data-field-externalPostingUrl]", "externalPostingUrl");
+    bindField("[data-field-trackingSource]", "trackingSource");
+    bindField("[data-field-campaignName]", "campaignName");
+    bindField("[data-field-distributionExpiry]", "distributionExpiry");
+    qs("[data-use-company-profile]", root)?.addEventListener("click", () => {
+      const company = DATA.companies.find(c => c.id === "maybank");
+      if (!company) { showToast("No company profile found yet.", "info"); return; }
+      draft.companySummary = company.summary || "";
+      draft.useCompanyProfile = true;
+      persistDraft();
+      draw();
+      showToast("Pulled details from your Company Profile.");
+    });
+    bindField("[data-field-companySummary]", "companySummary");
+    bindField("[data-field-accommodationStatement]", "accommodationStatement");
   }
 
   function draw() {
