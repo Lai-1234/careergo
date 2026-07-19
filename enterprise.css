@@ -17393,7 +17393,8 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
 .cg-vera-chat-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(11, 30, 26, 0.32);
+  background: rgba(6, 17, 15, 0.6);
+  backdrop-filter: blur(2px);
 }
 
 .cg-vera-chat-sheet {
@@ -17417,8 +17418,10 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
   flex-direction: column;
   min-height: 0;
   padding: 20px 14px;
-  border-right: 1px solid rgba(18, 59, 52, 0.1);
-  background: rgba(255, 255, 255, 0.5);
+  border-right: 0;
+  background:
+    radial-gradient(circle at 95% 10%, rgba(101, 181, 172, 0.18), transparent 220px),
+    linear-gradient(135deg, #07382f 0%, #052f29 100%);
 }
 
 .cg-vera-chat-history-head {
@@ -17430,7 +17433,8 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
 }
 
 .cg-vera-chat-history-head span {
-  color: #68756f;
+  color: rgba(255, 250, 242, 0.6) !important;
+  -webkit-text-fill-color: rgba(255, 250, 242, 0.6) !important;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -17443,13 +17447,18 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
   gap: 6px;
   min-height: 30px;
   padding: 0 12px;
-  border: 0;
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 999px;
-  background: #063f35;
+  background: rgba(255, 255, 255, 0.12);
   color: #fffaf2;
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.cg-vera-chat-history-head button:hover {
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .cg-vera-chat-history-head button svg {
@@ -17465,7 +17474,7 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
   min-height: 0;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: rgba(18, 59, 52, 0.28) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.24) transparent;
 }
 
 .cg-vera-history-item {
@@ -17480,17 +17489,18 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
 }
 
 .cg-vera-history-item:hover {
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(18, 59, 52, 0.1);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .cg-vera-history-item.active {
-  background: rgba(219, 239, 233, 0.7);
-  border-color: rgba(18, 59, 52, 0.14);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .cg-vera-history-item strong {
-  color: #123c34;
+  color: #fffaf2 !important;
+  -webkit-text-fill-color: #fffaf2 !important;
   font-size: 12px;
   font-weight: 500;
   overflow: hidden;
@@ -17499,7 +17509,8 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
 }
 
 .cg-vera-history-item small {
-  color: #8a978f;
+  color: rgba(255, 250, 242, 0.55) !important;
+  -webkit-text-fill-color: rgba(255, 250, 242, 0.55) !important;
   font-size: 11px;
 }
 
@@ -17687,8 +17698,7 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
   }
 
   .cg-vera-chat-history {
-    border-right: 0;
-    border-bottom: 1px solid rgba(18, 59, 52, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
     max-height: 160px;
   }
 }

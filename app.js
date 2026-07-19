@@ -7165,6 +7165,10 @@ function veraHistoryItemHtml(conv, activeId) {
   `;
 }
 
+function veraVisibleConversations(state) {
+  return state.veraConversations.filter(c => c.messages.length > 0).sort((a, b) => b.updatedAt - a.updatedAt);
+}
+
 function veraMessagesHtml(messages, firstName) {
   const shown = messages.length ? messages : [{ from: "vera", text: `Welcome back, ${firstName}. What can I help you with today?` }];
   return shown.map(msg => `<p class="${msg.from === "vera" ? "incoming" : "outgoing"}">${msg.text}</p>`).join("")
@@ -7172,7 +7176,7 @@ function veraMessagesHtml(messages, firstName) {
 }
 
 function veraChatPanelMarkup(state) {
-  const conversations = [...state.veraConversations].sort((a, b) => b.updatedAt - a.updatedAt);
+  const conversations = veraVisibleConversations(state);
   const active = getActiveVeraConversation(state);
   return `
     <div class="cg-vera-chat-panel" data-vera-chat-panel hidden>
@@ -7240,10 +7244,12 @@ function refreshVeraPanel() {
   const els = veraPanelEls();
   if (!els) return;
   const state = readState();
-  const conversations = [...state.veraConversations].sort((a, b) => b.updatedAt - a.updatedAt);
+  const isDraft = els.panel.dataset.draftMode === "1";
+  const conversations = veraVisibleConversations(state);
   const active = getActiveVeraConversation(state);
-  els.historyList.innerHTML = conversations.map(conv => veraHistoryItemHtml(conv, active.id)).join("");
-  els.messagesPane.innerHTML = veraMessagesHtml(active.messages, getFirstName(state));
+  const highlightId = isDraft ? null : active.id;
+  els.historyList.innerHTML = conversations.map(conv => veraHistoryItemHtml(conv, highlightId)).join("");
+  els.messagesPane.innerHTML = veraMessagesHtml(isDraft ? [] : active.messages, getFirstName(state));
   createIcons();
   els.messagesPane.scrollTop = els.messagesPane.scrollHeight;
   updateVeraBubbleBadge();
@@ -7252,7 +7258,12 @@ function refreshVeraPanel() {
 function sendVeraChatMessage(text) {
   const trimmed = text.trim();
   if (!trimmed) return;
+  const els = veraPanelEls();
   let state = readState();
+  if (els && els.panel.dataset.draftMode === "1") {
+    state = createVeraConversation(state, null);
+    delete els.panel.dataset.draftMode;
+  }
   state = appendVeraMessage(state, "user", trimmed);
   state = appendVeraMessage(state, "vera", veraReply(trimmed));
   writeState(state);
@@ -7266,6 +7277,7 @@ function openVeraPanel(options = {}) {
     let state = readState();
     state = createVeraConversation(state, options.seedTopic);
     writeState(state);
+    delete els.panel.dataset.draftMode;
   }
   const state = readState();
   state.veraLastReadAt = Date.now();
@@ -7288,15 +7300,14 @@ function wireVeraChatPanel() {
   if (!els || els.panel.dataset.wired) return;
   els.panel.dataset.wired = "1";
   els.newChatBtn.addEventListener("click", () => {
-    let state = readState();
-    state = createVeraConversation(state, null);
-    writeState(state);
+    els.panel.dataset.draftMode = "1";
     refreshVeraPanel();
     els.input.focus();
   });
   els.historyList.addEventListener("click", event => {
     const item = event.target.closest("[data-vera-history-item]");
     if (!item) return;
+    delete els.panel.dataset.draftMode;
     const state = readState();
     state.activeVeraConversationId = item.dataset.veraHistoryItem;
     writeState(state);
