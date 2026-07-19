@@ -1851,9 +1851,15 @@ function workspaceTopNav() {
         <div class="cg-search-panel" data-search-panel hidden></div>
       </div>
       <div class="nav-actions cg-user-actions">
-        <button type="button" class="btn btn-ghost cg-message-trigger" data-vera-chat-trigger aria-label="Open Coach Vera chat">
-          ${icon("message-circle")}
-        </button>
+        <div class="account-menu-wrap">
+          <button type="button" class="btn btn-ghost cg-message-trigger" data-chat-menu-toggle aria-haspopup="menu" aria-expanded="false" aria-label="Open chat">
+            ${icon("message-circle")}
+          </button>
+          <div class="account-menu glass-card" data-chat-menu hidden role="menu">
+            <button role="menuitem" type="button" data-chat-menu-vera>${icon("bot")} Coach Vera</button>
+            <a role="menuitem" href="posts.html#messages">${icon("inbox")} Messages</a>
+          </div>
+        </div>
         <div class="notification-menu-wrap">
           <button class="btn btn-ghost notification-trigger" type="button" data-notification-toggle aria-haspopup="dialog" aria-expanded="false" aria-label="Open notifications">
             ${icon("bell")} ${notifications.length ? `<strong>${notifications.length}</strong>` : ""}
@@ -2717,7 +2723,7 @@ function renderNavigation() {
   setActiveNav();
   bindAccountMenu();
   bindNotificationMenu();
-  qs("[data-vera-chat-trigger]")?.addEventListener("click", () => openVeraPanel());
+  bindChatMenu();
   updateVeraBubbleBadge();
   const workspaceSearchForm = qs("[data-workspace-search]");
   if (workspaceSearchForm?.classList.contains("cg-vera-search")) {
@@ -2777,6 +2783,34 @@ function bindNotificationMenu() {
     writeState(syncCurrentUser(state));
     renderNavigation();
     showToast("Notifications cleared.");
+  });
+  document.addEventListener("click", close);
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") close();
+  });
+}
+
+function bindChatMenu() {
+  const toggle = qs("[data-chat-menu-toggle]");
+  const menu = qs("[data-chat-menu]");
+  if (!toggle || !menu) return;
+  const close = () => {
+    menu.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+  };
+  const open = () => {
+    menu.hidden = false;
+    toggle.setAttribute("aria-expanded", "true");
+  };
+  toggle.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    menu.hidden ? open() : close();
+  });
+  menu.addEventListener("click", event => event.stopPropagation());
+  qs("[data-chat-menu-vera]", menu)?.addEventListener("click", () => {
+    close();
+    openVeraPanel();
   });
   document.addEventListener("click", close);
   document.addEventListener("keydown", event => {
