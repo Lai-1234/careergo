@@ -254,7 +254,7 @@ This navbar should match the current dashboard workspace style:
 - CareerGo logo on the left
 - Tabs: `Today`, `Discover`, `Grow`, `Worth`, `Pipeline`, `Feed`
 - Active tab is a solid forest-green pill
-- Search bar says `Ask Vera anything...` with `⌘ K`
+- Search bar says `Ask Vera anything...` (no `⌘ K` hint pill — removed; typing here shows live search results, it does not open chat)
 - Chat and notification icon buttons
 - User avatar initials on the far right
 - Sticky at the top when scrolling

@@ -1528,11 +1528,13 @@ function workspaceTopNav() {
       <nav class="nav-links cg-workspace-tabs" aria-label="CareerGo workspace" data-tour-target="workspace-nav">
         ${workspaceLinks.map(([key, label, href]) => `<a data-nav="${key}" class="${isWorkspaceTabActive(key) ? "active" : ""}" href="${href}">${label}</a>`).join("")}
       </nav>
-      <form class="workspace-search cg-vera-search" role="search" data-workspace-search data-tour-target="workspace-search">
-        ${icon("search")}
-        <input name="q" aria-label="Ask Vera" placeholder="Ask Vera anything...">
-        <kbd>Cmd K</kbd>
-      </form>
+      <div class="cg-search-shell" data-search-shell>
+        <form class="workspace-search cg-vera-search" role="search" data-workspace-search data-tour-target="workspace-search" style="grid-template-columns:24px minmax(0,1fr) !important">
+          ${icon("search")}
+          <input name="q" aria-label="Ask Vera" placeholder="Ask Vera anything..." autocomplete="off">
+        </form>
+        <div class="cg-search-panel" data-search-panel hidden></div>
+      </div>
       <div class="nav-actions cg-user-actions">
         <a class="btn btn-ghost cg-message-trigger" href="posts.html#messages" aria-label="Open messages">
           ${icon("message-circle")}
@@ -1799,33 +1801,6 @@ function ensureWorkspaceNavbarStyles() {
       opacity: 1 !important;
     }
 
-    html body .topbar:has(.cg-vera-search) .cg-vera-search kbd {
-      width: auto !important;
-      min-width: 44px !important;
-      height: 24px !important;
-      padding: 0 8px !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      border: 1px solid rgba(14, 44, 37, 0.09) !important;
-      border-radius: 7px !important;
-      color: transparent !important;
-      -webkit-text-fill-color: transparent !important;
-      background: rgba(255, 255, 255, 0.64) !important;
-      font-size: 0 !important;
-      font-family: var(--font-sans, Inter, sans-serif) !important;
-      box-shadow: none !important;
-    }
-
-    html body .topbar:has(.cg-vera-search) .cg-vera-search kbd::before {
-      content: "\\2318 K" !important;
-      color: #87908b !important;
-      -webkit-text-fill-color: #87908b !important;
-      font-size: 12px !important;
-      font-weight: 800 !important;
-      white-space: nowrap !important;
-    }
-
     html body .topbar:has(.cg-workspace-tabs) .cg-user-actions {
       justify-self: end !important;
       display: flex !important;
@@ -2043,23 +2018,6 @@ function ensureWorkspaceNavbarStyles() {
       color: #5f7573 !important;
       -webkit-text-fill-color: #5f7573 !important;
       opacity: 0.82 !important;
-    }
-
-    html body .topbar:has(.cg-vera-search) .cg-vera-search kbd {
-      min-width: 34px !important;
-      height: 20px !important;
-      padding: 0 6px !important;
-      border-color: #e3dcc8 !important;
-      color: transparent !important;
-      -webkit-text-fill-color: transparent !important;
-    }
-
-    html body .topbar:has(.cg-vera-search) .cg-vera-search kbd::before {
-      content: "Cmd K" !important;
-      color: #5f7573 !important;
-      -webkit-text-fill-color: #5f7573 !important;
-      font-size: 10px !important;
-      font-weight: 500 !important;
     }
 
     html body .topbar:has(.cg-workspace-tabs) .cg-message-trigger,
@@ -2295,33 +2253,6 @@ function ensureWorkspaceNavbarStyles() {
       opacity: 0.82 !important;
     }
 
-    html body .topbar.workspace-topbar .cg-vera-search kbd {
-      min-width: 34px !important;
-      height: 20px !important;
-      padding: 0 6px !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      border: 1px solid #e3dcc8 !important;
-      border-radius: 7px !important;
-      background: rgba(255, 255, 255, 0.8) !important;
-      color: transparent !important;
-      -webkit-text-fill-color: transparent !important;
-      font-size: 0 !important;
-      line-height: 1 !important;
-    }
-
-    html body .topbar.workspace-topbar .cg-vera-search kbd::before {
-      content: "Cmd K" !important;
-      color: #5f7573 !important;
-      -webkit-text-fill-color: #5f7573 !important;
-      font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
-      font-size: 10px !important;
-      font-weight: 500 !important;
-      line-height: 1 !important;
-      letter-spacing: 0 !important;
-    }
-
     html body .topbar.workspace-topbar .cg-user-actions {
       justify-self: end !important;
       display: flex !important;
@@ -2471,25 +2402,26 @@ function renderNavigation() {
   setActiveNav();
   bindAccountMenu();
   bindNotificationMenu();
-  qs("[data-workspace-search]")?.addEventListener("submit", event => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const q = String(form.get("q") || "").trim();
-    if (!q) return;
-    if (event.currentTarget.classList.contains("cg-vera-search")) {
-      location.href = `posts.html?topic=${encodeURIComponent(q)}#messages`;
-      return;
-    }
-    const lower = q.toLowerCase();
-    const destination = state.session.role === "employer"
-      ? "employer-app.html"
-      : lower.includes("university") || lower.includes("college") || lower.includes("degree") || lower.includes("scholarship")
-      ? "universities.html"
-      : lower.includes("company") || lower.includes("culture") || lower.includes("review") || lower.includes("maybank") || lower.includes("grab") || lower.includes("cimb")
-        ? "companies.html"
-        : "discover.html";
-    location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#candidates` : `${destination}?q=${encodeURIComponent(q)}`;
-  });
+  const workspaceSearchForm = qs("[data-workspace-search]");
+  if (workspaceSearchForm?.classList.contains("cg-vera-search")) {
+    attachLiveSearch(workspaceSearchForm, query => renderSearchPanelContent(query, "workspace", readState()));
+  } else if (workspaceSearchForm) {
+    workspaceSearchForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const q = String(form.get("q") || "").trim();
+      if (!q) return;
+      const lower = q.toLowerCase();
+      const destination = state.session.role === "employer"
+        ? "employer-app.html"
+        : lower.includes("university") || lower.includes("college") || lower.includes("degree") || lower.includes("scholarship")
+        ? "universities.html"
+        : lower.includes("company") || lower.includes("culture") || lower.includes("review") || lower.includes("maybank") || lower.includes("grab") || lower.includes("cimb")
+          ? "companies.html"
+          : "discover.html";
+      location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#candidates` : `${destination}?q=${encodeURIComponent(q)}`;
+    });
+  }
 }
 
 function bindNotificationMenu() {
@@ -5000,6 +4932,245 @@ function buildOrgCatalog() {
     programme: org.type === "University" ? (org.tags?.[0] || "Career outcomes") : (org.tags?.[1] || "Verified")
   }));
   return { companies, universities, catalog };
+}
+
+const WORKSPACE_SEARCH_SECTIONS = [
+  { label: "Today", href: "dashboard.html", icon: "layout-dashboard", keywords: ["today", "dashboard", "home", "daily brief", "brief"] },
+  { label: "Discover", href: "discover.html", icon: "compass", keywords: ["discover", "browse jobs", "explore roles", "find jobs"] },
+  { label: "Growth", href: "grow.html", icon: "route", keywords: ["grow", "growth", "coaching", "skills", "interview prep", "milestones", "roadmap"] },
+  { label: "Career Value", href: "market.html", icon: "bar-chart-2", keywords: ["worth", "career value", "market value", "salary", "benchmark", "negotiation", "pay"] },
+  { label: "Pipeline", href: "autopilot.html", icon: "list-checks", keywords: ["pipeline", "applications", "autopilot", "tracker", "applied"] },
+  { label: "Feed", href: "posts.html", icon: "message-circle", keywords: ["feed", "community", "posts", "inbox", "messages"] },
+  { label: "Profile", href: "profile.html", icon: "user-round", keywords: ["profile", "resume", "cv"] },
+  { label: "Settings", href: "settings.html", icon: "settings", keywords: ["settings", "account", "privacy"] },
+  { label: "Saved Items", href: "posts.html#saved", icon: "bookmark", keywords: ["saved", "bookmarks", "shortlist"] }
+];
+
+const CAREER_VALUE_SEARCH_INDEX = [
+  { title: "Career Value score", body: "Your projected RM 8,300-9,800/mo range and 6-month target.", href: "market.html", keywords: ["career value", "value score", "salary range", "worth"] },
+  { title: "Market benchmark vs. peers", body: "Compare your pay against KL PMs and top-tier companies like Grab and Shopee.", href: "market.html", keywords: ["benchmark", "market pulse", "peers", "compare"] },
+  { title: "Career scenario planner", body: "Model switching industry, going remote, or relocating to Singapore.", href: "market.html", keywords: ["scenario", "relocate", "remote", "switch industry", "singapore"] },
+  { title: "Salary negotiation prep", body: "Vera's highest-value action to raise your Career Value this month.", href: "market.html", keywords: ["negotiation", "raise", "offer", "highest value action"] }
+];
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+}
+
+function escapeRegExp(value) {
+  return String(value ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function highlightMatch(text, query) {
+  const safeText = escapeHtml(text);
+  const pattern = escapeRegExp(escapeHtml(query.trim()));
+  if (!pattern) return safeText;
+  return safeText.replace(new RegExp(pattern, "gi"), match => `<span class="cg-search-hit">${match}</span>`);
+}
+
+function matchesQuery(parts, query) {
+  return parts.filter(Boolean).join(" ").toLowerCase().includes(query);
+}
+
+function searchPublicCatalog(query, limit = 5) {
+  const q = query.trim().toLowerCase();
+  if (!q) return { companies: [], jobs: [], universities: [], totals: { companies: 0, jobs: 0, universities: 0 } };
+  const { companies, universities } = buildOrgCatalog();
+  const orgMatch = org => matchesQuery([org.name, org.industry, org.location, org.summary, org.signal, ...(org.tags || [])], q);
+  const jobMatch = job => matchesQuery([job.title, job.company, job.location, job.industry, job.type, job.level, ...(job.skills || [])], q);
+  const matchedCompanies = companies.filter(orgMatch);
+  const matchedJobs = DATA.jobs.filter(jobMatch);
+  const matchedUniversities = universities.filter(orgMatch);
+  return {
+    companies: matchedCompanies.slice(0, limit),
+    jobs: matchedJobs.slice(0, limit),
+    universities: matchedUniversities.slice(0, limit),
+    totals: { companies: matchedCompanies.length, jobs: matchedJobs.length, universities: matchedUniversities.length }
+  };
+}
+
+function searchWorkspaceCatalog(query, state) {
+  const base = searchPublicCatalog(query);
+  const q = query.trim().toLowerCase();
+  if (!q) return { ...base, pipeline: [], growth: [], value: [], sections: [], totals: { ...base.totals, pipeline: 0, growth: 0, value: 0, sections: 0 } };
+
+  const matchedPipeline = getTrackedJobs(state)
+    .filter(item => ["saved", "applied", "interview", "offer"].includes(item.record.stage))
+    .filter(item => matchesQuery([item.job.title, item.job.company, stageMeta(item.record.stage).label], q));
+
+  const matchedGrowth = personalizedMissions(state.profile || {})
+    .filter(mission => matchesQuery([mission.title, mission.body], q));
+
+  const matchedValue = CAREER_VALUE_SEARCH_INDEX
+    .filter(item => matchesQuery([item.title, item.body, ...(item.keywords || [])], q));
+
+  const matchedSections = WORKSPACE_SEARCH_SECTIONS
+    .filter(section => matchesQuery([section.label, ...(section.keywords || [])], q));
+
+  return {
+    ...base,
+    pipeline: matchedPipeline.slice(0, 5),
+    growth: matchedGrowth.slice(0, 5),
+    value: matchedValue.slice(0, 5),
+    sections: matchedSections.slice(0, 5),
+    totals: {
+      ...base.totals,
+      pipeline: matchedPipeline.length,
+      growth: matchedGrowth.length,
+      value: matchedValue.length,
+      sections: matchedSections.length
+    }
+  };
+}
+
+function renderSearchPanelContent(query, scope, state) {
+  const q = query.trim();
+  if (!q) return "";
+  const results = scope === "workspace" ? searchWorkspaceCatalog(q, state) : searchPublicCatalog(q);
+  const jobHref = job => scope === "workspace" ? `discover.html?job=${encodeURIComponent(job.id)}` : `explore.html#featured-opportunities`;
+  const groups = [];
+
+  if (scope === "workspace" && results.sections.length) {
+    groups.push({
+      title: "Go to",
+      items: results.sections.map(section => ({ href: section.href, title: section.label, meta: "Jump to this section", icon: section.icon }))
+    });
+  }
+  if (results.companies.length) {
+    groups.push({
+      title: "Companies",
+      items: results.companies.map(org => ({ href: `companies.html?q=${encodeURIComponent(org.name)}`, title: org.name, meta: `${org.industry} - ${org.location}`, icon: "building-2" }))
+    });
+  }
+  if (results.jobs.length) {
+    groups.push({
+      title: "Jobs",
+      items: results.jobs.map(job => ({ href: jobHref(job), title: job.title, meta: `${job.company} - ${job.location} - ${job.salary}`, icon: "briefcase" }))
+    });
+  }
+  if (results.universities.length) {
+    groups.push({
+      title: "Universities",
+      items: results.universities.map(org => ({ href: `universities.html?q=${encodeURIComponent(org.name)}`, title: org.name, meta: `${org.industry} - ${org.location}`, icon: "graduation-cap" }))
+    });
+  }
+  if (scope === "workspace") {
+    if (results.pipeline.length) {
+      groups.push({
+        title: "Your pipeline",
+        items: results.pipeline.map(({ record, job }) => ({ href: "autopilot.html", title: job.title, meta: `${job.company} - ${stageMeta(record.stage).label}`, icon: stageMeta(record.stage).icon }))
+      });
+    }
+    if (results.growth.length) {
+      groups.push({
+        title: "Growth & roadmap",
+        items: results.growth.map(mission => ({ href: mission.href || "grow.html", title: mission.title, meta: mission.body, icon: "route" }))
+      });
+    }
+    if (results.value.length) {
+      groups.push({
+        title: "Career value",
+        items: results.value.map(item => ({ href: item.href || "market.html", title: item.title, meta: item.body, icon: "bar-chart-2" }))
+      });
+    }
+  }
+
+  if (!groups.length) {
+    return `<div class="cg-search-empty">${icon("search")} No matches for "${escapeHtml(q)}"</div>`;
+  }
+
+  const totalAvailable = Object.values(results.totals || {}).reduce((sum, n) => sum + n, 0);
+  const totalShown = groups.reduce((sum, group) => sum + group.items.length, 0);
+  const footer = totalAvailable > totalShown
+    ? `<div class="cg-search-footer">Showing top ${totalShown} of ${totalAvailable} match${totalAvailable === 1 ? "" : "es"}</div>`
+    : "";
+
+  return groups.map(group => `
+    <div class="cg-search-group">
+      <span class="cg-search-group-title">${escapeHtml(group.title)}</span>
+      ${group.items.map(item => `
+        <a class="cg-search-result" href="${item.href}">
+          <span class="cg-search-result-icon">${icon(item.icon)}</span>
+          <span class="cg-search-result-body"><strong>${highlightMatch(item.title, q)}</strong><small>${escapeHtml(item.meta)}</small></span>
+        </a>
+      `).join("")}
+    </div>
+  `).join("") + footer;
+}
+
+function attachLiveSearch(form, buildResultsHtml) {
+  if (!form || form.dataset.liveSearchBound) return;
+  form.dataset.liveSearchBound = "1";
+  const shell = form.closest("[data-search-shell]");
+  const panel = shell ? qs("[data-search-panel]", shell) : null;
+  const input = qs("input[name='q']", form);
+  if (!shell || !panel || !input) return;
+
+  const renderNow = () => {
+    const query = input.value || "";
+    if (!query.trim()) {
+      panel.hidden = true;
+      panel.innerHTML = "";
+      return;
+    }
+    panel.innerHTML = buildResultsHtml(query);
+    panel.hidden = false;
+    createIcons();
+    qsa("a", panel).forEach(link => link.addEventListener("click", () => { panel.hidden = true; }));
+  };
+
+  let debounceId;
+  input.addEventListener("input", () => {
+    clearTimeout(debounceId);
+    debounceId = setTimeout(renderNow, 120);
+  });
+  input.addEventListener("focus", () => {
+    if (input.value.trim()) renderNow();
+  });
+  shell.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      panel.hidden = true;
+      input.focus();
+      return;
+    }
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    if (panel.hidden) return;
+    event.preventDefault();
+    const items = qsa(".cg-search-result", panel);
+    if (!items.length) return;
+    const currentIndex = items.indexOf(document.activeElement);
+    let nextIndex;
+    if (currentIndex === -1) {
+      nextIndex = event.key === "ArrowDown" ? 0 : items.length - 1;
+    } else if (event.key === "ArrowDown") {
+      nextIndex = (currentIndex + 1) % items.length;
+    } else {
+      nextIndex = (currentIndex - 1 + items.length) % items.length;
+    }
+    items[nextIndex].focus();
+  });
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    renderNow();
+  });
+  document.addEventListener("click", event => {
+    if (!shell.contains(event.target)) panel.hidden = true;
+  });
+}
+
+function initPublicHeroSearch() {
+  qsa(".home-search").forEach(form => {
+    if (!form.hasAttribute("data-search-shell")) {
+      form.classList.add("cg-search-shell");
+      form.setAttribute("data-search-shell", "");
+      const panel = document.createElement("div");
+      panel.className = "cg-search-panel";
+      panel.setAttribute("data-search-panel", "");
+      panel.hidden = true;
+      form.appendChild(panel);
+    }
+    attachLiveSearch(form, query => renderSearchPanelContent(query, "public"));
+  });
 }
 
 function discoverPathCard([title, sub, match, salary, demand, why]) {
@@ -12430,6 +12601,7 @@ function init() {
   initHomeStageAnimation();
   initComparisonTableAnimation();
   initGlobalBackToTop();
+  initPublicHeroSearch();
   bindGlobalActions();
   createIcons();
   initSidebarToggle();

@@ -10759,19 +10759,6 @@ body[data-page="dashboard"] .cg-vera-search svg {
   color: #5f6d67 !important;
 }
 
-body[data-page="dashboard"] .cg-vera-search kbd {
-  display: inline-flex !important;
-  align-items: center !important;
-  height: 24px !important;
-  padding: 0 8px !important;
-  color: #87908b !important;
-  border: 1px solid rgba(14, 44, 37, 0.1) !important;
-  border-radius: 7px !important;
-  background: rgba(255, 255, 255, 0.7) !important;
-  font-family: var(--cg-shot-sans) !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-}
 
 body[data-page="dashboard"] .cg-user-actions {
   justify-self: end !important;
@@ -11305,20 +11292,6 @@ body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [da
   box-shadow: none !important;
   font-size: 14px !important;
   font-weight: 500 !important;
-}
-
-body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-vera-search kbd {
-  display: inline-flex !important;
-  align-items: center !important;
-  height: 24px !important;
-  padding: 0 8px !important;
-  color: #87908b !important;
-  border: 1px solid rgba(14, 44, 37, 0.1) !important;
-  border-radius: 7px !important;
-  background: rgba(255, 255, 255, 0.7) !important;
-  font-family: var(--cg-shot-sans) !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
 }
 
 body:is([data-page="discover"], [data-page="profile"], [data-page="market"], [data-page="autopilot"], [data-page="posts"]) .cg-user-actions {
@@ -15407,21 +15380,6 @@ html body .topbar:has(.workspace-search) .workspace-search input::placeholder {
   opacity: 1 !important;
 }
 
-html body .topbar:has(.workspace-search) .cg-vera-search kbd,
-html body .topbar:has(.workspace-search) .workspace-search kbd {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 48px !important;
-  min-width: 48px !important;
-  height: 34px !important;
-  padding: 0 !important;
-  white-space: nowrap !important;
-  line-height: 1 !important;
-  letter-spacing: 0 !important;
-  word-spacing: 4px !important;
-}
-
 html body[data-page="profile"] .cg-grow-coach .cg-grow-chat button svg {
   color: #123c34 !important;
   stroke: #123c34 !important;
@@ -16009,16 +15967,6 @@ html body[data-page="dashboard"] .cg-vera-search input {
   font-weight: 400 !important;
 }
 
-html body .topbar:has(.cg-vera-search) .cg-vera-search kbd,
-html body[data-page="dashboard"] .cg-vera-search kbd {
-  min-width: 34px !important;
-  height: 20px !important;
-  padding: 0 6px !important;
-  border-color: var(--border) !important;
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
-}
-
 html body .topbar:has(.cg-workspace-tabs) .cg-message-trigger,
 html body .topbar:has(.cg-workspace-tabs) .notification-trigger,
 html body[data-page="dashboard"] .notification-trigger {
@@ -16190,43 +16138,6 @@ html body .topbar:has(.workspace-search) .cg-vera-search input::placeholder {
   color: #7584a2 !important;
   -webkit-text-fill-color: #7584a2 !important;
   opacity: 1 !important;
-}
-
-html body .topbar:has(.cg-workspace-tabs) .cg-vera-search kbd,
-html body .topbar:has(.workspace-search) .cg-vera-search kbd {
-  justify-self: end !important;
-  width: 42px !important;
-  min-width: 42px !important;
-  height: 34px !important;
-  padding: 0 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 2px !important;
-  white-space: nowrap !important;
-  word-break: keep-all !important;
-  line-height: 1 !important;
-  color: #6f7d79 !important;
-  -webkit-text-fill-color: #6f7d79 !important;
-  font-size: 15px !important;
-  font-weight: 600 !important;
-}
-
-html body .topbar:has(.cg-workspace-tabs) .cg-vera-search kbd {
-  font-size: 0 !important;
-}
-
-html body .topbar:has(.cg-workspace-tabs) .cg-vera-search kbd::before {
-  content: "⌘ K" !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  white-space: nowrap !important;
-  color: #6f7d79 !important;
-  -webkit-text-fill-color: #6f7d79 !important;
-  font-size: 15px !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
 }
 
 html body[data-page="profile"] .cg-grow-coach .cg-grow-chat input {
@@ -17888,24 +17799,6 @@ html body .cg-vera-search {
 
 html body .cg-vera-search input {
   min-width: 0 !important;
-}
-
-html body .cg-vera-search kbd {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: auto !important;
-  min-width: 46px !important;
-  height: 32px !important;
-  padding: 0 9px !important;
-  border-radius: 10px !important;
-  white-space: nowrap !important;
-  color: #6b7891 !important;
-  -webkit-text-fill-color: #6b7891 !important;
-  background: rgba(255, 255, 255, 0.68) !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
 }
 
 html body .cg-user-actions {
@@ -22127,40 +22020,6 @@ html body[data-page="dashboard"] .cg-vera-search input::placeholder {
   opacity: 1 !important;
 }
 
-html body[data-page="dashboard"] .cg-vera-search kbd {
-  justify-self: end !important;
-  width: auto !important;
-  min-width: 0 !important;
-  height: 24px !important;
-  padding: 0 8px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border: 1px solid rgba(14, 44, 37, 0.1) !important;
-  border-radius: 7px !important;
-  background: rgba(255, 255, 255, 0.7) !important;
-  box-shadow: none !important;
-  color: #87908b !important;
-  -webkit-text-fill-color: #87908b !important;
-  font-size: 0 !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
-  font-family: var(--cg-shot-sans) !important;
-}
-
-html body[data-page="dashboard"] .cg-vera-search kbd::before {
-  content: "⌘ K" !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: #87908b !important;
-  -webkit-text-fill-color: #87908b !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
-  white-space: nowrap !important;
-}
-
 html body[data-page="dashboard"] .cg-user-actions {
   justify-self: end !important;
   display: inline-flex !important;
@@ -22289,15 +22148,6 @@ html body[data-page="dashboard"] .cg-vera-search {
   border-color: rgba(227, 220, 200, 0.9) !important;
   background: rgba(255, 255, 255, 0.62) !important;
   box-shadow: none !important;
-}
-
-html body .topbar:has(.cg-vera-search) .cg-vera-search kbd::before,
-html body[data-page="dashboard"] .cg-vera-search kbd::before {
-  content: "Cmd K" !important;
-  color: #5f7573 !important;
-  -webkit-text-fill-color: #5f7573 !important;
-  font-size: 10px !important;
-  font-weight: 500 !important;
 }
 
 html body:is([data-page="grow"], [data-page="dashboard"], [data-page="discover"], [data-page="market"], [data-page="autopilot"]) main>.workspace-page-container,
@@ -24904,4 +24754,153 @@ body[data-page="discover"] .cg-cp :is(.cg-cp-role-row h3, .cg-cp-similar-card h3
 .cg-back-link svg {
   width: 14px;
   height: 14px;
+}
+
+/* Site search: public hero search + workspace "Ask Vera anything" live results */
+.cg-search-shell {
+  position: relative;
+}
+
+.cg-search-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  z-index: 260;
+  max-height: min(70vh, 520px);
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid rgba(31, 85, 96, 0.14);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(27, 46, 40, 0.08), 0 20px 44px -20px rgba(27, 46, 40, 0.4);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(31, 85, 96, 0.35) transparent;
+}
+
+.cg-search-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cg-search-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cg-search-panel::-webkit-scrollbar-thumb {
+  background-color: rgba(31, 85, 96, 0.32);
+  border-radius: 8px;
+  border: 2px solid #ffffff;
+}
+
+.cg-search-panel::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(31, 85, 96, 0.5);
+}
+
+.cg-search-panel[hidden] {
+  display: none;
+}
+
+.cg-search-group + .cg-search-group {
+  margin-top: 6px;
+}
+
+.cg-search-group-title {
+  display: block;
+  margin: 0 -8px 6px;
+  padding: 8px 12px 6px;
+  color: #1f5560;
+  font: 700 11px/1.35 "Inter", sans-serif;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  background: #f7f3ea;
+  border-bottom: 1px solid #e4dfd3;
+}
+
+.cg-search-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 9px 8px;
+  border-radius: 8px;
+  color: #1b2e28;
+  text-decoration: none;
+  transition: background-color 150ms cubic-bezier(0.2, 0.7, 0.2, 1), color 150ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.cg-search-result:hover,
+.cg-search-result:focus-visible {
+  background: #c8dddf;
+  outline: 0;
+}
+
+.cg-search-result-icon {
+  display: flex;
+  flex: 0 0 30px;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: #1f5560;
+  background: #efe8d8;
+}
+
+.cg-search-result-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.cg-search-result-body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cg-search-result-body strong {
+  overflow: hidden;
+  color: #1b2e28;
+  font: 500 14px/1.3 "Inter", sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cg-search-hit {
+  color: #1f5560;
+  font-weight: 700;
+}
+
+.cg-search-result-body small {
+  overflow: hidden;
+  color: #5b6a66;
+  font: 400 12px/1.4 "Inter", sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cg-search-footer {
+  position: sticky;
+  bottom: -8px;
+  margin: 6px -8px -8px;
+  padding: 8px 12px;
+  border-top: 1px solid #e4dfd3;
+  background: #ffffff;
+  color: #5b6a66;
+  font: 500 11px/1.4 "Inter", sans-serif;
+  text-align: center;
+}
+
+.cg-search-empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  color: #5b6a66;
+  font: 400 13px/1.5 "Inter", sans-serif;
+}
+
+.cg-search-empty svg {
+  width: 16px;
+  height: 16px;
 }
