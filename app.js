@@ -147,6 +147,18 @@ const DATA = {
       },
       requirementsInsight: { higherInterviewRatePercent: 74 },
       hiringProcess: { steps: ["Application review", "Online assessment", "HR interview", "Manager interview", "Final interview (graduate programs)"], avgResponseTime: "2-4 weeks", difficulty: "Medium", assessmentNote: "Online assessment and assessment centre for graduate programs" },
+      // Powers the "How Hiring Works" timeline (Company Profile page).
+      // dropOffPercent is of candidates entering that stage; success rate is
+      // derived as the complement at render time, not stored separately, so
+      // the two numbers can't drift out of sync with each other.
+      hiringTimeline: [
+        { stage: "Application", icon: "file-text", avgDays: 1, dropOffPercent: 8, tooltip: "Candidates submit their application and resume through CareerGo.", isCurrent: false },
+        { stage: "Resume Review", icon: "search", avgDays: 2, dropOffPercent: 35, tooltip: "Recruiters screen resumes against the role's must-have requirements.", isCurrent: false },
+        { stage: "Assessment", icon: "clipboard-check", avgDays: 4, dropOffPercent: 28, tooltip: "Candidates complete an online assessment relevant to the role.", isCurrent: true },
+        { stage: "HR Interview", icon: "users", avgDays: 3, dropOffPercent: 20, tooltip: "An HR screening call covering fit, expectations, and logistics.", isCurrent: false },
+        { stage: "Hiring Manager", icon: "user-check", avgDays: 5, dropOffPercent: 15, tooltip: "A role-specific interview with the hiring manager.", isCurrent: false },
+        { stage: "Offer", icon: "award", avgDays: 3, dropOffPercent: 5, tooltip: "A formal offer is extended and negotiated with the candidate.", isCurrent: false }
+      ],
       salaryBenefits: { freshGradSalary: "RM 3.2k - 4.5k / month", internshipAllowance: "RM 800 - 1.2k / month", bonus: "Annual performance bonus", medical: "Comprehensive medical coverage", training: "Structured graduate training program", flexibleWork: "Hybrid for eligible roles", leave: "Standard + study leave for certifications" },
       careerGrowth: { trainingQuality: "Strong structured training", promotionPath: "Clear grade-based progression", graduateProgram: "Available (Maybank Management Trainee)", mentorship: "Assigned mentors for new joiners", internalTransfer: "Common across departments", learningOpportunities: "Internal academy and certification support" },
       workCulture: { pace: "Steady, structured", teamStyle: "Large teams, defined roles", workLifeBalance: "Balanced, standard hours", managementStyle: "Hierarchical, process-driven", collaboration: "Cross-department coordination common", overtimeSignal: "Occasional during reporting periods", reviewThemes: "Stable, good for early career, slower pace" },
@@ -14509,6 +14521,7 @@ function renderEmployerCompany(root) {
   let tabsStuckObserver = null;
   let tabsSectionObserver = null;
   let tabsResizeHandler = null;
+  let timelineObserver = null;
 
   function sortRoles(roles) {
     const sorted = roles.slice();
@@ -14748,9 +14761,23 @@ function renderEmployerCompany(root) {
       <div class="card emp-company-section" id="comp-hiring">
         <div class="emp-company-section-head"><h2>How Hiring Works</h2>${sourceTag("Company provided")}</div>
         <p class="emp-company-section-desc">Help candidates understand what usually happens after they apply.</p>
-        <ol class="emp-hiring-steps">
-          ${company.hiringProcess.steps.map((s, i) => `<li><span class="emp-hiring-step-index">${i + 1}</span><span>${s}</span></li>`).join("")}
-        </ol>
+        <div class="emp-timeline" data-timeline>
+          ${company.hiringTimeline.map((s, i) => `
+            <div class="emp-timeline-stage ${s.isCurrent ? "emp-timeline-stage--current" : ""}" data-timeline-stage style="transition-delay:${i * 80}ms" tabindex="0">
+              <div class="emp-timeline-node">
+                <span class="emp-timeline-dot">${icon(s.icon)}</span>
+                ${i < company.hiringTimeline.length - 1 ? `<span class="emp-timeline-connector"></span>` : ""}
+              </div>
+              <strong class="emp-timeline-stage-name">${escapeHtml(s.stage)}</strong>
+              <div class="emp-timeline-stat-row">
+                <span>${s.avgDays}d avg</span>
+                <span>${s.dropOffPercent}% drop-off</span>
+                <span>${100 - s.dropOffPercent}% success</span>
+              </div>
+              <div class="emp-timeline-tooltip" role="tooltip">${escapeHtml(s.tooltip)}</div>
+            </div>
+          `).join("")}
+        </div>
         <div class="emp-requirements-grid">
           <div class="emp-stat-row"><span>Typical duration</span><strong>${company.hiringProcess.avgResponseTime}</strong></div>
           <div class="emp-stat-row"><span>Interview rounds</span><strong>${company.hiringProcess.steps.length}</strong></div>
@@ -14914,6 +14941,24 @@ function renderEmployerCompany(root) {
     qsa("[data-company-respond-review]", root).forEach(btn => btn.addEventListener("click", () => showToast("Response drafted. Full response workflow is coming soon.", "info")));
     qs("[data-company-jump-gaps]", root)?.addEventListener("click", () => qs("#comp-insights", root)?.scrollIntoView({ behavior: "smooth", block: "start" }));
     initCompanyTabsBehavior();
+    initTimelineReveal();
+  }
+
+  // Same disconnect-before-recreate discipline as initCompanyTabsBehavior():
+  // draw() replaces root.innerHTML wholesale, so [data-timeline] is a fresh
+  // node every call and any prior observer would be watching a detached one.
+  function initTimelineReveal() {
+    if (timelineObserver) timelineObserver.disconnect();
+    const timeline = qs("[data-timeline]", root);
+    if (!timeline) return;
+    if (!("IntersectionObserver" in window)) { timeline.classList.add("is-visible"); return; }
+    timelineObserver = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        timeline.classList.add("is-visible");
+        timelineObserver.disconnect();
+      }
+    }, { threshold: 0.2 });
+    timelineObserver.observe(timeline);
   }
 
   // Every draw() replaces root.innerHTML, so the sentinel/section nodes any

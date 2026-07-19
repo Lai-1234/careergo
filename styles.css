@@ -13658,11 +13658,78 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-role-card-side { flex-direction: row; }
   .emp-role-card-side .btn { flex: 1; }
 }
-.emp-hiring-steps { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 10px; }
-.emp-hiring-steps li { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-.emp-hiring-step-index {
-  display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; flex-shrink: 0;
-  border-radius: 999px; background: rgba(37, 99, 235, 0.1); color: var(--blue); font-size: 11px; font-weight: 700;
+/* How Hiring Works - horizontal timeline on desktop, vertical stepper on
+   mobile. Each stage fades/lifts in on scroll (JS toggles .is-visible on
+   the container; per-stage transition-delay from the inline style gives
+   the stagger), the current stage gets a soft pulsing glow, and hover/
+   focus reveals a tooltip + a small dot lift. */
+.emp-timeline { display: flex; align-items: flex-start; gap: 4px; margin: 8px 0 20px; padding: 8px 4px 44px; }
+.emp-timeline-stage {
+  position: relative; display: flex; flex-direction: column; align-items: center; text-align: center;
+  flex: 1 1 0; min-width: 0; padding: 4px 4px; border-radius: 12px;
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+.emp-timeline.is-visible .emp-timeline-stage { opacity: 1; transform: none; }
+.emp-timeline-node { position: relative; display: flex; align-items: center; width: 100%; margin-bottom: 10px; }
+.emp-timeline-dot {
+  position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; margin: 0 auto; border-radius: 999px; flex-shrink: 0;
+  background: #fff; border: 1.5px solid var(--emp-line, rgba(7, 56, 47, 0.16)); color: var(--emp-green, #07382f);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.emp-timeline-dot svg { width: 18px; height: 18px; }
+.emp-timeline-connector {
+  position: absolute; top: 50%; left: 50%; right: -50%; height: 2px; z-index: 0;
+  background: var(--emp-line, rgba(7, 56, 47, 0.14)); transform: translateY(-50%);
+}
+.emp-timeline-stage:hover .emp-timeline-dot,
+.emp-timeline-stage:focus-visible .emp-timeline-dot {
+  transform: translateY(-3px) scale(1.06); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14); border-color: var(--emp-green, #07382f);
+}
+.emp-timeline-stage--current .emp-timeline-dot {
+  background: var(--emp-green, #07382f); border-color: var(--emp-green, #07382f); color: #fff;
+  animation: empTimelineGlow 2.2s ease-in-out infinite;
+}
+@keyframes empTimelineGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(7, 56, 47, 0.35); }
+  50% { box-shadow: 0 0 0 9px rgba(7, 56, 47, 0); }
+}
+.emp-timeline-stage-name { font-size: 12px; font-weight: 700; color: var(--emp-ink, var(--text)); margin-bottom: 4px; }
+.emp-timeline-stat-row { display: flex; flex-direction: column; gap: 2px; font-size: 10px; font-weight: 600; color: var(--emp-muted, var(--soft)); }
+.emp-timeline-tooltip {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; z-index: 5; width: 180px;
+  padding: 8px 10px; border-radius: 10px; background: var(--emp-ink, #082f27); color: #fff;
+  font-size: 11px; line-height: 1.4; font-weight: 500; text-align: left;
+  opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(4px);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.emp-timeline-stage:hover .emp-timeline-tooltip,
+.emp-timeline-stage:focus-visible .emp-timeline-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped global !important color cascade documented elsewhere in this
+   file - applied proactively here since it has hit every other bare
+   <strong>/<span> added to this page so far. */
+.emp-app-shell.emp-app-shell .emp-timeline-stage-name { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-timeline-stat-row span { color: var(--emp-muted, var(--soft)) !important; }
+/* min-width, not the base rule: the mobile media query below turns this
+   into transparent/muted-colored inline caption text, and an unscoped
+   !important here would otherwise beat that override too. */
+@media (min-width: 721px) {
+  .emp-app-shell.emp-app-shell .emp-timeline-tooltip { color: #fff !important; }
+}
+
+@media (max-width: 720px) {
+  .emp-timeline { flex-direction: column; align-items: stretch; padding-bottom: 8px; }
+  .emp-timeline-stage { flex-direction: row; text-align: left; align-items: flex-start; padding: 10px 4px; }
+  .emp-timeline-node { flex-direction: column; width: auto; align-self: stretch; margin: 0 14px 0 0; }
+  .emp-timeline-connector { position: static; width: 2px; flex: 1; margin: 4px auto 0; }
+  .emp-timeline-stat-row { flex-direction: row; gap: 10px; flex-wrap: wrap; }
+  .emp-timeline-tooltip {
+    position: static; opacity: 1; transform: none; pointer-events: auto; width: auto;
+    margin-top: 6px; padding: 0; background: transparent; font-size: 12px;
+  }
+  .emp-app-shell.emp-app-shell .emp-timeline-tooltip { color: var(--emp-muted, var(--soft)) !important; }
 }
 .emp-highlight-watchout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
 .emp-highlight-card, .emp-watchout-card { padding: 16px 18px; }
