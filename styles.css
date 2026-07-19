@@ -13600,10 +13600,34 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-glance-grid { grid-template-columns: 1fr; }
 }
 .emp-company-description { margin: 0 0 14px; font-size: 13px; line-height: 1.6; color: var(--text); font-style: italic; }
-.emp-company-role-list { display: grid; gap: 10px; margin-top: 10px; }
-.emp-company-role-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-.emp-company-role-row > div:first-child { flex: 1; }
-.emp-company-role-row strong { font-size: 13px; }
+.emp-company-role-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+.emp-role-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  padding: 20px; border-radius: 16px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08));
+  background: #fff; transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+.emp-role-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
+.emp-role-card-main { flex: 1 1 320px; min-width: 0; }
+.emp-role-card-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+.emp-role-card-title { font-size: 16px; font-weight: 700; color: var(--emp-ink, var(--text)); }
+.emp-role-card-meta { margin: 0 0 4px; font-size: 13px; color: var(--emp-muted, var(--muted)); }
+.emp-role-card-salary { margin: 0 0 12px; font-size: 14px; font-weight: 700; color: var(--emp-green, var(--text)); }
+.emp-role-card-stats { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.emp-role-card-stat { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--emp-muted, var(--soft)); white-space: nowrap; }
+.emp-role-card-stat svg { width: 14px; height: 14px; color: var(--emp-green, #07382f); }
+.emp-role-card-side { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+.emp-role-card-side .btn { white-space: nowrap; }
+.emp-role-sort-row { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+.emp-role-sort-label { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--emp-muted, var(--soft)); }
+.emp-role-sort-label select {
+  padding: 7px 28px 7px 10px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line));
+  background-color: #fff; font-size: 12px; font-weight: 700; color: var(--emp-ink, var(--text));
+}
+@media (max-width: 720px) {
+  .emp-role-card { flex-direction: column; align-items: stretch; }
+  .emp-role-card-side { flex-direction: row; }
+  .emp-role-card-side .btn { flex: 1; }
+}
 .emp-hiring-steps { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 10px; }
 .emp-hiring-steps li { display: flex; align-items: center; gap: 10px; font-size: 13px; }
 .emp-hiring-step-index {

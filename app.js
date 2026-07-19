@@ -505,6 +505,7 @@ const DATA = {
     {
       id: "er1", title: "Product Design Intern", status: "Open", closeReason: null,
       applicants: 84, qualified: 21, strongMatches: 9, talentSupply: "Good", daysOpen: 7, health: "Healthy",
+      avgHiringDays: 9, careerGrowthScore: 4.2, avgCandidateMatch: 79, roleViews: 640,
       newApplicants: 12, interviews: 4, offers: 1, hires: 0, openings: 1,
       owner: "Mira", lastUpdated: "5 hours ago",
       department: "Design", employmentType: "Internship", reportsTo: "Design Lead",
@@ -529,6 +530,7 @@ const DATA = {
     {
       id: "er2", title: "Junior Data Analyst", status: "Open", closeReason: null,
       applicants: 126, qualified: 34, strongMatches: 8, talentSupply: "Strong", daysOpen: 12, health: "Needs attention",
+      avgHiringDays: 11, careerGrowthScore: 4.0, avgCandidateMatch: 81, roleViews: 980,
       newApplicants: 18, interviews: 6, offers: 0, hires: 0, openings: 1,
       owner: "Jason", lastUpdated: "2 hours ago",
       department: "Data & Analytics", employmentType: "Full-time", reportsTo: "Analytics Manager",
@@ -559,6 +561,7 @@ const DATA = {
     {
       id: "er3", title: "Graduate UX Researcher", status: "Draft", closeReason: null,
       applicants: 0, qualified: 0, strongMatches: 0, talentSupply: "Good", daysOpen: 0, health: "Healthy",
+      avgHiringDays: null, careerGrowthScore: 4.3, avgCandidateMatch: 0, roleViews: 0,
       owner: "Mira", lastUpdated: "3 hours ago", veraCheckCount: 2,
       department: "Design", employmentType: "Graduate programme", reportsTo: "Research Lead",
       roleSummary: "", responsibilities: [], successLooksLike: "",
@@ -577,6 +580,7 @@ const DATA = {
     {
       id: "er4", title: "Software Engineer", status: "Open", closeReason: null,
       applicants: 84, qualified: 29, strongMatches: 11, talentSupply: "Strong", daysOpen: 7, health: "Healthy",
+      avgHiringDays: 5, careerGrowthScore: 4.6, avgCandidateMatch: 87, roleViews: 1120,
       newApplicants: 9, interviews: 5, offers: 2, hires: 1, openings: 2,
       owner: "Jason", lastUpdated: "1 day ago",
       department: "Engineering", employmentType: "Full-time", reportsTo: "Engineering Manager",
@@ -600,6 +604,7 @@ const DATA = {
     {
       id: "er5", title: "Backend Engineer", status: "Paused", closeReason: null,
       applicants: 58, qualified: 19, strongMatches: 6, talentSupply: "Tight", daysOpen: 21, health: "Needs attention",
+      avgHiringDays: 24, careerGrowthScore: 4.4, avgCandidateMatch: 74, roleViews: 730,
       owner: "Jason", lastUpdated: "2 days ago", pausedSince: "4 days ago", pauseReason: "Requirements under review", lastActivity: "2 days ago",
       department: "Engineering", employmentType: "Full-time", reportsTo: "Engineering Manager",
       roleSummary: "Own core backend services powering payments and order processing.",
@@ -632,6 +637,7 @@ const DATA = {
     {
       id: "er6", title: "Marketing Coordinator", status: "Closed", closeReason: "Position filled",
       applicants: 72, qualified: 25, strongMatches: 10, talentSupply: "Good", daysOpen: 18, health: "Healthy",
+      avgHiringDays: 18, careerGrowthScore: 3.9, avgCandidateMatch: 82, roleViews: 590,
       owner: "Aisyah", lastUpdated: "10 days ago", closedDate: "10 days ago", timeToHire: "18 days",
       interviews: 9, offers: 1, hires: 1,
       results: {
@@ -662,6 +668,7 @@ const DATA = {
     {
       id: "er7", title: "Office Administrator", status: "Archived", closeReason: "Role changed",
       applicants: 41, qualified: 12, strongMatches: 4, talentSupply: "Good", daysOpen: 35, health: "Needs attention",
+      avgHiringDays: 30, careerGrowthScore: 3.5, avgCandidateMatch: 68, roleViews: 410,
       owner: "Aisyah", lastUpdated: "2 months ago", previousStatus: "Closed", archivedDate: "2 months ago", retentionPeriod: "Data retained for 12 months from archive date",
       department: "Operations", employmentType: "Full-time", reportsTo: "Operations Manager",
       roleSummary: "Manage day-to-day office operations and vendor coordination.",
@@ -14477,13 +14484,31 @@ function computeCompanyCompleteness(company) {
   return Math.round((checks.filter(Boolean).length / checks.length) * 100);
 }
 
+const ROLE_SORT_OPTIONS = [
+  ["newest", "Newest"],
+  ["salary", "Highest Salary"],
+  ["popular", "Most Popular"],
+  ["applied", "Most Applied"],
+  ["ai", "AI Recommended"]
+];
+
 function renderEmployerCompany(root) {
   const company = DATA.companies.find(c => c.id === "maybank");
   let showAllRoles = false;
   let showAllReviews = false;
+  let roleSort = "newest";
   let tabsStuckObserver = null;
   let tabsSectionObserver = null;
   let tabsResizeHandler = null;
+
+  function sortRoles(roles) {
+    const sorted = roles.slice();
+    if (roleSort === "salary") return sorted.sort((a, b) => (b.salary?.max || 0) - (a.salary?.max || 0));
+    if (roleSort === "popular") return sorted.sort((a, b) => (b.roleViews || 0) - (a.roleViews || 0));
+    if (roleSort === "applied") return sorted.sort((a, b) => (b.applicants || 0) - (a.applicants || 0));
+    if (roleSort === "ai") return sorted.sort((a, b) => (b.avgCandidateMatch || 0) - (a.avgCandidateMatch || 0));
+    return sorted.sort((a, b) => (a.daysOpen || 0) - (b.daysOpen || 0)); // newest = fewest days open
+  }
 
   function formatRoleSalary(r) {
     if (!r.salary || !r.salary.min || !r.salary.max) return "Salary not published";
@@ -14491,8 +14516,33 @@ function renderEmployerCompany(root) {
     return `RM ${fmt(r.salary.min)}k–${fmt(r.salary.max)}k / ${r.salary.period.toLowerCase()}`;
   }
 
+  // Lightweight, self-contained candidate-facing preview - the wizard has a
+  // richer version (renderJobPreviewContent/openRolePreviewModal), but it's
+  // closure-scoped to renderEmployerRoleBuilder and not reachable from here.
+  // Reuses the same .emp-job-preview-* CSS classes for visual consistency.
+  function openRoleApplyPreview(r) {
+    const responsibilities = (r.responsibilities || []).filter(Boolean);
+    openEmpModal(`role-apply-preview-${r.id}`, `
+      <div class="emp-job-preview-frame">
+        <div class="emp-job-preview-company">
+          <span class="emp-job-preview-logo">${escapeHtml(company.name.charAt(0))}</span>
+          <strong>${escapeHtml(company.name)}</strong>
+          ${company.verified ? `<span class="pill cyan">${icon("shield-check")} Verified</span>` : ""}
+        </div>
+        <h2>${escapeHtml(r.title)}</h2>
+        <div class="emp-job-preview-meta">${[r.location, r.workMode, r.employmentType].filter(Boolean).map(escapeHtml).join(" · ")}</div>
+        ${r.salary?.min && r.salary?.max ? `<div class="emp-job-preview-salary">${escapeHtml(r.salary.currency)} ${r.salary.min.toLocaleString()} – ${r.salary.max.toLocaleString()} / ${r.salary.period.toLowerCase()}</div>` : ""}
+        <h3>About the role</h3>
+        <p>${escapeHtml(r.roleSummary || "No summary added yet.")}</p>
+        ${responsibilities.length ? `<h3>What you'll do</h3><ul>${responsibilities.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>` : ""}
+        ${r.mustHaveSkills?.length ? `<h3>Must-have skills</h3><div class="pill-row">${r.mustHaveSkills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>` : ""}
+        <button type="button" class="btn btn-primary" disabled>Apply</button>
+      </div>
+    `, { label: `${r.title} - candidate preview`, className: "emp-preview-modal-card" });
+  }
+
   function draw() {
-    const openRoles = DATA.employerRoles.filter(r => r.status === "Open");
+    const openRoles = sortRoles(DATA.employerRoles.filter(r => r.status === "Open"));
     const rolesToShow = showAllRoles ? openRoles : openRoles.slice(0, 4);
     const allReviews = [
       ...DATA.reviews.filter(r => r.targetId === company.id).map(r => ({ title: r.title, role: r.author, date: r.date, rating: r.rating, body: r.body })),
@@ -14626,17 +14676,38 @@ function renderEmployerCompany(root) {
       <div class="card emp-company-section" id="comp-roles">
         <div class="emp-company-section-head">
           <div><h2>Roles Candidates Can Explore</h2><p>Current opportunities and common career paths associated with your company.</p></div>
-          <button type="button" class="btn btn-ghost btn-sm" data-company-manage-roles>Manage roles</button>
+          <div class="emp-role-sort-row">
+            <label class="emp-role-sort-label">
+              Sort by
+              <select data-role-sort>
+                ${ROLE_SORT_OPTIONS.map(([key, label]) => `<option value="${key}" ${roleSort === key ? "selected" : ""}>${label}</option>`).join("")}
+              </select>
+            </label>
+            <button type="button" class="btn btn-ghost btn-sm" data-company-manage-roles>Manage roles</button>
+          </div>
         </div>
         <div class="emp-company-role-list">
           ${rolesToShow.length ? rolesToShow.map(r => `
-            <div class="emp-company-role-row">
-              <div>
-                <strong>${r.title}</strong>
-                <p class="emp-cand-meta">${r.department || "—"} · ${formatRoleSalary(r)} · ${r.minExperience}</p>
+            <div class="emp-role-card">
+              <div class="emp-role-card-main">
+                <div class="emp-role-card-title-row">
+                  <strong class="emp-role-card-title">${escapeHtml(r.title)}</strong>
+                  <span class="pill green emp-role-card-status">${escapeHtml(r.status)}</span>
+                </div>
+                <p class="emp-role-card-meta">${[r.department, r.location, r.workMode].filter(Boolean).map(escapeHtml).join(" · ")}</p>
+                <p class="emp-role-card-salary">${formatRoleSalary(r)}</p>
+                <div class="emp-role-card-stats">
+                  <span class="emp-role-card-stat">${icon("briefcase")} ${escapeHtml(r.minExperience || "—")}</span>
+                  <span class="emp-role-card-stat">${icon("users")} ${r.applicants} Applicants</span>
+                  <span class="emp-role-card-stat">${icon("clock")} Average Response ${r.avgHiringDays != null ? `${r.avgHiringDays} Days` : "—"}</span>
+                  <span class="emp-role-card-stat">${icon("trending-up")} Career Growth ${r.careerGrowthScore}</span>
+                  <span class="emp-role-card-stat">${icon("target")} Candidate Match ${r.avgCandidateMatch}%</span>
+                </div>
               </div>
-              <span class="pill green">${r.status}</span>
-              <button type="button" class="btn btn-ghost btn-sm" data-company-view-role="${r.id}">View role</button>
+              <div class="emp-role-card-side">
+                <button type="button" class="btn btn-ghost btn-sm" data-company-role-preview="${r.id}">${icon("eye")} Apply Preview</button>
+                <button type="button" class="btn btn-primary btn-sm" data-company-view-role="${r.id}">View Details</button>
+              </div>
             </div>
           `).join("") : `<p class="emp-empty-hint">No open roles right now.</p>`}
         </div>
@@ -14818,6 +14889,11 @@ function renderEmployerCompany(root) {
     });
     qs("[data-company-manage-roles]", root)?.addEventListener("click", () => employerNavigateTo("roles"));
     qsa("[data-company-view-role]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo("role-builder", { id: btn.dataset.companyViewRole })));
+    qs("[data-role-sort]", root)?.addEventListener("change", event => { roleSort = event.target.value; draw(); });
+    qsa("[data-company-role-preview]", root).forEach(btn => btn.addEventListener("click", () => {
+      const r = DATA.employerRoles.find(role => role.id === btn.dataset.companyRolePreview);
+      if (r) openRoleApplyPreview(r);
+    }));
     qs("[data-company-toggle-roles]", root)?.addEventListener("click", () => { showAllRoles = !showAllRoles; draw(); });
     qs("[data-company-toggle-reviews]", root)?.addEventListener("click", () => { showAllReviews = !showAllReviews; draw(); });
     qsa("[data-company-respond-review]", root).forEach(btn => btn.addEventListener("click", () => showToast("Response drafted. Full response workflow is coming soon.", "info")));
