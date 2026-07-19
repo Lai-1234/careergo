@@ -6253,6 +6253,7 @@ const INDUSTRY_DEPARTMENTS = {
   SaaS: "Product &middot; Engineering &middot; Customer Success &middot; Growth",
   AI: "AI Research &middot; Product &middot; Platform Engineering &middot; Operations",
   "Private University": "Business &middot; Technology &middot; Design &middot; Student Affairs",
+  "Public University": "Science &amp; Engineering &middot; Business &middot; Computer Science &middot; Arts &amp; Social Science",
   "Business School": "Faculty &middot; Admissions &middot; Careers &middot; Alumni Relations"
 };
 const INDUSTRY_SKILLS = {
@@ -6372,10 +6373,14 @@ function renderCompanyProfile() {
     workLife: workMode === "Remote" ? "Flexible, async-friendly." : "Balanced with sprint peaks."
   };
   const similar = similarOrgsFor(org, catalog);
+  const requirementChecks = isCompany ? [] : universityRequirementChecks(org, state.profile);
+  const requirementsMet = requirementChecks.filter(check => check.status === "ok").length;
+  const requirementStatusIcon = { ok: "check-circle-2", gap: "alert-triangle", info: "info" };
+  const gradEmploymentMatch = isCompany ? null : String(org.salary || "").match(/\d+%/);
 
   root.innerHTML = `
     <section class="cg-cp">
-      <a class="cg-cp-back" href="discover-companies.html">${icon("arrow-left")} Companies</a>
+      <a class="cg-cp-back" href="${isCompany ? "discover-companies.html" : "discover-universities.html"}">${icon("arrow-left")} ${isCompany ? "Companies" : "Universities"}</a>
 
       <article class="cg-cp-hero">
         <div class="cg-cp-hero-top">
@@ -6522,7 +6527,53 @@ function renderCompanyProfile() {
           <div><span class="cg-cp-label">Overtime</span><p>Occasional.</p></div>
         </div>
       </article>
+      ` : `
+      <div class="cg-cp-row">
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Programmes</span>
+          <h2>Faculties &amp; programme areas</h2>
+          <p>${departments}</p>
+        </article>
+        <aside class="cg-cp-card cg-cp-glance">
+          <span class="cg-section-kicker">Graduate outcomes</span>
+          ${gradEmploymentMatch ? `<div class="cg-cp-glance-row"><span>Employed within 6 months</span><strong>${gradEmploymentMatch[0]}</strong></div>` : ""}
+          <div class="cg-cp-glance-row"><span>Alumni network</span><strong>${org.following}</strong></div>
+        </aside>
+      </div>
+
+      ${requirementChecks.length ? `
+      <article class="cg-cp-card">
+        <span class="cg-section-kicker">Entry requirements</span>
+        <h2>Your match against admission requirements</h2>
+        <p class="cg-uni-requirements-match">${icon("clipboard-list")} <b>${requirementsMet}/${requirementChecks.length} matched</b> against your profile</p>
+        <div class="cg-uni-requirements">
+          <ul>
+            ${requirementChecks.map(check => `
+              <li class="${check.status}">
+                ${icon(requirementStatusIcon[check.status])}
+                <div><strong>${check.label}</strong><p>${check.note}</p></div>
+              </li>
+            `).join("")}
+          </ul>
+        </div>
+      </article>
       ` : ""}
+
+      <div class="cg-cp-row">
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Campus</span>
+          <h2>Where you'd study</h2>
+          <div class="cg-cp-kv"><span>Location</span><strong>${org.location}</strong></div>
+          <div class="cg-cp-kv"><span>Student body</span><strong>${org.size}</strong></div>
+          <div class="cg-cp-kv"><span>Study mode</span><strong>${workMode}</strong></div>
+        </article>
+        <article class="cg-cp-card">
+          <span class="cg-section-kicker">Alumni</span>
+          <h2>Network signal</h2>
+          <p>${org.following}, based on graduate engagement and reviews shared on CareerGo.</p>
+        </article>
+      </div>
+      `}
 
       <section class="cg-cp-reviews">
         <span class="cg-section-kicker">Reviews</span>
