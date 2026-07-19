@@ -11181,15 +11181,13 @@ function renderHiringStagesEditor(draft) {
 function renderDistributionSection(draft) {
   return `
     <p class="emp-field-help">CareerGo publishing happens automatically when you publish this role. The other boards below don't have a live posting integration in this prototype — use copy or export to post manually, and mark them posted once you have.</p>
-    <div class="emp-distribution-list">
+    <div class="emp-checkbox-grid">
       ${DISTRIBUTION_CHANNELS_CONFIG.map(c => `
-        <div class="emp-distribution-row">
-          <div class="emp-distribution-row-left">
-            <label class="check-field custom-checkbox">
-              <input type="checkbox" data-distribution-channel="${escapeHtml(c.key)}" ${draft.distributionChannels.includes(c.key) ? "checked" : ""}> ${escapeHtml(c.key)}
-            </label>
-          </div>
-          <div class="emp-distribution-row-right">
+        <div class="check-field custom-checkbox emp-distribution-card">
+          <label class="emp-distribution-card-check">
+            <input type="checkbox" data-distribution-channel="${escapeHtml(c.key)}" ${draft.distributionChannels.includes(c.key) ? "checked" : ""}> ${escapeHtml(c.key)}
+          </label>
+          <div class="emp-distribution-card-meta">
             <span class="emp-distribution-state">${c.state}</span>
             ${c.key !== "CareerGo" ? `<button type="button" class="btn btn-ghost btn-sm" data-copy-posting="${escapeHtml(c.key)}">${icon("copy")} Copy job description</button>` : ""}
           </div>
@@ -11197,10 +11195,10 @@ function renderDistributionSection(draft) {
       `).join("")}
     </div>
     <div class="emp-form-grid-2">
-      <label>External posting URL <span class="emp-optional-tag">Optional</span><input type="url" data-field-externalPostingUrl value="${escapeHtml(draft.externalPostingUrl)}" placeholder="Optional"></label>
-      <label>Tracking source <span class="emp-optional-tag">Optional</span><input type="text" data-field-trackingSource value="${escapeHtml(draft.trackingSource)}" placeholder="Optional"></label>
-      <label>Campaign name <span class="emp-optional-tag">Optional</span><input type="text" data-field-campaignName value="${escapeHtml(draft.campaignName)}" placeholder="Optional"></label>
-      <label>Expiry date <span class="emp-optional-tag">Optional</span><input type="date" data-field-distributionExpiry value="${escapeHtml(draft.distributionExpiry)}"></label>
+      <label>External posting URL<input type="url" data-field-externalPostingUrl value="${escapeHtml(draft.externalPostingUrl)}" placeholder="Optional"></label>
+      <label>Tracking source<input type="text" data-field-trackingSource value="${escapeHtml(draft.trackingSource)}" placeholder="Optional"></label>
+      <label>Campaign name<input type="text" data-field-campaignName value="${escapeHtml(draft.campaignName)}" placeholder="Optional"></label>
+      <label>Expiry date<input type="date" data-field-distributionExpiry value="${escapeHtml(draft.distributionExpiry)}"></label>
     </div>
   `;
 }
@@ -12025,21 +12023,21 @@ function renderEmployerRoleBuilder(root, roleId) {
           <div class="emp-form-grid-2">
             <label>Role title<input type="text" data-field-title value="${escapeHtml(draft.title)}" placeholder="e.g. Backend Engineer"></label>
             <label>Department<input type="text" data-field-department value="${escapeHtml(draft.department)}" placeholder="e.g. Engineering"></label>
-            <label>Job category <span class="emp-optional-tag">Optional</span><input type="text" data-field-jobCategory value="${escapeHtml(draft.jobCategory)}" placeholder="Optional"></label>
+            <label>Job category<input type="text" data-field-jobCategory value="${escapeHtml(draft.jobCategory)}" placeholder="Optional"></label>
             <label>Seniority<select data-field-seniority>${SENIORITY_LEVELS.map(o => `<option ${draft.seniority === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label>Employment type<select data-field-employmentType>${EMPLOYMENT_TYPES.map(o => `<option ${draft.employmentType === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label>Number of openings<input type="number" min="1" data-field-openings value="${draft.openings}"></label>
             <label>Location<input type="text" data-field-location value="${escapeHtml(draft.location)}" placeholder="e.g. Kuala Lumpur"></label>
             <label>Work mode<select data-field-workMode>${["On-site", "Hybrid", "Remote"].map(o => `<option ${draft.workMode === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
-            <label>Target start date <span class="emp-optional-tag">Optional</span><input type="date" data-field-targetStartDate value="${draft.targetStartDate}"></label>
+            <label>Target start date<input type="date" data-field-targetStartDate value="${draft.targetStartDate}"></label>
             <label>Hiring urgency<select data-field-urgency>${["Standard", "Urgent", "Critical"].map(o => `<option ${draft.urgency === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
           </div>
           <details class="emp-advanced-disclosure" data-advanced="roleBasics" ${advancedOpen.roleBasics ? "open" : ""}>
             <summary>Advanced</summary>
             <div class="emp-form-grid-2">
-              <label>Internal job ID <span class="emp-optional-tag">Optional</span><input type="text" data-field-internalJobId value="${escapeHtml(draft.internalJobId)}" placeholder="Optional"></label>
-              <label>Reports to <span class="emp-optional-tag">Optional</span><input type="text" data-field-reportsTo value="${escapeHtml(draft.reportsTo)}" placeholder="Optional"></label>
-              <label>Hiring owner <span class="emp-optional-tag">Optional</span><input type="text" data-field-hiringOwner value="${escapeHtml(draft.hiringOwner)}" placeholder="Optional"></label>
+              <label>Internal job ID<input type="text" data-field-internalJobId value="${escapeHtml(draft.internalJobId)}" placeholder="Optional"></label>
+              <label>Reports to<input type="text" data-field-reportsTo value="${escapeHtml(draft.reportsTo)}" placeholder="Optional"></label>
+              <label>Hiring owner<input type="text" data-field-hiringOwner value="${escapeHtml(draft.hiringOwner)}" placeholder="Optional"></label>
               <label>Visa sponsorship<select data-field-visaSponsorship>${["Not available", "Available", "Case by case"].map(o => `<option ${draft.visaSponsorship === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
               ${["Contract", "Temporary", "Internship", "Freelance"].includes(draft.employmentType) ? `<label>Contract duration<input type="text" data-field-contractDuration value="${escapeHtml(draft.contractDuration)}" placeholder="e.g. 6 months"></label>` : ""}
             </div>
@@ -12049,19 +12047,19 @@ function renderEmployerRoleBuilder(root, roleId) {
         return `
           <div class="emp-form-section-head"><h2>${icon("list-checks")} Role Details</h2><p>Explain why this role exists, what they'll own, and how success is measured.</p></div>
           ${renderAskVeraButton("Do this with Vera", "data-generate-role-details", draft.title.trim() ? "" : `disabled title="Add a role title first"`)}
-          <label>Why this role exists <span class="emp-optional-tag">Optional</span><textarea data-field-rolePurpose rows="2" placeholder="Optional">${escapeHtml(draft.rolePurpose)}</textarea></label>
+          <label>Why this role exists<textarea data-field-rolePurpose rows="2" placeholder="Optional">${escapeHtml(draft.rolePurpose)}</textarea></label>
           <label>Role summary<textarea data-field-roleSummary rows="3" placeholder="Describe the role in 2-4 sentences. Focus on the purpose of the position.">${escapeHtml(draft.roleSummary)}</textarea></label>
           <div>
             <span class="emp-tags-label">Key responsibilities — recommended 3-8</span>
             ${renderResponsibilityList()}
           </div>
-          <label>First 90-day outcomes <span class="emp-optional-tag">Optional</span><textarea data-field-firstNinetyDays rows="2" placeholder="Optional">${escapeHtml(draft.firstNinetyDays)}</textarea></label>
-          <label>Long-term success looks like <span class="emp-optional-tag">Optional</span><textarea data-field-successLooksLike rows="2" placeholder="Optional">${escapeHtml(draft.successLooksLike)}</textarea></label>
+          <label>First 90-day outcomes<textarea data-field-firstNinetyDays rows="2" placeholder="Optional">${escapeHtml(draft.firstNinetyDays)}</textarea></label>
+          <label>Long-term success looks like<textarea data-field-successLooksLike rows="2" placeholder="Optional">${escapeHtml(draft.successLooksLike)}</textarea></label>
           <div class="emp-form-grid-2">
-            <label>Team structure <span class="emp-optional-tag">Optional</span><input type="text" data-field-teamStructure value="${escapeHtml(draft.teamStructure)}" placeholder="Optional"></label>
-            <label>Key stakeholders <span class="emp-optional-tag">Optional</span><input type="text" data-field-stakeholders value="${escapeHtml(draft.stakeholders)}" placeholder="Optional"></label>
-            <label>Tools & technologies <span class="emp-optional-tag">Optional</span><input type="text" data-field-tools value="${escapeHtml(draft.tools)}" placeholder="Optional"></label>
-            <label>Travel expectations <span class="emp-optional-tag">Optional</span><input type="text" data-field-travelExpectations value="${escapeHtml(draft.travelExpectations)}" placeholder="Optional"></label>
+            <label>Team structure<input type="text" data-field-teamStructure value="${escapeHtml(draft.teamStructure)}" placeholder="Optional"></label>
+            <label>Key stakeholders<input type="text" data-field-stakeholders value="${escapeHtml(draft.stakeholders)}" placeholder="Optional"></label>
+            <label>Tools & technologies<input type="text" data-field-tools value="${escapeHtml(draft.tools)}" placeholder="Optional"></label>
+            <label>Travel expectations<input type="text" data-field-travelExpectations value="${escapeHtml(draft.travelExpectations)}" placeholder="Optional"></label>
           </div>
         `;
       case 2:
@@ -12079,11 +12077,11 @@ function renderEmployerRoleBuilder(root, roleId) {
           <div class="emp-form-grid-2">
             <label>Minimum experience<select data-field-minExperience>${["No experience required", "Less than 1 year", "1-2 years", "3-5 years", "5+ years"].map(o => `<option ${draft.minExperience === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
             <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-equivalentExperienceAccepted ${draft.equivalentExperienceAccepted ? "checked" : ""}> Equivalent project/portfolio evidence accepted</label>
-            <label>Education or certification <span class="emp-optional-tag">Optional</span><input type="text" data-field-educationOrCertification value="${escapeHtml(draft.educationOrCertification)}" placeholder="Optional"></label>
-            <label>Required licences <span class="emp-optional-tag">Optional</span><input type="text" data-field-requiredLicences value="${escapeHtml(draft.requiredLicences)}" placeholder="Optional"></label>
-            <label>Language requirements <span class="emp-optional-tag">Optional</span><input type="text" data-field-languageRequirements value="${escapeHtml(draft.languageRequirements)}" placeholder="Optional"></label>
-            <label>Availability requirement <span class="emp-optional-tag">Optional</span><input type="text" data-field-availabilityRequirement value="${escapeHtml(draft.availabilityRequirement)}" placeholder="Optional"></label>
-            <label>Work authorization <span class="emp-optional-tag">Optional</span><input type="text" data-field-workAuthorization value="${escapeHtml(draft.workAuthorization)}" placeholder="Optional"></label>
+            <label>Education or certification<input type="text" data-field-educationOrCertification value="${escapeHtml(draft.educationOrCertification)}" placeholder="Optional"></label>
+            <label>Required licences<input type="text" data-field-requiredLicences value="${escapeHtml(draft.requiredLicences)}" placeholder="Optional"></label>
+            <label>Language requirements<input type="text" data-field-languageRequirements value="${escapeHtml(draft.languageRequirements)}" placeholder="Optional"></label>
+            <label>Availability requirement<input type="text" data-field-availabilityRequirement value="${escapeHtml(draft.availabilityRequirement)}" placeholder="Optional"></label>
+            <label>Work authorization<input type="text" data-field-workAuthorization value="${escapeHtml(draft.workAuthorization)}" placeholder="Optional"></label>
           </div>
         `;
       case 3:
@@ -12106,11 +12104,11 @@ function renderEmployerRoleBuilder(root, roleId) {
           <details class="emp-advanced-disclosure" data-advanced="compensation" ${advancedOpen.compensation ? "open" : ""}>
             <summary>Advanced — additional compensation</summary>
             <div class="emp-form-grid-2">
-              <label>Bonus <span class="emp-optional-tag">Optional</span><input type="text" data-field-bonus value="${escapeHtml(draft.bonus)}" placeholder="Optional"></label>
-              <label>Commission <span class="emp-optional-tag">Optional</span><input type="text" data-field-commission value="${escapeHtml(draft.commission)}" placeholder="Optional"></label>
-              <label>Allowances <span class="emp-optional-tag">Optional</span><input type="text" data-field-allowances value="${escapeHtml(draft.allowances)}" placeholder="Optional"></label>
-              <label>Overtime policy <span class="emp-optional-tag">Optional</span><input type="text" data-field-overtimePolicy value="${escapeHtml(draft.overtimePolicy)}" placeholder="Optional"></label>
-              <label>Equity <span class="emp-optional-tag">Optional</span><input type="text" data-field-equity value="${escapeHtml(draft.equity)}" placeholder="Optional"></label>
+              <label>Bonus<input type="text" data-field-bonus value="${escapeHtml(draft.bonus)}" placeholder="Optional"></label>
+              <label>Commission<input type="text" data-field-commission value="${escapeHtml(draft.commission)}" placeholder="Optional"></label>
+              <label>Allowances<input type="text" data-field-allowances value="${escapeHtml(draft.allowances)}" placeholder="Optional"></label>
+              <label>Overtime policy<input type="text" data-field-overtimePolicy value="${escapeHtml(draft.overtimePolicy)}" placeholder="Optional"></label>
+              <label>Equity<input type="text" data-field-equity value="${escapeHtml(draft.equity)}" placeholder="Optional"></label>
             </div>
           </details>
 
@@ -12119,11 +12117,11 @@ function renderEmployerRoleBuilder(root, roleId) {
 
           <h3 class="emp-form-subhead">Schedule</h3>
           <div class="emp-form-grid-2">
-            <label>Exact office location <span class="emp-optional-tag">Optional</span><input type="text" data-field-officeLocation value="${escapeHtml(draft.officeLocation)}" placeholder="Optional"></label>
-            <label>Hybrid attendance <span class="emp-optional-tag">Optional</span><input type="text" data-field-hybridDays value="${escapeHtml(draft.hybridDays)}" placeholder="Optional"></label>
-            <label>Working days <span class="emp-optional-tag">Optional</span><input type="text" data-field-workingDays value="${escapeHtml(draft.workingDays)}" placeholder="Optional"></label>
-            <label>Shift pattern <span class="emp-optional-tag">Optional</span><input type="text" data-field-shiftPattern value="${escapeHtml(draft.shiftPattern)}" placeholder="Optional"></label>
-            <label>Working hours <span class="emp-optional-tag">Optional</span><input type="text" data-field-workingHours value="${escapeHtml(draft.workingHours)}" placeholder="Optional"></label>
+            <label>Exact office location<input type="text" data-field-officeLocation value="${escapeHtml(draft.officeLocation)}" placeholder="Optional"></label>
+            <label>Hybrid attendance<input type="text" data-field-hybridDays value="${escapeHtml(draft.hybridDays)}" placeholder="Optional"></label>
+            <label>Working days<input type="text" data-field-workingDays value="${escapeHtml(draft.workingDays)}" placeholder="Optional"></label>
+            <label>Shift pattern<input type="text" data-field-shiftPattern value="${escapeHtml(draft.shiftPattern)}" placeholder="Optional"></label>
+            <label>Working hours<input type="text" data-field-workingHours value="${escapeHtml(draft.workingHours)}" placeholder="Optional"></label>
           </div>
         `;
       default:
@@ -12220,8 +12218,8 @@ function renderEmployerRoleBuilder(root, roleId) {
 
       <h3 class="emp-form-subhead">Application setup</h3>
       <div class="emp-form-grid-2">
-        <label>Application deadline <span class="emp-optional-tag">Optional</span><input type="date" data-field-applicationDeadline value="${draft.applicationDeadline}"></label>
-        <label>Contact person <span class="emp-optional-tag">Optional</span><input type="text" data-field-contactPerson value="${escapeHtml(draft.contactPerson)}" placeholder="Optional"></label>
+        <label>Application deadline<input type="date" data-field-applicationDeadline value="${draft.applicationDeadline}"></label>
+        <label>Contact person<input type="text" data-field-contactPerson value="${escapeHtml(draft.contactPerson)}" placeholder="Optional"></label>
       </div>
       ${renderRequiredDocumentsControl(draft)}
       <div>
@@ -12508,11 +12506,10 @@ function renderEmployerRoleBuilder(root, roleId) {
   }
 
   // One action row per step, used by every step (Steps 1-4 and Step 5) -
-  // Back [+ leftExtraHtml on Step 5 only] / Save draft / autosave label
-  // [/ Preview job on Step 5 only] / a step-specific final button (Continue,
-  // or Publish role on Step 5). This is the ONLY place these actions
-  // appear; the old top header row duplicated Preview job/Save draft here
-  // and Create with Vera in the per-step AskVeraButton.
+  // Back [+ leftExtraHtml on Step 5 only] / [Preview job on Step 5 only] /
+  // a step-specific final button (Continue, or Publish role on Step 5).
+  // Save is NOT here - it's a single button in the page header next to
+  // Cancel, functional from every step (see draw()'s header markup).
   function renderWizardActionRow(finalButtonHtml, { showPreviewJob = false, leftExtraHtml = "" } = {}) {
     return `
       <div class="emp-wizard-actions">
@@ -12521,8 +12518,6 @@ function renderEmployerRoleBuilder(root, roleId) {
           ${leftExtraHtml}
         </div>
         <div class="emp-publish-buttons">
-          <button type="button" class="btn btn-ghost" data-emp-save-draft>Save draft</button>
-          <span class="emp-save-indicator emp-save-indicator--inline" data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>
           ${showPreviewJob ? `<button type="button" class="btn btn-ghost" data-emp-preview-open>${icon("eye")} Preview job</button>` : ""}
           ${finalButtonHtml}
         </div>
@@ -12544,13 +12539,16 @@ function renderEmployerRoleBuilder(root, roleId) {
         <div class="emp-view-header-top">
           <div>
             <h1>${existing ? "Edit your role" : "Create a role"}</h1>
-            <p>
-              ${existing ? `${escapeHtml(existing.title)} · ` : "Set up the role candidates will see and CareerGo will match against. · "}
-              <span class="emp-save-indicator" data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>
-              <button type="button" class="emp-save-retry" data-emp-retry-save hidden>Retry</button>
-            </p>
+            <p>${existing ? escapeHtml(existing.title) : "Set up the role candidates will see and CareerGo will match against."}</p>
           </div>
-          <button type="button" class="emp-wizard-cancel-link" data-emp-nav="roles">Cancel</button>
+          <div class="emp-wizard-header-actions">
+            <button type="button" class="emp-wizard-cancel-link" data-emp-nav="roles">Cancel</button>
+            <div class="emp-wizard-save-group">
+              <button type="button" class="btn btn-ghost btn-sm" data-emp-save-draft>Save</button>
+              <span class="emp-save-indicator emp-save-indicator--inline" data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>
+              <button type="button" class="emp-save-retry" data-emp-retry-save hidden>Retry</button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="emp-wizard-steps">

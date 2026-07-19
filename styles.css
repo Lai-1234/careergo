@@ -12526,7 +12526,45 @@ body[data-page="home"] .home-metrics span {
 .emp-app-shell.emp-app-shell .pill.gold { color: #92400e !important; background: rgba(217, 119, 6, 0.12) !important; }
 .emp-app-shell.emp-app-shell .pill.cyan { color: var(--emp-teal) !important; background: rgba(106, 165, 157, 0.16) !important; }
 .emp-app-shell.emp-app-shell .pill.red { color: #b91c1c !important; background: rgba(239, 68, 68, 0.1) !important; }
-.emp-app-shell.emp-app-shell .emp-subtab.active { background: var(--emp-green-nav) !important; color: var(--emp-cream-text) !important; border-color: var(--emp-green-nav) !important; }
+/* Small outline checkboxes app-wide in the Employer OS, overriding the
+   shared .custom-checkbox pattern's larger filled-square look (that
+   pattern stays as-is on candidate-facing pages). Unchecked: thin border,
+   no fill. Checked: checkmark only, background stays transparent - no
+   solid color block. */
+.emp-app-shell.emp-app-shell .custom-checkbox input[type="checkbox"] {
+  /* .emp-wizard-form/.emp-publish-form-card input{padding:12px 14px} is meant
+     for text fields but also matches type=checkbox - with box-sizing:border-box
+     that padding alone (28px+) makes an 18px width impossible (content can't go
+     negative, so the box silently expands back to fit the padding). Zero it here. */
+  width: 18px !important; height: 18px !important; flex: 0 0 18px !important;
+  padding: 0 !important; min-width: 0 !important; max-width: 18px !important;
+  border: 1.5px solid var(--emp-line, rgba(7, 56, 47, 0.3)) !important;
+  border-radius: 5px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+}
+.emp-app-shell.emp-app-shell .custom-checkbox:hover input[type="checkbox"] {
+  border-color: var(--emp-green, #07382f) !important;
+  background: #fff !important;
+}
+.emp-app-shell.emp-app-shell .custom-checkbox input[type="checkbox"]:checked {
+  background: #fff !important;
+  border-color: var(--emp-green, #07382f) !important;
+  box-shadow: none !important;
+}
+.emp-app-shell.emp-app-shell .custom-checkbox input[type="checkbox"]::after {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.2 8.2 6.4 11.4 12.8 4.6' fill='none' stroke='%2307382f' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-size: 11px 11px !important;
+}
+/* Single-checkbox rows (Negotiable, candidate consent, etc.) - shrink the
+   old oversized bordered/padded box (sized for the old big checkbox) down
+   to fit the now-small checkbox + label snugly. Benefits/job-board grid
+   cards intentionally keep their .check-field card border/padding - only
+   .emp-checkbox-inline instances (single, standalone rows) are affected. */
+.emp-app-shell.emp-app-shell .custom-checkbox.emp-checkbox-inline {
+  padding: 0 !important; border: 0 !important; background: transparent !important;
+  border-radius: 0 !important; min-height: auto !important;
+}
 .emp-app-shell.emp-app-shell .emp-source-tag, .emp-app-shell.emp-app-shell .emp-tags-label { font-family: var(--emp-sans) !important; }
 .emp-app-shell.emp-app-shell :is(.page-hero, .dashboard-hero, .market-hero, .os-module-header, .compact-dashboard-hero, .glass-card, .tool-card, .list-card, .filters, .detail-panel, .search-panel, .hero-discovery-engine, .field, .workspace-search, .custom-select-panel, .locked-state, .locked-panel, .modal, .score-tile, .metric, .pipeline-stage) :is(h1, h2, h3, h4, strong, label) {
   color: var(--emp-ink) !important;
@@ -12670,11 +12708,13 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-view-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .emp-view-header h1 { margin: 6px 0 8px; font-size: var(--emp-title-xl); line-height: 1.02; }
 .emp-view-header p { margin: 0; max-width: 62ch; color: var(--emp-muted); font-size: var(--emp-body); line-height: 1.55; }
+.emp-wizard-header-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; margin-top: 8px; flex-wrap: wrap; }
 .emp-wizard-cancel-link {
-  border: 0; background: none; padding: 0; cursor: pointer; flex-shrink: 0; margin-top: 8px;
+  border: 0; background: none; padding: 0; cursor: pointer;
   color: var(--emp-muted, var(--soft)); font-size: 13px; font-weight: 600; text-decoration: none;
 }
 .emp-wizard-cancel-link:hover { text-decoration: underline; color: var(--emp-ink, var(--text)); }
+.emp-wizard-save-group { display: flex; align-items: center; gap: 8px; }
 
 /* ---------- Dashboard opening ---------- */
 .emp-dash-opening { margin-bottom: 32px; }
@@ -13816,18 +13856,15 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-drag-handle:active { cursor: grabbing; }
 .emp-stage-editor-fields { flex: 1; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .emp-stage-editor-fields input { min-width: 0; padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-size: 13px; font-family: inherit; }
-.emp-distribution-list { display: grid; gap: 10px; margin: 10px 0 16px; }
-/* Each row is a clean horizontal card: checkbox+name left, status+button
-   right, both groups vertically centered, consistent height whether or
-   not a row has a "Copy job description" button (CareerGo's row doesn't). */
-.emp-distribution-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  min-height: 56px; padding: 10px 16px;
-  border: 1px solid var(--emp-line, var(--line)); border-radius: 12px;
-}
-.emp-distribution-row-left { display: flex; align-items: center; min-width: 0; }
-.emp-distribution-row-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
-.emp-distribution-row .check-field { margin: 0; }
+/* Job board cards - reuses .emp-checkbox-grid (the exact grid Benefits
+   uses) for the container, and .check-field/.custom-checkbox (the exact
+   card look Benefits uses) for each card, so this matches Benefits'
+   size/padding/border/spacing exactly rather than approximating it.
+   Status text + Copy button stack below the checkbox row within the same
+   card instead of sitting in a separate far-right column. */
+.emp-distribution-card { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.emp-distribution-card-check { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; font-size: 13px; color: var(--emp-ink, var(--text)); }
+.emp-distribution-card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .emp-distribution-state { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; color: var(--emp-muted, var(--soft)); text-transform: uppercase; white-space: nowrap; }
 .emp-company-reuse-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
 .emp-company-reuse-row p { margin: 0; }
@@ -13843,7 +13880,11 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 /* Step 5 (Preview & Publish): the form is full-width - Preview/Readiness/
    Vera moved out of a persistent sidebar into an on-demand centered modal
    (.emp-review-modal-card below), opened via "Review, Readiness & Vera". */
-.emp-publish-top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+/* margin-top makes up the gap Steps 1-4 get for free from being a direct
+   .emp-wizard-form grid child - this wrapper isn't, so without it Step 5's
+   AskVeraButton sits right under the heading instead of matching the same
+   ~20px gap every other step has. */
+.emp-publish-top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; margin-bottom: 4px; }
 .emp-review-modal-card { width: min(860px, 100%); max-height: min(85vh, 820px); overflow-y: auto; }
 .emp-review-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
 .emp-review-modal-head h2 { margin: 0; }
