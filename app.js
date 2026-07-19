@@ -3876,13 +3876,15 @@ function renderJobsPage() {
         <header class="cg-discover-hero">
           <h1>Discover</h1>
           <p>Roles, companies, universities, and mentors tuned to Kuala Lumpur's Product Management market and your career goals.</p>
-          <form class="cg-discover-search" data-discover-search-form>
-            ${icon("search")}
-            <input name="topic" data-discover-search-input aria-label="Ask Vera about Discover" placeholder="Search companies, jobs, universities, industries, salaries...">
-            <button type="button" class="cg-search-chip" data-discover-opportunities-toggle aria-pressed="false">Opportunities only</button>
-            <button type="button" data-discover-filters>${icon("sliders-horizontal")} Filters</button>
-            <button type="submit">${icon("sparkles")} Ask Vera</button>
-          </form>
+          <div class="cg-search-shell cg-discover-search-shell" data-search-shell>
+            <form class="cg-discover-search" data-discover-search-form>
+              ${icon("search")}
+              <input name="q" data-discover-search-input aria-label="Search Discover" placeholder="Search companies, jobs, universities, industries, salaries...">
+              <button type="button" class="cg-search-chip" data-discover-opportunities-toggle aria-pressed="false">Opportunities only</button>
+              <button type="button" data-discover-filters>${icon("sliders-horizontal")} Filters</button>
+            </form>
+            <div class="cg-search-panel" data-search-panel hidden></div>
+          </div>
           <p class="cg-discover-network-note">Looking for people, mentors or recruiters? <a href="posts.html#messages">Head to Network</a>.</p>
         </header>
 
@@ -4171,13 +4173,7 @@ function renderJobsPage() {
         location.href = `posts.html?topic=${encodeURIComponent(topic)}#messages`;
       });
     });
-    qs("[data-discover-search-form]", root)?.addEventListener("submit", event => {
-      event.preventDefault();
-      const query = (qs("[data-discover-search-input]", root)?.value || "").trim();
-      const oppOnly = qs("[data-discover-opportunities-toggle]", root)?.getAttribute("aria-pressed") === "true";
-      const topic = [query || "matching opportunities", oppOnly ? "(jobs and roles only)" : ""].filter(Boolean).join(" ");
-      location.href = `posts.html?topic=${encodeURIComponent(topic)}#messages`;
-    });
+    attachLiveSearch(qs("[data-discover-search-form]", root), query => renderSearchPanelContent(query, "workspace", state));
     return;
   }
   if (state.session.loggedIn && document.body.dataset.page === "workspace-jobs") {
