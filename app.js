@@ -223,11 +223,21 @@ const DATA = {
         mostCommonWatchout: "Slow approval processes",
         basis: "Based on 1,285 employee reviews and candidate behaviour."
       },
+      // Powers the "Vera Insight" premium AI card (Insights section, Company
+      // Profile page). confidencePercent is the AI's overall confidence in
+      // this synthesis; each recommendedActions entry carries its own,
+      // separate confidence for that specific action.
       veraCompanyRead: {
+        confidencePercent: 93,
         summary: "Maybank is landing strongest with graduates and early-career candidates who value structured development, stability and a recognised brand. Candidate interest drops when salary ranges and team-level work style are unclear. The highest-impact improvement would be publishing salary information and clearer hiring timelines for your most-viewed graduate roles.",
-        whatIsWorking: ["Structured graduate programs", "Strong early-career brand", "Broad learning opportunities"],
-        whatMayBeLimiting: ["Unclear role-level salary information", "Team-level work style varies", "Slower candidate response expectations"],
-        nextBestImprovement: "Publish salary ranges and expected hiring timelines for your top 5 most-viewed roles."
+        strengths: ["Structured graduate programs", "Strong early-career brand", "Broad learning opportunities"],
+        weaknesses: ["Unclear role-level salary information", "Team-level work style varies", "Slower candidate response expectations"],
+        recommendedActions: [
+          { action: "Publish salary ranges for your open roles", difficulty: "Easy", expectedImpact: "+17% Applications", confidencePercent: 92 },
+          { action: "Add team-level work style details to each role", difficulty: "Medium", expectedImpact: "+9% Profile saves", confidencePercent: 81 },
+          { action: "Set clearer expected response timelines for candidates", difficulty: "Easy", expectedImpact: "+6% Completed applications", confidencePercent: 76 }
+        ],
+        predictedImpact: { headline: "+24% Applications", note: "Estimated combined effect if all three recommended actions are implemented within 60 days." }
       }
     },
     {
@@ -14996,11 +15006,11 @@ function renderEmployerCompany(root) {
         </div>
         <div class="emp-highlight-watchout-grid">
           <div class="card emp-highlight-card">
-            <div class="emp-callout-label">${icon("check")} What candidates like ${sourceTag("Vera synthesis")}</div>
+            <div class="emp-callout-label">${icon("check")} What candidates like ${sourceTag("Vera Insight")}</div>
             <ul>${company.highlights.map(h => `<li>${h}</li>`).join("")}</ul>
           </div>
           <div class="card emp-watchout-card">
-            <div class="emp-callout-label warn">${icon("alert-triangle")} What candidates should know ${sourceTag("Vera synthesis")}</div>
+            <div class="emp-callout-label warn">${icon("alert-triangle")} What candidates should know ${sourceTag("Vera Insight")}</div>
             <ul>${company.watchouts.map(w => `<li>${w}</li>`).join("")}</ul>
           </div>
         </div>
@@ -15045,7 +15055,7 @@ function renderEmployerCompany(root) {
         </div>
 
         <div class="emp-company-subsection">
-          <span class="emp-tags-label">Reputation summary ${sourceTag("Vera synthesis")}</span>
+          <span class="emp-tags-label">Reputation summary ${sourceTag("Vera Insight")}</span>
           <div class="emp-requirements-grid">
             <div class="emp-stat-row"><span>Strongest signal</span><strong>${company.reputationSummary.strongestSignal.label} — ${company.reputationSummary.strongestSignal.value}</strong></div>
             <div class="emp-stat-row"><span>Most common positive theme</span><strong>${company.reputationSummary.mostCommonPositive}</strong></div>
@@ -15060,18 +15070,48 @@ function renderEmployerCompany(root) {
           <ul class="emp-gap-list">${company.profileGaps.map(g => `<li>${icon("alert-triangle")} ${g}</li>`).join("")}</ul>
         </div>
 
-        <div class="emp-company-subsection emp-vera-read">
-          <div class="emp-callout-label">${icon("sparkles")} Vera's Read</div>
-          <p>${company.veraCompanyRead.summary}</p>
-          <div class="emp-vera-read-grid">
-            <div><span class="emp-tags-label">What is working</span><ul>${company.veraCompanyRead.whatIsWorking.map(w => `<li>${icon("check")} ${w}</li>`).join("")}</ul></div>
-            <div><span class="emp-tags-label">What may be limiting interest</span><ul>${company.veraCompanyRead.whatMayBeLimiting.map(w => `<li>${icon("alert-triangle")} ${w}</li>`).join("")}</ul></div>
+        <div class="emp-vera-insight-card">
+          <div class="emp-vera-insight-card-head">
+            <span class="emp-vera-insight-card-icon">${icon("sparkles")}</span>
+            <h3>Vera Insight</h3>
+            <span class="emp-vera-insight-confidence-badge">${icon("shield-check")} ${company.veraCompanyRead.confidencePercent}% confidence</span>
           </div>
-          <div class="emp-callout emp-callout-suggest">
-            <div class="emp-callout-label">${icon("lightbulb")} Next best improvement</div>
-            <p>${company.veraCompanyRead.nextBestImprovement}</p>
+          <p class="emp-vera-insight-card-summary">${escapeHtml(company.veraCompanyRead.summary)}</p>
+
+          <div class="emp-vera-insight-card-grid">
+            <div class="emp-vera-insight-card-col">
+              <span class="emp-tags-label">Strengths</span>
+              <ul>${company.veraCompanyRead.strengths.map(s => `<li>${icon("check")} ${escapeHtml(s)}</li>`).join("")}</ul>
+            </div>
+            <div class="emp-vera-insight-card-col">
+              <span class="emp-tags-label">Weaknesses</span>
+              <ul>${company.veraCompanyRead.weaknesses.map(w => `<li>${icon("alert-triangle")} ${escapeHtml(w)}</li>`).join("")}</ul>
+            </div>
           </div>
-          <div class="emp-vera-read-actions">
+
+          <div class="emp-vera-insight-card-section">
+            <span class="emp-tags-label">Recommended Actions</span>
+            <div class="emp-vera-rec-list">
+              ${company.veraCompanyRead.recommendedActions.map(rec => `
+                <div class="emp-vera-rec-card">
+                  <p class="emp-vera-rec-action">${escapeHtml(rec.action)}</p>
+                  <div class="emp-vera-rec-stats">
+                    <span class="emp-vera-rec-stat"><small>Difficulty</small><strong class="emp-vera-rec-difficulty emp-vera-rec-difficulty--${rec.difficulty.toLowerCase()}">${escapeHtml(rec.difficulty)}</strong></span>
+                    <span class="emp-vera-rec-stat"><small>Expected Impact</small><strong class="emp-vera-rec-impact">${escapeHtml(rec.expectedImpact)}</strong></span>
+                    <span class="emp-vera-rec-stat"><small>Confidence</small><strong class="emp-vera-rec-confidence">${rec.confidencePercent}%</strong></span>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+
+          <div class="emp-vera-insight-predicted">
+            <span class="emp-tags-label">Predicted Impact</span>
+            <strong>${escapeHtml(company.veraCompanyRead.predictedImpact.headline)}</strong>
+            <p>${escapeHtml(company.veraCompanyRead.predictedImpact.note)}</p>
+          </div>
+
+          <div class="emp-vera-insight-card-actions">
             <button type="button" class="btn btn-primary" data-company-edit>Edit profile</button>
             <button type="button" class="btn btn-ghost" data-company-jump-gaps>Review missing information</button>
           </div>

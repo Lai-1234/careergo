@@ -13917,11 +13917,73 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-kpi-trend { display: block; margin-top: 2px; font-size: 10px; color: var(--soft); }
 .emp-gap-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
 .emp-gap-list li { display: flex; gap: 6px; font-size: 13px; color: #b45309; }
-.emp-vera-read p { font-size: 13px; line-height: 1.6; margin: 10px 0; }
-.emp-vera-read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
-.emp-vera-read-grid ul { margin: 8px 0 0; padding-left: 4px; list-style: none; display: grid; gap: 6px; font-size: 13px; }
-.emp-vera-read-grid li { display: flex; gap: 6px; }
-.emp-vera-read-actions { display: flex; gap: 8px; margin-top: 14px; }
+/* Vera Insight - premium AI synthesis card (Insights section, Company
+   Profile page). A soft violet-tinted gradient card distinct from the
+   plain .emp-company-subsection blocks around it, using the same
+   --emp-ai purple already established for Vera-branded surfaces
+   elsewhere (.emp-vera-insight-box's label/strong, the Vera chat panel). */
+.emp-vera-insight-card {
+  margin-top: 4px; padding: 28px; border-radius: 20px;
+  background: linear-gradient(160deg, rgba(111, 95, 196, 0.07) 0%, rgba(111, 95, 196, 0.02) 55%, #fff 100%);
+  border: 1px solid rgba(111, 95, 196, 0.18);
+}
+.emp-vera-insight-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.emp-vera-insight-card-icon {
+  flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 999px; background: var(--emp-ai, #6f5fc4); color: #fff;
+}
+.emp-vera-insight-card-icon svg { width: 18px; height: 18px; }
+.emp-vera-insight-card-head h3 { margin: 0; flex: 1 1 auto; font-size: 18px; }
+.emp-vera-insight-confidence-badge {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px;
+  border-radius: 999px; background: rgba(111, 95, 196, 0.12); font-size: 12px; font-weight: 800; white-space: nowrap;
+}
+.emp-vera-insight-confidence-badge svg { width: 13px; height: 13px; }
+.emp-vera-insight-card-summary { margin: 0 0 20px; font-size: 14px; line-height: 1.65; }
+
+.emp-vera-insight-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 22px; }
+.emp-vera-insight-card-col ul { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 7px; font-size: 13px; }
+.emp-vera-insight-card-col li { display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
+.emp-vera-insight-card-col li svg { flex-shrink: 0; width: 14px; height: 14px; margin-top: 2px; }
+
+.emp-vera-insight-card-section { margin-bottom: 20px; }
+.emp-vera-rec-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.emp-vera-rec-card { padding: 14px 16px; border-radius: 14px; background: #fff; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); }
+.emp-vera-rec-action { margin: 0 0 10px; font-size: 13px; font-weight: 700; }
+.emp-vera-rec-stats { display: flex; flex-wrap: wrap; gap: 20px; }
+.emp-vera-rec-stat { display: flex; flex-direction: column; gap: 2px; }
+.emp-vera-rec-stat small { font-size: 10px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
+.emp-vera-rec-stat strong { font-size: 13px; font-weight: 800; }
+
+.emp-vera-insight-predicted {
+  padding: 16px 18px; border-radius: 14px; margin-bottom: 20px;
+  background: rgba(111, 95, 196, 0.08); border: 1px solid rgba(111, 95, 196, 0.18);
+}
+.emp-vera-insight-predicted > strong { display: block; margin: 4px 0 4px; font-size: 24px; }
+.emp-vera-insight-predicted p { margin: 0; font-size: 12px; }
+.emp-vera-insight-card-actions { display: flex; gap: 8px; }
+
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped color cascade fixed elsewhere in this file, applied
+   proactively to every bare/colored text element this card adds. */
+.emp-app-shell.emp-app-shell .emp-vera-insight-card-summary,
+.emp-app-shell.emp-app-shell .emp-vera-rec-stat small,
+.emp-app-shell.emp-app-shell .emp-vera-insight-predicted p { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-vera-rec-action,
+.emp-app-shell.emp-app-shell .emp-vera-rec-confidence { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-vera-insight-confidence-badge,
+.emp-app-shell.emp-app-shell .emp-vera-insight-confidence-badge svg,
+.emp-app-shell.emp-app-shell .emp-vera-rec-impact,
+.emp-app-shell.emp-app-shell .emp-vera-insight-predicted > strong { color: var(--emp-ai, #6f5fc4) !important; }
+.emp-app-shell.emp-app-shell .emp-vera-rec-difficulty--easy { color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell .emp-vera-rec-difficulty--medium { color: #92400e !important; }
+.emp-app-shell.emp-app-shell .emp-vera-rec-difficulty--hard { color: #b91c1c !important; }
+
+@media (max-width: 720px) {
+  .emp-vera-insight-card { padding: 20px; }
+  .emp-vera-insight-card-grid { grid-template-columns: 1fr; gap: 16px; }
+  .emp-vera-rec-stats { gap: 14px; }
+}
 .emp-edit-layout { display: grid; grid-template-columns: 1fr 280px; gap: 20px; align-items: start; }
 .emp-edit-main { min-width: 0; }
 .emp-edit-main .emp-company-section h2 { margin: 0 0 14px; font-size: var(--emp-title-md); font-weight: 700; }
@@ -14086,7 +14148,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-drawer { width: 100vw; }
   .emp-vera-drawer { width: 100vw; padding: 18px; }
   .emp-vera-compose { grid-template-columns: 1fr; }
-  .emp-requirements-grid, .emp-highlight-watchout-grid, .emp-vera-read-grid, .emp-edit-layout { grid-template-columns: 1fr; }
+  .emp-requirements-grid, .emp-highlight-watchout-grid, .emp-edit-layout { grid-template-columns: 1fr; }
   .emp-score-grid { grid-template-columns: repeat(2, 1fr); }
   .emp-company-header-top { flex-direction: column; }
   .emp-funnel-row { grid-template-columns: repeat(4, 1fr); }
