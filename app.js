@@ -371,6 +371,66 @@ const DATA = {
             predictedScore: 95
           }
         ]
+      },
+      // Powers the AI Competitor Comparison (its own tab, Company Profile
+      // page). No real company APIs - "Top Competitor" is deliberately
+      // anonymized rather than naming a real bank, since these are mock
+      // performance numbers ("mock data acceptable" per the request, but
+      // attributing fabricated figures to a real, identifiable competitor
+      // would read as a factual claim about that business). verdict is
+      // Company vs Industry Average specifically (the standard peer
+      // benchmark); Top Competitor is shown as an aspirational third
+      // reference point, not part of the verdict computation. Every value
+      // and explanation ties back to a real signal already in this
+      // company's data (scores.growth, rating, hiringTimeline,
+      // salaryComparison, the graduate-program narrative) for consistency
+      // with the Health Score dashboard and Vera Insight card built earlier.
+      competitorComparison: {
+        competitorLabel: "Top Competitor",
+        metrics: [
+          {
+            key: "salary", label: "Salary", icon: "wallet",
+            companyValue: "RM 6,850/mo avg", industryAvgValue: "RM 6,100/mo avg", competitorValue: "RM 7,400/mo avg",
+            verdict: "better",
+            explanation: "Average compensation sits about 12% above the industry average, driven by strong entry-level pay - though Senior and Executive bands still trail the top competitor by 8-10%."
+          },
+          {
+            key: "benefits", label: "Benefits", icon: "gift",
+            companyValue: "76 / 100", industryAvgValue: "76 / 100", competitorValue: "85 / 100",
+            verdict: "equal",
+            explanation: "Comprehensive medical coverage and training support keep you in line with the industry average, but you lack newer perks like remote-work stipends that your top competitor offers."
+          },
+          {
+            key: "growth", label: "Growth", icon: "trending-up",
+            companyValue: "4.3 / 5", industryAvgValue: "3.9 / 5", competitorValue: "4.1 / 5",
+            verdict: "better",
+            explanation: "A 4.3/5 growth rating and structured 6-stage career ladder outperform both the industry average and your top competitor."
+          },
+          {
+            key: "hiringSpeed", label: "Hiring Speed", icon: "gauge",
+            companyValue: "18 days avg", industryAvgValue: "16 days avg", competitorValue: "12 days avg",
+            verdict: "needsImprovement",
+            explanation: "Your hiring process averages 18 days - about 2 days slower than the industry average and 6 behind your top competitor, largely driven by Resume Review turnaround."
+          },
+          {
+            key: "employeeSatisfaction", label: "Employee Satisfaction", icon: "smile",
+            companyValue: "4.4 / 5", industryAvgValue: "4.0 / 5", competitorValue: "4.2 / 5",
+            verdict: "better",
+            explanation: "A 4.4/5 overall rating from 1,284 reviews outperforms both benchmarks, driven by strong culture and growth scores."
+          },
+          {
+            key: "retention", label: "Retention", icon: "shield-check",
+            companyValue: "84% (1-yr)", industryAvgValue: "79% (1-yr)", competitorValue: "88% (1-yr)",
+            verdict: "better",
+            explanation: "84% one-year retention reflects the job security and stability candidates describe in reviews, though the top competitor retains talent at a higher rate."
+          },
+          {
+            key: "graduateFriendliness", label: "Graduate Friendliness", icon: "graduation-cap",
+            companyValue: "92 / 100", industryAvgValue: "76 / 100", competitorValue: "81 / 100",
+            verdict: "better",
+            explanation: "A structured graduate program, strong trainee review ratings, and a clear entry-level career ladder make you a standout choice for new graduates, well ahead of both benchmarks."
+          }
+        ]
       }
     },
     {
@@ -14696,6 +14756,12 @@ const ROLE_SORT_OPTIONS = [
   ["ai", "AI Recommended"]
 ];
 
+const COMPARE_VERDICT_META = {
+  better: { label: "Better", icon: "check-circle" },
+  equal: { label: "Equal", icon: "minus-circle" },
+  needsImprovement: { label: "Needs Improvement", icon: "alert-circle" }
+};
+
 function renderEmployerCompany(root) {
   const company = DATA.companies.find(c => c.id === "maybank");
   let showAllRoles = false;
@@ -15053,6 +15119,7 @@ function renderEmployerCompany(root) {
         <a href="#comp-reviews" data-jump="comp-reviews">Reviews</a>
         <a href="#comp-insights" data-jump="comp-insights">Insights</a>
         <a href="#comp-health" data-jump="comp-health">Health Score</a>
+        <a href="#comp-compare" data-jump="comp-compare">Compare</a>
       </div>
 
       <div class="card emp-company-section" id="comp-overview">
@@ -15511,6 +15578,37 @@ function renderEmployerCompany(root) {
                     <span>Predicted <strong>${s.predictedScore}</strong></span>
                   </div>
                 </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-compare">
+        <div class="emp-company-section-head"><h2>AI Competitor Comparison</h2>${sourceTag("Vera Insight")}</div>
+        <p class="emp-company-section-desc">How you stack up against the industry average and your top competitor, with the reasoning behind every verdict. No real company APIs - all figures are illustrative.</p>
+
+        <div class="emp-compare-header-row">
+          <span>Metric</span>
+          <span>${escapeHtml(company.name)}</span>
+          <span>Industry Average</span>
+          <span>${escapeHtml(company.competitorComparison.competitorLabel)}</span>
+          <span>Verdict</span>
+        </div>
+
+        <div class="emp-compare-list">
+          ${company.competitorComparison.metrics.map(m => {
+            const verdict = COMPARE_VERDICT_META[m.verdict];
+            return `
+              <div class="emp-compare-row">
+                <div class="emp-compare-row-main">
+                  <span class="emp-compare-metric-label">${icon(m.icon)} ${escapeHtml(m.label)}</span>
+                  <span class="emp-compare-value emp-compare-value--company" data-label="${escapeHtml(company.name)}">${escapeHtml(m.companyValue)}</span>
+                  <span class="emp-compare-value" data-label="Industry Average">${escapeHtml(m.industryAvgValue)}</span>
+                  <span class="emp-compare-value" data-label="${escapeHtml(company.competitorComparison.competitorLabel)}">${escapeHtml(m.competitorValue)}</span>
+                  <span class="emp-compare-verdict emp-compare-verdict--${m.verdict}">${icon(verdict.icon)} ${verdict.label}</span>
+                </div>
+                <p class="emp-compare-explanation">${icon("sparkles")} ${escapeHtml(m.explanation)}</p>
               </div>
             `;
           }).join("")}

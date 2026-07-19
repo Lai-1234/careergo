@@ -14158,6 +14158,55 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-health-subscore-grid { grid-template-columns: 1fr; }
 }
 
+/* AI Competitor Comparison (its own tab, Company Profile page). Verdict
+   badge colors reuse the same green/amber/red tones already established
+   for .emp-salary-diff--*/.emp-vera-rec-difficulty--* elsewhere in this
+   file, not new colors. */
+.emp-compare-header-row,
+.emp-compare-row-main {
+  display: grid; grid-template-columns: 1.7fr 1fr 1fr 1fr 1.3fr; gap: 12px; align-items: center;
+}
+.emp-compare-header-row {
+  padding: 0 4px 10px; border-bottom: 1px solid var(--emp-line, var(--line));
+  font-size: 11px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase;
+}
+.emp-compare-list { display: flex; flex-direction: column; }
+.emp-compare-row { padding: 16px 4px; border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-compare-row:last-child { border-bottom: none; }
+.emp-compare-metric-label { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 800; }
+.emp-compare-metric-label svg { flex-shrink: 0; width: 15px; height: 15px; }
+.emp-compare-value { font-size: 13px; font-weight: 700; }
+.emp-compare-value--company { font-size: 14px; font-weight: 800; }
+.emp-compare-verdict {
+  display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px;
+  font-size: 11px; font-weight: 800; white-space: nowrap; justify-self: start;
+}
+.emp-compare-verdict svg { width: 13px; height: 13px; }
+.emp-compare-verdict--better { background: rgba(7, 56, 47, 0.1); }
+.emp-compare-verdict--equal { background: rgba(217, 119, 6, 0.12); }
+.emp-compare-verdict--needsImprovement { background: rgba(239, 68, 68, 0.1); }
+.emp-compare-explanation { margin: 10px 0 0; padding-left: 2px; font-size: 12px; line-height: 1.55; display: flex; gap: 6px; }
+.emp-compare-explanation svg { flex-shrink: 0; width: 13px; height: 13px; margin-top: 2px; }
+
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped color cascade fixed elsewhere in this file, applied
+   proactively to every bare/colored text element this comparison adds. */
+.emp-app-shell.emp-app-shell .emp-compare-header-row,
+.emp-app-shell.emp-app-shell .emp-compare-explanation,
+.emp-app-shell.emp-app-shell .emp-compare-value { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-compare-metric-label,
+.emp-app-shell.emp-app-shell .emp-compare-value--company { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-compare-verdict--better { color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell .emp-compare-verdict--equal { color: #92400e !important; }
+.emp-app-shell.emp-app-shell .emp-compare-verdict--needsImprovement { color: #b91c1c !important; }
+
+@media (max-width: 720px) {
+  .emp-compare-header-row { display: none; }
+  .emp-compare-row-main { grid-template-columns: 1fr; gap: 8px; }
+  .emp-compare-value, .emp-compare-verdict { justify-self: start; }
+  .emp-compare-value::before { content: attr(data-label) ": "; font-weight: 800; text-transform: uppercase; font-size: 10px; letter-spacing: 0.03em; }
+}
+
 .emp-company-subsection { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .emp-company-subsection:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .emp-kpi-trend { display: block; margin-top: 2px; font-size: 10px; color: var(--soft); }
