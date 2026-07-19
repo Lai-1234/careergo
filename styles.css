@@ -14457,7 +14457,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-edit-support { padding: 18px 20px; }
 .emp-metric-lg-value { margin: 8px 0 16px; font-size: var(--emp-metric-lg); font-weight: 700; }
 .emp-feed-layout { display: grid; grid-template-columns: 200px 1fr 280px; gap: 20px; align-items: start; }
-.emp-feed-nav { position: sticky; top: 0; display: grid; gap: 16px; }
+.emp-feed-nav { position: sticky; top: 0; display: grid; gap: 16px; min-width: 0; }
 .emp-feed-nav-list { display: grid; gap: 2px; }
 .emp-feed-nav-item {
   display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: none; background: none; border-radius: 10px;
@@ -14551,6 +14551,208 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-feed-suggest-info strong { font-size: 13px; }
 .emp-feed-suggest-reason { margin: 2px 0 0; font-size: 11px; color: var(--soft); }
 .emp-feed-signal-card p { margin: 6px 0 10px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+
+/* ---------- Vera Hiring Intelligence (Feed redesign) ----------
+   New premium-tier widgets: hiring recommendations, daily brief, in-feed
+   opportunity cards, why-Vera panels, hiring-opportunities rail, brand
+   health dashboard, AI composer bar. Reuses this page's existing --blue/
+   rgba(37,99,235,...) accent for plain feed chrome, but every *AI/Vera*
+   surface uses --emp-ai (violet) consistent with the Vera Insight card on
+   Company Profile, and --emp-green for hiring-outcome color (match %,
+   positive signals) - so "this came from Vera" and "this is a hiring
+   number" stay visually distinguishable at a glance. 8px spacing system,
+   16px radius for cards nested in the 280px rail, 20px for standalone
+   cards, unified 200ms hover per the established Company Profile pattern.
+*/
+.btn-icon-sm {
+  display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px;
+  border: 1px solid var(--emp-line, var(--line)); border-radius: 999px; background: #fff; color: var(--muted);
+  cursor: pointer; transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+.btn-icon-sm:hover { background: rgba(7, 56, 47, 0.06); color: var(--emp-ink, var(--text)); border-color: transparent; }
+.btn-icon-sm svg { width: 14px; height: 14px; }
+
+.emp-vera-rec-widget { padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.emp-vera-rec-widget-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.emp-vera-rec-nav { display: flex; align-items: center; gap: 8px; }
+.emp-vera-rec-count { font-size: 12px; font-weight: 700; color: var(--soft); min-width: 26px; text-align: center; }
+.emp-vera-rec-widget-body { display: flex; flex-direction: column; gap: 12px; min-width: 0; transition: opacity 200ms ease; }
+.emp-vera-rec-candidate-head { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.emp-vera-rec-candidate-id { flex: 1; min-width: 0; }
+.emp-vera-rec-candidate-id strong { display: block; font-size: 15px; overflow-wrap: break-word; }
+.emp-vera-rec-candidate-id p { overflow-wrap: break-word; }
+.emp-vera-rec-match {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 999px; background: rgba(7, 56, 47, 0.08); color: var(--emp-green, #07382f);
+  font-size: 13px; font-weight: 800; line-height: 1.1;
+}
+.emp-vera-rec-match small { font-size: 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; color: var(--emp-muted, var(--soft)); }
+.emp-vera-rec-match.sm { width: 40px; height: 40px; font-size: 12px; flex-shrink: 0; }
+.emp-vera-rec-type-badge {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px;
+  background: rgba(111, 95, 196, 0.1); color: var(--emp-ai, #6f5fc4); font-size: 12px; font-weight: 700; max-width: 100%;
+}
+.emp-vera-rec-type-badge svg { flex-shrink: 0; width: 13px; height: 13px; }
+.emp-vera-rec-stat-row { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.emp-vera-rec-stat-row strong { display: block; margin-top: 2px; font-size: 13px; overflow-wrap: break-word; }
+.emp-vera-rec-skills { margin: 0; }
+.emp-vera-rec-actions, .emp-vera-rec-secondary-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.emp-vera-rec-actions .btn, .emp-vera-rec-secondary-actions .btn { padding: 7px 12px; font-size: 12px; }
+.emp-vera-rec-secondary-actions { margin-top: 4px; padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); }
+
+/* Opportunity cards (item 3, in-feed) sit at full post width, not the
+   200px nav rail, so their stat row can afford a real 2-column layout and
+   larger match badge instead of the narrow-column stack below. */
+.emp-feed-opportunity-card .emp-vera-rec-stat-row { grid-template-columns: repeat(2, 1fr); gap: 10px 16px; }
+.emp-feed-opportunity-card .emp-vera-rec-match { width: 52px; height: 52px; font-size: 15px; }
+.emp-feed-opportunity-card .emp-vera-rec-match small { font-size: 8px; }
+
+/* At the 200px nav-rail width there isn't room for avatar + name + match
+   badge on one line without breaking "Product Design Intern" mid-word -
+   stack avatar+badge on their own row and let the name/role line take the
+   full card width on the row below instead. */
+.emp-vera-rec-widget:not(.emp-feed-opportunity-card) .emp-vera-rec-candidate-head { flex-wrap: wrap; }
+.emp-vera-rec-widget:not(.emp-feed-opportunity-card) .emp-vera-rec-match { order: 1; margin-left: auto; }
+.emp-vera-rec-widget:not(.emp-feed-opportunity-card) .emp-vera-rec-candidate-id { order: 2; flex-basis: 100%; }
+
+.emp-feed-why-panel { margin: 2px 0; }
+.emp-feed-why-panel summary {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 0; font-size: 12px; font-weight: 700;
+  color: var(--emp-ai, #6f5fc4); cursor: pointer; list-style: none;
+}
+.emp-feed-why-panel summary::-webkit-details-marker { display: none; }
+.emp-feed-why-panel summary svg { width: 13px; height: 13px; }
+.emp-feed-why-panel[open] summary { margin-bottom: 6px; }
+.emp-feed-why-body { padding: 10px 12px; border-radius: 10px; background: rgba(111, 95, 196, 0.06); }
+.emp-feed-why-body p { margin: 0 0 6px; font-size: 12px; line-height: 1.5; color: var(--emp-ink, var(--text)); }
+.emp-feed-why-body ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.emp-feed-why-body li { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.emp-feed-why-body li svg { flex-shrink: 0; width: 13px; height: 13px; margin-top: 2px; color: var(--emp-green, #07382f); }
+
+.emp-feed-opportunity-card { padding: 20px; border: 1px solid rgba(111, 95, 196, 0.18); background: linear-gradient(160deg, rgba(111, 95, 196, 0.05) 0%, rgba(111, 95, 196, 0.01) 45%, #fff 100%); display: flex; flex-direction: column; gap: 14px; }
+.emp-feed-opportunity-card .emp-vera-rec-widget-head { margin: 0; }
+
+.emp-daily-brief { padding: 24px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 4px; }
+.emp-daily-brief-head { display: flex; align-items: center; gap: 8px; }
+.emp-daily-brief-sub { margin: 4px 0 12px; font-size: 12px; color: var(--muted); }
+.emp-daily-brief-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.emp-daily-brief-list li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-daily-brief-list li:last-child { border-bottom: none; }
+.emp-daily-brief-icon {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px;
+  border-radius: 999px; background: rgba(7, 56, 47, 0.07); color: var(--emp-green, #07382f);
+}
+.emp-daily-brief-icon svg { width: 15px; height: 15px; }
+.emp-daily-brief-text { flex: 1; min-width: 0; font-size: 13px; line-height: 1.5; color: var(--emp-ink, var(--text)); }
+.emp-daily-brief-cta {
+  flex-shrink: 0; padding: 6px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 999px; background: #fff;
+  font-size: 12px; font-weight: 700; color: var(--emp-green, #07382f); cursor: pointer; transition: background 180ms ease;
+}
+.emp-daily-brief-cta:hover { background: rgba(7, 56, 47, 0.06); }
+.emp-daily-brief-toggle {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 0;
+  border: none; background: none; font-size: 12px; font-weight: 700; color: var(--emp-ai, #6f5fc4); cursor: pointer;
+}
+.emp-daily-brief-toggle svg { width: 13px; height: 13px; }
+.emp-daily-brief-suggested { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); }
+.emp-daily-brief-suggested ul { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.emp-daily-brief-suggested li { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.emp-daily-brief-suggested li svg { flex-shrink: 0; width: 13px; height: 13px; margin-top: 2px; color: var(--emp-ai, #6f5fc4); }
+
+.emp-hiring-opportunities h3 { display: flex; align-items: center; gap: 6px; }
+.emp-hiring-opp-list { display: flex; flex-direction: column; }
+.emp-hiring-opp-row { display: flex; align-items: flex-start; gap: 10px; padding-top: 14px; }
+.emp-hiring-opp-info { flex: 1; min-width: 0; }
+.emp-hiring-opp-info strong { font-size: 13px; }
+.emp-hiring-opp-type { display: inline-flex; align-items: center; gap: 5px; margin: 3px 0; font-size: 11px; font-weight: 700; color: var(--emp-ai, #6f5fc4); }
+.emp-hiring-opp-type svg { width: 12px; height: 12px; }
+.emp-hiring-opp-actions { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0 14px; margin-bottom: 4px; border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-hiring-opp-actions:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.emp-hiring-opp-actions .btn { padding: 6px 10px; font-size: 11px; }
+
+.emp-brand-health-card { display: flex; flex-direction: column; gap: 10px; }
+.emp-brand-health-head { display: flex; align-items: center; justify-content: space-between; }
+.emp-brand-health-head h3 { margin: 0; }
+.emp-brand-health-score { font-size: 20px; font-weight: 800; color: var(--emp-green, #07382f); }
+.emp-brand-health-score small { font-size: 11px; font-weight: 600; color: var(--soft); }
+.emp-brand-health-card > p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.emp-brand-health-mini-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 12px 0; border-top: 1px solid var(--emp-line, var(--line)); border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-brand-health-mini-stats strong { display: block; margin-top: 2px; font-size: 14px; }
+
+.emp-brand-modal-card { width: min(680px, calc(100vw - 32px)); max-height: calc(100vh - 64px); overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+.emp-brand-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.emp-brand-modal-head h2 { margin: 0; }
+.emp-brand-modal-overview { display: flex; align-items: center; gap: 24px; }
+.emp-brand-modal-ring { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.emp-brand-modal-ring span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--soft); }
+.emp-brand-modal-overview-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.emp-brand-modal-overview-text > p { margin: 0; display: flex; gap: 8px; font-size: 13px; line-height: 1.6; color: var(--muted); }
+.emp-brand-modal-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.emp-brand-modal-dropoff { padding: 14px 16px; border-radius: 14px; background: rgba(217, 119, 6, 0.06); }
+.emp-brand-modal-dropoff p { margin: 6px 0 0; display: flex; gap: 8px; font-size: 13px; line-height: 1.6; color: var(--emp-ink, var(--text)); }
+.emp-brand-modal-dropoff svg { flex-shrink: 0; width: 15px; height: 15px; margin-top: 2px; color: #d97706; }
+.emp-brand-modal-subscores { display: flex; flex-direction: column; gap: 12px; }
+.emp-brand-modal-subscore-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; font-size: 13px; font-weight: 700; }
+.emp-brand-modal-subscore-head span { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+.emp-brand-modal-subscore-head svg { width: 14px; height: 14px; }
+.emp-brand-modal-bar { height: 6px; border-radius: 999px; background: rgba(7, 56, 47, 0.08); overflow: hidden; }
+.emp-brand-modal-bar-fill { height: 100%; border-radius: 999px; background: var(--emp-green, #07382f); }
+.emp-brand-modal-suggestion { padding: 16px 18px; border-radius: 14px; background: rgba(111, 95, 196, 0.06); border: 1px solid rgba(111, 95, 196, 0.16); }
+.emp-brand-modal-suggestion p { margin: 6px 0 12px; font-size: 13px; line-height: 1.6; color: var(--emp-ink, var(--text)); }
+
+.emp-feed-composer-ai { margin-top: 8px; }
+.emp-feed-ai-toggle {
+  display: inline-flex; align-items: center; gap: 6px; padding: 0; border: none; background: none;
+  font-size: 12px; font-weight: 700; color: var(--emp-ai, #6f5fc4); cursor: pointer;
+}
+.emp-feed-ai-toggle svg { width: 13px; height: 13px; }
+.emp-feed-ai-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.emp-feed-ai-chip {
+  display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 999px;
+  border: 1px solid rgba(111, 95, 196, 0.22); background: rgba(111, 95, 196, 0.05); color: var(--emp-ai, #6f5fc4);
+  font-size: 12px; font-weight: 600; cursor: pointer; transition: background 180ms ease;
+}
+.emp-feed-ai-chip:hover { background: rgba(111, 95, 196, 0.12); }
+.emp-feed-ai-chip svg { width: 13px; height: 13px; }
+.emp-feed-ai-insight { display: flex; gap: 8px; margin: 10px 0 0; padding: 10px 12px; border-radius: 10px; background: rgba(111, 95, 196, 0.06); font-size: 12px; line-height: 1.5; color: var(--emp-ink, var(--text)); }
+.emp-feed-ai-insight svg { flex-shrink: 0; width: 14px; height: 14px; margin-top: 1px; color: var(--emp-ai, #6f5fc4); }
+
+/* Same long-standing unscoped color cascade documented elsewhere in this
+   file, hit for the first time on this page: a candidate-app rule at
+   "body :is(...,.card,...) :is(p,span,small,li,div){color:...!important}"
+   targets bare divs too, not just text tags, so ANY element nested inside
+   a bare .card - not just new ones added here, but pre-existing shared
+   classes like .emp-tags-label/.emp-callout-label/.emp-source-tag/
+   .emp-cand-meta/.emp-feed-suggest-reason that already declare the right
+   color without !important - loses to it. Those four already specify the
+   correct color; this only adds the !important + specificity needed to
+   keep it. Company Profile never hit this because its cards use
+   .emp-company-section, not bare .card - Feed's original cards (.emp-feed-
+   post etc.) already used .card and were quietly exposed to the same bug. */
+.emp-app-shell.emp-app-shell :is(.emp-tags-label, .emp-callout-label, .emp-source-tag, .emp-cand-meta, .emp-feed-suggest-reason, .emp-empty-hint, .emp-community-browse-head h3, .emp-feed-trending-count) { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-callout-label.warn { color: #b45309 !important; }
+/* Pre-existing Feed content (built before this pass) also uses bare .card
+   for every post/community-row/network-row/trending-item, so it was
+   already exposed to the same bug - fixed here rather than left broken
+   now that it's been found, not just the newly added widgets. */
+.emp-app-shell.emp-app-shell :is(.emp-feed-post-body, .emp-feed-post h3, .emp-feed-trending-item span:first-child) { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-feed-comment-body p, .emp-feed-reply p, .emp-community-row p) { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-feed-comment-body strong, .emp-feed-reply strong, .emp-community-row strong, .emp-network-row-info strong, .emp-feed-suggest-info strong, .emp-feed-attachment strong) { color: var(--emp-ink, var(--text)) !important; }
+
+.emp-app-shell.emp-app-shell :is(.emp-vera-rec-candidate-id p, .emp-daily-brief-sub, .emp-brand-health-card > p, .emp-feed-why-body li, .emp-vera-rec-count) { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-daily-brief-text, .emp-feed-why-body p, .emp-feed-ai-insight) { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-vera-rec-type-badge, .emp-hiring-opp-type, .emp-feed-why-panel summary, .emp-feed-why-panel summary span, .emp-feed-ai-toggle, .emp-daily-brief-toggle) { color: var(--emp-ai, #6f5fc4) !important; }
+.emp-app-shell.emp-app-shell .emp-vera-rec-match { color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell .emp-daily-brief-cta { color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-brand-modal-overview-text > p, .emp-brand-modal-dropoff p, .emp-brand-modal-suggestion p) { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-brand-modal-suggestion .emp-callout-label { color: var(--emp-ai, #6f5fc4) !important; }
+
+@media (max-width: 720px) {
+  .emp-vera-rec-stat-row { grid-template-columns: 1fr 1fr; }
+  .emp-brand-modal-overview { flex-direction: column; align-items: flex-start; }
+  .emp-brand-modal-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
 .emp-kanban { display: grid; grid-template-columns: repeat(7, minmax(160px, 1fr)); gap: 12px; overflow-x: auto; }
 .emp-kanban-col h3 { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; font-size: var(--emp-body); font-weight: 700; }
 .emp-kanban-card { padding: 12px; margin-bottom: 10px; display: grid; gap: 6px; }

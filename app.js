@@ -1185,7 +1185,9 @@ function readState() {
     feedMuted: [],
     feedSavedPosts: [],
     feedPostingIdentity: "Maybank",
-    feedConnections: []
+    feedConnections: [],
+    feedDismissedCandidates: [],
+    feedSavedPassiveTalent: []
   };
   try {
     return normalizeState({ ...fallback, ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") });
@@ -14317,6 +14319,245 @@ const EMPLOYER_MOCK_NETWORK = {
   ]
 };
 
+// ---------- Vera Hiring Intelligence ----------
+// Shared derivation layer for the Feed's AI widgets (recommendations, daily
+// brief, opportunity cards, "why Vera showed this", hiring-opportunities
+// rail). Everything here reads DATA.candidates / DATA.employerRoles rather
+// than duplicating candidate data into parallel mock arrays, so every
+// widget always agrees with Talent Pipeline. Signal fields that aren't in
+// the base candidate record (last active, resume-updated, competitor
+// views, AI confidence) are derived deterministically from candidate.id,
+// so a given candidate shows identical signals everywhere on every render
+// instead of visibly re-randomizing each redraw.
+function hashSeed(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  return h;
+}
+function seededPick(seedStr, arr) { return arr[hashSeed(seedStr) % arr.length]; }
+function seededRange(seedStr, min, max) { return min + (hashSeed(seedStr) % (max - min + 1)); }
+
+const HIRING_LAST_ACTIVE_OPTIONS = ["Just now", "1 hour ago", "3 hours ago", "6 hours ago", "Yesterday", "2 days ago"];
+const HIRING_COMPETITOR_NAMES = ["Grab", "CIMB", "Shopee", "AirAsia", "Petronas Digital"];
+
+function getCandidateSignals(c) {
+  const viewedByCompetitors = seededRange(c.id + "-comp", 0, 9) > 6;
+  return {
+    lastActive: seededPick(c.id + "-active", HIRING_LAST_ACTIVE_OPTIONS),
+    resumeUpdatedDaysAgo: seededRange(c.id + "-resume", 1, 12),
+    viewedByCompetitors,
+    competitorCount: viewedByCompetitors ? seededRange(c.id + "-compcount", 1, 3) : 0,
+    competitorName: seededPick(c.id + "-compname", HIRING_COMPETITOR_NAMES),
+    interviewSuccessProbability: Math.max(45, Math.min(97, c.fit + seededRange(c.id + "-isp", -8, 6))),
+    offerAcceptLikelihood: Math.max(40, Math.min(96, c.fit + (c.availability === "Immediate" ? 8 : -4) + seededRange(c.id + "-oal", -6, 6))),
+    aiConfidence: Math.max(72, Math.min(98, c.fit + seededRange(c.id + "-conf", -4, 8))),
+    recentlyAvailable: c.availability === "Immediate" || c.availability === "2 weeks",
+  };
+}
+
+// Compares a candidate against a specific role so every "why recommended"
+// explanation is computed from real overlaps (skills / salary / location)
+// rather than static copy - two candidates with the same fit score can
+// still get different reasons if their actual overlap differs.
+function getMatchReasons(c, role) {
+  const reasons = [];
+  const signals = getCandidateSignals(c);
+  if (role) {
+    const required = [...(role.mustHaveSkills || []), ...(role.niceToHaveSkills || [])];
+    const overlap = c.skills.filter(s => required.includes(s));
+    if (overlap.length) reasons.push(`Matches ${overlap.length} of ${required.length} required/preferred skills (${overlap.slice(0, 2).join(", ")}${overlap.length > 2 ? ", …" : ""})`);
+    if (role.location && c.location && c.location.split(" / ")[0].includes(role.location.split(" ")[0])) {
+      reasons.push(`Based in ${role.location}, matching the role's location`);
+    }
+    if (role.salary && role.salary.min) {
+      const expNum = parseFloat((c.salaryExpectation.match(/[\d.]+/g) || [])[0] || "0");
+      if (expNum && expNum * 1000 <= role.salary.max * 1.05) reasons.push(`Salary expectation (${c.salaryExpectation}) fits your published range`);
+    }
+  }
+  if (c.fit >= 88) reasons.push("Among your highest-fit candidates this month");
+  if (signals.recentlyAvailable) reasons.push(`Available ${c.availability.toLowerCase()}`);
+  if (signals.viewedByCompetitors) reasons.push(`Viewed by ${signals.competitorCount} other ${signals.competitorCount === 1 ? "company" : "companies"} this week — act before they do`);
+  if (signals.resumeUpdatedDaysAgo <= 3) reasons.push(`Updated their resume ${signals.resumeUpdatedDaysAgo} day${signals.resumeUpdatedDaysAgo === 1 ? "" : "s"} ago`);
+  return reasons.length ? reasons : [c.strength];
+}
+
+const HIRING_RECOMMENDATION_TYPES = {
+  "high-fit": { label: "High-fit candidate", icon: "target" },
+  "likely-to-accept": { label: "Likely to accept an offer", icon: "handshake" },
+  "recently-available": { label: "Recently became available", icon: "clock" },
+  "urgent-need": { label: "Matches an urgent hiring need", icon: "alert-triangle" },
+  "competitor-interest": { label: "Viewed by competitors", icon: "eye" },
+  "resume-updated": { label: "Recently updated resume", icon: "file-text" },
+  "interview-ready": { label: "High interview success probability", icon: "check-circle" },
+};
+
+// Ranks every active (non-archived, in-pipeline) candidate into a single
+// scored pool that every recommendation widget slices from, so "top 3 in
+// the nav rail" and "1 injected into the feed" never show the same
+// candidate twice in the same view.
+function getHiringRecommendationPool() {
+  return DATA.candidates
+    .filter(c => !c.archived && c.stage && c.stage !== "Hired")
+    .map(c => {
+      const role = DATA.employerRoles.find(r => r.id === c.roleId);
+      const signals = getCandidateSignals(c);
+      const reasons = getMatchReasons(c, role);
+      let recommendationType = "high-fit";
+      if (c.stage === "Offer" && signals.offerAcceptLikelihood >= 80) recommendationType = "likely-to-accept";
+      else if (signals.viewedByCompetitors) recommendationType = "competitor-interest";
+      else if (role && role.health === "Needs attention") recommendationType = "urgent-need";
+      else if (c.stage === "New" && signals.recentlyAvailable) recommendationType = "recently-available";
+      else if (signals.resumeUpdatedDaysAgo <= 3) recommendationType = "resume-updated";
+      else if (signals.interviewSuccessProbability >= 88) recommendationType = "interview-ready";
+      const score = c.fit * 0.5 + signals.aiConfidence * 0.3 + signals.offerAcceptLikelihood * 0.2;
+      return { candidate: c, role, signals, reasons, recommendationType, score };
+    })
+    .sort((a, b) => b.score - a.score);
+}
+
+// Net-new people outside the applicant pool that Vera claims to have
+// surfaced proactively (graduating soon, passive, switching jobs, hidden
+// talent). Deliberately a separate small dataset from DATA.candidates -
+// these people haven't applied, so they don't belong in Talent Pipeline.
+const HIRING_PASSIVE_TALENT = [
+  { id: "pt1", name: "Aisyah Rahman", type: "graduating-soon", headline: "Final-year Computer Science, UTM", relevantRoleId: "er4", matchScore: 81, note: "Graduating in 3 months · active in AI Talent Malaysia community", skills: ["Python", "React"] },
+  { id: "pt2", name: "Marcus Wong", type: "switching", headline: "Software Engineer · currently at Grab", relevantRoleId: "er4", matchScore: 88, note: "Updated their headline to \"Open to opportunities\" this week", skills: ["React", "Node.js", "AWS"] },
+  { id: "pt3", name: "Nur Iman", type: "passive", headline: "Data Analyst · currently at CIMB", relevantRoleId: "er2", matchScore: 76, note: "Engages with your Hiring Insight posts but hasn't applied yet", skills: ["SQL", "Power BI"] },
+  { id: "pt4", name: "Ben Tan", type: "hidden", headline: "Backend Engineer · open-source contributor", relevantRoleId: "er5", matchScore: 85, note: "Found through GitHub activity matching your tech stack", skills: ["Java", "Microservices", "Kafka"] },
+];
+const HIRING_PASSIVE_TYPE_META = {
+  "graduating-soon": { label: "Graduating soon", icon: "graduation-cap" },
+  switching: { label: "Switching jobs", icon: "refresh-cw" },
+  passive: { label: "Passive candidate", icon: "eye" },
+  hidden: { label: "Hidden talent, found by Vera", icon: "sparkles" },
+};
+
+// "Since your last visit" summary. Reads live off DATA.candidates /
+// DATA.employerRoles so it never drifts out of sync with what's actually
+// in the pipeline; every count is real, so a 0-count item is simply
+// omitted rather than shown as a fabricated "0 of something".
+function getDailyHiringBrief() {
+  const active = DATA.candidates.filter(c => !c.archived);
+  const openRoles = DATA.employerRoles.filter(r => r.status === "Open");
+  const newCandidates = active.filter(c => c.stage === "New");
+  const awaitingReview = active.filter(c => ["New", "Shortlisted"].includes(c.stage));
+  const upcomingInterviews = active.filter(c => c.interview && c.interview.nextInterview);
+  const offersAwaiting = active.filter(c => c.offer && c.offer.status === "Sent");
+  const needsAttentionRoles = openRoles.filter(r => r.health === "Needs attention");
+  const highSignal = getHiringRecommendationPool().filter(r => r.recommendationType === "competitor-interest" || r.recommendationType === "resume-updated");
+
+  const items = [];
+  if (newCandidates.length) items.push({ icon: "user-plus", text: `${newCandidates.length} new candidate${newCandidates.length === 1 ? "" : "s"} matched your active roles`, cta: "Review candidates", nav: "pipeline" });
+  if (awaitingReview.length) items.push({ icon: "clock", text: `${awaitingReview.length} applicant${awaitingReview.length === 1 ? "" : "s"} waiting for review`, cta: "Review now", nav: "pipeline" });
+  if (upcomingInterviews.length) items.push({ icon: "calendar", text: `${upcomingInterviews.length} interview${upcomingInterviews.length === 1 ? "" : "s"} coming up — ${upcomingInterviews.map(c => `${c.name.split(" ")[0]} (${c.interview.nextInterview.date})`).join(", ")}`, cta: "View schedule", nav: "pipeline" });
+  if (offersAwaiting.length) items.push({ icon: "file-text", text: `${offersAwaiting.length} offer${offersAwaiting.length === 1 ? "" : "s"} awaiting a candidate response`, cta: "View offers", nav: "pipeline" });
+  if (needsAttentionRoles.length) items.push({ icon: "alert-triangle", text: `${needsAttentionRoles.map(r => r.title).join(", ")} ${needsAttentionRoles.length === 1 ? "needs" : "need"} attention — talent supply or hiring speed is off pace`, cta: "Review role", nav: "roles" });
+  if (highSignal.length) items.push({ icon: "trending-up", text: `${highSignal.length} candidate${highSignal.length === 1 ? "" : "s"} showing urgent signal — competitor views or fresh resume updates`, cta: "See who", nav: "pipeline" });
+  items.push({ icon: "bar-chart-2", text: "Junior Data Analyst salary expectations are trending 6% higher this month across your target market.", cta: null, nav: null });
+
+  const suggestedActions = [];
+  if (offersAwaiting.length) suggestedActions.push(`Follow up on ${offersAwaiting[0].name}'s offer before it expires ${offersAwaiting[0].offer.expiryDate}.`);
+  if (needsAttentionRoles.length) suggestedActions.push(`Loosen the experience requirement on ${needsAttentionRoles[0].title} to widen your candidate pool.`);
+  if (upcomingInterviews.length) suggestedActions.push(`Prep interview notes for ${upcomingInterviews[0].name} ahead of ${upcomingInterviews[0].interview.nextInterview.date}.`);
+
+  return { items, suggestedActions, totalSignals: items.length };
+}
+
+function fmtSalaryK(n) { return (n / 1000).toFixed(1).replace(".0", ""); }
+
+// Assembles the Feed's Brand Health Dashboard entirely from data the
+// Company Profile page already owns (healthDashboard, hiringStages,
+// hiringFunnel, reputationSummary) so the two pages never disagree about
+// the company's health score or its drivers.
+function getBrandHealthSummary(company) {
+  const hd = company.healthDashboard;
+  const funnel30 = company.hiringFunnel.ranges["30d"].stages;
+  const funnel90 = company.hiringFunnel.ranges["90d"].stages;
+  const offers30 = funnel30.find(s => s.stage === "Offers").value;
+  const accepted30 = funnel30.find(s => s.stage === "Accepted").value;
+  const offers90 = funnel90.find(s => s.stage === "Offers").value;
+  const accepted90 = funnel90.find(s => s.stage === "Accepted").value;
+  const acceptanceRate30 = Math.round((accepted30 / offers30) * 100);
+  const acceptanceRate90 = Math.round((accepted90 / offers90) * 100);
+  const biggestDropOff = [...company.hiringTimeline].sort((a, b) => b.dropOffPercent - a.dropOffPercent)[0];
+  const topSuggestion = [...hd.subscores].sort((a, b) => (b.predictedScore - b.score) - (a.predictedScore - a.score))[0];
+  return {
+    overallScore: hd.overallScore,
+    overallPredictedScore: hd.overallPredictedScore,
+    overallExplanation: hd.overallExplanation,
+    profileCompleteness: computeCompanyCompleteness(company),
+    avgResponseDays: company.avgResponseDays,
+    interviewRating: company.scores.growth,
+    acceptanceRate: acceptanceRate30,
+    acceptanceTrend: acceptanceRate30 - acceptanceRate90,
+    sentiment: company.reputationSummary,
+    biggestDropOff,
+    subscores: hd.subscores,
+    topSuggestion,
+  };
+}
+
+// "Why Vera showed this" (item 4). Every post gets a real explanation -
+// posts that already carry a hand-written veraLine use it as the headline
+// reason; every post additionally gets 1-2 concrete supporting factors
+// computed from its own data (engagement, category, authorship) so the
+// panel never reads as generic filler.
+const VERA_POST_REASON_TEMPLATES = {
+  DISCUSSION: "Candidates in your pipeline engage with discussions like this.",
+  MILESTONE: "This reflects the kind of story your recently-hired candidates have shared.",
+  "COMPANY UPDATE": "This is your own company's post, shown to keep your hiring team aligned.",
+  "HIRING INSIGHT": "Hiring insights are prioritized for employers actively screening applicants.",
+  QUESTION: "Employer questions like this often surface useful market signal from candidates.",
+};
+function getPostVeraReason(post, state) {
+  const summary = post.veraLine || VERA_POST_REASON_TEMPLATES[post.category] || "This is relevant to your current hiring activity.";
+  const factors = [];
+  if (post.reactions > 100) factors.push(`High engagement in your talent market (${post.reactions} reactions)`);
+  if (["HIRING INSIGHT", "QUESTION"].includes(post.category)) factors.push("Directly relevant to your open roles");
+  if (post.authorType === "employer") factors.push("Posted by your own company");
+  if (state.feedFollowing.includes(post.followId)) factors.push("From someone you follow");
+  if (!factors.length) factors.push("General relevance to your hiring activity");
+  return { summary, factors };
+}
+
+// Shared "why Vera showed this" disclosure, used on both feed posts and
+// candidate opportunity cards. Native <details>/<summary> rather than a
+// JS-tracked open/close flag: it's keyboard-operable and announced by
+// screen readers with zero extra wiring, and since this codebase re-draws
+// the whole page on most interactions anyway, a JS-tracked flag would
+// reset just as often as this does.
+// Shared AI health-score ring, used by the Company Profile page's AI
+// Health Score section and the Feed's Brand Health Dashboard modal - one
+// SVG renderer so the visual stays identical wherever a health score
+// appears. Pure function: strokeDashoffset starts full (0% drawn) and the
+// caller animates it toward data-target-offset after mount.
+function renderHealthRing(score, { size = 120, strokeWidth = 10 } = {}) {
+  const clamped = Math.max(0, Math.min(100, score));
+  const radius = 50 - strokeWidth / 2 - 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - clamped / 100);
+  const tier = clamped >= 85 ? "strong" : clamped >= 70 ? "moderate" : "attention";
+  return `
+    <svg viewBox="0 0 100 100" class="emp-health-ring emp-health-ring--${tier}" style="width:${size}px;height:${size}px" data-health-ring data-target-offset="${offset}">
+      <circle cx="50" cy="50" r="${radius}" class="emp-health-ring-track" stroke-width="${strokeWidth}"></circle>
+      <circle cx="50" cy="50" r="${radius}" class="emp-health-ring-fill" stroke-width="${strokeWidth}" stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}"></circle>
+      <text x="50" y="50" class="emp-health-ring-text" text-anchor="middle" dominant-baseline="central">${Math.round(clamped)}</text>
+    </svg>
+  `;
+}
+
+function renderWhyVeraPanel(reason) {
+  return `
+    <details class="emp-feed-why-panel">
+      <summary>${icon("sparkles")} <span>Why Vera showed this</span></summary>
+      <div class="emp-feed-why-body">
+        <p>${reason.summary}</p>
+        <ul>${reason.factors.map(f => `<li>${icon("check")} ${f}</li>`).join("")}</ul>
+      </div>
+    </details>
+  `;
+}
+
 function renderEmployerFeed(root) {
   let activeFilter = "foryou";
   let trendingKeyword = null;
@@ -14327,6 +14568,32 @@ function renderEmployerFeed(root) {
   let replyingCommentId = null;
   let pendingCommunityCreate = false;
   let networkTab = "following";
+  let recRotateIndex = 0;
+  let recRotateTimer = null;
+  let briefExpanded = false;
+  let brandDashboardOpen = false;
+  let composerAiOpen = false;
+  let composerAiInsight = null;
+  let composerDraftText = "";
+
+  // Smart Feed Intelligence (item 8): on "For You" specifically - the only
+  // view framed as AI-personalized - rank by hiring relevance instead of
+  // raw recency. Explicit filters (Following/Discussions/Hiring/Company
+  // Updates/Trending) keep their natural order since the employer chose
+  // that lens deliberately; re-ranking there would be surprising, not
+  // helpful. Relevance = has an explicit "why you're seeing this" signal,
+  // is hiring-flavoured content, is from your own company/network, or has
+  // real engagement - each a genuine hiring-relevance signal, not just
+  // popularity.
+  function hiringRelevanceScore(post, state) {
+    let score = 0;
+    if (post.veraLine) score += 30;
+    if (["HIRING INSIGHT", "QUESTION"].includes(post.category)) score += 25;
+    if (post.authorType === "employer") score += 15;
+    if (state.feedFollowing.includes(post.followId)) score += 15;
+    score += Math.min(post.reactions / 10, 20);
+    return score;
+  }
 
   function visiblePosts(state) {
     let posts = DATA.communityPosts.filter(p => !state.feedMuted.includes(p.followId));
@@ -14339,6 +14606,7 @@ function renderEmployerFeed(root) {
     } else if (activeFilter === "discussions") posts = posts.filter(p => ["DISCUSSION", "MILESTONE"].includes(p.category));
     else if (activeFilter === "hiring") posts = posts.filter(p => ["HIRING INSIGHT", "QUESTION"].includes(p.category));
     else if (activeFilter === "company-updates") posts = posts.filter(p => p.category === "COMPANY UPDATE");
+    if (activeFilter === "foryou") posts = [...posts].sort((a, b) => hiringRelevanceScore(b, state) - hiringRelevanceScore(a, state));
     return posts;
   }
 
@@ -14429,7 +14697,7 @@ function renderEmployerFeed(root) {
             </div>
           </div>
         </div>
-        ${post.veraLine ? `<p class="emp-feed-vera-line">${icon("sparkles")} <strong>Why you're seeing this:</strong> ${post.veraLine}</p>` : ""}
+        ${renderWhyVeraPanel(getPostVeraReason(post, state))}
         ${post.title ? `<h3>${post.title}</h3>` : ""}
         <p class="emp-feed-post-body">${post.body}</p>
         ${post.attachment ? renderAttachment(post.attachment) : ""}
@@ -14503,6 +14771,34 @@ function renderEmployerFeed(root) {
     `;
   }
 
+  // AI Content Composer (item 9). Text-transform actions (generate,
+  // rewrite, hashtags, optimize) actually rewrite the textarea so the
+  // employer gets a real draft to edit, not just a toast; analysis actions
+  // (predict engagement, suggest posting time) surface an inline AI
+  // insight strip instead, since there's no text for them to change.
+  function renderComposerAiBar(state) {
+    return `
+      <div class="emp-feed-composer-ai">
+        <button type="button" class="emp-feed-ai-toggle" data-feed-ai-toggle aria-expanded="${composerAiOpen}">
+          ${icon("sparkles")} <span>Write with Vera</span> ${icon(composerAiOpen ? "chevron-up" : "chevron-down")}
+        </button>
+        ${composerAiOpen ? `
+          <div class="emp-feed-ai-actions">
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="generate">${icon("sparkles")} Generate hiring announcement</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="rewrite">${icon("edit-3")} Rewrite for employer branding</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="engagement">${icon("trending-up")} Improve engagement</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="hashtags">${icon("hash")} Add hashtags</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="media">${icon("image")} Recommend media</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="optimize">${icon("wand-2")} Optimize wording</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="predict">${icon("bar-chart-2")} Predict engagement</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="timing">${icon("clock")} Suggest posting time</button>
+          </div>
+          ${composerAiInsight ? `<p class="emp-feed-ai-insight">${icon("sparkles")} ${composerAiInsight}</p>` : ""}
+        ` : ""}
+      </div>
+    `;
+  }
+
   function renderComposer(state) {
     return `
       <div class="card emp-feed-composer">
@@ -14513,7 +14809,8 @@ function renderEmployerFeed(root) {
             <option value="Mira — Talent Acquisition" ${state.feedPostingIdentity === "Mira — Talent Acquisition" ? "selected" : ""}>Mira — Talent Acquisition</option>
           </select>
         </div>
-        <textarea data-feed-composer-text placeholder="Share an update, ask a question, or start a discussion…" rows="2"></textarea>
+        <textarea data-feed-composer-text placeholder="Share an update, ask a question, or start a discussion…" rows="2">${composerDraftText || ""}</textarea>
+        ${renderComposerAiBar(state)}
         ${composerOpen ? `
           <div class="emp-feed-composer-types">
             ${["Discussion", "Company Update", "Hiring Insight", "Question", "Event", "Role Share", "Media", "Poll"].map(t => `<button type="button" class="emp-feed-type-chip ${composerCategory === t.toUpperCase() ? "active" : ""}" data-feed-type="${t}">${t}</button>`).join("")}
@@ -14536,8 +14833,337 @@ function renderEmployerFeed(root) {
     `;
   }
 
+  // ---------- Item 1 + 3: shared recommendation-detail body ----------
+  // One body renderer powers both the compact nav-rail widget (item 1) and
+  // the full-width in-feed opportunity card (item 3), so a candidate's
+  // match %, explanation, salary, availability and actions never drift
+  // between the two surfaces that show the same underlying data.
+  function renderRecommendationDetail(entry, opts = {}) {
+    const { candidate: c, role, signals, reasons, recommendationType } = entry;
+    const typeMeta = HIRING_RECOMMENDATION_TYPES[recommendationType];
+    const whyReason = { summary: reasons[0], factors: reasons.slice(1).length ? reasons.slice(1) : [`AI confidence ${signals.aiConfidence}% based on fit, availability and engagement signals.`] };
+    return `
+      <div class="emp-vera-rec-candidate-head">
+        <span class="emp-feed-avatar">${initialsOf(c.name)}</span>
+        <div class="emp-vera-rec-candidate-id">
+          <strong>${c.name}</strong>
+          <p class="emp-cand-meta">${c.role}${role ? ` · ${role.location}` : ""}</p>
+        </div>
+        <span class="emp-vera-rec-match" title="AI match score">${c.fit}%<small>match</small></span>
+      </div>
+      <span class="emp-vera-rec-type-badge">${icon(typeMeta.icon)} ${typeMeta.label}</span>
+      <div class="emp-vera-rec-stat-row">
+        <div><span class="emp-tags-label">Expected salary</span><strong>${c.salaryExpectation}</strong></div>
+        <div><span class="emp-tags-label">Availability</span><strong>${c.availability}</strong></div>
+        <div><span class="emp-tags-label">Last active</span><strong>${signals.lastActive}</strong></div>
+        <div><span class="emp-tags-label">AI confidence</span><strong>${signals.aiConfidence}%</strong></div>
+      </div>
+      ${opts.showSkills !== false ? `<div class="pill-row emp-vera-rec-skills">${c.skills.slice(0, 4).map(s => `<span class="pill">${s}</span>`).join("")}</div>` : ""}
+      ${renderWhyVeraPanel(whyReason)}
+      <div class="emp-vera-rec-actions">
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="preview" data-rec-candidate="${c.id}">${icon("eye")} Preview</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="message" data-rec-candidate="${c.id}">${icon("message-circle")} Message</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="shortlist" data-rec-candidate="${c.id}">${icon("bookmark")} Shortlist</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="invite" data-rec-candidate="${c.id}">${icon("send")} Invite</button>
+        ${c.stage === "Offer" ? `<button type="button" class="btn btn-primary btn-sm" data-rec-action="offer" data-rec-candidate="${c.id}">${icon("award")} View offer</button>` : ""}
+      </div>
+    `;
+  }
+
+  // Item 1: replaces the static "Looking for talent?" card. Rotates
+  // through the ranked recommendation pool - manual prev/next always
+  // available (keyboard + click), plus a slow auto-advance that pauses on
+  // hover/focus so it never yanks attention or interrupts reading.
+  function renderVeraRecommendationsWidget() {
+    const pool = getHiringRecommendationPool();
+    if (!pool.length) {
+      return `
+        <div class="card emp-vera-rec-widget">
+          <div class="emp-vera-rec-widget-head"><span class="emp-callout-label">${icon("sparkles")} Vera Hiring Recommendations</span></div>
+          <p class="emp-empty-hint">No active candidates to recommend right now. Vera will surface matches as new applicants come in.</p>
+        </div>
+      `;
+    }
+    const index = recRotateIndex % pool.length;
+    const entry = pool[index];
+    return `
+      <div class="card emp-vera-rec-widget" data-vera-rec-widget>
+        <div class="emp-vera-rec-widget-head">
+          <span class="emp-callout-label">${icon("sparkles")} Vera Hiring Recommendations</span>
+          <div class="emp-vera-rec-nav">
+            <button type="button" class="btn-icon-sm" data-rec-prev aria-label="Previous recommendation">${icon("chevron-left")}</button>
+            <span class="emp-vera-rec-count" data-vera-rec-count>${index + 1}/${pool.length}</span>
+            <button type="button" class="btn-icon-sm" data-rec-next aria-label="Next recommendation">${icon("chevron-right")}</button>
+          </div>
+        </div>
+        <div class="emp-vera-rec-widget-body" data-vera-rec-body>
+          ${renderRecommendationDetail(entry, { showSkills: false })}
+        </div>
+      </div>
+    `;
+  }
+
+  // Steps the nav widget to a different recommendation via a scoped
+  // innerHTML swap + rebind of just [data-vera-rec-body] - not a full
+  // draw() - so rotation never disturbs scroll position, an open composer
+  // draft, or expanded comment threads elsewhere on the page. The prev/
+  // next buttons themselves live outside the swapped body and keep the
+  // listeners bind() gave them; only the body's fresh content needs
+  // rebinding.
+  function stepRecommendation(delta) {
+    const pool = getHiringRecommendationPool();
+    if (!pool.length) return;
+    recRotateIndex = (recRotateIndex + delta + pool.length) % pool.length;
+    const widget = qs("[data-vera-rec-widget]", root);
+    if (!widget) { draw(); return; }
+    const countEl = qs("[data-vera-rec-count]", widget);
+    if (countEl) countEl.textContent = `${recRotateIndex + 1}/${pool.length}`;
+    const body = qs("[data-vera-rec-body]", widget);
+    body.style.opacity = "0";
+    setTimeout(() => {
+      body.innerHTML = renderRecommendationDetail(pool[recRotateIndex], { showSkills: false });
+      createIcons();
+      bindRecommendationCardActions(body);
+      body.style.opacity = "1";
+    }, 150);
+  }
+
+  // Candidate action buttons shared by the nav widget and every in-feed
+  // opportunity card. "Shortlist" genuinely mutates the candidate's stage
+  // (same field Talent Pipeline's kanban reads) so the action has real
+  // in-session effect, not just a toast; actions with no meaningful mock
+  // mutation (preview/message/invite/schedule/offer) route to Talent
+  // Pipeline, matching how the pre-existing post-menu "Message" action
+  // already behaves.
+  function bindRecommendationCardActions(scopeEl) {
+    qsa("[data-rec-action]", scopeEl).forEach(btn => btn.addEventListener("click", () => {
+      const c = DATA.candidates.find(cand => cand.id === btn.dataset.recCandidate);
+      if (!c) return;
+      const action = btn.dataset.recAction;
+      if (action === "preview" || action === "offer") { employerNavigateTo("pipeline", { id: c.id }); showToast(`Opening ${c.name} in Talent Pipeline.`, "info"); }
+      else if (action === "message") showToast("Opens in Messages.", "info");
+      else if (action === "invite") showToast(`Invitation sent to ${c.name}.`);
+      else if (action === "shortlist") {
+        if (c.stage === "New") {
+          c.stage = "Shortlisted";
+          c.timeline.push({ label: "Shortlisted", date: "Just now", done: true });
+          c.activity.unshift({ text: "Shortlisted from Feed recommendation", date: "Just now" });
+          showToast(`${c.name} moved to Shortlisted.`);
+          draw();
+        } else showToast(`${c.name} is already at ${c.stage}.`, "info");
+      } else if (action === "schedule") { employerNavigateTo("pipeline", { id: c.id }); showToast("Opening Talent Pipeline to schedule the interview.", "info"); }
+      else if (action === "makeoffer") { employerNavigateTo("pipeline", { id: c.id }); showToast("Opening Talent Pipeline to prepare the offer.", "info"); }
+    }));
+  }
+
+  // Auto-advance every 9s, pausing whenever the widget is hovered or holds
+  // keyboard focus so it never yanks attention away mid-read. Self-clears
+  // if the widget's marker element is gone from the live DOM (the
+  // employer navigated away or the page fully redrew for another reason) -
+  // same guard the existing role-builder autosave ticker uses, since this
+  // codebase has no unmount hook to clear timers deterministically.
+  function startRecommendationRotation() {
+    if (recRotateTimer) clearInterval(recRotateTimer);
+    recRotateTimer = setInterval(() => {
+      const widget = qs("[data-vera-rec-widget]", root);
+      if (!widget) { clearInterval(recRotateTimer); recRotateTimer = null; return; }
+      if (widget.matches(":hover") || widget.contains(document.activeElement)) return;
+      stepRecommendation(1);
+    }, 9000);
+  }
+
+  // Item 3: injected between feed posts. Every 4th slot is an opportunity
+  // card rather than a post, cycling through the same ranked pool from a
+  // different starting offset than the nav widget so the two surfaces
+  // don't spotlight the identical candidate at the same time. Dismissed
+  // candidates (per-employer, persisted) are skipped.
+  function renderOpportunityCard(entry, state) {
+    const c = entry.candidate;
+    return `
+      <div class="card emp-vera-rec-widget emp-feed-opportunity-card" data-feed-opportunity="${c.id}">
+        <div class="emp-vera-rec-widget-head">
+          <span class="emp-callout-label">${icon("sparkles")} AI Candidate Opportunity</span>
+          <button type="button" class="btn-icon-sm" data-opportunity-dismiss="${c.id}" aria-label="Dismiss this recommendation">${icon("x")}</button>
+        </div>
+        ${renderRecommendationDetail(entry)}
+        <div class="emp-vera-rec-secondary-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-rec-action="schedule" data-rec-candidate="${c.id}">${icon("calendar")} Schedule interview</button>
+          <button type="button" class="btn btn-primary btn-sm" data-rec-action="makeoffer" data-rec-candidate="${c.id}">${icon("award")} Make offer</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Item 2: "Today's Hiring Brief" - everything that changed since last
+  // visit, in one scannable card. Collapsed to a headline + top 3 items by
+  // default (keeps the top of the feed from being dominated by the brief);
+  // "See full brief" expands the rest plus suggested next actions.
+  function renderDailyBriefCard() {
+    const brief = getDailyHiringBrief();
+    const shown = briefExpanded ? brief.items : brief.items.slice(0, 3);
+    return `
+      <div class="card emp-daily-brief" data-daily-brief>
+        <div class="emp-daily-brief-head">
+          <span class="emp-callout-label">${icon("sparkles")} Today's Hiring Brief</span>
+          <span class="emp-source-tag">Vera</span>
+        </div>
+        <p class="emp-daily-brief-sub">Here's what changed in your hiring pipeline since your last visit.</p>
+        <ul class="emp-daily-brief-list">
+          ${shown.map(item => `
+            <li>
+              <span class="emp-daily-brief-icon">${icon(item.icon)}</span>
+              <span class="emp-daily-brief-text">${item.text}</span>
+              ${item.cta ? `<button type="button" class="emp-daily-brief-cta" data-brief-nav="${item.nav}">${item.cta}</button>` : ""}
+            </li>
+          `).join("")}
+        </ul>
+        ${brief.items.length > 3 ? `
+          <button type="button" class="emp-daily-brief-toggle" data-brief-toggle>${briefExpanded ? "Show less" : `See full brief (${brief.items.length})`} ${icon(briefExpanded ? "chevron-up" : "chevron-down")}</button>
+        ` : ""}
+        ${briefExpanded && brief.suggestedActions.length ? `
+          <div class="emp-daily-brief-suggested">
+            <span class="emp-tags-label">Suggested next actions</span>
+            <ul>${brief.suggestedActions.map(a => `<li>${icon("arrow-right")} ${a}</li>`).join("")}</ul>
+          </div>
+        ` : ""}
+      </div>
+    `;
+  }
+
+  // Item 5: replaces "Suggested to follow" with hiring-focused talent
+  // discovery - people outside the applicant pool Vera has proactively
+  // surfaced, not generic profile-follow suggestions.
+  function renderHiringOpportunitiesCard() {
+    return `
+      <div class="card emp-feed-rail-card emp-hiring-opportunities">
+        <h3>${icon("radar")} Hiring Opportunities</h3>
+        <div class="emp-hiring-opp-list">
+          ${HIRING_PASSIVE_TALENT.map(p => {
+            const typeMeta = HIRING_PASSIVE_TYPE_META[p.type];
+            const role = DATA.employerRoles.find(r => r.id === p.relevantRoleId);
+            return `
+              <div class="emp-hiring-opp-row">
+                <span class="emp-feed-avatar">${initialsOf(p.name)}</span>
+                <div class="emp-hiring-opp-info">
+                  <strong>${p.name}</strong>
+                  <p class="emp-cand-meta">${p.headline}</p>
+                  <span class="emp-hiring-opp-type">${icon(typeMeta.icon)} ${typeMeta.label}${role ? ` · fits ${role.title}` : ""}</span>
+                  <p class="emp-feed-suggest-reason">${p.note}</p>
+                </div>
+                <span class="emp-vera-rec-match sm">${p.matchScore}%</span>
+              </div>
+              <div class="emp-hiring-opp-actions">
+                <button type="button" class="btn btn-ghost btn-sm" data-passive-action="preview" data-passive-id="${p.id}">${icon("eye")} Preview</button>
+                <button type="button" class="btn btn-ghost btn-sm" data-passive-action="compare" data-passive-id="${p.id}">${icon("scale")} Compare</button>
+                <button type="button" class="btn btn-ghost btn-sm" data-passive-action="save" data-passive-id="${p.id}">${icon("bookmark")} Save</button>
+                <button type="button" class="btn btn-primary btn-sm" data-passive-action="invite" data-passive-id="${p.id}">${icon("send")} Invite</button>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // Item 6: Employer Brand Health Dashboard. Compact scorecard in the
+  // rail (fits the 280px column); "View full report" opens a modal with
+  // the complete 6-dimension breakdown, sentiment, drop-off and AI
+  // suggestions - all pulled from the same company.healthDashboard data
+  // as the Company Profile page's AI Health Score, not a second dataset.
+  function renderBrandHealthCard(company) {
+    const b = getBrandHealthSummary(company);
+    return `
+      <div class="card emp-feed-rail-card emp-brand-health-card">
+        <div class="emp-brand-health-head">
+          <h3>${icon("shield-check")} Employer Brand Health</h3>
+          <span class="emp-brand-health-score">${b.overallScore}<small>/100</small></span>
+        </div>
+        <p>${b.sentiment.mostCommonPositive} is your most-cited strength; candidates most often ask about "${b.sentiment.biggestQuestion.toLowerCase()}".</p>
+        <div class="emp-brand-health-mini-stats">
+          <div><span class="emp-tags-label">Response time</span><strong>${b.avgResponseDays}d</strong></div>
+          <div><span class="emp-tags-label">Offer acceptance</span><strong>${b.acceptanceRate}%</strong></div>
+          <div><span class="emp-tags-label">Profile complete</span><strong>${b.profileCompleteness}%</strong></div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" data-brand-dashboard-open>${icon("bar-chart-2")} View full brand report</button>
+      </div>
+    `;
+  }
+
+  function renderBrandHealthModal(company) {
+    if (!brandDashboardOpen) return "";
+    const b = getBrandHealthSummary(company);
+    return `
+      <div class="emp-compose-modal" data-brand-modal>
+        <div class="card emp-compose-card emp-brand-modal-card">
+          <div class="emp-brand-modal-head">
+            <div>
+              <h2>Employer Brand Health</h2>
+              <p class="emp-cand-meta">${b.sentiment.basis}</p>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-brand-dashboard-close aria-label="Close">${icon("x")}</button>
+          </div>
+          <div class="emp-brand-modal-overview">
+            <div class="emp-brand-modal-ring">${renderHealthRing(b.overallScore, { size: 120, strokeWidth: 10 })}<span>Overall health</span></div>
+            <div class="emp-brand-modal-overview-text">
+              <p>${icon("sparkles")} ${b.overallExplanation}</p>
+              <div class="emp-health-predicted-banner">
+                <div><span class="emp-tags-label">Predicted after recommendations</span><strong>${b.overallPredictedScore}</strong></div>
+                <span class="emp-health-predicted-delta">${icon("trending-up")} +${b.overallPredictedScore - b.overallScore} points</span>
+              </div>
+            </div>
+          </div>
+          <div class="emp-brand-modal-stats">
+            <div class="emp-score-tile"><strong>${b.avgResponseDays}d</strong><span>Avg response time</span></div>
+            <div class="emp-score-tile"><strong>${b.acceptanceRate}%</strong><span>Offer acceptance rate</span></div>
+            <div class="emp-score-tile"><strong>${b.interviewRating}/5</strong><span>Interview experience rating</span></div>
+            <div class="emp-score-tile"><strong>${b.profileCompleteness}%</strong><span>Profile completeness</span></div>
+          </div>
+          <div class="emp-brand-modal-dropoff">
+            <span class="emp-tags-label">Biggest candidate drop-off</span>
+            <p>${icon("alert-triangle")} <strong>${b.biggestDropOff.stage}</strong> — ${b.biggestDropOff.dropOffPercent}% of candidates don't proceed past this stage. ${b.biggestDropOff.tooltip}</p>
+          </div>
+          <div class="emp-brand-modal-subscores">
+            ${b.subscores.map(s => `
+              <div class="emp-brand-modal-subscore">
+                <div class="emp-brand-modal-subscore-head"><span>${icon(s.icon)} ${s.label}</span><strong>${s.score}</strong></div>
+                <div class="emp-brand-modal-bar"><div class="emp-brand-modal-bar-fill" style="width:${s.score}%"></div></div>
+              </div>
+            `).join("")}
+          </div>
+          <div class="emp-brand-modal-suggestion">
+            <span class="emp-callout-label">${icon("sparkles")} AI recommendation</span>
+            <p><strong>${b.topSuggestion.suggestions[0].action}</strong> — projected ${b.topSuggestion.label} score ${b.topSuggestion.predictedScore} (${b.topSuggestion.suggestions[0].impact} points).</p>
+            <button type="button" class="btn btn-primary btn-sm" data-brand-review-gap>Review company profile</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Item 3: builds the post list with an opportunity card injected every
+  // 4th slot (not on "communities"/"network" sub-views where a candidate
+  // card would be out of place). Slices from the same ranked pool as the
+  // nav widget but offset by +1 so the two surfaces don't spotlight the
+  // same candidate at once, and skips anything the employer dismissed.
+  function renderFeedPostList(state) {
+    const posts = visiblePosts(state);
+    if (!posts.length) return `<p class="emp-empty-hint">No posts match this view yet.</p>`;
+    const pool = getHiringRecommendationPool().filter(e => !(state.feedDismissedCandidates || []).includes(e.candidate.id));
+    const injectOpportunities = activeFilter !== "communities" && pool.length;
+    const html = [];
+    posts.forEach((p, i) => {
+      html.push(renderPostCard(p, state));
+      if (injectOpportunities && i > 0 && (i + 1) % 4 === 0) {
+        const entry = pool[(Math.floor(i / 4) + 1) % pool.length];
+        html.push(renderOpportunityCard(entry, state));
+      }
+    });
+    return html.join("");
+  }
+
   function draw() {
     const state = readState();
+    const company = DATA.companies.find(c => c.id === "maybank");
     const isFeedView = ["foryou", "following", "discussions", "hiring", "company-updates", "trending", "communities"].includes(activeFilter);
     const showTopFilters = ["foryou", "following", "discussions", "hiring", "company-updates"].includes(activeFilter);
     const leftNavActive = key => key === "foryou" ? ["foryou", "discussions", "hiring", "company-updates"].includes(activeFilter) : key === activeFilter;
@@ -14553,18 +15179,15 @@ function renderEmployerFeed(root) {
             <button type="button" class="emp-feed-nav-item ${leftNavActive("communities") ? "active" : ""}" data-feed-nav="communities">${icon("messages-square")} Communities</button>
             <button type="button" class="emp-feed-nav-item ${leftNavActive("trending") ? "active" : ""}" data-feed-nav="trending">${icon("trending-up")} Trending</button>
           </nav>
-          <div class="card emp-feed-context-card">
-            <span class="emp-tags-label">Looking for talent?</span>
-            <p>High-fit candidates for your open roles are waiting in Talent Pipeline.</p>
-            <button type="button" class="btn btn-ghost btn-sm" data-feed-view-talent>View talent</button>
-          </div>
+          ${renderVeraRecommendationsWidget()}
         </div>
 
         <div class="emp-feed-main">
           ${activeFilter === "network" ? renderNetworkView(state) : `
+            ${renderDailyBriefCard()}
             <div class="emp-feed-headline">
-              <h2>Stay close to the people shaping your talent market.</h2>
-              <p>Follow candidate perspectives, hiring conversations and professional communities that matter to your company.</p>
+              <h2>Your AI-powered hiring intelligence feed.</h2>
+              <p>Vera surfaces candidates, market signal and hiring conversations relevant to your open roles — ranked by hiring relevance, not popularity.</p>
             </div>
             ${renderComposer(state)}
             ${activeFilter === "communities" ? renderCommunitiesBrowse() : ""}
@@ -14579,7 +15202,7 @@ function renderEmployerFeed(root) {
             ` : ""}
             ${trendingKeyword ? `<p class="emp-empty-hint">Showing posts related to "${trendingKeyword}". <button type="button" class="emp-feed-clear-trend" data-feed-clear-trend>Clear</button></p>` : ""}
             <div class="emp-feed-post-list">
-              ${(() => { const posts = visiblePosts(state); return posts.length ? posts.map(p => renderPostCard(p, state)).join("") : `<p class="emp-empty-hint">No posts match this view yet.</p>`; })()}
+              ${renderFeedPostList(state)}
             </div>
           `}
         </div>
@@ -14592,35 +15215,8 @@ function renderEmployerFeed(root) {
                 ${DATA.trendingTopics.map(t => `<button type="button" class="emp-feed-trending-item" data-feed-trending="${t.id}"><span>${t.label}</span><span class="emp-feed-trending-count">${t.count}</span></button>`).join("")}
               </div>
             </div>
-            <div class="card emp-feed-rail-card">
-              <h3>Suggested to follow</h3>
-              <div class="emp-feed-suggest-list">
-                ${(() => {
-                  const suggestions = DATA.suggestedConnections.filter(c => !state.feedFollowing.includes(c.id)).slice(0, 4);
-                  return suggestions.length ? suggestions.map(c => `
-                    <div class="emp-feed-suggest-row">
-                      <span class="emp-feed-avatar">${initialsOf(c.name)}</span>
-                      <div class="emp-feed-suggest-info">
-                        <strong>${c.name}</strong>
-                        <p class="emp-cand-meta">${c.title}</p>
-                        <p class="emp-feed-suggest-reason">${c.reason}</p>
-                      </div>
-                      <button type="button" class="btn btn-ghost btn-sm" data-feed-follow-suggestion="${c.id}">${c.type === "community" ? "Join" : "Follow"}</button>
-                    </div>
-                  `).join("") : `<p class="emp-empty-hint">You're following everyone we'd suggest right now.</p>`;
-                })()}
-              </div>
-            </div>
-            <div class="card emp-feed-rail-card emp-feed-signal-card">
-              <div class="emp-callout-label">${icon("sparkles")} Candidate signal</div>
-              <p>Salary transparency is trending among junior engineers in your target market.</p>
-              <button type="button" class="btn btn-ghost btn-sm" data-feed-view-discussion>View discussion</button>
-            </div>
-            <div class="card emp-feed-rail-card emp-feed-signal-card">
-              <div class="emp-callout-label warn">${icon("alert-triangle")} Employer brand signal</div>
-              <p>Candidates are discussing structured graduate development this week. Your company profile currently does not explain its mentorship programme.</p>
-              <button type="button" class="btn btn-ghost btn-sm" data-feed-review-gap>Review profile gap</button>
-            </div>
+            ${renderHiringOpportunitiesCard()}
+            ${renderBrandHealthCard(company)}
           </div>
         ` : ""}
       </div>
@@ -14642,9 +15238,14 @@ function renderEmployerFeed(root) {
           </div>
         </div>
       ` : ""}
+      ${renderBrandHealthModal(company)}
     `;
     createIcons();
+    if (brandDashboardOpen) requestAnimationFrame(() => requestAnimationFrame(() => {
+      qsa("[data-health-ring] .emp-health-ring-fill", root).forEach(fill => { fill.style.strokeDashoffset = fill.closest("[data-health-ring]").dataset.targetOffset; });
+    }));
     bind();
+    startRecommendationRotation();
   }
 
   function bind() {
@@ -14659,7 +15260,6 @@ function renderEmployerFeed(root) {
       draw();
     }));
     qs("[data-feed-clear-trend]", root)?.addEventListener("click", () => { trendingKeyword = null; draw(); });
-    qs("[data-feed-view-talent]", root)?.addEventListener("click", () => employerNavigateTo("pipeline"));
 
     qs("[data-feed-identity]", root)?.addEventListener("change", event => {
       const state = readState();
@@ -14823,6 +15423,105 @@ function renderEmployerFeed(root) {
       showToast("Connection request sent.");
       draw();
     }));
+
+    // Item 1 nav widget: manual rotation controls (auto-rotation calls the
+    // same stepRecommendation via startRecommendationRotation()).
+    qs("[data-rec-prev]", root)?.addEventListener("click", () => stepRecommendation(-1));
+    qs("[data-rec-next]", root)?.addEventListener("click", () => stepRecommendation(1));
+    bindRecommendationCardActions(root);
+
+    // Item 3: dismiss an in-feed opportunity card. Persisted so a
+    // dismissed candidate stays dismissed across visits, same durability
+    // as feedMuted/feedSavedPosts.
+    qsa("[data-opportunity-dismiss]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      state.feedDismissedCandidates = state.feedDismissedCandidates || [];
+      if (!state.feedDismissedCandidates.includes(btn.dataset.opportunityDismiss)) state.feedDismissedCandidates.push(btn.dataset.opportunityDismiss);
+      writeState(state);
+      showToast("Recommendation dismissed.");
+      draw();
+    }));
+
+    // Item 2: Daily Brief expand/collapse + per-item quick navigation.
+    qs("[data-brief-toggle]", root)?.addEventListener("click", () => { briefExpanded = !briefExpanded; draw(); });
+    qsa("[data-brief-nav]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo(btn.dataset.briefNav)));
+
+    // Item 5: Hiring Opportunities (passive talent) actions.
+    qsa("[data-passive-action]", root).forEach(btn => btn.addEventListener("click", () => {
+      const person = HIRING_PASSIVE_TALENT.find(p => p.id === btn.dataset.passiveId);
+      const action = btn.dataset.passiveAction;
+      if (action === "preview") showToast(`${person.name} hasn't applied yet, so there's no full profile - here's what Vera found: ${person.note}`, "info");
+      if (action === "compare") showToast("Side-by-side talent comparison is coming in a future update.", "info");
+      if (action === "invite") showToast(`Invitation sent to ${person.name} to apply for ${DATA.employerRoles.find(r => r.id === person.relevantRoleId)?.title || "an open role"}.`);
+      if (action === "save") {
+        const state = readState();
+        state.feedSavedPassiveTalent = state.feedSavedPassiveTalent || [];
+        const idx = state.feedSavedPassiveTalent.indexOf(person.id);
+        if (idx === -1) { state.feedSavedPassiveTalent.push(person.id); showToast(`Saved ${person.name}.`); } else { state.feedSavedPassiveTalent.splice(idx, 1); showToast("Removed from saved."); }
+        writeState(state);
+      }
+    }));
+
+    // Item 6: Brand Health Dashboard modal open/close + jump to profile.
+    qs("[data-brand-dashboard-open]", root)?.addEventListener("click", () => { brandDashboardOpen = true; draw(); });
+    qs("[data-brand-dashboard-close]", root)?.addEventListener("click", () => { brandDashboardOpen = false; draw(); });
+    qs("[data-brand-modal]", root)?.addEventListener("click", event => { if (event.target.closest("[data-brand-modal]") === event.currentTarget) { brandDashboardOpen = false; draw(); } });
+    qs("[data-brand-review-gap]", root)?.addEventListener("click", () => employerNavigateTo("company-edit"));
+
+    // Item 9: AI Content Composer. composerDraftText mirrors the textarea
+    // so it survives the draw() that opening/using the AI bar triggers -
+    // otherwise toggling "Write with Vera" would silently wipe whatever
+    // the employer had already typed.
+    const composerTextarea = qs("[data-feed-composer-text]", root);
+    composerTextarea?.addEventListener("input", event => { composerDraftText = event.target.value; });
+    qs("[data-feed-ai-toggle]", root)?.addEventListener("click", () => { composerAiOpen = !composerAiOpen; draw(); });
+    qsa("[data-feed-ai-action]", root).forEach(btn => btn.addEventListener("click", () => {
+      composerDraftText = qs("[data-feed-composer-text]", root)?.value ?? composerDraftText;
+      runComposerAiAction(btn.dataset.feedAiAction);
+      draw();
+    }));
+  }
+
+  // Item 9 action handlers. Text-transform actions write a real draft into
+  // composerDraftText (an honest, editable starting point - not a live
+  // rewrite of the employer's own words, since that needs a real model);
+  // analysis actions set composerAiInsight instead, since there's no text
+  // for them to change.
+  function runComposerAiAction(action) {
+    const openRole = DATA.employerRoles.find(r => r.status === "Open");
+    const roleLine = openRole ? `${openRole.title} (${openRole.location}, ${openRole.salary.min ? `RM ${fmtSalaryK(openRole.salary.min)}k–${fmtSalaryK(openRole.salary.max)}k` : "salary on request"})` : "one of our open roles";
+    if (action === "generate") {
+      composerDraftText = `We're hiring for ${roleLine}! If you're looking for a role with real ownership and a clear growth path, we'd love to hear from you. Apply through CareerGo or tag someone who'd be a great fit.`;
+      composerAiInsight = null;
+      composerCategory = "HIRING INSIGHT"; composerOpen = true;
+      showToast("Draft generated. Review and edit before posting.");
+    } else if (action === "rewrite") {
+      const base = composerDraftText.trim();
+      composerDraftText = base ? `${base}\n\nAt Maybank, we back this with real mentorship and a structured path for growth - not just a job description.` : composerDraftText;
+      if (!base) showToast("Write a draft first, then Vera can rewrite it for employer branding.", "info");
+      else showToast("Rewritten with employer-branding language.");
+    } else if (action === "engagement") {
+      const base = composerDraftText.trim();
+      composerDraftText = base ? `${base}\n\nWhat would you want to know before applying? Drop a question below.` : composerDraftText;
+      if (!base) showToast("Write a draft first, then Vera can suggest an engagement hook.", "info");
+      else showToast("Added a question to invite replies.");
+    } else if (action === "hashtags") {
+      const base = composerDraftText.trim();
+      composerDraftText = base ? `${base}\n\n#Hiring #MaybankCareers #NowHiring` : composerDraftText;
+      if (!base) showToast("Write a draft first, then Vera can suggest hashtags.", "info");
+      else showToast("Hashtags added.");
+    } else if (action === "optimize") {
+      const base = composerDraftText.trim().replace(/\s+/g, " ");
+      composerDraftText = base;
+      composerAiInsight = base ? "Wording tightened - shorter sentences read better in-feed and on mobile." : "Write a draft first, then Vera can optimize the wording.";
+    } else if (action === "media") {
+      composerAiInsight = "Posts with a role banner or team photo get noticeably more engagement than text-only posts. Add media before publishing.";
+    } else if (action === "predict") {
+      const est = 40 + seededRange(composerDraftText.length + "-predict-" + Date.now() % 97, 5, 55);
+      composerAiInsight = `Predicted engagement: roughly ${est} reactions based on similar posts from your company and current candidate activity.`;
+    } else if (action === "timing") {
+      composerAiInsight = "Candidate engagement in your target market peaks Tuesday-Thursday, 9-11am - posting in this window typically performs best.";
+    }
   }
 
   draw();
@@ -14976,20 +15675,6 @@ function renderEmployerCompany(root) {
   // animate to target" technique as the funnel bars (a real CSS transition
   // needs an observable "before" state, which the synchronous initial
   // render alone can't provide).
-  function renderHealthRing(score, { size = 120, strokeWidth = 10 } = {}) {
-    const clamped = Math.max(0, Math.min(100, score));
-    const radius = 50 - strokeWidth / 2 - 2;
-    const circumference = 2 * Math.PI * radius;
-    const offset = circumference * (1 - clamped / 100);
-    const tier = clamped >= 85 ? "strong" : clamped >= 70 ? "moderate" : "attention";
-    return `
-      <svg viewBox="0 0 100 100" class="emp-health-ring emp-health-ring--${tier}" style="width:${size}px;height:${size}px" data-health-ring data-target-offset="${offset}">
-        <circle cx="50" cy="50" r="${radius}" class="emp-health-ring-track" stroke-width="${strokeWidth}"></circle>
-        <circle cx="50" cy="50" r="${radius}" class="emp-health-ring-fill" stroke-width="${strokeWidth}" stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}"></circle>
-        <text x="50" y="50" class="emp-health-ring-text" text-anchor="middle" dominant-baseline="central">${Math.round(clamped)}</text>
-      </svg>
-    `;
-  }
 
   function getFilteredSortedReviews() {
     let list = company.companyReviews.filter(r => {
