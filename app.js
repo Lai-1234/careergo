@@ -293,6 +293,84 @@ const DATA = {
           { action: "Set clearer expected response timelines for candidates", difficulty: "Easy", expectedImpact: "+6% Completed applications", confidencePercent: 76 }
         ],
         predictedImpact: { headline: "+24% Applications", note: "Estimated combined effect if all three recommended actions are implemented within 60 days." }
+      },
+      // Powers the AI Health Score dashboard (its own tab, Company Profile
+      // page). overallScore reuses the existing hero KPI (healthScore above)
+      // for consistency rather than a second, possibly-drifting number.
+      // Overall is a weighted composite, not a plain mean of the 6
+      // subscores - Transparency pulls the raw average down further than
+      // its actual weight in the blend, the same way a single weak category
+      // doesn't dominate a real composite score. Every explanation/suggestion
+      // below references a real signal already present elsewhere in this
+      // company's data (hiringTimeline drop-off, salaryComparison, the
+      // careerPath ladder, companyReviews' manager-response rate, the 4
+      // profileGaps) rather than inventing disconnected numbers.
+      healthDashboard: {
+        overallScore: 89,
+        overallExplanation: "A weighted blend across all six dimensions, favoring what most influences whether a candidate applies and accepts an offer. Career Growth and Leadership are pulling the score up; Transparency is the biggest single drag.",
+        overallPredictedScore: 95,
+        subscores: [
+          {
+            key: "candidateExperience", label: "Candidate Experience", icon: "smile",
+            score: 85,
+            explanation: "Resume Review is the highest-drop-off stage in your hiring timeline (35% of candidates don't proceed), and reviews cite slow approval processes as a recurring watchout.",
+            suggestions: [
+              { action: "Reduce Resume Review turnaround time", impact: "+4" },
+              { action: "Set clearer expected response timelines for candidates", impact: "+3" }
+            ],
+            predictedScore: 92
+          },
+          {
+            key: "hiringSpeed", label: "Hiring Speed", icon: "gauge",
+            score: 76,
+            explanation: "Your hiring process averages 18 days across 6 stages (2-4 weeks total), with the Hiring Manager interview the slowest single stage at 5 days.",
+            suggestions: [
+              { action: "Run HR and Hiring Manager interviews in parallel where possible", impact: "+6" },
+              { action: "Set an internal SLA for resume review turnaround", impact: "+4" }
+            ],
+            predictedScore: 86
+          },
+          {
+            key: "compensation", label: "Compensation", icon: "wallet",
+            score: 82,
+            explanation: "You pay above market at Junior and Manager levels, but Senior (-8%) and Executive (-10%) bands sit below market, pulling the overall picture down.",
+            suggestions: [
+              { action: "Adjust Senior and Executive compensation bands toward market median", impact: "+7" },
+              { action: "Publish salary ranges to close the transparency gap", impact: "+3" }
+            ],
+            predictedScore: 92
+          },
+          {
+            key: "careerGrowth", label: "Career Growth", icon: "trending-up",
+            score: 94,
+            explanation: "A clearly structured 6-stage career ladder from Graduate Trainee to Senior Manager, and a 4.3/5 growth rating from employee reviews - your strongest dimension.",
+            suggestions: [
+              { action: "Reduce promotion-time variance at the Senior Manager stage", impact: "+2" },
+              { action: "Extend mentorship access beyond entry-level roles", impact: "+2" }
+            ],
+            predictedScore: 98
+          },
+          {
+            key: "transparency", label: "Transparency", icon: "eye",
+            score: 66,
+            explanation: "A 58/100 salary transparency score plus 4 unresolved profile gaps (interview timelines, workplace media, benefits freshness, remote-work policy) make this your biggest single opportunity.",
+            suggestions: [
+              { action: "Resolve all 4 open profile gaps", impact: "+9" },
+              { action: "Publish salary ranges for your 5 most-viewed roles", impact: "+8" }
+            ],
+            predictedScore: 83
+          },
+          {
+            key: "leadership", label: "Leadership", icon: "users",
+            score: 87,
+            explanation: "Reviews describe management as hierarchical and process-driven but dependable. Only 3 of your last 14 reviews have a manager response, which candidates read as a leadership-engagement signal.",
+            suggestions: [
+              { action: "Respond to a higher share of employee reviews", impact: "+5" },
+              { action: "Pilot more autonomy for trainee and junior roles", impact: "+3" }
+            ],
+            predictedScore: 95
+          }
+        ]
       }
     },
     {
@@ -14644,6 +14722,7 @@ function renderEmployerCompany(root) {
   let funnelRange = "30d";
   let funnelCustomFrom = "";
   let funnelCustomTo = "";
+  let expandedHealthScores = new Set();
 
   function sortRoles(roles) {
     const sorted = roles.slice();
@@ -14698,6 +14777,27 @@ function renderEmployerCompany(root) {
   function funnelConversionPercent(stages, i) {
     if (i === 0) return null;
     return Math.round((stages[i].value / stages[i - 1].value) * 1000) / 10;
+  }
+
+  // Renders at stroke-dashoffset = full circumference (0% filled) with the
+  // real target offset stashed in a data attribute - animateHealthRings()
+  // grows it to the actual score on the next frame, the same "render empty,
+  // animate to target" technique as the funnel bars (a real CSS transition
+  // needs an observable "before" state, which the synchronous initial
+  // render alone can't provide).
+  function renderHealthRing(score, { size = 120, strokeWidth = 10 } = {}) {
+    const clamped = Math.max(0, Math.min(100, score));
+    const radius = 50 - strokeWidth / 2 - 2;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference * (1 - clamped / 100);
+    const tier = clamped >= 85 ? "strong" : clamped >= 70 ? "moderate" : "attention";
+    return `
+      <svg viewBox="0 0 100 100" class="emp-health-ring emp-health-ring--${tier}" style="width:${size}px;height:${size}px" data-health-ring data-target-offset="${offset}">
+        <circle cx="50" cy="50" r="${radius}" class="emp-health-ring-track" stroke-width="${strokeWidth}"></circle>
+        <circle cx="50" cy="50" r="${radius}" class="emp-health-ring-fill" stroke-width="${strokeWidth}" stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}"></circle>
+        <text x="50" y="50" class="emp-health-ring-text" text-anchor="middle" dominant-baseline="central">${Math.round(clamped)}</text>
+      </svg>
+    `;
   }
 
   function getFilteredSortedReviews() {
@@ -14952,6 +15052,7 @@ function renderEmployerCompany(root) {
         <a href="#comp-growth" data-jump="comp-growth">Growth &amp; Culture</a>
         <a href="#comp-reviews" data-jump="comp-reviews">Reviews</a>
         <a href="#comp-insights" data-jump="comp-insights">Insights</a>
+        <a href="#comp-health" data-jump="comp-health">Health Score</a>
       </div>
 
       <div class="card emp-company-section" id="comp-overview">
@@ -15362,6 +15463,59 @@ function renderEmployerCompany(root) {
           </div>
         </div>
       </div>
+
+      <div class="card emp-company-section" id="comp-health">
+        <div class="emp-company-section-head"><h2>AI Health Score</h2>${sourceTag("Vera Insight")}</div>
+        <p class="emp-company-section-desc">A weighted, AI-scored breakdown of employer brand health, with the reasoning and improvement plan behind every number.</p>
+
+        <div class="emp-health-overview">
+          <div class="emp-health-overview-ring">
+            ${renderHealthRing(company.healthDashboard.overallScore, { size: 168, strokeWidth: 14 })}
+            <span class="emp-health-overview-label">Overall Company Health</span>
+          </div>
+          <div class="emp-health-overview-detail">
+            <p>${icon("sparkles")} ${escapeHtml(company.healthDashboard.overallExplanation)}</p>
+            <div class="emp-health-predicted-banner">
+              <div>
+                <span class="emp-tags-label">Predicted After Recommendations</span>
+                <strong>${company.healthDashboard.overallPredictedScore}</strong>
+              </div>
+              <span class="emp-health-predicted-delta">${icon("trending-up")} +${company.healthDashboard.overallPredictedScore - company.healthDashboard.overallScore} points</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="emp-health-subscore-grid" data-health-grid>
+          ${company.healthDashboard.subscores.map(s => {
+            const expanded = expandedHealthScores.has(s.key);
+            return `
+              <div class="emp-health-subscore-card ${expanded ? "is-expanded" : ""}">
+                <button type="button" class="emp-health-subscore-head" data-health-toggle="${s.key}">
+                  ${renderHealthRing(s.score, { size: 84, strokeWidth: 8 })}
+                  <div class="emp-health-subscore-info">
+                    <span class="emp-health-subscore-label">${icon(s.icon)} ${escapeHtml(s.label)}</span>
+                    <span class="emp-health-subscore-chevron">${icon(expanded ? "chevron-up" : "chevron-down")}</span>
+                  </div>
+                </button>
+                <div class="emp-health-subscore-detail" ${expanded ? "" : "hidden"}>
+                  <p class="emp-health-subscore-explanation">${icon("sparkles")} ${escapeHtml(s.explanation)}</p>
+                  <div class="emp-health-subscore-suggestions">
+                    <span class="emp-tags-label">Improvement Suggestions</span>
+                    <ul>
+                      ${s.suggestions.map(sg => `<li><span>${escapeHtml(sg.action)}</span><strong>${escapeHtml(sg.impact)}</strong></li>`).join("")}
+                    </ul>
+                  </div>
+                  <div class="emp-health-subscore-predicted">
+                    <span>Current <strong>${s.score}</strong></span>
+                    ${icon("arrow-right")}
+                    <span>Predicted <strong>${s.predictedScore}</strong></span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
     `;
     createIcons();
     bind();
@@ -15433,6 +15587,12 @@ function renderEmployerCompany(root) {
     qs("[data-funnel-custom-from]", root)?.addEventListener("change", event => { funnelCustomFrom = event.target.value; draw(); });
     qs("[data-funnel-custom-to]", root)?.addEventListener("change", event => { funnelCustomTo = event.target.value; draw(); });
     animateFunnelBars();
+    qsa("[data-health-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const key = btn.dataset.healthToggle;
+      if (expandedHealthScores.has(key)) expandedHealthScores.delete(key); else expandedHealthScores.add(key);
+      draw();
+    }));
+    animateHealthRings();
     qsa("[data-career-node]", root).forEach(btn => {
       const i = Number(btn.dataset.careerNode);
       btn.addEventListener("click", () => openCareerPathNodeModal(company.careerPath[i], i));
@@ -15457,6 +15617,18 @@ function renderEmployerCompany(root) {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         bars.forEach(bar => { bar.style.width = `${bar.dataset.targetWidth}%`; });
+      });
+    });
+  }
+
+  // Same render-empty-then-grow technique as animateFunnelBars(), applied to
+  // each ring's fill-circle stroke-dashoffset instead of a bar's width.
+  function animateHealthRings() {
+    const fills = qsa("[data-health-ring] .emp-health-ring-fill", root);
+    if (!fills.length) return;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        fills.forEach(fill => { fill.style.strokeDashoffset = fill.closest("[data-health-ring]").dataset.targetOffset; });
       });
     });
   }

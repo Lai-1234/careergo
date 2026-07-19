@@ -14077,6 +14077,87 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-funnel-range-row { flex-direction: column; align-items: stretch; }
   .emp-funnel-range-tabs { justify-content: center; }
 }
+
+/* AI Health Score dashboard (its own tab, Company Profile page). Radial
+   rings render at stroke-dashoffset = full circumference (0% filled) and
+   are grown to their real value by JS (animateHealthRings), the same
+   render-empty-then-animate technique as the funnel bars - a real
+   transition needs an observable "before" state. Ring color tiers
+   (strong/moderate/attention) reuse tones already established elsewhere
+   in this file (brand green, teal, and the same amber used for
+   .emp-vera-rec-difficulty--medium/.pill.gold), not new arbitrary colors. */
+.emp-health-ring { display: block; transform: rotate(-90deg); }
+.emp-health-ring-track { fill: none; stroke: rgba(7, 56, 47, 0.08); }
+.emp-health-ring-fill { fill: none; stroke-linecap: round; transition: stroke-dashoffset 900ms cubic-bezier(0.22, 1, 0.36, 1); }
+.emp-health-ring--strong .emp-health-ring-fill { stroke: var(--emp-green, #07382f); }
+.emp-health-ring--moderate .emp-health-ring-fill { stroke: var(--emp-teal, #6aa59d); }
+.emp-health-ring--attention .emp-health-ring-fill { stroke: #d97706; }
+.emp-health-ring-text { transform: rotate(90deg); transform-box: fill-box; transform-origin: center; font-weight: 800; font-size: 26px; }
+
+.emp-health-overview { display: flex; align-items: center; gap: 28px; padding: 8px 4px 24px; border-bottom: 1px solid var(--emp-line, var(--line)); margin-bottom: 22px; }
+.emp-health-overview-ring { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; }
+.emp-health-overview-ring .emp-health-ring-text { font-size: 30px; }
+.emp-health-overview-label { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
+.emp-health-overview-detail { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.emp-health-overview-detail > p { margin: 0; font-size: 14px; line-height: 1.6; display: flex; gap: 8px; }
+.emp-health-overview-detail > p svg { flex-shrink: 0; width: 16px; height: 16px; margin-top: 2px; }
+.emp-health-predicted-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 18px;
+  border-radius: 14px; background: rgba(111, 95, 196, 0.07); border: 1px solid rgba(111, 95, 196, 0.18);
+}
+.emp-health-predicted-banner strong { display: block; margin-top: 2px; font-size: 26px; }
+.emp-health-predicted-delta {
+  display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 999px;
+  background: rgba(7, 56, 47, 0.1); font-size: 12px; font-weight: 800; white-space: nowrap;
+}
+.emp-health-predicted-delta svg { width: 13px; height: 13px; }
+
+.emp-health-subscore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.emp-health-subscore-card { border-radius: 16px; border: 1px solid var(--emp-line, var(--line)); background: #fff; transition: box-shadow 150ms ease, border-color 150ms ease; }
+.emp-health-subscore-card:hover { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06); border-color: transparent; }
+.emp-health-subscore-head {
+  display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px; border: none;
+  background: none; cursor: pointer; font: inherit; text-align: left;
+}
+.emp-health-subscore-info { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.emp-health-subscore-label { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 800; }
+.emp-health-subscore-label svg { flex-shrink: 0; width: 15px; height: 15px; }
+.emp-health-subscore-chevron { flex-shrink: 0; transition: transform 200ms ease; }
+.emp-health-subscore-chevron svg { width: 15px; height: 15px; }
+.emp-health-subscore-card.is-expanded .emp-health-subscore-chevron { transform: rotate(180deg); }
+.emp-health-subscore-detail { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 14px; }
+.emp-health-subscore-detail[hidden] { display: none !important; }
+.emp-health-subscore-explanation { margin: 0; padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); font-size: 12px; line-height: 1.6; display: flex; gap: 6px; }
+.emp-health-subscore-explanation svg { flex-shrink: 0; width: 13px; height: 13px; margin-top: 2px; }
+.emp-health-subscore-suggestions ul { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.emp-health-subscore-suggestions li {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px;
+  border-radius: 10px; background: rgba(7, 56, 47, 0.04); font-size: 12px; font-weight: 600;
+}
+.emp-health-subscore-predicted { display: flex; align-items: center; justify-content: center; gap: 10px; padding-top: 12px; border-top: 1px solid var(--emp-line, var(--line)); font-size: 12px; font-weight: 700; }
+.emp-health-subscore-predicted svg { width: 13px; height: 13px; }
+
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped color cascade fixed elsewhere in this file, applied
+   proactively to every bare/colored text element this dashboard adds. */
+.emp-app-shell.emp-app-shell .emp-health-ring-text { fill: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-health-overview-label,
+.emp-app-shell.emp-app-shell .emp-health-subscore-predicted { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-health-predicted-banner strong,
+.emp-app-shell.emp-app-shell .emp-health-subscore-suggestions li strong { color: var(--emp-ai, #6f5fc4) !important; }
+.emp-app-shell.emp-app-shell .emp-health-predicted-delta { color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell .emp-health-subscore-label,
+.emp-app-shell.emp-app-shell .emp-health-subscore-suggestions li span:first-child,
+.emp-app-shell.emp-app-shell .emp-health-subscore-predicted strong { color: var(--emp-ink, var(--text)) !important; }
+
+@media (max-width: 900px) {
+  .emp-health-subscore-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .emp-health-overview { flex-direction: column; text-align: center; }
+  .emp-health-subscore-grid { grid-template-columns: 1fr; }
+}
+
 .emp-company-subsection { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .emp-company-subsection:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .emp-kpi-trend { display: block; margin-top: 2px; font-size: 10px; color: var(--soft); }
