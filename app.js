@@ -14579,14 +14579,42 @@ function renderEmployerCompany(root) {
 
       <div class="card emp-company-section" id="comp-overview">
         <div class="emp-company-section-head"><h2>Company at a Glance</h2>${sourceTag("Company provided")}</div>
-        <div class="emp-requirements-grid">
-          <div class="emp-stat-row"><span>Industry</span><strong>${company.industry}</strong></div>
-          <div class="emp-stat-row"><span>Headquarters</span><strong>${company.location}</strong></div>
-          <div class="emp-stat-row"><span>Company size</span><strong>${company.size}</strong></div>
-          <div class="emp-stat-row"><span>Work mode</span><strong>${company.workMode}</strong></div>
-          <div class="emp-stat-row"><span>Founded</span><strong>${company.founded}</strong></div>
-          <div class="emp-stat-row"><span>Office locations</span><strong>${company.officeLocations.join(" · ")}</strong></div>
-          <div class="emp-stat-row"><span>Website</span><strong>${company.website}</strong></div>
+        <div class="emp-glance-grid">
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("building-2")}</span>
+            <span class="emp-glance-label">Industry</span>
+            <strong class="emp-glance-value">${escapeHtml(company.industry)}</strong>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("users")}</span>
+            <span class="emp-glance-label">Employee Size</span>
+            <strong class="emp-glance-value">${escapeHtml(company.size)}</strong>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("calendar")}</span>
+            <span class="emp-glance-label">Founded</span>
+            <strong class="emp-glance-value">${company.founded}</strong>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("map-pin")}</span>
+            <span class="emp-glance-label">Headquarters</span>
+            <strong class="emp-glance-value">${escapeHtml(company.location)}</strong>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("laptop")}</span>
+            <span class="emp-glance-label">Work Mode</span>
+            <strong class="emp-glance-value">${escapeHtml(company.workMode)}</strong>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("globe")}</span>
+            <span class="emp-glance-label">Website</span>
+            <a class="emp-glance-value emp-glance-link" href="https://${escapeHtml(company.website)}" target="_blank" rel="noopener">${escapeHtml(company.website)}</a>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("map")}</span>
+            <span class="emp-glance-label">Office Locations</span>
+            <div class="emp-glance-value emp-glance-list">${company.officeLocations.map(loc => `<span>${escapeHtml(loc)}</span>`).join("")}</div>
+          </div>
         </div>
         <p class="emp-company-description">${company.summary}</p>
         <div class="emp-tags">

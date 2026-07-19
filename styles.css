@@ -13574,6 +13574,31 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   color: var(--soft); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap;
 }
 .emp-requirements-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 24px; margin-bottom: 14px; }
+
+/* Company at a Glance - a dedicated card grid, not the shared
+   .emp-requirements-grid/.emp-stat-row list pattern used by every other
+   section on this page (Requirements, Hiring, Salary, Growth, Reviews) -
+   scoped so this redesign doesn't ripple into those. */
+.emp-glance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 14px 0 20px; }
+.emp-glance-card {
+  display: flex; flex-direction: column; gap: 6px; min-width: 0;
+  padding: 20px; border-radius: 16px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08));
+  background: #fff; transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+.emp-glance-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
+.emp-glance-icon { color: var(--emp-green, #07382f); }
+.emp-glance-icon svg { width: 20px; height: 20px; }
+.emp-glance-label { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--emp-muted, var(--soft)); }
+.emp-glance-value { font-size: 15px; font-weight: 700; color: var(--emp-ink, var(--text)); word-break: break-word; }
+.emp-glance-link { color: var(--emp-green, #07382f); text-decoration: none; }
+.emp-glance-link:hover { text-decoration: underline; }
+.emp-glance-list { display: flex; flex-direction: column; gap: 2px; }
+@media (max-width: 900px) {
+  .emp-glance-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .emp-glance-grid { grid-template-columns: 1fr; }
+}
 .emp-company-description { margin: 0 0 14px; font-size: 13px; line-height: 1.6; color: var(--text); font-style: italic; }
 .emp-company-role-list { display: grid; gap: 10px; margin-top: 10px; }
 .emp-company-role-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
