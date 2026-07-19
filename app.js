@@ -226,11 +226,50 @@ const DATA = {
         "Benefits have not been updated in 14 months",
         "Remote-work policy is unclear for 3 teams"
       ],
-      candidateInterest: {
-        profileViews: { value: 12480, period: "Last 30 days", trend: "+8% vs previous period" },
-        saved: { value: 1284, percentOfViewers: 10.3, trend: "+3% vs previous period" },
-        roleClicks: { value: 3860, trend: "+5% vs previous period" },
-        applicationStarts: { value: 1140, trend: "-2% vs previous period" }
+      // Powers the hiring funnel (Insights section, Company Profile page):
+      // Profile Views -> Role Clicks -> Applications -> Interviews -> Offers
+      // -> Accepted, per time range. Conversion % between stages is derived
+      // at render time from consecutive stage values, not stored, so it
+      // can't drift. Each range keeps independently-tuned absolute numbers
+      // (not a fixed multiplier of 30d) so conversion rates realistically
+      // vary a little by range; "custom" has no fixed dataset and is instead
+      // computed from the 30d daily rate at render time (see getFunnelStages).
+      hiringFunnel: {
+        ranges: {
+          "30d": {
+            label: "Last 30 days",
+            stages: [
+              { stage: "Profile Views", value: 12480, trend: "+8% vs previous 30 days" },
+              { stage: "Role Clicks", value: 3860, trend: "+5% vs previous 30 days" },
+              { stage: "Applications", value: 1140, trend: "-2% vs previous 30 days" },
+              { stage: "Interviews", value: 342, trend: "+4% vs previous 30 days" },
+              { stage: "Offers", value: 96, trend: "+1% vs previous 30 days" },
+              { stage: "Accepted", value: 71, trend: "+6% vs previous 30 days" }
+            ]
+          },
+          "90d": {
+            label: "Last 90 days",
+            stages: [
+              { stage: "Profile Views", value: 34600, trend: "+11% vs previous 90 days" },
+              { stage: "Role Clicks", value: 10200, trend: "+7% vs previous 90 days" },
+              { stage: "Applications", value: 2980, trend: "+3% vs previous 90 days" },
+              { stage: "Interviews", value: 890, trend: "+6% vs previous 90 days" },
+              { stage: "Offers", value: 245, trend: "+2% vs previous 90 days" },
+              { stage: "Accepted", value: 178, trend: "+9% vs previous 90 days" }
+            ]
+          },
+          "12mo": {
+            label: "Last 12 months",
+            stages: [
+              { stage: "Profile Views", value: 148200, trend: "+15% vs previous 12 months" },
+              { stage: "Role Clicks", value: 42300, trend: "+10% vs previous 12 months" },
+              { stage: "Applications", value: 12100, trend: "+6% vs previous 12 months" },
+              { stage: "Interviews", value: 3540, trend: "+8% vs previous 12 months" },
+              { stage: "Offers", value: 968, trend: "+4% vs previous 12 months" },
+              { stage: "Accepted", value: 705, trend: "+12% vs previous 12 months" }
+            ]
+          }
+        }
       },
       reputationSummary: {
         strongestSignal: { label: "Career growth", value: "4.3 / 5" },
@@ -14600,6 +14639,11 @@ function renderEmployerCompany(root) {
   let likedReviews = new Set();
   let helpfulReviews = new Set();
   let reviewsObserver = null;
+  // Hiring funnel: "30d" | "90d" | "12mo" | "custom". Custom has no fixed
+  // dataset, see getFunnelStages().
+  let funnelRange = "30d";
+  let funnelCustomFrom = "";
+  let funnelCustomTo = "";
 
   function sortRoles(roles) {
     const sorted = roles.slice();
@@ -14635,6 +14679,26 @@ function renderEmployerCompany(root) {
   }
 
   function uniqueSorted(values) { return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b)); }
+
+  // Custom ranges have no fixed dataset - scale the 30-day stage values by
+  // the selected day count using the 30-day daily rate, so the funnel stays
+  // internally consistent (conversion ratios are preserved exactly, since
+  // every stage is scaled by the same factor) without needing a real
+  // date-indexed dataset for a mock feature. Returns null if either date is
+  // still unset, so the caller can show a prompt instead of a funnel.
+  function getFunnelStages() {
+    if (funnelRange !== "custom") return company.hiringFunnel.ranges[funnelRange].stages;
+    if (!funnelCustomFrom || !funnelCustomTo) return null;
+    const days = Math.round((new Date(funnelCustomTo) - new Date(funnelCustomFrom)) / 86400000) + 1;
+    if (!Number.isFinite(days) || days < 1) return null;
+    const base = company.hiringFunnel.ranges["30d"].stages;
+    return base.map(s => ({ stage: s.stage, value: Math.max(1, Math.round((s.value / 30) * days)), trend: "Estimated from your 30-day daily average" }));
+  }
+
+  function funnelConversionPercent(stages, i) {
+    if (i === 0) return null;
+    return Math.round((stages[i].value / stages[i - 1].value) * 1000) / 10;
+  }
 
   function getFilteredSortedReviews() {
     let list = company.companyReviews.filter(r => {
@@ -14811,6 +14875,7 @@ function renderEmployerCompany(root) {
     const reviewRoles = uniqueSorted(company.companyReviews.map(r => r.role));
     const reviewCountries = uniqueSorted(company.companyReviews.map(r => r.country));
     const reviewLocations = uniqueSorted(company.companyReviews.map(r => r.location));
+    const funnelStages = getFunnelStages();
     const completeness = computeCompanyCompleteness(company);
 
     root.innerHTML = `
@@ -15191,13 +15256,47 @@ function renderEmployerCompany(root) {
         <p class="emp-company-section-desc">Candidate behaviour, profile quality and reputation signals — explained in one place.</p>
 
         <div class="emp-company-subsection">
-          <span class="emp-tags-label">Candidate interest ${sourceTag("Candidate activity")}</span>
-          <div class="emp-kpi-row">
-            <div class="emp-kpi-tile"><strong>${company.candidateInterest.profileViews.value.toLocaleString()}</strong><span>Profile views</span><span class="emp-kpi-trend">${company.candidateInterest.profileViews.trend}</span></div>
-            <div class="emp-kpi-tile"><strong>${company.candidateInterest.saved.value.toLocaleString()}</strong><span>Saved by candidates</span><span class="emp-kpi-trend">${company.candidateInterest.saved.percentOfViewers}% of viewers</span></div>
-            <div class="emp-kpi-tile"><strong>${company.candidateInterest.roleClicks.value.toLocaleString()}</strong><span>Open-role clicks</span><span class="emp-kpi-trend">${company.candidateInterest.roleClicks.trend}</span></div>
-            <div class="emp-kpi-tile"><strong>${company.candidateInterest.applicationStarts.value.toLocaleString()}</strong><span>Application starts</span><span class="emp-kpi-trend">${company.candidateInterest.applicationStarts.trend}</span></div>
+          <span class="emp-tags-label">Hiring Funnel ${sourceTag("Candidate activity")}</span>
+          <div class="emp-funnel-range-row">
+            <div class="emp-funnel-range-tabs">
+              ${[["30d", "30 days"], ["90d", "90 days"], ["12mo", "12 months"], ["custom", "Custom"]].map(([key, label]) => `
+                <button type="button" class="emp-funnel-range-tab ${funnelRange === key ? "active" : ""}" data-funnel-range="${key}">${label}</button>
+              `).join("")}
+            </div>
+            ${funnelRange === "custom" ? `
+              <div class="emp-funnel-custom-dates">
+                <label>From <input type="date" data-funnel-custom-from value="${funnelCustomFrom}"></label>
+                <label>To <input type="date" data-funnel-custom-to value="${funnelCustomTo}"></label>
+              </div>
+            ` : ""}
           </div>
+
+          ${funnelStages ? `
+            <div class="emp-funnel" data-funnel>
+              ${funnelStages.map((s, i) => {
+                const pct = funnelConversionPercent(funnelStages, i);
+                const widthPct = Math.round((s.value / funnelStages[0].value) * 100);
+                return `
+                  ${i > 0 ? `
+                    <div class="emp-funnel-arrow">
+                      ${icon("chevron-down")}
+                      ${pct !== null ? `<span class="emp-funnel-conversion">${pct}%</span>` : ""}
+                    </div>
+                  ` : ""}
+                  <div class="emp-funnel-stage" style="opacity:${(1 - i * 0.08).toFixed(2)}">
+                    <div class="emp-funnel-stage-head">
+                      <span class="emp-funnel-stage-label">${escapeHtml(s.stage)}</span>
+                      <span class="emp-funnel-stage-value">${s.value.toLocaleString()}</span>
+                    </div>
+                    <div class="emp-funnel-bar-track">
+                      <div class="emp-funnel-bar-fill" data-funnel-bar data-target-width="${widthPct}" style="width:0%"></div>
+                    </div>
+                    <div class="emp-funnel-tooltip" role="tooltip">${escapeHtml(s.trend)}</div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          ` : `<p class="emp-empty-hint">Select a start and end date to see funnel data for that range.</p>`}
         </div>
 
         <div class="emp-company-subsection">
@@ -15330,6 +15429,10 @@ function renderEmployerCompany(root) {
     }));
     qsa("[data-company-respond-review]", root).forEach(btn => btn.addEventListener("click", () => showToast("Response drafted. Full response workflow is coming soon.", "info")));
     qs("[data-company-jump-gaps]", root)?.addEventListener("click", () => qs("#comp-insights", root)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    qsa("[data-funnel-range]", root).forEach(btn => btn.addEventListener("click", () => { funnelRange = btn.dataset.funnelRange; draw(); }));
+    qs("[data-funnel-custom-from]", root)?.addEventListener("change", event => { funnelCustomFrom = event.target.value; draw(); });
+    qs("[data-funnel-custom-to]", root)?.addEventListener("change", event => { funnelCustomTo = event.target.value; draw(); });
+    animateFunnelBars();
     qsa("[data-career-node]", root).forEach(btn => {
       const i = Number(btn.dataset.careerNode);
       btn.addEventListener("click", () => openCareerPathNodeModal(company.careerPath[i], i));
@@ -15341,6 +15444,21 @@ function renderEmployerCompany(root) {
     initCompanyTabsBehavior();
     initTimelineReveal();
     initReviewsInfiniteScroll();
+  }
+
+  // Bars render at width:0% (see draw()) so there's a real "before" state to
+  // transition from - setting the target width in the same synchronous pass
+  // as the render would skip the CSS transition entirely (no observable
+  // change to animate from). A nested rAF guarantees the 0% state has
+  // actually been painted before the target width is applied.
+  function animateFunnelBars() {
+    const bars = qsa("[data-funnel-bar]", root);
+    if (!bars.length) return;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        bars.forEach(bar => { bar.style.width = `${bar.dataset.targetWidth}%`; });
+      });
+    });
   }
 
   // Infinite scroll, not pagination: the sentinel sits right after the

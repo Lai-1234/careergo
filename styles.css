@@ -13718,6 +13718,22 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 @media (min-width: 721px) {
   .emp-app-shell.emp-app-shell .emp-timeline-tooltip { color: #fff !important; }
 }
+/* Same cascade, confirmed here on `opacity` too (not just color): a
+   multi-section navigation sequence surfaced this element resting at
+   computed opacity 1 with neither :hover nor :focus-visible actually
+   matching (transform stayed at the base translateY(4px), not the hover
+   rule's translateY(0)) - proven via the funnel tooltip's identical
+   symptom, root-caused there first. The narrower single-navigation
+   regression suite for this page didn't happen to trigger it, but the
+   underlying rule collision is present regardless of which page section
+   exposes it. min-width, not the base rule: the mobile block below turns
+   this into an always-visible inline caption (opacity:1 unconditionally),
+   and an unscoped !important here would beat that override too. */
+@media (min-width: 721px) {
+  .emp-app-shell.emp-app-shell .emp-timeline-tooltip { opacity: 0 !important; }
+  .emp-app-shell.emp-app-shell .emp-timeline-stage:hover .emp-timeline-tooltip,
+  .emp-app-shell.emp-app-shell .emp-timeline-stage:focus-visible .emp-timeline-tooltip { opacity: 1 !important; }
+}
 
 @media (max-width: 720px) {
   .emp-timeline { flex-direction: column; align-items: stretch; padding-bottom: 8px; }
@@ -13729,7 +13745,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
     position: static; opacity: 1; transform: none; pointer-events: auto; width: auto;
     margin-top: 6px; padding: 0; background: transparent; font-size: 12px;
   }
-  .emp-app-shell.emp-app-shell .emp-timeline-tooltip { color: var(--emp-muted, var(--soft)) !important; }
+  .emp-app-shell.emp-app-shell .emp-timeline-tooltip { color: var(--emp-muted, var(--soft)) !important; opacity: 1 !important; }
 }
 
 /* Salary section - company-vs-market comparison. Meta tiles (percentile,
@@ -13992,6 +14008,74 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-review-card-fields { grid-template-columns: 1fr; }
   .emp-review-card-head { flex-direction: column; }
   .emp-review-expand-toggle { margin-left: 0; }
+}
+
+/* Hiring Funnel (Insights section, Company Profile page). Deliberately
+   restricted to the CareerGo palette - --emp-green/--emp-teal/muted line
+   tones only, no traffic-light or rainbow colors anywhere in this chart,
+   including the conversion badges. Bars render at width:0% and are grown
+   to their target width by JS (animateFunnelBars) right after paint, so
+   the width change is an actual CSS transition, not an instant snap. */
+.emp-funnel-range-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0 18px; }
+.emp-funnel-range-tabs {
+  display: inline-flex; padding: 3px; border-radius: 999px; background: rgba(7, 56, 47, 0.06);
+  border: 1px solid var(--emp-line, var(--line)); gap: 2px;
+}
+.emp-funnel-range-tab {
+  padding: 6px 14px; border-radius: 999px; border: none; background: transparent; cursor: pointer;
+  font-size: 12px; font-weight: 700; font-family: inherit; transition: background 150ms ease, color 150ms ease;
+}
+.emp-funnel-range-tab.active { background: var(--emp-green, #07382f); color: #fff; }
+.emp-funnel-custom-dates { display: flex; flex-wrap: wrap; gap: 12px; }
+.emp-funnel-custom-dates label { display: flex; flex-direction: column; gap: 3px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+.emp-funnel-custom-dates input[type="date"] {
+  padding: 6px 10px; border-radius: 10px; border: 1px solid var(--emp-line, var(--line));
+  font-family: inherit; font-size: 12px; font-weight: 600;
+}
+
+.emp-funnel { display: flex; flex-direction: column; }
+.emp-funnel-stage { position: relative; padding: 4px 0; }
+.emp-funnel-stage-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.emp-funnel-stage-label { font-size: 13px; font-weight: 800; }
+.emp-funnel-stage-value { font-size: 15px; font-weight: 800; }
+.emp-funnel-bar-track { height: 14px; border-radius: 999px; background: rgba(7, 56, 47, 0.07); overflow: hidden; }
+.emp-funnel-bar-fill { height: 100%; border-radius: inherit; background: var(--emp-green, #07382f); transition: width 700ms cubic-bezier(0.22, 1, 0.36, 1); }
+.emp-funnel-tooltip {
+  position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 3; max-width: 240px;
+  padding: 7px 11px; border-radius: 10px; background: var(--emp-ink, #082f27); color: #fff;
+  font-size: 11px; font-weight: 600; line-height: 1.4; opacity: 0; pointer-events: none;
+  transform: translateY(4px); transition: opacity 150ms ease, transform 150ms ease;
+}
+.emp-funnel-stage:hover .emp-funnel-tooltip,
+.emp-funnel-stage:focus-within .emp-funnel-tooltip { opacity: 1; transform: translateY(0); }
+.emp-funnel-arrow { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 2px 0; }
+.emp-funnel-arrow svg { width: 15px; height: 15px; }
+.emp-funnel-conversion {
+  padding: 2px 9px; border-radius: 999px; background: rgba(106, 165, 157, 0.16);
+  font-size: 11px; font-weight: 800; white-space: nowrap;
+}
+
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped color cascade fixed elsewhere in this file, applied
+   proactively to every bare/colored text element this chart adds. */
+.emp-app-shell.emp-app-shell .emp-funnel-stage-value,
+.emp-app-shell.emp-app-shell .emp-funnel-stage-label { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-funnel-arrow { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-funnel-conversion { color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell .emp-funnel-range-tab:not(.active) { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-funnel-range-tab.active { color: #fff !important; }
+/* Same long-standing unscoped !important cascade as the color fixes above,
+   confirmed here on `opacity` instead of `color` via direct measurement:
+   computed opacity read 1 while transform stayed at the base rule's
+   translateY(4px) (not the :hover rule's translateY(0)), proving :hover
+   wasn't actually matching - some other rule was forcing opacity alone. */
+.emp-app-shell.emp-app-shell .emp-funnel-tooltip { opacity: 0 !important; }
+.emp-app-shell.emp-app-shell .emp-funnel-stage:hover .emp-funnel-tooltip,
+.emp-app-shell.emp-app-shell .emp-funnel-stage:focus-within .emp-funnel-tooltip { opacity: 1 !important; }
+
+@media (max-width: 640px) {
+  .emp-funnel-range-row { flex-direction: column; align-items: stretch; }
+  .emp-funnel-range-tabs { justify-content: center; }
 }
 .emp-company-subsection { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .emp-company-subsection:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
