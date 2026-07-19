@@ -13731,6 +13731,89 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   }
   .emp-app-shell.emp-app-shell .emp-timeline-tooltip { color: var(--emp-muted, var(--soft)) !important; }
 }
+
+/* Salary section - company-vs-market comparison. Meta tiles (percentile,
+   transparency score), then one expandable card per career level with a
+   diff badge + two comparison bars, then the reused .emp-vera-insight-box
+   for the AI insight, then the plain Benefits stat grid unchanged. */
+.emp-salary-meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 14px 0 20px; }
+.emp-salary-meta-tile {
+  display: flex; flex-direction: column; gap: 6px; padding: 20px; border-radius: 16px;
+  border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); background: #fff;
+}
+.emp-salary-meta-tile > span { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
+.emp-salary-meta-tile > strong { font-size: 28px; font-weight: 800; line-height: 1.2; }
+.emp-salary-meta-tile > strong sup { font-size: 14px; font-weight: 700; top: -0.9em; }
+.emp-salary-meta-tile > strong small { font-size: 15px; font-weight: 700; margin-left: 2px; }
+.emp-salary-meta-tile > p { margin: 0; font-size: 12px; }
+
+.emp-salary-levels { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.emp-salary-level {
+  border-radius: 14px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); background: #fff;
+  padding: 16px 18px; transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+.emp-salary-level:hover { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06); border-color: transparent; }
+.emp-salary-level-head {
+  display: flex; align-items: center; gap: 16px; width: 100%; padding: 0; border: none;
+  background: none; cursor: pointer; font: inherit; text-align: left;
+}
+.emp-salary-level-name { flex: 0 0 auto; min-width: 92px; font-size: 14px; font-weight: 800; }
+.emp-salary-level-figures { display: flex; align-items: center; gap: 24px; margin-left: auto; }
+.emp-salary-figure { display: flex; flex-direction: column; gap: 2px; }
+.emp-salary-figure small { font-size: 10px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
+.emp-salary-figure strong { font-size: 14px; font-weight: 800; }
+.emp-salary-diff {
+  display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; padding: 4px 10px;
+  border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap;
+}
+.emp-salary-diff svg { width: 13px; height: 13px; }
+.emp-salary-diff--positive { background: rgba(7, 56, 47, 0.12); }
+.emp-salary-diff--negative { background: rgba(239, 68, 68, 0.1); }
+.emp-salary-diff--neutral { background: rgba(217, 119, 6, 0.12); }
+.emp-salary-chevron { flex-shrink: 0; transition: transform 200ms ease; }
+.emp-salary-chevron svg { width: 16px; height: 16px; }
+.emp-salary-level.is-expanded .emp-salary-chevron { transform: rotate(180deg); }
+.emp-salary-bars { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.emp-salary-bar-row { display: flex; align-items: center; gap: 10px; }
+.emp-salary-bar-label { flex: 0 0 56px; font-size: 11px; font-weight: 700; }
+.emp-salary-bar-track { flex: 1; height: 8px; border-radius: 999px; background: rgba(7, 56, 47, 0.08); overflow: hidden; }
+.emp-salary-bar-fill { height: 100%; border-radius: inherit; transition: width 500ms ease; }
+.emp-salary-bar-fill--company { background: var(--emp-green, #07382f); }
+.emp-salary-bar-fill--market { background: var(--emp-teal, #6aa59d); }
+.emp-salary-level-detail.emp-requirements-grid { margin: 14px 0 0; padding-top: 14px; border-top: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); }
+/* [hidden]'s display:none comes from the UA stylesheet, which always loses
+   to an author-stylesheet declaration on the same element regardless of
+   specificity or source order - .emp-requirements-grid's `display: grid`
+   was silently winning and keeping every collapsed level's detail visible. */
+.emp-salary-level-detail[hidden] { display: none !important; }
+.emp-insight-confidence {
+  display: inline-flex; align-items: center; margin-left: 4px; padding: 2px 8px; border-radius: 999px;
+  background: rgba(111, 95, 196, 0.14); font-size: 11px; font-weight: 800; white-space: nowrap;
+}
+.emp-app-shell.emp-app-shell .emp-insight-confidence { color: var(--emp-ai, #6f5fc4) !important; }
+.emp-salary-benefits-sub { margin-top: 4px; }
+.emp-salary-benefits-sub h3 { margin: 0 0 10px; font-size: 13px; font-weight: 800; }
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped color cascade fixed elsewhere in this file, applied proactively
+   here to every bare <span>/<strong>/<small>/<p> this section adds. */
+.emp-app-shell.emp-app-shell .emp-salary-meta-tile > span,
+.emp-app-shell.emp-app-shell .emp-salary-meta-tile > strong small,
+.emp-app-shell.emp-app-shell .emp-salary-meta-tile > p,
+.emp-app-shell.emp-app-shell .emp-salary-figure small,
+.emp-app-shell.emp-app-shell .emp-salary-bar-label,
+.emp-app-shell.emp-app-shell .emp-salary-chevron { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-salary-meta-tile > strong,
+.emp-app-shell.emp-app-shell .emp-salary-level-name,
+.emp-app-shell.emp-app-shell .emp-salary-figure strong { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-salary-diff--positive { color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell .emp-salary-diff--negative { color: #b91c1c !important; }
+.emp-app-shell.emp-app-shell .emp-salary-diff--neutral { color: #92400e !important; }
+@media (max-width: 720px) {
+  .emp-salary-meta-grid { grid-template-columns: 1fr; }
+  .emp-salary-level-head { flex-wrap: wrap; }
+  .emp-salary-level-figures { margin-left: 0; flex-wrap: wrap; gap: 14px; }
+  .emp-salary-level-detail.emp-requirements-grid { grid-template-columns: 1fr; }
+}
 .emp-highlight-watchout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
 .emp-highlight-card, .emp-watchout-card { padding: 16px 18px; }
 .emp-highlight-card ul, .emp-watchout-card ul { margin: 10px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.7; }

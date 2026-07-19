@@ -160,6 +160,23 @@ const DATA = {
         { stage: "Offer", icon: "award", avgDays: 3, dropOffPercent: 5, tooltip: "A formal offer is extended and negotiated with the candidate.", isCurrent: false }
       ],
       salaryBenefits: { freshGradSalary: "RM 3.2k - 4.5k / month", internshipAllowance: "RM 800 - 1.2k / month", bonus: "Annual performance bonus", medical: "Comprehensive medical coverage", training: "Structured graduate training program", flexibleWork: "Hybrid for eligible roles", leave: "Standard + study leave for certifications" },
+      // Company-vs-market salary comparison by career level, powers the
+      // redesigned Salary section (Company Profile page). diffPercent is
+      // derived from company/market at render time, not stored, so it
+      // can't drift out of sync with the two figures it's based on.
+      salaryComparison: {
+        industryPercentile: 62,
+        transparencyScore: 58,
+        aiInsight: { text: "Publishing salary bands could increase applications by 18%.", confidencePercent: 91 },
+        levels: [
+          { level: "Internship", company: 1800, market: 1600, companyRange: [1500, 2000], marketRange: [1300, 1800], openRoles: 2 },
+          { level: "Graduate", company: 3600, market: 3500, companyRange: [3200, 4000], marketRange: [3100, 3900], openRoles: 3 },
+          { level: "Junior", company: 5200, market: 4800, companyRange: [4600, 5800], marketRange: [4200, 5400], openRoles: 4 },
+          { level: "Senior", company: 8600, market: 9300, companyRange: [7800, 9600], marketRange: [8400, 10200], openRoles: 2 },
+          { level: "Manager", company: 13500, market: 12800, companyRange: [12000, 15500], marketRange: [11200, 14600], openRoles: 1 },
+          { level: "Executive", company: 21500, market: 24000, companyRange: [19000, 25000], marketRange: [21000, 27500], openRoles: 1 }
+        ]
+      },
       careerGrowth: { trainingQuality: "Strong structured training", promotionPath: "Clear grade-based progression", graduateProgram: "Available (Maybank Management Trainee)", mentorship: "Assigned mentors for new joiners", internalTransfer: "Common across departments", learningOpportunities: "Internal academy and certification support" },
       workCulture: { pace: "Steady, structured", teamStyle: "Large teams, defined roles", workLifeBalance: "Balanced, standard hours", managementStyle: "Hierarchical, process-driven", collaboration: "Cross-department coordination common", overtimeSignal: "Occasional during reporting periods", reviewThemes: "Stable, good for early career, slower pace" },
       veraNote: "Maybank is strong for fresh graduates who want a structured early-career path, stable environment, and broad banking exposure. Watch for slower approval processes and large-company hierarchy.",
@@ -2821,6 +2838,17 @@ function progressBar(value) {
 
 function money(value) {
   return `RM${Number(value).toLocaleString("en-MY")}`;
+}
+
+function ordinalSuffix(n) {
+  const v = n % 100;
+  if (v >= 11 && v <= 13) return "th";
+  switch (n % 10) {
+    case 1: return "st";
+    case 2: return "nd";
+    case 3: return "rd";
+    default: return "th";
+  }
 }
 
 function showToast(message, type = "success") {
@@ -14518,6 +14546,7 @@ function renderEmployerCompany(root) {
   let showAllRoles = false;
   let showAllReviews = false;
   let roleSort = "newest";
+  let expandedSalaryLevels = new Set();
   let tabsStuckObserver = null;
   let tabsSectionObserver = null;
   let tabsResizeHandler = null;
@@ -14536,6 +14565,52 @@ function renderEmployerCompany(root) {
     if (!r.salary || !r.salary.min || !r.salary.max) return "Salary not published";
     const fmt = n => (n / 1000).toFixed(1).replace(".0", "");
     return `RM ${fmt(r.salary.min)}k–${fmt(r.salary.max)}k / ${r.salary.period.toLowerCase()}`;
+  }
+
+  // diffPercent is derived here from company/market, not stored on the
+  // data object, so it can't drift out of sync with the two figures it's
+  // computed from (same reasoning as hiringTimeline's success rate).
+  function salaryDiffInfo(companyVal, marketVal) {
+    const diffPercent = Math.round(((companyVal - marketVal) / marketVal) * 100);
+    const cls = diffPercent >= 5 ? "positive" : diffPercent <= -5 ? "negative" : "neutral";
+    return { diffPercent, cls, label: `${diffPercent > 0 ? "+" : ""}${diffPercent}%` };
+  }
+
+  function renderSalaryLevel(lvl, i) {
+    const { cls, label } = salaryDiffInfo(lvl.company, lvl.market);
+    const barMax = Math.max(lvl.company, lvl.market);
+    const companyPct = Math.round((lvl.company / barMax) * 100);
+    const marketPct = Math.round((lvl.market / barMax) * 100);
+    const expanded = expandedSalaryLevels.has(i);
+    const diffIcon = cls === "positive" ? "trending-up" : cls === "negative" ? "trending-down" : "minus";
+    return `
+      <div class="emp-salary-level ${expanded ? "is-expanded" : ""}">
+        <button type="button" class="emp-salary-level-head" data-salary-toggle="${i}" aria-expanded="${expanded}">
+          <span class="emp-salary-level-name">${escapeHtml(lvl.level)}</span>
+          <div class="emp-salary-level-figures">
+            <span class="emp-salary-figure"><small>Company</small><strong>${money(lvl.company)}</strong></span>
+            <span class="emp-salary-figure"><small>Market</small><strong>${money(lvl.market)}</strong></span>
+            <span class="emp-salary-diff emp-salary-diff--${cls}">${icon(diffIcon)}${label}</span>
+          </div>
+          <span class="emp-salary-chevron">${icon("chevron-down")}</span>
+        </button>
+        <div class="emp-salary-bars">
+          <div class="emp-salary-bar-row">
+            <span class="emp-salary-bar-label">Company</span>
+            <div class="emp-salary-bar-track"><div class="emp-salary-bar-fill emp-salary-bar-fill--company" style="width:${companyPct}%"></div></div>
+          </div>
+          <div class="emp-salary-bar-row">
+            <span class="emp-salary-bar-label">Market</span>
+            <div class="emp-salary-bar-track"><div class="emp-salary-bar-fill emp-salary-bar-fill--market" style="width:${marketPct}%"></div></div>
+          </div>
+        </div>
+        <div class="emp-salary-level-detail emp-requirements-grid" ${expanded ? "" : "hidden"}>
+          <div class="emp-stat-row"><span>Company range</span><strong>${money(lvl.companyRange[0])}–${money(lvl.companyRange[1])}</strong></div>
+          <div class="emp-stat-row"><span>Market range</span><strong>${money(lvl.marketRange[0])}–${money(lvl.marketRange[1])}</strong></div>
+          <div class="emp-stat-row"><span>Open roles at this level</span><strong>${lvl.openRoles}</strong></div>
+        </div>
+      </div>
+    `;
   }
 
   // Lightweight, self-contained candidate-facing preview - the wizard has a
@@ -14788,16 +14863,39 @@ function renderEmployerCompany(root) {
 
       <div class="card emp-company-section" id="comp-salary">
         <div class="emp-company-section-head"><h2>Salary &amp; Benefits</h2>${sourceTag("Company provided + live roles")}</div>
-        <p class="emp-company-section-desc">What candidates can realistically expect.</p>
-        <div class="emp-requirements-grid">
-          <div class="emp-stat-row"><span>Average salary range</span><strong>${company.salary}</strong></div>
-          <div class="emp-stat-row"><span>Fresh graduate salary</span><strong>${company.salaryBenefits.freshGradSalary}</strong></div>
-          <div class="emp-stat-row"><span>Internship allowance</span><strong>${company.salaryBenefits.internshipAllowance}</strong></div>
-          <div class="emp-stat-row"><span>Bonus / incentives</span><strong>${company.salaryBenefits.bonus}</strong></div>
-          <div class="emp-stat-row"><span>Medical benefits</span><strong>${company.salaryBenefits.medical}</strong></div>
-          <div class="emp-stat-row"><span>Flexible work</span><strong>${company.salaryBenefits.flexibleWork}</strong></div>
-          <div class="emp-stat-row"><span>Training</span><strong>${company.salaryBenefits.training}</strong></div>
-          <div class="emp-stat-row"><span>Leave benefits</span><strong>${company.salaryBenefits.leave}</strong></div>
+        <p class="emp-company-section-desc">How pay compares to the market at every level, and what candidates receive beyond salary.</p>
+
+        <div class="emp-salary-meta-grid">
+          <div class="emp-salary-meta-tile">
+            <span>Industry Percentile</span>
+            <strong>${company.salaryComparison.industryPercentile}<sup>${ordinalSuffix(company.salaryComparison.industryPercentile)}</sup></strong>
+            <p>Pays above ${company.salaryComparison.industryPercentile}% of industry peers</p>
+          </div>
+          <div class="emp-salary-meta-tile">
+            <span>Salary Transparency Score</span>
+            <strong>${company.salaryComparison.transparencyScore}<small>/100</small></strong>
+            <p>${company.salaryComparison.transparencyScore >= 80 ? "Most roles publish clear ranges" : company.salaryComparison.transparencyScore >= 50 ? "Some roles are missing published ranges" : "Most roles don't publish a range yet"}</p>
+          </div>
+        </div>
+
+        <div class="emp-salary-levels">
+          ${company.salaryComparison.levels.map((lvl, i) => renderSalaryLevel(lvl, i)).join("")}
+        </div>
+
+        <div class="card emp-vera-insight-box">
+          <div class="emp-callout-label">${icon("sparkles")} Vera Insight</div>
+          <p>${company.salaryComparison.aiInsight.text} <span class="emp-insight-confidence">${company.salaryComparison.aiInsight.confidencePercent}% confidence</span></p>
+        </div>
+
+        <div class="emp-salary-benefits-sub">
+          <h3>Benefits</h3>
+          <div class="emp-requirements-grid">
+            <div class="emp-stat-row"><span>Bonus / incentives</span><strong>${company.salaryBenefits.bonus}</strong></div>
+            <div class="emp-stat-row"><span>Medical benefits</span><strong>${company.salaryBenefits.medical}</strong></div>
+            <div class="emp-stat-row"><span>Flexible work</span><strong>${company.salaryBenefits.flexibleWork}</strong></div>
+            <div class="emp-stat-row"><span>Training</span><strong>${company.salaryBenefits.training}</strong></div>
+            <div class="emp-stat-row"><span>Leave benefits</span><strong>${company.salaryBenefits.leave}</strong></div>
+          </div>
         </div>
       </div>
 
@@ -14938,6 +15036,11 @@ function renderEmployerCompany(root) {
     }));
     qs("[data-company-toggle-roles]", root)?.addEventListener("click", () => { showAllRoles = !showAllRoles; draw(); });
     qs("[data-company-toggle-reviews]", root)?.addEventListener("click", () => { showAllReviews = !showAllReviews; draw(); });
+    qsa("[data-salary-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const i = Number(btn.dataset.salaryToggle);
+      if (expandedSalaryLevels.has(i)) expandedSalaryLevels.delete(i); else expandedSalaryLevels.add(i);
+      draw();
+    }));
     qsa("[data-company-respond-review]", root).forEach(btn => btn.addEventListener("click", () => showToast("Response drafted. Full response workflow is coming soon.", "info")));
     qs("[data-company-jump-gaps]", root)?.addEventListener("click", () => qs("#comp-insights", root)?.scrollIntoView({ behavior: "smooth", block: "start" }));
     initCompanyTabsBehavior();
