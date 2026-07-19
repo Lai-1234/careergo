@@ -11695,6 +11695,10 @@ function bindVeraChatPanel(host, stepIndex, draft, onUpdate) {
   }
 
   function bind() {
+    // openEmpModal's [data-emp-modal-close] auto-bind only wired the button that
+    // existed at open time - refresh() (called after every message) replaces
+    // card.innerHTML and creates a new, unbound one. Re-bind it every time.
+    qs("[data-emp-modal-close]", card)?.addEventListener("click", () => closeEmpModal());
     qs("[data-vera-chat-form]", card)?.addEventListener("submit", event => {
       event.preventDefault();
       const input = qs("[data-vera-chat-input]", card);
@@ -12013,7 +12017,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       case 0:
         return `
           <div class="emp-form-section-head"><h2>${icon("briefcase")} Role Basics</h2><p>Start with the essentials candidates and your team need to understand this role.</p></div>
-          ${renderAskVeraButton("Draft this role with Vera", "data-emp-create-vera")}
+          ${renderAskVeraButton("Do this with Vera", "data-emp-create-vera")}
           <div class="emp-form-grid-2">
             <label>Role title<input type="text" data-field-title value="${escapeHtml(draft.title)}" placeholder="e.g. Backend Engineer"></label>
             <label>Department<input type="text" data-field-department value="${escapeHtml(draft.department)}" placeholder="e.g. Engineering"></label>
@@ -12040,7 +12044,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       case 1:
         return `
           <div class="emp-form-section-head"><h2>${icon("list-checks")} Role Details</h2><p>Explain why this role exists, what they'll own, and how success is measured.</p></div>
-          ${renderAskVeraButton("Generate with Vera", "data-generate-role-details", draft.title.trim() ? "" : `disabled title="Add a role title first"`)}
+          ${renderAskVeraButton("Do this with Vera", "data-generate-role-details", draft.title.trim() ? "" : `disabled title="Add a role title first"`)}
           <label>Why this role exists <span class="emp-optional-tag">Optional</span><textarea data-field-rolePurpose rows="2" placeholder="What gap or need this role fills">${escapeHtml(draft.rolePurpose)}</textarea></label>
           <label>Role summary<textarea data-field-roleSummary rows="3" placeholder="Describe the role in 2-4 sentences. Focus on the purpose of the position.">${escapeHtml(draft.roleSummary)}</textarea></label>
           <div>
@@ -12059,7 +12063,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       case 2:
         return `
           <div class="emp-form-section-head"><h2>${icon("users")} Candidate Profile</h2><p>Separate what's essential from what's preferred or trainable.</p></div>
-          ${renderAskVeraButton("Ask Vera to review requirements", "data-review-requirements")}
+          ${renderAskVeraButton("Do this with Vera", "data-review-requirements")}
           ${renderRequirementWarnings(draft)}
           <div><span class="emp-tags-label">Must-have — failure to meet may affect eligibility</span>${renderTagInput("mustHaveSkills", draft.mustHaveSkills)}</div>
           <div><span class="emp-tags-label">Preferred — improves fit, won't automatically reject candidates</span>${renderTagInput("niceToHaveSkills", draft.niceToHaveSkills)}</div>
@@ -12081,7 +12085,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       case 3:
         return `
           <div class="emp-form-section-head"><h2>${icon("wallet")} Offer</h2><p>Set compensation, benefits, and schedule detail.</p></div>
-          ${renderAskVeraButton("Ask Vera about market rate", "data-ask-vera-market-rate")}
+          ${renderAskVeraButton("Do this with Vera", "data-ask-vera-market-rate")}
 
           <h3 class="emp-form-subhead">Compensation</h3>
           <div class="emp-salary-row">
@@ -12290,37 +12294,117 @@ function renderEmployerRoleBuilder(root, roleId) {
   }
 
   function renderPreviewPublishStep() {
+    return `
+      <div class="emp-form-section-head"><h2>${icon("eye")} Preview & Publish</h2><p>Review everything before publishing this role.</p></div>
+      <div class="emp-publish-top-actions">
+        ${renderAskVeraButton("Do this with Vera", "data-ask-vera-publish-tab")}
+        <button type="button" class="btn btn-ghost" data-emp-open-review-modal>${icon("list-checks")} Review, Readiness & Vera</button>
+      </div>
+      <div class="card">
+        ${renderHiringAndPublishExtras(draft)}
+      </div>
+      <div class="card emp-publish-checklist" style="margin-top:16px;">
+        ${renderWizardActionRow(`<button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} ${existing && existing.status !== "Draft" ? "Save changes" : "Publish role"}</button>`)}
+      </div>
+    `;
+  }
+
+  // Preview / Readiness / Vera used to live in a persistent sidebar next to
+  // the Step 5 form; now it's an on-demand centered modal (opened via
+  // "Review, Readiness & Vera") so the form can be full-width. Same content,
+  // same tab-switching, same publishActiveTab state - just rendered into
+  // [data-emp-modal-root] instead of `root`, so it needs its own bind/refresh
+  // pair rather than reusing bindPreviewPublishEvents (which only reaches
+  // elements inside `root`).
+  function renderReviewReadinessVeraModal() {
     const ri = existing ? existing.roleIntelligence : null;
     const pendingSuggestions = ri ? (ri.suggestions || []).filter(s => !dismissedSuggestions.has(s.recommendation) && !appliedSuggestions.has(s.recommendation)) : [];
     const checks = getPublishReadinessChecks(draft);
     const review = computeDraftVeraReview(draft);
-
     return `
-      <div class="emp-publish-layout">
-        <div class="emp-publish-left">
-          <div class="emp-form-section-head"><h2>${icon("eye")} Preview & Publish</h2><p>Review everything before publishing this role.</p></div>
-          ${renderAskVeraButton("Ask Vera about this role", "data-ask-vera-publish-tab")}
-          <div class="card">
-            ${renderHiringAndPublishExtras(draft)}
-          </div>
-          <div class="card emp-publish-checklist" style="margin-top:16px;">
-            ${renderWizardActionRow(`<button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} ${existing && existing.status !== "Draft" ? "Save changes" : "Publish role"}</button>`)}
-          </div>
-        </div>
-        <div class="emp-publish-right">
-          <div class="card emp-role-intelligence emp-role-intelligence--wide">
-            <div class="emp-tab-strip">
-              <button type="button" class="${publishActiveTab === "preview" ? "active" : ""}" data-publish-tab="preview">Preview</button>
-              <button type="button" class="${publishActiveTab === "readiness" ? "active" : ""}" data-publish-tab="readiness">Readiness</button>
-              <button type="button" class="${publishActiveTab === "vera" ? "active" : ""}" data-publish-tab="vera">Vera</button>
-            </div>
-            ${publishActiveTab === "preview" ? renderPublishPreviewTab(draft)
-              : publishActiveTab === "readiness" ? renderPublishReadinessTab(checks)
-              : renderPublishVeraTab(review, ri, pendingSuggestions, draft)}
-          </div>
-        </div>
+      <div class="emp-review-modal-head">
+        <h2>Review, Readiness & Vera</h2>
+        <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="emp-tab-strip">
+        <button type="button" class="${publishActiveTab === "preview" ? "active" : ""}" data-publish-tab="preview">Preview</button>
+        <button type="button" class="${publishActiveTab === "readiness" ? "active" : ""}" data-publish-tab="readiness">Readiness</button>
+        <button type="button" class="${publishActiveTab === "vera" ? "active" : ""}" data-publish-tab="vera">Vera</button>
+      </div>
+      <div class="emp-review-modal-body">
+        ${publishActiveTab === "preview" ? renderPublishPreviewTab(draft)
+          : publishActiveTab === "readiness" ? renderPublishReadinessTab(checks)
+          : renderPublishVeraTab(review, ri, pendingSuggestions, draft)}
       </div>
     `;
+  }
+
+  function bindReviewReadinessVeraModal(host) {
+    const card = qs(".emp-modal-card", host);
+    if (!card) return;
+
+    function refresh() {
+      card.innerHTML = renderReviewReadinessVeraModal();
+      createIcons();
+      bind();
+    }
+
+    function bind() {
+      // openEmpModal's own [data-emp-modal-close] auto-bind only ran once, against
+      // the button that existed at open time - refresh() replaces card.innerHTML
+      // (e.g. on every tab switch), which destroys that button and creates a new,
+      // unbound one. Re-bind it here every time so the X keeps working after any refresh.
+      qs("[data-emp-modal-close]", card)?.addEventListener("click", () => closeEmpModal());
+      qsa("[data-publish-tab]", card).forEach(btn => btn.addEventListener("click", () => {
+        publishActiveTab = btn.dataset.publishTab;
+        if (publishActiveTab === "preview") { draft.previewReviewed = true; persistDraft(); draw(); }
+        refresh();
+      }));
+      qsa("[data-emp-compare-suggestion]", card).forEach(btn => btn.addEventListener("click", () => {
+        const panel = qs(`[data-suggestion-compare="${btn.dataset.empCompareSuggestion}"]`, card);
+        if (panel) panel.hidden = !panel.hidden;
+      }));
+      qsa("[data-emp-apply-suggestion]", card).forEach(btn => btn.addEventListener("click", () => {
+        const currentRi = existing ? existing.roleIntelligence : null;
+        const suggestion = currentRi ? (currentRi.suggestions || []).find(s => s.recommendation === btn.dataset.empApplySuggestion) : null;
+        if (suggestion) {
+          draft[suggestion.field] = suggestion.suggestedValue;
+          appliedSuggestions.add(suggestion.recommendation);
+          persistDraft();
+          draw();
+          refresh();
+          showToast("Suggestion applied.");
+        }
+      }));
+      qsa("[data-emp-keep-suggestion]", card).forEach(btn => btn.addEventListener("click", () => {
+        dismissedSuggestions.add(btn.dataset.empKeepSuggestion);
+        refresh();
+      }));
+      qsa("[data-vera-review-action]", card).forEach(btn => btn.addEventListener("click", () => {
+        applyVeraReviewAction(JSON.parse(btn.dataset.veraReviewAction));
+        persistDraft();
+        draw();
+        refresh();
+        showToast("Applied.");
+      }));
+      qs("[data-vera-review-apply-all]", card)?.addEventListener("click", () => {
+        computeDraftVeraReview(draft).needsAttention.filter(n => n.action).forEach(n => applyVeraReviewAction(n.action));
+        persistDraft();
+        draw();
+        refresh();
+        showToast("Applied all suggested changes.");
+      });
+    }
+
+    bind();
+  }
+
+  function openReviewReadinessVeraModal() {
+    openEmpModal("review-readiness-vera", renderReviewReadinessVeraModal(), {
+      className: "emp-review-modal-card",
+      label: "Review, Readiness & Vera",
+      onOpen: host => bindReviewReadinessVeraModal(host)
+    });
   }
 
   function renderJobPreviewContent(company, responsibilities) {
@@ -12378,44 +12462,9 @@ function renderEmployerRoleBuilder(root, roleId) {
   }
 
   function bindPreviewPublishEvents() {
-    qsa("[data-emp-compare-suggestion]", root).forEach(btn => btn.addEventListener("click", () => {
-      const panel = qs(`[data-suggestion-compare="${btn.dataset.empCompareSuggestion}"]`, root);
-      if (panel) panel.hidden = !panel.hidden;
-    }));
-    qsa("[data-emp-apply-suggestion]", root).forEach(btn => btn.addEventListener("click", () => {
-      const ri = existing ? existing.roleIntelligence : null;
-      const suggestion = ri ? (ri.suggestions || []).find(s => s.recommendation === btn.dataset.empApplySuggestion) : null;
-      if (suggestion) {
-        draft[suggestion.field] = suggestion.suggestedValue;
-        appliedSuggestions.add(suggestion.recommendation);
-        persistDraft();
-        draw();
-        showToast("Suggestion applied.");
-      }
-    }));
-    qsa("[data-emp-keep-suggestion]", root).forEach(btn => btn.addEventListener("click", () => {
-      dismissedSuggestions.add(btn.dataset.empKeepSuggestion);
-      draw();
-    }));
-    qsa("[data-vera-review-action]", root).forEach(btn => btn.addEventListener("click", () => {
-      applyVeraReviewAction(JSON.parse(btn.dataset.veraReviewAction));
-      persistDraft();
-      draw();
-      showToast("Applied.");
-    }));
-    qs("[data-vera-review-apply-all]", root)?.addEventListener("click", () => {
-      computeDraftVeraReview(draft).needsAttention.filter(n => n.action).forEach(n => applyVeraReviewAction(n.action));
-      persistDraft();
-      draw();
-      showToast("Applied all suggested changes.");
-    });
     qs("[data-emp-publish]", root)?.addEventListener("click", () => commitDraft(existing ? existing.status : "Open"));
-    qsa("[data-publish-tab]", root).forEach(btn => btn.addEventListener("click", () => {
-      publishActiveTab = btn.dataset.publishTab;
-      if (publishActiveTab === "preview") { draft.previewReviewed = true; persistDraft(); }
-      draw();
-    }));
     qs("[data-ask-vera-publish-tab]", root)?.addEventListener("click", () => openVeraChatPanel(4, draft, () => { persistDraft(); draw(); }));
+    qs("[data-emp-open-review-modal]", root)?.addEventListener("click", () => openReviewReadinessVeraModal());
 
     bindHiringStagesEditor();
     bindRequiredDocumentsControl();

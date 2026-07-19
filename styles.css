@@ -13822,14 +13822,14 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   text-decoration: underline; cursor: pointer;
 }
 
-.emp-publish-layout { display: grid; grid-template-columns: 1fr 1.35fr; gap: 20px; align-items: start; max-width: 1180px; margin-inline: auto; }
-.emp-publish-left { min-width: 0; }
-/* Sticky under the 64px sticky app header (.emp-app-header) so the
-   Preview/Readiness/Vera panel stays visible while the left column
-   (Hiring Process, Application Setup, Job Distribution, About the
-   Company, Accessibility) scrolls past it. */
-.emp-publish-right { min-width: 0; position: sticky; top: 80px; max-height: calc(100vh - 96px); overflow-y: auto; }
-.emp-role-intelligence--wide { min-height: 380px; }
+/* Step 5 (Preview & Publish): the form is full-width - Preview/Readiness/
+   Vera moved out of a persistent sidebar into an on-demand centered modal
+   (.emp-review-modal-card below), opened via "Review, Readiness & Vera". */
+.emp-publish-top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+.emp-review-modal-card { width: min(860px, 100%); max-height: min(85vh, 820px); overflow-y: auto; }
+.emp-review-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.emp-review-modal-head h2 { margin: 0; }
+.emp-review-modal-body { margin-top: 14px; }
 .emp-vera-readiness { margin: 0 0 14px; font-size: 15px; color: var(--emp-muted); }
 .emp-vera-readiness strong { font-size: 20px; color: var(--emp-green, var(--text)); }
 .emp-suggestion-actions--wrap { flex-wrap: wrap; }
@@ -13924,6 +13924,5 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 @media (max-width: 900px) {
   .emp-form-grid-2, .emp-checkbox-grid { grid-template-columns: 1fr; }
   .emp-stage-editor-fields { grid-template-columns: 1fr 1fr; }
-  .emp-publish-layout { grid-template-columns: 1fr; }
 }
 
