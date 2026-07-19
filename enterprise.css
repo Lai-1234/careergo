@@ -8788,6 +8788,52 @@ body[data-page="autopilot"] .cg-ap-log .cg-ap-status-tan {
   line-height: 1.5;
 }
 
+.cg-ap-safety-cap {
+  padding-top: 8px;
+  border-top: 1px solid #e4dfd3;
+  color: #1f5560 !important;
+  font-weight: 500;
+}
+
+.cg-ap-auto-badge {
+  color: #1f5560;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cg-ap-auto-pill {
+  color: #1f5560 !important;
+  border-color: rgba(31, 85, 96, 0.24) !important;
+  background: #c8dddf !important;
+  font-weight: 600 !important;
+}
+
+.cg-ap-autoapply-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid rgba(31, 85, 96, 0.18);
+  border-radius: 14px;
+  background: rgba(200, 221, 223, 0.2);
+}
+
+.cg-ap-autoapply-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #1f5560;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cg-ap-undo {
+  height: 28px;
+  margin-top: 6px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
 /* Bold, enlarged emphasis for card/role titles - beats the sitewide forced h1-h3 weight reset */
 body[data-page="autopilot"] .cg-pipeline .cg-ap-match-title h3,
 body[data-page="autopilot"] .cg-pipeline .cg-ap-rule-card h3,
@@ -8854,7 +8900,8 @@ body[data-page="autopilot"] .cg-apjob .cg-cp-card h2 {
 
   .cg-ap-field-row,
   .cg-ap-field-group,
-  .cg-ap-mode-grid {
+  .cg-ap-mode-grid,
+  .cg-ap-autoapply-fields {
     grid-template-columns: 1fr;
   }
 

@@ -477,10 +477,14 @@ function readState() {
       acceptVague: "No",
       excludedRoles: "Sales, Telemarketing",
       excludedIndustries: "Gambling, MLM",
-      actionMode: "recommend"
+      actionMode: "recommend",
+      autoApplyThreshold: 85,
+      autoApplyCap: 3
     },
     autopilotLog: [],
     autopilotPaused: false,
+    autopilotAutoApplyLog: [],
+    autopilotAutoApplyExcluded: [],
     posts: DATA.communityPosts
   };
   try {
@@ -678,10 +682,14 @@ function normalizeState(state) {
       excludedRoles: "Sales, Telemarketing",
       excludedIndustries: "Gambling, MLM",
       actionMode: "recommend",
+      autoApplyThreshold: 85,
+      autoApplyCap: 3,
       ...(state.autopilotRules || {})
     },
     autopilotLog: Array.isArray(state.autopilotLog) ? state.autopilotLog : [],
     autopilotPaused: Boolean(state.autopilotPaused),
+    autopilotAutoApplyLog: Array.isArray(state.autopilotAutoApplyLog) ? state.autopilotAutoApplyLog : [],
+    autopilotAutoApplyExcluded: Array.isArray(state.autopilotAutoApplyExcluded) ? state.autopilotAutoApplyExcluded : [],
     autopilotSavedRoles: Array.isArray(state.autopilotSavedRoles) ? state.autopilotSavedRoles : [],
     autopilotAppliedRoles: Array.isArray(state.autopilotAppliedRoles) ? state.autopilotAppliedRoles : [],
     autopilotDismissedRoles: Array.isArray(state.autopilotDismissedRoles) ? state.autopilotDismissedRoles : [],
@@ -1006,9 +1014,35 @@ function normalizeApplicationRecords(state) {
   return records;
 }
 
+function autopilotMatchAsJob(role) {
+  return {
+    id: role.id,
+    title: role.title,
+    company: role.company,
+    location: role.location,
+    salary: role.salary,
+    type: role.workMode || "Hybrid",
+    level: "",
+    industry: "",
+    match: role.match,
+    posted: role.found,
+    skills: [],
+    why: [role.why].filter(Boolean),
+    caution: role.watch || "",
+    description: role.why || ""
+  };
+}
+
 function getTrackedJobs(state = readState()) {
   return Object.values(state.applicationRecords || {})
-    .map(record => ({ record, job: DATA.jobs.find(job => job.id === record.jobId) }))
+    .map(record => {
+      const job = DATA.jobs.find(item => item.id === record.jobId)
+        || (() => {
+          const role = AUTOPILOT_MATCHES.find(item => item.id === record.jobId);
+          return role ? autopilotMatchAsJob(role) : null;
+        })();
+      return { record, job };
+    })
     .filter(item => item.job);
 }
 
@@ -11877,6 +11911,109 @@ function dismissApRole(role) {
   showToast("Vera will not surface this role again.");
 }
 
+function autopilotMatchSalaryMax(role) {
+  const numbers = (String(role.salary || "").match(/[\d,]+/g) || []).map(n => Number(n.replace(/,/g, "")));
+  return numbers.length ? Math.max(...numbers) : 0;
+}
+
+function autopilotWeeklyAutoApplyCount(state) {
+  const log = Array.isArray(state.autopilotAutoApplyLog) ? state.autopilotAutoApplyLog : [];
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  return log.filter(entry => new Date(entry.at).getTime() >= weekAgo).length;
+}
+
+function autopilotAutoApplyEligibility(role, rules, state) {
+  const reasons = [];
+  const threshold = Number(rules.autoApplyThreshold) || 85;
+  if (role.match < threshold) reasons.push(`${role.match}% match is below your ${threshold}% auto-apply threshold.`);
+  const minSalary = Number(rules.minSalary) || 0;
+  if (minSalary && autopilotMatchSalaryMax(role) < minSalary) reasons.push(`Salary tops out below RM ${minSalary.toLocaleString()} / month.`);
+  const avoidCompanies = String(rules.avoidCompanies || "").split(",").map(v => v.trim().toLowerCase()).filter(Boolean);
+  if (avoidCompanies.some(name => role.company.toLowerCase().includes(name))) reasons.push(`${role.company} is on your avoid-companies list.`);
+  const avoidKeywords = String(rules.avoidKeywords || "").split(",").map(v => v.trim().toLowerCase()).filter(Boolean);
+  const hay = `${role.title} ${role.company} ${role.why || ""}`.toLowerCase();
+  const blockedKeyword = avoidKeywords.find(word => hay.includes(word));
+  if (blockedKeyword) reasons.push(`Matches your avoid-keywords rule "${blockedKeyword}".`);
+  const excludedRoles = String(rules.excludedRoles || "").split(",").map(v => v.trim().toLowerCase()).filter(Boolean);
+  if (excludedRoles.some(word => role.title.toLowerCase().includes(word))) reasons.push(`Title matches your excluded-roles rule.`);
+  const cap = Number(rules.autoApplyCap) || 0;
+  const used = autopilotWeeklyAutoApplyCount(state);
+  if (cap && used >= cap) reasons.push(`Weekly auto-apply cap (${cap}) already reached.`);
+  return { eligible: !reasons.length, reasons };
+}
+
+function createAutopilotApplicationRecord(role) {
+  const now = nowStamp();
+  return {
+    jobId: role.id,
+    stage: "applied",
+    savedAt: "Today",
+    appliedAt: "Today",
+    deadline: "This week",
+    nextAction: "Vera auto-applied with a tailored resume. Watch for the recruiter's first reply.",
+    note: `Auto-applied at ${role.match}% match - ${role.why || "matches your Autopilot rules"}.`,
+    updatedLabel: "Just now",
+    viaAutopilot: true,
+    timeline: [
+      { label: "Saved role", date: "Today", done: true },
+      { label: "Resume tailored", date: "Today", done: true },
+      { label: "Applied", date: "Today", done: true },
+      { label: "Screening", date: "Pending", done: false },
+      { label: "Interview", date: "Pending", done: false },
+      { label: "Outcome", date: "Pending", done: false }
+    ],
+    updatedAt: now
+  };
+}
+
+let autopilotAutoApplyCheckedThisLoad = false;
+
+function runAutoApply(state) {
+  if (autopilotAutoApplyCheckedThisLoad) return { state, applied: [] };
+  autopilotAutoApplyCheckedThisLoad = true;
+  const rules = state.autopilotRules || {};
+  if (rules.actionMode !== "autoapply" || state.autopilotPaused) return { state, applied: [] };
+  const dismissed = Array.isArray(state.autopilotDismissedRoles) ? state.autopilotDismissedRoles : [];
+  const alreadyApplied = Array.isArray(state.autopilotAppliedRoles) ? state.autopilotAppliedRoles : [];
+  const excluded = Array.isArray(state.autopilotAutoApplyExcluded) ? state.autopilotAutoApplyExcluded : [];
+  const candidates = AUTOPILOT_MATCHES.filter(role => !dismissed.includes(role.id) && !alreadyApplied.includes(role.id) && !excluded.includes(role.id));
+  const applied = [];
+  candidates.forEach(role => {
+    const { eligible } = autopilotAutoApplyEligibility(role, rules, state);
+    if (!eligible) return;
+    state.autopilotAppliedRoles = [...(Array.isArray(state.autopilotAppliedRoles) ? state.autopilotAppliedRoles : []), role.id];
+    const savedRoles = Array.isArray(state.autopilotSavedRoles) ? state.autopilotSavedRoles : [];
+    if (!savedRoles.includes(role.id)) state.autopilotSavedRoles = [...savedRoles, role.id];
+    state.applicationRecords = { ...(state.applicationRecords || {}), [role.id]: createAutopilotApplicationRecord(role) };
+    const now = nowStamp();
+    state.autopilotAutoApplyLog = [{ id: `apauto-${Date.now()}-${role.id}`, roleId: role.id, at: now }, ...(Array.isArray(state.autopilotAutoApplyLog) ? state.autopilotAutoApplyLog : [])];
+    state.autopilotLog = pushAutopilotLog(state, { time: "Just now", status: "Applied", tone: "teal", title: `${role.title} at ${role.company}`, body: `Auto-applied at ${role.match}% match, within your rules and weekly cap.`, autoApplyLogId: state.autopilotAutoApplyLog[0].id });
+    state.notifications = [
+      { id: `n-autoapply-${Date.now()}-${role.id}`, icon: "bot", title: "Vera auto-applied for you", body: `${role.title} at ${role.company} - ${role.match}% match. Review it in Autopilot's Activity log.` },
+      ...(Array.isArray(state.notifications) ? state.notifications : [])
+    ];
+    applied.push(role);
+  });
+  return { state, applied };
+}
+
+function undoAutoApply(autoApplyLogId) {
+  const state = readState();
+  const entry = (state.autopilotAutoApplyLog || []).find(item => item.id === autoApplyLogId);
+  if (!entry) return;
+  state.autopilotAutoApplyLog = state.autopilotAutoApplyLog.filter(item => item.id !== autoApplyLogId);
+  state.autopilotAppliedRoles = (state.autopilotAppliedRoles || []).filter(id => id !== entry.roleId);
+  const excluded = Array.isArray(state.autopilotAutoApplyExcluded) ? state.autopilotAutoApplyExcluded : [];
+  if (!excluded.includes(entry.roleId)) state.autopilotAutoApplyExcluded = [...excluded, entry.roleId];
+  if (state.applicationRecords) delete state.applicationRecords[entry.roleId];
+  const role = AUTOPILOT_MATCHES.find(item => item.id === entry.roleId);
+  state.autopilotLog = pushAutopilotLog(state, { time: "Just now", status: "Rule changed", tone: "tan", title: role ? `${role.title} at ${role.company}` : "Auto-applied role", body: "Auto-application undone - reverted to Saved. Vera will not auto-apply to this role again." });
+  writeState(syncCurrentUser(state));
+  showToast("Auto-application undone.");
+  renderAutopilot();
+  renderDashboard();
+}
+
 function apRuleCardFor(role) {
   const text = `${role.why || ""} ${role.watch || ""}`.toLowerCase();
   if (/salary|remote|hybrid|location|relocate|on-site/.test(text)) return 2;
@@ -11892,6 +12029,11 @@ function renderAutopilot() {
   if (needsOnboarding(root)) return;
   const state = readState();
   if (state.session.loggedIn) {
+    const autoApplyResult = runAutoApply(state);
+    if (autoApplyResult.applied.length) {
+      writeState(syncCurrentUser(state));
+      showToast(`Vera auto-applied to ${autoApplyResult.applied.length} role${autoApplyResult.applied.length === 1 ? "" : "s"} within your rules.`);
+    }
     const urgencyRank = { Urgent: 0, High: 1, Medium: 2 };
     const impactTasks = [
       ["Reply to Grab recruiter", "Grab responds within 48h - silence past today drops your callback rate by 31%.", "+14% interview odds", "5 min", "Draft reply", "Urgent"],
@@ -11975,6 +12117,9 @@ function renderAutopilot() {
     const apStrongMatches = apMatches.filter(role => role.match >= 85).length;
     const apSavedCount = (state.autopilotSavedRoles || []).length;
     const apAppliedCount = (state.autopilotAppliedRoles || []).length;
+    const apAutoAppliedCount = (state.autopilotAutoApplyLog || []).length;
+    const apAutoApplyCap = Number(apRules.autoApplyCap) || 0;
+    const apAutoApplyUsedThisWeek = autopilotWeeklyAutoApplyCount(state);
     const apNeedsReview = apMatches.filter(role => role.mode === "Queue for review").length;
     const apLastScan = (apMatches[0]?.found || "Found recently").replace(/^Found /, "");
     const apRestrictiveFilters = [
@@ -12160,7 +12305,7 @@ function renderAutopilot() {
               <div><span>Scanned</span><strong>${apScanned}</strong></div>
               <div><span>Strong matches</span><strong>${apStrongMatches}</strong></div>
               <div><span>Saved</span><strong>${apSavedCount}</strong></div>
-              <div><span>Applied</span><strong>${apAppliedCount}</strong></div>
+              <div><span>Applied</span><strong>${apAppliedCount}${apAutoAppliedCount ? ` <small class="cg-ap-auto-badge">(${apAutoAppliedCount} auto)</small>` : ""}</strong></div>
               <div><span>Needs review</span><strong>${apNeedsReview}</strong></div>
             </div>
             <div class="cg-ap-insight" data-ap-insight>
@@ -12185,6 +12330,7 @@ function renderAutopilot() {
           <div class="cg-ap-match-list">
             ${apMatches.length ? apMatches.map(role => {
               const { saved, applied } = apRoleActionState(state, role.id);
+              const viaAutopilot = Boolean(state.applicationRecords?.[role.id]?.viaAutopilot);
               return `
               <article class="cg-ap-match-card">
                 <div class="cg-ap-match-head">
@@ -12194,6 +12340,7 @@ function renderAutopilot() {
                     <span class="cg-ap-company">${role.company}</span>
                     <span class="cg-ap-match-pct">${role.match}% match</span>
                     <span class="pill">${role.mode}</span>
+                    ${viaAutopilot ? `<span class="pill cg-ap-auto-pill">${icon("bot")} Auto-applied</span>` : ""}
                   </div>
                   <span class="cg-ap-found">${role.found}</span>
                 </div>
@@ -12209,7 +12356,7 @@ function renderAutopilot() {
                 <div class="cg-ap-match-actions">
                   <a class="btn btn-primary" href="job-detail.html?role=${encodeURIComponent(role.id)}">View job ${icon("chevron-right")}</a>
                   <button class="btn btn-ghost" type="button" data-ap-save="${role.id}">${icon(saved ? "bookmark-check" : "bookmark")} ${saved ? "Saved" : "Save"}</button>
-                  <button class="btn btn-ghost" type="button" data-ap-apply="${role.id}"${applied ? " disabled" : ""}>${icon(applied ? "check" : "send")} ${applied ? "Applied" : "Apply"}</button>
+                  <button class="btn btn-ghost" type="button" data-ap-apply="${role.id}"${applied ? " disabled" : ""}>${icon(applied ? "check" : "send")} ${viaAutopilot ? "Auto-applied" : applied ? "Applied" : "Apply"}</button>
                   <button class="btn btn-ghost" type="button" data-ap-dismiss="${role.id}">${icon("x")} Dismiss</button>
                   <button class="btn btn-ghost" type="button" data-ap-edit-rule="${role.id}">${icon("settings-2")} Edit rule</button>
                 </div>
@@ -12313,6 +12460,13 @@ function renderAutopilot() {
                   </button>
                 `).join("")}
               </div>
+              ${apRules.actionMode === "autoapply" ? `
+                <div class="cg-ap-autoapply-fields">
+                  <label class="cg-ap-field">Auto-apply threshold (% match)<input name="autoApplyThreshold" type="number" min="50" max="99" value="${esc(apRules.autoApplyThreshold)}"></label>
+                  <label class="cg-ap-field">Max auto-applies per week<input name="autoApplyCap" type="number" min="1" max="20" value="${esc(apRules.autoApplyCap)}"></label>
+                  <p class="cg-ap-autoapply-note">${icon("shield-check")} ${apAutoApplyUsedThisWeek} of ${apAutoApplyCap || "unlimited"} auto-applies used this week.</p>
+                </div>
+              ` : ""}
             </article>
 
             <div class="cg-ap-save-row">
@@ -12330,7 +12484,7 @@ function renderAutopilot() {
               <article>
                 <small>${entry.time}</small>
                 <span class="pill cg-ap-status-${entry.tone}">${entry.status}</span>
-                <div><h3>${entry.title}</h3><p>${entry.body}</p></div>
+                <div><h3>${entry.title}</h3><p>${entry.body}</p>${entry.autoApplyLogId ? `<button type="button" class="btn btn-ghost cg-ap-undo" data-ap-undo-autoapply="${entry.autoApplyLogId}">${icon("undo-2")} Undo</button>` : ""}</div>
               </article>
             `).join("")}
           </div>
@@ -12339,6 +12493,7 @@ function renderAutopilot() {
         <section class="cg-ap-safety">
           <span>${icon("shield-check")} Safety</span>
           <p>Autopilot will never apply to excluded companies, industries, roles below your salary floor, roles below your match threshold or roles missing key information. You can pause Autopilot or change any rule anytime.</p>
+          ${apRules.actionMode === "autoapply" ? `<p class="cg-ap-safety-cap">${icon("gauge")} ${apAutoApplyUsedThisWeek} of ${apAutoApplyCap || "unlimited"} weekly auto-applies used. Every auto-application is logged above and can be undone.</p>` : ""}
         </section>
         </div>
 
@@ -12422,7 +12577,9 @@ function renderAutopilot() {
         requiredSkills: String(form.get("requiredSkills") || "").trim(),
         niceToHave: String(form.get("niceToHave") || "").trim(),
         excludedRoles: String(form.get("excludedRoles") || "").trim(),
-        excludedIndustries: String(form.get("excludedIndustries") || "").trim()
+        excludedIndustries: String(form.get("excludedIndustries") || "").trim(),
+        autoApplyThreshold: Number(form.get("autoApplyThreshold")) || next.autopilotRules.autoApplyThreshold,
+        autoApplyCap: Number(form.get("autoApplyCap")) || next.autopilotRules.autoApplyCap
       };
       writeState(syncCurrentUser(next));
       showToast("Autopilot rules saved.");
@@ -12446,6 +12603,9 @@ function renderAutopilot() {
       if (!role) return;
       dismissApRole(role);
       renderAutopilot();
+    }));
+    qsa("[data-ap-undo-autoapply]", root).forEach(btn => btn.addEventListener("click", () => {
+      undoAutoApply(btn.dataset.apUndoAutoapply);
     }));
     qsa("[data-ap-edit-rule]", root).forEach(btn => btn.addEventListener("click", () => {
       const role = apMatches.find(item => item.id === btn.dataset.apEditRule);
