@@ -5444,22 +5444,23 @@ function renderDiscoverOrgDirectory() {
   const { companies, universities } = buildOrgCatalog();
   const items = isCompanies ? companies : universities;
   root.innerHTML = `
-    <section class="cg-discover cg-discover-v2">
+    <section class="cg-discover cg-discover-v2 cg-discover-org-directory">
       <header class="cg-discover-hero">
         <a class="cg-back-link" href="discover.html">${icon("arrow-left")} Discover</a>
+        <span class="cg-overline">Browse career places</span>
         <h1>${isCompanies ? "All companies" : "All universities"}.</h1>
         <p>${isCompanies ? "Every employer Vera is tracking for your Product Management search in Malaysia." : "Every institution Vera is tracking for your career path in Malaysia."}</p>
-        <form class="cg-discover-search" data-org-directory-search-form>
-          ${icon("search")}
-          <input name="q" data-org-directory-search placeholder="Search ${isCompanies ? "companies" : "universities"} by name, industry, or location...">
-        </form>
       </header>
+      <nav class="cg-org-tabs" aria-label="Directory category">
+        <a href="discover-companies.html" class="${isCompanies ? "active" : ""}">${icon("building-2")} Companies</a>
+        <a href="discover-universities.html" class="${isCompanies ? "" : "active"}">${icon("graduation-cap")} Universities</a>
+      </nav>
       <section class="cg-discover-section">
-        <div class="cg-discover-section-head">
-          <div><h2>${isCompanies ? "Companies" : "Universities"}</h2></div>
-          <a class="cg-discover-link-btn" href="discover.html">${icon("arrow-left")} Back to Discover</a>
-        </div>
         <div class="cg-org-filters" aria-label="${isCompanies ? "Company" : "University"} filters">
+          <form class="cg-org-search-field" data-org-directory-search-form>
+            ${icon("search")}
+            <input name="q" data-org-directory-search placeholder="Search ${isCompanies ? "companies" : "universities"} by name, industry, or location...">
+          </form>
           <select data-org-directory-sort aria-label="Sort">
             <option value="top">Top rated</option>
             <option value="open">Most ${isCompanies ? "openings" : "programmes"}</option>
