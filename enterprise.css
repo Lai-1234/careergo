@@ -25340,6 +25340,24 @@ body[data-page="discover"] .cg-cp :is(.cg-cp-role-row h3, .cg-cp-similar-card h3
   border-bottom: 1px solid #e4dfd3;
 }
 
+.cg-search-group-title:has(.cg-search-clear-history) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cg-search-clear-history {
+  color: #1f5560;
+  font: 600 11px/1.35 "Inter", sans-serif;
+  text-transform: none;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+
+.cg-search-clear-history:hover {
+  text-decoration: underline;
+}
+
 .cg-search-result {
   display: flex;
   align-items: flex-start;

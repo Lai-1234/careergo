@@ -296,6 +296,16 @@ const DATA = {
     { id: "r16", targetId: "apu", author: "Current IT Student", rating: 3.9, title: "Strong labs, plan your commute", body: "Good facilities and hands-on modules. The Bukit Jalil campus is great but factor in travel time if you live far.", date: "Jan 2026" },
     { id: "r17", targetId: "carsome", author: "PM - 2 yrs", rating: 4, title: "Real marketplace complexity", body: "Learned a lot about cross-side dynamics.", pros: "Scope, autonomy.", watch: "Ops-heavy problem space.", date: "May 2026" }
   ],
+  people: [
+    { id: "aisha", name: "Aisha Rahman", role: "Recruiter", company: "Grab Malaysia", university: "", industry: "Technology", tag: "Recruiter", bio: "Talent lead at Grab Malaysia, focused on product and analytics hiring across Southeast Asia.", signal: "Reviewed your saved role at Grab this week." },
+    { id: "ravi", name: "Ravi Iyer", role: "Head of Product", company: "Vercel", university: "", industry: "Technology", tag: "Mentor", bio: "Leads product at Vercel; mentors career switchers moving into product management.", signal: "Offered to review your PM portfolio." },
+    { id: "nurul", name: "Nurul Adlina", role: "Hiring Manager", company: "Setel", university: "", industry: "Fintech", tag: "Hiring manager", bio: "Hiring manager at Setel, running the take-home process for Product Manager candidates.", signal: "Sent you a take-home exercise." },
+    { id: "shreya", name: "Shreya Kapoor", role: "Product Manager", company: "Figma", university: "", industry: "Technology", tag: "Connection", bio: "Made the jump from design to product; happy to share how she framed a design background for PM interviews.", signal: "Made the same design -> PM switch you're considering." },
+    { id: "aisyah-r", name: "Aisyah R.", role: "Product Manager", company: "Setel", university: "um", industry: "Fintech", tag: "Mentor", bio: "4y journey from designer to PM at Setel - started with a design background, just like you.", signal: "82% path overlap with your roadmap." },
+    { id: "rohan-s", name: "Rohan S.", role: "AI Product Manager", company: "StoreHub", university: "", industry: "SaaS", tag: "Mentor", bio: "3y journey from design engineering to AI PM at StoreHub, using a similar skill stack to yours.", signal: "76% path overlap with your roadmap." },
+    { id: "meera-k", name: "Meera K.", role: "Head of Product", company: "", university: "", industry: "Technology", tag: "Mentor", bio: "6y journey from product designer to Head of Product - a long-term direction if you follow the 3-year roadmap.", signal: "68% path overlap with your roadmap." },
+    { id: "daniel-l", name: "Daniel L.", role: "Founding PM", company: "KL seed startup", university: "", industry: "Technology", tag: "Mentor", bio: "5y journey from PM to Founding PM at a KL seed startup - took the founding PM leap you're considering.", signal: "71% path overlap with your roadmap." }
+  ],
   profile: null,
   futures: [
     { role: "Senior Product Designer", probability: 82, salary: "RM 108k - 142k", timeline: "12-18 months", risk: "Needs stronger product strategy proof" },
@@ -634,6 +644,9 @@ function normalizeState(state) {
     ignoredJobs: Array.isArray(state.ignoredJobs) ? state.ignoredJobs : [],
     comparedJobs: Array.isArray(state.comparedJobs) ? state.comparedJobs : [],
     savedOrgs: Array.isArray(state.savedOrgs) ? state.savedOrgs : [],
+    followingUsers: Array.isArray(state.followingUsers) ? state.followingUsers : [],
+    connectionStatus: state.connectionStatus && typeof state.connectionStatus === "object" ? state.connectionStatus : {},
+    peopleSearchHistory: Array.isArray(state.peopleSearchHistory) ? state.peopleSearchHistory : [],
     marketPlan: state.marketPlan && typeof state.marketPlan === "object" ? state.marketPlan : null,
     growGoals: state.growGoals && typeof state.growGoals === "object" ? state.growGoals : null,
     growMovesStarted: Array.isArray(state.growMovesStarted) ? state.growMovesStarted : [],
@@ -2445,7 +2458,7 @@ function renderNavigation() {
   updateVeraBubbleBadge();
   const workspaceSearchForm = qs("[data-workspace-search]");
   if (workspaceSearchForm?.classList.contains("cg-vera-search")) {
-    attachLiveSearch(workspaceSearchForm, query => renderSearchPanelContent(query, "workspace", readState()));
+    attachLiveSearch(workspaceSearchForm, query => renderSearchPanelContent(query, "workspace", readState()), () => renderSearchDefaultContent(readState()));
   } else if (workspaceSearchForm) {
     workspaceSearchForm.addEventListener("submit", event => {
       event.preventDefault();
@@ -4224,7 +4237,7 @@ function renderJobsPage() {
         openVeraPanel({ seedTopic: topic });
       });
     });
-    attachLiveSearch(qs("[data-discover-search-form]", root), query => renderSearchPanelContent(query, "workspace", state));
+    attachLiveSearch(qs("[data-discover-search-form]", root), query => renderSearchPanelContent(query, "workspace", state), () => renderSearchDefaultContent(state));
     return;
   }
   if (state.session.loggedIn && document.body.dataset.page === "workspace-jobs") {
@@ -5039,7 +5052,10 @@ function searchPublicCatalog(query, limit = 5) {
 function searchWorkspaceCatalog(query, state) {
   const base = searchPublicCatalog(query);
   const q = query.trim().toLowerCase();
-  if (!q) return { ...base, pipeline: [], growth: [], value: [], sections: [], totals: { ...base.totals, pipeline: 0, growth: 0, value: 0, sections: 0 } };
+  if (!q) return { ...base, people: [], pipeline: [], growth: [], value: [], sections: [], totals: { ...base.totals, people: 0, pipeline: 0, growth: 0, value: 0, sections: 0 } };
+
+  const matchedPeople = DATA.people
+    .filter(person => matchesQuery([person.name, person.role, person.company, person.industry, person.tag], q));
 
   const matchedPipeline = getTrackedJobs(state)
     .filter(item => ["saved", "applied", "interview", "offer"].includes(item.record.stage))
@@ -5056,12 +5072,14 @@ function searchWorkspaceCatalog(query, state) {
 
   return {
     ...base,
+    people: matchedPeople.slice(0, 5),
     pipeline: matchedPipeline.slice(0, 5),
     growth: matchedGrowth.slice(0, 5),
     value: matchedValue.slice(0, 5),
     sections: matchedSections.slice(0, 5),
     totals: {
       ...base.totals,
+      people: matchedPeople.length,
       pipeline: matchedPipeline.length,
       growth: matchedGrowth.length,
       value: matchedValue.length,
@@ -5083,6 +5101,12 @@ function renderSearchPanelContent(query, scope, state) {
     groups.push({
       title: "Go to",
       items: results.sections.map(section => ({ href: section.href, title: section.label, meta: "Jump to this section", icon: section.icon }))
+    });
+  }
+  if (scope === "workspace" && results.people?.length) {
+    groups.push({
+      title: "People",
+      items: results.people.map(person => ({ href: `user-profile.html?id=${encodeURIComponent(person.id)}`, title: person.name, meta: [person.role, person.company].filter(Boolean).join(" - "), icon: "user-round", personId: person.id }))
     });
   }
   if (results.companies.length) {
@@ -5138,7 +5162,7 @@ function renderSearchPanelContent(query, scope, state) {
     <div class="cg-search-group">
       <span class="cg-search-group-title">${escapeHtml(group.title)}</span>
       ${group.items.map(item => `
-        <a class="cg-search-result" href="${item.href}">
+        <a class="cg-search-result" href="${item.href}" ${item.personId ? `data-person-id="${escapeHtml(item.personId)}"` : ""}>
           <span class="cg-search-result-icon">${icon(item.icon)}</span>
           <span class="cg-search-result-body"><strong>${highlightMatch(item.title, q)}</strong><small>${escapeHtml(item.meta)}</small></span>
         </a>
@@ -5147,7 +5171,61 @@ function renderSearchPanelContent(query, scope, state) {
   `).join("") + footer;
 }
 
-function attachLiveSearch(form, buildResultsHtml) {
+function recommendedPeopleFor(state) {
+  const almaMater = "um";
+  const targetIndustries = state.profile?.preferences?.industries || [];
+  const scored = DATA.people.map(person => {
+    let score = 0;
+    if (person.tag === "Mentor") score += 2;
+    if (person.university && person.university === almaMater) score += 3;
+    if (targetIndustries.includes(person.industry)) score += 1;
+    return { person, score };
+  });
+  return scored.sort((a, b) => b.score - a.score).slice(0, 4).map(item => item.person);
+}
+
+function personSearchResultHtml(person) {
+  return `
+    <a class="cg-search-result" href="user-profile.html?id=${encodeURIComponent(person.id)}" data-person-id="${person.id}">
+      <span class="cg-search-result-icon">${icon("user-round")}</span>
+      <span class="cg-search-result-body"><strong>${escapeHtml(person.name)}</strong><small>${escapeHtml([person.role, person.company].filter(Boolean).join(" - "))}</small></span>
+    </a>
+  `;
+}
+
+function renderSearchDefaultContent(state) {
+  const recommended = recommendedPeopleFor(state);
+  const historyIds = Array.isArray(state.peopleSearchHistory) ? state.peopleSearchHistory : [];
+  const history = historyIds.map(id => DATA.people.find(person => person.id === id)).filter(Boolean).slice(0, 6);
+  const groups = [];
+  if (history.length) {
+    groups.push(`
+      <div class="cg-search-group">
+        <span class="cg-search-group-title">Recent searches<button type="button" class="cg-search-clear-history" data-clear-people-history>Clear</button></span>
+        ${history.map(personSearchResultHtml).join("")}
+      </div>
+    `);
+  }
+  if (recommended.length) {
+    groups.push(`
+      <div class="cg-search-group">
+        <span class="cg-search-group-title">Recommended for you</span>
+        ${recommended.map(personSearchResultHtml).join("")}
+      </div>
+    `);
+  }
+  return groups.join("") || `<div class="cg-search-empty">${icon("search")} Search companies, jobs, universities, or people.</div>`;
+}
+
+function recordPeopleSearchHistory(personId) {
+  if (!personId) return;
+  const next = readState();
+  const list = Array.isArray(next.peopleSearchHistory) ? next.peopleSearchHistory : [];
+  next.peopleSearchHistory = [personId, ...list.filter(id => id !== personId)].slice(0, 8);
+  writeState(next);
+}
+
+function attachLiveSearch(form, buildResultsHtml, buildDefaultHtml) {
   if (!form || form.dataset.liveSearchBound) return;
   form.dataset.liveSearchBound = "1";
   const shell = form.closest("[data-search-shell]");
@@ -5155,17 +5233,37 @@ function attachLiveSearch(form, buildResultsHtml) {
   const input = qs("input[name='q']", form);
   if (!shell || !panel || !input) return;
 
+  const bindPanelInteractions = () => {
+    qsa("a", panel).forEach(link => link.addEventListener("click", () => {
+      if (link.dataset.personId) recordPeopleSearchHistory(link.dataset.personId);
+      panel.hidden = true;
+    }));
+    qs("[data-clear-people-history]", panel)?.addEventListener("click", () => {
+      const next = readState();
+      next.peopleSearchHistory = [];
+      writeState(next);
+      renderNow();
+    });
+  };
+
   const renderNow = () => {
     const query = input.value || "";
     if (!query.trim()) {
-      panel.hidden = true;
-      panel.innerHTML = "";
+      if (!buildDefaultHtml) {
+        panel.hidden = true;
+        panel.innerHTML = "";
+        return;
+      }
+      panel.innerHTML = buildDefaultHtml();
+      panel.hidden = false;
+      createIcons();
+      bindPanelInteractions();
       return;
     }
     panel.innerHTML = buildResultsHtml(query);
     panel.hidden = false;
     createIcons();
-    qsa("a", panel).forEach(link => link.addEventListener("click", () => { panel.hidden = true; }));
+    bindPanelInteractions();
   };
 
   let debounceId;
@@ -5174,7 +5272,7 @@ function attachLiveSearch(form, buildResultsHtml) {
     debounceId = setTimeout(renderNow, 120);
   });
   input.addEventListener("focus", () => {
-    if (input.value.trim()) renderNow();
+    if (input.value.trim() || buildDefaultHtml) renderNow();
   });
   shell.addEventListener("keydown", event => {
     if (event.key === "Escape") {
@@ -7126,6 +7224,95 @@ const RECOMMENDED_ROLES = [
   { id: "rr-grab", company: "Grab", title: "Senior PM, Fintech", match: 78, location: "Kuala Lumpur", mode: "Hybrid", salary: "RM 13k - 17k", insight: "Fintech domain match - Saved company", warmIntro: false },
   { id: "rr-stripe", company: "Stripe", title: "PM, APAC Payments", match: 90, location: "Remote (SEA)", mode: "Remote", salary: "$175k - 205k", insight: "Already in your pipeline - Round 2 booked", warmIntro: true }
 ];
+
+function renderUserProfile() {
+  const root = qs("[data-user-profile]");
+  if (!root) return;
+  if (!requireAccount(root, "view other members' profiles")) return;
+  const personId = new URLSearchParams(location.search).get("id");
+  const person = DATA.people.find(item => item.id === personId);
+  if (!person) {
+    root.innerHTML = `
+      <div class="locked-state-wrap">
+        <div class="locked-state glass-card">
+          <div class="eyebrow"><span class="spark">*</span> Profile not found</div>
+          <h1 class="section-title">We could not find that member profile.</h1>
+          <p class="section-sub">The link may be out of date, or this person is no longer on CareerGo.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="discover.html">${icon("arrow-left")} Back to Discover</a></div>
+        </div>
+      </div>
+    `;
+    createIcons();
+    return;
+  }
+  const state = readState();
+  const isFollowing = (state.followingUsers || []).includes(person.id);
+  const connectionState = (state.connectionStatus || {})[person.id] || "none";
+  const connectionLabel = { none: "Add Friend", pending: "Request Sent", connected: "Connected" }[connectionState];
+  const connectionIcon = { none: "user-plus", pending: "clock", connected: "user-check" }[connectionState];
+  const targetIndustries = state.profile?.preferences?.industries || [];
+  const sharedSignals = [];
+  if (person.university === "um") sharedSignals.push("You're both connected to University of Malaya.");
+  if (person.industry && targetIndustries.includes(person.industry)) sharedSignals.push(`You're both focused on ${person.industry}.`);
+  if (person.tag === "Mentor") sharedSignals.push("Vera matched this mentor to your roadmap.");
+  const initials = orgInitials(person.name);
+
+  root.innerHTML = `
+    <section class="cg-cp">
+      <a class="cg-cp-back" href="discover.html">${icon("arrow-left")} Discover</a>
+
+      <article class="cg-cp-hero">
+        <div class="cg-cp-hero-top">
+          <span class="cg-cp-mono">${initials}</span>
+          <div class="cg-cp-hero-id">
+            <span class="cg-section-kicker">${escapeHtml(person.tag)}</span>
+            <h1>${escapeHtml(person.name)}</h1>
+            <p class="cg-cp-hero-meta">${icon("briefcase")} ${escapeHtml(person.role)}${person.company ? ` &middot; ${icon("building-2")} ${escapeHtml(person.company)}` : ""}</p>
+          </div>
+          <div class="cg-cp-hero-actions">
+            <button type="button" class="btn btn-primary" data-user-follow="${person.id}">${icon(isFollowing ? "user-check" : "user-plus")} ${isFollowing ? "Following" : "Follow"}</button>
+            <a class="btn btn-ghost" href="posts.html?person=${encodeURIComponent(person.id)}#messages">${icon("send")} Message</a>
+            <button type="button" class="btn btn-ghost" data-user-connect="${person.id}" ${connectionState !== "none" ? "disabled" : ""}>${icon(connectionIcon)} ${connectionLabel}</button>
+          </div>
+        </div>
+        <div class="cg-cp-vera">
+          <span class="cg-cp-vera-label">${icon("bot")} Vera's read</span>
+          <p>${escapeHtml(person.bio)}</p>
+          ${person.signal ? `<p class="cg-cp-vera-watch"><b>Recent:</b> ${escapeHtml(person.signal)}</p>` : ""}
+        </div>
+      </article>
+
+      ${sharedSignals.length ? `
+      <article class="cg-cp-card">
+        <span class="cg-section-kicker">Shared with you</span>
+        <h2>Why Vera surfaced this connection</h2>
+        <ul class="cg-uni-requirements">
+          ${sharedSignals.map(signal => `<li class="ok">${icon("check-circle-2")}<div><p>${escapeHtml(signal)}</p></div></li>`).join("")}
+        </ul>
+      </article>
+      ` : ""}
+    </section>
+  `;
+  createIcons();
+  qs("[data-user-follow]", root)?.addEventListener("click", () => {
+    const next = readState();
+    next.followingUsers = Array.isArray(next.followingUsers) ? next.followingUsers : [];
+    const nowFollowing = next.followingUsers.includes(person.id);
+    next.followingUsers = nowFollowing ? next.followingUsers.filter(id => id !== person.id) : [...next.followingUsers, person.id];
+    writeState(next);
+    showToast(nowFollowing ? `Unfollowed ${person.name}.` : `Following ${person.name}.`);
+    renderUserProfile();
+  });
+  qs("[data-user-connect]", root)?.addEventListener("click", () => {
+    const next = readState();
+    next.connectionStatus = next.connectionStatus && typeof next.connectionStatus === "object" ? next.connectionStatus : {};
+    if (next.connectionStatus[person.id]) return;
+    next.connectionStatus[person.id] = "pending";
+    writeState(next);
+    showToast(`Connection request sent to ${person.name}.`);
+    renderUserProfile();
+  });
+}
 
 let recommendedRolesFilter = "all";
 
@@ -12211,6 +12398,8 @@ function renderPosts() {
     .join("")
     .toUpperCase();
   if (activeTab === "messages") {
+    const requestedPerson = new URLSearchParams(location.search).get("person");
+    if (requestedPerson && DATA.people.some(person => person.id === requestedPerson)) activePostsThread = requestedPerson;
     if (!activePostsThread || activePostsThread === "vera") activePostsThread = "aisha";
 
     const humanThreads = [
@@ -12247,6 +12436,12 @@ function renderPosts() {
         ]
       }
     ];
+    DATA.people.filter(person => !humanThreads.some(thread => thread.id === person.id)).forEach(person => {
+      humanThreads.push({
+        id: person.id, name: person.name, role: `${person.role}  - ${person.company || "CareerGo"}`, tag: person.tag,
+        preview: "Say hello to start the conversation.", time: "", unread: "", messages: []
+      });
+    });
     const humanThreadReplies = state.humanThreadReplies && typeof state.humanThreadReplies === "object" ? state.humanThreadReplies : {};
     humanThreads.forEach(thread => {
       const sent = Array.isArray(humanThreadReplies[thread.id]) ? humanThreadReplies[thread.id] : [];
@@ -12272,7 +12467,7 @@ function renderPosts() {
             <span>Warm - 3 replies this week</span>
           </header>
           <section class="cg-chat-thread" aria-label="Conversation with ${activeThread.name}">
-            ${activeThread.messages.map(msg => `<p class="${msg.dir}${msg.delivered ? " delivered" : ""}">${msg.text}${msg.delivered ? `<small>${icon("check-check")} Delivered</small>` : ""}</p>`).join("")}
+            ${activeThread.messages.length ? activeThread.messages.map(msg => `<p class="${msg.dir}${msg.delivered ? " delivered" : ""}">${msg.text}${msg.delivered ? `<small>${icon("check-check")} Delivered</small>` : ""}</p>`).join("") : `<p class="cg-inbox-empty">Say hello to start the conversation with ${activeThread.name}.</p>`}
             ${activeThread.veraSuggest ? `
               <article class="cg-vera-suggests">
                 <span><img src="assets/vera-ai-coach.png" alt="Vera"> Vera suggests</span>
@@ -12996,6 +13191,7 @@ function init() {
   renderDiscoverOrgDirectory();
   renderMarketPulsePage();
   renderCompanyProfile();
+  renderUserProfile();
   renderDashboard();
   renderRecommendedRoles();
   renderVera();
