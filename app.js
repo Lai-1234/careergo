@@ -472,6 +472,56 @@ const DATA = {
           id: "faq-work-life-balance", question: "How is the work-life balance?", source: "Employee Reviews",
           answer: "Reviews consistently describe balanced, standard hours, with a 4.0/5 work-life balance rating overall - though month-end periods in Finance can require some overtime."
         }
+      ],
+      // Powers the Executive Recommendations dashboard (its own tab,
+      // Company Profile page) - a prioritized action plan synthesizing
+      // signals from every other AI section on this page rather than
+      // standing alone: the salary-range and work-style actions match
+      // veraCompanyRead.recommendedActions exactly, the profile-gaps and
+      // compensation-band actions match healthDashboard's Transparency/
+      // Compensation suggestions, the review-response and autonomy actions
+      // match its Leadership/Career Growth suggestions, and the Resume
+      // Review action matches hiringTimeline's highest-drop-off stage.
+      // estimatedHiringSpeedImprovement is honestly "No impact" for actions
+      // that don't plausibly affect hiring days, rather than inventing a
+      // number for every field. timeWeeks is a sortable numeric value
+      // backing the estimatedTime display string (999 = ongoing/open-ended).
+      executiveRecommendations: [
+        {
+          id: "rec-salary-ranges", action: "Publish salary ranges for your open roles", priority: "high",
+          applicationIncrease: "+17%", hiringSpeedImprovement: "No impact", satisfactionIncrease: "+6%",
+          difficulty: "Easy", estimatedTime: "2 weeks", timeWeeks: 2, confidence: 92
+        },
+        {
+          id: "rec-resume-review", action: "Speed up Resume Review turnaround", priority: "high",
+          applicationIncrease: "+5%", hiringSpeedImprovement: "-4 days", satisfactionIncrease: "+9%",
+          difficulty: "Medium", estimatedTime: "1 month", timeWeeks: 4.3, confidence: 84
+        },
+        {
+          id: "rec-work-style", action: "Add team-level work style details to each role", priority: "medium",
+          applicationIncrease: "+9%", hiringSpeedImprovement: "No impact", satisfactionIncrease: "+4%",
+          difficulty: "Medium", estimatedTime: "3 weeks", timeWeeks: 3, confidence: 81
+        },
+        {
+          id: "rec-profile-gaps", action: "Resolve the 4 open profile gaps", priority: "medium",
+          applicationIncrease: "+8%", hiringSpeedImprovement: "No impact", satisfactionIncrease: "+5%",
+          difficulty: "Easy", estimatedTime: "2 weeks", timeWeeks: 2, confidence: 88
+        },
+        {
+          id: "rec-comp-bands", action: "Adjust Senior and Executive compensation bands toward market median", priority: "medium",
+          applicationIncrease: "+6%", hiringSpeedImprovement: "-2 days", satisfactionIncrease: "+5%",
+          difficulty: "Hard", estimatedTime: "1 quarter", timeWeeks: 13, confidence: 71
+        },
+        {
+          id: "rec-review-response", action: "Respond to a higher share of employee reviews", priority: "low",
+          applicationIncrease: "+4%", hiringSpeedImprovement: "No impact", satisfactionIncrease: "+7%",
+          difficulty: "Easy", estimatedTime: "Ongoing", timeWeeks: 999, confidence: 78
+        },
+        {
+          id: "rec-autonomy", action: "Pilot more autonomy for trainee and junior roles", priority: "low",
+          applicationIncrease: "+2%", hiringSpeedImprovement: "No impact", satisfactionIncrease: "+6%",
+          difficulty: "Medium", estimatedTime: "1 quarter", timeWeeks: 13, confidence: 68
+        }
       ]
     },
     {
@@ -14803,6 +14853,22 @@ const COMPARE_VERDICT_META = {
   needsImprovement: { label: "Needs Improvement", icon: "alert-circle" }
 };
 
+// Priority color convention here is the standard project-management one
+// (High = red/urgent, Medium = amber, Low = green) - the opposite polarity
+// from COMPARE_VERDICT_META's green=good, since "priority" measures
+// urgency, not performance.
+const RECOMMENDATION_PRIORITY_META = {
+  high: { label: "High Priority", order: 0 },
+  medium: { label: "Medium Priority", order: 1 },
+  low: { label: "Low Priority", order: 2 }
+};
+const RECOMMENDATION_SORT_OPTIONS = [
+  ["priority", "Priority"],
+  ["impact", "Highest Application Increase"],
+  ["confidence", "Highest Confidence"],
+  ["fastest", "Fastest to Implement"]
+];
+
 function renderEmployerCompany(root) {
   const company = DATA.companies.find(c => c.id === "maybank");
   let showAllRoles = false;
@@ -14833,6 +14899,7 @@ function renderEmployerCompany(root) {
   // FAQ: single-open accordion (null = none open), plus a live search query.
   let faqSearchQuery = "";
   let expandedFaqId = null;
+  let recommendationSort = "priority";
 
   function sortRoles(roles) {
     const sorted = roles.slice();
@@ -14893,6 +14960,14 @@ function renderEmployerCompany(root) {
     const q = faqSearchQuery.trim().toLowerCase();
     if (!q) return company.faqs;
     return company.faqs.filter(f => f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q));
+  }
+
+  function getSortedRecommendations() {
+    const list = company.executiveRecommendations.slice();
+    if (recommendationSort === "impact") return list.sort((a, b) => parseFloat(b.applicationIncrease) - parseFloat(a.applicationIncrease));
+    if (recommendationSort === "confidence") return list.sort((a, b) => b.confidence - a.confidence);
+    if (recommendationSort === "fastest") return list.sort((a, b) => a.timeWeeks - b.timeWeeks);
+    return list.sort((a, b) => RECOMMENDATION_PRIORITY_META[a.priority].order - RECOMMENDATION_PRIORITY_META[b.priority].order);
   }
 
   // Renders at stroke-dashoffset = full circumference (0% filled) with the
@@ -15093,6 +15168,7 @@ function renderEmployerCompany(root) {
     const reviewLocations = uniqueSorted(company.companyReviews.map(r => r.location));
     const funnelStages = getFunnelStages();
     const filteredFaqs = getFilteredFaqs();
+    const sortedRecommendations = getSortedRecommendations();
     const completeness = computeCompanyCompleteness(company);
 
     // The FAQ search input redraws on every keystroke (root.innerHTML is
@@ -15180,6 +15256,7 @@ function renderEmployerCompany(root) {
         <a href="#comp-health" data-jump="comp-health">Health Score</a>
         <a href="#comp-compare" data-jump="comp-compare">Compare</a>
         <a href="#comp-faq" data-jump="comp-faq">FAQ</a>
+        <a href="#comp-actions" data-jump="comp-actions">Actions</a>
       </div>
 
       <div class="card emp-company-section" id="comp-overview">
@@ -15711,6 +15788,54 @@ function renderEmployerCompany(root) {
           ` : ""}
         </div>
       </div>
+
+      <div class="card emp-company-section" id="comp-actions">
+        <div class="emp-company-section-head"><h2>Executive Recommendations</h2>${sourceTag("Vera Insight")}</div>
+        <p class="emp-company-section-desc">A prioritized action plan, synthesized from every signal above, with the estimated impact and effort behind each recommendation.</p>
+
+        <div class="emp-rec-sort-row">
+          <label class="emp-rec-sort-label">
+            Sort by
+            <select data-rec-sort>
+              ${RECOMMENDATION_SORT_OPTIONS.map(([key, label]) => `<option value="${key}" ${recommendationSort === key ? "selected" : ""}>${label}</option>`).join("")}
+            </select>
+          </label>
+        </div>
+
+        <div class="emp-rec-grid" data-rec-grid>
+          ${sortedRecommendations.map(r => {
+            const priority = RECOMMENDATION_PRIORITY_META[r.priority];
+            return `
+              <div class="emp-rec-card emp-rec-card--${r.priority}" data-rec-card="${r.id}">
+                <span class="emp-rec-priority-badge emp-rec-priority-badge--${r.priority}">${escapeHtml(priority.label)}</span>
+                <h3 class="emp-rec-action">${escapeHtml(r.action)}</h3>
+                <div class="emp-rec-metrics">
+                  <div class="emp-rec-metric">
+                    ${icon("trending-up")}
+                    <span class="emp-rec-metric-label">Application Increase</span>
+                    <strong class="emp-rec-metric-value">${escapeHtml(r.applicationIncrease)}</strong>
+                  </div>
+                  <div class="emp-rec-metric">
+                    ${icon("gauge")}
+                    <span class="emp-rec-metric-label">Hiring Speed</span>
+                    <strong class="emp-rec-metric-value">${escapeHtml(r.hiringSpeedImprovement)}</strong>
+                  </div>
+                  <div class="emp-rec-metric">
+                    ${icon("smile")}
+                    <span class="emp-rec-metric-label">Satisfaction Increase</span>
+                    <strong class="emp-rec-metric-value">${escapeHtml(r.satisfactionIncrease)}</strong>
+                  </div>
+                </div>
+                <div class="emp-rec-footer">
+                  <span>Difficulty <strong>${escapeHtml(r.difficulty)}</strong></span>
+                  <span>Time <strong>${escapeHtml(r.estimatedTime)}</strong></span>
+                  <span>Confidence <strong>${r.confidence}%</strong></span>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
     `;
     createIcons();
     bind();
@@ -15802,6 +15927,7 @@ function renderEmployerCompany(root) {
       expandedFaqId = expandedFaqId === id ? null : id; // strict accordion: opening one collapses any other
       draw();
     }));
+    qs("[data-rec-sort]", root)?.addEventListener("change", event => { recommendationSort = event.target.value; draw(); });
     qsa("[data-career-node]", root).forEach(btn => {
       const i = Number(btn.dataset.careerNode);
       btn.addEventListener("click", () => openCareerPathNodeModal(company.careerPath[i], i));

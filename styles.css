@@ -14254,6 +14254,62 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-app-shell.emp-app-shell .emp-faq-empty p { color: var(--emp-muted, var(--soft)) !important; }
 .emp-app-shell.emp-app-shell .emp-faq-answer .emp-callout-label { color: var(--emp-ai, #6f5fc4) !important; }
 
+/* Executive Recommendations (its own tab, Company Profile page). Priority
+   color convention is High=red/Medium=amber/Low=green (the standard
+   project-management polarity, opposite of the Compare tab's verdict
+   colors where green=good) - see RECOMMENDATION_PRIORITY_META in app.js. */
+.emp-rec-sort-row { margin: 14px 0 16px; }
+.emp-rec-sort-label { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; }
+.emp-rec-sort-label select {
+  padding: 7px 28px 7px 12px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line));
+  background-color: #fff; font-size: 12px; font-weight: 700; font-family: inherit;
+}
+.emp-rec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.emp-rec-card {
+  position: relative; padding: 18px; border-radius: 16px; background: #fff;
+  border: 1px solid var(--emp-line, var(--line)); border-top: 4px solid transparent;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+.emp-rec-card:hover { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06); }
+.emp-rec-card--high { border-top-color: #dc2626; }
+.emp-rec-card--medium { border-top-color: #d97706; }
+.emp-rec-card--low { border-top-color: var(--emp-green, #07382f); }
+.emp-rec-priority-badge {
+  display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; white-space: nowrap;
+}
+.emp-rec-priority-badge--high { background: rgba(220, 38, 38, 0.1); }
+.emp-rec-priority-badge--medium { background: rgba(217, 119, 6, 0.12); }
+.emp-rec-priority-badge--low { background: rgba(7, 56, 47, 0.1); }
+.emp-rec-action { margin: 10px 0 16px; font-size: 15px; line-height: 1.35; }
+.emp-rec-metrics { display: flex; flex-direction: column; gap: 10px; padding: 14px 0; border-top: 1px solid var(--emp-line, var(--line)); border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-rec-metric { display: flex; align-items: center; gap: 8px; }
+.emp-rec-metric svg { flex-shrink: 0; width: 14px; height: 14px; }
+.emp-rec-metric-label { flex: 1 1 auto; font-size: 12px; font-weight: 600; }
+.emp-rec-metric-value { flex-shrink: 0; font-size: 13px; font-weight: 800; }
+.emp-rec-footer { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 14px; font-size: 11px; font-weight: 600; }
+.emp-rec-footer strong { display: block; margin-top: 1px; font-size: 13px; font-weight: 800; }
+
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped color cascade fixed elsewhere in this file, applied
+   proactively to every bare/colored text element this dashboard adds. */
+.emp-app-shell.emp-app-shell .emp-rec-action,
+.emp-app-shell.emp-app-shell .emp-rec-metric-value,
+.emp-app-shell.emp-app-shell .emp-rec-footer strong { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-rec-metric-label,
+.emp-app-shell.emp-app-shell .emp-rec-metric svg,
+.emp-app-shell.emp-app-shell .emp-rec-footer { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-rec-priority-badge--high { color: #dc2626 !important; }
+.emp-app-shell.emp-app-shell .emp-rec-priority-badge--medium { color: #92400e !important; }
+.emp-app-shell.emp-app-shell .emp-rec-priority-badge--low { color: var(--emp-green, #07382f) !important; }
+
+@media (max-width: 900px) {
+  .emp-rec-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .emp-rec-grid { grid-template-columns: 1fr; }
+}
+
 .emp-company-subsection { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .emp-company-subsection:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .emp-kpi-trend { display: block; margin-top: 2px; font-size: 10px; color: var(--soft); }
