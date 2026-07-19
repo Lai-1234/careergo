@@ -534,7 +534,7 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-count
 
 body:is([data-page="companies"], [data-page="universities"]) .cg-directory-grid {
   display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: 12px !important;
 }
 
@@ -555,22 +555,22 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-
 
 body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-head {
   display: grid !important;
-  grid-template-columns: 86px minmax(0, 1fr) !important;
-  gap: 20px !important;
+  grid-template-columns: 64px minmax(0, 1fr) !important;
+  gap: 16px !important;
   align-items: center !important;
 }
 
 body:is([data-page="companies"], [data-page="universities"]) .cg-directory-logo {
   display: grid !important;
   place-items: center !important;
-  width: 86px !important;
-  height: 86px !important;
-  border-radius: 24px !important;
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 20px !important;
   background: linear-gradient(145deg, #087a68, #0b3444) !important;
   color: #fffaf2 !important;
   -webkit-text-fill-color: #fffaf2 !important;
   font-family: var(--cg-shot-serif, Georgia, serif) !important;
-  font-size: 36px !important;
+  font-size: 27px !important;
   font-weight: 600 !important;
   box-shadow: 0 3px 6px rgba(7, 56, 47, 0.16) !important;
 }
@@ -600,9 +600,9 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-
   color: var(--dir-ink) !important;
   -webkit-text-fill-color: var(--dir-ink) !important;
   font-family: var(--cg-shot-serif, Georgia, serif) !important;
-  font-size: 27px !important;
+  font-size: 22px !important;
   font-weight: 600 !important;
-  line-height: 1.05 !important;
+  line-height: 1.1 !important;
 }
 
 body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-head h2 svg {
@@ -712,7 +712,7 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-empty
 
 @media (max-width: 1100px) {
   body:is([data-page="companies"], [data-page="universities"]) .cg-directory-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
@@ -728,19 +728,8 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-empty
     width: 100% !important;
   }
 
-  body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-head {
-    grid-template-columns: 64px minmax(0, 1fr) !important;
-  }
-
-  body:is([data-page="companies"], [data-page="universities"]) .cg-directory-logo {
-    width: 64px !important;
-    height: 64px !important;
-    border-radius: 20px !important;
-    font-size: 27px !important;
-  }
-
-  body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-head h2 {
-    font-size: 23px !important;
+  body:is([data-page="companies"], [data-page="universities"]) .cg-directory-grid {
+    grid-template-columns: 1fr !important;
   }
 }
 

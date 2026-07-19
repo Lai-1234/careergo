@@ -303,7 +303,7 @@ const DATA = {
     { role: "UX Research Specialist", probability: 76, salary: "RM 86k - 118k", timeline: "6-12 months", risk: "Lower salary ceiling than product path" }
   ],
   missions: [
-    { id: "m1", title: "Compare 3 organizations", body: "Review culture, pay, growth, and watchouts before applying.", xp: 120, progress: 66, href: "companies.html" },
+    { id: "m1", title: "Compare 3 organizations", body: "Review culture, pay, growth, and watchouts before applying.", xp: 120, progress: 66, href: "discover-companies.html" },
     { id: "m2", title: "Upgrade one case study", body: "Add trade-offs, metric impact, and stakeholder decisions.", xp: 180, progress: 35, href: "grow.html" },
     { id: "m3", title: "Practice interview story", body: "Record one STAR answer for ambiguity and feedback.", xp: 90, progress: 20, href: "grow.html#interview-coach" }
   ],
@@ -1172,7 +1172,7 @@ function starterMissions(profile) {
       id: "tour-research",
       title: "Research an organization",
       body: "Check ratings, background, salary or outcome signals, and review themes before deciding.",
-      href: "companies.html",
+      href: "discover-companies.html",
       icon: "building-2"
     },
     {
@@ -2415,9 +2415,9 @@ function renderNavigation() {
       const destination = state.session.role === "employer"
         ? "employer-app.html"
         : lower.includes("university") || lower.includes("college") || lower.includes("degree") || lower.includes("scholarship")
-        ? "universities.html"
+        ? "discover-universities.html"
         : lower.includes("company") || lower.includes("culture") || lower.includes("review") || lower.includes("maybank") || lower.includes("grab") || lower.includes("cimb")
-          ? "companies.html"
+          ? "discover-companies.html"
           : "discover.html";
       location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#candidates` : `${destination}?q=${encodeURIComponent(q)}`;
     });
@@ -5024,6 +5024,8 @@ function renderSearchPanelContent(query, scope, state) {
   if (!q) return "";
   const results = scope === "workspace" ? searchWorkspaceCatalog(q, state) : searchPublicCatalog(q);
   const jobHref = job => scope === "workspace" ? `discover.html?job=${encodeURIComponent(job.id)}` : `explore.html#featured-opportunities`;
+  const companyHref = org => scope === "workspace" ? `discover-companies.html?q=${encodeURIComponent(org.name)}` : `companies.html?q=${encodeURIComponent(org.name)}`;
+  const universityHref = org => scope === "workspace" ? `discover-universities.html?q=${encodeURIComponent(org.name)}` : `universities.html?q=${encodeURIComponent(org.name)}`;
   const groups = [];
 
   if (scope === "workspace" && results.sections.length) {
@@ -5035,7 +5037,7 @@ function renderSearchPanelContent(query, scope, state) {
   if (results.companies.length) {
     groups.push({
       title: "Companies",
-      items: results.companies.map(org => ({ href: `companies.html?q=${encodeURIComponent(org.name)}`, title: org.name, meta: `${org.industry} - ${org.location}`, icon: "building-2" }))
+      items: results.companies.map(org => ({ href: companyHref(org), title: org.name, meta: `${org.industry} - ${org.location}`, icon: "building-2" }))
     });
   }
   if (results.jobs.length) {
@@ -5047,7 +5049,7 @@ function renderSearchPanelContent(query, scope, state) {
   if (results.universities.length) {
     groups.push({
       title: "Universities",
-      items: results.universities.map(org => ({ href: `universities.html?q=${encodeURIComponent(org.name)}`, title: org.name, meta: `${org.industry} - ${org.location}`, icon: "graduation-cap" }))
+      items: results.universities.map(org => ({ href: universityHref(org), title: org.name, meta: `${org.industry} - ${org.location}`, icon: "graduation-cap" }))
     });
   }
   if (scope === "workspace") {
@@ -5488,6 +5490,7 @@ function renderDiscoverOrgDirectory() {
   const filterControls = qsa("[data-org-directory-filter]", root);
   const chipButtons = qsa("[data-org-chip]", root);
   const sortLabels = { top: "top rated", open: isCompanies ? "most openings" : "most programmes", reviews: "most signals" };
+  if (searchInput) searchInput.value = new URLSearchParams(location.search).get("q") || "";
 
   function syncFilterOptions() {
     const industrySelect = qs('[data-org-directory-filter="industry"]', root);
@@ -6623,7 +6626,7 @@ function renderDashboard() {
     ["Career Simulation", "See where your career could be in 5 years", "compass", "grow.html"],
     ["Fair Pay", "Your market value increased 6% this month", "chart-line", "market.html"],
     ["Career Planning", "Continue your 3-year roadmap", "target", "market.html#roadmap"],
-    ["Company Research", `${savedOrgs.length || 12} new insights on companies you follow`, "building-2", "companies.html"]
+    ["Company Research", `${savedOrgs.length || 12} new insights on companies you follow`, "building-2", "discover-companies.html"]
   ];
   root.innerHTML = appShell("dashboard", `
     <section class="cg-dashboard">
@@ -10074,7 +10077,7 @@ function renderSavedItems() {
     </section>
     <section class="saved-items-stack">
       <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved jobs</div><h2 class="section-title mini">${savedJobs.length} roles</h2></div><a class="btn btn-ghost" href="discover.html">${icon("briefcase")} Jobs</a></div><div class="list-stack">${savedJobs.map(job => `<a class="list-card quiet" href="discover.html?job=${job.id}"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div></a>`).join("") || `<p class="muted">No saved jobs yet.</p>`}</div></article>
-      <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved research</div><h2 class="section-title mini">${savedOrgs.length} organizations</h2></div><a class="btn btn-ghost" href="companies.html">${icon("search")} Research</a></div><div class="list-stack">${savedOrgs.map(org => `<a class="list-card quiet" href="${org.type === "University" ? "universities.html" : "companies.html"}?org=${org.id}"><div class="list-card-top"><div><h3>${org.name}</h3><div class="muted small">${org.signal}</div></div>${rating(org.rating)}</div></a>`).join("") || `<p class="muted">No saved companies or universities yet.</p>`}</div></article>
+      <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved research</div><h2 class="section-title mini">${savedOrgs.length} organizations</h2></div><a class="btn btn-ghost" href="discover-companies.html">${icon("search")} Research</a></div><div class="list-stack">${savedOrgs.map(org => `<a class="list-card quiet" href="${org.type === "University" ? "discover-universities.html" : "discover-companies.html"}?org=${org.id}"><div class="list-card-top"><div><h3>${org.name}</h3><div class="muted small">${org.signal}</div></div>${rating(org.rating)}</div></a>`).join("") || `<p class="muted">No saved companies or universities yet.</p>`}</div></article>
     </section>
     <section class="glass-card"><div class="section-kicker">Saved posts</div><div class="grid-3">${DATA.communityPosts.slice(0, 3).map(post => `<article class="tool-card"><h3>${post.title}</h3><p>${post.body}</p><span class="pill gold">${post.reactions} reactions</span></article>`).join("")}</div></section>
   `, { title: "Saved Items", subtitle: "Saved jobs, companies, universities, and posts in one place." });
