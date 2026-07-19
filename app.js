@@ -5590,18 +5590,28 @@ function renderDiscoverOrgDirectory() {
       <article class="cg-featured-org-card" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} reviews and details">
         <header><span>${org.name.charAt(0)}</span><div><h3>${org.name}</h3><p>${org.industry} - ${org.location}</p></div></header>
         <p class="cg-featured-org-meta">${icon("star")} ${Number(org.rating).toFixed(1)} &middot; ${org.reviews} reviews &middot; ${org.following}</p>
+        <p class="cg-featured-org-meta">${icon("trending-up")} ${orgHiringPct(org)}% hiring</p>
         <p class="cg-featured-org-summary">${org.summary}</p>
-        <div class="cg-featured-org-tags">${(org.tags || []).slice(0, 3).map(tag => `<b>${tag}</b>`).join("")}<b>${org.open} open role${org.open === 1 ? "" : "s"}</b></div>
-        <footer>${icon("sparkles")} ${org.signal}</footer>
+        ${org.scores ? `<p class="cg-featured-org-scores">Culture ${org.scores.culture.toFixed(1)} &middot; Growth ${org.scores.growth.toFixed(1)} &middot; Pay ${org.scores.pay.toFixed(1)} &middot; Balance ${org.scores.balance.toFixed(1)}</p>` : ""}
+        <div class="cg-featured-org-tags">${(org.tags || []).slice(0, 3).map(tag => `<b>${tag}</b>`).join("")}<b>${icon("zap")} ${orgGrowingTag(org)}</b><b>${org.open} open role${org.open === 1 ? "" : "s"}</b></div>
+        <footer>
+          <p>${icon("sparkles")} ${org.signal}</p>
+          ${org.watchouts?.length ? `<p class="cg-featured-org-watch">${icon("alert-triangle")} <b>Watch:</b> ${org.watchouts[0]}</p>` : ""}
+        </footer>
         <button type="button" class="btn btn-primary btn-wide" data-org-cta="${org.id}">View company ${icon("arrow-right")}</button>
       </article>
     ` : `
       <article class="cg-featured-org-card university" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} details">
         <header><span>${icon("graduation-cap")}</span><div><h3>${org.name}</h3><p>${icon("map-pin")} ${org.location}</p></div></header>
         <p class="cg-featured-org-meta">${icon("star")} ${Number(org.rating).toFixed(1)} &middot; ${org.reviews} reviews &middot; ${org.following}</p>
+        <p class="cg-featured-org-meta">${icon("trending-up")} ${orgHiringPct(org)}% hiring</p>
         <p class="cg-featured-org-summary">${org.summary}</p>
+        ${org.scores ? `<p class="cg-featured-org-scores">Culture ${org.scores.culture.toFixed(1)} &middot; Growth ${org.scores.growth.toFixed(1)} &middot; Pay ${org.scores.pay.toFixed(1)} &middot; Balance ${org.scores.balance.toFixed(1)}</p>` : ""}
         <div class="cg-featured-org-tags">${(org.tags || []).slice(0, 3).map(tag => `<b>${tag}</b>`).join("")}<b>${org.salary}</b></div>
-        <footer>${icon("sparkles")} ${org.signal}</footer>
+        <footer>
+          <p>${icon("sparkles")} ${org.signal}</p>
+          ${org.watchouts?.length ? `<p class="cg-featured-org-watch">${icon("alert-triangle")} <b>Watch:</b> ${org.watchouts[0]}</p>` : ""}
+        </footer>
         ${universityRequirementsPanel(org, state.profile)}
         <button type="button" class="btn btn-primary btn-wide" data-org-cta="${org.id}">View university ${icon("arrow-right")}</button>
       </article>

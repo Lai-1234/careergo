@@ -5195,6 +5195,43 @@ html body[data-page="discover"] .cg-featured-org-card .cg-featured-org-tags {
   gap: 6px !important;
 }
 
+html body[data-page="discover"] .cg-featured-org-card .cg-featured-org-scores {
+  margin: 0 !important;
+  color: #5d6f68 !important;
+  -webkit-text-fill-color: #5d6f68 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+html body[data-page="discover"] .cg-featured-org-card footer p {
+  margin: 0 !important;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+}
+
+html body[data-page="discover"] .cg-featured-org-card footer p + p {
+  margin-top: 6px !important;
+}
+
+html body[data-page="discover"] .cg-featured-org-card .cg-featured-org-watch {
+  color: #8a6416 !important;
+  -webkit-text-fill-color: #8a6416 !important;
+}
+
+html body[data-page="discover"] .cg-featured-org-card .cg-featured-org-watch b {
+  display: inline !important;
+  width: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  font-size: inherit !important;
+  font-weight: 600 !important;
+}
+
 html body[data-page="discover"] .cg-discover-v2 .cg-direction-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
 }
