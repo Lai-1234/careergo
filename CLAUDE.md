@@ -31,6 +31,7 @@ Primary files:
 - Public marketing pages: `index.html`, `explore.html`, `companies.html`, `universities.html`, `community.html`, `login.html`, `register.html`
 - Logged-in workspace pages: `dashboard.html`, `discover.html`, `grow.html`, `market.html`, `autopilot.html`, `posts.html`, `profile.html`, `settings.html`, `saved.html`, `edit-career-data.html`, `vera.html`
 - Discover sub-pages (logged-in only, `data-page="discover"`): `discover-companies.html`, `discover-universities.html` — full "browse all" grids opened from the "More Companies" / "More Universities" links on `discover.html`. Distinct from the public `companies.html`/`universities.html` directory pages; do not merge them.
+- Detail/drill-down pages (all `data-page="discover"`, all follow the `?id=`/`?org=`/`?role=` query-param convention rather than one static file per record): `company-profile.html` (`?org=` — renders both company AND university profiles, branching on `org.type`), `user-profile.html` (`?id=`, another person's profile — see "People / social" below), `job-detail.html` (`?role=`, Autopilot-matched roles only), `market-pulse.html` (no param — full Market Pulse list), `growth-move.html` (`?id=`, a single Growth "Recommended Growth" move's practice/course/essay content — see "Growth moves" below)
 - Shared public/user styling: `enterprise.css`
 - Directory browser styling: `directory-final.css`
 - Feed styling: `feed-final.css`
@@ -314,6 +315,49 @@ Profile work should follow the user page design system:
 `profile.html` is the public/user profile surface.
 `edit-career-data.html` is for editing account, education, skills, goals, preferences, documents, privacy, and Vera settings.
 `settings.html` is for application/account settings.
+
+## Feature Notes (so this can be picked up cold)
+
+These are the major features layered on since the base spec above was written. Each one reused existing patterns/state conventions rather than inventing new ones — check the referenced function/constant in `app.js` before changing behavior in these areas.
+
+### Market Pulse (`discover.html` → `market-pulse.html`)
+- `MARKET_PULSE_CATEGORIES` / `MARKET_TONE_RAMP` (top-level constants in `app.js`) hold 8 market segments. `discover.html`'s "Market Pulse" preview slices the first 4; `market-pulse.html` (`renderMarketPulsePage()`) shows all 8 with filter/sort.
+
+### Coach Vera vs. human Messages (topbar chat-bubble icon)
+- The chat-bubble icon does **not** open Coach Vera directly. It opens a small picker (`bindChatMenu()`, `data-chat-menu-toggle` / `data-chat-menu`) with two entries: **Coach Vera** (`openVeraPanel()`, unchanged) and **Messages** (navigates to `posts.html#messages`).
+- Existing "Ask Vera" links (`a[href*='posts.html?topic=']`) are unaffected — they're still caught by the global click interceptor in `bindGlobalActions()` and open the Vera panel directly, bypassing the picker.
+- These are two genuinely separate systems — don't conflate them: Coach Vera's AI conversations live in `state.veraConversations` (sidebar built by `veraVisibleConversations()`); the human Inbox lives at `posts.html#messages` (`humanThreads`, replies in `state.humanThreadReplies`).
+
+### People search, profiles, and social actions
+- `DATA.people` is the seeded people directory (8 entries) — built from names already referenced elsewhere (Inbox contacts + Discover's "Mentors" list), not invented.
+- `searchWorkspaceCatalog()` / `renderSearchPanelContent()` have a "People" result group (workspace search only, not the public/guest search). `attachLiveSearch()` takes an optional third `buildDefaultHtml` arg — when the search box is focused but empty, it shows "Recommended for you" / "Recent searches" (`renderSearchDefaultContent()`, `recordPeopleSearchHistory()`, history in `state.peopleSearchHistory`).
+- `user-profile.html?id=<personId>` (`renderUserProfile()`): Follow (`state.followingUsers`), Add Friend (`state.connectionStatus`), Message (navigates to `posts.html?person=<id>#messages`).
+- `renderPosts()`'s `humanThreads` is generated from `DATA.people` (any person without a scripted conversation gets a stub empty thread that becomes real once a message is sent) — it is not a fixed 4-person array anymore.
+
+### Growth: real Practice/Course/Essay content
+- `GROWTH_MOVES` (top-level constant) replaces the old display-only tuples behind Grow's "Recommended Growth" cards with real per-kind content (Practice = SQL questions, Course = modules, Essay pack = draft/publish flow).
+- `growth-move.html?id=<moveId>` (`renderGrowthMovePage()`) tracks progress in `state.growMoveProgress` and completion in `state.growMovesCompleted`. Completing a move applies a real stat bump (`growMoveCompletionBonus()`) to Grow's readiness/matching-jobs/pay numbers and skill-graph rows, computed from that move's own already-stated metric deltas (no separate invented scoring model).
+
+### Per-page guided tours
+- The dashboard's original 7-step tour (`DASHBOARD_TOUR_STEPS`, untouched) now has siblings on Discover/Grow/Career Value/Pipeline/Feed via a second, generic engine: `TOUR_STEPS` (keyed by page), `getTourState()` / `saveTourState()` / `showTourStep()` / `initPageTour(pageKey)`. `state.guidedTour` has one key per page (`dashboard`, `discover`, `grow`, `market`, `autopilot`, `posts`).
+- All visual styling (`.tour-card`, `.tour-backdrop`, `.tour-highlight`, `.tour-progress`, `.tour-dots`, `.tour-mission`) lives in `styles.css`, unscoped by page — no new CSS was needed to extend the tour to more pages.
+
+### Autopilot Auto-Apply
+- The Action Mode rule card's existing "Auto-apply" option (`autopilotRules.actionMode === "autoapply"`) is the real toggle — no separate on/off switch. New rule fields: `autoApplyThreshold` (default 85% match) and `autoApplyCap` (default 3/week).
+- `runAutoApply()` decides eligibility via `autopilotAutoApplyEligibility()` and applies **once per page load** — see the "run-once guard" quirk below for why. Applied roles are tagged `applicationRecords[id].viaAutopilot = true`, logged to the existing Activity Log with an **Undo** button, and pushed to `state.notifications`.
+- Undoing an auto-applied role adds it to `state.autopilotAutoApplyExcluded` so it isn't immediately re-applied to backfill the freed weekly-cap slot.
+- `getTrackedJobs()` also resolves `AUTOPILOT_MATCHES` ids (via `autopilotMatchAsJob()`), so auto-applied roles surface through Dashboard/Pipeline like any other tracked application.
+
+### University profile enrichment
+- `company-profile.html` (which renders both company and university profiles) has a working back button (was hardcoded to "Companies" regardless of org type) and 5 university-only sections — Faculties, Graduate Outcomes, Entry Requirements, Campus, Alumni. Each is gated on the underlying data actually existing (e.g. Entry Requirements only renders for the universities that carry a `.requirements` object) — don't assume every university has every section.
+
+## Known Codebase Quirks
+
+### "Dead code after an early `return`" — a recurring trap
+`renderMarket()`, `renderGrow()`, and `renderAutopilot()` each contain a large block of **orphaned, unreachable legacy code** sitting after an early `return;` inside their `if (state.session.loggedIn) { ... }` block — leftovers from an earlier redesign that were never deleted. Anything appended *after* that `return` silently never runs (no error, no warning — it just never executes). This exact mistake was made and caught 3 separate times in one session (a scroll-into-view call, a tour-init call, an Auto-Apply hook). **Before adding a call to the end of one of these render functions**, grep the function body for `return;` and confirm what follows isn't a second, near-duplicate implementation — put your new code before the real `return`, not after it.
+
+### Cache-busting
+Every HTML file loads `app.js` and `enterprise.css` with a `?v=YYYYMMDDHHmm` query string. After any edit to either file, bump this timestamp across **every** workspace HTML file in one pass before testing in a browser — a stale query string means the browser serves the cached old file and edits will appear not to have worked.
 
 ## Implementation Guidance
 
