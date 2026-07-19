@@ -431,7 +431,48 @@ const DATA = {
             explanation: "A structured graduate program, strong trainee review ratings, and a clear entry-level career ladder make you a standout choice for new graduates, well ahead of both benchmarks."
           }
         ]
-      }
+      },
+      // Powers the AI-Generated FAQ (its own tab, Company Profile page).
+      // source names which signal the question was generated from -
+      // distributed across all 3 requested categories rather than
+      // clustering on one. Every answer draws on a real field elsewhere in
+      // this company's data (hiringTimeline, salaryBenefits,
+      // salaryComparison, careerGrowth, workCulture, companyReviews)
+      // instead of inventing disconnected claims.
+      faqs: [
+        {
+          id: "faq-interview-length", question: "How long does the interview process take?", source: "Applications",
+          answer: "Most candidates go through 6 stages - Application, Resume Review, Assessment, HR Interview, Hiring Manager, and Offer - completing the full process in about 2-4 weeks."
+        },
+        {
+          id: "faq-remote-work", question: "Can I work remotely?", source: "Searches",
+          answer: "Most roles are Onsite or Hybrid. Maybank runs a structured, in-office-first schedule with hybrid flexibility for eligible roles rather than fully remote positions."
+        },
+        {
+          id: "faq-promotion", question: "What are the promotion opportunities like?", source: "Employee Reviews",
+          answer: "Promotion follows a clear, grade-based ladder from Graduate Trainee through to Senior Manager. Reviews describe it as structured and fair, though a few note that cycles can run longer at senior levels."
+        },
+        {
+          id: "faq-dress-code", question: "Is there a dress code?", source: "Searches",
+          answer: "Business formal is expected for customer-facing and Head Office roles, with smart casual on Fridays for most teams."
+        },
+        {
+          id: "faq-benefits", question: "What benefits are offered?", source: "Applications",
+          answer: "Benefits include comprehensive medical coverage, an annual performance bonus, hybrid work for eligible roles, structured training, and standard leave plus study leave for professional certifications."
+        },
+        {
+          id: "faq-grad-salary", question: "What is the starting salary for fresh graduates?", source: "Searches",
+          answer: "Fresh graduate roles typically start around RM3.2k-4.5k per month, close to the industry average for entry-level banking positions."
+        },
+        {
+          id: "faq-bonus", question: "Do employees get bonuses?", source: "Employee Reviews",
+          answer: "Yes - Maybank offers an annual performance bonus, and several employee reviews mention it as a competitive part of total compensation."
+        },
+        {
+          id: "faq-work-life-balance", question: "How is the work-life balance?", source: "Employee Reviews",
+          answer: "Reviews consistently describe balanced, standard hours, with a 4.0/5 work-life balance rating overall - though month-end periods in Finance can require some overtime."
+        }
+      ]
     },
     {
       id: "grab",
@@ -14789,6 +14830,9 @@ function renderEmployerCompany(root) {
   let funnelCustomFrom = "";
   let funnelCustomTo = "";
   let expandedHealthScores = new Set();
+  // FAQ: single-open accordion (null = none open), plus a live search query.
+  let faqSearchQuery = "";
+  let expandedFaqId = null;
 
   function sortRoles(roles) {
     const sorted = roles.slice();
@@ -14843,6 +14887,12 @@ function renderEmployerCompany(root) {
   function funnelConversionPercent(stages, i) {
     if (i === 0) return null;
     return Math.round((stages[i].value / stages[i - 1].value) * 1000) / 10;
+  }
+
+  function getFilteredFaqs() {
+    const q = faqSearchQuery.trim().toLowerCase();
+    if (!q) return company.faqs;
+    return company.faqs.filter(f => f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q));
   }
 
   // Renders at stroke-dashoffset = full circumference (0% filled) with the
@@ -15042,7 +15092,16 @@ function renderEmployerCompany(root) {
     const reviewCountries = uniqueSorted(company.companyReviews.map(r => r.country));
     const reviewLocations = uniqueSorted(company.companyReviews.map(r => r.location));
     const funnelStages = getFunnelStages();
+    const filteredFaqs = getFilteredFaqs();
     const completeness = computeCompanyCompleteness(company);
+
+    // The FAQ search input redraws on every keystroke (root.innerHTML is
+    // replaced wholesale), which would otherwise drop focus and reset the
+    // cursor to the end after each character - capture both before the
+    // replace and restore them on the fresh input node afterward.
+    const faqSearchEl = qs("[data-faq-search]", root);
+    const faqSearchHadFocus = document.activeElement === faqSearchEl;
+    const faqSearchSelection = faqSearchHadFocus ? [faqSearchEl.selectionStart, faqSearchEl.selectionEnd] : null;
 
     root.innerHTML = `
       <div class="emp-view-header">
@@ -15120,6 +15179,7 @@ function renderEmployerCompany(root) {
         <a href="#comp-insights" data-jump="comp-insights">Insights</a>
         <a href="#comp-health" data-jump="comp-health">Health Score</a>
         <a href="#comp-compare" data-jump="comp-compare">Compare</a>
+        <a href="#comp-faq" data-jump="comp-faq">FAQ</a>
       </div>
 
       <div class="card emp-company-section" id="comp-overview">
@@ -15614,9 +15674,53 @@ function renderEmployerCompany(root) {
           }).join("")}
         </div>
       </div>
+
+      <div class="card emp-company-section" id="comp-faq">
+        <div class="emp-company-section-head"><h2>AI-Generated FAQ</h2>${sourceTag("Vera Insight")}</div>
+        <p class="emp-company-section-desc">Vera answers the questions candidates ask most, generated from employee reviews, applications, and search activity.</p>
+
+        <div class="emp-faq-search">
+          ${icon("search")}
+          <input type="text" placeholder="Search questions..." value="${escapeHtml(faqSearchQuery)}" data-faq-search>
+          ${faqSearchQuery ? `<button type="button" class="emp-faq-search-clear" data-faq-search-clear aria-label="Clear search">${icon("x")}</button>` : ""}
+        </div>
+        <p class="emp-empty-hint">${filteredFaqs.length} of ${company.faqs.length} questions${faqSearchQuery ? ` match "${escapeHtml(faqSearchQuery)}"` : ""}</p>
+
+        <div class="emp-faq-list">
+          ${filteredFaqs.map(f => {
+            const expanded = expandedFaqId === f.id;
+            return `
+              <div class="emp-faq-item ${expanded ? "is-expanded" : ""}">
+                <button type="button" class="emp-faq-question" data-faq-toggle="${f.id}" aria-expanded="${expanded}">
+                  <span class="emp-faq-question-text">${escapeHtml(f.question)}</span>
+                  ${sourceTag(f.source)}
+                  <span class="emp-faq-chevron">${icon(expanded ? "chevron-up" : "chevron-down")}</span>
+                </button>
+                <div class="emp-faq-answer" ${expanded ? "" : "hidden"}>
+                  <div class="emp-callout-label">${icon("sparkles")} Answered by Vera</div>
+                  <p>${escapeHtml(f.answer)}</p>
+                </div>
+              </div>
+            `;
+          }).join("")}
+          ${filteredFaqs.length === 0 ? `
+            <div class="emp-faq-empty">
+              ${icon("search-x")}
+              <p>No questions match "${escapeHtml(faqSearchQuery)}".</p>
+            </div>
+          ` : ""}
+        </div>
+      </div>
     `;
     createIcons();
     bind();
+    if (faqSearchHadFocus) {
+      const newFaqSearchEl = qs("[data-faq-search]", root);
+      if (newFaqSearchEl) {
+        newFaqSearchEl.focus();
+        if (faqSearchSelection) newFaqSearchEl.setSelectionRange(faqSearchSelection[0], faqSearchSelection[1]);
+      }
+    }
   }
 
   function bind() {
@@ -15691,6 +15795,13 @@ function renderEmployerCompany(root) {
       draw();
     }));
     animateHealthRings();
+    qs("[data-faq-search]", root)?.addEventListener("input", event => { faqSearchQuery = event.target.value; draw(); });
+    qs("[data-faq-search-clear]", root)?.addEventListener("click", () => { faqSearchQuery = ""; draw(); });
+    qsa("[data-faq-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.faqToggle;
+      expandedFaqId = expandedFaqId === id ? null : id; // strict accordion: opening one collapses any other
+      draw();
+    }));
     qsa("[data-career-node]", root).forEach(btn => {
       const i = Number(btn.dataset.careerNode);
       btn.addEventListener("click", () => openCareerPathNodeModal(company.careerPath[i], i));

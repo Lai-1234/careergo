@@ -14207,6 +14207,53 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-compare-value::before { content: attr(data-label) ": "; font-weight: 800; text-transform: uppercase; font-size: 10px; letter-spacing: 0.03em; }
 }
 
+/* AI-Generated FAQ (its own tab, Company Profile page). Reuses the page's
+   existing sourceTag()/.emp-source-tag badge for the per-question source
+   attribution instead of a bespoke class, and .emp-callout-label for the
+   "Answered by Vera" label - both already established and color-cascade-
+   safe elsewhere on this page. */
+.emp-faq-search {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px; margin: 14px 0 16px;
+  border-radius: 12px; border: 1px solid var(--emp-line, var(--line)); background: #fff;
+}
+.emp-faq-search svg { flex-shrink: 0; width: 16px; height: 16px; }
+.emp-faq-search input {
+  flex: 1 1 auto; min-width: 0; border: none; outline: none; background: none;
+  font-family: inherit; font-size: 13px; font-weight: 600;
+}
+.emp-faq-search-clear {
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 999px; border: none; background: rgba(7, 56, 47, 0.08); cursor: pointer;
+}
+.emp-faq-search-clear svg { width: 12px; height: 12px; }
+
+.emp-faq-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.emp-faq-item { border-radius: 14px; border: 1px solid var(--emp-line, var(--line)); background: #fff; overflow: hidden; }
+.emp-faq-question {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px 18px; border: none;
+  background: none; cursor: pointer; font: inherit; text-align: left;
+}
+.emp-faq-question-text { flex: 1 1 auto; min-width: 0; font-size: 13px; font-weight: 800; }
+.emp-faq-chevron { flex-shrink: 0; transition: transform 200ms ease; }
+.emp-faq-chevron svg { width: 15px; height: 15px; }
+.emp-faq-item.is-expanded .emp-faq-chevron { transform: rotate(180deg); }
+.emp-faq-answer { padding: 0 18px 18px; }
+.emp-faq-answer[hidden] { display: none !important; }
+.emp-faq-answer .emp-callout-label { margin-bottom: 6px; }
+.emp-faq-answer p { margin: 0; font-size: 13px; line-height: 1.6; }
+.emp-faq-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 40px 20px; text-align: center; }
+.emp-faq-empty svg { width: 26px; height: 26px; }
+.emp-faq-empty p { margin: 0; font-size: 13px; }
+
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped color cascade fixed elsewhere in this file, applied
+   proactively to every bare/colored text element this section adds. */
+.emp-app-shell.emp-app-shell .emp-faq-question-text,
+.emp-app-shell.emp-app-shell .emp-faq-answer p { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-faq-chevron,
+.emp-app-shell.emp-app-shell .emp-faq-empty p { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-faq-answer .emp-callout-label { color: var(--emp-ai, #6f5fc4) !important; }
+
 .emp-company-subsection { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .emp-company-subsection:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .emp-kpi-trend { display: block; margin-top: 2px; font-size: 10px; color: var(--soft); }
