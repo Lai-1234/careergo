@@ -3558,25 +3558,18 @@ function initGlobalInteractionAnimations() {
     "button[data-market-role]"
   ].join(",");
 
+  // Click feedback is intentionally limited to this: a fast, subtle
+  // press-state class, nothing else. A ripple effect used to run alongside
+  // this (addRipple()), but it relied on position:absolute positioned
+  // relative to the clicked button - the base .btn class never sets
+  // position:relative, so on any button without a positioned ancestor the
+  // ripple escaped to the document's containing block instead of the
+  // button, rendering as a huge circle in the wrong place. Deleted outright
+  // rather than fixing containment, since a ripple isn't the desired effect.
   function animatePress(target) {
     if (reducedMotion.matches) return;
     target.classList.add("is-pressed");
-    window.setTimeout(() => target.classList.remove("is-pressed"), 180);
-  }
-
-  function addRipple(target, event) {
-    if (reducedMotion.matches || target.dataset.noRipple === "true") return;
-    const rect = target.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
-    const ripple = document.createElement("span");
-    const size = Math.max(rect.width, rect.height);
-    ripple.className = "interaction-ripple";
-    ripple.style.width = `${size}px`;
-    ripple.style.height = `${size}px`;
-    ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
-    ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
-    target.appendChild(ripple);
-    ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+    window.setTimeout(() => target.classList.remove("is-pressed"), 140);
   }
 
   document.addEventListener("mousedown", event => {
@@ -3584,9 +3577,6 @@ function initGlobalInteractionAnimations() {
     const target = event.target.closest(interactiveSelector);
     if (!target || target.disabled || target.getAttribute("aria-disabled") === "true") return;
     animatePress(target);
-    if (target.matches("button, a.btn, [role='button'], .btn, .home-btn, .pipeline-stage, .application-stage-actions button, .tab-row button, .pill")) {
-      addRipple(target, event);
-    }
   }, { passive: true });
 
   document.addEventListener("keydown", event => {
@@ -10987,7 +10977,10 @@ function makeEmployerRoleDraft(existing) {
     accommodationStatement: "Candidates who require an accommodation during the hiring process may contact our recruiting team — we're happy to help.",
     additionalCompensation: [],
     previewReviewed: false,
-    lastSavedAt: null
+    lastSavedAt: null,
+    // One Vera chat thread per wizard step, keyed by step index (0-4).
+    // Each entry is [{ role: "vera"|"employer", text, quickReplies? }, ...].
+    veraThreads: {}
   };
   if (!existing) return base;
   const merged = { ...base };
@@ -11132,48 +11125,6 @@ function renderRequirementWarnings(draft) {
   const warnings = getRequirementWarnings(draft);
   if (!warnings.length) return "";
   return `<div class="emp-callout emp-callout-warn">${warnings.map(w => `<p>${icon("alert-triangle")} ${escapeHtml(w)}</p>`).join("")}</div>`;
-}
-
-function openDraftRequirementsReview(draft) {
-  const warnings = getRequirementWarnings(draft);
-  openEmpModal("draft-requirements-review", `
-    <h2>${icon("sparkles")} Vera's requirement review</h2>
-    ${warnings.length ? `
-      <div class="emp-intel-section">
-        <h3 class="emp-intel-heading">Worth reviewing</h3>
-        ${warnings.map(w => `<div class="emp-callout emp-callout-warn"><p>${icon("alert-triangle")} ${escapeHtml(w)}</p></div>`).join("")}
-      </div>
-    ` : `<p>No obvious requirement issues found — the must-have list and experience bar look reasonable for the stated seniority.</p>`}
-    <p class="emp-vera-principle">${icon("shield-check")} Vera checks for realism, not intent. You decide what to keep.</p>
-    <div class="emp-compose-actions"><button type="button" class="btn btn-primary" data-emp-modal-close>Got it</button></div>
-  `, { label: "Vera's requirement review" });
-}
-
-function openMarketRateModal(draft) {
-  const benchmark = computeSalaryBenchmark(draft);
-  openEmpModal("market-rate-review", `
-    <h2>${icon("sparkles")} Vera's market rate check</h2>
-    ${!benchmark ? `
-      <p>Market benchmark data is only available for MYR right now. Switch the currency to MYR to see how this role's salary range compares.</p>
-    ` : benchmark.verdict === "none" ? `
-      <p>Add a salary range to see how it compares to the typical range for ${escapeHtml(draft.seniority)} (RM ${benchmark.benchmarkMin.toLocaleString()} - RM ${benchmark.benchmarkMax.toLocaleString()} / month).</p>
-    ` : `
-      <div class="emp-intel-section">
-        <h3 class="emp-intel-heading">Typical range for ${escapeHtml(draft.seniority)}</h3>
-        <div class="emp-stat-row"><span>Market range</span><strong>RM ${benchmark.benchmarkMin.toLocaleString()} - RM ${benchmark.benchmarkMax.toLocaleString()} / month</strong></div>
-        <div class="emp-stat-row"><span>This role's midpoint</span><strong>RM ${benchmark.offeredMid.toLocaleString()} / month</strong></div>
-      </div>
-      <div class="emp-callout ${benchmark.verdict === "below" ? "emp-callout-warn" : ""}">
-        <p>${icon(benchmark.verdict === "below" ? "alert-triangle" : "check")} ${
-          benchmark.verdict === "below" ? `Below the typical range - consider raising the range to stay competitive for ${escapeHtml(draft.seniority)} candidates.`
-          : benchmark.verdict === "above" ? `Above the typical range - you may attract more applicants, or this may signal a very senior hire.`
-          : `Within the typical range for ${escapeHtml(draft.seniority)}.`
-        }</p>
-      </div>
-    `}
-    <p class="emp-vera-principle">${icon("shield-check")} Based on mock market data for this prototype. You decide the final range.</p>
-    <div class="emp-compose-actions"><button type="button" class="btn btn-primary" data-emp-modal-close>Got it</button></div>
-  `, { label: "Vera's market rate check" });
 }
 
 function renderRequiredDocumentsControl(draft) {
@@ -11523,168 +11474,6 @@ const CREATE_VERA_FIELD_LABELS = {
   responsibilities: "Responsibilities", benefits: "Benefits"
 };
 
-let createVeraDraftSuggestions = null;
-let createVeraReviewMode = "summary";
-let createVeraDecisions = {};
-let createVeraStep = 0;
-let createVeraAnswers = {};
-let createVeraTranscript = [];
-let createVeraGenerating = false;
-let createVeraRegenerateSeeds = {};
-
-function renderCreateVeraQuestionInput(question) {
-  const prior = createVeraAnswers[question.field];
-  if (question.type === "chips") {
-    return `
-      <div class="emp-cv-chips" data-cv-chip-group>
-        ${question.options.map(opt => `<button type="button" class="emp-cv-chip ${prior === opt ? "active" : ""}" data-cv-chip="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`).join("")}
-      </div>
-    `;
-  }
-  if (question.type === "salary") {
-    const salary = prior || {};
-    return `
-      <div class="emp-cv-salary-row">
-        <span class="emp-cv-salary-prefix">RM</span>
-        <input type="number" min="0" data-cv-salary-min placeholder="Min" value="${salary.min || ""}">
-        <span>–</span>
-        <input type="number" min="0" data-cv-salary-max placeholder="Max" value="${salary.max || ""}">
-        <span class="emp-cv-salary-suffix">/ month</span>
-      </div>
-    `;
-  }
-  if (question.type === "tags") {
-    const tags = prior || [];
-    const options = question.autocomplete ? question.autocomplete() : [];
-    return `
-      <div class="emp-cv-tags-input">
-        <div class="pill-row" data-cv-tag-list>${tags.map(t => `<span class="pill">${escapeHtml(t)} <button type="button" data-cv-tag-remove="${escapeHtml(t)}" aria-label="Remove ${escapeHtml(t)}">${icon("x")}</button></span>`).join("")}</div>
-        <div class="emp-cv-tag-add-row">
-          <input type="text" data-cv-tag-input list="emp-cv-tag-datalist" placeholder="Type a skill and press Add">
-          <button type="button" class="btn btn-ghost btn-sm" data-cv-tag-add>Add</button>
-        </div>
-        <datalist id="emp-cv-tag-datalist">${options.map(s => `<option value="${escapeHtml(s)}">`).join("")}</datalist>
-      </div>
-    `;
-  }
-  const options = question.autocomplete ? question.autocomplete() : null;
-  return `
-    <div class="emp-cv-text-input">
-      <input type="text" data-cv-text-input ${options ? `list="emp-cv-text-datalist"` : ""} placeholder="${escapeHtml(question.placeholder || "")}" value="${escapeHtml(prior || "")}">
-      ${options ? `<datalist id="emp-cv-text-datalist">${options.map(s => `<option value="${escapeHtml(s)}">`).join("")}</datalist>` : ""}
-    </div>
-  `;
-}
-
-function renderCreateVeraConversationPhase() {
-  const total = CREATE_VERA_QUESTIONS.length;
-  const current = createVeraStep < total ? CREATE_VERA_QUESTIONS[createVeraStep] : null;
-
-  const transcriptHtml = createVeraTranscript.map(entry =>
-    `<div class="emp-cv-bubble emp-cv-bubble-${entry.role}">${escapeHtml(entry.text)}</div>`
-  ).join("");
-
-  return `
-    <div class="emp-create-vera-head">
-      <div>
-        <span class="emp-vera-context">Create with Vera</span>
-        <h2>Tell Vera about the role</h2>
-        <p>${current ? `Question ${createVeraStep + 1} of ${total}` : ""}</p>
-      </div>
-      <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
-    </div>
-    <div class="emp-cv-transcript" data-cv-transcript>
-      ${transcriptHtml}
-      ${current ? `<div class="emp-cv-bubble emp-cv-bubble-vera">${escapeHtml(current.prompt)}</div>` : ""}
-    </div>
-    ${current ? renderCreateVeraQuestionInput(current) : ""}
-    <div class="emp-compose-actions emp-cv-nav">
-      <button type="button" class="btn btn-ghost" data-cv-back ${createVeraStep === 0 ? "disabled" : ""}>Back</button>
-      ${current && current.skippable ? `<button type="button" class="btn btn-ghost" data-cv-skip>Skip</button>` : ""}
-      ${current && current.type !== "chips" ? `<button type="button" class="btn btn-primary" data-cv-next>Next</button>` : ""}
-    </div>
-  `;
-}
-
-function renderCreateVeraGeneratingPhase() {
-  return `
-    <div class="emp-create-vera-head">
-      <div><span class="emp-vera-context">Create with Vera</span><h2>Generating professional job...</h2></div>
-    </div>
-    <div class="emp-cv-generating">
-      <div class="emp-cv-generating-spinner">${icon("sparkles")}</div>
-      <p>Vera is drafting a role summary, responsibilities, and benefits from your answers.</p>
-    </div>
-  `;
-}
-
-function renderCreateVeraReviewPhase(draft, suggestions) {
-  const fields = Object.keys(suggestions);
-  if (!fields.length) {
-    return `
-      <div class="emp-create-vera-head">
-        <div><span class="emp-vera-context">Create with Vera</span><h2>Nothing to suggest yet</h2></div>
-        <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
-      </div>
-      <p>Vera couldn't confidently extract structured details from that text. Try including a role title, location, work mode, or a salary range.</p>
-      <div class="emp-compose-actions">
-        <button type="button" class="btn btn-ghost" data-create-vera-back>Back</button>
-        <button type="button" class="btn btn-primary" data-emp-modal-close>Close</button>
-      </div>
-    `;
-  }
-  if (createVeraReviewMode === "sections") {
-    return `
-      <div class="emp-create-vera-head">
-        <div><span class="emp-vera-context">Create with Vera</span><h2>Review section by section</h2><p>Original or blank value, Vera's suggestion, and why.</p></div>
-        <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
-      </div>
-      <div class="emp-create-vera-sections">
-        ${fields.map(f => {
-          const s = suggestions[f];
-          const current = f === "salary" ? (draft.salary.min && draft.salary.max ? `${draft.salary.currency} ${draft.salary.min}-${draft.salary.max}` : "—") : (Array.isArray(draft[f]) ? (draft[f].length ? draft[f].join(", ") : "—") : (draft[f] || "—"));
-          const suggestedDisplay = f === "salary" ? `${s.value.currency} ${s.value.min.toLocaleString()}-${s.value.max.toLocaleString()}` : Array.isArray(s.value) ? s.value.join(", ") : s.value;
-          const decision = createVeraDecisions[f] || "pending";
-          return `
-            <div class="emp-create-vera-section-row emp-cvs-${decision}">
-              <div class="emp-cvs-field">${escapeHtml(CREATE_VERA_FIELD_LABELS[f] || f)}${decision !== "pending" ? `<span class="emp-cvs-decision-tag">${decision === "accept" ? "Accepted" : "Skipped"}</span>` : ""}</div>
-              <div class="emp-cvs-compare">
-                <span>Current: <strong>${escapeHtml(String(current))}</strong></span>
-                <span>Suggested: <strong>${escapeHtml(String(suggestedDisplay))}</strong></span>
-              </div>
-              <p class="emp-cvs-reason">${escapeHtml(s.reason)}</p>
-              <div class="emp-cvs-actions">
-                <button type="button" class="btn btn-primary btn-sm" data-cvs-accept="${f}">Accept</button>
-                <button type="button" class="btn btn-ghost btn-sm" data-cvs-skip="${f}">Skip</button>
-                ${s.generated ? `<button type="button" class="btn btn-ghost btn-sm" data-cvs-regenerate="${f}">${icon("refresh-cw")} Regenerate</button>` : ""}
-              </div>
-            </div>
-          `;
-        }).join("")}
-      </div>
-      <div class="emp-compose-actions">
-        <button type="button" class="btn btn-ghost" data-create-vera-back>Back</button>
-        <button type="button" class="btn btn-primary" data-create-vera-apply-decisions>Apply accepted changes</button>
-      </div>
-    `;
-  }
-  return `
-    <div class="emp-create-vera-head">
-      <div><span class="emp-vera-context">Create with Vera</span><h2>Vera generated the following role draft</h2></div>
-      <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
-    </div>
-    <ul class="emp-checklist">
-      ${fields.map(f => `<li class="done">${icon("check")} ${escapeHtml(CREATE_VERA_FIELD_LABELS[f] || f)}</li>`).join("")}
-    </ul>
-    <p class="emp-field-help">Nothing is applied yet. Choose how you'd like to review it.</p>
-    <div class="emp-compose-actions">
-      <button type="button" class="btn btn-ghost" data-emp-modal-close>Cancel</button>
-      <button type="button" class="btn btn-ghost" data-create-vera-sections>Review section by section</button>
-      <button type="button" class="btn btn-primary" data-create-vera-apply-all>Apply all</button>
-    </div>
-  `;
-}
-
 function applyCreateVeraSuggestions(draft, suggestions, fields) {
   fields.forEach(f => {
     const s = suggestions[f];
@@ -11693,26 +11482,6 @@ function applyCreateVeraSuggestions(draft, suggestions, fields) {
     else if (f === "mustHaveSkills" || f === "niceToHaveSkills") s.value.forEach(skill => { if (!draft[f].includes(skill)) draft[f].push(skill); });
     else draft[f] = s.value;
   });
-}
-
-function validateCreateVeraAnswer(question) {
-  if (!question.required) return true;
-  const value = createVeraAnswers[question.field];
-  if (question.type === "tags") return Array.isArray(value) && value.length > 0;
-  if (question.type === "salary") return Boolean(value && (value.min || value.max));
-  return Boolean(value && String(value).trim());
-}
-
-function formatCreateVeraAnswerForTranscript(question) {
-  const value = createVeraAnswers[question.field];
-  if (question.type === "tags") return (value || []).length ? value.join(", ") : "None";
-  if (question.type === "salary") return value && (value.min || value.max) ? `RM ${value.min || "?"} - RM ${value.max || "?"}` : "Not specified";
-  return value ? String(value) : "Not specified";
-}
-
-function commitCreateVeraAnswer(question, answerText) {
-  createVeraTranscript.push({ role: "vera", text: question.prompt });
-  createVeraTranscript.push({ role: "employer", text: answerText });
 }
 
 function buildCreateVeraSuggestions(answers) {
@@ -11742,160 +11511,229 @@ function buildCreateVeraSuggestions(answers) {
   return suggestions;
 }
 
-function advanceCreateVeraQuestion(draft, onApplied) {
-  createVeraStep += 1;
-  if (createVeraStep >= CREATE_VERA_QUESTIONS.length) {
-    createVeraGenerating = true;
-    refreshCreateVeraModal(draft, onApplied);
-    setTimeout(() => {
-      createVeraGenerating = false;
-      createVeraDraftSuggestions = buildCreateVeraSuggestions(createVeraAnswers);
-      createVeraReviewMode = "summary";
-      createVeraDecisions = {};
-      refreshCreateVeraModal(draft, onApplied);
-    }, 900);
-  } else {
-    refreshCreateVeraModal(draft, onApplied);
+/* ---------- Vera chat panel — shared by all 5 wizard steps ----------
+   One component, one interaction model: a persistent per-step message
+   thread stored on the draft (draft.veraThreads[stepIndex]), rendered as
+   chat bubbles with an always-visible text input. Each step's scripted
+   reply logic reuses the same mock computations the old one-off modals
+   used (buildCreateVeraSuggestions, getRequirementWarnings,
+   computeSalaryBenchmark, computeDraftVeraReview) - only the presentation
+   changed, from a paginated "Question N of 11" wizard / static "Got it"
+   modal into a back-and-forth conversation. Nothing here is a real model:
+   replies are picked by which turn number the thread is on, same
+   prototype-honesty as the rest of this app's "AI".
+   ---------------------------------------------------------------- */
+const VERA_STEP_OPENING_MESSAGES = [
+  "Tell me about the role and I'll help set up the basics — what's the title, and where's it based?",
+  "Let's define what this person will actually own. What's the main gap this role fills?",
+  "Which of your requirements are truly must-have, and which could someone learn on the job?",
+  "What's your budget range for this role? I can tell you how it compares to similar roles.",
+  "I've reviewed the role — want me to walk you through what's strong and what needs attention before you publish?"
+];
+
+// CREATE_VERA_QUESTIONS indices asked during the Step 1 chat, in order -
+// title(0) and location(2) are skipped since the opening message already asks for those.
+const VERA_STEP1_QUESTION_ORDER = [1, 3, 4, 5, 6, 7, 8, 9, 10];
+
+function getVeraThread(draft, stepIndex) {
+  if (!draft.veraThreads) draft.veraThreads = {};
+  if (!draft.veraThreads[stepIndex] || !draft.veraThreads[stepIndex].length) {
+    draft.veraThreads[stepIndex] = [{ role: "vera", text: VERA_STEP_OPENING_MESSAGES[stepIndex] }];
   }
+  return draft.veraThreads[stepIndex];
 }
 
-function addCreateVeraTag(card, question, draft, onApplied) {
-  const input = qs("[data-cv-tag-input]", card);
-  const value = (input?.value || "").trim();
-  if (!value) return;
-  const tags = createVeraAnswers[question.field] || [];
-  if (!tags.includes(value)) tags.push(value);
-  createVeraAnswers[question.field] = tags;
-  refreshCreateVeraModal(draft, onApplied);
+function parseVeraStep1FirstReply(text) {
+  const trimmed = text.trim();
+  const foundLocation = CREATE_VERA_LOCATIONS.find(loc => trimmed.toLowerCase().includes(loc.toLowerCase()));
+  let title = trimmed;
+  if (foundLocation) {
+    const escaped = foundLocation.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    title = trimmed.replace(new RegExp(escaped, "i"), "").replace(/\b(in|at|based)\b/gi, " ").replace(/[,-]/g, " ").replace(/\s+/g, " ").trim();
+  }
+  return { title: title || trimmed, location: foundLocation || "" };
 }
 
-function bindCreateVeraConversationEvents(card, draft, onApplied) {
-  const question = CREATE_VERA_QUESTIONS[createVeraStep];
-  if (!question) return;
-
-  qsa("[data-cv-chip]", card).forEach(btn => btn.addEventListener("click", () => {
-    createVeraAnswers[question.field] = btn.dataset.cvChip;
-    commitCreateVeraAnswer(question, btn.dataset.cvChip);
-    advanceCreateVeraQuestion(draft, onApplied);
-  }));
-
-  qs("[data-cv-tag-add]", card)?.addEventListener("click", () => addCreateVeraTag(card, question, draft, onApplied));
-  qs("[data-cv-tag-input]", card)?.addEventListener("keydown", e => {
-    if (e.key === "Enter") { e.preventDefault(); addCreateVeraTag(card, question, draft, onApplied); }
-  });
-  qsa("[data-cv-tag-remove]", card).forEach(btn => btn.addEventListener("click", () => {
-    const tags = createVeraAnswers[question.field] || [];
-    createVeraAnswers[question.field] = tags.filter(t => t !== btn.dataset.cvTagRemove);
-    refreshCreateVeraModal(draft, onApplied);
-  }));
-
-  qs("[data-cv-back]", card)?.addEventListener("click", () => {
-    if (createVeraStep === 0) return;
-    createVeraStep -= 1;
-    createVeraTranscript.splice(-2, 2);
-    refreshCreateVeraModal(draft, onApplied);
-  });
-  qs("[data-cv-skip]", card)?.addEventListener("click", () => {
-    createVeraAnswers[question.field] = question.type === "tags" ? [] : "";
-    commitCreateVeraAnswer(question, "Skipped");
-    advanceCreateVeraQuestion(draft, onApplied);
-  });
-  qs("[data-cv-next]", card)?.addEventListener("click", () => {
-    if (question.type === "text") createVeraAnswers[question.field] = (qs("[data-cv-text-input]", card)?.value || "").trim();
-    if (question.type === "salary") {
-      const min = Number(qs("[data-cv-salary-min]", card)?.value || 0) || null;
-      const max = Number(qs("[data-cv-salary-max]", card)?.value || 0) || null;
-      createVeraAnswers.salary = { min, max };
-    }
-    if (!validateCreateVeraAnswer(question)) { showToast("Please answer this question first.", "info"); return; }
-    commitCreateVeraAnswer(question, formatCreateVeraAnswerForTranscript(question));
-    advanceCreateVeraQuestion(draft, onApplied);
-  });
+function parseVeraQuestionAnswer(question, text) {
+  const trimmed = text.trim();
+  if (/^skip$/i.test(trimmed)) return question.type === "tags" ? [] : "";
+  if (question.type === "tags") return trimmed.split(",").map(s => s.trim()).filter(Boolean);
+  if (question.type === "salary") {
+    const nums = (trimmed.match(/\d[\d,]*/g) || []).map(n => Number(n.replace(/,/g, "")));
+    if (!nums.length) return { min: null, max: null };
+    if (nums.length === 1) return { min: nums[0], max: nums[0] };
+    return { min: Math.min(nums[0], nums[1]), max: Math.max(nums[0], nums[1]) };
+  }
+  if (question.type === "chips") {
+    const match = question.options.find(o => o.toLowerCase() === trimmed.toLowerCase());
+    return match || trimmed;
+  }
+  return trimmed;
 }
 
-function bindCreateVeraReviewEvents(card, draft, onApplied) {
-  qs("[data-create-vera-back]", card)?.addEventListener("click", () => {
-    createVeraDraftSuggestions = null;
-    createVeraStep = Math.max(0, CREATE_VERA_QUESTIONS.length - 1);
-    createVeraTranscript.splice(-2, 2);
-    refreshCreateVeraModal(draft, onApplied);
-  });
-  qs("[data-create-vera-apply-all]", card)?.addEventListener("click", () => {
-    applyCreateVeraSuggestions(draft, createVeraDraftSuggestions, Object.keys(createVeraDraftSuggestions));
-    closeEmpModal();
-    onApplied();
-    showToast("Applied Vera's suggested role draft.");
-  });
-  qs("[data-create-vera-sections]", card)?.addEventListener("click", () => {
-    createVeraReviewMode = "sections";
-    refreshCreateVeraModal(draft, onApplied);
-  });
-  qsa("[data-cvs-accept]", card).forEach(btn => btn.addEventListener("click", () => {
-    createVeraDecisions[btn.dataset.cvsAccept] = "accept";
-    refreshCreateVeraModal(draft, onApplied);
-  }));
-  qsa("[data-cvs-skip]", card).forEach(btn => btn.addEventListener("click", () => {
-    createVeraDecisions[btn.dataset.cvsSkip] = "skip";
-    refreshCreateVeraModal(draft, onApplied);
-  }));
-  qsa("[data-cvs-regenerate]", card).forEach(btn => btn.addEventListener("click", () => {
-    const f = btn.dataset.cvsRegenerate;
-    createVeraRegenerateSeeds[f] = (createVeraRegenerateSeeds[f] || 0) + 1;
-    const seed = createVeraRegenerateSeeds[f];
-    const value = f === "roleSummary" ? generateRoleSummary(createVeraAnswers, seed)
-      : f === "responsibilities" ? generateResponsibilities(createVeraAnswers, seed)
-      : generateBenefits(createVeraAnswers, seed);
-    createVeraDraftSuggestions[f] = { value, reason: "Vera generated this from your answers — edit or regenerate below.", generated: true };
-    refreshCreateVeraModal(draft, onApplied);
-  }));
-  qs("[data-create-vera-apply-decisions]", card)?.addEventListener("click", () => {
-    const acceptedFields = Object.keys(createVeraDecisions).filter(f => createVeraDecisions[f] === "accept");
-    if (!acceptedFields.length) { showToast("Accept at least one section first.", "info"); return; }
-    applyCreateVeraSuggestions(draft, createVeraDraftSuggestions, acceptedFields);
-    closeEmpModal();
-    onApplied();
-    showToast(`Applied ${acceptedFields.length} accepted section${acceptedFields.length === 1 ? "" : "s"}.`);
-  });
+function computeVeraStep1Reply(draft, employerMessages) {
+  const n = employerMessages.length;
+  const order = VERA_STEP1_QUESTION_ORDER;
+  if (n === 1) {
+    const { title, location } = parseVeraStep1FirstReply(employerMessages[0].text);
+    if (title) draft.title = title;
+    if (location) draft.location = location;
+    const q = CREATE_VERA_QUESTIONS[order[0]];
+    return {
+      text: `Got it${title ? ` — ${title}` : ""}${location ? ` in ${location}` : ""}. ${q.prompt}`,
+      quickReplies: q.type === "chips" ? q.options : q.skippable ? ["Skip"] : undefined
+    };
+  }
+  const answeredIndex = n - 2;
+  if (answeredIndex < order.length - 1) {
+    const nextQ = CREATE_VERA_QUESTIONS[order[answeredIndex + 1]];
+    return {
+      text: nextQ.prompt,
+      quickReplies: nextQ.type === "chips" ? nextQ.options : nextQ.skippable ? ["Skip"] : undefined
+    };
+  }
+  if (answeredIndex === order.length - 1) {
+    const { title, location } = parseVeraStep1FirstReply(employerMessages[0].text);
+    const answers = { title: draft.title || title, location: draft.location || location };
+    order.forEach((qIdx, i) => {
+      const question = CREATE_VERA_QUESTIONS[qIdx];
+      answers[question.field] = parseVeraQuestionAnswer(question, employerMessages[i + 1].text);
+    });
+    const suggestions = buildCreateVeraSuggestions(answers);
+    const fields = Object.keys(suggestions);
+    applyCreateVeraSuggestions(draft, suggestions, fields);
+    const labels = fields.map(f => CREATE_VERA_FIELD_LABELS[f] || f);
+    return { text: `Done — I've filled in ${labels.join(", ")}. Take a look at Role Basics and Role Details to fine-tune anything, or keep chatting if there's something you want to change.` };
+  }
+  return { text: "You're all set for this step — feel free to keep editing the fields directly, or ask me anything else." };
 }
 
-function refreshCreateVeraModal(draft, onApplied) {
-  const host = qs("[data-emp-modal-root]");
+function computeVeraStep2Reply(draft, employerMessages) {
+  const seed = employerMessages.length;
+  const hadResponsibilities = draft.responsibilities.some(r => r.trim());
+  const generatedSummary = generateRoleSummary(draft, seed);
+  const generatedResponsibilities = generateResponsibilities(draft, seed);
+  draft.roleSummary = generatedSummary;
+  draft.responsibilities = hadResponsibilities
+    ? [...draft.responsibilities, ...generatedResponsibilities.filter(r => !draft.responsibilities.includes(r))].slice(0, 8)
+    : generatedResponsibilities;
+  return { text: `Got it. Based on that, I've drafted a role summary and ${generatedResponsibilities.length} responsibilities below in Role Details — take a look and adjust anything that's off.` };
+}
+
+function computeVeraStep3Reply(draft) {
+  const warnings = getRequirementWarnings(draft);
+  if (!warnings.length) return { text: "No obvious requirement issues found — the must-have list and experience bar look reasonable for the stated seniority." };
+  return { text: `Here's what's worth reviewing:\n${warnings.map(w => `• ${w}`).join("\n")}` };
+}
+
+function computeVeraStep4Reply(draft, employerText) {
+  if (!draft.salary.min || !draft.salary.max) {
+    const nums = (employerText.match(/\d[\d,]*/g) || []).map(n => Number(n.replace(/,/g, "")));
+    if (nums.length >= 2) { draft.salary.min = Math.min(nums[0], nums[1]); draft.salary.max = Math.max(nums[0], nums[1]); }
+    else if (nums.length === 1) { draft.salary.min = draft.salary.min || nums[0]; draft.salary.max = draft.salary.max || nums[0]; }
+  }
+  const benchmark = computeSalaryBenchmark(draft);
+  if (!benchmark) return { text: "Market benchmark data is only available for MYR right now — switch the currency to MYR and I can compare it." };
+  if (benchmark.verdict === "none") return { text: `Add a salary range and I can compare it to the typical range for ${draft.seniority} (RM ${benchmark.benchmarkMin.toLocaleString()} - RM ${benchmark.benchmarkMax.toLocaleString()} / month).` };
+  const verdictText = benchmark.verdict === "below" ? `That's below the typical range — consider raising it to stay competitive for ${draft.seniority} candidates.`
+    : benchmark.verdict === "above" ? `That's above the typical range — you may attract more applicants, or this may signal a very senior hire.`
+    : `That's within the typical range for ${draft.seniority}.`;
+  return { text: `Typical range for ${draft.seniority} is RM ${benchmark.benchmarkMin.toLocaleString()} - RM ${benchmark.benchmarkMax.toLocaleString()} / month. This role's midpoint is RM ${benchmark.offeredMid.toLocaleString()} / month. ${verdictText}` };
+}
+
+function computeVeraStep5Reply(draft) {
+  const review = computeDraftVeraReview(draft);
+  const parts = [`Role readiness is at ${review.readiness}%.`];
+  if (review.strengths.length) parts.push(`Strengths: ${review.strengths.join(" ")}`);
+  parts.push(review.needsAttention.length ? `Needs attention: ${review.needsAttention.map(n => n.text).join(" ")}` : "Nothing urgent needs attention before you publish.");
+  return { text: parts.join("\n\n") };
+}
+
+function computeVeraChatReply(stepIndex, draft, thread, employerText) {
+  const employerMessages = thread.filter(m => m.role === "employer");
+  if (stepIndex === 0) return computeVeraStep1Reply(draft, employerMessages);
+  if (stepIndex === 1) return computeVeraStep2Reply(draft, employerMessages);
+  if (stepIndex === 2) return computeVeraStep3Reply(draft);
+  if (stepIndex === 3) return computeVeraStep4Reply(draft, employerText);
+  if (stepIndex === 4) return computeVeraStep5Reply(draft);
+  return { text: "Noted." };
+}
+
+function renderVeraChatPanel(stepIndex, draft) {
+  const thread = getVeraThread(draft, stepIndex);
+  const lastMsg = thread[thread.length - 1];
+  const quickReplies = lastMsg && lastMsg.role === "vera" && lastMsg.quickReplies ? lastMsg.quickReplies : null;
+  return `
+    <div class="emp-vera-chat">
+      <div class="emp-vera-chat-header">
+        <h2>${icon("sparkles")} Vera</h2>
+        <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="emp-vera-chat-messages" data-vera-chat-messages>
+        ${thread.map(m => `<div class="emp-vera-chat-bubble emp-vera-chat-bubble-${m.role}">${escapeHtml(m.text)}</div>`).join("")}
+      </div>
+      ${quickReplies ? `
+        <div class="emp-vera-chat-quick-replies" data-vera-quick-replies>
+          ${quickReplies.map(q => `<button type="button" class="emp-vera-chat-quick-reply" data-vera-quick-reply="${escapeHtml(q)}">${escapeHtml(q)}</button>`).join("")}
+        </div>
+      ` : ""}
+      <form class="emp-vera-chat-input-row" data-vera-chat-form>
+        <input type="text" data-vera-chat-input placeholder="Type a message..." autocomplete="off" aria-label="Message Vera">
+        <button type="submit" class="btn btn-primary btn-sm" aria-label="Send">${icon("send")}</button>
+      </form>
+    </div>
+  `;
+}
+
+function bindVeraChatPanel(host, stepIndex, draft, onUpdate) {
   const card = qs(".emp-modal-card", host);
   if (!card) return;
-  card.innerHTML = createVeraDraftSuggestions
-    ? renderCreateVeraReviewPhase(draft, createVeraDraftSuggestions)
-    : createVeraGenerating
-      ? renderCreateVeraGeneratingPhase()
-      : renderCreateVeraConversationPhase();
-  createIcons();
-  const transcript = qs("[data-cv-transcript]", card);
-  if (transcript) transcript.scrollTop = transcript.scrollHeight;
-  bindCreateVeraModal(host, draft, onApplied);
-}
 
-function bindCreateVeraModal(host, draft, onApplied) {
-  const card = qs(".emp-modal-card", host);
-  if (!card) return;
-  if (createVeraDraftSuggestions) {
-    bindCreateVeraReviewEvents(card, draft, onApplied);
-  } else if (!createVeraGenerating) {
-    bindCreateVeraConversationEvents(card, draft, onApplied);
+  function scrollToBottom() {
+    const messagesEl = qs("[data-vera-chat-messages]", card);
+    if (messagesEl) messagesEl.scrollTop = messagesEl.scrollHeight;
   }
+
+  function bind() {
+    qs("[data-vera-chat-form]", card)?.addEventListener("submit", event => {
+      event.preventDefault();
+      const input = qs("[data-vera-chat-input]", card);
+      const value = input?.value || "";
+      if (input) input.value = "";
+      send(value);
+    });
+    qsa("[data-vera-quick-reply]", card).forEach(btn => btn.addEventListener("click", () => send(btn.dataset.veraQuickReply)));
+  }
+
+  function refresh() {
+    card.innerHTML = renderVeraChatPanel(stepIndex, draft);
+    createIcons();
+    bind();
+    scrollToBottom();
+    qs("[data-vera-chat-input]", card)?.focus();
+  }
+
+  function send(text) {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    const thread = getVeraThread(draft, stepIndex);
+    thread.push({ role: "employer", text: trimmed });
+    const reply = computeVeraChatReply(stepIndex, draft, thread, trimmed);
+    thread.push({ role: "vera", text: reply.text, quickReplies: reply.quickReplies });
+    onUpdate();
+    refresh();
+  }
+
+  bind();
+  scrollToBottom();
+  qs("[data-vera-chat-input]", card)?.focus();
 }
 
-function openCreateWithVeraModal(draft, onApplied) {
-  createVeraStep = 0;
-  createVeraAnswers = {};
-  createVeraTranscript = [];
-  createVeraGenerating = false;
-  createVeraDraftSuggestions = null;
-  createVeraReviewMode = "summary";
-  createVeraDecisions = {};
-  createVeraRegenerateSeeds = {};
-  openEmpModal("create-with-vera", renderCreateVeraConversationPhase(), {
-    label: "Create with Vera",
-    className: "emp-create-vera-card",
-    onOpen: host => bindCreateVeraModal(host, draft, onApplied)
+function openVeraChatPanel(stepIndex, draft, onUpdate) {
+  openEmpModal("vera-chat", renderVeraChatPanel(stepIndex, draft), {
+    className: "emp-vera-chat-card",
+    label: "Vera",
+    onOpen: host => bindVeraChatPanel(host, stepIndex, draft, onUpdate)
   });
 }
 
@@ -11920,7 +11758,6 @@ function renderEmployerRoleBuilder(root, roleId) {
   let publishActiveTab = "preview";
   const advancedOpen = { roleBasics: false, compensation: false };
   let saveTimer = null;
-  let roleDetailsGenerateSeed = 0;
   const dismissedSuggestions = new Set();
   const appliedSuggestions = new Set();
   let currentSaveState = "idle";
@@ -12286,6 +12123,18 @@ function renderEmployerRoleBuilder(root, roleId) {
     }
   }
 
+  // Every keystroke autosaves, so "unsaved" can't mean "not yet written to
+  // storage" the way it would in a traditional form - it means "diverged
+  // from the last published/loaded version" (existing roles) or "not blank"
+  // (brand-new drafts). Compares against a fresh baseline, ignoring the
+  // bookkeeping fields (autosave timestamp, Vera chat history) that change
+  // just from opening the wizard without the employer editing anything.
+  function hasWizardDraftDiverged() {
+    const baseline = makeEmployerRoleDraft(existing);
+    const strip = d => { const { lastSavedAt, veraThreads, ...rest } = d; return rest; };
+    return JSON.stringify(strip(draft)) !== JSON.stringify(strip(baseline));
+  }
+
   function commitDraft(status, { stay = false } = {}) {
     const state = readState();
     if (existing) {
@@ -12566,7 +12415,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       if (publishActiveTab === "preview") { draft.previewReviewed = true; persistDraft(); }
       draw();
     }));
-    qs("[data-ask-vera-publish-tab]", root)?.addEventListener("click", () => { publishActiveTab = "vera"; draw(); });
+    qs("[data-ask-vera-publish-tab]", root)?.addEventListener("click", () => openVeraChatPanel(4, draft, () => { persistDraft(); draw(); }));
 
     bindHiringStagesEditor();
     bindRequiredDocumentsControl();
@@ -12633,15 +12482,17 @@ function renderEmployerRoleBuilder(root, roleId) {
       : null;
     root.innerHTML = `
       <div class="emp-view-header">
-        <div>
-          <h1>${existing ? "Edit your role" : "Create a role"}</h1>
-          <p>
-            ${existing ? `${escapeHtml(existing.title)} · ` : "Set up the role candidates will see and CareerGo will match against. · "}
-            <span class="emp-save-indicator" data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>
-            <button type="button" class="emp-save-retry" data-emp-retry-save hidden>Retry</button>
-          </p>
+        <div class="emp-view-header-top">
+          <div>
+            <h1>${existing ? "Edit your role" : "Create a role"}</h1>
+            <p>
+              ${existing ? `${escapeHtml(existing.title)} · ` : "Set up the role candidates will see and CareerGo will match against. · "}
+              <span class="emp-save-indicator" data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>
+              <button type="button" class="emp-save-retry" data-emp-retry-save hidden>Retry</button>
+            </p>
+          </div>
+          <button type="button" class="emp-wizard-cancel-link" data-emp-nav="roles">Cancel</button>
         </div>
-        <button type="button" class="emp-inline-clear emp-wizard-cancel-link" data-emp-nav="roles">${icon("x")} Cancel</button>
       </div>
       <div class="emp-wizard-steps">
         ${(() => {
@@ -12688,12 +12539,27 @@ function renderEmployerRoleBuilder(root, roleId) {
     qs("[data-emp-next]", root)?.addEventListener("click", () => { activeStep = Math.min(EMPLOYER_ROLE_BUILDER_STEPS.length - 1, activeStep + 1); draw(); });
     qs("[data-emp-nav]", root)?.addEventListener("click", event => {
       event.preventDefault();
-      employerNavigateTo("roles");
+      if (!hasWizardDraftDiverged()) { employerNavigateTo("roles"); return; }
+      openEmpConfirm({
+        title: "Discard this draft?",
+        body: existing
+          ? "Unsaved changes to this role will be discarded. The last saved version will be kept."
+          : "This role hasn't been saved or published yet. Your progress will be discarded.",
+        confirmLabel: "Discard",
+        cancelLabel: "Keep editing",
+        danger: true,
+        onConfirm: () => {
+          const state = readState();
+          delete state.employerRoleDrafts[draftId];
+          writeState(state);
+          employerNavigateTo("roles", {}, { force: true });
+        }
+      });
     });
     qs("[data-emp-retry-save]", root)?.addEventListener("click", persistDraft);
     qs("[data-emp-preview-open]", root)?.addEventListener("click", openRolePreviewModal);
     qs("[data-emp-save-draft]", root)?.addEventListener("click", () => commitDraft("Draft", { stay: true }));
-    qs("[data-emp-create-vera]", root)?.addEventListener("click", () => openCreateWithVeraModal(draft, () => { persistDraft(); draw(); }));
+    qs("[data-emp-create-vera]", root)?.addEventListener("click", () => openVeraChatPanel(0, draft, () => { persistDraft(); draw(); }));
 
     if (activeStep === 0) {
       bindField("[data-field-title]", "title");
@@ -12722,27 +12588,7 @@ function renderEmployerRoleBuilder(root, roleId) {
       bindField("[data-field-stakeholders]", "stakeholders");
       bindField("[data-field-tools]", "tools");
       bindField("[data-field-travelExpectations]", "travelExpectations");
-      qs("[data-generate-role-details]", root)?.addEventListener("click", () => {
-        if (!draft.title.trim()) return;
-        const prevSummary = draft.roleSummary;
-        const prevResponsibilities = draft.responsibilities.slice();
-        const generatedSummary = generateRoleSummary(draft, roleDetailsGenerateSeed);
-        const generatedResponsibilities = generateResponsibilities(draft, roleDetailsGenerateSeed);
-        roleDetailsGenerateSeed += 1;
-        draft.roleSummary = generatedSummary;
-        const hasExistingResponsibilities = draft.responsibilities.some(r => r.trim());
-        draft.responsibilities = hasExistingResponsibilities
-          ? [...draft.responsibilities, ...generatedResponsibilities.filter(r => !draft.responsibilities.includes(r))].slice(0, 8)
-          : generatedResponsibilities;
-        persistDraft();
-        draw();
-        showUndoToast("Vera generated a role summary and responsibilities.", () => {
-          draft.roleSummary = prevSummary;
-          draft.responsibilities = prevResponsibilities;
-          persistDraft();
-          draw();
-        });
-      });
+      qs("[data-generate-role-details]", root)?.addEventListener("click", () => openVeraChatPanel(1, draft, () => { persistDraft(); draw(); }));
     } else if (activeStep === 2) {
       bindTagInput("mustHaveSkills");
       bindTagInput("niceToHaveSkills");
@@ -12755,9 +12601,9 @@ function renderEmployerRoleBuilder(root, roleId) {
       bindField("[data-field-languageRequirements]", "languageRequirements");
       bindField("[data-field-availabilityRequirement]", "availabilityRequirement");
       bindField("[data-field-workAuthorization]", "workAuthorization");
-      qs("[data-review-requirements]", root)?.addEventListener("click", () => openDraftRequirementsReview(draft));
+      qs("[data-review-requirements]", root)?.addEventListener("click", () => openVeraChatPanel(2, draft, () => { persistDraft(); draw(); }));
     } else if (activeStep === 3) {
-      qs("[data-ask-vera-market-rate]", root)?.addEventListener("click", () => openMarketRateModal(draft));
+      qs("[data-ask-vera-market-rate]", root)?.addEventListener("click", () => openVeraChatPanel(3, draft, () => { persistDraft(); draw(); }));
       bindSalaryField("min");
       bindSalaryField("max");
       bindSalarySelect("period");

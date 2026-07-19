@@ -237,7 +237,7 @@ img { max-width: 100%; display: block; }
   color: #1a202c;
   background: rgba(0, 0, 0, 0.05);
   font-weight: 900;
-  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
 }
 
 .btn:hover { transform: translateY(-1px); }
@@ -12467,7 +12467,13 @@ body[data-page="home"] .home-metrics span {
    staying scoped to .emp-app-shell (present only in the Employer DOM), so
    Employer tokens win without touching that cascade or the Candidate pages
    that depend on it. */
-.emp-app-shell.emp-app-shell :is(h1, h2, h3) { font-family: var(--emp-serif) !important; color: var(--emp-ink) !important; font-weight: 650 !important; letter-spacing: -0.02em; }
+.emp-app-shell.emp-app-shell :is(h1, h2, h3),
+[data-emp-modal-root] :is(h1, h2, h3) {
+  font-family: var(--emp-serif, "Fraunces", Georgia, "Times New Roman", serif) !important;
+  color: var(--emp-ink, #082f27) !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.02em;
+}
 .emp-app-shell.emp-app-shell :is(p, span, small, li, time, label, input, textarea, select, button) { font-family: var(--emp-sans) !important; }
 
 /* Placeholders must always read as empty-state hint text, never as filled
@@ -12664,6 +12670,11 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-view-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .emp-view-header h1 { margin: 6px 0 8px; font-size: var(--emp-title-xl); line-height: 1.02; }
 .emp-view-header p { margin: 0; max-width: 62ch; color: var(--emp-muted); font-size: var(--emp-body); line-height: 1.55; }
+.emp-wizard-cancel-link {
+  border: 0; background: none; padding: 0; cursor: pointer; flex-shrink: 0; margin-top: 8px;
+  color: var(--emp-muted, var(--soft)); font-size: 13px; font-weight: 600; text-decoration: none;
+}
+.emp-wizard-cancel-link:hover { text-decoration: underline; color: var(--emp-ink, var(--text)); }
 
 /* ---------- Dashboard opening ---------- */
 .emp-dash-opening { margin-bottom: 32px; }
@@ -13672,43 +13683,13 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-app-shell.emp-app-shell button { box-sizing: border-box; transform: none; }
 .emp-app-shell.emp-app-shell button:active { transform: translateY(1px); }
 
-/* Root-cause fix for the button-growth bug: app.js runs a shared press/ripple
-   animation (initGlobalInteractionAnimations) on every page, including this one,
-   which appends a `.interaction-ripple` <span> into the clicked button on every
-   click. Its `position: absolute` rule only exists in enterprise.css, which
-   employer-app.html deliberately does not load (to avoid leaking candidate-page
-   CSS into the Employer OS). Without that rule the ripple rendered in normal
-   flow, so every click made the button's content box — and therefore the
-   button itself — larger, compounding on repeated clicks. Restating just the
-   positioning rule here (not the whole file) keeps the existing animation
-   working without importing enterprise.css. */
-/* [data-emp-modal-root] is included alongside .emp-app-shell here because
-   ensureEmpModalRoot() appends the modal host directly to document.body
-   (needed for fixed positioning/stacking), not inside .emp-app-shell — so
-   the descendant selector above never reached ripples on buttons inside any
-   Employer OS modal (Create with Vera, role preview, etc). Same root cause
-   as the original fix, just a second, sibling location it didn't cover. */
-.emp-app-shell .interaction-ripple,
-[data-emp-modal-root] .interaction-ripple {
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  border-radius: 999px;
-  background: currentColor;
-  opacity: 0.16;
-  transform: scale(0);
-  animation: emp-interactionRipple 520ms ease-out forwards;
-}
-.emp-app-shell :is(button, a.btn, [role="button"], .btn, .pill) > :not(.interaction-ripple),
-[data-emp-modal-root] :is(button, a.btn, [role="button"], .btn, .pill) > :not(.interaction-ripple) {
-  position: relative;
-  z-index: 1;
-}
+/* Click feedback: press-state only (translateY + slight scale, ~140ms).
+   The ripple effect previously here escaped to the top of the document on
+   any button without a positioned ancestor (base .btn never sets
+   position:relative) - deleted at the source (app.js addRipple()) rather
+   than patched, since a ripple isn't the intended effect. */
 .emp-app-shell :is(button, a.btn, [role="button"], .btn, .pill).is-pressed {
   transform: translateY(1px) scale(0.985) !important;
-}
-@keyframes emp-interactionRipple {
-  to { opacity: 0; transform: scale(2.6); }
 }
 
 .emp-view-header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
@@ -13884,57 +13865,61 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-tab-strip button { border: 0; background: none; padding: 10px 16px; font-size: 13px; font-weight: 700; color: var(--emp-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
 .emp-tab-strip button.active { color: var(--emp-green); border-bottom-color: var(--emp-green); }
 
-.emp-create-vera-btn { border-color: var(--emp-teal, var(--line)) !important; }
-
 .emp-preview-modal-card { width: min(720px, 100%); max-height: min(85vh, 760px); overflow-y: auto; }
 .emp-preview-modal-card .emp-preview-toolbar { align-items: center; }
 .emp-preview-modal-card .emp-preview-toolbar h2 { margin: 0; font-size: var(--emp-title-lg, 20px); }
 
-.emp-create-vera-card { width: min(680px, 100%); max-height: min(85vh, 700px); overflow-y: auto; }
-.emp-create-vera-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-.emp-create-vera-head h2 { margin: 4px 0 6px; }
-.emp-create-vera-head p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
-.emp-create-vera-input {
-  width: 100%; min-height: 150px; padding: 12px 14px; border: 1px solid var(--emp-line, var(--line));
-  border-radius: 12px; font-family: inherit; font-size: 14px; line-height: 1.55; resize: vertical;
+/* Vera chat panel - shared by all 5 wizard steps' AskVeraButtons. Right-side
+   slide-in panel (mirrors the app-wide .emp-vera-drawer's right-anchored
+   positioning), rendered through the same [data-emp-modal-root]/openEmpModal
+   host as every other modal, so it gets close-on-backdrop-click/Escape/X for
+   free. The backdrop is overridden to stop centering and dimming the page
+   like a normal modal, since this reads as a panel, not a dialog. */
+.emp-modal-backdrop:has(.emp-vera-chat-card) {
+  display: block; padding: 0; background: rgba(8, 20, 16, 0.16); backdrop-filter: none;
 }
-.emp-create-vera-sections { display: grid; gap: 10px; margin-top: 4px; }
-.emp-create-vera-section-row { padding: 12px 14px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; }
-.emp-create-vera-section-row.emp-cvs-accept { border-color: rgba(10, 122, 76, 0.4); background: rgba(10, 122, 76, 0.05); }
-.emp-create-vera-section-row.emp-cvs-skip { opacity: 0.55; }
-.emp-cvs-field { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; margin-bottom: 6px; }
-.emp-cvs-decision-tag { font-size: 10px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: rgba(7, 56, 47, 0.08); color: var(--emp-green, var(--text)); }
-.emp-cvs-compare { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-bottom: 6px; flex-wrap: wrap; }
-.emp-cvs-reason { margin: 0 0 10px; font-size: 12px; color: var(--emp-muted, var(--soft)); line-height: 1.5; }
-.emp-cvs-actions { display: flex; gap: 8px; }
+.emp-vera-chat-card {
+  position: fixed; top: 80px; right: 24px; bottom: 24px; width: min(400px, calc(100vw - 48px));
+  max-height: none; padding: 0; display: flex; flex-direction: column;
+  animation: empVeraChatSlideIn 200ms ease-out;
+}
+@keyframes empVeraChatSlideIn {
+  from { transform: translateX(16px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.emp-vera-chat { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.emp-vera-chat-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 18px 18px 14px; border-bottom: 1px solid var(--emp-line, var(--line)); flex-shrink: 0;
+}
+.emp-vera-chat-header h2 { margin: 0; font-size: var(--emp-title-md, 18px); display: flex; align-items: center; gap: 8px; }
+.emp-vera-chat-header h2 svg { width: 18px; height: 18px; color: var(--emp-ai, #6f5fc4); }
+.emp-vera-chat-messages {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.emp-vera-chat-bubble { max-width: 82%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.55; white-space: pre-line; }
+.emp-vera-chat-bubble-vera { align-self: flex-start; background: rgba(7, 56, 47, 0.06); color: var(--emp-ink, #082f27); border-bottom-left-radius: 4px; }
+.emp-vera-chat-bubble-employer { align-self: flex-end; background: var(--emp-green, #07382f); color: var(--emp-cream-text, #fff); border-bottom-right-radius: 4px; }
+.emp-vera-chat-quick-replies { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 12px; flex-shrink: 0; }
+.emp-vera-chat-quick-reply {
+  padding: 7px 13px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line)); background: transparent;
+  font-size: 12px; font-weight: 600; cursor: pointer; color: var(--emp-ink, #082f27);
+  transition: background 140ms ease, border-color 140ms ease;
+}
+.emp-vera-chat-quick-reply:hover { border-color: var(--emp-ai, #6f5fc4); background: rgba(111, 95, 196, 0.08); }
+.emp-vera-chat-input-row {
+  display: flex; gap: 8px; padding: 14px 18px; border-top: 1px solid var(--emp-line, var(--line)); flex-shrink: 0;
+}
+.emp-vera-chat-input-row input {
+  flex: 1; min-width: 0; padding: 10px 14px; border: 1px solid var(--emp-line, var(--line));
+  border-radius: 999px; font-size: 13px;
+}
+.emp-vera-chat-input-row button { border-radius: 999px; width: 40px; height: 40px; padding: 0; flex-shrink: 0; }
 
-.emp-cv-transcript { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; margin-bottom: 14px; padding-right: 4px; }
-.emp-cv-bubble { max-width: 80%; padding: 9px 13px; border-radius: 14px; font-size: 13px; line-height: 1.5; }
-.emp-cv-bubble-vera { align-self: flex-start; background: rgba(7, 56, 47, 0.06); color: var(--emp-ink, var(--text)); border-bottom-left-radius: 4px; }
-.emp-cv-bubble-employer { align-self: flex-end; background: var(--emp-green, #07382f); color: var(--emp-cream-text, #fff); border-bottom-right-radius: 4px; }
-
-.emp-cv-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-.emp-cv-chip { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line)); background: transparent; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 150ms, border-color 150ms, color 150ms; }
-.emp-cv-chip:hover { border-color: var(--emp-teal, var(--line)); }
-.emp-cv-chip.active { background: var(--emp-green, #07382f); border-color: var(--emp-green, #07382f); color: var(--emp-cream-text, #fff); }
-
-.emp-cv-salary-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-.emp-cv-salary-row input { flex: 1; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; font-size: 14px; }
-.emp-cv-salary-prefix, .emp-cv-salary-suffix { font-size: 12px; color: var(--emp-muted, var(--muted)); white-space: nowrap; }
-
-.emp-cv-text-input { margin-bottom: 14px; }
-.emp-cv-text-input input { width: 100%; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; font-size: 14px; }
-
-.emp-cv-tags-input { margin-bottom: 14px; }
-.emp-cv-tag-add-row { display: flex; gap: 8px; margin-top: 8px; }
-.emp-cv-tag-add-row input { flex: 1; padding: 9px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; font-size: 13px; }
-
-.emp-cv-nav { justify-content: flex-end; }
-.emp-cv-nav [data-cv-back] { margin-right: auto; }
-
-.emp-cv-generating { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 36px 12px; text-align: center; color: var(--emp-muted, var(--muted)); }
-.emp-cv-generating-spinner { animation: emp-cv-spin 1.1s linear infinite; color: var(--emp-green, #07382f); }
-@keyframes emp-cv-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@media (max-width: 640px) {
+  .emp-vera-chat-card { top: 64px; right: 0; bottom: 0; width: 100vw; border-radius: 0; }
+}
 
 @media (max-width: 900px) {
   .emp-form-grid-2, .emp-checkbox-grid { grid-template-columns: 1fr; }
