@@ -17362,6 +17362,337 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
   display: none !important;
 }
 
+/* ===== Coach Vera chat panel (slide-over, works on every page) ===== */
+.cg-message-trigger {
+  position: relative;
+}
+
+.cg-message-trigger-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #0b6d65;
+  border: 2px solid #f7f3ea;
+}
+
+.cg-vera-chat-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cg-vera-chat-panel[hidden] {
+  display: none;
+}
+
+.cg-vera-chat-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 30, 26, 0.32);
+}
+
+.cg-vera-chat-sheet {
+  position: relative;
+  display: grid;
+  grid-template-columns: 260px minmax(420px, 560px);
+  width: min(100%, 820px);
+  height: 100%;
+  background: #f7f3ea;
+  box-shadow: -20px 0 60px rgba(7, 30, 26, 0.25);
+  animation: cgVeraChatSlideIn 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes cgVeraChatSlideIn {
+  from { transform: translateX(24px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.cg-vera-chat-history {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 20px 14px;
+  border-right: 1px solid rgba(18, 59, 52, 0.1);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.cg-vera-chat-history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.cg-vera-chat-history-head span {
+  color: #68756f;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.cg-vera-chat-history-head button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: #063f35;
+  color: #fffaf2;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cg-vera-chat-history-head button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cg-vera-chat-history-list {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(18, 59, 52, 0.28) transparent;
+}
+
+.cg-vera-history-item {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cg-vera-history-item:hover {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(18, 59, 52, 0.1);
+}
+
+.cg-vera-history-item.active {
+  background: rgba(219, 239, 233, 0.7);
+  border-color: rgba(18, 59, 52, 0.14);
+}
+
+.cg-vera-history-item strong {
+  color: #123c34;
+  font-size: 12px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cg-vera-history-item small {
+  color: #8a978f;
+  font-size: 11px;
+}
+
+.cg-vera-chat-main {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 0;
+  padding: 20px 24px;
+}
+
+.cg-vera-chat-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(18, 59, 52, 0.1);
+}
+
+.cg-vera-chat-head h2 {
+  margin: 0;
+  color: #123c34;
+  font-family: var(--cg-shot-serif);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.cg-vera-chat-head p {
+  margin: 2px 0 0;
+  color: #7c8981;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.cg-vera-chat-badge {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  color: #41615a;
+  border-radius: 999px;
+  background: #dcefeb;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cg-vera-chat-close {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(18, 59, 52, 0.06);
+  color: #123c34;
+}
+
+.cg-vera-chat-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cg-vera-chat-panel .cg-chat-thread {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 16px 4px;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(18, 59, 52, 0.28) transparent;
+}
+
+.cg-vera-chat-panel .cg-chat-thread::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cg-vera-chat-panel .cg-chat-thread::-webkit-scrollbar-thumb {
+  background: rgba(18, 59, 52, 0.24);
+  border-radius: 999px;
+}
+
+.cg-vera-chat-panel .cg-chat-thread>p {
+  width: fit-content;
+  max-width: 85%;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.cg-vera-chat-panel .cg-chat-thread .incoming {
+  justify-self: start;
+  color: #263a34 !important;
+  -webkit-text-fill-color: #263a34 !important;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(18, 59, 52, 0.1);
+}
+
+.cg-vera-chat-panel .cg-chat-thread .outgoing {
+  justify-self: end;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #063f35;
+}
+
+.cg-vera-chat-panel .cg-vera-quick-prompts {
+  justify-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 2px;
+}
+
+.cg-vera-chat-panel .cg-vera-quick-chip {
+  min-height: 28px;
+  padding: 0 12px;
+  color: #0b6d65;
+  background: rgba(220, 239, 235, 0.55);
+  border: 1px solid rgba(11, 109, 101, 0.28);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.cg-vera-chat-panel .cg-vera-quick-chip:hover {
+  color: #fffaf2;
+  background: #0b6d65;
+  border-color: #0b6d65;
+}
+
+.cg-vera-chat-panel .cg-message-composer {
+  min-height: 46px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 7px 7px 7px 16px;
+  border: 1px solid rgba(18, 59, 52, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.cg-vera-chat-panel .cg-message-composer input {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #263a34;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.cg-vera-chat-panel .cg-message-composer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 14px;
+  color: #fffaf2;
+  background: #063f35;
+  border: 0;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cg-vera-chat-panel .cg-message-composer button svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+  .cg-vera-chat-sheet {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    width: 100%;
+  }
+
+  .cg-vera-chat-history {
+    border-right: 0;
+    border-bottom: 1px solid rgba(18, 59, 52, 0.1);
+    max-height: 160px;
+  }
+}
+
 @keyframes cgVeraPopIn {
   from { opacity: 0; transform: translateY(8px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }

@@ -588,16 +588,42 @@ function createEmptyProfile(seed = {}) {
   };
 }
 
+function normalizeVeraConversations(state) {
+  let conversations = Array.isArray(state.veraConversations)
+    ? state.veraConversations.filter(c => c && typeof c === "object" && Array.isArray(c.messages))
+    : [];
+  if (!conversations.length) {
+    const legacyMessages = Array.isArray(state.chat) ? state.chat : [];
+    const now = Date.now();
+    conversations = [{
+      id: "conv-default",
+      title: legacyMessages.find(m => m.from === "user")?.text || "New chat",
+      createdAt: now,
+      updatedAt: now,
+      messages: legacyMessages
+    }];
+  }
+  let activeId = state.activeVeraConversationId;
+  if (!activeId || !conversations.some(c => c.id === activeId)) activeId = conversations[0].id;
+  return { conversations, activeId };
+}
+
 function normalizeState(state) {
   const profile = normalizeProfile(state.profile || createEmptyProfile());
   const session = { loggedIn: false, role: "guest", currentUserId: null, name: "", isDemo: false, ...(state.session || {}) };
   if (session.loggedIn && !session.name) session.name = profile.personal.fullName;
+  const { conversations: veraConversations, activeId: activeVeraConversationId } = normalizeVeraConversations(state);
+  const activeVeraConversation = veraConversations.find(c => c.id === activeVeraConversationId);
   return ensureGuidedTour({
     ...state,
     auth: state.auth || { users: [] },
     session,
     onboarding: { candidateDone: false, employerDone: false, currentStep: 0, lastSavedAt: "", ...(state.onboarding || {}) },
     profile,
+    veraConversations,
+    activeVeraConversationId,
+    chat: activeVeraConversation.messages,
+    veraLastReadAt: Number(state.veraLastReadAt) || 0,
     notifications: Array.isArray(state.notifications) ? state.notifications : [],
     savedJobs: Array.isArray(state.savedJobs) ? state.savedJobs : [],
     applications: Array.isArray(state.applications) ? state.applications : [],
@@ -1458,6 +1484,16 @@ function bindGlobalActions() {
     location.href = "index.html";
   }));
   qsa("[data-enter-demo]").forEach(btn => btn.addEventListener("click", startDemoDashboard));
+  document.addEventListener("click", event => {
+    const link = event.target.closest("a[href*='posts.html?topic=']");
+    if (!link) return;
+    const state = readState();
+    if (!state.session.loggedIn) return;
+    event.preventDefault();
+    const url = new URL(link.getAttribute("href"), location.href);
+    const topic = url.searchParams.get("topic") || "";
+    openVeraPanel({ seedTopic: topic });
+  });
 }
 
 function bindAccountMenu() {
@@ -1536,9 +1572,9 @@ function workspaceTopNav() {
         <div class="cg-search-panel" data-search-panel hidden></div>
       </div>
       <div class="nav-actions cg-user-actions">
-        <a class="btn btn-ghost cg-message-trigger" href="posts.html#messages" aria-label="Open messages">
+        <button type="button" class="btn btn-ghost cg-message-trigger" data-vera-chat-trigger aria-label="Open Coach Vera chat">
           ${icon("message-circle")}
-        </a>
+        </button>
         <div class="notification-menu-wrap">
           <button class="btn btn-ghost notification-trigger" type="button" data-notification-toggle aria-haspopup="dialog" aria-expanded="false" aria-label="Open notifications">
             ${icon("bell")} ${notifications.length ? `<strong>${notifications.length}</strong>` : ""}
@@ -2402,6 +2438,8 @@ function renderNavigation() {
   setActiveNav();
   bindAccountMenu();
   bindNotificationMenu();
+  qs("[data-vera-chat-trigger]")?.addEventListener("click", () => openVeraPanel());
+  updateVeraBubbleBadge();
   const workspaceSearchForm = qs("[data-workspace-search]");
   if (workspaceSearchForm?.classList.contains("cg-vera-search")) {
     attachLiveSearch(workspaceSearchForm, query => renderSearchPanelContent(query, "workspace", readState()));
@@ -4170,7 +4208,7 @@ function renderJobsPage() {
       openDiscoverFiltersModal(summary => {
         const query = (qs("[data-discover-search-input]", root)?.value || "").trim();
         const topic = [query, summary].filter(Boolean).join(" - ") || "matching roles";
-        location.href = `posts.html?topic=${encodeURIComponent(topic)}#messages`;
+        openVeraPanel({ seedTopic: topic });
       });
     });
     attachLiveSearch(qs("[data-discover-search-form]", root), query => renderSearchPanelContent(query, "workspace", state));
@@ -7066,6 +7104,221 @@ const VERA_QUICK_PROMPTS = [
   "Review my next application strategy"
 ];
 
+function getActiveVeraConversation(state) {
+  return state.veraConversations.find(c => c.id === state.activeVeraConversationId) || state.veraConversations[0];
+}
+
+function veraConversationTitle(conv) {
+  if (conv.title && conv.title !== "New chat") return conv.title;
+  const firstUser = conv.messages.find(m => m.from === "user");
+  return firstUser ? firstUser.text : "New chat";
+}
+
+function relativeConversationTime(ts) {
+  const diffMin = Math.round((Date.now() - ts) / 60000);
+  if (diffMin < 1) return "now";
+  if (diffMin < 60) return `${diffMin}m`;
+  const diffHr = Math.round(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h`;
+  return `${Math.round(diffHr / 24)}d`;
+}
+
+function createVeraConversation(state, seedTopic) {
+  const now = Date.now();
+  const id = `conv-${now}-${Math.random().toString(36).slice(2, 7)}`;
+  const messages = seedTopic
+    ? [
+        { from: "user", text: `Help me with ${seedTopic}` },
+        { from: "vera", text: veraReply(seedTopic) }
+      ]
+    : [];
+  const conv = { id, title: seedTopic || "New chat", createdAt: now, updatedAt: now, messages };
+  state.veraConversations = [conv, ...state.veraConversations];
+  state.activeVeraConversationId = id;
+  state.chat = conv.messages;
+  return state;
+}
+
+function appendVeraMessage(state, from, text) {
+  const conv = getActiveVeraConversation(state);
+  conv.messages.push({ from, text });
+  conv.updatedAt = Date.now();
+  if ((!conv.title || conv.title === "New chat") && from === "user") conv.title = text;
+  state.chat = conv.messages;
+  return state;
+}
+
+function hasUnreadVeraMessage(state) {
+  const latest = [...state.veraConversations].sort((a, b) => b.updatedAt - a.updatedAt)[0];
+  if (!latest || !latest.messages.length) return false;
+  const lastMsg = latest.messages[latest.messages.length - 1];
+  return lastMsg.from === "vera" && latest.updatedAt > (state.veraLastReadAt || 0);
+}
+
+function veraHistoryItemHtml(conv, activeId) {
+  return `
+    <button type="button" class="cg-vera-history-item ${conv.id === activeId ? "active" : ""}" data-vera-history-item="${conv.id}">
+      <strong>${escapeHtml(veraConversationTitle(conv))}</strong>
+      <small>${relativeConversationTime(conv.updatedAt)}</small>
+    </button>
+  `;
+}
+
+function veraMessagesHtml(messages, firstName) {
+  const shown = messages.length ? messages : [{ from: "vera", text: `Welcome back, ${firstName}. What can I help you with today?` }];
+  return shown.map(msg => `<p class="${msg.from === "vera" ? "incoming" : "outgoing"}">${msg.text}</p>`).join("")
+    + `<div class="cg-vera-quick-prompts" role="group" aria-label="Quick questions for Vera">${VERA_QUICK_PROMPTS.map(prompt => `<button type="button" class="cg-vera-quick-chip" data-vera-chat-quick-prompt="${escapeHtml(prompt)}">${prompt}</button>`).join("")}</div>`;
+}
+
+function veraChatPanelMarkup(state) {
+  const conversations = [...state.veraConversations].sort((a, b) => b.updatedAt - a.updatedAt);
+  const active = getActiveVeraConversation(state);
+  return `
+    <div class="cg-vera-chat-panel" data-vera-chat-panel hidden>
+      <div class="cg-vera-chat-backdrop" data-vera-chat-backdrop></div>
+      <aside class="cg-vera-chat-sheet" role="dialog" aria-modal="true" aria-label="Coach Vera chat">
+        <div class="cg-vera-chat-history">
+          <div class="cg-vera-chat-history-head">
+            <span>Conversations</span>
+            <button type="button" data-vera-new-chat>${icon("plus")} New chat</button>
+          </div>
+          <div class="cg-vera-chat-history-list" data-vera-history-list>
+            ${conversations.map(conv => veraHistoryItemHtml(conv, active.id)).join("")}
+          </div>
+        </div>
+        <div class="cg-vera-chat-main">
+          <header class="cg-vera-chat-head">
+            <div><h2>Coach Vera</h2><p>Your AI career coach &middot; always online</p></div>
+            <span class="cg-vera-chat-badge">Personalized to your profile</span>
+            <button type="button" class="cg-vera-chat-close" data-vera-chat-close aria-label="Close Vera chat">${icon("x")}</button>
+          </header>
+          <section class="cg-chat-thread" data-vera-chat-messages aria-label="Conversation with Coach Vera">
+            ${veraMessagesHtml(active.messages, getFirstName(state))}
+          </section>
+          <form class="cg-message-composer" data-vera-chat-composer>
+            <input placeholder="Write a message..." data-vera-chat-input>
+            <button type="submit">${icon("send")} Send</button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  `;
+}
+
+function veraPanelEls() {
+  const panel = qs("[data-vera-chat-panel]");
+  if (!panel) return null;
+  return {
+    panel,
+    backdrop: qs("[data-vera-chat-backdrop]", panel),
+    closeBtn: qs("[data-vera-chat-close]", panel),
+    historyList: qs("[data-vera-history-list]", panel),
+    messagesPane: qs("[data-vera-chat-messages]", panel),
+    composer: qs("[data-vera-chat-composer]", panel),
+    input: qs("[data-vera-chat-input]", panel),
+    newChatBtn: qs("[data-vera-new-chat]", panel)
+  };
+}
+
+function updateVeraBubbleBadge() {
+  const state = readState();
+  const trigger = qs(".cg-message-trigger");
+  if (!trigger) return;
+  let dot = qs(".cg-message-trigger-dot", trigger);
+  const unread = hasUnreadVeraMessage(state);
+  if (unread && !dot) {
+    dot = document.createElement("span");
+    dot.className = "cg-message-trigger-dot";
+    trigger.appendChild(dot);
+  } else if (!unread && dot) {
+    dot.remove();
+  }
+}
+
+function refreshVeraPanel() {
+  const els = veraPanelEls();
+  if (!els) return;
+  const state = readState();
+  const conversations = [...state.veraConversations].sort((a, b) => b.updatedAt - a.updatedAt);
+  const active = getActiveVeraConversation(state);
+  els.historyList.innerHTML = conversations.map(conv => veraHistoryItemHtml(conv, active.id)).join("");
+  els.messagesPane.innerHTML = veraMessagesHtml(active.messages, getFirstName(state));
+  createIcons();
+  els.messagesPane.scrollTop = els.messagesPane.scrollHeight;
+  updateVeraBubbleBadge();
+}
+
+function sendVeraChatMessage(text) {
+  const trimmed = text.trim();
+  if (!trimmed) return;
+  let state = readState();
+  state = appendVeraMessage(state, "user", trimmed);
+  state = appendVeraMessage(state, "vera", veraReply(trimmed));
+  writeState(state);
+  refreshVeraPanel();
+}
+
+function openVeraPanel(options = {}) {
+  const els = veraPanelEls();
+  if (!els) return;
+  if (options.seedTopic) {
+    let state = readState();
+    state = createVeraConversation(state, options.seedTopic);
+    writeState(state);
+  }
+  const state = readState();
+  state.veraLastReadAt = Date.now();
+  writeState(state);
+  els.panel.hidden = false;
+  document.body.classList.add("cg-vera-chat-open");
+  refreshVeraPanel();
+  els.input.focus();
+}
+
+function closeVeraPanel() {
+  const els = veraPanelEls();
+  if (!els) return;
+  els.panel.hidden = true;
+  document.body.classList.remove("cg-vera-chat-open");
+}
+
+function wireVeraChatPanel() {
+  const els = veraPanelEls();
+  if (!els || els.panel.dataset.wired) return;
+  els.panel.dataset.wired = "1";
+  els.newChatBtn.addEventListener("click", () => {
+    let state = readState();
+    state = createVeraConversation(state, null);
+    writeState(state);
+    refreshVeraPanel();
+    els.input.focus();
+  });
+  els.historyList.addEventListener("click", event => {
+    const item = event.target.closest("[data-vera-history-item]");
+    if (!item) return;
+    const state = readState();
+    state.activeVeraConversationId = item.dataset.veraHistoryItem;
+    writeState(state);
+    refreshVeraPanel();
+  });
+  els.messagesPane.addEventListener("click", event => {
+    const chip = event.target.closest("[data-vera-chat-quick-prompt]");
+    if (!chip) return;
+    sendVeraChatMessage(chip.dataset.veraChatQuickPrompt);
+  });
+  els.composer.addEventListener("submit", event => {
+    event.preventDefault();
+    const text = els.input.value;
+    els.input.value = "";
+    sendVeraChatMessage(text);
+  });
+  els.closeBtn.addEventListener("click", closeVeraPanel);
+  els.backdrop.addEventListener("click", closeVeraPanel);
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !els.panel.hidden) closeVeraPanel();
+  });
+}
+
 function veraWidgetMarkup() {
   const state = readState();
   const insight = veraInsight(state);
@@ -7079,7 +7332,7 @@ function veraWidgetMarkup() {
           <div class="cg-vera-pop-head">
             <span>Coach Vera</span>
             <b class="cg-vera-pop-online">online</b>
-            <a class="cg-vera-pop-expand" href="posts.html?topic=${encodeURIComponent("continuing my conversation with Vera")}#messages" aria-label="Open full conversation">${icon("external-link")}</a>
+            <button type="button" class="cg-vera-pop-expand" data-vera-pop-expand aria-label="Open full conversation">${icon("external-link")}</button>
             <button type="button" class="cg-vera-pop-close" data-vera-close aria-label="Close Vera">${icon("x")}</button>
           </div>
           <div class="cg-vera-pop-body" data-vera-pop-body>
@@ -7107,6 +7360,7 @@ function veraWidgetMarkup() {
           <img class="cg-vera-trigger-logo" src="assets/vera-ai-coach.png" alt="Vera AI">
         </button>
       </div>
+      ${veraChatPanelMarkup(state)}
   `;
 }
 
@@ -7130,21 +7384,27 @@ function wireVeraWidget(root) {
   };
   const sendMessage = text => {
     const reply = veraReply(text);
-    const next = readState();
-    next.chat.push({ from: "user", text });
-    next.chat.push({ from: "vera", text: reply });
+    let next = readState();
+    next = appendVeraMessage(next, "user", text);
+    next = appendVeraMessage(next, "vera", reply);
     writeState(next);
     thread.insertAdjacentHTML("beforeend", `<div class="cg-vera-pop-question">${text}</div><div class="cg-vera-pop-bubble">${reply}</div>`);
     body.scrollTop = body.scrollHeight;
+    refreshVeraPanel();
   };
   trigger.addEventListener("click", () => {
     if (popover.hidden) openPopover(); else closePopover();
   });
   qs("[data-vera-close]", popover).addEventListener("click", closePopover);
+  qs("[data-vera-pop-expand]", popover)?.addEventListener("click", () => {
+    closePopover();
+    openVeraPanel();
+  });
   qsa("[data-vera-open]", root).forEach(btn => btn.addEventListener("click", event => {
     event.stopPropagation();
     openPopover();
   }));
+  wireVeraChatPanel();
   document.addEventListener("click", event => {
     if (!widget.contains(event.target)) closePopover();
   });
@@ -7174,6 +7434,7 @@ function wireVeraWidget(root) {
     quick.hidden = true;
     sendMessage(text);
   });
+  updateVeraBubbleBadge();
 }
 
 function renderVera() {
@@ -11734,20 +11995,7 @@ function renderPosts() {
     .join("")
     .toUpperCase();
   if (activeTab === "messages") {
-    const topicParam = new URLSearchParams(location.search).get("topic");
-    const veraMessages = state.chat.length ? state.chat : [
-      { from: "vera", text: `Welcome back, ${getFirstName(state)}. I checked your ${state.profile.careerStage || "career"} profile. Your best move today is: ${state.profile.intelligence.immediateActions[0]}` },
-      ...(topicParam ? [{ from: "user", text: `Help me with ${topicParam}` }, { from: "vera", text: `Good choice. I will break ${topicParam} into a clear next-step plan: evidence needed, risks, and the action you should take first.` }] : [])
-    ];
-    if (!state.chat.length) {
-      state.chat = veraMessages;
-      writeState(state);
-    }
-    if (topicParam) {
-      activePostsThread = "vera";
-      history.replaceState(null, "", "posts.html#messages");
-    }
-    if (!activePostsThread) activePostsThread = "aisha";
+    if (!activePostsThread || activePostsThread === "vera") activePostsThread = "aisha";
 
     const humanThreads = [
       {
@@ -11796,32 +12044,13 @@ function renderPosts() {
     const inboxFilters = ["All", "Recruiters", "Mentors", "Hiring", "Connections"];
     const inboxFilterTag = { Recruiters: "Recruiter", Mentors: "Mentor", Hiring: "Hiring manager", Connections: "Connection" };
     if (!inboxFilters.includes(activeInboxFilter)) activeInboxFilter = "All";
-    const inboxThreads = [
-      { id: "vera", name: "Coach Vera", role: "Your AI career coach", tag: "Coach", preview: veraMessages[veraMessages.length - 1]?.text || "Ask me anything about your career.", time: "now", unread: "" },
-      ...humanThreads
-    ];
+    const inboxThreads = humanThreads;
     const activeThread = inboxThreads.find(thread => thread.id === activePostsThread) || inboxThreads[0];
     const visibleThreads = activeInboxFilter === "All"
       ? inboxThreads
       : inboxThreads.filter(thread => thread.tag === inboxFilterTag[activeInboxFilter]);
 
-    const veraQuickPrompts = VERA_QUICK_PROMPTS;
-    const threadPanel = activeThread.id === "vera" ? `
-          <header>
-            <div><h2>Coach Vera</h2><p>Your AI career coach  - always online</p></div>
-            <span>Personalized to your profile</span>
-          </header>
-          <section class="cg-chat-thread" aria-label="Conversation with Coach Vera" data-vera-thread-messages>
-            ${veraMessages.map(msg => `<p class="${msg.from === "vera" ? "incoming" : "outgoing"}">${msg.text}</p>`).join("")}
-            <div class="cg-vera-quick-prompts" role="group" aria-label="Quick questions for Vera">
-              ${veraQuickPrompts.map(prompt => `<button type="button" class="cg-vera-quick-chip" data-vera-quick="${prompt}">${prompt}</button>`).join("")}
-            </div>
-          </section>
-          <form class="cg-message-composer" data-vera-thread-composer>
-            <input placeholder="Write a message..." data-vera-thread-input>
-            <button type="submit">${icon("send")} Send</button>
-          </form>
-    ` : `
+    const threadPanel = `
           <header>
             <div><h2>${activeThread.name}</h2><p>${activeThread.role}  - Usually replies within 2h</p></div>
             <span>Warm - 3 replies this week</span>
@@ -11912,26 +12141,6 @@ function renderPosts() {
       humanInput.focus();
       showToast("Vera shortened the draft - edit and send.");
     });
-    function sendVeraThreadMessage(text) {
-      const trimmed = text.trim();
-      if (!trimmed) return;
-      const next = readState();
-      next.chat = [...next.chat, { from: "user", text: trimmed }, { from: "vera", text: veraReply(trimmed) }];
-      writeState(next);
-      activePostsThread = "vera";
-      renderPosts();
-    }
-    const veraComposer = qs("[data-vera-thread-composer]", root);
-    if (veraComposer) {
-      const input = qs("[data-vera-thread-input]", veraComposer);
-      veraComposer.addEventListener("submit", event => {
-        event.preventDefault();
-        sendVeraThreadMessage(input.value);
-      });
-    }
-    qsa("[data-vera-quick]", root).forEach(chip => chip.addEventListener("click", () => sendVeraThreadMessage(chip.dataset.veraQuick)));
-    const messagesPane = qs("[data-vera-thread-messages]", root);
-    if (messagesPane) messagesPane.scrollTop = messagesPane.scrollHeight;
     return;
   }
   const commentSeed = post => [
@@ -12247,12 +12456,9 @@ function renderPosts() {
   qsa("[data-feed-org-chat]", root).forEach(button => button.addEventListener("click", () => {
     const org = [...DATA.companies, ...DATA.universities].find(item => item.id === button.dataset.feedOrgChat);
     if (!org) return;
-    const next = readState();
-    next.chat = [
-      ...next.chat,
-      { from: "user", text: `Help me evaluate ${org.name}` },
-      { from: "vera", text: `${org.name} looks strongest for ${org.signal.toLowerCase()}. Compare culture, growth, pay, and whether its watchouts match your tolerance before making it a priority.` }
-    ];
+    let next = readState();
+    next = appendVeraMessage(next, "user", `Help me evaluate ${org.name}`);
+    next = appendVeraMessage(next, "vera", `${org.name} looks strongest for ${org.signal.toLowerCase()}. Compare culture, growth, pay, and whether its watchouts match your tolerance before making it a priority.`);
     writeState(next);
     showToast("Vera added this research note to chat.");
   }));
