@@ -650,6 +650,8 @@ function normalizeState(state) {
     marketPlan: state.marketPlan && typeof state.marketPlan === "object" ? state.marketPlan : null,
     growGoals: state.growGoals && typeof state.growGoals === "object" ? state.growGoals : null,
     growMovesStarted: Array.isArray(state.growMovesStarted) ? state.growMovesStarted : [],
+    growMovesCompleted: Array.isArray(state.growMovesCompleted) ? state.growMovesCompleted : [],
+    growMoveProgress: state.growMoveProgress && typeof state.growMoveProgress === "object" ? state.growMoveProgress : {},
     interviewChecklist: Array.isArray(state.interviewChecklist) ? state.interviewChecklist : null,
     autopilotRules: {
       salary: "", location: "", threshold: 75, scanOnly: true, exclude: "",
@@ -8606,6 +8608,64 @@ function openAdjustGoalsModal() {
   createIcons();
 }
 
+const GROWTH_MOVES = [
+  {
+    id: "move-sql", kind: "Practice", time: "3h - Beginner", title: "SQL for Product Managers", source: "DataLemur",
+    why: "Chosen because: 78% of your saved PM roles list SQL as required.",
+    metrics: [["Interview readiness", "+8%"], ["New matching jobs", "+31"], ["Skill gap closed", "Data fluency"]],
+    practice: {
+      intro: "Five SQL exercises PMs are actually asked in interviews - joins, aggregation, and cohort thinking.",
+      questions: [
+        { id: "q1", title: "Join two tables", prompt: "Write a query joining `orders` and `users` to list each order with the customer's name and signup date." },
+        { id: "q2", title: "Aggregate with GROUP BY", prompt: "Find the total revenue per product category for the last 30 days." },
+        { id: "q3", title: "Window function", prompt: "Rank customers by lifetime spend within each country using a window function." },
+        { id: "q4", title: "Cohort retention", prompt: "Write a query that buckets users into signup-month cohorts and shows month-1 retention." },
+        { id: "q5", title: "Funnel conversion", prompt: "Calculate the conversion rate from `viewed` to `purchased` events per day." }
+      ]
+    }
+  },
+  {
+    id: "move-strategy", kind: "Course", time: "6h - Intermediate", title: "Product Strategy sprint", source: "Reforge",
+    why: "Chosen because: Completes Milestone 1 and matches your Grab & Setel targets.",
+    metrics: [["Interview readiness", "+11%"], ["Pay band shift", "+RM 900"], ["Milestone", "Closes M1"]],
+    course: {
+      modules: [
+        { id: "m1", title: "Frame the strategic bet", summary: "Turn a vague direction into a testable strategic bet with a clear north-star metric." },
+        { id: "m2", title: "Map the competitive landscape", summary: "Position your product against Grab and Setel's current strategic moves." },
+        { id: "m3", title: "Prioritize with a strategy canvas", summary: "Use a strategy canvas to cut your roadmap down to the 3 bets that matter." },
+        { id: "m4", title: "Pressure-test with stakeholders", summary: "Rehearse defending your strategy against a skeptical VP of Product." }
+      ]
+    }
+  },
+  {
+    id: "move-essay", kind: "Essay pack", time: "45m - Any", title: "Write a crisp problem statement", source: "Vera curated",
+    why: "Chosen because: Your written comms is your strongest signal - publish once to lock Top 18%.",
+    metrics: [["Callback rate", "x1.4"], ["Portfolio proof", "+1 artifact"], ["Milestone", "Feeds M3"]],
+    essay: {
+      template: "In 150-200 words: name the user, the pain, the evidence it's real, and why now is the moment to solve it.",
+      criteria: [
+        "Names a specific user segment, not \"users\" in general",
+        "Backed by one concrete evidence point (data, quote, or observed behavior)",
+        "States why this problem is more urgent now than 6 months ago",
+        "Ends with the outcome that solving it unlocks"
+      ]
+    }
+  }
+];
+
+function growMoveCompletionBonus(state) {
+  const completed = Array.isArray(state.growMovesCompleted) ? state.growMovesCompleted : [];
+  const bonus = { readiness: 0, matchingJobs: 0, pay: 0 };
+  GROWTH_MOVES.filter(move => completed.includes(move.id)).forEach(move => {
+    move.metrics.forEach(([label, value]) => {
+      if (/interview readiness/i.test(label)) bonus.readiness += parseInt(value, 10) || 0;
+      if (/matching jobs/i.test(label)) bonus.matchingJobs += parseInt(value.replace(/[^\d-]/g, ""), 10) || 0;
+      if (/pay band/i.test(label)) bonus.pay += parseInt(value.replace(/[^\d-]/g, ""), 10) || 0;
+    });
+  });
+  return bonus;
+}
+
 function renderGrow() {
   const root = qs("[data-grow]");
   if (!root) return;
@@ -8614,16 +8674,22 @@ function renderGrow() {
   const profile = state.profile;
   const intel = profile.intelligence || generateCareerIntelligence(profile);
   const growCoachInsight = veraInsight(state);
+  const moveBonus = growMoveCompletionBonus(state);
+  const growMovesCompleted = Array.isArray(state.growMovesCompleted) ? state.growMovesCompleted : [];
+  const sqlDone = growMovesCompleted.includes("move-sql");
+  const essayDone = growMovesCompleted.includes("move-essay");
   const growthStats = [
-    ["Interview readiness", "74%", "6"],
+    ["Interview readiness", `${74 + moveBonus.readiness}%`, "6"],
     ["Skill percentile", "Top 31%", "11"],
-    ["Matching jobs", "153", "35"],
-    ["Estimated pay", "RM 8,900", "RM 1,100"]
+    ["Matching jobs", String(153 + moveBonus.matchingJobs), "35"],
+    ["Estimated pay", formatRM(8900 + moveBonus.pay), "RM 1,100"]
   ];
+  const dataFluencyValue = Math.min(100, 58 + (sqlDone ? 20 : 0));
+  const writtenCommsValue = Math.min(100, 86 + (essayDone ? 6 : 0));
   const skillGraph = [
     ["Product strategy", "Strong", "Near target - one artifact away from proof.", "Top 30%", 78, "strong"],
-    ["Data fluency", "Needs work", "Closing this unlocks 40+ PM roles in KL.", "Largest hiring blocker", 58, "needs"],
-    ["Written communication", "Strong", "Ship one public essay to lock it in.", "Top 18%", 86, "strong"],
+    ["Data fluency", sqlDone ? "Growing" : "Needs work", sqlDone ? "SQL for Product Managers is done - keep shipping proof." : "Closing this unlocks 40+ PM roles in KL.", "Largest hiring blocker", dataFluencyValue, sqlDone ? "growing" : "needs"],
+    ["Written communication", "Strong", essayDone ? "Published your problem statement - locked in." : "Ship one public essay to lock it in.", "Top 18%", writtenCommsValue, "strong"],
     ["Technical depth", "Growing", "2 more shipped projects to reach target.", "Bottom 45%", 46, "growing"],
     ["User research", "On track", "One study away from target.", "Top 38%", 74, "track"]
   ];
@@ -8633,11 +8699,7 @@ function renderGrow() {
     ["Milestone 3", "Portfolio proof", "One public case study Vera helps you write.", "~3 weeks", "Lifts interview callback rate ~2.3x", 0, ""],
     ["Milestone 4", "Application sprint", "5 applications  - 2 warm intros via Vera.", "~4 weeks", "Median offer RM 10.2k  - 3 expected interviews", 0, ""]
   ];
-  const moves = [
-    ["move-sql", "Practice", "3h  - Beginner", "SQL for Product Managers", "DataLemur", "Chosen because: 78% of your saved PM roles list SQL as required.", [["Interview readiness", "+8%"], ["New matching jobs", "+31"], ["Skill gap closed", "Data fluency"]]],
-    ["move-strategy", "Course", "6h  - Intermediate", "Product Strategy sprint", "Reforge", "Chosen because: Completes Milestone 1 and matches your Grab & Setel targets.", [["Interview readiness", "+11%"], ["Pay band shift", "+RM 900"], ["Milestone", "Closes M1"]]],
-    ["move-essay", "Essay pack", "45m  - Any", "Write a crisp problem statement", "Vera curated", "Chosen because: Your written comms is your strongest signal - publish once to lock Top 18%.", [["Callback rate", "x1.4"], ["Portfolio proof", "+1 artifact"], ["Milestone", "Feeds M3"]]]
-  ];
+  const moves = GROWTH_MOVES;
   const growGoals = state.growGoals || {};
   const growMovesStarted = Array.isArray(state.growMovesStarted) ? state.growMovesStarted : [];
   const checklistItems = [
@@ -8824,19 +8886,23 @@ function renderGrow() {
         </div>
       </section>
 
-      <section class="cg-grow-section">
+      <section class="cg-grow-section" id="recommended-growth">
         <div class="cg-grow-section-head"><div><h2>Recommended Growth</h2><p class="cg-h2-sub">The learning moves with the highest return for your target role right now.</p></div><a href="vera.html#skills">Browse all</a></div>
         <div class="cg-move-grid">
-          ${moves.map(([id, kind, time, title, source, why, metrics]) => {
-            const started = growMovesStarted.includes(id);
+          ${moves.map(move => {
+            const { id, kind, time, title, source, why, metrics } = move;
+            const completed = growMovesCompleted.includes(id);
+            const started = completed || growMovesStarted.includes(id);
+            const buttonIcon = completed ? "check-circle-2" : started ? "arrow-right" : "play";
+            const buttonLabel = completed ? "Completed" : started ? "In progress" : "Start";
             return `
-            <article class="cg-move-card ${started ? "started" : ""}">
+            <article class="cg-move-card ${started ? "started" : ""} ${completed ? "completed" : ""}">
               <header><span>${kind}</span><small>${icon("clock")} ${time}</small></header>
               <h3>${title}</h3>
               <p>${icon("book-open")} ${source}</p>
               <div class="cg-move-why">${icon("lightbulb")} ${why}</div>
               <dl>${metrics.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
-              <button class="btn btn-primary" type="button" data-grow-move-start="${id}">${icon(started ? "check" : "play")} ${started ? "In progress" : "Start"}</button>
+              <a class="btn btn-primary" href="growth-move.html?id=${encodeURIComponent(id)}">${icon(buttonIcon)} ${buttonLabel}</a>
             </article>
           `;
           }).join("")}
@@ -8862,15 +8928,6 @@ function renderGrow() {
     });
   });
   qs("[data-adjust-goals]", root)?.addEventListener("click", () => openAdjustGoalsModal());
-  qsa("[data-grow-move-start]", root).forEach(btn => btn.addEventListener("click", () => {
-    const id = btn.dataset.growMoveStart;
-    const next = readState();
-    next.growMovesStarted = Array.isArray(next.growMovesStarted) ? next.growMovesStarted : [];
-    if (!next.growMovesStarted.includes(id)) next.growMovesStarted.push(id);
-    writeState(next);
-    showToast("Added to your active learning moves.");
-    renderGrow();
-  }));
   function toggleChecklistItem(id) {
     const next = readState();
     const current = Array.isArray(next.interviewChecklist) ? next.interviewChecklist : defaultChecklistDone;
@@ -9074,6 +9131,201 @@ function renderGrow() {
     URL.revokeObjectURL(link.href);
   });
   createIcons();
+}
+
+function renderGrowthMovePage() {
+  const root = qs("[data-growth-move]");
+  if (!root) return;
+  if (!requireAccount(root, "continue this learning move")) return;
+  const moveId = new URLSearchParams(location.search).get("id");
+  const move = GROWTH_MOVES.find(item => item.id === moveId);
+  if (!move) {
+    root.innerHTML = `
+      <div class="locked-state-wrap">
+        <div class="locked-state glass-card">
+          <div class="eyebrow"><span class="spark">*</span> Move not found</div>
+          <h1 class="section-title">We could not find that learning move.</h1>
+          <p class="section-sub">The link may be out of date.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="grow.html#recommended-growth">${icon("arrow-left")} Back to Growth</a></div>
+        </div>
+      </div>
+    `;
+    createIcons();
+    return;
+  }
+  let state = readState();
+  if (!state.growMovesStarted.includes(move.id) && !state.growMovesCompleted.includes(move.id)) {
+    state.growMovesStarted = [...state.growMovesStarted, move.id];
+    writeState(state);
+    state = readState();
+  }
+  const completed = state.growMovesCompleted.includes(move.id);
+  const progress = state.growMoveProgress[move.id] || {};
+  const kindIcon = { Practice: "zap", Course: "book-open", "Essay pack": "pen-line" }[move.kind] || "sparkles";
+
+  let bodyHtml = "";
+  if (move.kind === "Practice") {
+    const doneIds = Array.isArray(progress.doneQuestions) ? progress.doneQuestions : [];
+    const total = move.practice.questions.length;
+    bodyHtml = `
+      <article class="cg-cp-card">
+        <span class="cg-section-kicker">Practice</span>
+        <h2>${total} SQL exercises</h2>
+        <p>${move.practice.intro}</p>
+        <p class="cg-move-detail-progress">${doneIds.length}/${total} completed</p>
+        <div class="cg-move-detail-list">
+          ${move.practice.questions.map(q => {
+            const done = doneIds.includes(q.id);
+            return `
+              <article class="cg-move-detail-item ${done ? "done" : ""}">
+                <button type="button" class="cg-move-detail-check" data-practice-toggle="${q.id}" aria-pressed="${done}">${icon(done ? "check-circle-2" : "circle")}</button>
+                <div><strong>${escapeHtml(q.title)}</strong><p>${escapeHtml(q.prompt)}</p></div>
+              </article>
+            `;
+          }).join("")}
+        </div>
+      </article>
+    `;
+  } else if (move.kind === "Course") {
+    const doneIds = Array.isArray(progress.doneModules) ? progress.doneModules : [];
+    const total = move.course.modules.length;
+    bodyHtml = `
+      <article class="cg-cp-card">
+        <span class="cg-section-kicker">Course &middot; ${escapeHtml(move.source)}</span>
+        <h2>${total} modules</h2>
+        <p class="cg-move-detail-progress">${doneIds.length}/${total} completed</p>
+        <ol class="cg-move-detail-modules">
+          ${move.course.modules.map((m, index) => {
+            const done = doneIds.includes(m.id);
+            return `
+              <li class="${done ? "done" : ""}">
+                <span>${done ? icon("check-circle-2") : index + 1}</span>
+                <div><strong>${escapeHtml(m.title)}</strong><p>${escapeHtml(m.summary)}</p></div>
+                <button type="button" class="btn ${done ? "btn-ghost" : "btn-primary"}" data-module-toggle="${m.id}">${done ? "Completed" : "Mark complete"}</button>
+              </li>
+            `;
+          }).join("")}
+        </ol>
+      </article>
+    `;
+  } else if (move.kind === "Essay pack") {
+    const draft = progress.draft || "";
+    const published = Boolean(progress.published);
+    bodyHtml = `
+      <article class="cg-cp-card">
+        <span class="cg-section-kicker">Prompt</span>
+        <h2>Write your problem statement</h2>
+        <p>${escapeHtml(move.essay.template)}</p>
+      </article>
+      <article class="cg-cp-card">
+        <span class="cg-section-kicker">What makes it strong</span>
+        <h2>Guidance</h2>
+        <div class="cg-uni-requirements"><ul>${move.essay.criteria.map(c => `<li class="ok">${icon("check-circle-2")}<div><p>${escapeHtml(c)}</p></div></li>`).join("")}</ul></div>
+      </article>
+      <article class="cg-cp-card">
+        <span class="cg-section-kicker">Your draft</span>
+        <h2>${published ? "Published" : "Draft"}</h2>
+        <textarea class="cg-essay-editor" data-essay-draft placeholder="Write your problem statement here..." ${published ? "disabled" : ""}>${escapeHtml(draft)}</textarea>
+        <div class="cg-action-row">
+          ${published
+            ? `<span class="cg-cp-vera-watch">${icon("check-circle-2")} Published - counted toward your portfolio proof.</span>`
+            : `<button type="button" class="btn btn-ghost" data-essay-save>${icon("save")} Save draft</button><button type="button" class="btn btn-primary" data-essay-publish>${icon("upload")} Publish</button>`}
+        </div>
+      </article>
+    `;
+  }
+
+  root.innerHTML = `
+    <section class="cg-cp">
+      <a class="cg-cp-back" href="grow.html#recommended-growth">${icon("arrow-left")} Growth</a>
+      <article class="cg-cp-hero">
+        <div class="cg-cp-hero-top">
+          <span class="cg-cp-mono">${move.kind.slice(0, 2).toUpperCase()}</span>
+          <div class="cg-cp-hero-id">
+            <span class="cg-section-kicker">${escapeHtml(move.kind)} &middot; ${escapeHtml(move.time)}</span>
+            <h1>${escapeHtml(move.title)}</h1>
+            <p class="cg-cp-hero-meta">${icon("book-open")} ${escapeHtml(move.source)}</p>
+          </div>
+          <div class="cg-cp-hero-actions">
+            ${completed ? `<span class="pill">${icon("check-circle-2")} Completed</span>` : ""}
+          </div>
+        </div>
+        <div class="cg-cp-vera">
+          <span class="cg-cp-vera-label">${icon("lightbulb")} Why Vera chose this</span>
+          <p>${escapeHtml(move.why.replace(/^Chosen because:\s*/, ""))}</p>
+        </div>
+        <div class="cg-move-detail-stats">
+          ${move.metrics.map(([k, v]) => `<div><span>${escapeHtml(k)}</span><strong>${escapeHtml(v)}</strong></div>`).join("")}
+        </div>
+      </article>
+      ${bodyHtml}
+    </section>
+  `;
+  createIcons();
+
+  function updateProgress(mutator) {
+    const next = readState();
+    next.growMoveProgress = next.growMoveProgress && typeof next.growMoveProgress === "object" ? next.growMoveProgress : {};
+    const current = next.growMoveProgress[move.id] || {};
+    next.growMoveProgress[move.id] = mutator({ ...current });
+    return next;
+  }
+  function markCompletedIfDone(next, isDone) {
+    if (!isDone) return next;
+    next.growMovesCompleted = Array.isArray(next.growMovesCompleted) ? next.growMovesCompleted : [];
+    if (!next.growMovesCompleted.includes(move.id)) {
+      next.growMovesCompleted = [...next.growMovesCompleted, move.id];
+      showToast(`${move.title} completed - stats updated on your Growth page.`);
+    }
+    return next;
+  }
+
+  qsa("[data-practice-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+    const qId = btn.dataset.practiceToggle;
+    let next = updateProgress(current => {
+      const doneQuestions = Array.isArray(current.doneQuestions) ? current.doneQuestions : [];
+      current.doneQuestions = doneQuestions.includes(qId) ? doneQuestions.filter(id => id !== qId) : [...doneQuestions, qId];
+      return current;
+    });
+    const allDone = next.growMoveProgress[move.id].doneQuestions.length === move.practice.questions.length;
+    next = markCompletedIfDone(next, allDone);
+    writeState(next);
+    renderGrowthMovePage();
+  }));
+
+  qsa("[data-module-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+    const mId = btn.dataset.moduleToggle;
+    let next = updateProgress(current => {
+      const doneModules = Array.isArray(current.doneModules) ? current.doneModules : [];
+      if (!doneModules.includes(mId)) current.doneModules = [...doneModules, mId];
+      return current;
+    });
+    const allDone = next.growMoveProgress[move.id].doneModules.length === move.course.modules.length;
+    const wasCompleted = next.growMovesCompleted.includes(move.id);
+    next = markCompletedIfDone(next, allDone);
+    writeState(next);
+    if (!allDone || wasCompleted) showToast("Module marked complete.");
+    renderGrowthMovePage();
+  }));
+
+  qs("[data-essay-save]", root)?.addEventListener("click", () => {
+    const text = qs("[data-essay-draft]", root)?.value || "";
+    const next = updateProgress(current => ({ ...current, draft: text }));
+    writeState(next);
+    showToast("Draft saved.");
+  });
+
+  qs("[data-essay-publish]", root)?.addEventListener("click", () => {
+    const text = qs("[data-essay-draft]", root)?.value || "";
+    if (!text.trim()) {
+      showToast("Write a draft before publishing.", "note");
+      return;
+    }
+    let next = updateProgress(current => ({ ...current, draft: text, published: true }));
+    next = markCompletedIfDone(next, true);
+    writeState(next);
+    renderGrowthMovePage();
+  });
 }
 
 function renderProfileLegacy() {
@@ -13199,6 +13451,7 @@ function init() {
   renderCandidateOnboarding();
   renderEmployerOnboarding();
   renderGrow();
+  renderGrowthMovePage();
   renderProfile();
   renderPublicProfile();
   renderSettings();
