@@ -602,6 +602,9 @@ function normalizeVeraConversations(state) {
       updatedAt: now,
       messages: legacyMessages
     }];
+  } else {
+    const withMessages = conversations.filter(c => c.messages.length > 0);
+    if (withMessages.length) conversations = withMessages;
   }
   let activeId = state.activeVeraConversationId;
   if (!activeId || !conversations.some(c => c.id === activeId)) activeId = conversations[0].id;

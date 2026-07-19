@@ -17517,7 +17517,7 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-.cg-vera-history-item strong {
+html body .cg-vera-chat-panel .cg-vera-history-item strong {
   color: #fffaf2 !important;
   -webkit-text-fill-color: #fffaf2 !important;
   font-size: 12px;
@@ -17527,7 +17527,7 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
   white-space: nowrap;
 }
 
-.cg-vera-history-item small {
+html body .cg-vera-chat-panel .cg-vera-history-item small {
   color: rgba(255, 250, 242, 0.55) !important;
   -webkit-text-fill-color: rgba(255, 250, 242, 0.55) !important;
   font-size: 11px;
