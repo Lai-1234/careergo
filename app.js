@@ -15620,26 +15620,26 @@ function renderEmployerCompany(root) {
           <ul class="emp-gap-list">${company.profileGaps.map(g => `<li>${icon("alert-triangle")} ${g}</li>`).join("")}</ul>
         </div>
 
-        <div class="emp-vera-insight-card">
-          <div class="emp-vera-insight-card-head">
-            <span class="emp-vera-insight-card-icon">${icon("sparkles")}</span>
+        <div class="emp-company-vera-card">
+          <div class="emp-company-vera-card-head">
+            <span class="emp-company-vera-card-icon">${icon("sparkles")}</span>
             <h3>Vera Insight</h3>
             <span class="emp-vera-insight-confidence-badge">${icon("shield-check")} ${company.veraCompanyRead.confidencePercent}% confidence</span>
           </div>
-          <p class="emp-vera-insight-card-summary">${escapeHtml(company.veraCompanyRead.summary)}</p>
+          <p class="emp-company-vera-card-summary">${escapeHtml(company.veraCompanyRead.summary)}</p>
 
-          <div class="emp-vera-insight-card-grid">
-            <div class="emp-vera-insight-card-col">
+          <div class="emp-company-vera-card-grid">
+            <div class="emp-company-vera-card-col">
               <span class="emp-tags-label">Strengths</span>
               <ul>${company.veraCompanyRead.strengths.map(s => `<li>${icon("check")} ${escapeHtml(s)}</li>`).join("")}</ul>
             </div>
-            <div class="emp-vera-insight-card-col">
+            <div class="emp-company-vera-card-col">
               <span class="emp-tags-label">Weaknesses</span>
               <ul>${company.veraCompanyRead.weaknesses.map(w => `<li>${icon("alert-triangle")} ${escapeHtml(w)}</li>`).join("")}</ul>
             </div>
           </div>
 
-          <div class="emp-vera-insight-card-section">
+          <div class="emp-company-vera-card-section">
             <span class="emp-tags-label">Recommended Actions</span>
             <div class="emp-vera-rec-list">
               ${company.veraCompanyRead.recommendedActions.map(rec => `
@@ -15661,7 +15661,7 @@ function renderEmployerCompany(root) {
             <p>${escapeHtml(company.veraCompanyRead.predictedImpact.note)}</p>
           </div>
 
-          <div class="emp-vera-insight-card-actions">
+          <div class="emp-company-vera-card-actions">
             <button type="button" class="btn btn-primary" data-company-edit>Edit profile</button>
             <button type="button" class="btn btn-ghost" data-company-jump-gaps>Review missing information</button>
           </div>

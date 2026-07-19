@@ -13512,8 +13512,11 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-company-hero {
   display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; flex-wrap: wrap;
   padding: 40px !important; border-radius: 24px !important; border: 0 !important;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.10) !important;
-  margin-bottom: 16px;
+  /* Same warm-neutral hue as --emp-shadow-card (0 18px 44px rgba(35,29,18,.065))
+     used on every .emp-company-section below it, just scaled up for the
+     hero's elevated role - one shadow family, not two different color casts. */
+  box-shadow: 0 24px 56px rgba(35, 29, 18, 0.09) !important;
+  margin-bottom: 40px;
 }
 .emp-company-hero-left { display: flex; flex-direction: column; gap: 20px; min-width: 0; flex: 1 1 420px; }
 .emp-company-hero-identity { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
@@ -13533,15 +13536,20 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-company-hero-right { display: flex; flex-direction: column; gap: 24px; align-items: stretch; flex: 0 1 320px; }
 .emp-company-hero-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 /* Opacity-only feedback per spec - no bounce/scale/flashy motion. */
-.emp-company-hero-actions .btn { transition: opacity 150ms ease, background 150ms ease, border-color 150ms ease; }
+.emp-company-hero-actions .btn { box-sizing: border-box; transition: opacity 150ms ease, background 150ms ease, border-color 150ms ease; }
+/* .btn-ghost's 1px border (vs. .btn-primary's border:0) otherwise adds 2px
+   of natural content-driven height even under border-box sizing, since
+   that height already exceeds .btn's min-height floor - compensate with
+   1px less vertical padding so the two buttons in this stack match exactly. */
+.emp-company-hero-actions .btn-ghost:not(.emp-menu-toggle) { padding-top: 10px; padding-bottom: 10px; }
 .emp-company-hero-actions .btn:hover { opacity: 0.85; }
 .emp-company-hero-actions .btn:active { opacity: 0.7; }
 .emp-company-hero-menu-wrap { position: relative; }
 
 .emp-company-hero-kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 .emp-company-hero-kpi {
-  display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 16px;
-  background: rgba(7, 56, 47, 0.04); transition: transform 150ms ease, box-shadow 150ms ease;
+  display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 16px; border-radius: 16px;
+  min-height: 90px; background: rgba(7, 56, 47, 0.04); transition: transform 150ms ease, box-shadow 150ms ease;
 }
 .emp-company-hero-kpi:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); }
 .emp-company-hero-kpi strong { font-size: 24px; font-weight: 800; color: var(--emp-ink, var(--text)); line-height: 1.1; }
@@ -13554,10 +13562,25 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-company-hero-right { flex-basis: 100%; }
 }
 [data-tabs-sentinel] { height: 0; }
+/* Nav redesign (sizing/spacing/overflow only - order, tabs, and the
+   underline mechanism below are unchanged). 12 tabs at the previous
+   padding/gap/font overflowed the ~1240px content width by ~21px, forcing
+   a horizontal scrollbar even at a 1440px viewport - measured via
+   Playwright before touching anything, then re-measured after each change
+   below until the scrollbar was actually eliminated (not just estimated). */
 .emp-detail-tabs {
-  display: flex; align-items: center; gap: 4px; overflow-x: auto; overflow-y: hidden; margin-bottom: 20px;
-  position: relative; z-index: 10; padding: 8px 6px;
+  display: flex; align-items: center; justify-content: center; gap: 12px; overflow-x: auto; overflow-y: hidden; margin-bottom: 20px;
+  position: relative; z-index: 10; padding: 6px 4px;
   background: var(--emp-bg, #f8f4eb); transition: background 200ms ease, box-shadow 200ms ease;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.emp-detail-tabs::-webkit-scrollbar { display: none; }
+@media (min-width: 1200px) {
+  /* At >=1200px the 12 tabs fit on one row at the sizing below (verified),
+     so scrolling is disabled outright rather than just visually hidden -
+     "eliminate the scrollbar" means no scroll interaction either, not a
+     hidden-but-still-functional one. */
+  .emp-detail-tabs { overflow-x: visible; }
 }
 /* This is the "selected tab" pill itself, not a thin underline bar - one
    sliding element serves as both the animated indicator and the active
@@ -13566,19 +13589,20 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    be a background fill). Hidden via :has() until JS marks a tab .active,
    so there's no flash at width:0/left:0 before the observer runs. */
 .emp-detail-tabs-underline {
-  position: absolute; left: 0; top: 3px; height: calc(100% - 6px); width: 0; border-radius: 999px;
-  background: var(--emp-green, #07382f); box-shadow: 0 6px 16px rgba(7, 56, 47, 0.28); opacity: 0; z-index: 0;
+  position: absolute; left: 0; top: 4px; height: calc(100% - 8px); width: 0; border-radius: 999px;
+  background: var(--emp-green, #07382f); box-shadow: 0 4px 12px rgba(7, 56, 47, 0.26); opacity: 0; z-index: 0;
   transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1), width 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .emp-detail-tabs:has(a.active) .emp-detail-tabs-underline { opacity: 1; }
 .emp-detail-tabs a {
-  position: relative; z-index: 1; flex-shrink: 0; padding: 9px 18px; border-radius: 999px; border: 1px solid transparent;
-  background: transparent; color: var(--emp-muted, var(--muted)); font-size: 13px; font-weight: 600;
-  text-decoration: none; white-space: nowrap; transition: background 180ms ease, color 180ms ease;
+  position: relative; z-index: 1; flex-shrink: 0; display: inline-flex; align-items: center; min-height: 40px;
+  padding: 6px 9px; border-radius: 999px; border: 1px solid transparent;
+  background: transparent; color: var(--emp-muted, var(--muted)); font-size: 14px; font-weight: 500;
+  text-decoration: none; white-space: nowrap; transition: background 200ms ease, color 200ms ease;
 }
-/* Fades in on hover over 180ms per spec - background only, no border/scale motion. */
+/* Fades in on hover over 180-250ms per spec - background only, no border/scale motion. */
 .emp-detail-tabs a:hover { background: rgba(7, 56, 47, 0.07); color: var(--emp-ink, var(--text)); }
-.emp-detail-tabs a.active { color: #fff; font-weight: 800; }
+.emp-detail-tabs a.active { color: #fff; font-weight: 600; }
 .emp-detail-tabs a.active:hover { background: transparent; color: #fff; }
 
 /* Desktop only: sticky under the 64px app header once scroll reaches past
@@ -13594,14 +13618,28 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
     border-radius: 16px;
   }
 }
-.emp-company-section { padding: 22px 24px; margin-bottom: 16px; scroll-margin-top: 70px; }
-.emp-company-section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
-.emp-company-section-head h2 { margin: 0; font-size: var(--emp-title-lg); font-weight: 700; }
-.emp-company-section-head p { margin: 4px 0 0; font-size: var(--emp-body-sm); color: var(--muted); }
-.emp-company-section-desc { margin: 0 0 14px; font-size: var(--emp-body-sm); color: var(--muted); }
+@media (max-width: 899px) {
+  /* Tablet/mobile: horizontal swipe scroll is acceptable, scrollbar stays
+     hidden (already scrollbar-width:none above), smooth native scrolling. */
+  .emp-detail-tabs { justify-content: flex-start; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+}
+/* Page-wide polish pass (spacing/typography/radius/shadow/hover only - no
+   layout changes). --emp-title-lg/--emp-radius-card/--emp-shadow-card etc.
+   are GLOBAL tokens shared with Roles/Pipeline/Feed/Settings, so this pass
+   overrides them only on selectors already exclusive to this page (verified
+   via usage-count audit before editing) rather than touching the shared
+   tokens themselves, which would leak into those other pages. 8px spacing
+   system: 32px = 4 * 8 (content card padding), 40px = 5 * 8 (inter-section
+   rhythm), 24px = 3 * 8 (small-card padding), 16px = 2 * 8 (small-card
+   radius / tight gaps). */
+.emp-company-section { padding: 32px; margin-bottom: 40px; scroll-margin-top: 70px; }
+.emp-company-section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
+.emp-company-section-head h2 { margin: 0; font-size: 40px; line-height: 1.15; font-weight: 700; }
+.emp-company-section-head p { margin: 8px 0 0; max-width: 68ch; font-size: 14px; color: var(--muted); }
+.emp-company-section-desc { margin: 0 0 24px; max-width: 68ch; font-size: 14px; line-height: 1.6; color: var(--muted); }
 .emp-source-tag {
-  flex-shrink: 0; display: inline-block; padding: 2px 8px; border-radius: 999px; background: rgba(100, 116, 139, 0.1);
-  color: var(--soft); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap;
+  flex-shrink: 0; display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: rgba(100, 116, 139, 0.1);
+  color: var(--soft); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap;
 }
 .emp-requirements-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 24px; margin-bottom: 14px; }
 
@@ -13611,9 +13649,9 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    scoped so this redesign doesn't ripple into those. */
 .emp-glance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 14px 0 20px; }
 .emp-glance-card {
-  display: flex; flex-direction: column; gap: 6px; min-width: 0;
-  padding: 20px; border-radius: 16px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08));
-  background: #fff; transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+  display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 165px;
+  padding: 24px; border-radius: 16px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08));
+  background: #fff; transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
 }
 .emp-glance-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
 .emp-glance-icon { color: var(--emp-green, #07382f); }
@@ -13633,13 +13671,13 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-company-role-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
 .emp-role-card {
   display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
-  padding: 20px; border-radius: 16px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08));
-  background: #fff; transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+  padding: 24px; border-radius: 16px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08));
+  background: #fff; transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
 }
 .emp-role-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
 .emp-role-card-main { flex: 1 1 320px; min-width: 0; }
 .emp-role-card-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
-.emp-role-card-title { font-size: 16px; font-weight: 700; color: var(--emp-ink, var(--text)); }
+.emp-role-card-title { font-size: 22px; font-weight: 700; color: var(--emp-ink, var(--text)); }
 .emp-role-card-meta { margin: 0 0 4px; font-size: 13px; color: var(--emp-muted, var(--muted)); }
 .emp-role-card-salary { margin: 0 0 12px; font-size: 14px; font-weight: 700; color: var(--emp-green, var(--text)); }
 .emp-role-card-stats { display: flex; flex-wrap: wrap; gap: 8px 18px; }
@@ -13765,10 +13803,10 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 
 .emp-salary-levels { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
 .emp-salary-level {
-  border-radius: 14px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); background: #fff;
-  padding: 16px 18px; transition: box-shadow 150ms ease, border-color 150ms ease;
+  border-radius: 16px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); background: #fff;
+  padding: 24px; transition: box-shadow 200ms ease, border-color 200ms ease;
 }
-.emp-salary-level:hover { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06); border-color: transparent; }
+.emp-salary-level:hover { box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
 .emp-salary-level-head {
   display: flex; align-items: center; gap: 16px; width: 100%; padding: 0; border: none;
   background: none; cursor: pointer; font: inherit; text-align: left;
@@ -13808,7 +13846,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 }
 .emp-app-shell.emp-app-shell .emp-insight-confidence { color: var(--emp-ai, #6f5fc4) !important; }
 .emp-salary-benefits-sub { margin-top: 4px; }
-.emp-salary-benefits-sub h3 { margin: 0 0 10px; font-size: 13px; font-weight: 800; }
+.emp-salary-benefits-sub h3 { margin: 0 0 16px; font-size: 30px; font-weight: 700; }
 /* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
    unscoped color cascade fixed elsewhere in this file, applied proactively
    here to every bare <span>/<strong>/<small>/<p> this section adds. */
@@ -13837,17 +13875,17 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    and every stage before it via .in-path (set by JS - CSS can't select
    earlier siblings from a later element's :hover). */
 .emp-career-path-sub { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); }
-.emp-career-path-sub h3 { margin: 0 0 4px; font-size: 13px; font-weight: 800; }
+.emp-career-path-sub h3 { margin: 0 0 8px; font-size: 30px; font-weight: 700; }
 .emp-career-path-hint { margin: 0 0 16px; font-size: 12px; }
 .emp-career-path { display: flex; flex-direction: column; }
 .emp-career-path-node {
-  display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 16px;
-  border-radius: 14px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); background: #fff;
+  display: flex; align-items: center; gap: 16px; width: 100%; padding: 24px;
+  border-radius: 16px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); background: #fff;
   font: inherit; text-align: left; cursor: pointer;
-  transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+  transition: border-color 200ms ease, background 200ms ease, box-shadow 200ms ease, transform 200ms ease;
 }
 .emp-career-path-node:hover, .emp-career-path-node:focus-visible {
-  border-color: var(--emp-green, #07382f); box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08); transform: translateX(2px);
+  border-color: var(--emp-green, #07382f); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); transform: translateX(2px);
 }
 .emp-career-path-node.in-path { border-color: var(--emp-green, #07382f); background: rgba(7, 56, 47, 0.03); }
 .emp-career-path-node-index {
@@ -13918,12 +13956,18 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-career-node-modal-section ul { margin: 8px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.7; }
 
 .emp-highlight-watchout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
-.emp-highlight-card, .emp-watchout-card { padding: 16px 18px; }
+.emp-highlight-card, .emp-watchout-card { padding: 24px; }
+/* Doubled .emp-app-shell.emp-app-shell + !important: these also carry the
+   shared .card class, whose border-radius comes from the (non-!important
+   but higher-specificity) .emp-app-shell.emp-app-shell .card rule - a
+   plain override here would lose that fight regardless of source order. */
+.emp-app-shell.emp-app-shell .emp-highlight-card,
+.emp-app-shell.emp-app-shell .emp-watchout-card { border-radius: 16px !important; }
 .emp-highlight-card ul, .emp-watchout-card ul { margin: 10px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.7; }
-.emp-score-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 10px; }
-.emp-score-tile { text-align: center; padding: 14px 8px; border: 1px solid var(--line); border-radius: 12px; }
+.emp-score-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 16px; }
+.emp-score-tile { display: flex; flex-direction: column; justify-content: center; gap: 4px; text-align: center; padding: 24px 8px; border: 1px solid var(--line); border-radius: 16px; }
 .emp-score-tile strong { display: block; font-size: var(--emp-metric-sm); }
-.emp-score-tile span { font-size: 11px; color: var(--soft); }
+.emp-score-tile span { font-size: 12px; color: var(--soft); }
 .emp-score-tile.main { border-color: rgba(37, 99, 235, 0.35); background: rgba(37, 99, 235, 0.04); }
 /* Reviews - filter bar, expandable cards, infinite scroll (see JS:
    getFilteredSortedReviews/renderReviewCard/initReviewsInfiniteScroll). */
@@ -13944,13 +13988,21 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-review-chip.active { background: var(--emp-green, #07382f); border-color: var(--emp-green, #07382f); color: #fff; }
 
 .emp-review-list { display: grid; gap: 14px; margin: 12px 0; }
-.emp-review-card { padding: 20px 22px; }
+.emp-review-card { padding: 24px; transition: box-shadow 200ms ease, border-color 200ms ease; }
+/* Doubled .emp-app-shell.emp-app-shell + !important: .emp-review-card also
+   carries the shared .card class (unlike every other small card on this
+   page), whose .emp-app-shell.emp-app-shell .card rule sets border-radius/
+   box-shadow with !important at the same 3-class specificity - a plain
+   .emp-review-card:hover rule would lose that fight regardless of hover
+   state, so this needs to match it to actually take effect. */
+.emp-app-shell.emp-app-shell .emp-review-card { border-radius: 16px !important; }
+.emp-app-shell.emp-app-shell .emp-review-card:hover { box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08) !important; border-color: transparent !important; }
 .emp-review-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
 .emp-review-card-title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.emp-review-card-title-row h3 { margin: 0; }
+.emp-review-card-title-row h3 { margin: 0; font-size: 22px; }
 .emp-review-verified-badge {
-  display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 999px;
-  background: rgba(7, 56, 47, 0.1); font-size: 11px; font-weight: 800; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px;
+  background: rgba(7, 56, 47, 0.1); font-size: 12px; font-weight: 800; white-space: nowrap;
 }
 .emp-review-verified-badge svg { width: 12px; height: 12px; }
 .emp-review-meta { margin: 4px 0 0; font-size: 12px; }
@@ -14099,7 +14151,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-health-overview-ring .emp-health-ring-text { font-size: 30px; }
 .emp-health-overview-label { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
 .emp-health-overview-detail { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
-.emp-health-overview-detail > p { margin: 0; font-size: 14px; line-height: 1.6; display: flex; gap: 8px; }
+.emp-health-overview-detail > p { margin: 0; max-width: 68ch; font-size: 14px; line-height: 1.6; display: flex; gap: 8px; }
 .emp-health-overview-detail > p svg { flex-shrink: 0; width: 16px; height: 16px; margin-top: 2px; }
 .emp-health-predicted-banner {
   display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 18px;
@@ -14113,10 +14165,10 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-health-predicted-delta svg { width: 13px; height: 13px; }
 
 .emp-health-subscore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.emp-health-subscore-card { border-radius: 16px; border: 1px solid var(--emp-line, var(--line)); background: #fff; transition: box-shadow 150ms ease, border-color 150ms ease; }
-.emp-health-subscore-card:hover { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06); border-color: transparent; }
+.emp-health-subscore-card { border-radius: 16px; border: 1px solid var(--emp-line, var(--line)); background: #fff; transition: box-shadow 200ms ease, border-color 200ms ease; }
+.emp-health-subscore-card:hover { box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
 .emp-health-subscore-head {
-  display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px; border: none;
+  display: flex; align-items: center; gap: 16px; width: 100%; padding: 24px; border: none;
   background: none; cursor: pointer; font: inherit; text-align: left;
 }
 .emp-health-subscore-info { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -14125,7 +14177,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-health-subscore-chevron { flex-shrink: 0; transition: transform 200ms ease; }
 .emp-health-subscore-chevron svg { width: 15px; height: 15px; }
 .emp-health-subscore-card.is-expanded .emp-health-subscore-chevron { transform: rotate(180deg); }
-.emp-health-subscore-detail { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 14px; }
+.emp-health-subscore-detail { padding: 0 24px 24px; display: flex; flex-direction: column; gap: 14px; }
 .emp-health-subscore-detail[hidden] { display: none !important; }
 .emp-health-subscore-explanation { margin: 0; padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); font-size: 12px; line-height: 1.6; display: flex; gap: 6px; }
 .emp-health-subscore-explanation svg { flex-shrink: 0; width: 13px; height: 13px; margin-top: 2px; }
@@ -14160,18 +14212,23 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 
 /* AI Competitor Comparison (its own tab, Company Profile page). Verdict
    badge colors reuse the same green/amber/red tones already established
-   for .emp-salary-diff--*/.emp-vera-rec-difficulty--* elsewhere in this
-   file, not new colors. */
+   for .emp-salary-diff--* and .emp-vera-rec-difficulty--* elsewhere in
+   this file, not new colors. */
+/* max-width keeps the data rows sized to their actual short-form content
+   (e.g. "RM 6,850/mo avg") instead of stretching proportional grid columns
+   across the full ~1176px card width, which just left content clustered on
+   the left with a wide, unbalanced gap of pure empty space on the right. */
 .emp-compare-header-row,
 .emp-compare-row-main {
   display: grid; grid-template-columns: 1.7fr 1fr 1fr 1fr 1.3fr; gap: 12px; align-items: center;
+  max-width: 920px;
 }
 .emp-compare-header-row {
   padding: 0 4px 10px; border-bottom: 1px solid var(--emp-line, var(--line));
   font-size: 11px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase;
 }
 .emp-compare-list { display: flex; flex-direction: column; }
-.emp-compare-row { padding: 16px 4px; border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-compare-row { padding: 24px 8px; border-bottom: 1px solid var(--emp-line, var(--line)); }
 .emp-compare-row:last-child { border-bottom: none; }
 .emp-compare-metric-label { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 800; }
 .emp-compare-metric-label svg { flex-shrink: 0; width: 15px; height: 15px; }
@@ -14179,7 +14236,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-compare-value--company { font-size: 14px; font-weight: 800; }
 .emp-compare-verdict {
   display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px;
-  font-size: 11px; font-weight: 800; white-space: nowrap; justify-self: start;
+  font-size: 12px; font-weight: 800; white-space: nowrap; justify-self: start;
 }
 .emp-compare-verdict svg { width: 13px; height: 13px; }
 .emp-compare-verdict--better { background: rgba(7, 56, 47, 0.1); }
@@ -14228,16 +14285,17 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-faq-search-clear svg { width: 12px; height: 12px; }
 
 .emp-faq-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
-.emp-faq-item { border-radius: 14px; border: 1px solid var(--emp-line, var(--line)); background: #fff; overflow: hidden; }
+.emp-faq-item { border-radius: 16px; border: 1px solid var(--emp-line, var(--line)); background: #fff; overflow: hidden; transition: box-shadow 200ms ease, border-color 200ms ease; }
+.emp-faq-item:hover { box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
 .emp-faq-question {
-  display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px 18px; border: none;
+  display: flex; align-items: center; gap: 16px; width: 100%; padding: 24px; border: none;
   background: none; cursor: pointer; font: inherit; text-align: left;
 }
 .emp-faq-question-text { flex: 1 1 auto; min-width: 0; font-size: 13px; font-weight: 800; }
 .emp-faq-chevron { flex-shrink: 0; transition: transform 200ms ease; }
 .emp-faq-chevron svg { width: 15px; height: 15px; }
 .emp-faq-item.is-expanded .emp-faq-chevron { transform: rotate(180deg); }
-.emp-faq-answer { padding: 0 18px 18px; }
+.emp-faq-answer { padding: 0 24px 24px; }
 .emp-faq-answer[hidden] { display: none !important; }
 .emp-faq-answer .emp-callout-label { margin-bottom: 6px; }
 .emp-faq-answer p { margin: 0; font-size: 13px; line-height: 1.6; }
@@ -14266,22 +14324,22 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 }
 .emp-rec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .emp-rec-card {
-  position: relative; padding: 18px; border-radius: 16px; background: #fff;
+  position: relative; padding: 24px; border-radius: 16px; background: #fff;
   border: 1px solid var(--emp-line, var(--line)); border-top: 4px solid transparent;
-  transition: box-shadow 150ms ease, border-color 150ms ease;
+  transition: box-shadow 200ms ease, border-color 200ms ease;
 }
-.emp-rec-card:hover { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06); }
+.emp-rec-card:hover { box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); }
 .emp-rec-card--high { border-top-color: #dc2626; }
 .emp-rec-card--medium { border-top-color: #d97706; }
 .emp-rec-card--low { border-top-color: var(--emp-green, #07382f); }
 .emp-rec-priority-badge {
   display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px;
-  font-size: 10px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; white-space: nowrap;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; white-space: nowrap;
 }
 .emp-rec-priority-badge--high { background: rgba(220, 38, 38, 0.1); }
 .emp-rec-priority-badge--medium { background: rgba(217, 119, 6, 0.12); }
 .emp-rec-priority-badge--low { background: rgba(7, 56, 47, 0.1); }
-.emp-rec-action { margin: 10px 0 16px; font-size: 15px; line-height: 1.35; }
+.emp-rec-action { margin: 12px 0 16px; font-size: 22px; font-weight: 700; line-height: 1.25; }
 .emp-rec-metrics { display: flex; flex-direction: column; gap: 10px; padding: 14px 0; border-top: 1px solid var(--emp-line, var(--line)); border-bottom: 1px solid var(--emp-line, var(--line)); }
 .emp-rec-metric { display: flex; align-items: center; gap: 8px; }
 .emp-rec-metric svg { flex-shrink: 0; width: 14px; height: 14px; }
@@ -14319,34 +14377,40 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    Profile page). A soft violet-tinted gradient card distinct from the
    plain .emp-company-subsection blocks around it, using the same
    --emp-ai purple already established for Vera-branded surfaces
-   elsewhere (.emp-vera-insight-box's label/strong, the Vera chat panel). */
-.emp-vera-insight-card {
+   elsewhere (.emp-vera-insight-box's label/strong, the Vera chat panel).
+   Named .emp-company-vera-card (not .emp-vera-insight-card) because that
+   name was already taken by an unrelated, pre-existing small-card widget
+   in the Talent Pipeline's Ask-Vera panel (renderVeraInsightsTab) - a
+   same-specificity, later-declared collision was silently overriding that
+   widget's compact styling with this card's 28px/gradient look, found
+   during the page-wide polish pass and fixed by renaming this one. */
+.emp-company-vera-card {
   margin-top: 4px; padding: 28px; border-radius: 20px;
   background: linear-gradient(160deg, rgba(111, 95, 196, 0.07) 0%, rgba(111, 95, 196, 0.02) 55%, #fff 100%);
   border: 1px solid rgba(111, 95, 196, 0.18);
 }
-.emp-vera-insight-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.emp-vera-insight-card-icon {
+.emp-company-vera-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.emp-company-vera-card-icon {
   flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
   width: 36px; height: 36px; border-radius: 999px; background: var(--emp-ai, #6f5fc4); color: #fff;
 }
-.emp-vera-insight-card-icon svg { width: 18px; height: 18px; }
-.emp-vera-insight-card-head h3 { margin: 0; flex: 1 1 auto; font-size: 18px; }
+.emp-company-vera-card-icon svg { width: 18px; height: 18px; }
+.emp-company-vera-card-head h3 { margin: 0; flex: 1 1 auto; font-size: 22px; font-weight: 700; }
 .emp-vera-insight-confidence-badge {
   flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px;
   border-radius: 999px; background: rgba(111, 95, 196, 0.12); font-size: 12px; font-weight: 800; white-space: nowrap;
 }
 .emp-vera-insight-confidence-badge svg { width: 13px; height: 13px; }
-.emp-vera-insight-card-summary { margin: 0 0 20px; font-size: 14px; line-height: 1.65; }
+.emp-company-vera-card-summary { margin: 0 0 20px; max-width: 72ch; font-size: 16px; line-height: 1.65; }
 
-.emp-vera-insight-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 22px; }
-.emp-vera-insight-card-col ul { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 7px; font-size: 13px; }
-.emp-vera-insight-card-col li { display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
-.emp-vera-insight-card-col li svg { flex-shrink: 0; width: 14px; height: 14px; margin-top: 2px; }
+.emp-company-vera-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 22px; }
+.emp-company-vera-card-col ul { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 7px; font-size: 13px; }
+.emp-company-vera-card-col li { display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
+.emp-company-vera-card-col li svg { flex-shrink: 0; width: 14px; height: 14px; margin-top: 2px; }
 
-.emp-vera-insight-card-section { margin-bottom: 20px; }
+.emp-company-vera-card-section { margin-bottom: 20px; }
 .emp-vera-rec-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-.emp-vera-rec-card { padding: 14px 16px; border-radius: 14px; background: #fff; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); }
+.emp-vera-rec-card { padding: 24px; border-radius: 16px; background: #fff; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); }
 .emp-vera-rec-action { margin: 0 0 10px; font-size: 13px; font-weight: 700; }
 .emp-vera-rec-stats { display: flex; flex-wrap: wrap; gap: 20px; }
 .emp-vera-rec-stat { display: flex; flex-direction: column; gap: 2px; }
@@ -14359,12 +14423,12 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 }
 .emp-vera-insight-predicted > strong { display: block; margin: 4px 0 4px; font-size: 24px; }
 .emp-vera-insight-predicted p { margin: 0; font-size: 12px; }
-.emp-vera-insight-card-actions { display: flex; gap: 8px; }
+.emp-company-vera-card-actions { display: flex; gap: 8px; }
 
 /* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
    unscoped color cascade fixed elsewhere in this file, applied
    proactively to every bare/colored text element this card adds. */
-.emp-app-shell.emp-app-shell .emp-vera-insight-card-summary,
+.emp-app-shell.emp-app-shell .emp-company-vera-card-summary,
 .emp-app-shell.emp-app-shell .emp-vera-rec-stat small,
 .emp-app-shell.emp-app-shell .emp-vera-insight-predicted p { color: var(--emp-muted, var(--soft)) !important; }
 .emp-app-shell.emp-app-shell .emp-vera-rec-action,
@@ -14378,8 +14442,8 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-app-shell.emp-app-shell .emp-vera-rec-difficulty--hard { color: #b91c1c !important; }
 
 @media (max-width: 720px) {
-  .emp-vera-insight-card { padding: 20px; }
-  .emp-vera-insight-card-grid { grid-template-columns: 1fr; gap: 16px; }
+  .emp-company-vera-card { padding: 20px; }
+  .emp-company-vera-card-grid { grid-template-columns: 1fr; gap: 16px; }
   .emp-vera-rec-stats { gap: 14px; }
 }
 .emp-edit-layout { display: grid; grid-template-columns: 1fr 280px; gap: 20px; align-items: start; }
