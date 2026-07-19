@@ -5168,6 +5168,33 @@ html body[data-page="discover"] .cg-program-card footer {
   font-weight: 500 !important;
 }
 
+html body[data-page="discover"] .cg-featured-org-card .cg-featured-org-meta {
+  margin: 0 !important;
+  color: #5d6f68 !important;
+  -webkit-text-fill-color: #5d6f68 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+html body[data-page="discover"] .cg-featured-org-card .cg-featured-org-summary {
+  margin: 0 !important;
+  color: #33453f !important;
+  -webkit-text-fill-color: #33453f !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 1.45 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+html body[data-page="discover"] .cg-featured-org-card .cg-featured-org-tags {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+
 html body[data-page="discover"] .cg-discover-v2 .cg-direction-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
 }

@@ -5492,8 +5492,9 @@ function renderDiscoverOrgDirectory() {
   if (!root) return;
   const isCompanies = root.dataset.discoverOrgDirectory !== "universities";
   if (!requireAccount(root, isCompanies ? "browse every company Vera is tracking" : "browse every university Vera is tracking")) return;
-  const { companies, universities } = buildOrgCatalog();
-  const items = isCompanies ? companies : universities;
+  const state = readState();
+  const { catalog } = buildOrgCatalog();
+  const items = catalog.filter(org => org.category === (isCompanies ? "companies" : "universities"));
   root.innerHTML = `
     <section class="cg-discover cg-discover-v2 cg-discover-org-directory">
       <header class="cg-discover-hero">
@@ -5588,15 +5589,20 @@ function renderDiscoverOrgDirectory() {
     grid.innerHTML = filtered.map(org => isCompanies ? `
       <article class="cg-featured-org-card" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} reviews and details">
         <header><span>${org.name.charAt(0)}</span><div><h3>${org.name}</h3><p>${org.industry} - ${org.location}</p></div></header>
-        <b>${(org.tags || [])[0] || "Verified"}</b><strong>${org.open} open role${org.open === 1 ? "" : "s"}</strong>
+        <p class="cg-featured-org-meta">${icon("star")} ${Number(org.rating).toFixed(1)} &middot; ${org.reviews} reviews &middot; ${org.following}</p>
+        <p class="cg-featured-org-summary">${org.summary}</p>
+        <div class="cg-featured-org-tags">${(org.tags || []).slice(0, 3).map(tag => `<b>${tag}</b>`).join("")}<b>${org.open} open role${org.open === 1 ? "" : "s"}</b></div>
         <footer>${icon("sparkles")} ${org.signal}</footer>
         <button type="button" class="btn btn-primary btn-wide" data-org-cta="${org.id}">View company ${icon("arrow-right")}</button>
       </article>
     ` : `
       <article class="cg-featured-org-card university" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} details">
         <header><span>${icon("graduation-cap")}</span><div><h3>${org.name}</h3><p>${icon("map-pin")} ${org.location}</p></div></header>
-        <b>${org.salary}</b>
+        <p class="cg-featured-org-meta">${icon("star")} ${Number(org.rating).toFixed(1)} &middot; ${org.reviews} reviews &middot; ${org.following}</p>
+        <p class="cg-featured-org-summary">${org.summary}</p>
+        <div class="cg-featured-org-tags">${(org.tags || []).slice(0, 3).map(tag => `<b>${tag}</b>`).join("")}<b>${org.salary}</b></div>
         <footer>${icon("sparkles")} ${org.signal}</footer>
+        ${universityRequirementsPanel(org, state.profile)}
         <button type="button" class="btn btn-primary btn-wide" data-org-cta="${org.id}">View university ${icon("arrow-right")}</button>
       </article>
     `).join("") || `<p class="cg-org-browse-empty">No matches yet. Try clearing a filter or searching a broader term.</p>`;
@@ -5621,6 +5627,10 @@ function renderDiscoverOrgDirectory() {
       button.addEventListener("click", triggerOrgDetail);
       button.addEventListener("keydown", triggerOrgDetail);
     });
+    qsa("[data-uni-requirements]", grid).forEach(button => button.addEventListener("click", event => {
+      event.stopPropagation();
+      openUniversityRequirementsModal(button.dataset.uniRequirements);
+    }));
     createIcons();
   }
 
