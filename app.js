@@ -14481,6 +14481,9 @@ function renderEmployerCompany(root) {
   const company = DATA.companies.find(c => c.id === "maybank");
   let showAllRoles = false;
   let showAllReviews = false;
+  let tabsStuckObserver = null;
+  let tabsSectionObserver = null;
+  let tabsResizeHandler = null;
 
   function formatRoleSalary(r) {
     if (!r.salary || !r.salary.min || !r.salary.max) return "Salary not published";
@@ -14561,7 +14564,9 @@ function renderEmployerCompany(root) {
         </div>
       </div>
 
+      <div data-tabs-sentinel></div>
       <div class="emp-detail-tabs" data-company-nav>
+        <span class="emp-detail-tabs-underline" data-tabs-underline></span>
         <a href="#comp-overview" data-jump="comp-overview">Overview</a>
         <a href="#comp-roles" data-jump="comp-roles">Roles</a>
         <a href="#comp-requirements" data-jump="comp-requirements">Requirements</a>
@@ -14789,6 +14794,60 @@ function renderEmployerCompany(root) {
     qs("[data-company-toggle-reviews]", root)?.addEventListener("click", () => { showAllReviews = !showAllReviews; draw(); });
     qsa("[data-company-respond-review]", root).forEach(btn => btn.addEventListener("click", () => showToast("Response drafted. Full response workflow is coming soon.", "info")));
     qs("[data-company-jump-gaps]", root)?.addEventListener("click", () => qs("#comp-insights", root)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    initCompanyTabsBehavior();
+  }
+
+  // Every draw() replaces root.innerHTML, so the sentinel/section nodes any
+  // prior observers were watching are gone - disconnect before re-observing
+  // the fresh ones, or they'd silently pile up on every showAllRoles/
+  // showAllReviews toggle.
+  function initCompanyTabsBehavior() {
+    if (tabsStuckObserver) tabsStuckObserver.disconnect();
+    if (tabsSectionObserver) tabsSectionObserver.disconnect();
+    if (!("IntersectionObserver" in window)) return;
+
+    const nav = qs("[data-company-nav]", root);
+    const sentinel = qs("[data-tabs-sentinel]", root);
+    if (!nav) return;
+    const links = qsa("[data-jump]", nav);
+    const sections = links.map(l => qs(`#${l.dataset.jump}`, root)).filter(Boolean);
+
+    function positionUnderline() {
+      const underline = qs("[data-tabs-underline]", nav);
+      const activeLink = qs("a.active", nav);
+      if (!underline || !activeLink) return;
+      underline.style.width = `${activeLink.offsetWidth}px`;
+      underline.style.transform = `translateX(${activeLink.offsetLeft}px)`;
+    }
+
+    function setActive(id) {
+      links.forEach(l => l.classList.toggle("active", l.dataset.jump === id));
+      positionUnderline();
+    }
+
+    if (sentinel) {
+      // Standard "detect when a sticky element has stuck" trick: watch a
+      // zero-height sentinel placed immediately before it. Once the
+      // sentinel scrolls above the tabs' own sticky offset (64px, the app
+      // header height), it stops intersecting - that's exactly the moment
+      // the tabs bar has reached the top and started sticking.
+      tabsStuckObserver = new IntersectionObserver(([entry]) => {
+        nav.classList.toggle("is-stuck", !entry.isIntersecting);
+      }, { rootMargin: "-65px 0px 0px 0px", threshold: [1] });
+      tabsStuckObserver.observe(sentinel);
+    }
+
+    if (sections.length) {
+      tabsSectionObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); });
+      }, { rootMargin: "-140px 0px -60% 0px", threshold: 0 });
+      sections.forEach(s => tabsSectionObserver.observe(s));
+    }
+
+    setActive(links[0]?.dataset.jump);
+    if (tabsResizeHandler) window.removeEventListener("resize", tabsResizeHandler);
+    tabsResizeHandler = positionUnderline;
+    window.addEventListener("resize", tabsResizeHandler);
   }
 
   draw();
