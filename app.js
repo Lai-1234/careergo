@@ -178,6 +178,18 @@ const DATA = {
         ]
       },
       careerGrowth: { trainingQuality: "Strong structured training", promotionPath: "Clear grade-based progression", graduateProgram: "Available (Maybank Management Trainee)", mentorship: "Assigned mentors for new joiners", internalTransfer: "Common across departments", learningOpportunities: "Internal academy and certification support" },
+      // Powers the career path ladder (Growth & Development section, Company
+      // Profile page). avgTimeToReach is the average time to be promoted
+      // INTO that stage from the one above it (null for the entry stage) -
+      // it labels the connector between a node and the one before it.
+      careerPath: [
+        { role: "Graduate Trainee", avgTimeToReach: null, salary: { min: 3500, max: 4000 }, skills: ["Communication", "Adaptability", "Business fundamentals"], learning: ["Maybank Graduate Orientation Program", "Banking Fundamentals Certification"] },
+        { role: "Executive", avgTimeToReach: "18 months", salary: { min: 4200, max: 5200 }, skills: ["Process ownership", "Stakeholder communication", "Reporting accuracy"], learning: ["Advanced Excel & Reporting", "Regulatory Compliance Basics"] },
+        { role: "Senior Executive", avgTimeToReach: "2 years", salary: { min: 5500, max: 7000 }, skills: ["Project coordination", "Team collaboration", "Problem solving"], learning: ["Project Management Fundamentals", "Data-Driven Decision Making"] },
+        { role: "Assistant Manager", avgTimeToReach: "2.5 years", salary: { min: 7500, max: 9500 }, skills: ["People coordination", "Budget awareness", "Cross-team collaboration"], learning: ["People Leadership Essentials", "Financial Acumen for Leaders"] },
+        { role: "Manager", avgTimeToReach: "3 years", salary: { min: 10000, max: 13000 }, skills: ["Team leadership", "Performance management", "Strategic planning"], learning: ["Maybank Leadership Academy", "Change Management"] },
+        { role: "Senior Manager", avgTimeToReach: "3.5 years", salary: { min: 14000, max: 18000 }, skills: ["Departmental strategy", "Stakeholder influence", "P&L ownership"], learning: ["Executive Leadership Program", "Strategic Business Planning"] }
+      ],
       workCulture: { pace: "Steady, structured", teamStyle: "Large teams, defined roles", workLifeBalance: "Balanced, standard hours", managementStyle: "Hierarchical, process-driven", collaboration: "Cross-department coordination common", overtimeSignal: "Occasional during reporting periods", reviewThemes: "Stable, good for early career, slower pace" },
       veraNote: "Maybank is strong for fresh graduates who want a structured early-career path, stable environment, and broad banking exposure. Watch for slower approval processes and large-company hierarchy.",
       companyReviews: [
@@ -14576,6 +14588,15 @@ function renderEmployerCompany(root) {
     return { diffPercent, cls, label: `${diffPercent > 0 ? "+" : ""}${diffPercent}%` };
   }
 
+  // Plain class toggling, not a draw() - hovering/focusing a node highlights
+  // it plus every earlier node/connector (the path leading up to it), which
+  // a pure CSS sibling selector can't express since earlier siblings aren't
+  // reachable from a later element's :hover.
+  function setCareerPathHighlight(uptoIndex) {
+    qsa("[data-career-node]", root).forEach(n => n.classList.toggle("in-path", uptoIndex >= 0 && Number(n.dataset.careerNode) <= uptoIndex));
+    qsa("[data-career-connector]", root).forEach(c => c.classList.toggle("in-path", uptoIndex >= 0 && Number(c.dataset.careerConnector) <= uptoIndex));
+  }
+
   function renderSalaryLevel(lvl, i) {
     const { cls, label } = salaryDiffInfo(lvl.company, lvl.market);
     const barMax = Math.max(lvl.company, lvl.market);
@@ -14636,6 +14657,32 @@ function renderEmployerCompany(root) {
         <button type="button" class="btn btn-primary" disabled>Apply</button>
       </div>
     `, { label: `${r.title} - candidate preview`, className: "emp-preview-modal-card" });
+  }
+
+  function openCareerPathNodeModal(node, index) {
+    openEmpModal(`career-node-${index}`, `
+      <div class="emp-career-node-modal">
+        <div class="emp-career-node-modal-head">
+          <span class="emp-career-node-modal-index">${index + 1}</span>
+          <div>
+            <h2>${escapeHtml(node.role)}</h2>
+            <p>${index === 0 ? "Entry point of this career path" : `Stage ${index + 1} of ${company.careerPath.length}`}</p>
+          </div>
+        </div>
+        <div class="emp-requirements-grid emp-career-node-modal-stats">
+          <div class="emp-stat-row"><span>Average promotion time</span><strong>${node.avgTimeToReach ? escapeHtml(node.avgTimeToReach) : "Entry level"}</strong></div>
+          <div class="emp-stat-row"><span>Typical salary</span><strong>${money(node.salary.min)}–${money(node.salary.max)} / month</strong></div>
+        </div>
+        <div class="emp-career-node-modal-section">
+          <span class="emp-tags-label">Skills required</span>
+          <div class="pill-row">${node.skills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>
+        </div>
+        <div class="emp-career-node-modal-section">
+          <span class="emp-tags-label">Recommended learning</span>
+          <ul>${node.learning.map(l => `<li>${escapeHtml(l)}</li>`).join("")}</ul>
+        </div>
+      </div>
+    `, { label: `${node.role} - career path stage`, className: "emp-career-node-modal-card" });
   }
 
   function draw() {
@@ -14910,6 +14957,29 @@ function renderEmployerCompany(root) {
           <div class="emp-stat-row"><span>Internal transfer</span><strong>${company.careerGrowth.internalTransfer}</strong></div>
           <div class="emp-stat-row"><span>Learning opportunities</span><strong>${company.careerGrowth.learningOpportunities}</strong></div>
         </div>
+
+        <div class="emp-career-path-sub">
+          <h3>Career Path</h3>
+          <p class="emp-career-path-hint">A typical progression through this company. Click a stage for promotion time, required skills, salary and recommended learning.</p>
+          <div class="emp-career-path" data-career-path>
+            ${company.careerPath.map((node, i) => `
+              ${i > 0 ? `
+                <div class="emp-career-path-connector" data-career-connector="${i}">
+                  <span class="emp-career-path-connector-line"></span>
+                  <span class="emp-career-path-connector-time">${escapeHtml(node.avgTimeToReach)}</span>
+                </div>
+              ` : ""}
+              <button type="button" class="emp-career-path-node" data-career-node="${i}">
+                <span class="emp-career-path-node-index">${i + 1}</span>
+                <span class="emp-career-path-node-body">
+                  <span class="emp-career-path-node-role">${escapeHtml(node.role)}</span>
+                  <span class="emp-career-path-node-salary">${money(node.salary.min)}–${money(node.salary.max)} / month</span>
+                </span>
+                <span class="emp-career-path-node-arrow">${icon("chevron-right")}</span>
+              </button>
+            `).join("")}
+          </div>
+        </div>
       </div>
 
       <div class="card emp-company-section">
@@ -15043,6 +15113,14 @@ function renderEmployerCompany(root) {
     }));
     qsa("[data-company-respond-review]", root).forEach(btn => btn.addEventListener("click", () => showToast("Response drafted. Full response workflow is coming soon.", "info")));
     qs("[data-company-jump-gaps]", root)?.addEventListener("click", () => qs("#comp-insights", root)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    qsa("[data-career-node]", root).forEach(btn => {
+      const i = Number(btn.dataset.careerNode);
+      btn.addEventListener("click", () => openCareerPathNodeModal(company.careerPath[i], i));
+      btn.addEventListener("mouseenter", () => setCareerPathHighlight(i));
+      btn.addEventListener("mouseleave", () => setCareerPathHighlight(-1));
+      btn.addEventListener("focus", () => setCareerPathHighlight(i));
+      btn.addEventListener("blur", () => setCareerPathHighlight(-1));
+    });
     initCompanyTabsBehavior();
     initTimelineReveal();
   }

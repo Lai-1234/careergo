@@ -13814,6 +13814,93 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-salary-level-figures { margin-left: 0; flex-wrap: wrap; gap: 14px; }
   .emp-salary-level-detail.emp-requirements-grid { grid-template-columns: 1fr; }
 }
+
+/* Career Path ladder (Growth & Development section). Vertical stack of
+   clickable stage buttons connected by a continuously animated flowing
+   line + a promotion-time pill; hovering/focusing a stage highlights it
+   and every stage before it via .in-path (set by JS - CSS can't select
+   earlier siblings from a later element's :hover). */
+.emp-career-path-sub { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); }
+.emp-career-path-sub h3 { margin: 0 0 4px; font-size: 13px; font-weight: 800; }
+.emp-career-path-hint { margin: 0 0 16px; font-size: 12px; }
+.emp-career-path { display: flex; flex-direction: column; }
+.emp-career-path-node {
+  display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 16px;
+  border-radius: 14px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08)); background: #fff;
+  font: inherit; text-align: left; cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+.emp-career-path-node:hover, .emp-career-path-node:focus-visible {
+  border-color: var(--emp-green, #07382f); box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08); transform: translateX(2px);
+}
+.emp-career-path-node.in-path { border-color: var(--emp-green, #07382f); background: rgba(7, 56, 47, 0.03); }
+.emp-career-path-node-index {
+  flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 999px; background: rgba(7, 56, 47, 0.08);
+  font-size: 13px; font-weight: 800; transition: background 200ms ease, color 200ms ease;
+}
+.emp-career-path-node.in-path .emp-career-path-node-index { background: var(--emp-green, #07382f); color: #fff; }
+.emp-career-path-node-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.emp-career-path-node-role { font-size: 14px; font-weight: 800; }
+.emp-career-path-node-salary { font-size: 12px; }
+.emp-career-path-node-arrow { flex: 0 0 auto; transition: transform 150ms ease; }
+.emp-career-path-node-arrow svg { width: 16px; height: 16px; }
+.emp-career-path-node:hover .emp-career-path-node-arrow,
+.emp-career-path-node:focus-visible .emp-career-path-node-arrow { transform: translateX(3px); }
+
+.emp-career-path-connector { display: flex; gap: 10px; height: 36px; padding-left: 32px; }
+.emp-career-path-connector-line {
+  width: 3px; border-radius: 999px;
+  background: repeating-linear-gradient(180deg, var(--emp-line, rgba(7, 56, 47, 0.14)) 0px, var(--emp-line, rgba(7, 56, 47, 0.14)) 8px, var(--emp-teal, #6aa59d) 8px, var(--emp-teal, #6aa59d) 16px);
+  background-size: 100% 32px;
+  animation: empCareerFlow 1.6s linear infinite;
+}
+.emp-career-path-connector.in-path .emp-career-path-connector-line {
+  width: 4px;
+  background: repeating-linear-gradient(180deg, rgba(7, 56, 47, 0.25) 0px, rgba(7, 56, 47, 0.25) 8px, var(--emp-green, #07382f) 8px, var(--emp-green, #07382f) 16px);
+  background-size: 100% 32px;
+  animation-duration: 0.7s;
+}
+@keyframes empCareerFlow {
+  from { background-position: 0 0; }
+  to { background-position: 0 32px; }
+}
+.emp-career-path-connector-time {
+  align-self: center; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 999px;
+  background: rgba(7, 56, 47, 0.06); white-space: nowrap; transition: background 200ms ease, color 200ms ease;
+}
+.emp-career-path-connector.in-path .emp-career-path-connector-time { background: var(--emp-green, #07382f); color: #fff; }
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped color cascade fixed elsewhere in this file. */
+.emp-app-shell.emp-app-shell .emp-career-path-hint,
+.emp-app-shell.emp-app-shell .emp-career-path-node-salary,
+.emp-app-shell.emp-app-shell .emp-career-path-node-index,
+.emp-app-shell.emp-app-shell .emp-career-path-node-arrow,
+.emp-app-shell.emp-app-shell .emp-career-path-connector-time { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-career-path-node-role { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-career-path-node.in-path .emp-career-path-node-index,
+.emp-app-shell.emp-app-shell .emp-career-path-connector.in-path .emp-career-path-connector-time { color: #fff !important; }
+
+@media (max-width: 640px) {
+  .emp-career-path-node { padding: 12px 14px; gap: 10px; }
+  .emp-career-path-node-role { font-size: 13px; }
+}
+
+/* Career path node modal ([data-emp-modal-root], outside .emp-app-shell -
+   var(--muted) is the global, unscoped token, same as .emp-confirm-modal p
+   right above uses, so it resolves correctly here too). */
+.emp-career-node-modal-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+.emp-career-node-modal-index {
+  flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 999px; background: var(--emp-green, #07382f); color: #fff;
+  font-size: 16px; font-weight: 800;
+}
+.emp-career-node-modal-head h2 { margin: 0 0 2px; }
+.emp-career-node-modal-head p { margin: 0; font-size: 13px; color: var(--muted); }
+.emp-career-node-modal-stats { margin-bottom: 4px; }
+.emp-career-node-modal-section { margin-top: 16px; }
+.emp-career-node-modal-section ul { margin: 8px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.7; }
+
 .emp-highlight-watchout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
 .emp-highlight-card, .emp-watchout-card { padding: 16px 18px; }
 .emp-highlight-card ul, .emp-watchout-card ul { margin: 10px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.7; }
