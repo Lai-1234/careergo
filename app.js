@@ -137,6 +137,15 @@ const DATA = {
       workMode: "Onsite / Hybrid",
       hiringDifficulty: "Medium",
       averageRequirements: { education: "Diploma/Degree depending on role", cgpa: "Usually 3.0+ preferred for graduate programs", experience: "Fresh graduate to 2 years for junior roles", commonSkills: ["Communication", "Excel", "Teamwork", "Problem solving"], techSkills: ["SQL", "Excel/VBA", "Basic data analysis"], englishRequirement: "Good written and spoken English", portfolio: "Not required for most roles", internshipPreferred: "Advantageous but not mandatory", certifications: "Professional banking/finance certifications advantageous" },
+      // Same underlying requirements as averageRequirements above, regrouped
+      // by how much they actually gate a candidate - used by the tiered
+      // chip display on the Requirements section (Company Profile page).
+      requirementTiers: {
+        required: ["Diploma/Degree", "3.0+ CGPA", "Good English", "Communication"],
+        preferred: ["Teamwork", "Problem Solving", "Excel/VBA", "SQL", "Internship Experience"],
+        bonus: ["Basic Data Analysis", "Professional Certifications", "Portfolio"]
+      },
+      requirementsInsight: { higherInterviewRatePercent: 74 },
       hiringProcess: { steps: ["Application review", "Online assessment", "HR interview", "Manager interview", "Final interview (graduate programs)"], avgResponseTime: "2-4 weeks", difficulty: "Medium", assessmentNote: "Online assessment and assessment centre for graduate programs" },
       salaryBenefits: { freshGradSalary: "RM 3.2k - 4.5k / month", internshipAllowance: "RM 800 - 1.2k / month", bonus: "Annual performance bonus", medical: "Comprehensive medical coverage", training: "Structured graduate training program", flexibleWork: "Hybrid for eligible roles", leave: "Standard + study leave for certifications" },
       careerGrowth: { trainingQuality: "Strong structured training", promotionPath: "Clear grade-based progression", graduateProgram: "Available (Maybank Management Trainee)", mentorship: "Assigned mentors for new joiners", internalTransfer: "Common across departments", learningOpportunities: "Internal academy and certification support" },
@@ -14717,17 +14726,23 @@ function renderEmployerCompany(root) {
       <div class="card emp-company-section" id="comp-requirements">
         <div class="emp-company-section-head"><h2>What Candidates Usually Need</h2>${sourceTag("Company provided")}</div>
         <p class="emp-company-section-desc">Typical requirements candidates should understand before applying.</p>
-        <div class="emp-requirements-grid">
-          <div class="emp-stat-row"><span>Education</span><strong>${company.averageRequirements.education}</strong></div>
-          <div class="emp-stat-row"><span>CGPA</span><strong>${company.averageRequirements.cgpa}</strong></div>
-          <div class="emp-stat-row"><span>Experience</span><strong>${company.averageRequirements.experience}</strong></div>
-          <div class="emp-stat-row"><span>English</span><strong>${company.averageRequirements.englishRequirement}</strong></div>
-          <div class="emp-stat-row"><span>Portfolio</span><strong>${company.averageRequirements.portfolio}</strong></div>
-          <div class="emp-stat-row"><span>Internship experience</span><strong>${company.averageRequirements.internshipPreferred}</strong></div>
-          <div class="emp-stat-row"><span>Certifications</span><strong>${company.averageRequirements.certifications}</strong></div>
+        <p class="emp-req-experience-note"><strong>Experience:</strong> ${escapeHtml(company.averageRequirements.experience)}</p>
+        <div class="emp-req-tier">
+          <h3 class="emp-req-tier-heading">Required</h3>
+          <div class="emp-req-chip-row">${company.requirementTiers.required.map(r => `<span class="emp-req-chip emp-req-chip--required">${escapeHtml(r)}</span>`).join("")}</div>
         </div>
-        <div class="emp-tags"><span class="emp-tags-label">Common skills</span><div class="pill-row">${company.averageRequirements.commonSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
-        <div class="emp-tags"><span class="emp-tags-label">Tech / tools</span><div class="pill-row">${company.averageRequirements.techSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
+        <div class="emp-req-tier">
+          <h3 class="emp-req-tier-heading">Preferred</h3>
+          <div class="emp-req-chip-row">${company.requirementTiers.preferred.map(r => `<span class="emp-req-chip emp-req-chip--preferred">${escapeHtml(r)}</span>`).join("")}</div>
+        </div>
+        <div class="emp-req-tier">
+          <h3 class="emp-req-tier-heading">Bonus</h3>
+          <div class="emp-req-chip-row">${company.requirementTiers.bonus.map(r => `<span class="emp-req-chip emp-req-chip--bonus">${escapeHtml(r)}</span>`).join("")}</div>
+        </div>
+        <div class="emp-vera-insight-box">
+          <div class="emp-callout-label">${icon("sparkles")} Vera Insight</div>
+          <p>Candidates with these skills have a <strong>${company.requirementsInsight.higherInterviewRatePercent}% higher</strong> interview rate.</p>
+        </div>
       </div>
 
       <div class="card emp-company-section" id="comp-hiring">

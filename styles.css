@@ -13001,6 +13001,36 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-callout-label.warn { color: #b45309; }
 .emp-callout { padding: 12px 0; border-top: 1px solid var(--emp-line); margin-top: 12px; }
 .emp-callout p { margin: 0; font-size: 13px; line-height: 1.5; }
+
+/* Requirements section: three tiers, each chip weighted by how much it
+   actually gates a candidate - Required is the strongest (dark, filled),
+   Bonus the lightest (outline only), so the hierarchy reads at a glance
+   without needing to read every label. */
+.emp-req-experience-note { margin: 0 0 16px; font-size: 13px; color: var(--emp-muted, var(--muted)); }
+.emp-req-experience-note strong { color: var(--emp-ink, var(--text)); }
+.emp-req-tier { margin-bottom: 18px; }
+.emp-req-tier:last-of-type { margin-bottom: 0; }
+.emp-req-tier-heading { margin: 0 0 10px; font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--emp-muted, var(--soft)); }
+.emp-req-chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.emp-req-chip { display: inline-flex; align-items: center; padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped global `span{color:#2FAE7A!important}`-style cascade documented
+   elsewhere in this file (search "long-standing global, unscoped
+   !important cascade") was winning over these plain `color` declarations
+   on a bare <span>, since color+!important beats color with no !important
+   regardless of which one is more specific. */
+.emp-app-shell.emp-app-shell .emp-req-chip--required { background: var(--emp-green, #07382f); color: #fff !important; }
+.emp-app-shell.emp-app-shell .emp-req-chip--preferred { background: rgba(7, 56, 47, 0.14); color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell .emp-req-chip--bonus { background: transparent; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.18)); color: var(--emp-muted, var(--soft)) !important; }
+
+.emp-vera-insight-box {
+  margin-top: 20px; padding: 16px 18px; border-radius: 14px;
+  background: rgba(111, 95, 196, 0.06); border: 1px solid rgba(111, 95, 196, 0.18);
+}
+.emp-app-shell.emp-app-shell .emp-vera-insight-box .emp-callout-label { color: var(--emp-ai, #6f5fc4) !important; margin-bottom: 6px; }
+.emp-app-shell.emp-app-shell .emp-vera-insight-box .emp-callout-label svg { color: var(--emp-ai, #6f5fc4) !important; width: 15px; height: 15px; }
+.emp-app-shell.emp-app-shell .emp-vera-insight-box p { margin: 0; font-size: 13px; line-height: 1.55; color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-vera-insight-box strong { color: var(--emp-ai, #6f5fc4) !important; }
 .emp-stat-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid var(--emp-line); }
 .emp-stat-row span { color: var(--emp-muted); }
 .emp-tags { margin-top: 10px; }
