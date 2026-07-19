@@ -192,9 +192,25 @@ const DATA = {
       ],
       workCulture: { pace: "Steady, structured", teamStyle: "Large teams, defined roles", workLifeBalance: "Balanced, standard hours", managementStyle: "Hierarchical, process-driven", collaboration: "Cross-department coordination common", overtimeSignal: "Occasional during reporting periods", reviewThemes: "Stable, good for early career, slower pace" },
       veraNote: "Maybank is strong for fresh graduates who want a structured early-career path, stable environment, and broad banking exposure. Watch for slower approval processes and large-company hierarchy.",
+      // Powers the redesigned Reviews section (Company Profile page): filters,
+      // sort, expandable cards and infinite scroll all read from this array.
+      // tenure is employment period (when they worked there); date is when
+      // the review was posted - the two are deliberately independent.
       companyReviews: [
-        { id: "cr-mb-1", title: "Solid first job with real structure", author: "Graduate Trainee", role: "Management Trainee", date: "May 2026", rating: 4.6, body: "The rotation program gave me exposure to multiple departments. Approvals can be slow but the learning is real." },
-        { id: "cr-mb-2", title: "Good stability, steady pace", author: "Data Analyst", role: "Data Analyst", date: "Mar 2026", rating: 4.3, body: "Good work-life balance and supportive team, though systems can feel dated." }
+        { id: "cr-mb-1", title: "Solid first job with real structure", author: "Graduate Trainee", role: "Management Trainee", department: "Graduate Program", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Graduate", verified: true, date: "May 2026", tenure: "2023 - 2025 (2 yrs)", rating: 4.6, pros: "The rotation program gave me exposure to multiple departments and the mentorship was genuinely helpful.", cons: "Approvals can be slow, and some processes still rely on manual paperwork.", advice: "Continue investing in the rotation program, and consider digitizing more internal approvals.", likes: 34, helpfulCount: 28, managerResponse: "Thank you for the thoughtful feedback - we're actively working on digitizing approval workflows this year." },
+        { id: "cr-mb-2", title: "Good stability, steady pace", author: "Data Analyst", role: "Data Analyst", department: "Analytics", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "Mar 2026", tenure: "2022 - Present (3 yrs)", rating: 4.3, pros: "Good work-life balance and a genuinely supportive team.", cons: "Internal systems can feel dated compared to fintech competitors.", advice: "Invest in modern tooling for the analytics team to reduce manual reporting work.", likes: 21, helpfulCount: 19, managerResponse: null },
+        { id: "cr-mb-3", title: "Great place to start a banking career", author: "Management Trainee", role: "Management Trainee", department: "Graduate Program", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Graduate", verified: true, date: "Jun 2026", tenure: "2024 - Present (1 yr)", rating: 4.7, pros: "Structured onboarding, clear expectations, and a strong alumni network.", cons: "Hierarchy can feel rigid if you're used to a flatter structure.", advice: "Give trainees more autonomy earlier in the rotation.", likes: 40, helpfulCount: 33, managerResponse: "Glad the program is working well for you - we're reviewing trainee autonomy for the next cohort." },
+        { id: "cr-mb-4", title: "Fair pay, slow promotions", author: "Finance Executive", role: "Finance Executive", department: "Finance", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: false, date: "Feb 2026", tenure: "2021 - Present (4 yrs)", rating: 3.4, pros: "Compensation is competitive for the industry and benefits are solid.", cons: "Promotion cycles are long and can depend heavily on tenure rather than performance.", advice: "Make promotion criteria more transparent and performance-driven.", likes: 12, helpfulCount: 25, managerResponse: null },
+        { id: "cr-mb-5", title: "Supportive team, heavy month-end load", author: "Finance Manager", role: "Finance Manager", department: "Finance", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "Apr 2026", tenure: "2019 - Present (6 yrs)", rating: 3.9, pros: "Strong team culture and leadership genuinely listens to feedback.", cons: "Month-end and quarter-end periods require significant overtime.", advice: "Look into automating parts of the month-end close process.", likes: 18, helpfulCount: 15, managerResponse: null },
+        { id: "cr-mb-6", title: "Friendly team, repetitive work", author: "Customer Operations Associate", role: "Customer Operations Associate", department: "Customer Operations", location: "Penang", country: "Malaysia", employmentType: "Employee", verified: true, date: "Jan 2026", tenure: "2023 - Present (2 yrs)", rating: 3.6, pros: "Friendly colleagues and manageable shift schedules.", cons: "The work can get repetitive and career growth in this track is limited.", advice: "Create clearer growth paths from operations into other departments.", likes: 9, helpfulCount: 11, managerResponse: null },
+        { id: "cr-mb-7", title: "Modern team inside a traditional bank", author: "Software Engineer", role: "Software Engineer", department: "Technology", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "Jun 2026", tenure: "2022 - Present (3 yrs)", rating: 4.2, pros: "The engineering team runs with modern practices even though the wider org is traditional.", cons: "Cross-team dependencies with legacy systems can slow releases down.", advice: "Give engineering more autonomy over legacy system integrations.", likes: 27, helpfulCount: 22, managerResponse: "Appreciate this - we're expanding the platform team specifically to reduce legacy dependency friction." },
+        { id: "cr-mb-8", title: "Solid internship, real project exposure", author: "IT Support Intern", role: "IT Support Intern", department: "Technology", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Intern", verified: true, date: "Jul 2026", tenure: "Jun 2026 - Aug 2026 (3 mo)", rating: 4.4, pros: "I worked on a real internal tool, not just busywork, and got regular feedback.", cons: "Onboarding took a while since intern access requests move slowly.", advice: "Speed up IT access provisioning for interns in their first week.", likes: 15, helpfulCount: 10, managerResponse: null },
+        { id: "cr-mb-9", title: "Good learning, cautious culture", author: "Risk Analyst", role: "Risk Analyst", department: "Risk Management", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: false, date: "Mar 2026", tenure: "2020 - Present (5 yrs)", rating: 3.8, pros: "You learn regulatory and risk fundamentals extremely well here.", cons: "The culture is risk-averse, so new ideas take a long time to get approved.", advice: "Create a faster track for testing new risk models before full rollout.", likes: 14, helpfulCount: 17, managerResponse: null },
+        { id: "cr-mb-10", title: "HR genuinely cares, but understaffed", author: "HR Executive", role: "HR Executive", department: "Human Resources", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "May 2026", tenure: "2023 - Present (2 yrs)", rating: 4.0, pros: "Leadership genuinely cares about employee wellbeing initiatives.", cons: "The HR team itself is understaffed relative to headcount growth.", advice: "Hire more HR business partners to match the pace of hiring.", likes: 11, helpfulCount: 9, managerResponse: null },
+        { id: "cr-mb-11", title: "Great brand recognition for early career", author: "Marketing Executive", role: "Marketing Executive", department: "Marketing", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "Feb 2026", tenure: "2022 - Present (3 yrs)", rating: 4.1, pros: "The Maybank brand opens doors and campaigns get real regional reach.", cons: "Creative approvals go through multiple layers before launch.", advice: "Streamline the creative approval chain for smaller campaigns.", likes: 16, helpfulCount: 13, managerResponse: null },
+        { id: "cr-mb-12", title: "Regional exposure from the Singapore office", author: "Compliance Officer", role: "Compliance Officer", department: "Compliance", location: "Singapore", country: "Singapore", employmentType: "Employee", verified: true, date: "Apr 2026", tenure: "2021 - Present (4 yrs)", rating: 4.3, pros: "Working from the Singapore office gives good regional and cross-border exposure.", cons: "Regulatory reporting cycles are demanding and deadlines are strict.", advice: "Add more automation to recurring regulatory reports.", likes: 19, helpfulCount: 16, managerResponse: null },
+        { id: "cr-mb-13", title: "Decent internship but limited mentorship", author: "Finance Intern", role: "Finance Intern", department: "Finance", location: "Johor Bahru", country: "Malaysia", employmentType: "Intern", verified: false, date: "Jan 2026", tenure: "Dec 2025 - Feb 2026 (3 mo)", rating: 3.2, pros: "Got exposure to real financial reporting workflows.", cons: "My mentor was often unavailable due to month-end workload.", advice: "Assign a backup mentor for interns during peak periods.", likes: 6, helpfulCount: 8, managerResponse: null },
+        { id: "cr-mb-14", title: "Stable and dependable, not fast-paced", author: "Team Lead", role: "Customer Operations Team Lead", department: "Customer Operations", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "Jun 2026", tenure: "2018 - Present (7 yrs)", rating: 3.7, pros: "Job security is strong and the team is dependable.", cons: "Pace of change is slow compared to fintech or tech-first employers.", advice: "Pilot more agile ways of working in the operations team.", likes: 8, helpfulCount: 7, managerResponse: null }
       ],
       roles: [
         { id: "mb-mt", title: "Management Trainee", department: "Graduate Program", salaryRange: "RM 3.5k - 5k / month", employmentType: "Full-time (Rotational)", location: "Kuala Lumpur", workMode: "Onsite / Hybrid", experienceLevel: "Fresh graduate", educationRequirement: "Degree in any discipline", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Leadership potential", "Communication", "Adaptability"], preferredSkills: ["Prior internship experience", "Extracurricular leadership roles"], tools: ["Excel", "PowerPoint"], responsibilities: ["Rotate across business units", "Complete structured training modules", "Take on project assignments", "Build cross-functional experience"], hiringProcess: "Online assessment, assessment centre, panel interview", careerPath: "Management Trainee -> Executive -> Manager (post-rotation placement)", benefits: ["Structured mentorship", "Rotational exposure", "Fast-track promotion potential"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Highly competitive intake", "Placement after rotation is not guaranteed to be your first choice"] },
@@ -14566,13 +14582,24 @@ const ROLE_SORT_OPTIONS = [
 function renderEmployerCompany(root) {
   const company = DATA.companies.find(c => c.id === "maybank");
   let showAllRoles = false;
-  let showAllReviews = false;
   let roleSort = "newest";
   let expandedSalaryLevels = new Set();
   let tabsStuckObserver = null;
   let tabsSectionObserver = null;
   let tabsResizeHandler = null;
   let timelineObserver = null;
+  // Reviews: filter/sort state, infinite-scroll window (no pagination - the
+  // sentinel observer below grows this by REVIEW_BATCH_SIZE as the user
+  // scrolls), and per-card interaction state (expand/like/helpful).
+  let reviewFilters = { department: "all", role: "all", minRating: "all", country: "all", location: "all", verified: false, graduate: false, intern: false };
+  let reviewSort = "newest";
+  const REVIEW_BATCH_SIZE = 5;
+  let reviewsLoadedCount = REVIEW_BATCH_SIZE;
+  let reviewsLoadingMore = false;
+  let expandedReviews = new Set();
+  let likedReviews = new Set();
+  let helpfulReviews = new Set();
+  let reviewsObserver = null;
 
   function sortRoles(roles) {
     const sorted = roles.slice();
@@ -14605,6 +14632,86 @@ function renderEmployerCompany(root) {
   function setCareerPathHighlight(uptoIndex) {
     qsa("[data-career-node]", root).forEach(n => n.classList.toggle("in-path", uptoIndex >= 0 && Number(n.dataset.careerNode) <= uptoIndex));
     qsa("[data-career-connector]", root).forEach(c => c.classList.toggle("in-path", uptoIndex >= 0 && Number(c.dataset.careerConnector) <= uptoIndex));
+  }
+
+  function uniqueSorted(values) { return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b)); }
+
+  function getFilteredSortedReviews() {
+    let list = company.companyReviews.filter(r => {
+      if (reviewFilters.department !== "all" && r.department !== reviewFilters.department) return false;
+      if (reviewFilters.role !== "all" && r.role !== reviewFilters.role) return false;
+      if (reviewFilters.minRating !== "all" && r.rating < Number(reviewFilters.minRating)) return false;
+      if (reviewFilters.country !== "all" && r.country !== reviewFilters.country) return false;
+      if (reviewFilters.location !== "all" && r.location !== reviewFilters.location) return false;
+      if (reviewFilters.verified && !r.verified) return false;
+      // Graduate/Intern are OR'd together within this one facet (either
+      // toggled type qualifies) rather than ANDed, since a review can only
+      // ever have one employmentType - requiring both would always be empty.
+      if (reviewFilters.graduate || reviewFilters.intern) {
+        const matches = (reviewFilters.graduate && r.employmentType === "Graduate") || (reviewFilters.intern && r.employmentType === "Intern");
+        if (!matches) return false;
+      }
+      return true;
+    });
+    return list.slice().sort((a, b) => reviewSort === "helpful" ? b.helpfulCount - a.helpfulCount : new Date(b.date) - new Date(a.date));
+  }
+
+  function renderReviewCard(r) {
+    const expanded = expandedReviews.has(r.id);
+    const liked = likedReviews.has(r.id);
+    const foundHelpful = helpfulReviews.has(r.id);
+    return `
+      <div class="card emp-review-card ${expanded ? "is-expanded" : ""}" data-review-card="${r.id}">
+        <div class="emp-review-card-head">
+          <div class="emp-review-card-head-main">
+            <div class="emp-review-card-title-row">
+              <h3>${escapeHtml(r.title)}</h3>
+              ${r.verified ? `<span class="emp-review-verified-badge">${icon("badge-check")} Verified</span>` : ""}
+            </div>
+            <p class="emp-review-meta">${escapeHtml(r.role)} · ${escapeHtml(r.department)} · ${escapeHtml(r.location)}, ${escapeHtml(r.country)}</p>
+            <p class="emp-review-meta emp-review-meta-sub">Posted ${escapeHtml(r.date)} · Timeline: ${escapeHtml(r.tenure)}</p>
+          </div>
+          <span class="pill green">${r.rating} / 5</span>
+        </div>
+
+        <div class="emp-review-card-fields">
+          <div class="emp-review-field emp-review-field--pros">
+            <span class="emp-tags-label">${icon("thumbs-up")} Pros</span>
+            <p>${escapeHtml(r.pros)}</p>
+          </div>
+          <div class="emp-review-field emp-review-field--cons">
+            <span class="emp-tags-label">${icon("thumbs-down")} Cons</span>
+            <p>${escapeHtml(r.cons)}</p>
+          </div>
+        </div>
+
+        <div class="emp-review-card-expand" ${expanded ? "" : "hidden"}>
+          <div class="emp-review-field">
+            <span class="emp-tags-label">${icon("lightbulb")} Advice to Management</span>
+            <p>${escapeHtml(r.advice)}</p>
+          </div>
+          ${r.managerResponse ? `
+            <div class="emp-review-manager-response">
+              <div class="emp-callout-label">${icon("building-2")} Response from ${escapeHtml(company.name)}</div>
+              <p>${escapeHtml(r.managerResponse)}</p>
+            </div>
+          ` : ""}
+        </div>
+
+        <div class="emp-review-card-footer">
+          <button type="button" class="emp-review-action-btn ${liked ? "is-active" : ""}" data-review-like="${r.id}">
+            ${icon("heart")}<span>${r.likes + (liked ? 1 : 0)}</span>
+          </button>
+          <button type="button" class="emp-review-action-btn ${foundHelpful ? "is-active" : ""}" data-review-helpful="${r.id}">
+            ${icon("thumbs-up")}<span>${r.helpfulCount + (foundHelpful ? 1 : 0)} found this helpful</span>
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm emp-review-expand-toggle" data-review-toggle="${r.id}">
+            ${expanded ? "Show less" : "Read more"}${icon(expanded ? "chevron-up" : "chevron-down")}
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-company-respond-review>Respond to review</button>
+        </div>
+      </div>
+    `;
   }
 
   function renderSalaryLevel(lvl, i) {
@@ -14698,11 +14805,12 @@ function renderEmployerCompany(root) {
   function draw() {
     const openRoles = sortRoles(DATA.employerRoles.filter(r => r.status === "Open"));
     const rolesToShow = showAllRoles ? openRoles : openRoles.slice(0, 4);
-    const allReviews = [
-      ...DATA.reviews.filter(r => r.targetId === company.id).map(r => ({ title: r.title, role: r.author, date: r.date, rating: r.rating, body: r.body })),
-      ...company.companyReviews.map(r => ({ title: r.title, role: r.role, date: r.date, rating: r.rating, body: r.body }))
-    ];
-    const reviewsToShow = showAllReviews ? allReviews : allReviews.slice(0, 3);
+    const filteredReviews = getFilteredSortedReviews();
+    const reviewsToShow = filteredReviews.slice(0, reviewsLoadedCount);
+    const reviewDepartments = uniqueSorted(company.companyReviews.map(r => r.department));
+    const reviewRoles = uniqueSorted(company.companyReviews.map(r => r.role));
+    const reviewCountries = uniqueSorted(company.companyReviews.map(r => r.country));
+    const reviewLocations = uniqueSorted(company.companyReviews.map(r => r.location));
     const completeness = computeCompanyCompleteness(company);
 
     root.innerHTML = `
@@ -15026,18 +15134,56 @@ function renderEmployerCompany(root) {
           <div class="emp-score-tile"><strong>${company.scores.pay}</strong><span>Pay</span></div>
           <div class="emp-score-tile"><strong>${company.scores.balance}</strong><span>Work-life balance</span></div>
         </div>
-        <p class="emp-empty-hint">${company.reviews.toLocaleString()} reviews</p>
-        <div class="emp-review-list">
-          ${reviewsToShow.map(r => `
-            <div class="card emp-review-card">
-              <div class="emp-card-head"><h3>${r.title}</h3><span class="pill green">${r.rating} / 5</span></div>
-              <p class="emp-cand-meta">${r.role} · ${r.date}</p>
-              <p>${r.body}</p>
-              <button type="button" class="btn btn-ghost btn-sm" data-company-respond-review>Respond to review</button>
-            </div>
-          `).join("")}
+
+        <div class="emp-review-filter-bar">
+          <div class="emp-review-filter-selects">
+            <select data-review-filter="department" aria-label="Filter by department">
+              <option value="all">All Departments</option>
+              ${reviewDepartments.map(d => `<option value="${escapeHtml(d)}" ${reviewFilters.department === d ? "selected" : ""}>${escapeHtml(d)}</option>`).join("")}
+            </select>
+            <select data-review-filter="role" aria-label="Filter by role">
+              <option value="all">All Roles</option>
+              ${reviewRoles.map(r => `<option value="${escapeHtml(r)}" ${reviewFilters.role === r ? "selected" : ""}>${escapeHtml(r)}</option>`).join("")}
+            </select>
+            <select data-review-filter="minRating" aria-label="Filter by rating">
+              <option value="all">Any Rating</option>
+              <option value="4" ${reviewFilters.minRating === "4" ? "selected" : ""}>4+ stars</option>
+              <option value="3" ${reviewFilters.minRating === "3" ? "selected" : ""}>3+ stars</option>
+              <option value="2" ${reviewFilters.minRating === "2" ? "selected" : ""}>2+ stars</option>
+            </select>
+            <select data-review-filter="country" aria-label="Filter by country">
+              <option value="all">All Countries</option>
+              ${reviewCountries.map(c => `<option value="${escapeHtml(c)}" ${reviewFilters.country === c ? "selected" : ""}>${escapeHtml(c)}</option>`).join("")}
+            </select>
+            <select data-review-filter="location" aria-label="Filter by location">
+              <option value="all">All Locations</option>
+              ${reviewLocations.map(l => `<option value="${escapeHtml(l)}" ${reviewFilters.location === l ? "selected" : ""}>${escapeHtml(l)}</option>`).join("")}
+            </select>
+            <select data-review-sort aria-label="Sort reviews">
+              <option value="newest" ${reviewSort === "newest" ? "selected" : ""}>Newest</option>
+              <option value="helpful" ${reviewSort === "helpful" ? "selected" : ""}>Most Helpful</option>
+            </select>
+          </div>
+          <div class="emp-review-filter-chips">
+            <button type="button" class="emp-review-chip ${reviewFilters.verified ? "active" : ""}" data-review-toggle-filter="verified">${icon("badge-check")} Verified</button>
+            <button type="button" class="emp-review-chip ${reviewFilters.graduate ? "active" : ""}" data-review-toggle-filter="graduate">Graduate</button>
+            <button type="button" class="emp-review-chip ${reviewFilters.intern ? "active" : ""}" data-review-toggle-filter="intern">Intern</button>
+            ${JSON.stringify(reviewFilters) !== JSON.stringify({ department: "all", role: "all", minRating: "all", country: "all", location: "all", verified: false, graduate: false, intern: false }) ? `<button type="button" class="btn btn-ghost btn-sm" data-review-clear-filters>Clear filters</button>` : ""}
+          </div>
         </div>
-        ${allReviews.length > 3 ? `<button type="button" class="btn btn-ghost btn-sm" data-company-toggle-reviews>${showAllReviews ? "Show fewer reviews" : "Show more reviews"}</button>` : ""}
+
+        <p class="emp-empty-hint" data-review-count>${filteredReviews.length.toLocaleString()} of ${company.reviews.toLocaleString()} reviews${filteredReviews.length !== company.companyReviews.length ? " match your filters" : ""}</p>
+
+        <div class="emp-review-list" data-review-list>
+          ${reviewsToShow.map(renderReviewCard).join("")}
+          ${filteredReviews.length === 0 ? `<div class="emp-review-empty-state">${icon("search-x")}<p>No reviews match your filters.</p><button type="button" class="btn btn-ghost btn-sm" data-review-clear-filters>Clear filters</button></div>` : ""}
+        </div>
+
+        ${reviewsLoadedCount < filteredReviews.length ? `
+          <div class="emp-review-infinite-sentinel" data-review-sentinel>
+            <span class="emp-review-loading-spinner"></span> Loading more reviews…
+          </div>
+        ` : ""}
       </div>
 
       <div class="card emp-company-section" id="comp-insights">
@@ -15145,7 +15291,38 @@ function renderEmployerCompany(root) {
       if (r) openRoleApplyPreview(r);
     }));
     qs("[data-company-toggle-roles]", root)?.addEventListener("click", () => { showAllRoles = !showAllRoles; draw(); });
-    qs("[data-company-toggle-reviews]", root)?.addEventListener("click", () => { showAllReviews = !showAllReviews; draw(); });
+    qsa("[data-review-filter]", root).forEach(sel => sel.addEventListener("change", event => {
+      reviewFilters[sel.dataset.reviewFilter] = event.target.value;
+      reviewsLoadedCount = REVIEW_BATCH_SIZE;
+      draw();
+    }));
+    qs("[data-review-sort]", root)?.addEventListener("change", event => { reviewSort = event.target.value; reviewsLoadedCount = REVIEW_BATCH_SIZE; draw(); });
+    qsa("[data-review-toggle-filter]", root).forEach(btn => btn.addEventListener("click", () => {
+      const key = btn.dataset.reviewToggleFilter;
+      reviewFilters[key] = !reviewFilters[key];
+      reviewsLoadedCount = REVIEW_BATCH_SIZE;
+      draw();
+    }));
+    qsa("[data-review-clear-filters]", root).forEach(btn => btn.addEventListener("click", () => {
+      reviewFilters = { department: "all", role: "all", minRating: "all", country: "all", location: "all", verified: false, graduate: false, intern: false };
+      reviewsLoadedCount = REVIEW_BATCH_SIZE;
+      draw();
+    }));
+    qsa("[data-review-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.reviewToggle;
+      if (expandedReviews.has(id)) expandedReviews.delete(id); else expandedReviews.add(id);
+      draw();
+    }));
+    qsa("[data-review-like]", root).forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.reviewLike;
+      if (likedReviews.has(id)) likedReviews.delete(id); else likedReviews.add(id);
+      draw();
+    }));
+    qsa("[data-review-helpful]", root).forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.reviewHelpful;
+      if (helpfulReviews.has(id)) helpfulReviews.delete(id); else helpfulReviews.add(id);
+      draw();
+    }));
     qsa("[data-salary-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
       const i = Number(btn.dataset.salaryToggle);
       if (expandedSalaryLevels.has(i)) expandedSalaryLevels.delete(i); else expandedSalaryLevels.add(i);
@@ -15163,6 +15340,32 @@ function renderEmployerCompany(root) {
     });
     initCompanyTabsBehavior();
     initTimelineReveal();
+    initReviewsInfiniteScroll();
+  }
+
+  // Infinite scroll, not pagination: the sentinel sits right after the
+  // rendered review batch and only exists in the DOM while more filtered
+  // reviews remain (reviewsLoadedCount < filteredReviews.length in draw()).
+  // A short artificial delay before growing reviewsLoadedCount gives a real
+  // "lazy loading" flash instead of an instant swap. Same disconnect-before-
+  // recreate discipline as the other observers - draw() replaces
+  // root.innerHTML wholesale, so a stale observer would watch a detached node.
+  function initReviewsInfiniteScroll() {
+    if (reviewsObserver) reviewsObserver.disconnect();
+    const sentinel = qs("[data-review-sentinel]", root);
+    if (!sentinel) return;
+    if (!("IntersectionObserver" in window)) { reviewsLoadedCount += REVIEW_BATCH_SIZE; draw(); return; }
+    reviewsObserver = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !reviewsLoadingMore) {
+        reviewsLoadingMore = true;
+        setTimeout(() => {
+          reviewsLoadingMore = false;
+          reviewsLoadedCount += REVIEW_BATCH_SIZE;
+          draw();
+        }, 500);
+      }
+    }, { rootMargin: "200px 0px 0px 0px", threshold: 0 });
+    reviewsObserver.observe(sentinel);
   }
 
   // Same disconnect-before-recreate discipline as initCompanyTabsBehavior():

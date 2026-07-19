@@ -13909,9 +13909,90 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-score-tile strong { display: block; font-size: var(--emp-metric-sm); }
 .emp-score-tile span { font-size: 11px; color: var(--soft); }
 .emp-score-tile.main { border-color: rgba(37, 99, 235, 0.35); background: rgba(37, 99, 235, 0.04); }
-.emp-review-list { display: grid; gap: 12px; margin: 12px 0; }
-.emp-review-card { padding: 16px 18px; }
-.emp-review-card p { margin: 8px 0; font-size: 13px; line-height: 1.6; }
+/* Reviews - filter bar, expandable cards, infinite scroll (see JS:
+   getFilteredSortedReviews/renderReviewCard/initReviewsInfiniteScroll). */
+.emp-review-filter-bar { display: flex; flex-direction: column; gap: 10px; margin: 16px 0 4px; }
+.emp-review-filter-selects { display: flex; flex-wrap: wrap; gap: 8px; }
+.emp-review-filter-selects select {
+  padding: 7px 28px 7px 12px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line));
+  background-color: #fff; font-size: 12px; font-weight: 700; font-family: inherit;
+}
+.emp-review-filter-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.emp-review-chip {
+  display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 999px;
+  border: 1px solid var(--emp-line, var(--line)); background: #fff; font-size: 12px; font-weight: 700;
+  font-family: inherit; cursor: pointer; transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.emp-review-chip svg { width: 13px; height: 13px; }
+.emp-review-chip:hover { border-color: var(--emp-green, #07382f); }
+.emp-review-chip.active { background: var(--emp-green, #07382f); border-color: var(--emp-green, #07382f); color: #fff; }
+
+.emp-review-list { display: grid; gap: 14px; margin: 12px 0; }
+.emp-review-card { padding: 20px 22px; }
+.emp-review-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.emp-review-card-title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.emp-review-card-title-row h3 { margin: 0; }
+.emp-review-verified-badge {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 999px;
+  background: rgba(7, 56, 47, 0.1); font-size: 11px; font-weight: 800; white-space: nowrap;
+}
+.emp-review-verified-badge svg { width: 12px; height: 12px; }
+.emp-review-meta { margin: 4px 0 0; font-size: 12px; }
+.emp-review-meta-sub { margin-top: 2px; font-size: 11px; }
+.emp-review-card-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 0; }
+.emp-review-field { padding: 12px 14px; border-radius: 12px; }
+.emp-review-field--pros { background: rgba(7, 56, 47, 0.05); }
+.emp-review-field--cons { background: rgba(217, 119, 6, 0.06); }
+.emp-review-field p { margin: 6px 0 0; font-size: 13px; line-height: 1.55; }
+.emp-review-card-expand { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); display: flex; flex-direction: column; gap: 14px; }
+/* [hidden]'s display:none comes from the UA stylesheet, which always loses
+   to an author-stylesheet declaration on the same element regardless of
+   specificity - the `display: flex` above was silently winning and kept
+   collapsed review detail visible (same bug class as the Salary section's
+   .emp-salary-level-detail[hidden] fix earlier this session). */
+.emp-review-card-expand[hidden] { display: none !important; }
+.emp-review-manager-response { padding: 12px 14px; border-radius: 12px; background: rgba(111, 95, 196, 0.06); border: 1px solid rgba(111, 95, 196, 0.16); }
+.emp-review-manager-response p { margin: 6px 0 0; font-size: 13px; line-height: 1.55; }
+.emp-review-card-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+.emp-review-action-btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px;
+  border: 1px solid var(--emp-line, var(--line)); background: #fff; font-size: 12px; font-weight: 700;
+  font-family: inherit; cursor: pointer; transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.emp-review-action-btn svg { width: 14px; height: 14px; }
+.emp-review-action-btn:hover { border-color: var(--emp-green, #07382f); }
+.emp-review-action-btn.is-active { background: rgba(7, 56, 47, 0.08); border-color: var(--emp-green, #07382f); }
+.emp-review-expand-toggle { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
+.emp-review-expand-toggle svg { width: 14px; height: 14px; }
+
+.emp-review-empty-state { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 40px 20px; text-align: center; }
+.emp-review-empty-state svg { width: 28px; height: 28px; }
+.emp-review-empty-state p { margin: 0; font-size: 13px; }
+
+.emp-review-infinite-sentinel { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 20px 0 6px; font-size: 13px; font-weight: 600; }
+.emp-review-loading-spinner {
+  width: 16px; height: 16px; border-radius: 999px; border: 2px solid rgba(7, 56, 47, 0.18);
+  border-top-color: var(--emp-green, #07382f); animation: empReviewSpin 700ms linear infinite;
+}
+@keyframes empReviewSpin { to { transform: rotate(360deg); } }
+
+/* !important + doubled .emp-app-shell.emp-app-shell: same long-standing
+   unscoped color cascade fixed elsewhere in this file, applied
+   proactively to every bare/colored text element this redesign adds. */
+.emp-app-shell.emp-app-shell .emp-review-meta,
+.emp-app-shell.emp-app-shell .emp-review-meta-sub,
+.emp-app-shell.emp-app-shell .emp-review-empty-state p,
+.emp-app-shell.emp-app-shell .emp-review-infinite-sentinel { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-review-verified-badge,
+.emp-app-shell.emp-app-shell .emp-review-verified-badge svg { color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell .emp-review-manager-response .emp-callout-label,
+.emp-app-shell.emp-app-shell .emp-review-manager-response .emp-callout-label svg { color: var(--emp-ai, #6f5fc4) !important; }
+
+@media (max-width: 720px) {
+  .emp-review-card-fields { grid-template-columns: 1fr; }
+  .emp-review-card-head { flex-direction: column; }
+  .emp-review-expand-toggle { margin-left: 0; }
+}
 .emp-company-subsection { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .emp-company-subsection:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .emp-kpi-trend { display: block; margin-top: 2px; font-size: 10px; color: var(--soft); }
