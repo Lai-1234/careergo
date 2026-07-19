@@ -689,13 +689,17 @@ function normalizeState(state) {
   });
 }
 
+const TOUR_PAGE_KEYS = ["dashboard", "discover", "grow", "market", "autopilot", "posts"];
+
 function ensureGuidedTour(state) {
   const guidedTour = state.guidedTour || {};
-  guidedTour.dashboard = {
-    status: "new",
-    step: 0,
-    ...(guidedTour.dashboard || {})
-  };
+  TOUR_PAGE_KEYS.forEach(key => {
+    guidedTour[key] = {
+      status: "new",
+      step: 0,
+      ...(guidedTour[key] || {})
+    };
+  });
   state.guidedTour = guidedTour;
   return state;
 }
@@ -1394,6 +1398,256 @@ function positionTourCard(card, target) {
 
   card.style.left = `${left}px`;
   card.style.top = `${top}px`;
+}
+
+const TOUR_STEPS = {
+  discover: [
+    {
+      target: ".cg-discover-hero",
+      title: "Your career discovery hub",
+      body: "Discover surfaces roles, companies, universities, and mentors tuned to your target career and Kuala Lumpur's market - all searchable from one place.",
+      mission: "Try typing a company or role name to see live matches."
+    },
+    {
+      target: ".cg-discover-question-grid",
+      title: "Start with a question",
+      body: "Not sure where to begin? These quick prompts jump straight to the answer Vera already has ready for you.",
+      mission: "Tap one question to see Vera's answer."
+    },
+    {
+      target: "#vera-top-pick",
+      title: "Vera's Top Pick",
+      body: "The single role Vera rates highest against your skills, roadmap, and salary target this week - not a generic listing.",
+      mission: "Check why Vera ranked this role first."
+    },
+    {
+      target: "#market-pulse",
+      title: "Market Pulse in Malaysia",
+      body: "Live hiring, pay, and growth signals refreshed from real postings - so you know what's actually moving before you commit time to it.",
+      mission: "Open Explore more to see every tracked segment."
+    },
+    {
+      target: "[data-tour-target='discover-orgs']",
+      title: "Companies and universities",
+      body: "Browse employers and institutions Vera is watching for you - open a card for ratings, reviews, and entry requirements matched to your profile.",
+      mission: "Save one company or university to compare later."
+    },
+    {
+      target: "[data-tour-target='discover-mentors']",
+      title: "Mentors you can reach out to",
+      body: "People a few steps ahead of you on a similar path, ranked by how closely their journey overlaps with yours.",
+      mission: "Message one mentor with a specific question."
+    }
+  ],
+  grow: [
+    {
+      target: ".cg-grow-stats",
+      title: "You're improving",
+      body: "Interview readiness, skill percentile, matching jobs, and estimated pay - tracked over the last 14 days so progress is visible, not just felt.",
+      mission: "Check which stat moved most this week."
+    },
+    {
+      target: ".cg-skill-graph",
+      title: "Your skill graph",
+      body: "How you stack up against the Product Manager archetype in the KL market, skill by skill - this is what drives every recommendation below it.",
+      mission: "Find your single biggest skill gap."
+    },
+    {
+      target: ".cg-grow-journey",
+      title: "Your growth journey",
+      body: "The milestones between you and your target role, with the current one highlighted so you always know what's next.",
+      mission: "Open your current milestone."
+    },
+    {
+      target: "#interview-coach",
+      title: "Interview Coach",
+      body: "Company-specific prep, practice drills, and your readiness breakdown - built around your next actual interview, not a generic question bank.",
+      mission: "Try one 15-minute practice drill today."
+    },
+    {
+      target: "#recommended-growth",
+      title: "Recommended Growth",
+      body: "The learning moves with the highest return for your target role right now - each one opens into real practice, a course, or a guided writing exercise.",
+      mission: "Start the highest-return learning move."
+    }
+  ],
+  market: [
+    {
+      target: ".cg-worth-hero",
+      title: "Know your worth",
+      body: "Your Career Value is a live estimate built from your skills, roadmap progress, and thousands of verified Malaysian offers - not a guess.",
+      mission: "See your fair-value gap at a glance."
+    },
+    {
+      target: ".cg-worth-action",
+      title: "Vera's highest-value action today",
+      body: "Of everything you could do next, this is the single move that moves your Career Value the most for the least effort.",
+      mission: "Ask Vera why this is today's top move."
+    },
+    {
+      target: "[data-tour-target='worth-drivers']",
+      title: "Top value drivers",
+      body: "Ranked by expected monthly pay lift, weighted by how likely you are to actually complete each one.",
+      mission: "Pick one value driver to close first."
+    },
+    {
+      target: "#salary-negotiation",
+      title: "Salary negotiation",
+      body: "Vera benchmarks a defensible ask against verified market data, your skill match, and your pipeline leverage.",
+      mission: "Generate your negotiation points."
+    },
+    {
+      target: ".cg-worth-timeline",
+      title: "Career Value Timetable",
+      body: "Vera projects how each roadmap action lifts your monthly Career Value, so you can see the payoff before you start.",
+      mission: "See how each roadmap action lifts your value."
+    }
+  ],
+  autopilot: [
+    {
+      target: "[data-pipeline-tabs]",
+      title: "Applications, Autopilot, Follow-ups",
+      body: "Switch between your live pipeline, what Vera found and queued overnight, and the relationships waiting on a reply.",
+      mission: "Switch to Autopilot to see what Vera found overnight."
+    },
+    {
+      target: ".cg-pipeline-one-move",
+      title: "The one move today",
+      body: "Every open thread and application, ranked down to the single highest-leverage action for right now.",
+      mission: "Draft your reply with Vera."
+    },
+    {
+      target: ".cg-pipeline-impact",
+      title: "Vera - today's highest impact",
+      body: "A ranked task list built from your actual pipeline, not a generic to-do list - each one shows the expected lift and time cost.",
+      mission: "Open your #1 highest-impact task."
+    },
+    {
+      target: ".cg-pipeline-board-section",
+      title: "Live pipeline board",
+      body: "Every application, auto-scored and sorted by stage, so your search feels organized instead of scattered across emails.",
+      mission: "Move one application to its next stage."
+    },
+    {
+      target: ".cg-pipeline-review",
+      title: "Week in review",
+      body: "A running record of your momentum - applications sent, replies, interviews booked - so you can see the search accelerating.",
+      mission: "Plan next week with Vera."
+    }
+  ],
+  posts: [
+    {
+      target: ".cg-feed-left",
+      title: "Your feed sections",
+      body: "Move between what's new, people you follow, your network, communities, and what's trending in the Product Management world right now.",
+      mission: "Check what's trending today."
+    },
+    {
+      target: ".cg-feed-composer",
+      title: "Share your progress",
+      body: "Post a milestone, a lesson learned, or a question - the same feed hiring managers and mentors are reading.",
+      mission: "Share one milestone or question."
+    },
+    {
+      target: ".cg-feed-tabs",
+      title: "Filter by type",
+      body: "Narrow the feed to milestones, discussions, or hiring signals depending on what you're looking for today.",
+      mission: "Filter to Hiring to see who's recruiting."
+    }
+  ]
+};
+
+function getTourState(pageKey) {
+  const state = readState();
+  return state.guidedTour?.[pageKey] || { status: "new", step: 0 };
+}
+
+function saveTourState(pageKey, partial) {
+  const state = readState();
+  state.guidedTour = state.guidedTour || {};
+  state.guidedTour[pageKey] = {
+    status: "new",
+    step: 0,
+    ...(state.guidedTour[pageKey] || {}),
+    ...partial
+  };
+  writeState(syncCurrentUser(state));
+}
+
+function removePageTour() {
+  qsa(".tour-highlight").forEach(item => item.classList.remove("tour-highlight"));
+  qsa("[data-tour-layer]").forEach(item => item.remove());
+  document.body.classList.remove("sidebar-open");
+  if (window.__careergoTourReposition) window.removeEventListener("resize", window.__careergoTourReposition);
+}
+
+function showTourStep(pageKey, index) {
+  const steps = TOUR_STEPS[pageKey];
+  if (!steps || !steps.length) return;
+  const stepIndex = Math.max(0, Math.min(steps.length - 1, index));
+  const step = steps[stepIndex];
+  const target = qs(step.target);
+  if (!target) return;
+  removePageTour();
+  saveTourState(pageKey, { status: "active", step: stepIndex, startedAt: getTourState(pageKey).startedAt || nowStamp() });
+  target.classList.add("tour-highlight");
+  target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+  const backdrop = document.createElement("div");
+  backdrop.className = "tour-backdrop";
+  backdrop.dataset.tourLayer = "";
+  backdrop.setAttribute("aria-hidden", "true");
+
+  const card = document.createElement("aside");
+  card.className = "tour-card glass-card";
+  card.dataset.tourLayer = "";
+  card.setAttribute("role", "dialog");
+  card.setAttribute("aria-live", "polite");
+  card.innerHTML = `
+    <div class="tour-progress">
+      <span>Step ${stepIndex + 1} of ${steps.length}</span>
+      <div class="tour-dots">${steps.map((_, dotIndex) => `<i class="${dotIndex <= stepIndex ? "active" : ""}"></i>`).join("")}</div>
+    </div>
+    <h2>${step.title}</h2>
+    <p>${step.body}</p>
+    <div class="tour-mission">${icon("target")} ${step.mission}</div>
+    <div class="tour-actions">
+      <button class="btn btn-ghost" type="button" data-tour-skip>Skip</button>
+      <div>
+        <button class="btn btn-ghost" type="button" data-tour-back ${stepIndex === 0 ? "disabled" : ""}>Back</button>
+        <button class="btn btn-primary" type="button" data-tour-next>${icon(stepIndex === steps.length - 1 ? "check" : "arrow-right")} ${stepIndex === steps.length - 1 ? "Finish" : "Next"}</button>
+      </div>
+    </div>
+  `;
+  document.body.append(backdrop, card);
+  positionTourCard(card, target);
+  window.setTimeout(() => positionTourCard(card, target), 260);
+  window.__careergoTourReposition = () => positionTourCard(card, target);
+  window.addEventListener("resize", window.__careergoTourReposition);
+
+  qs("[data-tour-skip]", card).addEventListener("click", () => {
+    saveTourState(pageKey, { status: "skipped", step: stepIndex, skippedAt: nowStamp() });
+    removePageTour();
+  });
+  qs("[data-tour-back]", card).addEventListener("click", () => showTourStep(pageKey, stepIndex - 1));
+  qs("[data-tour-next]", card).addEventListener("click", () => {
+    if (stepIndex === steps.length - 1) {
+      saveTourState(pageKey, { status: "completed", step: stepIndex, completedAt: nowStamp() });
+      removePageTour();
+      showToast("Tour completed.");
+      return;
+    }
+    showTourStep(pageKey, stepIndex + 1);
+  });
+  createIcons();
+}
+
+function initPageTour(pageKey) {
+  const state = readState();
+  if (!state.session.loggedIn || !state.onboarding.candidateDone) return;
+  const tour = getTourState(pageKey);
+  if (tour.status === "completed" || tour.status === "skipped") return;
+  window.setTimeout(() => showTourStep(pageKey, tour.step || 0), 180);
 }
 
 function sanitizeRedirectPath(raw) {
@@ -4075,7 +4329,7 @@ function renderJobsPage() {
           </div>
         </section>
 
-        <section class="cg-discover-section">
+        <section class="cg-discover-section" data-tour-target="discover-orgs">
           <div class="cg-discover-section-head">
             <div><h2>Featured Companies</h2><p class="cg-h2-sub">Employers Vera is watching for you - tap a card for ratings and reviews.</p></div>
             <a class="cg-discover-link-btn" href="discover-companies.html">More Companies ${icon("arrow-right")}</a>
@@ -4144,7 +4398,7 @@ function renderJobsPage() {
           </div>
         </section>
 
-        <section class="cg-discover-section">
+        <section class="cg-discover-section" data-tour-target="discover-mentors">
           <div class="cg-discover-section-head">
             <div><h2>Mentors You can reach out to</h2><p class="cg-h2-sub">People a few steps ahead of you on a similar route, ranked by path overlap.</p></div>
             <button type="button" class="cg-discover-link-btn" data-discover-browse="mentors">Browse all mentors ${icon("arrow-right")}</button>
@@ -4247,6 +4501,7 @@ function renderJobsPage() {
       });
     });
     attachLiveSearch(qs("[data-discover-search-form]", root), query => renderSearchPanelContent(query, "workspace", state), () => renderSearchDefaultContent(state));
+    initPageTour("discover");
     return;
   }
   if (state.session.loggedIn && document.body.dataset.page === "workspace-jobs") {
@@ -8965,6 +9220,7 @@ function renderGrow() {
     }
   }
   bindHistoryTooltips(root);
+  initPageTour("grow");
   return;
   root.innerHTML = appShell("intelligence", `
     <section class="glass-card dashboard-hero profile-intel-hero">
@@ -11108,7 +11364,7 @@ function renderMarket() {
           </div>
         </section>
 
-        <section class="cg-worth-section">
+        <section class="cg-worth-section" data-tour-target="worth-drivers">
           <div class="cg-worth-section-head"><div><h2>Top value drivers</h2><p>Ranked by expected monthly pay lift, weighted by how likely you are to complete it.</p></div><a href="posts.html?topic=${encodeURIComponent("how my top value drivers are ranked")}#messages">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-driver-grid">
             ${valueDrivers.map(([ic, title, body, pct, effort, breakdown]) => `
@@ -11215,6 +11471,7 @@ function renderMarket() {
     if (location.hash === "#salary-negotiation") {
       window.setTimeout(() => qs("#salary-negotiation", root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
     }
+    initPageTour("market");
     return;
   }
   const target = getTargetLabel(state.profile).toLowerCase();
@@ -12207,6 +12464,7 @@ function renderAutopilot() {
         }
       });
     });
+    if (pipelineActiveTab === "applications") initPageTour("autopilot");
     return;
   }
   const tracked = getTrackedJobs(state);
@@ -13154,6 +13412,7 @@ function renderPosts() {
     });
   });
   syncFeedSidebarSticky();
+  if (!isDirectoryTab) initPageTour("posts");
 }
 
 function renderEmployerPortal() {
