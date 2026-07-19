@@ -980,6 +980,13 @@ function defaultApplicationAction(job, stage) {
   return "Archive or revisit later if your goals change.";
 }
 
+function applicationContinueHref(job, record) {
+  if (record.stage === "interview") return "grow.html#interview-coach";
+  if (record.stage === "offer") return "market.html#salary-negotiation";
+  const topic = (record.nextAction || `next steps for ${job.title} at ${job.company}`).replace(/^ask vera\s+/i, "");
+  return `posts.html?topic=${encodeURIComponent(topic)}#messages`;
+}
+
 function normalizeApplicationRecords(state) {
   const records = { ...(state.applicationRecords || {}) };
   (Array.isArray(state.savedJobs) ? state.savedJobs : []).forEach(jobId => {
@@ -7073,7 +7080,7 @@ function renderDashboard() {
               <p class="cg-application-meta">${icon("calendar")} ${record.deadline || "Due in 2 days"} ${icon("clock")} ${record.nextAction}</p>
               <div class="cg-note">${icon("sparkles")} ${record.nextAction}</div>
               <div class="cg-action-row">
-                <button type="button" class="btn btn-primary" data-app-details="${job.id}">Continue ${icon("arrow-up-right")}</button>
+                <a class="btn btn-primary" href="${applicationContinueHref(job, record)}">Continue ${icon("arrow-up-right")}</a>
                 <button type="button" class="btn btn-ghost" data-app-details="${job.id}">Details</button>
               </div>
             </article>
@@ -8946,8 +8953,8 @@ function renderGrow() {
   });
   createIcons();
   wireVeraWidget(root);
-  if (location.hash === "#interview-coach") {
-    window.setTimeout(() => qs("#interview-coach", root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+  if (["#interview-coach", "#recommended-growth"].includes(location.hash)) {
+    window.setTimeout(() => qs(location.hash, root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
   }
   const historySvg = qs(".cg-history-trend", root);
   if (historySvg) {
@@ -11139,7 +11146,7 @@ function renderMarket() {
           </div>
         </section>
 
-        <section class="cg-worth-negotiation">
+        <section class="cg-worth-negotiation" id="salary-negotiation">
           <article>
             <span class="cg-section-kicker">${icon("scale")} Salary negotiation - Grab Malaysia</span>
             <h2>Vera thinks you can ask for <em>RM 10,300.</em></h2>
@@ -11151,12 +11158,11 @@ function renderMarket() {
               ${worthDriverPie([["Verified market data", 30], ["Skill match to role", 26], ["Pipeline leverage", 16]])}
             </div>
             <div class="cg-worth-slider"><i><em></em><b></b></i><div><span>Lowball - RM 8,400</span><span>Fair - RM 10,100</span><span>Ambitious - RM 11,500</span></div></div>
-            <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("generating negotiation points for my next offer")}#messages">${icon("sparkles")} Generate negotiation points</a>
+            <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("generating negotiation points for my next offer")}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Generate negotiation points</a>
           </article>
           <div class="cg-grow-coach">
             <div class="cg-grow-coach-head"><span><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Coach Vera</span><b>online</b></div>
             <div class="cg-worth-coach-message">
-              <span class="cg-worth-coach-avatar"><img src="assets/vera-ai-coach.png" alt="Vera AI"></span>
               <div>
                 <h3>Why RM 10,300 is defensible</h3>
                 ${[
@@ -11205,6 +11211,9 @@ function renderMarket() {
       if (measuredWidth > 0 && measuredHeight > 0 && (Math.abs(measuredWidth - 1200) > 4 || Math.abs(measuredHeight - 360) > 4)) {
         worthChartSvg.outerHTML = worthTimelineSvg(worthTimelinePoints, measuredWidth, measuredHeight);
       }
+    }
+    if (location.hash === "#salary-negotiation") {
+      window.setTimeout(() => qs("#salary-negotiation", root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
     }
     return;
   }
