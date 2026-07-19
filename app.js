@@ -3836,6 +3836,24 @@ function openUniversityRequirementsModal(uniId) {
   createIcons();
 }
 
+const MARKET_PULSE_CATEGORIES = [
+  { tag: "In your market", trend: "Hiring +34%", title: "AI Product roles", salary: "RM 145k / year", salaryRange: "RM 118k - 172k / year", remote: "67% remote-friendly", openings: "312 new openings", tone: "teal", latestWeekly: 38, skills: ["Product strategy", "SQL", "Roadmapping"], companies: ["Setel", "Aerodyne", "Grab"] },
+  { tag: "Missing from your profile", trend: "Hiring +62%", title: "Prompt engineering", salary: "RM 9,500 / month", salaryRange: "RM 7k - 13k / month", remote: "82% remote-friendly", openings: "48 new openings", tone: "blue", latestWeekly: 9, skills: ["Prompt design", "LLM evaluation", "Python"], companies: ["Aerodyne", "Grab"] },
+  { tag: "Matches your background", trend: "Hiring +21%", title: "Design-first PMs", salary: "RM 132k / year", salaryRange: "RM 104k - 156k / year", remote: "54% remote-friendly", openings: "96 new openings", tone: "gold", latestWeekly: 16, skills: ["Design systems", "User research", "Figma"], companies: ["StoreHub", "Carsome"] },
+  { tag: "Your region", trend: "Hiring +12%", title: "KL fintech product hubs", salary: "RM 128k / year", salaryRange: "RM 98k - 158k / year", remote: "38% remote-friendly", openings: "204 new openings", tone: "rose", latestWeekly: 26, skills: ["Fintech compliance", "Payments", "Stakeholder management"], companies: ["Setel", "Carsome"] },
+  { tag: "Growing fast", trend: "Hiring +48%", title: "AI/ML infrastructure roles", salary: "RM 138k / year", salaryRange: "RM 108k - 168k / year", remote: "58% remote-friendly", openings: "72 new openings", tone: "teal", latestWeekly: 21, skills: ["MLOps", "Python", "Data pipelines"], companies: ["Aerodyne", "Grab"] },
+  { tag: "High salary ceiling", trend: "Hiring +9%", title: "Fintech engineering leads", salary: "RM 168k / year", salaryRange: "RM 132k - 210k / year", remote: "44% remote-friendly", openings: "58 new openings", tone: "blue", latestWeekly: 19, skills: ["System design", "Payments", "Team leadership"], companies: ["Setel", "Grab"] },
+  { tag: "New this quarter", trend: "Hiring +71%", title: "Sustainability & GreenTech roles", salary: "RM 112k / year", salaryRange: "RM 86k - 138k / year", remote: "49% remote-friendly", openings: "34 new openings", tone: "gold", latestWeekly: 6, skills: ["ESG reporting", "Data analysis", "Stakeholder management"], companies: ["Aerodyne"] },
+  { tag: "Cooling slightly", trend: "Hiring -6%", title: "Generalist marketplace ops", salary: "RM 96k / year", salaryRange: "RM 78k - 118k / year", remote: "36% remote-friendly", openings: "41 new openings", tone: "rose", latestWeekly: 24, skills: ["Operations", "Vendor management", "SQL"], companies: ["Carsome", "StoreHub"] }
+];
+
+const MARKET_TONE_RAMP = {
+  teal: ["#b9d9d4", "#a0cbc6", "#87beb8", "#6eb0aa", "#56a39c", "#3d958e", "#248880", "#0b7a72"],
+  blue: ["#cae4ee", "#b5d5e3", "#a0c7d8", "#8bb8cd", "#75a9c2", "#609ab7", "#4b8cac", "#367da1"],
+  gold: ["#eadfbf", "#e2d3aa", "#dbc696", "#d3ba81", "#ccae6c", "#c4a257", "#bd9543", "#b5892e"],
+  rose: ["#ecd5cf", "#e4c8c1", "#ddbcb2", "#d5afa4", "#cea296", "#c69588", "#bf8979", "#b77c6b"]
+};
+
 function renderJobsPage() {
   const root = qs("[data-jobs-page]");
   if (!root) return;
@@ -3859,19 +3877,9 @@ function renderJobsPage() {
   if (isDiscoverPage) {
     const topPick = DATA.jobs.find(job => job.id === "job-ai-product") || DATA.jobs[0];
     const topPickSaved = state.savedJobs.includes(topPick.id);
-    const marketPulse = [
-      ["In your market", "Hiring +34%", "AI Product roles", "RM 145k / year", "67% remote-friendly", "312 new openings", "teal", 38],
-      ["Missing from your profile", "Hiring +62%", "Prompt engineering", "RM 9,500 / month", "82% remote-friendly", "48 new openings", "blue", 9],
-      ["Matches your background", "Hiring +21%", "Design-first PMs", "RM 132k / year", "54% remote-friendly", "96 new openings", "gold", 16],
-      ["Your region", "Hiring +12%", "KL fintech product hubs", "RM 128k / year", "38% remote-friendly", "204 new openings", "rose", 26]
-    ];
+    const marketPulse = MARKET_PULSE_CATEGORIES.slice(0, 4).map(c => [c.tag, c.trend, c.title, c.salary, c.remote, c.openings, c.tone, c.latestWeekly]);
     const marketWeeks = marketWeekLabels(12);
-    const barRamp = {
-      teal: ["#b9d9d4", "#a0cbc6", "#87beb8", "#6eb0aa", "#56a39c", "#3d958e", "#248880", "#0b7a72"],
-      blue: ["#cae4ee", "#b5d5e3", "#a0c7d8", "#8bb8cd", "#75a9c2", "#609ab7", "#4b8cac", "#367da1"],
-      gold: ["#eadfbf", "#e2d3aa", "#dbc696", "#d3ba81", "#ccae6c", "#c4a257", "#bd9543", "#b5892e"],
-      rose: ["#ecd5cf", "#e4c8c1", "#ddbcb2", "#d5afa4", "#cea296", "#c69588", "#bf8979", "#b77c6b"]
-    };
+    const barRamp = MARKET_TONE_RAMP;
     const collections = [
       ["12 companies", "Fast-growing AI companies hiring PMs in Malaysia", "12 teams where the AI stack IS the product. Weighted by funding velocity, headcount growth in KL/Penang, and open PM roles.", "Because your last 4 saved roles were AI-native.", "large"],
       ["8 companies", "Startups with strong work-life balance", "Async-first Malaysian teams. Median 34h weeks, no on-call PM culture, hybrid-friendly.", "Matches your working-style profile.", ""],
@@ -3999,8 +4007,10 @@ function renderJobsPage() {
         </section>
 
         <section class="cg-discover-section" id="market-pulse">
-          <h2>Market Pulse in Malaysia</h2>
-          <p class="cg-h2-sub">What's hiring, paying, and growing around you right now - refreshed from live postings.</p>
+          <div class="cg-discover-section-head">
+            <div><h2>Market Pulse in Malaysia</h2><p class="cg-h2-sub">What's hiring, paying, and growing around you right now - refreshed from live postings.</p></div>
+            <a class="cg-discover-link-btn" href="market-pulse.html">Explore more ${icon("arrow-right")}</a>
+          </div>
           <div class="cg-market-grid">
             ${marketPulse.map(([tag, trend, title, salary, remote, openings, tone, latestWeekly], index) => {
               const trendPct = Number((trend.match(/-?\d+(\.\d+)?/) || [0])[0]);
@@ -5622,6 +5632,125 @@ function renderDiscoverOrgDirectory() {
     renderGrid();
   }));
   syncFilterOptions();
+  renderGrid();
+  createIcons();
+}
+
+function renderMarketPulsePage() {
+  const root = qs("[data-market-pulse-page]");
+  if (!root) return;
+  if (!requireAccount(root, "explore the full Malaysia market pulse")) return;
+  const marketWeeks = marketWeekLabels(12);
+  const tags = [...new Set(MARKET_PULSE_CATEGORIES.map(c => c.tag))];
+  const parseOpenings = str => Number((str.match(/[\d,]+/) || ["0"])[0].replace(/,/g, ""));
+  const parseTrend = str => Number((str.match(/-?\d+(\.\d+)?/) || [0])[0]);
+  const parseSalary = c => {
+    const value = Number((c.salary.match(/[\d,.]+/) || ["0"])[0].replace(/,/g, ""));
+    return /month/.test(c.salary) ? value * 12 : value * 1000;
+  };
+  root.innerHTML = `
+    <section class="cg-discover cg-discover-v2 cg-market-pulse-page">
+      <header class="cg-discover-hero">
+        <a class="cg-back-link" href="discover.html">${icon("arrow-left")} Discover</a>
+        <span class="cg-overline">Browse career places</span>
+        <h1>Market Pulse in Malaysia.</h1>
+        <p>Every market segment Vera is tracking for hiring trends, pay, and remote share across the Malaysian Product Management market.</p>
+      </header>
+      <section class="cg-discover-section">
+        <div class="cg-org-filters" aria-label="Market pulse filters">
+          <form class="cg-org-search-field" data-market-pulse-search-form>
+            ${icon("search")}
+            <input name="q" data-market-pulse-search placeholder="Search market segments, skills, or companies...">
+          </form>
+          <select data-market-pulse-sort aria-label="Sort">
+            <option value="growth">Highest hiring growth</option>
+            <option value="salary">Highest avg salary</option>
+            <option value="openings">Most openings</option>
+          </select>
+        </div>
+        <div class="cg-org-chips">
+          ${tags.map(tag => `<button type="button" data-market-pulse-chip="${tag}">${icon("zap")} ${tag}</button>`).join("")}
+        </div>
+        <p class="cg-org-count"><strong data-market-pulse-count>0</strong> shown &middot; Market segments &middot; sorted by <span data-market-pulse-sort-label>highest hiring growth</span></p>
+        <div class="cg-market-grid" data-market-pulse-grid></div>
+      </section>
+    </section>
+  `;
+  const grid = qs("[data-market-pulse-grid]", root);
+  const countNode = qs("[data-market-pulse-count]", root);
+  const sortLabelNode = qs("[data-market-pulse-sort-label]", root);
+  const searchInput = qs("[data-market-pulse-search]", root);
+  const sortSelect = qs("[data-market-pulse-sort]", root);
+  const chipButtons = qsa("[data-market-pulse-chip]", root);
+  const sortLabels = { growth: "highest hiring growth", salary: "highest avg salary", openings: "most openings" };
+  if (searchInput) searchInput.value = new URLSearchParams(location.search).get("q") || "";
+
+  function currentItems() {
+    const query = (searchInput?.value || "").trim().toLowerCase();
+    const activeChip = qs("[data-market-pulse-chip].active", root)?.dataset.marketPulseChip || "";
+    let filtered = MARKET_PULSE_CATEGORIES.filter(c => {
+      const hay = [c.tag, c.title, c.salary, c.remote, ...c.skills, ...c.companies].join(" ").toLowerCase();
+      if (query && !hay.includes(query)) return false;
+      if (activeChip && c.tag !== activeChip) return false;
+      return true;
+    });
+    const sort = sortSelect?.value || "growth";
+    return filtered.slice().sort((a, b) => {
+      if (sort === "salary") return parseSalary(b) - parseSalary(a);
+      if (sort === "openings") return parseOpenings(b.openings) - parseOpenings(a.openings);
+      return parseTrend(b.trend) - parseTrend(a.trend);
+    });
+  }
+
+  function renderGrid() {
+    const filtered = currentItems();
+    countNode.textContent = String(filtered.length);
+    if (sortLabelNode) sortLabelNode.textContent = sortLabels[sortSelect?.value || "growth"];
+    grid.innerHTML = filtered.map(c => {
+      const trendPct = parseTrend(c.trend);
+      const startWeekly = Math.max(1, Math.round(c.latestWeekly / (1 + trendPct / 100)));
+      const series = marketWeeklySeries(startWeekly, c.latestWeekly, MARKET_PULSE_CATEGORIES.indexOf(c));
+      const seriesMin = Math.min(...series);
+      const seriesRange = Math.max(1, Math.max(...series) - seriesMin);
+      const heightFor = value => 10 + Math.round(((value - seriesMin) / seriesRange) * 38);
+      const chartSummary = `Hiring trend ${trendPct >= 0 ? "up" : "down"} ${Math.abs(trendPct)}% over the last 12 weeks, from ${series[0]} to ${series[series.length - 1]} postings a week.`;
+      return `
+        <article class="cg-market-card tone-${c.tone}">
+          <div><span>${icon("zap")} ${c.tag}</span><small>${icon("trending-up")} ${c.trend}</small></div>
+          <h3>${c.title}</h3><a href="posts.html?topic=${encodeURIComponent(c.title)}#messages" aria-label="Ask Vera about ${c.title}">${icon("arrow-up-right")}</a>
+          <div class="cg-bars">
+            <span class="sr-only">${chartSummary}</span>
+            ${series.map((value, i) => {
+              const isCurrent = i === series.length - 1;
+              const barLabel = `Week of ${marketWeeks[i]}${isCurrent ? " (this week)" : ""}: ${value} postings`;
+              return `<i tabindex="0" role="img" class="${isCurrent ? "is-current" : ""}" style="height:${heightFor(value)}px;background:${isCurrent ? MARKET_TONE_RAMP[c.tone][7] : MARKET_TONE_RAMP[c.tone][2]}" data-tooltip="${barLabel}" aria-label="${barLabel}"></i>`;
+            }).join("")}
+          </div>
+          <p class="cg-bars-caption">Last 12 weeks - <strong>${c.latestWeekly} postings this week</strong></p>
+          <dl>
+            <dt>Avg. salary (MY)</dt><dd>${c.salary}</dd>
+            <dt>Salary range (MY)</dt><dd>${c.salaryRange}</dd>
+            <dt>Remote share</dt><dd>${c.remote}</dd>
+            <dt>Openings</dt><dd>${c.openings}</dd>
+          </dl>
+          <p class="cg-market-extra"><span>${icon("sparkles")} Skills in demand</span>${c.skills.join(" - ")}</p>
+          <p class="cg-market-extra"><span>${icon("building-2")} Hiring now</span>${c.companies.join(" - ")}</p>
+        </article>
+      `;
+    }).join("") || `<p class="cg-org-browse-empty">No market segments match yet. Try clearing a filter or searching a broader term.</p>`;
+    createIcons();
+    bindMarketTooltips(grid);
+  }
+
+  qs("[data-market-pulse-search-form]", root)?.addEventListener("submit", event => event.preventDefault());
+  searchInput?.addEventListener("input", renderGrid);
+  sortSelect?.addEventListener("input", renderGrid);
+  chipButtons.forEach(button => button.addEventListener("click", () => {
+    const wasActive = button.classList.contains("active");
+    chipButtons.forEach(item => item.classList.remove("active"));
+    if (!wasActive) button.classList.add("active");
+    renderGrid();
+  }));
   renderGrid();
   createIcons();
 }
@@ -12791,6 +12920,7 @@ function init() {
   renderJobsPage();
   renderDirectoryPage(document.body.dataset.directory || "");
   renderDiscoverOrgDirectory();
+  renderMarketPulsePage();
   renderCompanyProfile();
   renderDashboard();
   renderRecommendedRoles();
