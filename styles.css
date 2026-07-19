@@ -12918,14 +12918,25 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-wizard-step.done .emp-wizard-step-index { background: #059669; color: #fff; }
 .emp-wizard-body { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: start; }
 .emp-wizard-form { max-width: 1180px; margin-inline: auto; padding: 22px; display: grid; gap: 16px; }
-.emp-wizard-form label {
+.emp-wizard-form label,
+.emp-publish-form-card label {
   display: grid; grid-template-columns: 1fr auto; align-items: baseline;
   column-gap: 8px; row-gap: 6px; font-size: 13px; font-weight: 700; color: var(--emp-muted);
 }
 /* Explicit full-span placement, not flex-basis:100%: the control's own
    max-width (520px) would otherwise leave room for it to sit beside the
    label/Optional-tag row instead of wrapping to its own row. */
-.emp-wizard-form label > :is(input, textarea, select) { grid-column: 1 / -1; }
+.emp-wizard-form label > :is(input, textarea, select),
+.emp-publish-form-card label > :is(input, textarea, select) { grid-column: 1 / -1; }
+/* Step 5's form card (renderHiringAndPublishExtras) is full-width per the
+   Step 5 restructure, not wrapped in .emp-wizard-form (which caps at
+   1180px) - repeat just the label-stacking + input sizing rules here so
+   the same label-above-input pattern applies without the width cap. */
+.emp-publish-form-card { display: grid; gap: 16px; }
+.emp-publish-form-card input, .emp-publish-form-card textarea, .emp-publish-form-card select {
+  max-width: 520px; padding: 12px 14px; border: 1px solid var(--emp-line); border-radius: 10px;
+  font-size: 14px; line-height: 1.4; font-family: inherit; font-weight: 400; color: var(--emp-ink);
+}
 .emp-wizard-form input, .emp-wizard-form textarea, .emp-wizard-form select {
   max-width: 520px; padding: 12px 14px; border: 1px solid var(--emp-line); border-radius: 10px;
   font-size: 14px; line-height: 1.4; font-family: inherit; font-weight: 400; color: var(--emp-ink);
@@ -12940,6 +12951,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   background-repeat: no-repeat !important; background-position: right 12px center !important; background-size: 14px !important;
 }
 .emp-wizard-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+.emp-wizard-actions-left { display: flex; align-items: center; gap: 8px; }
 .emp-preview-note { margin: 0; font-size: 14px; color: var(--emp-muted); line-height: 1.5; }
 .emp-role-intelligence { padding: 20px 22px; }
 .emp-callout-label {
@@ -13804,13 +13816,19 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-drag-handle:active { cursor: grabbing; }
 .emp-stage-editor-fields { flex: 1; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .emp-stage-editor-fields input { min-width: 0; padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-size: 13px; font-family: inherit; }
-.emp-distribution-list { display: grid; gap: 8px; margin: 10px 0 16px; }
+.emp-distribution-list { display: grid; gap: 10px; margin: 10px 0 16px; }
+/* Each row is a clean horizontal card: checkbox+name left, status+button
+   right, both groups vertically centered, consistent height whether or
+   not a row has a "Copy job description" button (CareerGo's row doesn't). */
 .emp-distribution-row {
-  display: flex; align-items: center; gap: 12px; padding: 10px 12px;
-  border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 56px; padding: 10px 16px;
+  border: 1px solid var(--emp-line, var(--line)); border-radius: 12px;
 }
-.emp-distribution-row .check-field { flex: 1 1 200px; margin: 0; }
-.emp-distribution-state { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; color: var(--emp-muted, var(--soft)); text-transform: uppercase; }
+.emp-distribution-row-left { display: flex; align-items: center; min-width: 0; }
+.emp-distribution-row-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.emp-distribution-row .check-field { margin: 0; }
+.emp-distribution-state { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; color: var(--emp-muted, var(--soft)); text-transform: uppercase; white-space: nowrap; }
 .emp-company-reuse-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
 .emp-company-reuse-row p { margin: 0; }
 
