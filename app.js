@@ -6588,6 +6588,7 @@ function renderDashboard() {
   const applications = DATA.jobs.filter(job => state.applications.includes(job.id));
   const trackedJobs = getTrackedJobs(state);
   const counts = applicationSummaryCounts(state);
+  const apReviewCount = AUTOPILOT_MATCHES.filter(role => !(state.autopilotDismissedRoles || []).includes(role.id)).length;
   const profile = state.profile;
   const intel = profile.intelligence || generateCareerIntelligence(profile);
   const missions = personalizedMissions(profile);
@@ -6739,7 +6740,7 @@ function renderDashboard() {
             ].map(([ic, text, time], index, arr) => `<div class="cg-activity-item${index === arr.length - 1 ? " is-last" : ""}"><span class="cg-activity-dot">${icon(ic)}</span><p>${text}</p><time>${time}</time></div>`).join("")}
           </div>
           <div class="cg-action-row compact-actions">
-            <a class="btn btn-primary" href="autopilot.html">Review 8 items ${icon("chevron-right")}</a>
+            <a class="btn btn-primary" href="autopilot.html#autopilot-matches">Review ${apReviewCount} item${apReviewCount === 1 ? "" : "s"} ${icon("chevron-right")}</a>
             <a class="btn btn-ghost" href="autopilot.html#autopilot-console">Tune</a>
           </div>
         </article>
@@ -11030,7 +11031,8 @@ function renderAutopilot() {
     const apInsight = apRestrictiveFilters
       ? `Your ${apRestrictiveFilters} rule${apRestrictiveFilters.includes(" and ") ? "s" : ""} may be filtering out roles that are otherwise a strong fit. Loosening it slightly could surface more matches this week.`
       : `Your ${(apRules.strictness || "Balanced").toLowerCase()} match rules and ${apRules.threshold || 75}% threshold currently return ${apMatches.length} role${apMatches.length === 1 ? "" : "s"}. Widening the threshold a little could surface more.`;
-    if (location.hash === "#autopilot-console") pipelineActiveTab = "autopilot";
+    const autopilotHashTargets = ["#autopilot-console", "#autopilot-matches", "#autopilot-activity-log"];
+    if (autopilotHashTargets.includes(location.hash)) pipelineActiveTab = "autopilot";
     root.innerHTML = appShell("autopilot", `
       <section class="cg-pipeline">
         <div class="cg-pipeline-tabs" data-pipeline-tabs>
@@ -11219,7 +11221,7 @@ function renderAutopilot() {
           </div>
         </section>
 
-        <section class="cg-ap-matches">
+        <section class="cg-ap-matches" id="autopilot-matches">
           <header>
             <div>
               <span class="cg-section-kicker">${icon("bot")} Autopilot found for you</span>
@@ -11423,8 +11425,8 @@ function renderAutopilot() {
       ${veraWidgetMarkup()}
     `);
     createIcons();
-    if (location.hash === "#autopilot-console") {
-      window.setTimeout(() => qs("#autopilot-console", root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+    if (autopilotHashTargets.includes(location.hash)) {
+      window.setTimeout(() => qs(location.hash, root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
     }
     wireVeraWidget(root);
     qsa("[data-pipeline-view]", root).forEach(btn => btn.addEventListener("click", () => {
