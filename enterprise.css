@@ -4982,7 +4982,7 @@ html body[data-page="discover"] .cg-org-filters {
   display: grid !important;
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   gap: 10px !important;
-  margin: 20px 0 0 !important;
+  margin: 0 !important;
 }
 
 html body[data-page="discover"] .cg-org-filters select {
