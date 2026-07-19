@@ -127,6 +127,13 @@ const DATA = {
       activelyHiring: true,
       freshGraduateFriendly: true,
       internshipAvailable: true,
+      // Employer-facing hero KPIs (Company Profile page) - distinct from the
+      // candidate-facing signals above (rating, tags, scores).
+      healthScore: 89,
+      hiringActivityLevel: "High",
+      applicationConversionRate: 31,
+      avgResponseDays: 5,
+      avgCandidateMatchScore: 87,
       workMode: "Onsite / Hybrid",
       hiringDifficulty: "Medium",
       averageRequirements: { education: "Diploma/Degree depending on role", cgpa: "Usually 3.0+ preferred for graduate programs", experience: "Fresh graduate to 2 years for junior roles", commonSkills: ["Communication", "Excel", "Teamwork", "Problem solving"], techSkills: ["SQL", "Excel/VBA", "Basic data analysis"], englishRequirement: "Good written and spoken English", portfolio: "Not required for most roles", internshipPreferred: "Advantageous but not mandatory", certifications: "Professional banking/finance certifications advantageous" },
@@ -14500,29 +14507,57 @@ function renderEmployerCompany(root) {
         </div>
       </div>
 
-      <div class="card emp-company-header">
-        <div class="emp-company-header-top">
-          <div class="emp-company-header-identity">
-            <span class="emp-company-logo">${company.name.charAt(0)}</span>
-            <div>
-              <div class="emp-company-name-row"><h2>${company.name}</h2>${company.verified ? `<span class="pill cyan">${icon("shield-check")} Verified company</span>` : ""}</div>
-              <p class="emp-cand-meta">${company.industry} · ${company.location} · ${company.size}</p>
-              <p class="emp-cand-meta">${company.workMode} · ${company.followers.toLocaleString()} followers · ${openRoles.length} open roles</p>
-            </div>
+      <div class="card emp-company-hero">
+        <div class="emp-company-hero-left">
+          <div class="emp-company-hero-identity">
+            <span class="emp-company-logo emp-company-hero-logo">${company.name.charAt(0)}</span>
+            <div class="emp-company-name-row"><h2>${company.name}</h2>${company.verified ? `<span class="pill cyan">${icon("shield-check")} Verified company</span>` : ""}</div>
           </div>
-          <div class="emp-company-header-actions">
-            <button type="button" class="btn btn-primary" data-company-edit>Edit profile</button>
-            <a class="btn btn-ghost" href="companies.html?org=${company.id}" target="_blank" rel="noopener">${icon("external-link")} View as candidate</a>
-            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-company-menu>${icon("more-horizontal")}</button>
-            <div class="emp-actions-menu" data-company-menu-panel hidden>
-              <button type="button" data-company-share>Share public profile</button>
-            </div>
+          <div class="emp-company-hero-facts">
+            <div class="emp-company-hero-fact"><span>Industry</span><strong>${company.industry}</strong></div>
+            <div class="emp-company-hero-fact"><span>Headquarters</span><strong>${company.location}</strong></div>
+            <div class="emp-company-hero-fact"><span>Employee count</span><strong>${company.size}</strong></div>
+            <div class="emp-company-hero-fact"><span>Followers</span><strong>${company.followers.toLocaleString()}</strong></div>
+            <div class="emp-company-hero-fact"><span>Active roles</span><strong>${openRoles.length}</strong></div>
+            <div class="emp-company-hero-fact"><span>Work arrangement</span><strong>${company.workMode}</strong></div>
+          </div>
+          <div class="emp-company-hero-chips">
+            <span class="emp-company-hero-chip">${icon("star")} ${company.rating} Employee Rating</span>
+            ${company.activelyHiring ? `<span class="emp-company-hero-chip emp-company-hero-chip--positive">${icon("zap")} Hiring Actively</span>` : ""}
+            <span class="emp-company-hero-chip">${icon("clock")} Average Response Time: ${company.avgResponseDays} Days</span>
+            <span class="emp-company-hero-chip">${icon("target")} Candidate Match Score: ${company.avgCandidateMatchScore}%</span>
           </div>
         </div>
-        <div class="emp-company-header-status">
-          <span><strong>Public profile:</strong> ${company.publicProfileStatus}</span>
-          <span><strong>Profile completeness:</strong> ${completeness}%</span>
-          <span>Last updated ${company.lastUpdated}</span>
+        <div class="emp-company-hero-right">
+          <div class="emp-company-hero-actions">
+            <button type="button" class="btn btn-primary" data-company-edit>Edit Profile</button>
+            <a class="btn btn-ghost" href="companies.html?org=${company.id}" target="_blank" rel="noopener">Preview Candidate View</a>
+            <button type="button" class="btn btn-ghost" data-company-share>Share Public Profile</button>
+            <div class="emp-company-hero-menu-wrap">
+              <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-company-menu aria-haspopup="menu" aria-expanded="false">${icon("more-horizontal")}</button>
+              <div class="emp-actions-menu" data-company-menu-panel hidden>
+                <button type="button" data-company-share>Share public profile</button>
+              </div>
+            </div>
+          </div>
+          <div class="emp-company-hero-kpis">
+            <div class="emp-company-hero-kpi">
+              <strong>${company.healthScore}<span class="emp-company-hero-kpi-suffix">/100</span></strong>
+              <span class="emp-company-hero-kpi-label">Company Health</span>
+            </div>
+            <div class="emp-company-hero-kpi">
+              <strong>${company.hiringActivityLevel}</strong>
+              <span class="emp-company-hero-kpi-label">Hiring Activity</span>
+            </div>
+            <div class="emp-company-hero-kpi">
+              <strong>${company.applicationConversionRate}%</strong>
+              <span class="emp-company-hero-kpi-label">Application Conversion</span>
+            </div>
+            <div class="emp-company-hero-kpi">
+              <strong>${completeness}%</strong>
+              <span class="emp-company-hero-kpi-label">Profile Completeness</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -14741,7 +14776,7 @@ function renderEmployerCompany(root) {
       panel.hidden = !panel.hidden;
     });
     document.addEventListener("click", () => { const p = qs("[data-company-menu-panel]", root); if (p) p.hidden = true; });
-    qs("[data-company-share]", root)?.addEventListener("click", () => showToast("Public profile link copied."));
+    qsa("[data-company-share]", root).forEach(btn => btn.addEventListener("click", () => showToast("Public profile link copied.")));
     qs("[data-company-nav]", root)?.addEventListener("click", event => {
       const link = event.target.closest("[data-jump]");
       if (!link) return;
