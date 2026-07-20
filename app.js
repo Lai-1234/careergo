@@ -14645,6 +14645,12 @@ function getMatchReasons(c, role) {
   return reasons.length ? reasons : [c.strength];
 }
 
+const FEED_CONTENT_FILTERS = [
+  ["all", "All"], ["hiring", "Hiring"], ["candidate", "Candidate"], ["discussion", "Discussion"],
+  ["company", "Company"], ["universities", "Universities"], ["market", "Market"], ["salary", "Salary"],
+  ["remote", "Remote"], ["ai", "AI"], ["saved", "Saved"],
+];
+
 const HIRING_RECOMMENDATION_TYPES = {
   "high-fit": { label: "High-fit candidate", icon: "target" },
   "likely-to-accept": { label: "Likely to accept an offer", icon: "handshake" },
@@ -15048,6 +15054,7 @@ function renderEmployerFeed(root) {
   let recRotateIndex = 0;
   let briefExpanded = false;
   let hiringOppsExpanded = false;
+  let contentFilter = "all";
   let brandDashboardOpen = false;
   let composerAiOpen = false;
   let composerAiInsight = null;
@@ -15072,12 +15079,33 @@ function renderEmployerFeed(root) {
     return score;
   }
 
+  // Smart Filter Bar (section 12): an independent content-type layer on
+  // top of the sidebar's broad view (For You / Following). Genuinely
+  // functional, not decorative - Market/Salary/Remote/AI match real post
+  // text since those topics aren't already a distinct category field on
+  // DATA.communityPosts, the same substring-match approach already used
+  // for the trending-keyword banner.
+  function matchesContentFilter(p, state) {
+    const haystack = (p.body + " " + p.category).toLowerCase();
+    switch (contentFilter) {
+      case "hiring": return ["HIRING INSIGHT", "QUESTION"].includes(p.category);
+      case "candidate": return p.authorType === "person";
+      case "discussion": return ["DISCUSSION", "MILESTONE"].includes(p.category);
+      case "company": return p.category === "COMPANY UPDATE" || p.authorType === "employer";
+      case "universities": return p.authorType === "university";
+      case "market": return /market|trend|demand/.test(haystack);
+      case "salary": return /salary|pay|compensation/.test(haystack);
+      case "remote": return /remote/.test(haystack);
+      case "ai": return /\bai\b|artificial intelligence/.test(haystack);
+      case "saved": return state.feedSavedPosts.includes(p.id);
+      default: return true;
+    }
+  }
+
   function visiblePosts(state) {
     let posts = DATA.communityPosts.filter(p => !state.feedMuted.includes(p.followId));
     if (activeFilter === "following") posts = posts.filter(p => state.feedFollowing.includes(p.followId));
-    else if (activeFilter === "discussions") posts = posts.filter(p => ["DISCUSSION", "MILESTONE"].includes(p.category));
-    else if (activeFilter === "hiring") posts = posts.filter(p => ["HIRING INSIGHT", "QUESTION"].includes(p.category));
-    else if (activeFilter === "company-updates") posts = posts.filter(p => p.category === "COMPANY UPDATE");
+    if (contentFilter !== "all") posts = posts.filter(p => matchesContentFilter(p, state));
     // Trending keyword is a layer on top of whatever filter is active
     // (set by clicking a right-rail Trending topic), not a dedicated tab.
     if (trendingKeyword) posts = posts.filter(p => (p.body + " " + p.category).toLowerCase().includes(trendingKeyword.toLowerCase()));
@@ -15635,7 +15663,6 @@ function renderEmployerFeed(root) {
   function draw() {
     const state = readState();
     const company = DATA.companies.find(c => c.id === "maybank");
-    const showTopFilters = ["foryou", "following", "discussions", "hiring", "company-updates"].includes(activeFilter);
 
     root.innerHTML = `
       <div class="emp-view-header"><span class="emp-section-label">Feed</span><h1>Feed</h1></div>
@@ -15652,15 +15679,9 @@ function renderEmployerFeed(root) {
             <p>Vera surfaces candidates, market signal and hiring conversations relevant to your open roles — ranked by hiring relevance, not popularity.</p>
           </div>
           ${renderComposer(state)}
-          ${showTopFilters ? `
-            <div class="emp-feed-filters">
-              <button type="button" class="emp-feed-filter-chip ${activeFilter === "foryou" ? "active" : ""}" data-feed-filter="foryou">For You</button>
-              <button type="button" class="emp-feed-filter-chip ${activeFilter === "following" ? "active" : ""}" data-feed-filter="following">Following</button>
-              <button type="button" class="emp-feed-filter-chip ${activeFilter === "discussions" ? "active" : ""}" data-feed-filter="discussions">Discussions</button>
-              <button type="button" class="emp-feed-filter-chip ${activeFilter === "hiring" ? "active" : ""}" data-feed-filter="hiring">Hiring</button>
-              <button type="button" class="emp-feed-filter-chip ${activeFilter === "company-updates" ? "active" : ""}" data-feed-filter="company-updates">Company Updates</button>
-            </div>
-          ` : ""}
+          <div class="emp-feed-filters" data-feed-filters-bar>
+            ${FEED_CONTENT_FILTERS.map(([key, label]) => `<button type="button" class="emp-feed-filter-chip ${contentFilter === key ? "active" : ""}" data-content-filter="${key}">${label}</button>`).join("")}
+          </div>
           ${trendingKeyword ? `<p class="emp-empty-hint">Showing posts related to "${trendingKeyword}". <button type="button" class="emp-feed-clear-trend" data-feed-clear-trend>Clear</button></p>` : ""}
           <div class="emp-feed-post-list">
             ${renderFeedPostList(state)}
@@ -15697,8 +15718,8 @@ function renderEmployerFeed(root) {
       trendingKeyword = null;
       draw();
     }));
-    qsa("[data-feed-filter]", root).forEach(btn => btn.addEventListener("click", () => {
-      activeFilter = btn.dataset.feedFilter;
+    qsa("[data-content-filter]", root).forEach(btn => btn.addEventListener("click", () => {
+      contentFilter = btn.dataset.contentFilter;
       trendingKeyword = null;
       draw();
     }));

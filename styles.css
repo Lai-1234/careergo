@@ -14483,9 +14483,25 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-feed-role-select { display: block; margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--muted); }
 .emp-feed-role-select select { display: block; margin-top: 4px; width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; }
 .emp-feed-composer-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 12px; }
-.emp-feed-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-.emp-feed-filter-chip { padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; }
-.emp-feed-filter-chip.active { border-color: rgba(37, 99, 235, 0.4); background: rgba(37, 99, 235, 0.06); color: var(--blue); }
+/* Smart Filter Bar (section 12): sticky under the posting box, scrolls
+   horizontally rather than wrapping to a second row - 11 categories at
+   comfortable chip width don't fit one line at typical feed-column
+   widths, and wrapping would push the post list down unpredictably as
+   the active chip changes length. Scrollbar hidden, same pattern as the
+   Company Profile tab nav. */
+.emp-feed-filters {
+  display: flex; gap: 8px; margin-bottom: 16px; padding: 4px 2px; overflow-x: auto;
+  position: sticky; top: 64px; z-index: 5; background: var(--emp-bg, #f8f4eb);
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.emp-feed-filters::-webkit-scrollbar { display: none; }
+.emp-feed-filter-chip {
+  flex-shrink: 0; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line)); background: #fff;
+  font-size: 12px; font-weight: 600; color: var(--emp-muted, var(--soft)); cursor: pointer;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease, transform 150ms ease;
+}
+.emp-feed-filter-chip:hover { background: rgba(7, 56, 47, 0.05); }
+.emp-feed-filter-chip.active { border-color: var(--emp-green, #07382f); background: var(--emp-green, #07382f); color: #fff; transform: scale(1.04); }
 .emp-feed-clear-trend { border: none; background: none; color: var(--blue); font-weight: 600; cursor: pointer; padding: 0 0 0 4px; }
 .emp-feed-post-list { display: grid; gap: 14px; }
 .emp-feed-post { padding: 18px 20px; }
