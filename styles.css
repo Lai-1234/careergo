@@ -14456,7 +14456,8 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-edit-side { position: sticky; top: 70px; }
 .emp-edit-support { padding: 18px 20px; }
 .emp-metric-lg-value { margin: 8px 0 16px; font-size: var(--emp-metric-lg); font-weight: 700; }
-.emp-feed-layout { display: grid; grid-template-columns: 200px 1fr 280px; gap: 20px; align-items: start; }
+.emp-feed-layout { display: grid; grid-template-columns: 320px 1fr 340px; gap: 24px; align-items: start; }
+.emp-feed-layout > * { min-width: 0; }
 .emp-feed-nav { position: sticky; top: 0; display: grid; gap: 16px; min-width: 0; }
 .emp-feed-nav-list { display: grid; gap: 2px; }
 .emp-feed-nav-item {
@@ -14754,6 +14755,111 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-brand-modal-stats { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ---------- Feed complete redesign (master execution prompt) ----------
+   Sidebar shortcuts, the wider compact recommendation carousel, the
+   unified Save Candidate button, the Candidate Profile Modal, the
+   One-Click Talent Action Bar, and the Saved Candidates page. */
+.emp-feed-sidebar-shortcuts { display: flex; flex-direction: column; gap: 2px; }
+.emp-feed-shortcut-row {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: none; border-radius: 12px;
+  background: none; font-size: 13px; font-weight: 600; color: var(--emp-ink, var(--text)); cursor: pointer; text-align: left;
+  transition: background 180ms ease;
+}
+.emp-feed-shortcut-row:hover { background: rgba(7, 56, 47, 0.05); }
+.emp-feed-shortcut-icon { flex-shrink: 0; display: inline-flex; color: var(--emp-green, #07382f); }
+.emp-feed-shortcut-icon svg { width: 16px; height: 16px; }
+.emp-feed-shortcut-row span:nth-child(2) { flex: 1; }
+.emp-feed-shortcut-count {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px;
+  border-radius: 999px; background: var(--emp-green, #07382f); color: #fff; font-size: 11px; font-weight: 800;
+}
+
+/* Unified Save button - a filled heart + "saved" tint once toggled on,
+   used identically everywhere (recommendation carousel, opportunity
+   cards, Hiring Opportunities, the profile modal, Inbox, Saved
+   Candidates) so the same visual state means the same thing everywhere. */
+.emp-save-talent-btn svg { transition: transform 150ms ease; }
+.emp-save-talent-btn.saved { color: #dc2626; border-color: rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.06); }
+.emp-save-talent-btn.saved svg { fill: #dc2626; stroke: #dc2626; }
+.emp-save-talent-btn:active svg { transform: scale(1.15); }
+.btn-icon-sm.emp-save-talent-btn.saved { border-color: rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.08); color: #dc2626; }
+
+/* Compact recommendation carousel card (item 1 redesign) - deliberately
+   minimal: avatar, name, match %, one stat row, one AI line, two buttons.
+   Everything else lives in the profile modal Preview opens. */
+.emp-rec-compact-head { display: flex; align-items: center; gap: 12px; }
+.emp-rec-compact-id { flex: 1; min-width: 0; }
+.emp-rec-compact-id strong { display: block; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.emp-rec-compact-id p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.emp-rec-compact-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; padding: 14px 0; border-top: 1px solid var(--emp-line, var(--line)); border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-rec-compact-stats strong { display: block; margin-top: 2px; font-size: 14px; }
+.emp-rec-compact-note { display: flex; gap: 8px; margin: 0 0 16px; font-size: 13px; line-height: 1.55; color: var(--emp-ink, var(--text)); }
+.emp-rec-compact-note svg { flex-shrink: 0; width: 14px; height: 14px; margin-top: 2px; color: var(--emp-ai, #6f5fc4); }
+.emp-rec-compact-actions { display: flex; gap: 8px; }
+.emp-rec-compact-actions .btn-primary { flex: 1; justify-content: center; }
+
+/* One-Click Talent Action Bar - the 7/8-action inline row used on the
+   spacious in-feed opportunity card. */
+.emp-talent-action-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.emp-talent-action-bar .btn { padding: 7px 12px; font-size: 12px; }
+.emp-feed-opportunity-save { margin-top: 4px; padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); }
+
+/* Candidate Profile Modal */
+.emp-cpm-card { width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 64px); overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+.emp-cpm-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.emp-cpm-head-id { display: flex; align-items: center; gap: 14px; }
+.emp-feed-avatar.lg { width: 56px; height: 56px; font-size: 20px; border-radius: 14px; }
+.emp-cpm-head-id h2 { margin: 0; }
+.emp-cpm-head-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.emp-cpm-why { display: flex; gap: 8px; padding: 14px 16px; border-radius: 14px; background: rgba(111, 95, 196, 0.06); font-size: 13px; line-height: 1.55; }
+.emp-cpm-body { display: flex; flex-direction: column; gap: 18px; }
+.emp-cpm-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 20px; padding-bottom: 18px; border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-cpm-stat-grid strong { display: block; margin-top: 2px; font-size: 14px; }
+.emp-cpm-section { padding-bottom: 18px; border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-cpm-section:last-child { border-bottom: none; padding-bottom: 0; }
+.emp-cpm-text { margin: 6px 0 0; font-size: 13px; line-height: 1.6; color: var(--emp-ink, var(--text)); }
+.emp-cpm-activity { margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.emp-cpm-activity li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.5; color: var(--emp-ink, var(--text)); }
+.emp-cpm-activity li svg { flex-shrink: 0; width: 13px; height: 13px; margin-top: 3px; color: var(--emp-muted, var(--soft)); }
+.emp-cpm-activity li span { color: var(--emp-muted, var(--soft)); }
+.emp-cpm-footer { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
+.emp-cpm-footer .btn { padding: 8px 14px; font-size: 13px; }
+
+/* Saved Candidates page */
+.emp-saved-page { display: flex; flex-direction: column; gap: 24px; }
+.emp-saved-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; padding: 20px; }
+.emp-saved-filters label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; color: var(--emp-muted, var(--soft)); }
+.emp-saved-filters select { padding: 8px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; font-size: 13px; font-family: inherit; color: var(--emp-ink, var(--text)); background: #fff; min-width: 160px; }
+.emp-saved-group h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: 20px; }
+.emp-saved-group-count { padding: 2px 9px; border-radius: 999px; background: rgba(7, 56, 47, 0.08); color: var(--emp-green, #07382f); font-size: 12px; font-weight: 800; }
+.emp-saved-group-list { display: flex; flex-direction: column; gap: 10px; }
+.emp-saved-row { display: flex; align-items: center; gap: 14px; padding: 16px 20px; }
+.emp-saved-row-info { flex: 1; min-width: 0; }
+.emp-saved-row-top { display: flex; align-items: center; gap: 8px; }
+.emp-saved-row-top strong { font-size: 15px; }
+.emp-saved-row-meta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; }
+.emp-saved-row-meta span { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--emp-muted, var(--soft)); }
+.emp-saved-row-meta svg { width: 13px; height: 13px; }
+.emp-saved-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.emp-saved-delete:hover { background: rgba(220, 38, 38, 0.08); color: #dc2626; }
+
+/* DM saved-contact badge (item 10) */
+.emp-dm-saved-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #dc2626; }
+.emp-dm-saved-badge svg { width: 11px; height: 11px; fill: #dc2626; }
+.emp-dm-saved-badge--muted { color: var(--emp-muted, var(--soft)); }
+.emp-dm-saved-badge--muted svg { display: none; }
+.emp-dm-thread-head-name { display: flex; align-items: center; gap: 8px; }
+
+.emp-app-shell.emp-app-shell :is(.emp-rec-compact-id p, .emp-cpm-head-id p, .emp-saved-row-info .emp-cand-meta) { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-cpm-why { color: var(--emp-ink, var(--text)) !important; }
+
+@media (max-width: 720px) {
+  .emp-cpm-stat-grid { grid-template-columns: 1fr 1fr; }
+  .emp-saved-filters { flex-direction: column; align-items: stretch; }
+  .emp-saved-row { flex-wrap: wrap; }
+  .emp-saved-row-actions { width: 100%; justify-content: flex-end; }
+}
+
 /* ---------- Floating Vera Hiring Copilot (item 7) ----------
    Lives in the persistent shell, above the header (60) and the existing
    Vera drawer (83) but below nothing else - it's meant to always be
@@ -14987,7 +15093,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-compose-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
 
 @media (max-width: 1180px) {
-  .emp-feed-layout { grid-template-columns: 180px 1fr; }
+  .emp-feed-layout { grid-template-columns: 280px 1fr; }
   .emp-feed-rail { display: none; }
 }
 
@@ -15031,7 +15137,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-feed-nav { position: static; }
   .emp-feed-nav-list { display: flex; overflow-x: auto; gap: 4px; }
   .emp-feed-nav-item { flex-shrink: 0; }
-  .emp-feed-context-card { display: none; }
+  .emp-feed-sidebar-shortcuts { display: none; }
 }
 
 /* ---------- Talent Pipeline redesign — Phase 6 (responsive) ----------

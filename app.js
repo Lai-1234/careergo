@@ -1247,6 +1247,8 @@ const APPLICATION_STAGES = [
   { key: "archived", label: "Archived", icon: "archive", tone: "" }
 ];
 
+function daysAgoIso(n) { return new Date(Date.now() - n * 86400000).toISOString(); }
+
 function readState() {
   const fallback = {
     auth: { users: [] },
@@ -1279,7 +1281,17 @@ function readState() {
     feedPostingIdentity: "Maybank",
     feedConnections: [],
     feedDismissedCandidates: [],
-    feedSavedPassiveTalent: []
+    // Unified Save Candidate system: one array covers both real pipeline
+    // candidates (DATA.candidates) and passive-talent discoveries
+    // (HIRING_PASSIVE_TALENT), tagged by type so the Saved Candidates page
+    // can render/act on both with the same UI. savedAt is a real
+    // timestamp (not a canned "2 days ago" string) so "Saved today / this
+    // week / this month" grouping is computed correctly, not hardcoded.
+    savedTalent: [
+      { id: "c6", type: "candidate", savedAt: daysAgoIso(9) },
+      { id: "pt2", type: "passive", savedAt: daysAgoIso(20) },
+    ],
+    recentSearches: [],
   };
   try {
     return normalizeState({ ...fallback, ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") });
@@ -9428,7 +9440,7 @@ const EMPLOYER_NAV_GROUPS = [
   ] }
 ];
 
-const EMPLOYER_VIEW_KEYS = [...EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key]) => key)), "role-builder", "company-edit", "settings", "messages"];
+const EMPLOYER_VIEW_KEYS = [...EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key]) => key)), "role-builder", "company-edit", "settings", "messages", "saved-candidates"];
 const EMPLOYER_VIEW_TITLES = Object.fromEntries(EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key, label]) => [key, label])));
 
 let employerRouteState = { view: "", params: {} };
@@ -9611,7 +9623,7 @@ function renderEmployerShell(root) {
             <div class="emp-search-results" data-emp-search-results hidden></div>
           </div>
           <button type="button" class="emp-icon-btn" data-emp-ask-vera data-vera-prompt="What needs my attention today?" aria-label="Ask Vera">${icon("sparkles")}</button>
-          <button type="button" class="emp-icon-btn" data-emp-messages aria-label="Messages">${icon("message-circle")}</button>
+          <button type="button" class="emp-icon-btn" data-emp-messages aria-label="Inbox">${icon("inbox")}</button>
           <button type="button" class="emp-icon-btn" aria-label="Notifications">${icon("bell")}</button>
           <div class="emp-account-menu-wrap">
             <button type="button" class="emp-avatar-trigger" data-emp-account-toggle aria-haspopup="menu" aria-expanded="false">
@@ -10329,6 +10341,7 @@ function renderEmployerView(view, params, root) {
     case "pipeline": return renderEmployerTalentPipeline(root, params);
     case "feed": return renderEmployerFeed(root);
     case "messages": return renderEmployerMessages(root, params);
+    case "saved-candidates": return renderEmployerSavedCandidates(root);
     case "company": return renderEmployerCompany(root);
     case "company-edit": return renderEmployerCompanyEdit(root);
     default: return renderEmployerPlaceholder(root, view);
@@ -14683,6 +14696,193 @@ const HIRING_PASSIVE_TYPE_META = {
   hidden: { label: "Hidden talent, found by Vera", icon: "sparkles" },
 };
 
+// ---------- Unified Save Candidate system ----------
+// One saved-talent list covers both real pipeline candidates and passive-
+// talent discoveries (tagged by type), so every "Save" button anywhere in
+// the app - recommendation card, profile modal, Hiring Opportunities,
+// feed post, search results - reads and writes the exact same state and
+// the Saved Candidates page can show both kinds together.
+function isSavedTalent(state, id, type) { return (state.savedTalent || []).some(s => s.id === id && s.type === type); }
+function toggleSavedTalent(state, id, type) {
+  const list = state.savedTalent || (state.savedTalent = []);
+  const idx = list.findIndex(s => s.id === id && s.type === type);
+  if (idx === -1) { list.push({ id, type, savedAt: new Date().toISOString() }); return true; }
+  list.splice(idx, 1);
+  return false;
+}
+// Resolves a saved-talent record (which only stores id/type/savedAt) into
+// a display-ready shape, so the Saved Candidates page never duplicates
+// candidate/passive-talent field data - it's always read live from
+// DATA.candidates / HIRING_PASSIVE_TALENT at render time.
+function resolveSavedTalent(entry) {
+  if (entry.type === "candidate") {
+    const c = DATA.candidates.find(x => x.id === entry.id);
+    if (!c) return null;
+    const role = DATA.employerRoles.find(r => r.id === c.roleId);
+    return { id: c.id, type: "candidate", name: c.name, role: c.role, location: c.location, salary: c.salaryExpectation, availability: c.availability, fit: c.fit, savedAt: entry.savedAt, roleObj: role };
+  }
+  const p = HIRING_PASSIVE_TALENT.find(x => x.id === entry.id);
+  if (!p) return null;
+  const role = DATA.employerRoles.find(r => r.id === p.relevantRoleId);
+  return { id: p.id, type: "passive", name: p.name, role: role ? role.title : p.headline, location: null, salary: null, availability: null, fit: p.matchScore, savedAt: entry.savedAt, roleObj: role };
+}
+function bindSaveTalentButtons(scopeEl, onChange) {
+  qsa("[data-save-talent]", scopeEl).forEach(btn => btn.addEventListener("click", event => {
+    event.stopPropagation();
+    const state = readState();
+    const id = btn.dataset.saveTalent;
+    const type = btn.dataset.saveType;
+    const nowSaved = toggleSavedTalent(state, id, type);
+    writeState(state);
+    const name = btn.dataset.saveName || "Candidate";
+    showToast(nowSaved ? `${name} saved.` : `${name} removed from saved.`);
+    if (onChange) onChange(nowSaved, state);
+  }));
+}
+// ---------- Candidate Profile Modal ----------
+// Page-independent, like the existing Vera drawer: appended to <body>,
+// not tied to any one page's draw()/bind() cycle, so "View Profile" works
+// identically from the Feed recommendation carousel, Saved Candidates,
+// Hiring Opportunities or search results without each page needing its
+// own copy of this modal. Everything shown is read from the real
+// candidate record (+ the same signals/match-reason layer the rest of
+// the app uses) rather than fabricated fields the data doesn't have.
+let candidateProfileModalState = { open: false, candidateId: null };
+
+function openCandidateProfileModal(candidateId) {
+  candidateProfileModalState = { open: true, candidateId };
+  renderCandidateProfileModalRoot();
+}
+function closeCandidateProfileModal() {
+  candidateProfileModalState = { open: false, candidateId: null };
+  renderCandidateProfileModalRoot();
+}
+function candidateProfileModalRootEl() {
+  let root = document.querySelector("[data-candidate-profile-modal-root]");
+  if (!root) {
+    root = document.createElement("div");
+    root.setAttribute("data-candidate-profile-modal-root", "");
+    document.body.appendChild(root);
+  }
+  return root;
+}
+function renderCandidateProfileModalRoot() {
+  const root = candidateProfileModalRootEl();
+  if (!candidateProfileModalState.open) { root.innerHTML = ""; return; }
+  const c = DATA.candidates.find(x => x.id === candidateProfileModalState.candidateId);
+  if (!c) { root.innerHTML = ""; return; }
+  const role = DATA.employerRoles.find(r => r.id === c.roleId);
+  const signals = getCandidateSignals(c);
+  const reasons = getMatchReasons(c, role);
+  const state = readState();
+  const saved = isSavedTalent(state, c.id, "candidate");
+
+  root.innerHTML = `
+    <div class="emp-compose-modal" data-cpm-backdrop role="presentation">
+      <div class="card emp-cpm-card" role="dialog" aria-modal="true" aria-label="${escapeHtml(c.name)}'s profile">
+        <div class="emp-cpm-head">
+          <div class="emp-cpm-head-id">
+            <span class="emp-feed-avatar lg">${initialsOf(c.name)}</span>
+            <div>
+              <h2>${escapeHtml(c.name)}</h2>
+              <p class="emp-cand-meta">${escapeHtml(c.role)} · ${escapeHtml(c.location)}</p>
+            </div>
+          </div>
+          <div class="emp-cpm-head-actions">
+            <span class="emp-vera-rec-match">${c.fit}%<small>match</small></span>
+            <button type="button" class="btn-icon-sm" data-cpm-close aria-label="Close profile">${icon("x")}</button>
+          </div>
+        </div>
+
+        <div class="emp-cpm-body">
+          <div class="emp-cpm-why">${icon("sparkles")} <span>${reasons[0]}</span></div>
+
+          <div class="emp-cpm-stat-grid">
+            <div><span class="emp-tags-label">Expected salary</span><strong>${c.salaryExpectation}</strong></div>
+            <div><span class="emp-tags-label">Availability</span><strong>${c.availability}</strong></div>
+            <div><span class="emp-tags-label">Education</span><strong>${escapeHtml(c.education)}</strong></div>
+            <div><span class="emp-tags-label">Experience</span><strong>${escapeHtml(c.experience)}</strong></div>
+            <div><span class="emp-tags-label">Career stage</span><strong>${escapeHtml(c.careerStage)}</strong></div>
+            <div><span class="emp-tags-label">Interview readiness</span><strong>${signals.interviewSuccessProbability}%</strong></div>
+          </div>
+
+          <div class="emp-cpm-section">
+            <span class="emp-tags-label">Skills</span>
+            <div class="pill-row">${c.skills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>
+          </div>
+
+          <div class="emp-cpm-section">
+            <span class="emp-tags-label">Resume summary</span>
+            <p class="emp-cpm-text">${escapeHtml(c.strength)}</p>
+            ${c.concern ? `<span class="emp-tags-label">Watch-out</span><p class="emp-cpm-text">${escapeHtml(c.concern)}</p>` : ""}
+          </div>
+
+          <div class="emp-cpm-section">
+            <span class="emp-tags-label">Portfolio</span>
+            <p class="emp-cpm-text">${c.portfolio} portfolio evidence provided for this application.</p>
+          </div>
+
+          ${c.interview && c.interview.scorecards.length ? `
+            <div class="emp-cpm-section">
+              <span class="emp-tags-label">Interview notes</span>
+              ${c.interview.scorecards.map(s => `<p class="emp-cpm-text"><strong>${escapeHtml(s.interviewer)}</strong> (${escapeHtml(s.recommendation)}): ${escapeHtml(s.notes)}</p>`).join("")}
+            </div>
+          ` : ""}
+
+          <div class="emp-cpm-section">
+            <span class="emp-tags-label">Recent activity</span>
+            <ul class="emp-cpm-activity">${c.activity.slice(0, 4).map(a => `<li>${icon("clock")} ${escapeHtml(a.text)} <span>· ${escapeHtml(a.date)}</span></li>`).join("")}</ul>
+          </div>
+        </div>
+
+        <div class="emp-cpm-footer">
+          ${renderSaveButton(c.id, "candidate", c.name, saved)}
+          <button type="button" class="btn btn-ghost btn-sm" data-cpm-action="message" data-cpm-candidate="${c.id}">${icon("message-circle")} Message</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-cpm-action="shortlist" data-cpm-candidate="${c.id}">${icon("list-checks")} Shortlist</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-cpm-action="schedule" data-cpm-candidate="${c.id}">${icon("calendar")} Schedule Interview</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-cpm-action="invite" data-cpm-candidate="${c.id}">${icon("send")} Send Invite</button>
+          <button type="button" class="btn btn-primary btn-sm" data-cpm-action="offer" data-cpm-candidate="${c.id}">${icon("award")} Generate Offer</button>
+        </div>
+      </div>
+    </div>
+  `;
+  createIcons();
+  bindCandidateProfileModal(root);
+}
+function bindCandidateProfileModal(root) {
+  qs("[data-cpm-close]", root)?.addEventListener("click", closeCandidateProfileModal);
+  qs("[data-cpm-backdrop]", root)?.addEventListener("click", event => { if (event.target === event.currentTarget) closeCandidateProfileModal(); });
+  bindSaveTalentButtons(root, () => renderCandidateProfileModalRoot());
+  qsa("[data-cpm-action]", root).forEach(btn => btn.addEventListener("click", () => {
+    const c = DATA.candidates.find(x => x.id === btn.dataset.cpmCandidate);
+    const action = btn.dataset.cpmAction;
+    if (action === "message") { closeCandidateProfileModal(); openConversationForCandidate(c.id); }
+    else if (action === "shortlist") {
+      if (c.stage === "New") {
+        c.stage = "Shortlisted";
+        c.timeline.push({ label: "Shortlisted", date: "Just now", done: true });
+        c.activity.unshift({ text: "Shortlisted from candidate profile", date: "Just now" });
+        showToast(`${c.name} moved to Shortlisted.`);
+        renderCandidateProfileModalRoot();
+      } else showToast(`${c.name} is already at ${c.stage}.`, "info");
+    } else if (action === "schedule" || action === "offer") { closeCandidateProfileModal(); employerNavigateTo("pipeline", { id: c.id }); showToast(`Opening Talent Pipeline to ${action === "offer" ? "prepare the offer" : "schedule the interview"}.`, "info"); }
+    else if (action === "invite") showToast(`Invitation sent to ${c.name}.`);
+  }));
+  document.addEventListener("keydown", function escHandler(event) {
+    if (event.key === "Escape" && candidateProfileModalState.open) { closeCandidateProfileModal(); document.removeEventListener("keydown", escHandler); }
+  });
+}
+
+function renderSaveButton(id, type, name, saved, opts = {}) {
+  const variant = opts.iconOnly ? "btn-icon-sm" : "btn btn-ghost btn-sm";
+  const label = opts.iconOnly ? "" : (saved ? " Saved" : " Save");
+  return `
+    <button type="button" class="${variant} emp-save-talent-btn ${saved ? "saved" : ""}" data-save-talent="${id}" data-save-type="${type}" data-save-name="${escapeHtml(name)}" aria-pressed="${saved}" aria-label="${saved ? "Remove from saved" : "Save"} ${escapeHtml(name)}">
+      ${icon(saved ? "heart" : "heart")}${label}
+    </button>
+  `;
+}
+
 // "Since your last visit" summary. Reads live off DATA.candidates /
 // DATA.employerRoles so it never drifts out of sync with what's actually
 // in the pipeline; every count is real, so a 0-count item is simply
@@ -14817,11 +15017,9 @@ function renderEmployerFeed(root) {
   let composerRoleId = "";
   let openCommentsPostId = null;
   let replyingCommentId = null;
-  let pendingCommunityCreate = false;
-  let networkTab = "following";
   let recRotateIndex = 0;
-  let recRotateTimer = null;
   let briefExpanded = false;
+  let hiringOppsExpanded = false;
   let brandDashboardOpen = false;
   let composerAiOpen = false;
   let composerAiInsight = null;
@@ -14849,14 +15047,12 @@ function renderEmployerFeed(root) {
   function visiblePosts(state) {
     let posts = DATA.communityPosts.filter(p => !state.feedMuted.includes(p.followId));
     if (activeFilter === "following") posts = posts.filter(p => state.feedFollowing.includes(p.followId));
-    else if (activeFilter === "communities") {
-      const joinedIds = DATA.communities.filter(c => c.joined).map(c => c.id);
-      posts = posts.filter(p => p.communityId && joinedIds.includes(p.communityId));
-    } else if (activeFilter === "trending" && trendingKeyword) {
-      posts = posts.filter(p => (p.body + " " + p.category).toLowerCase().includes(trendingKeyword.toLowerCase()));
-    } else if (activeFilter === "discussions") posts = posts.filter(p => ["DISCUSSION", "MILESTONE"].includes(p.category));
+    else if (activeFilter === "discussions") posts = posts.filter(p => ["DISCUSSION", "MILESTONE"].includes(p.category));
     else if (activeFilter === "hiring") posts = posts.filter(p => ["HIRING INSIGHT", "QUESTION"].includes(p.category));
     else if (activeFilter === "company-updates") posts = posts.filter(p => p.category === "COMPANY UPDATE");
+    // Trending keyword is a layer on top of whatever filter is active
+    // (set by clicking a right-rail Trending topic), not a dedicated tab.
+    if (trendingKeyword) posts = posts.filter(p => (p.body + " " + p.category).toLowerCase().includes(trendingKeyword.toLowerCase()));
     if (activeFilter === "foryou") posts = [...posts].sort((a, b) => hiringRelevanceScore(b, state) - hiringRelevanceScore(a, state));
     return posts;
   }
@@ -14963,65 +15159,6 @@ function renderEmployerFeed(root) {
     `;
   }
 
-  function renderCommunityRow(c) {
-    return `
-      <div class="emp-community-row">
-        <div><strong>${c.name}</strong><p class="emp-cand-meta">${c.members.toLocaleString()} members · ${c.recentActivity}</p></div>
-        <button type="button" class="btn ${c.joined ? "btn-ghost" : "btn-primary"} btn-sm" data-feed-join-community="${c.id}">${c.joined ? "Joined" : "Join"}</button>
-      </div>
-    `;
-  }
-
-  function renderCommunitiesBrowse() {
-    const mine = DATA.communities.filter(c => c.joined);
-    const discover = DATA.communities.filter(c => !c.joined);
-    return `
-      <div class="card emp-feed-communities-browse">
-        <div class="emp-community-browse-head"><h3>My Communities</h3></div>
-        <div class="emp-community-row-list">${mine.map(renderCommunityRow).join("") || `<p class="emp-empty-hint">You haven't joined any communities yet.</p>`}</div>
-        <div class="emp-community-browse-head"><h3>Discover Communities</h3><button type="button" class="btn btn-ghost btn-sm" data-feed-create-community>${icon("plus")} Create community</button></div>
-        <div class="emp-community-row-list">${discover.map(renderCommunityRow).join("") || `<p class="emp-empty-hint">No more communities to discover right now.</p>`}</div>
-      </div>
-    `;
-  }
-
-  function renderNetworkRow(item, action) {
-    return `
-      <div class="emp-network-row">
-        <span class="emp-feed-avatar">${initialsOf(item.name)}</span>
-        <div class="emp-network-row-info"><strong>${item.name}</strong><p class="emp-cand-meta">${item.title}${item.note ? ` · ${item.note}` : ""}</p></div>
-        ${action ? `<button type="button" class="btn btn-ghost btn-sm" data-network-connect data-network-name="${item.name}">${action}</button>` : ""}
-      </div>
-    `;
-  }
-
-  function renderNetworkView(state) {
-    const tabs = [["following", "Following"], ["followers", "Followers"], ["connections", "Connections"], ["organisations", "Organisations Followed"], ["communities", "Communities Joined"], ["mutual", "Mutual Connections"]];
-    let body = "";
-    if (networkTab === "following") {
-      const items = DATA.suggestedConnections.filter(c => state.feedFollowing.includes(c.id));
-      body = items.length ? items.map(c => renderNetworkRow({ name: c.name, title: c.title }, null)).join("") : `<p class="emp-empty-hint">You're not following anyone yet.</p>`;
-    } else if (networkTab === "followers") {
-      body = EMPLOYER_MOCK_NETWORK.followers.map(f => renderNetworkRow(f, null)).join("");
-    } else if (networkTab === "connections") {
-      body = EMPLOYER_MOCK_NETWORK.connections.length ? EMPLOYER_MOCK_NETWORK.connections.map(f => renderNetworkRow(f, "Message")).join("") : `<p class="emp-empty-hint">No professional connections yet.</p>`;
-    } else if (networkTab === "organisations") {
-      const orgs = DATA.suggestedConnections.filter(c => (c.type === "university") && state.feedFollowing.includes(c.id));
-      body = orgs.length ? orgs.map(c => renderNetworkRow({ name: c.name, title: c.title }, null)).join("") : `<p class="emp-empty-hint">No organisations followed yet.</p>`;
-    } else if (networkTab === "communities") {
-      const joined = DATA.communities.filter(c => c.joined);
-      body = joined.map(c => renderNetworkRow({ name: c.name, title: `${c.members.toLocaleString()} members` }, null)).join("");
-    } else if (networkTab === "mutual") {
-      body = EMPLOYER_MOCK_NETWORK.mutual.map(f => renderNetworkRow(f, "Connect")).join("");
-    }
-    return `
-      <div class="card emp-feed-network">
-        <div class="emp-subtabs">${tabs.map(([k, l]) => `<button type="button" class="emp-subtab ${networkTab === k ? "active" : ""}" data-network-tab="${k}">${l}</button>`).join("")}</div>
-        <div class="emp-feed-network-list">${body}</div>
-      </div>
-    `;
-  }
-
   // AI Content Composer (item 9). Text-transform actions (generate,
   // rewrite, hashtags, optimize) actually rewrite the textarea so the
   // employer gets a real draft to edit, not just a toast; analysis actions
@@ -15084,47 +15221,58 @@ function renderEmployerFeed(root) {
     `;
   }
 
-  // ---------- Item 1 + 3: shared recommendation-detail body ----------
-  // One body renderer powers both the compact nav-rail widget (item 1) and
-  // the full-width in-feed opportunity card (item 3), so a candidate's
-  // match %, explanation, salary, availability and actions never drift
-  // between the two surfaces that show the same underlying data.
-  function renderRecommendationDetail(entry, opts = {}) {
-    const { candidate: c, role, signals, reasons, recommendationType } = entry;
-    const typeMeta = HIRING_RECOMMENDATION_TYPES[recommendationType];
-    const whyReason = { summary: reasons[0], factors: reasons.slice(1).length ? reasons.slice(1) : [`AI confidence ${signals.aiConfidence}% based on fit, availability and engagement signals.`] };
+  // ---------- One-Click Talent Action Bar ----------
+  // The full 8-action bar (Preview/Message/Save/Shortlist/Schedule/Offer/
+  // Invite/Compare) used on the spacious in-feed opportunity card. The
+  // compact carousel widget deliberately does NOT use this - it shows
+  // only Preview + Save per the redesign spec, with everything else
+  // living in the profile modal Preview opens.
+  function renderTalentActionBar(c) {
     return `
-      <div class="emp-vera-rec-candidate-head">
-        <span class="emp-feed-avatar">${initialsOf(c.name)}</span>
-        <div class="emp-vera-rec-candidate-id">
-          <strong>${c.name}</strong>
-          <p class="emp-cand-meta">${c.role}${role ? ` · ${role.location}` : ""}</p>
-        </div>
-        <span class="emp-vera-rec-match" title="AI match score">${c.fit}%<small>match</small></span>
-      </div>
-      <span class="emp-vera-rec-type-badge">${icon(typeMeta.icon)} ${typeMeta.label}</span>
-      <div class="emp-vera-rec-stat-row">
-        <div><span class="emp-tags-label">Expected salary</span><strong>${c.salaryExpectation}</strong></div>
-        <div><span class="emp-tags-label">Availability</span><strong>${c.availability}</strong></div>
-        <div><span class="emp-tags-label">Last active</span><strong>${signals.lastActive}</strong></div>
-        <div><span class="emp-tags-label">AI confidence</span><strong>${signals.aiConfidence}%</strong></div>
-      </div>
-      ${opts.showSkills !== false ? `<div class="pill-row emp-vera-rec-skills">${c.skills.slice(0, 4).map(s => `<span class="pill">${s}</span>`).join("")}</div>` : ""}
-      ${renderWhyVeraPanel(whyReason)}
-      <div class="emp-vera-rec-actions">
+      <div class="emp-talent-action-bar">
         <button type="button" class="btn btn-ghost btn-sm" data-rec-action="preview" data-rec-candidate="${c.id}">${icon("eye")} Preview</button>
         <button type="button" class="btn btn-ghost btn-sm" data-rec-action="message" data-rec-candidate="${c.id}">${icon("message-circle")} Message</button>
-        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="shortlist" data-rec-candidate="${c.id}">${icon("bookmark")} Shortlist</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="shortlist" data-rec-candidate="${c.id}">${icon("list-checks")} Shortlist</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="schedule" data-rec-candidate="${c.id}">${icon("calendar")} Schedule</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="offer" data-rec-candidate="${c.id}">${icon("file-text")} Offer</button>
         <button type="button" class="btn btn-ghost btn-sm" data-rec-action="invite" data-rec-candidate="${c.id}">${icon("send")} Invite</button>
-        ${c.stage === "Offer" ? `<button type="button" class="btn btn-primary btn-sm" data-rec-action="offer" data-rec-candidate="${c.id}">${icon("award")} View offer</button>` : ""}
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="compare" data-rec-candidate="${c.id}">${icon("scale")} Compare</button>
       </div>
     `;
   }
 
-  // Item 1: replaces the static "Looking for talent?" card. Rotates
-  // through the ranked recommendation pool - manual prev/next always
-  // available (keyboard + click), plus a slow auto-advance that pauses on
-  // hover/focus so it never yanks attention or interrupts reading.
+  // Item 1 (redesigned): the compact carousel card. Only what's needed to
+  // decide "is this worth a closer look" - avatar, name, match %, role,
+  // salary, availability, one AI-generated line. Everything else (skills,
+  // interview readiness, activity, full action bar) lives behind View
+  // Profile in the modal, not crammed into this card.
+  function renderRecommendationCompact(entry) {
+    const { candidate: c, reasons } = entry;
+    const state = readState();
+    const saved = isSavedTalent(state, c.id, "candidate");
+    return `
+      <div class="emp-rec-compact-head">
+        <span class="emp-feed-avatar lg">${initialsOf(c.name)}</span>
+        <div class="emp-rec-compact-id">
+          <strong>${c.name}</strong>
+          <p class="emp-cand-meta">${c.role}</p>
+        </div>
+        <span class="emp-vera-rec-match" title="AI match score">${c.fit}%<small>match</small></span>
+      </div>
+      <div class="emp-rec-compact-stats">
+        <div><span class="emp-tags-label">Salary</span><strong>${c.salaryExpectation}</strong></div>
+        <div><span class="emp-tags-label">Availability</span><strong>${c.availability}</strong></div>
+      </div>
+      <p class="emp-rec-compact-note">${icon("sparkles")} ${reasons[0]}</p>
+      <div class="emp-rec-compact-actions">
+        <button type="button" class="btn btn-primary" data-rec-action="preview" data-rec-candidate="${c.id}">${icon("eye")} View Profile</button>
+        ${renderSaveButton(c.id, "candidate", c.name, saved, { iconOnly: true })}
+      </div>
+    `;
+  }
+
+  // Item 1: manual carousel only - no auto-play. Prev/next by click,
+  // keyboard left/right when the widget holds focus, and touch swipe.
   function renderVeraRecommendationsWidget() {
     const pool = getHiringRecommendationPool();
     if (!pool.length) {
@@ -15138,29 +15286,26 @@ function renderEmployerFeed(root) {
     const index = recRotateIndex % pool.length;
     const entry = pool[index];
     return `
-      <div class="card emp-vera-rec-widget" data-vera-rec-widget>
+      <div class="card emp-vera-rec-widget" data-vera-rec-widget tabindex="0" aria-roledescription="carousel" aria-label="Vera hiring recommendations">
         <div class="emp-vera-rec-widget-head">
           <span class="emp-callout-label">${icon("sparkles")} Vera Hiring Recommendations</span>
           <div class="emp-vera-rec-nav">
             <button type="button" class="btn-icon-sm" data-rec-prev aria-label="Previous recommendation">${icon("chevron-left")}</button>
-            <span class="emp-vera-rec-count" data-vera-rec-count>${index + 1}/${pool.length}</span>
+            <span class="emp-vera-rec-count" data-vera-rec-count>Recommendation ${index + 1} of ${pool.length}</span>
             <button type="button" class="btn-icon-sm" data-rec-next aria-label="Next recommendation">${icon("chevron-right")}</button>
           </div>
         </div>
         <div class="emp-vera-rec-widget-body" data-vera-rec-body>
-          ${renderRecommendationDetail(entry, { showSkills: false })}
+          ${renderRecommendationCompact(entry)}
         </div>
       </div>
     `;
   }
 
-  // Steps the nav widget to a different recommendation via a scoped
-  // innerHTML swap + rebind of just [data-vera-rec-body] - not a full
-  // draw() - so rotation never disturbs scroll position, an open composer
-  // draft, or expanded comment threads elsewhere on the page. The prev/
-  // next buttons themselves live outside the swapped body and keep the
-  // listeners bind() gave them; only the body's fresh content needs
-  // rebinding.
+  // Steps the widget to a different recommendation via a scoped innerHTML
+  // swap + rebind of just [data-vera-rec-body] - not a full draw() - so
+  // stepping never disturbs scroll position, an open composer draft, or
+  // expanded comment threads elsewhere on the page.
   function stepRecommendation(delta) {
     const pool = getHiringRecommendationPool();
     if (!pool.length) return;
@@ -15168,36 +15313,35 @@ function renderEmployerFeed(root) {
     const widget = qs("[data-vera-rec-widget]", root);
     if (!widget) { draw(); return; }
     const countEl = qs("[data-vera-rec-count]", widget);
-    if (countEl) countEl.textContent = `${recRotateIndex + 1}/${pool.length}`;
+    if (countEl) countEl.textContent = `Recommendation ${recRotateIndex + 1} of ${pool.length}`;
     const body = qs("[data-vera-rec-body]", widget);
     body.style.opacity = "0";
     setTimeout(() => {
-      body.innerHTML = renderRecommendationDetail(pool[recRotateIndex], { showSkills: false });
+      body.innerHTML = renderRecommendationCompact(pool[recRotateIndex]);
       createIcons();
       bindRecommendationCardActions(body);
+      bindSaveTalentButtons(body, () => stepRecommendation(0));
       body.style.opacity = "1";
     }, 150);
   }
 
-  // Candidate action buttons shared by the nav widget and every in-feed
-  // opportunity card. "Shortlist" genuinely mutates the candidate's stage
-  // (same field Talent Pipeline's kanban reads) so the action has real
-  // in-session effect, not just a toast; actions with no meaningful mock
-  // mutation (preview/message/invite/schedule/offer) route to Talent
-  // Pipeline, matching how the pre-existing post-menu "Message" action
-  // already behaves.
+  // Candidate action buttons shared by the widget and every in-feed
+  // opportunity card. "Preview" opens the shared Candidate Profile Modal
+  // (no page navigation); "Shortlist" genuinely mutates the candidate's
+  // stage (same field Talent Pipeline's kanban reads); "Message" always
+  // finds-or-creates a conversation and opens Inbox on it; "Compare"
+  // is a mocked comparison (no dedicated compare UI yet, same honesty
+  // policy as the rest of this build - say so rather than pretend).
   function bindRecommendationCardActions(scopeEl) {
     qsa("[data-rec-action]", scopeEl).forEach(btn => btn.addEventListener("click", () => {
       const c = DATA.candidates.find(cand => cand.id === btn.dataset.recCandidate);
       if (!c) return;
       const action = btn.dataset.recAction;
-      if (action === "preview" || action === "offer") { employerNavigateTo("pipeline", { id: c.id }); showToast(`Opening ${c.name} in Talent Pipeline.`, "info"); }
-      else if (action === "message") {
-        const conv = DATA.employerConversations.find(cv => cv.candidateId === c.id);
-        employerNavigateTo("messages", conv ? { id: c.id } : {});
-        showToast(conv ? `Opening your conversation with ${c.name}.` : `No conversation with ${c.name} yet - start one from Messages.`, "info");
-      }
+      if (action === "preview") openCandidateProfileModal(c.id);
+      else if (action === "offer") { employerNavigateTo("pipeline", { id: c.id }); showToast("Opening Talent Pipeline to prepare the offer.", "info"); }
+      else if (action === "message") openConversationForCandidate(c.id);
       else if (action === "invite") showToast(`Invitation sent to ${c.name}.`);
+      else if (action === "compare") showToast("Side-by-side candidate comparison is coming in a future update.", "info");
       else if (action === "shortlist") {
         if (c.stage === "New") {
           c.stage = "Shortlisted";
@@ -15207,44 +15351,41 @@ function renderEmployerFeed(root) {
           draw();
         } else showToast(`${c.name} is already at ${c.stage}.`, "info");
       } else if (action === "schedule") { employerNavigateTo("pipeline", { id: c.id }); showToast("Opening Talent Pipeline to schedule the interview.", "info"); }
-      else if (action === "makeoffer") { employerNavigateTo("pipeline", { id: c.id }); showToast("Opening Talent Pipeline to prepare the offer.", "info"); }
     }));
-  }
-
-  // Auto-advance every 9s, pausing whenever the widget is hovered or holds
-  // keyboard focus so it never yanks attention away mid-read. Self-clears
-  // if the widget's marker element is gone from the live DOM (the
-  // employer navigated away or the page fully redrew for another reason) -
-  // same guard the existing role-builder autosave ticker uses, since this
-  // codebase has no unmount hook to clear timers deterministically.
-  function startRecommendationRotation() {
-    if (recRotateTimer) clearInterval(recRotateTimer);
-    recRotateTimer = setInterval(() => {
-      const widget = qs("[data-vera-rec-widget]", root);
-      if (!widget) { clearInterval(recRotateTimer); recRotateTimer = null; return; }
-      if (widget.matches(":hover") || widget.contains(document.activeElement)) return;
-      stepRecommendation(1);
-    }, 9000);
   }
 
   // Item 3: injected between feed posts. Every 4th slot is an opportunity
   // card rather than a post, cycling through the same ranked pool from a
-  // different starting offset than the nav widget so the two surfaces
-  // don't spotlight the identical candidate at the same time. Dismissed
-  // candidates (per-employer, persisted) are skipped.
+  // different starting offset than the widget so the two surfaces don't
+  // spotlight the identical candidate at once. Dismissed candidates
+  // (per-employer, persisted) are skipped.
   function renderOpportunityCard(entry, state) {
     const c = entry.candidate;
+    const saved = isSavedTalent(state, c.id, "candidate");
     return `
-      <div class="card emp-vera-rec-widget emp-feed-opportunity-card" data-feed-opportunity="${c.id}">
+      <div class="card emp-feed-opportunity-card" data-feed-opportunity="${c.id}">
         <div class="emp-vera-rec-widget-head">
           <span class="emp-callout-label">${icon("sparkles")} AI Candidate Opportunity</span>
           <button type="button" class="btn-icon-sm" data-opportunity-dismiss="${c.id}" aria-label="Dismiss this recommendation">${icon("x")}</button>
         </div>
-        ${renderRecommendationDetail(entry)}
-        <div class="emp-vera-rec-secondary-actions">
-          <button type="button" class="btn btn-ghost btn-sm" data-rec-action="schedule" data-rec-candidate="${c.id}">${icon("calendar")} Schedule interview</button>
-          <button type="button" class="btn btn-primary btn-sm" data-rec-action="makeoffer" data-rec-candidate="${c.id}">${icon("award")} Make offer</button>
+        <div class="emp-vera-rec-candidate-head">
+          <span class="emp-feed-avatar">${initialsOf(c.name)}</span>
+          <div class="emp-vera-rec-candidate-id">
+            <strong>${c.name}</strong>
+            <p class="emp-cand-meta">${c.role}${entry.role ? ` · ${entry.role.location}` : ""}</p>
+          </div>
+          <span class="emp-vera-rec-match" title="AI match score">${c.fit}%<small>match</small></span>
         </div>
+        <div class="emp-vera-rec-stat-row">
+          <div><span class="emp-tags-label">Expected salary</span><strong>${c.salaryExpectation}</strong></div>
+          <div><span class="emp-tags-label">Availability</span><strong>${c.availability}</strong></div>
+          <div><span class="emp-tags-label">Last active</span><strong>${entry.signals.lastActive}</strong></div>
+          <div><span class="emp-tags-label">AI confidence</span><strong>${entry.signals.aiConfidence}%</strong></div>
+        </div>
+        <div class="pill-row emp-vera-rec-skills">${c.skills.slice(0, 4).map(s => `<span class="pill">${s}</span>`).join("")}</div>
+        ${renderWhyVeraPanel({ summary: entry.reasons[0], factors: entry.reasons.slice(1).length ? entry.reasons.slice(1) : [`AI confidence ${entry.signals.aiConfidence}% based on fit, availability and engagement signals.`] })}
+        ${renderTalentActionBar(c)}
+        <div class="emp-feed-opportunity-save">${renderSaveButton(c.id, "candidate", c.name, saved)}</div>
       </div>
     `;
   }
@@ -15289,13 +15430,16 @@ function renderEmployerFeed(root) {
   // discovery - people outside the applicant pool Vera has proactively
   // surfaced, not generic profile-follow suggestions.
   function renderHiringOpportunitiesCard() {
+    const state = readState();
+    const visible = hiringOppsExpanded ? HIRING_PASSIVE_TALENT : HIRING_PASSIVE_TALENT.slice(0, 4);
     return `
       <div class="card emp-feed-rail-card emp-hiring-opportunities">
         <h3>${icon("radar")} Hiring Opportunities</h3>
         <div class="emp-hiring-opp-list">
-          ${HIRING_PASSIVE_TALENT.map(p => {
+          ${visible.map(p => {
             const typeMeta = HIRING_PASSIVE_TYPE_META[p.type];
             const role = DATA.employerRoles.find(r => r.id === p.relevantRoleId);
+            const saved = isSavedTalent(state, p.id, "passive");
             return `
               <div class="emp-hiring-opp-row">
                 <span class="emp-feed-avatar">${initialsOf(p.name)}</span>
@@ -15310,12 +15454,15 @@ function renderEmployerFeed(root) {
               <div class="emp-hiring-opp-actions">
                 <button type="button" class="btn btn-ghost btn-sm" data-passive-action="preview" data-passive-id="${p.id}">${icon("eye")} Preview</button>
                 <button type="button" class="btn btn-ghost btn-sm" data-passive-action="compare" data-passive-id="${p.id}">${icon("scale")} Compare</button>
-                <button type="button" class="btn btn-ghost btn-sm" data-passive-action="save" data-passive-id="${p.id}">${icon("bookmark")} Save</button>
+                ${renderSaveButton(p.id, "passive", p.name, saved)}
                 <button type="button" class="btn btn-primary btn-sm" data-passive-action="invite" data-passive-id="${p.id}">${icon("send")} Invite</button>
               </div>
             `;
           }).join("")}
         </div>
+        ${HIRING_PASSIVE_TALENT.length > 4 ? `
+          <button type="button" class="emp-daily-brief-toggle" data-hiring-opps-toggle>${hiringOppsExpanded ? "Show less" : `Show more (${HIRING_PASSIVE_TALENT.length - 4})`} ${icon(hiringOppsExpanded ? "chevron-up" : "chevron-down")}</button>
+        ` : ""}
       </div>
     `;
   }
@@ -15416,83 +15563,79 @@ function renderEmployerFeed(root) {
     return html.join("");
   }
 
+  // Simplified primary nav (item 1 of the redesign): For You / Following /
+  // Inbox only. Network, Communities and Trending were removed as
+  // dedicated tabs - each overlapped an existing surface (Network with
+  // Following, Communities with joined-community posts already appearing
+  // in the feed, Trending with the right-rail Trending card, which stays
+  // and still drives the keyword-filter banner below without needing its
+  // own tab). Inbox navigates away entirely rather than filtering in
+  // place, since it's a full page now.
+  function renderFeedSidebarNav(state) {
+    const savedCount = (state.savedTalent || []).length;
+    return `
+      <nav class="emp-feed-nav-list">
+        <button type="button" class="emp-feed-nav-item ${activeFilter === "foryou" ? "active" : ""}" data-feed-nav="foryou">${icon("sparkles")} For You</button>
+        <button type="button" class="emp-feed-nav-item ${activeFilter === "following" ? "active" : ""}" data-feed-nav="following">${icon("users")} Following</button>
+        <button type="button" class="emp-feed-nav-item" data-feed-nav="inbox">${icon("inbox")} Inbox</button>
+      </nav>
+      <div class="emp-feed-sidebar-shortcuts">
+        <button type="button" class="emp-feed-shortcut-row" data-feed-nav="saved">
+          <span class="emp-feed-shortcut-icon">${icon("heart")}</span>
+          <span>Saved Candidates</span>
+          ${savedCount ? `<span class="emp-feed-shortcut-count">${savedCount}</span>` : ""}
+        </button>
+      </div>
+    `;
+  }
+
   function draw() {
     const state = readState();
     const company = DATA.companies.find(c => c.id === "maybank");
-    const isFeedView = ["foryou", "following", "discussions", "hiring", "company-updates", "trending", "communities"].includes(activeFilter);
     const showTopFilters = ["foryou", "following", "discussions", "hiring", "company-updates"].includes(activeFilter);
-    const leftNavActive = key => key === "foryou" ? ["foryou", "discussions", "hiring", "company-updates"].includes(activeFilter) : key === activeFilter;
 
     root.innerHTML = `
       <div class="emp-view-header"><span class="emp-section-label">Feed</span><h1>Feed</h1></div>
       <div class="emp-feed-layout">
         <div class="emp-feed-nav">
-          <nav class="emp-feed-nav-list">
-            <button type="button" class="emp-feed-nav-item ${leftNavActive("foryou") ? "active" : ""}" data-feed-nav="foryou">${icon("sparkles")} For You</button>
-            <button type="button" class="emp-feed-nav-item ${leftNavActive("following") ? "active" : ""}" data-feed-nav="following">${icon("users")} Following</button>
-            <button type="button" class="emp-feed-nav-item ${leftNavActive("network") ? "active" : ""}" data-feed-nav="network">${icon("share-2")} Network</button>
-            <button type="button" class="emp-feed-nav-item ${leftNavActive("communities") ? "active" : ""}" data-feed-nav="communities">${icon("messages-square")} Communities</button>
-            <button type="button" class="emp-feed-nav-item ${leftNavActive("trending") ? "active" : ""}" data-feed-nav="trending">${icon("trending-up")} Trending</button>
-          </nav>
+          ${renderFeedSidebarNav(state)}
           ${renderVeraRecommendationsWidget()}
         </div>
 
         <div class="emp-feed-main">
-          ${activeFilter === "network" ? renderNetworkView(state) : `
-            ${renderDailyBriefCard()}
-            <div class="emp-feed-headline">
-              <h2>Your AI-powered hiring intelligence feed.</h2>
-              <p>Vera surfaces candidates, market signal and hiring conversations relevant to your open roles — ranked by hiring relevance, not popularity.</p>
+          ${renderDailyBriefCard()}
+          <div class="emp-feed-headline">
+            <h2>Your AI-powered hiring intelligence feed.</h2>
+            <p>Vera surfaces candidates, market signal and hiring conversations relevant to your open roles — ranked by hiring relevance, not popularity.</p>
+          </div>
+          ${renderComposer(state)}
+          ${showTopFilters ? `
+            <div class="emp-feed-filters">
+              <button type="button" class="emp-feed-filter-chip ${activeFilter === "foryou" ? "active" : ""}" data-feed-filter="foryou">For You</button>
+              <button type="button" class="emp-feed-filter-chip ${activeFilter === "following" ? "active" : ""}" data-feed-filter="following">Following</button>
+              <button type="button" class="emp-feed-filter-chip ${activeFilter === "discussions" ? "active" : ""}" data-feed-filter="discussions">Discussions</button>
+              <button type="button" class="emp-feed-filter-chip ${activeFilter === "hiring" ? "active" : ""}" data-feed-filter="hiring">Hiring</button>
+              <button type="button" class="emp-feed-filter-chip ${activeFilter === "company-updates" ? "active" : ""}" data-feed-filter="company-updates">Company Updates</button>
             </div>
-            ${renderComposer(state)}
-            ${activeFilter === "communities" ? renderCommunitiesBrowse() : ""}
-            ${showTopFilters ? `
-              <div class="emp-feed-filters">
-                <button type="button" class="emp-feed-filter-chip ${activeFilter === "foryou" ? "active" : ""}" data-feed-filter="foryou">For You</button>
-                <button type="button" class="emp-feed-filter-chip ${activeFilter === "following" ? "active" : ""}" data-feed-filter="following">Following</button>
-                <button type="button" class="emp-feed-filter-chip ${activeFilter === "discussions" ? "active" : ""}" data-feed-filter="discussions">Discussions</button>
-                <button type="button" class="emp-feed-filter-chip ${activeFilter === "hiring" ? "active" : ""}" data-feed-filter="hiring">Hiring</button>
-                <button type="button" class="emp-feed-filter-chip ${activeFilter === "company-updates" ? "active" : ""}" data-feed-filter="company-updates">Company Updates</button>
-              </div>
-            ` : ""}
-            ${trendingKeyword ? `<p class="emp-empty-hint">Showing posts related to "${trendingKeyword}". <button type="button" class="emp-feed-clear-trend" data-feed-clear-trend>Clear</button></p>` : ""}
-            <div class="emp-feed-post-list">
-              ${renderFeedPostList(state)}
-            </div>
-          `}
+          ` : ""}
+          ${trendingKeyword ? `<p class="emp-empty-hint">Showing posts related to "${trendingKeyword}". <button type="button" class="emp-feed-clear-trend" data-feed-clear-trend>Clear</button></p>` : ""}
+          <div class="emp-feed-post-list">
+            ${renderFeedPostList(state)}
+          </div>
         </div>
 
-        ${activeFilter !== "network" ? `
-          <div class="emp-feed-rail">
-            <div class="card emp-feed-rail-card">
-              <h3>Trending</h3>
-              <div class="emp-feed-trending-list">
-                ${DATA.trendingTopics.map(t => `<button type="button" class="emp-feed-trending-item" data-feed-trending="${t.id}"><span>${t.label}</span><span class="emp-feed-trending-count">${t.count}</span></button>`).join("")}
-              </div>
+        <div class="emp-feed-rail">
+          <div class="card emp-feed-rail-card">
+            <h3>Trending</h3>
+            <div class="emp-feed-trending-list">
+              ${DATA.trendingTopics.map(t => `<button type="button" class="emp-feed-trending-item" data-feed-trending="${t.id}"><span>${t.label}</span><span class="emp-feed-trending-count">${t.count}</span></button>`).join("")}
             </div>
-            ${renderHiringOpportunitiesCard()}
-            ${renderBrandHealthCard(company)}
           </div>
-        ` : ""}
+          ${renderHiringOpportunitiesCard()}
+          ${renderBrandHealthCard(company)}
+        </div>
       </div>
 
-      ${pendingCommunityCreate ? `
-        <div class="emp-compose-modal">
-          <div class="card emp-compose-card">
-            <h2>Create community</h2>
-            <label>Name<input type="text" data-cc-name></label>
-            <label>Topic<input type="text" data-cc-topic></label>
-            <label>Description<textarea data-cc-desc rows="2"></textarea></label>
-            <label>Visibility<select data-cc-visibility><option>Public</option><option>Private</option></select></label>
-            <label>Rules <span class="emp-optional-tag">Optional</span><textarea data-cc-rules rows="2"></textarea></label>
-            <label>Moderators <span class="emp-optional-tag">Optional</span><input type="text" data-cc-mods placeholder="e.g. Mira, Jason"></label>
-            <div class="emp-compose-actions">
-              <button type="button" class="btn btn-ghost" data-cc-cancel>Cancel</button>
-              <button type="button" class="btn btn-primary" data-cc-submit>Create</button>
-            </div>
-          </div>
-        </div>
-      ` : ""}
       ${renderBrandHealthModal(company)}
     `;
     createIcons();
@@ -15500,12 +15643,14 @@ function renderEmployerFeed(root) {
       qsa("[data-health-ring] .emp-health-ring-fill", root).forEach(fill => { fill.style.strokeDashoffset = fill.closest("[data-health-ring]").dataset.targetOffset; });
     }));
     bind();
-    startRecommendationRotation();
   }
 
   function bind() {
     qsa("[data-feed-nav]", root).forEach(btn => btn.addEventListener("click", () => {
-      activeFilter = btn.dataset.feedNav;
+      const key = btn.dataset.feedNav;
+      if (key === "inbox") { employerNavigateTo("messages"); return; }
+      if (key === "saved") { employerNavigateTo("saved-candidates"); return; }
+      activeFilter = key;
       trendingKeyword = null;
       draw();
     }));
@@ -15634,7 +15779,6 @@ function renderEmployerFeed(root) {
 
     qsa("[data-feed-trending]", root).forEach(btn => btn.addEventListener("click", () => {
       const topic = DATA.trendingTopics.find(t => t.id === btn.dataset.feedTrending);
-      activeFilter = "trending";
       trendingKeyword = topic.label.split(" ")[0];
       draw();
     }));
@@ -15646,49 +15790,34 @@ function renderEmployerFeed(root) {
       showToast(`${item.type === "community" ? "Joined" : "Following"} ${item.name}.`);
       draw();
     }));
-    qs("[data-feed-view-discussion]", root)?.addEventListener("click", () => { activeFilter = "trending"; trendingKeyword = "salary"; draw(); });
+    qs("[data-feed-view-discussion]", root)?.addEventListener("click", () => { trendingKeyword = "salary"; draw(); });
     qs("[data-feed-review-gap]", root)?.addEventListener("click", () => employerNavigateTo("company-edit"));
 
     qsa("[data-feed-explore-role]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo("role-builder", { id: btn.dataset.feedExploreRole })));
     qs("[data-feed-follow-updates]", root)?.addEventListener("click", () => showToast("You'll be notified about updates."));
 
-    qsa("[data-feed-join-community]", root).forEach(btn => btn.addEventListener("click", () => {
-      const community = DATA.communities.find(c => c.id === btn.dataset.feedJoinCommunity);
-      community.joined = !community.joined;
-      showToast(community.joined ? `Joined ${community.name}.` : `Left ${community.name}.`);
-      draw();
-    }));
-    qs("[data-feed-create-community]", root)?.addEventListener("click", () => { pendingCommunityCreate = true; draw(); });
-    qs("[data-cc-cancel]", root)?.addEventListener("click", () => { pendingCommunityCreate = false; draw(); });
-    qs("[data-cc-submit]", root)?.addEventListener("click", () => {
-      const name = qs("[data-cc-name]", root).value.trim();
-      if (!name) { showToast("Community name is required.", "info"); return; }
-      DATA.communities.unshift({
-        id: `community-${Date.now()}`, name, topic: qs("[data-cc-topic]", root).value.trim(),
-        description: qs("[data-cc-desc]", root).value.trim(), members: 1, recentActivity: "Just created", joined: true
-      });
-      pendingCommunityCreate = false;
-      draw();
-      showToast("Community created.");
-    });
-
-    qsa("[data-network-tab]", root).forEach(btn => btn.addEventListener("click", () => { networkTab = btn.dataset.networkTab; draw(); }));
-    qsa("[data-network-connect]", root).forEach(btn => btn.addEventListener("click", () => {
-      const name = btn.dataset.networkName;
-      const note = prompt(`Send a short note to ${name}?`, `Hi ${name.split(" ")[0]}, I'd like to connect.`);
-      if (note === null) return;
-      const state = readState();
-      state.feedConnections.push(name);
-      writeState(state);
-      showToast("Connection request sent.");
-      draw();
-    }));
-
-    // Item 1 nav widget: manual rotation controls (auto-rotation calls the
-    // same stepRecommendation via startRecommendationRotation()).
+    // Item 1 widget: manual carousel only - click, keyboard left/right
+    // while the card holds focus, and touch swipe. No auto-play.
     qs("[data-rec-prev]", root)?.addEventListener("click", () => stepRecommendation(-1));
     qs("[data-rec-next]", root)?.addEventListener("click", () => stepRecommendation(1));
+    const recWidget = qs("[data-vera-rec-widget]", root);
+    if (recWidget) {
+      recWidget.addEventListener("keydown", event => {
+        if (event.target.closest("button, a, input, select, textarea") && event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        if (event.key === "ArrowLeft") { event.preventDefault(); stepRecommendation(-1); }
+        else if (event.key === "ArrowRight") { event.preventDefault(); stepRecommendation(1); }
+      });
+      let touchStartX = null;
+      recWidget.addEventListener("touchstart", event => { touchStartX = event.touches[0].clientX; }, { passive: true });
+      recWidget.addEventListener("touchend", event => {
+        if (touchStartX === null) return;
+        const dx = event.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) stepRecommendation(dx < 0 ? 1 : -1);
+        touchStartX = null;
+      });
+    }
     bindRecommendationCardActions(root);
+    bindSaveTalentButtons(root, () => draw());
 
     // Item 3: dismiss an in-feed opportunity card. Persisted so a
     // dismissed candidate stays dismissed across visits, same durability
@@ -15713,14 +15842,8 @@ function renderEmployerFeed(root) {
       if (action === "preview") showToast(`${person.name} hasn't applied yet, so there's no full profile - here's what Vera found: ${person.note}`, "info");
       if (action === "compare") showToast("Side-by-side talent comparison is coming in a future update.", "info");
       if (action === "invite") showToast(`Invitation sent to ${person.name} to apply for ${DATA.employerRoles.find(r => r.id === person.relevantRoleId)?.title || "an open role"}.`);
-      if (action === "save") {
-        const state = readState();
-        state.feedSavedPassiveTalent = state.feedSavedPassiveTalent || [];
-        const idx = state.feedSavedPassiveTalent.indexOf(person.id);
-        if (idx === -1) { state.feedSavedPassiveTalent.push(person.id); showToast(`Saved ${person.name}.`); } else { state.feedSavedPassiveTalent.splice(idx, 1); showToast("Removed from saved."); }
-        writeState(state);
-      }
     }));
+    qs("[data-hiring-opps-toggle]", root)?.addEventListener("click", () => { hiringOppsExpanded = !hiringOppsExpanded; draw(); });
 
     // Item 6: Brand Health Dashboard modal open/close + jump to profile.
     qs("[data-brand-dashboard-open]", root)?.addEventListener("click", () => { brandDashboardOpen = true; draw(); });
@@ -15859,7 +15982,173 @@ const DM_FILE_TYPE_META = {
   assessment: { icon: "clipboard-check", label: "Assessment" },
 };
 
+// Chat redirection (item 9): every "Message" action anywhere in the app
+// calls this instead of showing a toast or dead-ending - opens the
+// existing conversation with this candidate if one exists, otherwise
+// creates an empty one first, so Inbox never needs its own "start a new
+// conversation" flow.
+function openConversationForCandidate(candidateId) {
+  let conv = DATA.employerConversations.find(c => c.candidateId === candidateId);
+  if (!conv) {
+    conv = { id: `conv-${candidateId}-${Date.now()}`, candidateId, pinned: false, archived: false, messages: [], files: [] };
+    DATA.employerConversations.unshift(conv);
+  } else if (conv.archived) {
+    conv.archived = false;
+  }
+  employerNavigateTo("messages", { id: candidateId });
+}
+
 function sourceTag(label) { return `<span class="emp-source-tag">${label}</span>`; }
+
+// Groups saved talent by real elapsed time since savedAt, not a canned
+// label - "Saved today" genuinely means < 24h old, computed at render
+// time, so it stays correct as time passes in a long-running session.
+function groupSavedTalentByRecency(entries) {
+  const now = Date.now();
+  const groups = { today: [], week: [], month: [], older: [] };
+  entries.forEach(e => {
+    const days = (now - new Date(e.savedAt).getTime()) / 86400000;
+    if (days < 1) groups.today.push(e);
+    else if (days < 7) groups.week.push(e);
+    else if (days < 30) groups.month.push(e);
+    else groups.older.push(e);
+  });
+  return groups;
+}
+
+function renderEmployerSavedCandidates(root) {
+  let filterRole = "";
+  let filterAvailability = "";
+  let filterStatus = "";
+
+  function resolvedEntries(state) {
+    return (state.savedTalent || []).map(resolveSavedTalent).filter(Boolean);
+  }
+
+  function filteredEntries(state) {
+    let entries = resolvedEntries(state);
+    if (filterRole) entries = entries.filter(e => e.role === filterRole);
+    if (filterAvailability) entries = entries.filter(e => e.availability === filterAvailability);
+    if (filterStatus) entries = entries.filter(e => (e.type === "passive" ? "Passive" : DATA.candidates.find(c => c.id === e.id)?.stage) === filterStatus);
+    return entries;
+  }
+
+  function renderSavedRow(e) {
+    return `
+      <div class="card emp-saved-row" data-saved-row="${e.id}">
+        <span class="emp-feed-avatar">${initialsOf(e.name)}</span>
+        <div class="emp-saved-row-info">
+          <div class="emp-saved-row-top"><strong>${e.name}</strong>${e.type === "passive" ? `<span class="pill">Passive talent</span>` : ""}</div>
+          <p class="emp-cand-meta">${e.role}${e.location ? ` · ${e.location}` : ""}</p>
+          <div class="emp-saved-row-meta">
+            ${e.salary ? `<span>${icon("badge-dollar-sign")} ${e.salary}</span>` : ""}
+            ${e.availability ? `<span>${icon("clock")} ${e.availability}</span>` : ""}
+            <span>${icon("target")} ${e.fit}% match</span>
+          </div>
+        </div>
+        <div class="emp-saved-row-actions">
+          <button type="button" class="btn-icon-sm" data-saved-action="preview" data-saved-id="${e.id}" data-saved-type="${e.type}" aria-label="Preview ${e.name}">${icon("eye")}</button>
+          <button type="button" class="btn-icon-sm" data-saved-action="message" data-saved-id="${e.id}" data-saved-type="${e.type}" aria-label="Message ${e.name}">${icon("message-circle")}</button>
+          <button type="button" class="btn-icon-sm" data-saved-action="invite" data-saved-id="${e.id}" data-saved-type="${e.type}" aria-label="Invite ${e.name}">${icon("send")}</button>
+          <button type="button" class="btn-icon-sm" data-saved-action="compare" data-saved-id="${e.id}" data-saved-type="${e.type}" aria-label="Compare ${e.name}">${icon("scale")}</button>
+          <button type="button" class="btn-icon-sm emp-saved-delete" data-saved-action="delete" data-saved-id="${e.id}" data-saved-type="${e.type}" aria-label="Remove ${e.name} from saved">${icon("trash-2")}</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderGroup(label, entries) {
+    if (!entries.length) return "";
+    return `
+      <div class="emp-saved-group">
+        <h3>${label} <span class="emp-saved-group-count">${entries.length}</span></h3>
+        <div class="emp-saved-group-list">${entries.map(renderSavedRow).join("")}</div>
+      </div>
+    `;
+  }
+
+  function draw() {
+    const state = readState();
+    const all = resolvedEntries(state);
+    const entries = filteredEntries(state);
+    const groups = groupSavedTalentByRecency(entries);
+    const roleOptions = [...new Set(all.map(e => e.role))].sort();
+    const availabilityOptions = [...new Set(all.map(e => e.availability).filter(Boolean))];
+    const statusOptions = [...new Set(all.map(e => e.type === "passive" ? "Passive" : DATA.candidates.find(c => c.id === e.id)?.stage).filter(Boolean))];
+
+    root.innerHTML = `
+      <div class="emp-view-header"><span class="emp-section-label">Saved Candidates</span><h1>Saved Candidates</h1></div>
+      <div class="emp-saved-page">
+        <div class="card emp-saved-filters">
+          <label>Role
+            <select data-saved-filter="role">
+              <option value="">All roles</option>
+              ${roleOptions.map(r => `<option value="${escapeHtml(r)}" ${filterRole === r ? "selected" : ""}>${escapeHtml(r)}</option>`).join("")}
+            </select>
+          </label>
+          <label>Availability
+            <select data-saved-filter="availability">
+              <option value="">Any availability</option>
+              ${availabilityOptions.map(a => `<option value="${escapeHtml(a)}" ${filterAvailability === a ? "selected" : ""}>${escapeHtml(a)}</option>`).join("")}
+            </select>
+          </label>
+          <label>Status
+            <select data-saved-filter="status">
+              <option value="">Any status</option>
+              ${statusOptions.map(s => `<option value="${escapeHtml(s)}" ${filterStatus === s ? "selected" : ""}>${escapeHtml(s)}</option>`).join("")}
+            </select>
+          </label>
+          ${(filterRole || filterAvailability || filterStatus) ? `<button type="button" class="btn btn-ghost btn-sm" data-saved-clear-filters>${icon("x")} Clear filters</button>` : ""}
+        </div>
+
+        ${entries.length ? `
+          ${renderGroup("Saved today", groups.today)}
+          ${renderGroup("Saved this week", groups.week)}
+          ${renderGroup("Saved this month", groups.month)}
+          ${renderGroup("Saved earlier", groups.older)}
+        ` : `
+          <div class="emp-empty-state card">
+            <div class="feature-icon">${icon("heart")}</div>
+            <h2>${all.length ? "No saved candidates match these filters." : "No saved candidates yet."}</h2>
+            <p>${all.length ? "Try clearing a filter to see more." : "Save candidates from the Feed's recommendations, Hiring Opportunities, or any candidate profile - they'll show up here."}</p>
+          </div>
+        `}
+      </div>
+    `;
+    createIcons();
+    bind();
+  }
+
+  function bind() {
+    qsa("[data-saved-filter]", root).forEach(sel => sel.addEventListener("change", () => {
+      if (sel.dataset.savedFilter === "role") filterRole = sel.value;
+      if (sel.dataset.savedFilter === "availability") filterAvailability = sel.value;
+      if (sel.dataset.savedFilter === "status") filterStatus = sel.value;
+      draw();
+    }));
+    qs("[data-saved-clear-filters]", root)?.addEventListener("click", () => { filterRole = ""; filterAvailability = ""; filterStatus = ""; draw(); });
+
+    qsa("[data-saved-action]", root).forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.savedId;
+      const type = btn.dataset.savedType;
+      const action = btn.dataset.savedAction;
+      if (action === "preview") { if (type === "candidate") openCandidateProfileModal(id); else showToast("This talent hasn't applied yet, so there's no full profile to preview.", "info"); }
+      else if (action === "message") { if (type === "candidate") openConversationForCandidate(id); else showToast("Messaging passive talent directly is coming in a future update.", "info"); }
+      else if (action === "invite") { const name = resolveSavedTalent({ id, type }).name; showToast(`Invitation sent to ${name}.`); }
+      else if (action === "compare") showToast("Side-by-side candidate comparison is coming in a future update.", "info");
+      else if (action === "delete") {
+        const state = readState();
+        const name = resolveSavedTalent({ id, type }).name;
+        toggleSavedTalent(state, id, type);
+        writeState(state);
+        showToast(`${name} removed from saved.`);
+        draw();
+      }
+    }));
+  }
+
+  draw();
+}
 
 function computeCompanyCompleteness(company) {
   const checks = [
@@ -15909,6 +16198,7 @@ function renderEmployerMessages(root, params = {}) {
     const cand = candidateFor(conv);
     const last = lastMessage(conv);
     const unread = isUnread(conv);
+    const saved = isSavedTalent(readState(), cand.id, "candidate");
     return `
       <button type="button" class="emp-dm-convo-row ${activeConversationId === conv.id ? "active" : ""} ${unread ? "unread" : ""}" data-dm-select-convo="${conv.id}">
         <span class="emp-feed-avatar">${initialsOf(cand.name)}</span>
@@ -15921,7 +16211,7 @@ function renderEmployerMessages(root, params = {}) {
               <span class="emp-dm-convo-time">${last.time}</span>
             </span>
           </span>
-          <span class="emp-dm-convo-role">${cand.role}</span>
+          <span class="emp-dm-convo-role">${cand.role}${saved ? ` · <span class="emp-dm-saved-badge">${icon("heart")} Saved</span>` : ""}</span>
           <span class="emp-dm-convo-preview">${last.sender === "employer" ? "You: " : ""}${last.text}</span>
         </span>
       </button>
@@ -15972,15 +16262,17 @@ function renderEmployerMessages(root, params = {}) {
   function renderThread(conv) {
     const cand = candidateFor(conv);
     const signals = getCandidateSignals(cand);
+    const saved = isSavedTalent(readState(), cand.id, "candidate");
     return `
       <div class="emp-dm-thread">
         <div class="emp-dm-thread-head">
           <span class="emp-feed-avatar">${initialsOf(cand.name)}</span>
           <div class="emp-dm-thread-head-info">
-            <strong>${cand.name}</strong>
+            <span class="emp-dm-thread-head-name"><strong>${cand.name}</strong>${saved ? `<span class="emp-dm-saved-badge">${icon("heart")} Saved</span>` : `<span class="emp-dm-saved-badge emp-dm-saved-badge--muted">Not saved</span>`}</span>
             <p class="emp-cand-meta">${cand.role} · ${signals.lastActive}</p>
           </div>
           <div class="emp-dm-thread-head-actions">
+            ${renderSaveButton(cand.id, "candidate", cand.name, saved, { iconOnly: true })}
             <button type="button" class="btn btn-ghost btn-sm" data-dm-pin-toggle="${conv.id}">${icon("pin")} ${conv.pinned ? "Unpin" : "Pin"}</button>
             <button type="button" class="btn btn-ghost btn-sm" data-dm-archive-toggle="${conv.id}">${icon("archive")} ${conv.archived ? "Unarchive" : "Archive"}</button>
           </div>
@@ -16161,7 +16453,7 @@ function renderEmployerMessages(root, params = {}) {
     const conv = activeConversationId ? findConversation(activeConversationId) : null;
 
     root.innerHTML = `
-      <div class="emp-view-header"><span class="emp-section-label">Messages</span><h1>Messages</h1></div>
+      <div class="emp-view-header"><span class="emp-section-label">Inbox</span><h1>Inbox</h1></div>
       <div class="emp-dm-layout">
         ${renderConversationList()}
         ${conv ? renderThread(conv) : `
@@ -16209,6 +16501,7 @@ function renderEmployerMessages(root, params = {}) {
     }));
 
     qsa("[data-dm-right-tab]", root).forEach(btn => btn.addEventListener("click", () => { rightTab = btn.dataset.dmRightTab; draw(); }));
+    bindSaveTalentButtons(root, () => draw());
 
     const composerTextarea = qs("[data-dm-composer-text]", root);
     composerTextarea?.addEventListener("input", event => { composerDraftText = event.target.value; });
