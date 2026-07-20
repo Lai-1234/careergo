@@ -105,9 +105,16 @@ const DATA = {
     {
       id: "maybank",
       name: "Maybank",
+      verified: true,
       type: "Company",
       industry: "Banking",
       location: "Kuala Lumpur",
+      officeLocations: ["Kuala Lumpur", "Penang", "Johor"],
+      founded: 1960,
+      website: "maybank2u.com.my",
+      followers: 8600,
+      publicProfileStatus: "Live",
+      lastUpdated: "2 days ago",
       size: "10,000+ employees",
       rating: 4.4,
       reviews: 1284,
@@ -117,8 +124,405 @@ const DATA = {
       tags: ["Stable", "Graduate friendly", "Large teams"],
       summary: "Malaysia's largest financial group with strong graduate programs, structured teams, and broad digital transformation work.",
       scores: { culture: 4.2, growth: 4.3, pay: 4.1, balance: 4.0 },
+      activelyHiring: true,
+      freshGraduateFriendly: true,
+      internshipAvailable: true,
+      // Employer-facing hero KPIs (Company Profile page) - distinct from the
+      // candidate-facing signals above (rating, tags, scores).
+      healthScore: 89,
+      hiringActivityLevel: "High",
+      applicationConversionRate: 31,
+      avgResponseDays: 5,
+      avgCandidateMatchScore: 87,
+      workMode: "Onsite / Hybrid",
+      hiringDifficulty: "Medium",
+      averageRequirements: { education: "Diploma/Degree depending on role", cgpa: "Usually 3.0+ preferred for graduate programs", experience: "Fresh graduate to 2 years for junior roles", commonSkills: ["Communication", "Excel", "Teamwork", "Problem solving"], techSkills: ["SQL", "Excel/VBA", "Basic data analysis"], englishRequirement: "Good written and spoken English", portfolio: "Not required for most roles", internshipPreferred: "Advantageous but not mandatory", certifications: "Professional banking/finance certifications advantageous" },
+      // Same underlying requirements as averageRequirements above, regrouped
+      // by how much they actually gate a candidate - used by the tiered
+      // chip display on the Requirements section (Company Profile page).
+      requirementTiers: {
+        required: ["Diploma/Degree", "3.0+ CGPA", "Good English", "Communication"],
+        preferred: ["Teamwork", "Problem Solving", "Excel/VBA", "SQL", "Internship Experience"],
+        bonus: ["Basic Data Analysis", "Professional Certifications", "Portfolio"]
+      },
+      requirementsInsight: { higherInterviewRatePercent: 74 },
+      hiringProcess: { steps: ["Application review", "Online assessment", "HR interview", "Manager interview", "Final interview (graduate programs)"], avgResponseTime: "2-4 weeks", difficulty: "Medium", assessmentNote: "Online assessment and assessment centre for graduate programs" },
+      // Powers the "How Hiring Works" timeline (Company Profile page).
+      // dropOffPercent is of candidates entering that stage; success rate is
+      // derived as the complement at render time, not stored separately, so
+      // the two numbers can't drift out of sync with each other.
+      hiringTimeline: [
+        { stage: "Application", icon: "file-text", avgDays: 1, dropOffPercent: 8, tooltip: "Candidates submit their application and resume through CareerGo.", isCurrent: false },
+        { stage: "Resume Review", icon: "search", avgDays: 2, dropOffPercent: 35, tooltip: "Recruiters screen resumes against the role's must-have requirements.", isCurrent: false },
+        { stage: "Assessment", icon: "clipboard-check", avgDays: 4, dropOffPercent: 28, tooltip: "Candidates complete an online assessment relevant to the role.", isCurrent: true },
+        { stage: "HR Interview", icon: "users", avgDays: 3, dropOffPercent: 20, tooltip: "An HR screening call covering fit, expectations, and logistics.", isCurrent: false },
+        { stage: "Hiring Manager", icon: "user-check", avgDays: 5, dropOffPercent: 15, tooltip: "A role-specific interview with the hiring manager.", isCurrent: false },
+        { stage: "Offer", icon: "award", avgDays: 3, dropOffPercent: 5, tooltip: "A formal offer is extended and negotiated with the candidate.", isCurrent: false }
+      ],
+      salaryBenefits: { freshGradSalary: "RM 3.2k - 4.5k / month", internshipAllowance: "RM 800 - 1.2k / month", bonus: "Annual performance bonus", medical: "Comprehensive medical coverage", training: "Structured graduate training program", flexibleWork: "Hybrid for eligible roles", leave: "Standard + study leave for certifications" },
+      // Company-vs-market salary comparison by career level, powers the
+      // redesigned Salary section (Company Profile page). diffPercent is
+      // derived from company/market at render time, not stored, so it
+      // can't drift out of sync with the two figures it's based on.
+      salaryComparison: {
+        industryPercentile: 62,
+        transparencyScore: 58,
+        aiInsight: { text: "Publishing salary bands could increase applications by 18%.", confidencePercent: 91 },
+        levels: [
+          { level: "Internship", company: 1800, market: 1600, companyRange: [1500, 2000], marketRange: [1300, 1800], openRoles: 2 },
+          { level: "Graduate", company: 3600, market: 3500, companyRange: [3200, 4000], marketRange: [3100, 3900], openRoles: 3 },
+          { level: "Junior", company: 5200, market: 4800, companyRange: [4600, 5800], marketRange: [4200, 5400], openRoles: 4 },
+          { level: "Senior", company: 8600, market: 9300, companyRange: [7800, 9600], marketRange: [8400, 10200], openRoles: 2 },
+          { level: "Manager", company: 13500, market: 12800, companyRange: [12000, 15500], marketRange: [11200, 14600], openRoles: 1 },
+          { level: "Executive", company: 21500, market: 24000, companyRange: [19000, 25000], marketRange: [21000, 27500], openRoles: 1 }
+        ]
+      },
+      careerGrowth: { trainingQuality: "Strong structured training", promotionPath: "Clear grade-based progression", graduateProgram: "Available (Maybank Management Trainee)", mentorship: "Assigned mentors for new joiners", internalTransfer: "Common across departments", learningOpportunities: "Internal academy and certification support" },
+      // Powers the career path ladder (Growth & Development section, Company
+      // Profile page). avgTimeToReach is the average time to be promoted
+      // INTO that stage from the one above it (null for the entry stage) -
+      // it labels the connector between a node and the one before it.
+      careerPath: [
+        { role: "Graduate Trainee", avgTimeToReach: null, salary: { min: 3500, max: 4000 }, skills: ["Communication", "Adaptability", "Business fundamentals"], learning: ["Maybank Graduate Orientation Program", "Banking Fundamentals Certification"] },
+        { role: "Executive", avgTimeToReach: "18 months", salary: { min: 4200, max: 5200 }, skills: ["Process ownership", "Stakeholder communication", "Reporting accuracy"], learning: ["Advanced Excel & Reporting", "Regulatory Compliance Basics"] },
+        { role: "Senior Executive", avgTimeToReach: "2 years", salary: { min: 5500, max: 7000 }, skills: ["Project coordination", "Team collaboration", "Problem solving"], learning: ["Project Management Fundamentals", "Data-Driven Decision Making"] },
+        { role: "Assistant Manager", avgTimeToReach: "2.5 years", salary: { min: 7500, max: 9500 }, skills: ["People coordination", "Budget awareness", "Cross-team collaboration"], learning: ["People Leadership Essentials", "Financial Acumen for Leaders"] },
+        { role: "Manager", avgTimeToReach: "3 years", salary: { min: 10000, max: 13000 }, skills: ["Team leadership", "Performance management", "Strategic planning"], learning: ["Maybank Leadership Academy", "Change Management"] },
+        { role: "Senior Manager", avgTimeToReach: "3.5 years", salary: { min: 14000, max: 18000 }, skills: ["Departmental strategy", "Stakeholder influence", "P&L ownership"], learning: ["Executive Leadership Program", "Strategic Business Planning"] }
+      ],
+      workCulture: { pace: "Steady, structured", teamStyle: "Large teams, defined roles", workLifeBalance: "Balanced, standard hours", managementStyle: "Hierarchical, process-driven", collaboration: "Cross-department coordination common", overtimeSignal: "Occasional during reporting periods", reviewThemes: "Stable, good for early career, slower pace" },
+      veraNote: "Maybank is strong for fresh graduates who want a structured early-career path, stable environment, and broad banking exposure. Watch for slower approval processes and large-company hierarchy.",
+      // Powers the redesigned Reviews section (Company Profile page): filters,
+      // sort, expandable cards and infinite scroll all read from this array.
+      // tenure is employment period (when they worked there); date is when
+      // the review was posted - the two are deliberately independent.
+      companyReviews: [
+        { id: "cr-mb-1", title: "Solid first job with real structure", author: "Graduate Trainee", role: "Management Trainee", department: "Graduate Program", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Graduate", verified: true, date: "May 2026", tenure: "2023 - 2025 (2 yrs)", rating: 4.6, pros: "The rotation program gave me exposure to multiple departments and the mentorship was genuinely helpful.", cons: "Approvals can be slow, and some processes still rely on manual paperwork.", advice: "Continue investing in the rotation program, and consider digitizing more internal approvals.", likes: 34, helpfulCount: 28, managerResponse: "Thank you for the thoughtful feedback - we're actively working on digitizing approval workflows this year." },
+        { id: "cr-mb-2", title: "Good stability, steady pace", author: "Data Analyst", role: "Data Analyst", department: "Analytics", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "Mar 2026", tenure: "2022 - Present (3 yrs)", rating: 4.3, pros: "Good work-life balance and a genuinely supportive team.", cons: "Internal systems can feel dated compared to fintech competitors.", advice: "Invest in modern tooling for the analytics team to reduce manual reporting work.", likes: 21, helpfulCount: 19, managerResponse: null },
+        { id: "cr-mb-3", title: "Great place to start a banking career", author: "Management Trainee", role: "Management Trainee", department: "Graduate Program", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Graduate", verified: true, date: "Jun 2026", tenure: "2024 - Present (1 yr)", rating: 4.7, pros: "Structured onboarding, clear expectations, and a strong alumni network.", cons: "Hierarchy can feel rigid if you're used to a flatter structure.", advice: "Give trainees more autonomy earlier in the rotation.", likes: 40, helpfulCount: 33, managerResponse: "Glad the program is working well for you - we're reviewing trainee autonomy for the next cohort." },
+        { id: "cr-mb-4", title: "Fair pay, slow promotions", author: "Finance Executive", role: "Finance Executive", department: "Finance", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: false, date: "Feb 2026", tenure: "2021 - Present (4 yrs)", rating: 3.4, pros: "Compensation is competitive for the industry and benefits are solid.", cons: "Promotion cycles are long and can depend heavily on tenure rather than performance.", advice: "Make promotion criteria more transparent and performance-driven.", likes: 12, helpfulCount: 25, managerResponse: null },
+        { id: "cr-mb-5", title: "Supportive team, heavy month-end load", author: "Finance Manager", role: "Finance Manager", department: "Finance", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "Apr 2026", tenure: "2019 - Present (6 yrs)", rating: 3.9, pros: "Strong team culture and leadership genuinely listens to feedback.", cons: "Month-end and quarter-end periods require significant overtime.", advice: "Look into automating parts of the month-end close process.", likes: 18, helpfulCount: 15, managerResponse: null },
+        { id: "cr-mb-6", title: "Friendly team, repetitive work", author: "Customer Operations Associate", role: "Customer Operations Associate", department: "Customer Operations", location: "Penang", country: "Malaysia", employmentType: "Employee", verified: true, date: "Jan 2026", tenure: "2023 - Present (2 yrs)", rating: 3.6, pros: "Friendly colleagues and manageable shift schedules.", cons: "The work can get repetitive and career growth in this track is limited.", advice: "Create clearer growth paths from operations into other departments.", likes: 9, helpfulCount: 11, managerResponse: null },
+        { id: "cr-mb-7", title: "Modern team inside a traditional bank", author: "Software Engineer", role: "Software Engineer", department: "Technology", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "Jun 2026", tenure: "2022 - Present (3 yrs)", rating: 4.2, pros: "The engineering team runs with modern practices even though the wider org is traditional.", cons: "Cross-team dependencies with legacy systems can slow releases down.", advice: "Give engineering more autonomy over legacy system integrations.", likes: 27, helpfulCount: 22, managerResponse: "Appreciate this - we're expanding the platform team specifically to reduce legacy dependency friction." },
+        { id: "cr-mb-8", title: "Solid internship, real project exposure", author: "IT Support Intern", role: "IT Support Intern", department: "Technology", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Intern", verified: true, date: "Jul 2026", tenure: "Jun 2026 - Aug 2026 (3 mo)", rating: 4.4, pros: "I worked on a real internal tool, not just busywork, and got regular feedback.", cons: "Onboarding took a while since intern access requests move slowly.", advice: "Speed up IT access provisioning for interns in their first week.", likes: 15, helpfulCount: 10, managerResponse: null },
+        { id: "cr-mb-9", title: "Good learning, cautious culture", author: "Risk Analyst", role: "Risk Analyst", department: "Risk Management", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: false, date: "Mar 2026", tenure: "2020 - Present (5 yrs)", rating: 3.8, pros: "You learn regulatory and risk fundamentals extremely well here.", cons: "The culture is risk-averse, so new ideas take a long time to get approved.", advice: "Create a faster track for testing new risk models before full rollout.", likes: 14, helpfulCount: 17, managerResponse: null },
+        { id: "cr-mb-10", title: "HR genuinely cares, but understaffed", author: "HR Executive", role: "HR Executive", department: "Human Resources", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "May 2026", tenure: "2023 - Present (2 yrs)", rating: 4.0, pros: "Leadership genuinely cares about employee wellbeing initiatives.", cons: "The HR team itself is understaffed relative to headcount growth.", advice: "Hire more HR business partners to match the pace of hiring.", likes: 11, helpfulCount: 9, managerResponse: null },
+        { id: "cr-mb-11", title: "Great brand recognition for early career", author: "Marketing Executive", role: "Marketing Executive", department: "Marketing", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "Feb 2026", tenure: "2022 - Present (3 yrs)", rating: 4.1, pros: "The Maybank brand opens doors and campaigns get real regional reach.", cons: "Creative approvals go through multiple layers before launch.", advice: "Streamline the creative approval chain for smaller campaigns.", likes: 16, helpfulCount: 13, managerResponse: null },
+        { id: "cr-mb-12", title: "Regional exposure from the Singapore office", author: "Compliance Officer", role: "Compliance Officer", department: "Compliance", location: "Singapore", country: "Singapore", employmentType: "Employee", verified: true, date: "Apr 2026", tenure: "2021 - Present (4 yrs)", rating: 4.3, pros: "Working from the Singapore office gives good regional and cross-border exposure.", cons: "Regulatory reporting cycles are demanding and deadlines are strict.", advice: "Add more automation to recurring regulatory reports.", likes: 19, helpfulCount: 16, managerResponse: null },
+        { id: "cr-mb-13", title: "Decent internship but limited mentorship", author: "Finance Intern", role: "Finance Intern", department: "Finance", location: "Johor Bahru", country: "Malaysia", employmentType: "Intern", verified: false, date: "Jan 2026", tenure: "Dec 2025 - Feb 2026 (3 mo)", rating: 3.2, pros: "Got exposure to real financial reporting workflows.", cons: "My mentor was often unavailable due to month-end workload.", advice: "Assign a backup mentor for interns during peak periods.", likes: 6, helpfulCount: 8, managerResponse: null },
+        { id: "cr-mb-14", title: "Stable and dependable, not fast-paced", author: "Team Lead", role: "Customer Operations Team Lead", department: "Customer Operations", location: "Kuala Lumpur", country: "Malaysia", employmentType: "Employee", verified: true, date: "Jun 2026", tenure: "2018 - Present (7 yrs)", rating: 3.7, pros: "Job security is strong and the team is dependable.", cons: "Pace of change is slow compared to fintech or tech-first employers.", advice: "Pilot more agile ways of working in the operations team.", likes: 8, helpfulCount: 7, managerResponse: null }
+      ],
+      roles: [
+        { id: "mb-mt", title: "Management Trainee", department: "Graduate Program", salaryRange: "RM 3.5k - 5k / month", employmentType: "Full-time (Rotational)", location: "Kuala Lumpur", workMode: "Onsite / Hybrid", experienceLevel: "Fresh graduate", educationRequirement: "Degree in any discipline", cgpaRequirement: "3.3+ preferred", requiredSkills: ["Leadership potential", "Communication", "Adaptability"], preferredSkills: ["Prior internship experience", "Extracurricular leadership roles"], tools: ["Excel", "PowerPoint"], responsibilities: ["Rotate across business units", "Complete structured training modules", "Take on project assignments", "Build cross-functional experience"], hiringProcess: "Online assessment, assessment centre, panel interview", careerPath: "Management Trainee -> Executive -> Manager (post-rotation placement)", benefits: ["Structured mentorship", "Rotational exposure", "Fast-track promotion potential"], status: "Open", hiringDifficulty: "Hard", watchouts: ["Highly competitive intake", "Placement after rotation is not guaranteed to be your first choice"] },
+        { id: "mb-da", title: "Data Analyst", department: "Analytics", salaryRange: "RM 4k - 7k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Hybrid", experienceLevel: "Junior", educationRequirement: "Degree in Statistics, Computer Science, Business, or related field", cgpaRequirement: "3.0+ preferred", requiredSkills: ["SQL", "Data visualization", "Analytical thinking"], preferredSkills: ["Python/R", "Dashboarding tools (Power BI/Tableau)", "Statistics"], tools: ["Excel", "SQL", "Power BI / Tableau"], responsibilities: ["Analyze business data and trends", "Build dashboards and reports", "Support data-driven decision making", "Work with stakeholders to define metrics"], hiringProcess: "Online assessment (SQL/case study), interview with hiring manager", careerPath: "Data Analyst -> Senior Analyst -> Analytics Manager / Data Scientist", benefits: ["Medical coverage", "Training allowance", "Hybrid work options"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Case study round can be competitive", "Requires strong attention to detail"] },
+        { id: "mb-fe", title: "Finance Executive", department: "Finance", salaryRange: "RM 3.5k - 6k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Degree in Finance, Accounting, or related field", cgpaRequirement: "3.2+ preferred", requiredSkills: ["Financial reporting", "Attention to detail", "Excel proficiency"], preferredSkills: ["Accounting software", "Basic taxation knowledge", "ACCA/CPA progress"], tools: ["Excel", "SAP/accounting ERP", "PowerPoint"], responsibilities: ["Support financial reporting and reconciliation", "Assist with budgeting and forecasting", "Ensure compliance with financial policies", "Prepare month-end reports"], hiringProcess: "Online assessment, interview with finance manager", careerPath: "Finance Executive -> Senior Executive -> Finance Manager", benefits: ["Medical coverage", "Study support for professional certification", "Performance bonus"], status: "Open", hiringDifficulty: "Medium", watchouts: ["Month-end periods can be demanding", "High attention to detail required"] },
+        { id: "mb-coa", title: "Customer Operations Associate", department: "Customer Operations", salaryRange: "RM 2.8k - 4k / month", employmentType: "Full-time", location: "Kuala Lumpur", workMode: "Onsite", experienceLevel: "Fresh graduate / Junior", educationRequirement: "Diploma/Degree in any discipline", cgpaRequirement: "Not strictly required", requiredSkills: ["Communication", "Problem solving", "Patience"], preferredSkills: ["CRM tools experience", "Multilingual ability", "Process improvement mindset"], tools: ["CRM/ticketing systems", "Excel"], responsibilities: ["Handle customer inquiries and issues", "Maintain service quality standards", "Escalate complex cases appropriately", "Support process improvement initiatives"], hiringProcess: "Interview with operations manager, situational assessment", careerPath: "Associate -> Senior Associate -> Team Lead", benefits: ["Medical coverage", "Shift allowance (if applicable)", "Performance incentives"], status: "Open", hiringDifficulty: "Easy", watchouts: ["May involve shift work", "High interaction volume during peak periods"] }
+      ],
       highlights: ["Strong training and rotation programs", "Good brand value for early career", "Structured promotion paths"],
-      watchouts: ["Large-company pace can feel slower", "Some teams report layered approvals"]
+      watchouts: ["Large-company pace can feel slower", "Some teams report layered approvals"],
+      profileGaps: [
+        "Average interview timeline has not been confirmed for Finance Executive",
+        "No team or workplace media uploaded",
+        "Benefits have not been updated in 14 months",
+        "Remote-work policy is unclear for 3 teams"
+      ],
+      // Powers the hiring funnel (Insights section, Company Profile page):
+      // Profile Views -> Role Clicks -> Applications -> Interviews -> Offers
+      // -> Accepted, per time range. Conversion % between stages is derived
+      // at render time from consecutive stage values, not stored, so it
+      // can't drift. Each range keeps independently-tuned absolute numbers
+      // (not a fixed multiplier of 30d) so conversion rates realistically
+      // vary a little by range; "custom" has no fixed dataset and is instead
+      // computed from the 30d daily rate at render time (see getFunnelStages).
+      hiringFunnel: {
+        ranges: {
+          "30d": {
+            label: "Last 30 days",
+            stages: [
+              { stage: "Profile Views", value: 12480, trend: "+8% vs previous 30 days" },
+              { stage: "Role Clicks", value: 3860, trend: "+5% vs previous 30 days" },
+              { stage: "Applications", value: 1140, trend: "-2% vs previous 30 days" },
+              { stage: "Interviews", value: 342, trend: "+4% vs previous 30 days" },
+              { stage: "Offers", value: 96, trend: "+1% vs previous 30 days" },
+              { stage: "Accepted", value: 71, trend: "+6% vs previous 30 days" }
+            ]
+          },
+          "90d": {
+            label: "Last 90 days",
+            stages: [
+              { stage: "Profile Views", value: 34600, trend: "+11% vs previous 90 days" },
+              { stage: "Role Clicks", value: 10200, trend: "+7% vs previous 90 days" },
+              { stage: "Applications", value: 2980, trend: "+3% vs previous 90 days" },
+              { stage: "Interviews", value: 890, trend: "+6% vs previous 90 days" },
+              { stage: "Offers", value: 245, trend: "+2% vs previous 90 days" },
+              { stage: "Accepted", value: 178, trend: "+9% vs previous 90 days" }
+            ]
+          },
+          "12mo": {
+            label: "Last 12 months",
+            stages: [
+              { stage: "Profile Views", value: 148200, trend: "+15% vs previous 12 months" },
+              { stage: "Role Clicks", value: 42300, trend: "+10% vs previous 12 months" },
+              { stage: "Applications", value: 12100, trend: "+6% vs previous 12 months" },
+              { stage: "Interviews", value: 3540, trend: "+8% vs previous 12 months" },
+              { stage: "Offers", value: 968, trend: "+4% vs previous 12 months" },
+              { stage: "Accepted", value: 705, trend: "+12% vs previous 12 months" }
+            ]
+          }
+        }
+      },
+      reputationSummary: {
+        strongestSignal: { label: "Career growth", value: "4.3 / 5" },
+        mostCommonPositive: "Structured graduate development",
+        biggestQuestion: "Salary transparency",
+        mostCommonWatchout: "Slow approval processes",
+        basis: "Based on 1,285 employee reviews and candidate behaviour."
+      },
+      // Powers the "Vera Insight" premium AI card (Insights section, Company
+      // Profile page). confidencePercent is the AI's overall confidence in
+      // this synthesis; each recommendedActions entry carries its own,
+      // separate confidence for that specific action.
+      veraCompanyRead: {
+        confidencePercent: 93,
+        summary: "Maybank is landing strongest with graduates and early-career candidates who value structured development, stability and a recognised brand. Candidate interest drops when salary ranges and team-level work style are unclear. The highest-impact improvement would be publishing salary information and clearer hiring timelines for your most-viewed graduate roles.",
+        strengths: ["Structured graduate programs", "Strong early-career brand", "Broad learning opportunities"],
+        weaknesses: ["Unclear role-level salary information", "Team-level work style varies", "Slower candidate response expectations"],
+        recommendedActions: [
+          { action: "Publish salary ranges for your open roles", difficulty: "Easy", expectedImpact: "+17% Applications", confidencePercent: 92 },
+          { action: "Add team-level work style details to each role", difficulty: "Medium", expectedImpact: "+9% Profile saves", confidencePercent: 81 },
+          { action: "Set clearer expected response timelines for candidates", difficulty: "Easy", expectedImpact: "+6% Completed applications", confidencePercent: 76 }
+        ],
+        predictedImpact: { headline: "+24% Applications", note: "Estimated combined effect if all three recommended actions are implemented within 60 days." }
+      },
+      // Powers the AI Health Score dashboard (its own tab, Company Profile
+      // page). overallScore reuses the existing hero KPI (healthScore above)
+      // for consistency rather than a second, possibly-drifting number.
+      // Overall is a weighted composite, not a plain mean of the 6
+      // subscores - Transparency pulls the raw average down further than
+      // its actual weight in the blend, the same way a single weak category
+      // doesn't dominate a real composite score. Every explanation/suggestion
+      // below references a real signal already present elsewhere in this
+      // company's data (hiringTimeline drop-off, salaryComparison, the
+      // careerPath ladder, companyReviews' manager-response rate, the 4
+      // profileGaps) rather than inventing disconnected numbers.
+      healthDashboard: {
+        overallScore: 89,
+        overallExplanation: "A weighted blend across all six dimensions, favoring what most influences whether a candidate applies and accepts an offer. Career Growth and Leadership are pulling the score up; Transparency is the biggest single drag.",
+        overallPredictedScore: 95,
+        subscores: [
+          {
+            key: "candidateExperience", label: "Candidate Experience", icon: "smile",
+            score: 85,
+            explanation: "Resume Review is the highest-drop-off stage in your hiring timeline (35% of candidates don't proceed), and reviews cite slow approval processes as a recurring watchout.",
+            suggestions: [
+              { action: "Reduce Resume Review turnaround time", impact: "+4" },
+              { action: "Set clearer expected response timelines for candidates", impact: "+3" }
+            ],
+            predictedScore: 92
+          },
+          {
+            key: "hiringSpeed", label: "Hiring Speed", icon: "gauge",
+            score: 76,
+            explanation: "Your hiring process averages 18 days across 6 stages (2-4 weeks total), with the Hiring Manager interview the slowest single stage at 5 days.",
+            suggestions: [
+              { action: "Run HR and Hiring Manager interviews in parallel where possible", impact: "+6" },
+              { action: "Set an internal SLA for resume review turnaround", impact: "+4" }
+            ],
+            predictedScore: 86
+          },
+          {
+            key: "compensation", label: "Compensation", icon: "wallet",
+            score: 82,
+            explanation: "You pay above market at Junior and Manager levels, but Senior (-8%) and Executive (-10%) bands sit below market, pulling the overall picture down.",
+            suggestions: [
+              { action: "Adjust Senior and Executive compensation bands toward market median", impact: "+7" },
+              { action: "Publish salary ranges to close the transparency gap", impact: "+3" }
+            ],
+            predictedScore: 92
+          },
+          {
+            key: "careerGrowth", label: "Career Growth", icon: "trending-up",
+            score: 94,
+            explanation: "A clearly structured 6-stage career ladder from Graduate Trainee to Senior Manager, and a 4.3/5 growth rating from employee reviews - your strongest dimension.",
+            suggestions: [
+              { action: "Reduce promotion-time variance at the Senior Manager stage", impact: "+2" },
+              { action: "Extend mentorship access beyond entry-level roles", impact: "+2" }
+            ],
+            predictedScore: 98
+          },
+          {
+            key: "transparency", label: "Transparency", icon: "eye",
+            score: 66,
+            explanation: "A 58/100 salary transparency score plus 4 unresolved profile gaps (interview timelines, workplace media, benefits freshness, remote-work policy) make this your biggest single opportunity.",
+            suggestions: [
+              { action: "Resolve all 4 open profile gaps", impact: "+9" },
+              { action: "Publish salary ranges for your 5 most-viewed roles", impact: "+8" }
+            ],
+            predictedScore: 83
+          },
+          {
+            key: "leadership", label: "Leadership", icon: "users",
+            score: 87,
+            explanation: "Reviews describe management as hierarchical and process-driven but dependable. Only 3 of your last 14 reviews have a manager response, which candidates read as a leadership-engagement signal.",
+            suggestions: [
+              { action: "Respond to a higher share of employee reviews", impact: "+5" },
+              { action: "Pilot more autonomy for trainee and junior roles", impact: "+3" }
+            ],
+            predictedScore: 95
+          }
+        ]
+      },
+      // Powers the AI Competitor Comparison (its own tab, Company Profile
+      // page). No real company APIs - "Top Competitor" is deliberately
+      // anonymized rather than naming a real bank, since these are mock
+      // performance numbers ("mock data acceptable" per the request, but
+      // attributing fabricated figures to a real, identifiable competitor
+      // would read as a factual claim about that business). verdict is
+      // Company vs Industry Average specifically (the standard peer
+      // benchmark); Top Competitor is shown as an aspirational third
+      // reference point, not part of the verdict computation. Every value
+      // and explanation ties back to a real signal already in this
+      // company's data (scores.growth, rating, hiringTimeline,
+      // salaryComparison, the graduate-program narrative) for consistency
+      // with the Health Score dashboard and Vera Insight card built earlier.
+      competitorComparison: {
+        competitorLabel: "Top Competitor",
+        metrics: [
+          {
+            key: "salary", label: "Salary", icon: "wallet",
+            companyValue: "RM 6,850/mo avg", industryAvgValue: "RM 6,100/mo avg", competitorValue: "RM 7,400/mo avg",
+            verdict: "better",
+            explanation: "Average compensation sits about 12% above the industry average, driven by strong entry-level pay - though Senior and Executive bands still trail the top competitor by 8-10%."
+          },
+          {
+            key: "benefits", label: "Benefits", icon: "gift",
+            companyValue: "76 / 100", industryAvgValue: "76 / 100", competitorValue: "85 / 100",
+            verdict: "equal",
+            explanation: "Comprehensive medical coverage and training support keep you in line with the industry average, but you lack newer perks like remote-work stipends that your top competitor offers."
+          },
+          {
+            key: "growth", label: "Growth", icon: "trending-up",
+            companyValue: "4.3 / 5", industryAvgValue: "3.9 / 5", competitorValue: "4.1 / 5",
+            verdict: "better",
+            explanation: "A 4.3/5 growth rating and structured 6-stage career ladder outperform both the industry average and your top competitor."
+          },
+          {
+            key: "hiringSpeed", label: "Hiring Speed", icon: "gauge",
+            companyValue: "18 days avg", industryAvgValue: "16 days avg", competitorValue: "12 days avg",
+            verdict: "needsImprovement",
+            explanation: "Your hiring process averages 18 days - about 2 days slower than the industry average and 6 behind your top competitor, largely driven by Resume Review turnaround."
+          },
+          {
+            key: "employeeSatisfaction", label: "Employee Satisfaction", icon: "smile",
+            companyValue: "4.4 / 5", industryAvgValue: "4.0 / 5", competitorValue: "4.2 / 5",
+            verdict: "better",
+            explanation: "A 4.4/5 overall rating from 1,284 reviews outperforms both benchmarks, driven by strong culture and growth scores."
+          },
+          {
+            key: "retention", label: "Retention", icon: "shield-check",
+            companyValue: "84% (1-yr)", industryAvgValue: "79% (1-yr)", competitorValue: "88% (1-yr)",
+            verdict: "better",
+            explanation: "84% one-year retention reflects the job security and stability candidates describe in reviews, though the top competitor retains talent at a higher rate."
+          },
+          {
+            key: "graduateFriendliness", label: "Graduate Friendliness", icon: "graduation-cap",
+            companyValue: "92 / 100", industryAvgValue: "76 / 100", competitorValue: "81 / 100",
+            verdict: "better",
+            explanation: "A structured graduate program, strong trainee review ratings, and a clear entry-level career ladder make you a standout choice for new graduates, well ahead of both benchmarks."
+          }
+        ]
+      },
+      // Powers the AI-Generated FAQ (its own tab, Company Profile page).
+      // source names which signal the question was generated from -
+      // distributed across all 3 requested categories rather than
+      // clustering on one. Every answer draws on a real field elsewhere in
+      // this company's data (hiringTimeline, salaryBenefits,
+      // salaryComparison, careerGrowth, workCulture, companyReviews)
+      // instead of inventing disconnected claims.
+      faqs: [
+        {
+          id: "faq-interview-length", question: "How long does the interview process take?", source: "Applications",
+          answer: "Most candidates go through 6 stages - Application, Resume Review, Assessment, HR Interview, Hiring Manager, and Offer - completing the full process in about 2-4 weeks."
+        },
+        {
+          id: "faq-remote-work", question: "Can I work remotely?", source: "Searches",
+          answer: "Most roles are Onsite or Hybrid. Maybank runs a structured, in-office-first schedule with hybrid flexibility for eligible roles rather than fully remote positions."
+        },
+        {
+          id: "faq-promotion", question: "What are the promotion opportunities like?", source: "Employee Reviews",
+          answer: "Promotion follows a clear, grade-based ladder from Graduate Trainee through to Senior Manager. Reviews describe it as structured and fair, though a few note that cycles can run longer at senior levels."
+        },
+        {
+          id: "faq-dress-code", question: "Is there a dress code?", source: "Searches",
+          answer: "Business formal is expected for customer-facing and Head Office roles, with smart casual on Fridays for most teams."
+        },
+        {
+          id: "faq-benefits", question: "What benefits are offered?", source: "Applications",
+          answer: "Benefits include comprehensive medical coverage, an annual performance bonus, hybrid work for eligible roles, structured training, and standard leave plus study leave for professional certifications."
+        },
+        {
+          id: "faq-grad-salary", question: "What is the starting salary for fresh graduates?", source: "Searches",
+          answer: "Fresh graduate roles typically start around RM3.2k-4.5k per month, close to the industry average for entry-level banking positions."
+        },
+        {
+          id: "faq-bonus", question: "Do employees get bonuses?", source: "Employee Reviews",
+          answer: "Yes - Maybank offers an annual performance bonus, and several employee reviews mention it as a competitive part of total compensation."
+        },
+        {
+          id: "faq-work-life-balance", question: "How is the work-life balance?", source: "Employee Reviews",
+          answer: "Reviews consistently describe balanced, standard hours, with a 4.0/5 work-life balance rating overall - though month-end periods in Finance can require some overtime."
+        }
+      ],
+      // Powers the Executive Recommendations dashboard (its own tab,
+      // Company Profile page) - a prioritized action plan synthesizing
+      // signals from every other AI section on this page rather than
+      // standing alone: the salary-range and work-style actions match
+      // veraCompanyRead.recommendedActions exactly, the profile-gaps and
+      // compensation-band actions match healthDashboard's Transparency/
+      // Compensation suggestions, the review-response and autonomy actions
+      // match its Leadership/Career Growth suggestions, and the Resume
+      // Review action matches hiringTimeline's highest-drop-off stage.
+      // estimatedHiringSpeedImprovement is honestly "No impact" for actions
+      // that don't plausibly affect hiring days, rather than inventing a
+      // number for every field. timeWeeks is a sortable numeric value
+      // backing the estimatedTime display string (999 = ongoing/open-ended).
+      executiveRecommendations: [
+        {
+          id: "rec-salary-ranges", action: "Publish salary ranges for your open roles", priority: "high",
+          applicationIncrease: "+17%", hiringSpeedImprovement: "No impact", satisfactionIncrease: "+6%",
+          difficulty: "Easy", estimatedTime: "2 weeks", timeWeeks: 2, confidence: 92
+        },
+        {
+          id: "rec-resume-review", action: "Speed up Resume Review turnaround", priority: "high",
+          applicationIncrease: "+5%", hiringSpeedImprovement: "-4 days", satisfactionIncrease: "+9%",
+          difficulty: "Medium", estimatedTime: "1 month", timeWeeks: 4.3, confidence: 84
+        },
+        {
+          id: "rec-work-style", action: "Add team-level work style details to each role", priority: "medium",
+          applicationIncrease: "+9%", hiringSpeedImprovement: "No impact", satisfactionIncrease: "+4%",
+          difficulty: "Medium", estimatedTime: "3 weeks", timeWeeks: 3, confidence: 81
+        },
+        {
+          id: "rec-profile-gaps", action: "Resolve the 4 open profile gaps", priority: "medium",
+          applicationIncrease: "+8%", hiringSpeedImprovement: "No impact", satisfactionIncrease: "+5%",
+          difficulty: "Easy", estimatedTime: "2 weeks", timeWeeks: 2, confidence: 88
+        },
+        {
+          id: "rec-comp-bands", action: "Adjust Senior and Executive compensation bands toward market median", priority: "medium",
+          applicationIncrease: "+6%", hiringSpeedImprovement: "-2 days", satisfactionIncrease: "+5%",
+          difficulty: "Hard", estimatedTime: "1 quarter", timeWeeks: 13, confidence: 71
+        },
+        {
+          id: "rec-review-response", action: "Respond to a higher share of employee reviews", priority: "low",
+          applicationIncrease: "+4%", hiringSpeedImprovement: "No impact", satisfactionIncrease: "+7%",
+          difficulty: "Easy", estimatedTime: "Ongoing", timeWeeks: 999, confidence: 78
+        },
+        {
+          id: "rec-autonomy", action: "Pilot more autonomy for trainee and junior roles", priority: "low",
+          applicationIncrease: "+2%", hiringSpeedImprovement: "No impact", satisfactionIncrease: "+6%",
+          difficulty: "Medium", estimatedTime: "1 quarter", timeWeeks: 13, confidence: 68
+        }
+      ]
     },
     {
       id: "grab",
@@ -328,9 +732,72 @@ const DATA = {
     { title: "Portfolio evidence beats certificate volume", body: "Employers respond better to proof of outcomes than long course lists.", impact: "Polish one measurable case study" }
   ],
   communityPosts: [
-    { id: "p1", author: "Nadia, UX Intern", title: "How I explained a messy university project in interviews", body: "I reframed it around constraints, decisions, and what changed after testing.", reactions: 42 },
-    { id: "p2", author: "Jason, Data Analyst", title: "SQL portfolio tip", body: "One clear dashboard with a business question is stronger than five disconnected notebooks.", reactions: 36 },
-    { id: "p3", author: "Vera", title: "Weekly career prompt", body: "Before applying, write the one sentence evidence you would use to prove fit for the role.", reactions: 88 }
+    {
+      id: "p5", followId: "priya-menon", author: "Priya Menon", authorType: "person", authorTitle: "Senior Product Manager · Stripe", verified: false,
+      category: "DISCUSSION", timestamp: "2h ago", title: "",
+      body: "The best PM interview prep is not more frameworks — it's writing three teardowns of products you love. Interviewers can feel the difference between a memorized answer and a real point of view.",
+      reactions: 214, attachment: null, communityId: null,
+      veraLine: "People similar to your recent hires engage with this discussion.",
+      comments: [
+        { id: "c1", author: "Wei Jun Tan", body: "This is exactly what I did before my last interview loop — helped me sound like myself instead of a textbook.", likes: 12, replies: [] },
+        { id: "c2", author: "Mira", body: "We ask for a teardown in our own PM screen for this reason.", likes: 6, replies: [{ author: "Priya Menon", body: "Love that — it filters for real curiosity fast." }] }
+      ]
+    },
+    {
+      id: "p6", followId: "rohan-s", author: "Rohan S.", authorType: "person", authorTitle: "Design Engineer · StoreHub", verified: false,
+      category: "MILESTONE", timestamp: "5h ago", title: "",
+      body: "I stopped describing my portfolio as screens and started explaining constraints, tradeoffs and what changed after testing. That shift changed the interview.",
+      reactions: 98, attachment: null, communityId: null, veraLine: null,
+      comments: [{ id: "c3", author: "Ahmad Zulkifli", body: "Needed to read this today, thank you.", likes: 3, replies: [] }]
+    },
+    {
+      id: "p4", followId: "maybank", author: "Maybank", authorType: "employer", authorTitle: "Verified Employer", verified: true,
+      category: "QUESTION", timestamp: "8h ago", title: "What do early-career software engineers value most when choosing their first employer?",
+      body: "We are reviewing how we communicate graduate development opportunities and would like to hear from students and recent graduates.",
+      reactions: 14, attachment: null, communityId: null, veraLine: null,
+      comments: [{ id: "c4", author: "Nadia, UX Intern", body: "Clear mentorship and honest feedback loops, more than salary alone.", likes: 9, replies: [] }]
+    },
+    {
+      id: "p7", followId: "maybank", author: "Maybank", authorType: "employer", authorTitle: "Verified Employer", verified: true,
+      category: "COMPANY UPDATE", timestamp: "1d ago", title: "",
+      body: "Our graduate technology rotation programme is opening applications next month.",
+      reactions: 51, communityId: null, veraLine: null,
+      attachment: { type: "program", title: "Graduate Technology Rotation", meta: ["12 months", "Kuala Lumpur", "Applications opening soon"] },
+      comments: []
+    },
+    {
+      id: "p8", followId: "mira", author: "Mira", authorType: "person", authorTitle: "Talent Acquisition · Maybank", verified: false,
+      category: "HIRING INSIGHT", timestamp: "1d ago", title: "",
+      body: "We reviewed 140 junior data applications this quarter. The strongest portfolios did one thing consistently: they explained the business decision behind the dashboard.",
+      reactions: 176, attachment: null, communityId: null, veraLine: null,
+      comments: [{ id: "c5", author: "Jason, Data Analyst", body: "This matches what I heard in my own interview debrief.", likes: 4, replies: [] }]
+    },
+    {
+      id: "p9", followId: "u-malaya", author: "Universiti Malaya", authorType: "university", authorTitle: "Verified University", verified: true,
+      category: "DISCUSSION", timestamp: "2d ago", title: "",
+      body: "What skills are Malaysian employers finding hardest to evaluate in entry-level AI candidates?",
+      reactions: 63, attachment: null, communityId: null,
+      veraLine: "12 candidates in your pipeline follow this topic.",
+      comments: []
+    },
+    {
+      id: "p1", followId: "nadia", author: "Nadia, UX Intern", authorType: "person", authorTitle: "UX Intern", verified: false,
+      category: "DISCUSSION", timestamp: "3d ago", title: "How I explained a messy university project in interviews",
+      body: "I reframed it around constraints, decisions, and what changed after testing.", reactions: 42,
+      attachment: null, communityId: null, veraLine: null, comments: []
+    },
+    {
+      id: "p2", followId: "jason", author: "Jason, Data Analyst", authorType: "person", authorTitle: "Data Analyst", verified: false,
+      category: "DISCUSSION", timestamp: "4d ago", title: "SQL portfolio tip",
+      body: "One clear dashboard with a business question is stronger than five disconnected notebooks.", reactions: 36,
+      attachment: null, communityId: null, veraLine: null, comments: []
+    },
+    {
+      id: "p3", followId: "ai-talent-malaysia", author: "AI Talent Malaysia", authorType: "community", authorTitle: "Community", verified: false,
+      category: "DISCUSSION", timestamp: "5d ago", title: "Weekly career prompt",
+      body: "Before applying, write the one sentence evidence you would use to prove fit for the role.", reactions: 88,
+      attachment: null, communityId: "ai-talent-malaysia", veraLine: null, comments: []
+    }
   ],
   autopilotEvents: [
     { id: "a1", type: "recommended", title: "Product Designer at Maybank", reason: "92% fit, strong salary, hybrid setup", status: "Ready to review" },
@@ -338,15 +805,397 @@ const DATA = {
     { id: "a3", type: "skipped", title: "Data Analyst at Grab", reason: "Below current SQL evidence threshold", status: "Needs skill proof" }
   ],
   candidates: [
-    { id: "c1", name: "Siti Nur", privacy: "Public profile", role: "Product Designer", stage: "Screen", fit: 92, location: "Kuala Lumpur", availability: "2 weeks", salary: "RM 5k - 7k", education: "BA Design, Taylor's", experience: "1 year internship", careerStage: "Fresh Graduate", portfolio: "Strong", skills: ["Figma", "Research", "Design Systems"], reason: "Portfolio shows banking onboarding work and strong research evidence." },
-    { id: "c2", name: "Daniel Lim", privacy: "Anonymized", role: "Data Analyst", stage: "Interview", fit: 88, location: "Petaling Jaya", availability: "Immediate", salary: "RM 4.8k - 6.5k", education: "BSc Statistics, UM", experience: "Graduate projects", careerStage: "Looking for first full-time job", portfolio: "Moderate", skills: ["SQL", "Python", "Dashboards"], reason: "Strong SQL dashboard proof and clear interest in marketplace analytics." },
-    { id: "c3", name: "Priya Nair", privacy: "Public profile", role: "Frontend Developer", stage: "Saved", fit: 84, location: "Remote / Selangor", availability: "1 month", salary: "RM 6k - 8k", education: "Diploma Software Engineering", experience: "2 years freelance", careerStage: "Career Switcher", portfolio: "Strong", skills: ["React", "TypeScript", "Testing"], reason: "Transferable freelance delivery evidence with strong component testing habits." }
+    {
+      id: "c4", name: "Ahmad Zulkifli", roleId: "er5", role: "Backend Engineer", stage: "New", archived: false, rejection: null,
+      source: "Applied", owner: "Jason", fit: 79, location: "Kuala Lumpur", availability: "3 weeks", salaryExpectation: "RM 6k - 8k",
+      education: "BSc Computer Science, UPM", experience: "1.5 years", careerStage: "Early career", portfolio: "Moderate",
+      skills: ["Java", "SQL", "Microservices"], strength: "Recently applied with a relevant microservices side project.", concern: null,
+      interview: null, finalReview: null, offer: null, hired: null,
+      timeline: [{ label: "Applied", date: "3 weeks ago", done: true }],
+      notes: [], activity: [{ text: "Applied to Backend Engineer", date: "3 weeks ago" }]
+    },
+    {
+      id: "c1", name: "Siti Nur", roleId: "er1", role: "Product Design Intern", stage: "Shortlisted", archived: false, rejection: null,
+      source: "Applied", owner: "Mira", fit: 92, location: "Kuala Lumpur", availability: "2 weeks", salaryExpectation: "RM 2k - 2.5k",
+      education: "BA Design, Taylor's", experience: "1 year internship", careerStage: "Fresh Graduate", portfolio: "Strong",
+      skills: ["Figma", "User Research", "Design Systems"], strength: "Portfolio shows banking onboarding work and strong research evidence.", concern: "Limited experience with design systems at scale.",
+      interview: null, finalReview: null, offer: null, hired: null,
+      timeline: [{ label: "Applied", date: "9 days ago", done: true }, { label: "Reviewed", date: "6 days ago", done: true }, { label: "Shortlisted", date: "2 days ago", done: true }],
+      notes: [{ author: "Mira", text: "Strong portfolio, worth a screening call.", date: "2 days ago" }],
+      activity: [{ text: "Moved to Shortlisted", date: "2 days ago" }, { text: "Reviewed application", date: "6 days ago" }, { text: "Applied to Product Design Intern", date: "9 days ago" }]
+    },
+    {
+      id: "c3", name: "Priya Nair", roleId: "er4", role: "Software Engineer", stage: "Shortlisted", archived: false, rejection: null,
+      source: "Referral", owner: "Jason", fit: 84, location: "Remote / Selangor", availability: "1 month", salaryExpectation: "RM 6k - 8k",
+      education: "Diploma Software Engineering", experience: "2 years freelance", careerStage: "Career Switcher", portfolio: "Strong",
+      skills: ["React", "TypeScript", "Testing"], strength: "Transferable freelance delivery evidence with strong component testing habits.", concern: "No prior full-time employment.",
+      interview: null, finalReview: null, offer: null, hired: null,
+      timeline: [{ label: "Applied", date: "12 days ago", done: true }, { label: "Reviewed", date: "8 days ago", done: true }, { label: "Shortlisted", date: "4 days ago", done: true }],
+      notes: [], activity: [{ text: "Moved to Shortlisted", date: "4 days ago" }, { text: "Referred by a current employee", date: "12 days ago" }]
+    },
+    {
+      id: "c2", name: "Daniel Lim", roleId: "er2", role: "Junior Data Analyst", stage: "Interview", archived: false, rejection: null,
+      source: "Applied", owner: "Mira", fit: 88, location: "Petaling Jaya", availability: "Immediate", salaryExpectation: "RM 4.8k - 6.5k",
+      education: "BSc Statistics, UM", experience: "Graduate projects", careerStage: "Looking for first full-time job", portfolio: "Moderate",
+      skills: ["SQL", "Python", "Dashboards"], strength: "Strong SQL dashboard proof and clear interest in marketplace analytics.", concern: null,
+      interview: { round: 1, totalRounds: 2, nextInterview: { type: "Recruiter Screen", date: "Tomorrow", time: "2:30 PM" }, interviewers: ["Mira"], feedbackSubmitted: 0, feedbackTotal: 1, scorecards: [] },
+      finalReview: null, offer: null, hired: null,
+      timeline: [{ label: "Applied", date: "2 weeks ago", done: true }, { label: "Reviewed", date: "10 days ago", done: true }, { label: "Shortlisted", date: "6 days ago", done: true }, { label: "Interview scheduled", date: "1 day ago", done: true }, { label: "Feedback submitted", date: "", done: false }, { label: "Decision", date: "", done: false }],
+      notes: [], activity: [{ text: "Interview scheduled: Recruiter Screen", date: "1 day ago" }, { text: "Moved to Interview", date: "6 days ago" }]
+    },
+    {
+      id: "c6", name: "Farah Alia", roleId: "er4", role: "Software Engineer", stage: "Final Review", archived: false, rejection: null,
+      source: "Applied", owner: "Jason", fit: 90, location: "Kuala Lumpur", availability: "2 weeks", salaryExpectation: "RM 7k - 8k",
+      education: "BSc Computer Science, MMU", experience: "2 years", careerStage: "Early career", portfolio: "Strong",
+      skills: ["React", "Node.js", "AWS"], strength: "Cleared technical rounds with strong system design answers.", concern: "Limited large-team collaboration experience.",
+      interview: {
+        round: 2, totalRounds: 2, nextInterview: null, interviewers: ["Jason", "Mira"], feedbackSubmitted: 2, feedbackTotal: 2,
+        scorecards: [
+          { interviewer: "Jason", recommendation: "Strong yes", strengths: ["System design depth", "Clear communication"], concerns: [], notes: "Confidently walked through a scalable order service design." },
+          { interviewer: "Mira", recommendation: "Yes", strengths: ["Strong AWS fundamentals"], concerns: ["Limited large-team experience"], notes: "Good technical depth, slightly quiet in group discussion." }
+        ]
+      },
+      finalReview: { overallResult: "Strong candidate", teamRecommendations: [{ name: "Jason", verdict: "Strong yes" }, { name: "Mira", verdict: "Yes" }], strengths: ["Strong system design answers", "Confident communicator"], concerns: ["Limited large-team collaboration experience"], openQuestions: ["Notice period confirmation"] },
+      offer: null, hired: null,
+      timeline: [{ label: "Applied", date: "5 weeks ago", done: true }, { label: "Reviewed", date: "4 weeks ago", done: true }, { label: "Shortlisted", date: "3 weeks ago", done: true }, { label: "Interview scheduled", date: "2 weeks ago", done: true }, { label: "Feedback submitted", date: "3 days ago", done: true }, { label: "Decision", date: "", done: false }],
+      notes: [{ author: "Jason", text: "Ready to move to final decision once we confirm notice period.", date: "3 days ago" }],
+      activity: [{ text: "Both scorecards submitted", date: "3 days ago" }, { text: "Round 2 interview completed", date: "3 days ago" }, { text: "Moved to Final Review", date: "3 days ago" }]
+    },
+    {
+      id: "c5", name: "Wei Jun Tan", roleId: "er2", role: "Junior Data Analyst", stage: "Offer", archived: false, rejection: null,
+      source: "Applied", owner: "Mira", fit: 81, location: "Petaling Jaya", availability: "Immediate", salaryExpectation: "RM 5k - 5.5k",
+      education: "BSc Statistics, UM", experience: "Graduate projects", careerStage: "Fresh Graduate", portfolio: "Moderate",
+      skills: ["SQL", "Power BI", "Excel"], strength: "Strong coursework portfolio, immediately available.", concern: null,
+      interview: { round: 2, totalRounds: 2, nextInterview: null, interviewers: ["Mira"], feedbackSubmitted: 1, feedbackTotal: 1, scorecards: [{ interviewer: "Mira", recommendation: "Yes", strengths: ["Fast learner", "Solid SQL fundamentals"], concerns: [], notes: "Ready to contribute from day one." }] },
+      finalReview: { overallResult: "Approved for offer", teamRecommendations: [{ name: "Mira", verdict: "Yes" }], strengths: ["Immediately available", "Strong coursework evidence"], concerns: [], openQuestions: [] },
+      offer: { status: "Sent", amount: "RM 5,200 / month", sentDate: "3 days ago", expiryDate: "in 4 days", counterAmount: null, approvedRange: { min: "RM 4,500", max: "RM 5,500" } },
+      hired: null,
+      timeline: [{ label: "Applied", date: "6 weeks ago", done: true }, { label: "Reviewed", date: "5 weeks ago", done: true }, { label: "Shortlisted", date: "4 weeks ago", done: true }, { label: "Interview scheduled", date: "3 weeks ago", done: true }, { label: "Feedback submitted", date: "2 weeks ago", done: true }, { label: "Decision", date: "10 days ago", done: true }],
+      notes: [], activity: [{ text: "Offer sent: RM 5,200 / month", date: "3 days ago" }, { text: "Decision: approved for offer", date: "10 days ago" }]
+    },
+    {
+      id: "c7", name: "Kevin Ong", roleId: "er1", role: "Product Design Intern", stage: "Hired", archived: false, rejection: null,
+      source: "Applied", owner: "Mira", fit: 95, location: "Kuala Lumpur", availability: "Accepted", salaryExpectation: "RM 2k - 2.5k",
+      education: "BA Design, Taylor's", experience: "Internship-level", careerStage: "Fresh Graduate", portfolio: "Strong",
+      skills: ["Figma", "Prototyping"], strength: "Accepted offer after a strong final-round portfolio review.", concern: null,
+      interview: { round: 1, totalRounds: 1, nextInterview: null, interviewers: ["Mira"], feedbackSubmitted: 1, feedbackTotal: 1, scorecards: [{ interviewer: "Mira", recommendation: "Strong yes", strengths: ["Exceptional portfolio", "Strong prototyping skills"], concerns: [], notes: "Best portfolio review of the intern cycle." }] },
+      finalReview: { overallResult: "Approved for offer", teamRecommendations: [{ name: "Mira", verdict: "Strong yes" }], strengths: ["Exceptional portfolio"], concerns: [], openQuestions: [] },
+      offer: { status: "Accepted", amount: "RM 2,200 / month", sentDate: "3 weeks ago", expiryDate: null, counterAmount: null, approvedRange: { min: "RM 1,800", max: "RM 2,500" } },
+      hired: { startDate: "3 Aug 2026", onboardingStatus: "Onboarding scheduled" },
+      timeline: [{ label: "Applied", date: "8 weeks ago", done: true }, { label: "Reviewed", date: "7 weeks ago", done: true }, { label: "Shortlisted", date: "6 weeks ago", done: true }, { label: "Interview scheduled", date: "5 weeks ago", done: true }, { label: "Feedback submitted", date: "4 weeks ago", done: true }, { label: "Decision", date: "3 weeks ago", done: true }],
+      notes: [], activity: [{ text: "Accepted offer", date: "3 weeks ago" }, { text: "Offer sent: RM 2,200 / month", date: "3 weeks ago" }]
+    },
+    {
+      id: "c8", name: "Hafiz Rahman", roleId: "er5", role: "Backend Engineer", stage: null, archived: true,
+      rejection: { reason: "Skill mismatch", message: "Thank you for applying — we've decided to move forward with candidates whose experience more closely matches our current distributed-systems requirements.", date: "1 week ago" },
+      source: "Applied", owner: "Jason", fit: 58, location: "Kuala Lumpur", availability: "1 month", salaryExpectation: "RM 5.5k - 7k",
+      education: "BSc Information Technology, UiTM", experience: "1 year", careerStage: "Early career", portfolio: "Moderate",
+      skills: ["Java", "SQL"], strength: "Solid Java fundamentals.", concern: "No distributed systems or Kafka experience required for this role.",
+      interview: null, finalReview: null, offer: null, hired: null,
+      timeline: [{ label: "Applied", date: "3 weeks ago", done: true }, { label: "Reviewed", date: "2 weeks ago", done: true }, { label: "Rejected", date: "1 week ago", done: true }],
+      notes: [], activity: [{ text: "Rejected: Skill mismatch", date: "1 week ago" }]
+    }
   ],
   employerRoles: [
-    { id: "er1", title: "Product Design Intern", applicants: 84, qualified: 21, status: "Active" },
-    { id: "er2", title: "Junior Data Analyst", applicants: 126, qualified: 34, status: "Active" },
-    { id: "er3", title: "Graduate UX Researcher", applicants: 47, qualified: 16, status: "Draft" }
-  ]
+    {
+      id: "er1", title: "Product Design Intern", status: "Open", closeReason: null,
+      applicants: 84, qualified: 21, strongMatches: 9, talentSupply: "Good", daysOpen: 7, health: "Healthy",
+      avgHiringDays: 9, careerGrowthScore: 4.2, avgCandidateMatch: 79, roleViews: 640,
+      newApplicants: 12, interviews: 4, offers: 1, hires: 0, openings: 1,
+      owner: "Mira", lastUpdated: "5 hours ago",
+      department: "Design", employmentType: "Internship", reportsTo: "Design Lead",
+      roleSummary: "Support the design team on end-to-end product design work across research, prototyping, and design systems.",
+      responsibilities: ["Conduct user research and usability tests", "Design and prototype product flows in Figma", "Contribute to and maintain the design system"],
+      successLooksLike: "In the first 3 months, this person should have shipped one polished feature prototype and run two usability tests.",
+      mustHaveSkills: ["Figma", "User Research", "Prototyping"], niceToHaveSkills: ["Motion Design", "Design Systems"],
+      minExperience: "No experience required", educationOrCertification: "",
+      salary: { min: 1800, max: 2500, currency: "MYR", period: "Monthly" }, location: "Kuala Lumpur", workMode: "Hybrid",
+      matchThreshold: 70, portfolioRequirement: "Preferred",
+      roleIntelligence: {
+        talentAvailability: "Good", typicalExperience: "0-1 years", commonSalary: "RM 1.8k - 2.5k",
+        commonSkills: ["Figma", "User Research", "Prototyping", "Design Systems"],
+        potentialIssue: "No major mismatch between requirements and the current intern talent pool.",
+        hiringCompetition: "Low", locationContext: "Kuala Lumpur + Remote Malaysia",
+        dataContext: { region: "Malaysia", category: "Product Design (Intern)", confidence: "High" },
+        strengths: ["Salary is aligned with the local intern market.", "Responsibilities are clear and specific.", "Hybrid work increases your available candidate pool."],
+        concerns: [],
+        suggestions: []
+      }
+    },
+    {
+      id: "er2", title: "Junior Data Analyst", status: "Open", closeReason: null,
+      applicants: 126, qualified: 34, strongMatches: 8, talentSupply: "Strong", daysOpen: 12, health: "Needs attention",
+      avgHiringDays: 11, careerGrowthScore: 4.0, avgCandidateMatch: 81, roleViews: 980,
+      newApplicants: 18, interviews: 6, offers: 0, hires: 0, openings: 1,
+      owner: "Jason", lastUpdated: "2 hours ago",
+      department: "Data & Analytics", employmentType: "Full-time", reportsTo: "Analytics Manager",
+      roleSummary: "Own recurring reporting and ad-hoc analysis that helps the business understand what's working.",
+      responsibilities: ["Build and maintain dashboards in Power BI", "Write SQL queries against the marketplace warehouse", "Partner with product and marketing on ad-hoc analysis"],
+      successLooksLike: "In the first 6 months, this person should own the weekly business review dashboard end to end.",
+      mustHaveSkills: ["SQL", "Excel"], niceToHaveSkills: ["Power BI", "Python", "AWS"],
+      minExperience: "3-5 years", educationOrCertification: "",
+      salary: { min: 3800, max: 6000, currency: "MYR", period: "Monthly" }, location: "Kuala Lumpur", workMode: "Hybrid",
+      matchThreshold: 70, portfolioRequirement: "Optional",
+      roleIntelligence: {
+        talentAvailability: "Strong", typicalExperience: "0-2 years", commonSalary: "RM 3.8k - 6k",
+        commonSkills: ["SQL", "Excel", "Power BI", "Python"],
+        potentialIssue: "Requiring 3-5 years of experience may unnecessarily reduce your candidate pool for a junior title.",
+        hiringCompetition: "Medium", locationContext: "Kuala Lumpur + Remote Malaysia",
+        dataContext: { region: "Malaysia", category: "Data Analytics (Junior)", confidence: "High" },
+        strengths: ["Salary is aligned with the local market.", "SQL and Excel as must-haves match what most similar roles require."],
+        concerns: [{ issue: "5+ years of experience may unnecessarily reduce the candidate pool.", why: "Most candidates applying to a Junior Data Analyst title have 0-2 years of experience; a 3-5 year minimum filters most of them out before they can be reviewed." }],
+        suggestions: [{
+          recommendation: "Change minimum experience from 3-5 years to 1-2 years.",
+          pros: ["Larger candidate pool", "Closer to the market norm for this title", "More strong matches"],
+          cons: ["More candidate screening may be required", "Some candidates may need additional onboarding"],
+          expectedEffect: "Larger eligible candidate pool", effectIsEstimated: true, confidence: "Medium",
+          field: "minExperience", suggestedValue: "1-2 years"
+        }]
+      }
+    },
+    {
+      id: "er3", title: "Graduate UX Researcher", status: "Draft", closeReason: null,
+      applicants: 0, qualified: 0, strongMatches: 0, talentSupply: "Good", daysOpen: 0, health: "Healthy",
+      avgHiringDays: null, careerGrowthScore: 4.3, avgCandidateMatch: 0, roleViews: 0,
+      owner: "Mira", lastUpdated: "3 hours ago", veraCheckCount: 2,
+      department: "Design", employmentType: "Graduate programme", reportsTo: "Research Lead",
+      roleSummary: "", responsibilities: [], successLooksLike: "",
+      mustHaveSkills: [], niceToHaveSkills: [], minExperience: "No experience required", educationOrCertification: "",
+      salary: { min: null, max: null, currency: "MYR", period: "Monthly" }, location: "", workMode: "Hybrid",
+      matchThreshold: 70, portfolioRequirement: "Optional",
+      roleIntelligence: {
+        talentAvailability: "Good", typicalExperience: "0-1 years", commonSalary: "RM 3k - 4.5k",
+        commonSkills: ["User Interviews", "Usability Testing", "Figma", "Survey Design"],
+        potentialIssue: "Draft not yet published — no applicant data yet.",
+        hiringCompetition: "Low", locationContext: "Kuala Lumpur + Remote Malaysia",
+        dataContext: { region: "Malaysia", category: "UX Research (Graduate)", confidence: "Medium" },
+        strengths: [], concerns: [], suggestions: []
+      }
+    },
+    {
+      id: "er4", title: "Software Engineer", status: "Open", closeReason: null,
+      applicants: 84, qualified: 29, strongMatches: 11, talentSupply: "Strong", daysOpen: 7, health: "Healthy",
+      avgHiringDays: 5, careerGrowthScore: 4.6, avgCandidateMatch: 87, roleViews: 1120,
+      newApplicants: 9, interviews: 5, offers: 2, hires: 1, openings: 2,
+      owner: "Jason", lastUpdated: "1 day ago",
+      department: "Engineering", employmentType: "Full-time", reportsTo: "Engineering Manager",
+      roleSummary: "Build and ship customer-facing features across our web platform, from API to UI.",
+      responsibilities: ["Build features across the React front end and Node.js API", "Write and maintain automated tests", "Participate in code review and technical design discussions"],
+      successLooksLike: "In the first 6 months, this person should have shipped two customer-facing features end to end.",
+      mustHaveSkills: ["React", "Node.js", "SQL"], niceToHaveSkills: ["AWS", "Kubernetes"],
+      minExperience: "1-2 years", educationOrCertification: "",
+      salary: { min: 4500, max: 7000, currency: "MYR", period: "Monthly" }, location: "Kuala Lumpur", workMode: "Hybrid",
+      matchThreshold: 70, portfolioRequirement: "Optional",
+      roleIntelligence: {
+        talentAvailability: "Strong", typicalExperience: "1-3 years", commonSalary: "RM 4.5k - 7k",
+        commonSkills: ["React", "Node.js", "SQL", "AWS"],
+        potentialIssue: "No major mismatch between requirements and the current talent pool.",
+        hiringCompetition: "Medium", locationContext: "Kuala Lumpur + Remote Malaysia",
+        dataContext: { region: "Malaysia", category: "Software Engineering (Early Career)", confidence: "High" },
+        strengths: ["Salary is aligned with the local market.", "Must-have skills match what most similar roles require.", "Hybrid work increases your available candidate pool."],
+        concerns: [], suggestions: []
+      }
+    },
+    {
+      id: "er5", title: "Backend Engineer", status: "Paused", closeReason: null,
+      applicants: 58, qualified: 19, strongMatches: 6, talentSupply: "Tight", daysOpen: 21, health: "Needs attention",
+      avgHiringDays: 24, careerGrowthScore: 4.4, avgCandidateMatch: 74, roleViews: 730,
+      owner: "Jason", lastUpdated: "2 days ago", pausedSince: "4 days ago", pauseReason: "Requirements under review", lastActivity: "2 days ago",
+      department: "Engineering", employmentType: "Full-time", reportsTo: "Engineering Manager",
+      roleSummary: "Own core backend services powering payments and order processing.",
+      responsibilities: ["Design and build distributed backend services in Java", "Operate Kafka-based event pipelines", "Improve system reliability and on-call practices"],
+      successLooksLike: "In the first 6 months, this person should have shipped one major service and improved system reliability.",
+      mustHaveSkills: ["Java", "SQL", "Microservices"], niceToHaveSkills: ["Kafka", "Site Reliability"],
+      minExperience: "5+ years", educationOrCertification: "",
+      salary: { min: 7000, max: 10000, currency: "MYR", period: "Monthly" }, location: "Kuala Lumpur", workMode: "Hybrid",
+      matchThreshold: 70, portfolioRequirement: "Optional",
+      roleIntelligence: {
+        talentAvailability: "Tight", typicalExperience: "3-5 years", commonSalary: "RM 7k - 10k",
+        commonSkills: ["Java", "Microservices", "SQL", "Kafka"],
+        potentialIssue: "The combination of a 5+ year requirement and Kafka-at-scale evidence is uncommon locally, narrowing supply.",
+        hiringCompetition: "High", locationContext: "Kuala Lumpur + Remote Malaysia",
+        dataContext: { region: "Malaysia", category: "Backend Engineering", confidence: "High" },
+        strengths: ["Salary is aligned with the local market for senior backend roles.", "Responsibilities are clear and specific."],
+        concerns: [
+          { issue: "5+ years of experience may unnecessarily reduce the candidate pool.", why: "Most local candidates with distributed-systems experience have 3-5 years; a hard 5-year cutoff excludes many strong applicants before review." },
+          { issue: "Kafka is currently marked as essential, but most similar roles treat it as preferred.", why: "Requiring Kafka-at-scale evidence on top of the experience bar compounds the talent pool reduction." }
+        ],
+        suggestions: [{
+          recommendation: "Change minimum experience from 5+ years to 3-5 years.",
+          pros: ["Larger candidate pool", "Closer to the market norm", "More strong matches"],
+          cons: ["More candidate screening may be required", "Some candidates may need additional onboarding"],
+          expectedEffect: "Larger eligible candidate pool", effectIsEstimated: true, confidence: "High",
+          field: "minExperience", suggestedValue: "3-5 years"
+        }]
+      }
+    },
+    {
+      id: "er6", title: "Marketing Coordinator", status: "Closed", closeReason: "Position filled",
+      applicants: 72, qualified: 25, strongMatches: 10, talentSupply: "Good", daysOpen: 18, health: "Healthy",
+      avgHiringDays: 18, careerGrowthScore: 3.9, avgCandidateMatch: 82, roleViews: 590,
+      owner: "Aisyah", lastUpdated: "10 days ago", closedDate: "10 days ago", timeToHire: "18 days",
+      interviews: 9, offers: 1, hires: 1,
+      results: {
+        reviewed: 72, shortlisted: 25, interviewed: 9, offersSent: 1, offersAccepted: 1,
+        finalHire: "Farah Aziz", timeToHire: "18 days",
+        sourcingChannel: "CareerGo direct apply (61% of applicants)",
+        dropOffStage: "Screening call — 18 candidates did not proceed after the first screen.",
+        retrospective: "Candidate supply and quality were both strong for this role. The screening-call drop-off was mostly candidates without hands-on campaign-execution experience, which the job post didn't filter for.",
+        improvement: "Add \"has run at least one end-to-end campaign\" as a must-have next time to reduce screening-stage drop-off."
+      },
+      department: "Marketing", employmentType: "Full-time", reportsTo: "Marketing Manager",
+      roleSummary: "Coordinate campaign execution across social, email, and events.",
+      responsibilities: ["Plan and execute monthly campaign calendars", "Coordinate with design and content freelancers", "Report on campaign performance"],
+      successLooksLike: "",
+      mustHaveSkills: ["Campaign Management", "Copywriting"], niceToHaveSkills: ["Canva", "Meta Ads"],
+      minExperience: "1-2 years", educationOrCertification: "",
+      salary: { min: 3200, max: 4500, currency: "MYR", period: "Monthly" }, location: "Petaling Jaya", workMode: "On-site",
+      matchThreshold: 70, portfolioRequirement: "Optional",
+      roleIntelligence: {
+        talentAvailability: "Good", typicalExperience: "1-2 years", commonSalary: "RM 3.2k - 4.5k",
+        commonSkills: ["Campaign Management", "Copywriting", "Canva"],
+        potentialIssue: "Role closed after filling — kept for historical reference.",
+        hiringCompetition: "Low", locationContext: "Petaling Jaya",
+        dataContext: { region: "Malaysia", category: "Marketing (Coordinator)", confidence: "Medium" },
+        strengths: ["Filled within 18 days with 10 strong matches."], concerns: [], suggestions: []
+      }
+    },
+    {
+      id: "er7", title: "Office Administrator", status: "Archived", closeReason: "Role changed",
+      applicants: 41, qualified: 12, strongMatches: 4, talentSupply: "Good", daysOpen: 35, health: "Needs attention",
+      avgHiringDays: 30, careerGrowthScore: 3.5, avgCandidateMatch: 68, roleViews: 410,
+      owner: "Aisyah", lastUpdated: "2 months ago", previousStatus: "Closed", archivedDate: "2 months ago", retentionPeriod: "Data retained for 12 months from archive date",
+      department: "Operations", employmentType: "Full-time", reportsTo: "Operations Manager",
+      roleSummary: "Manage day-to-day office operations and vendor coordination.",
+      responsibilities: ["Coordinate office vendors and supplies", "Support onboarding logistics for new hires"],
+      successLooksLike: "",
+      mustHaveSkills: ["Office Administration"], niceToHaveSkills: ["Vendor Management"],
+      minExperience: "1-2 years", educationOrCertification: "",
+      salary: { min: 2800, max: 3600, currency: "MYR", period: "Monthly" }, location: "Kuala Lumpur", workMode: "On-site",
+      matchThreshold: 70, portfolioRequirement: "Optional",
+      roleIntelligence: {
+        talentAvailability: "Good", typicalExperience: "1-2 years", commonSalary: "RM 2.8k - 3.6k",
+        commonSkills: ["Office Administration", "Vendor Management"],
+        potentialIssue: "Role was restructured into a hybrid Operations Coordinator position — archived, not deleted.",
+        hiringCompetition: "Low", locationContext: "Kuala Lumpur",
+        dataContext: { region: "Malaysia", category: "Operations (Administrator)", confidence: "Medium" },
+        strengths: [], concerns: [], suggestions: []
+      }
+    }
+  ],
+  communities: [
+    { id: "ai-talent-malaysia", name: "AI Talent Malaysia", topic: "AI & Machine Learning hiring", description: "Discussions on sourcing, evaluating and growing AI talent in Malaysia.", members: 4200, recentActivity: "12 posts this week", joined: true },
+    { id: "graduate-hiring-malaysia", name: "Graduate Hiring Malaysia", topic: "Graduate & early-career hiring", description: "Employers and universities comparing notes on graduate programmes.", members: 6800, recentActivity: "24 posts this week", joined: true },
+    { id: "product-careers-sea", name: "Product Careers Southeast Asia", topic: "Product management", description: "Product managers and hiring leads across Southeast Asia.", members: 3100, recentActivity: "8 posts this week", joined: false },
+    { id: "women-in-tech-malaysia", name: "Women in Technology Malaysia", topic: "Diversity in tech", description: "Community for women in technology careers and the employers who support them.", members: 5400, recentActivity: "15 posts this week", joined: false },
+    { id: "university-recruiter-network", name: "University Recruiter Network", topic: "Campus recruiting", description: "Recruiters and university career offices coordinating on campus hiring.", members: 1900, recentActivity: "6 posts this week", joined: true },
+    { id: "frontend-engineering-careers", name: "Frontend Engineering Careers", topic: "Frontend engineering", description: "Frontend engineers and the teams hiring them.", members: 2600, recentActivity: "9 posts this week", joined: false }
+  ],
+  suggestedConnections: [
+    { id: "priya-menon", name: "Priya Menon", type: "person", title: "Senior Product Manager · Stripe", reason: "Discusses AI hiring and product interviewing." },
+    { id: "u-malaya", name: "Universiti Malaya", type: "university", title: "Verified University", reason: "Relevant to your Backend Engineer and Data Analyst roles." },
+    { id: "ai-talent-malaysia", name: "AI Talent Malaysia", type: "community", title: "Community", reason: "Candidates you hire often follow this community." },
+    { id: "rohan-s", name: "Rohan S.", type: "person", title: "Design Engineer · StoreHub", reason: "3 mutual connections." }
+  ],
+  trendingTopics: [
+    { id: "ai-hiring", label: "AI hiring in Malaysia", count: "1.2k posts today" },
+    { id: "salary-transparency", label: "Graduate salary transparency", count: "840 posts today" },
+    { id: "pm-teardowns", label: "Product interview teardowns", count: "612 posts today" },
+    { id: "remote-expectations", label: "Remote work expectations", count: "455 posts today" },
+    { id: "skills-gap", label: "University-to-industry skills gap", count: "301 posts today" }
+  ],
+  // Employer Direct Messaging (items 10-14). Each conversation links to a
+  // real DATA.candidates record by id rather than duplicating name/role/
+  // fit data, so the AI Candidate Intelligence panel and the message
+  // thread never disagree. `files` models the Shared Hiring Workspace -
+  // documents exchanged in-thread with a lightweight version history.
+  employerConversations: [
+    {
+      id: "conv-c5", candidateId: "c5", pinned: true, archived: false,
+      messages: [
+        { id: "m1", sender: "employer", text: "Hi Wei Jun, congratulations! We'd like to formally offer you the Junior Data Analyst role at RM 5,200/month. Details are attached.", time: "3 days ago", read: true },
+        { id: "m2", sender: "employer", text: "Take your time reviewing it - happy to jump on a call if you have questions about the package.", time: "3 days ago", read: true },
+        { id: "m3", sender: "candidate", text: "Thank you so much! This is really exciting. I have a couple of questions about the start date and the remote-work policy.", time: "2 days ago", read: true },
+        { id: "m4", sender: "employer", text: "Of course - happy to walk through both. Are you free for a quick call tomorrow afternoon?", time: "2 days ago", read: false },
+      ],
+      files: [
+        { id: "f1", name: "Wei_Jun_Tan_Resume.pdf", type: "resume", uploadedBy: "candidate", date: "6 weeks ago", version: 1 },
+        { id: "f2", name: "Offer_Letter_JuniorDataAnalyst.pdf", type: "offer", uploadedBy: "employer", date: "3 days ago", version: 1 },
+      ],
+    },
+    {
+      id: "conv-c2", candidateId: "c2", pinned: true, archived: false,
+      messages: [
+        { id: "m1", sender: "candidate", text: "Hi! Thank you for shortlisting me for the Junior Data Analyst role. Looking forward to the next steps.", time: "6 days ago", read: true },
+        { id: "m2", sender: "employer", text: "Great to have you in the process, Daniel. We'd like to schedule a recruiter screen this week.", time: "5 days ago", read: true },
+        { id: "m3", sender: "employer", text: "Does tomorrow at 2:30 PM work for a 30-minute call?", time: "1 day ago", read: true },
+        { id: "m4", sender: "candidate", text: "That works well for me, thank you! Should I prepare anything specific?", time: "1 day ago", read: false },
+      ],
+      files: [
+        { id: "f1", name: "Daniel_Lim_Resume.pdf", type: "resume", uploadedBy: "candidate", date: "2 weeks ago", version: 1 },
+        { id: "f2", name: "Daniel_Lim_SQL_Dashboard_Sample.pdf", type: "portfolio", uploadedBy: "candidate", date: "2 weeks ago", version: 1 },
+      ],
+    },
+    {
+      id: "conv-c1", candidateId: "c1", pinned: false, archived: false,
+      messages: [
+        { id: "m1", sender: "employer", text: "Hi Siti, your portfolio really stood out - the banking onboarding case study was excellent work.", time: "2 days ago", read: true },
+        { id: "m2", sender: "candidate", text: "Thank you so much! That project taught me a lot about balancing compliance constraints with usability.", time: "2 days ago", read: true },
+        { id: "m3", sender: "candidate", text: "Is there anything else you'd like to see from my portfolio before the next round?", time: "6 hours ago", read: false },
+      ],
+      files: [
+        { id: "f1", name: "Siti_Nur_Portfolio.pdf", type: "portfolio", uploadedBy: "candidate", date: "9 days ago", version: 2 },
+      ],
+    },
+    {
+      id: "conv-c4", candidateId: "c4", pinned: false, archived: false,
+      messages: [
+        { id: "m1", sender: "candidate", text: "Hello, I just submitted my application for the Backend Engineer role. I've included a link to a microservices side project I think is relevant.", time: "3 hours ago", read: false },
+      ],
+      files: [
+        { id: "f1", name: "Ahmad_Zulkifli_Resume.pdf", type: "resume", uploadedBy: "candidate", date: "3 hours ago", version: 1 },
+      ],
+    },
+    {
+      id: "conv-c6", candidateId: "c6", pinned: false, archived: false,
+      messages: [
+        { id: "m1", sender: "employer", text: "Hi Farah, thanks for a strong second-round interview - the team was impressed with your system design walkthrough.", time: "3 days ago", read: true },
+        { id: "m2", sender: "candidate", text: "Thank you, I really enjoyed the discussion! Happy to answer any follow-up questions the team has.", time: "3 days ago", read: true },
+        { id: "m3", sender: "employer", text: "We're finalising the decision this week - just confirming your notice period if we move forward with an offer.", time: "1 day ago", read: true },
+        { id: "m4", sender: "candidate", text: "My notice period is 2 weeks. Let me know if you need anything else in the meantime.", time: "20 hours ago", read: true },
+      ],
+      files: [
+        { id: "f1", name: "Farah_Alia_Resume.pdf", type: "resume", uploadedBy: "candidate", date: "5 weeks ago", version: 1 },
+      ],
+    },
+    {
+      id: "conv-c3", candidateId: "c3", pinned: false, archived: false,
+      messages: [
+        { id: "m1", sender: "employer", text: "Hi Priya, your freelance delivery track record is exactly the kind of evidence we look for. We'd like to move you to Shortlisted.", time: "4 days ago", read: true },
+        { id: "m2", sender: "candidate", text: "That's great to hear, thank you! I'm looking forward to learning more about the role.", time: "4 days ago", read: true },
+      ],
+      files: [],
+    },
+    {
+      id: "conv-c7", candidateId: "c7", pinned: false, archived: true,
+      messages: [
+        { id: "m1", sender: "employer", text: "Welcome to the team, Kevin! Onboarding is scheduled to start 3 Aug 2026 - HR will be in touch with the paperwork.", time: "3 weeks ago", read: true },
+        { id: "m2", sender: "candidate", text: "Thank you, I'm really excited to get started!", time: "3 weeks ago", read: true },
+      ],
+      files: [
+        { id: "f1", name: "Offer_Letter_ProductDesignIntern.pdf", type: "offer", uploadedBy: "employer", date: "3 weeks ago", version: 1 },
+        { id: "f2", name: "Signed_Offer_Kevin_Ong.pdf", type: "contract", uploadedBy: "candidate", date: "3 weeks ago", version: 1 },
+      ],
+    },
+    {
+      id: "conv-c8", candidateId: "c8", pinned: false, archived: true,
+      messages: [
+        { id: "m1", sender: "employer", text: "Hi Hafiz, thank you for your interest in the Backend Engineer role. After review, we've decided to move forward with candidates whose experience more closely matches our distributed-systems requirements.", time: "1 week ago", read: true },
+        { id: "m2", sender: "candidate", text: "Thanks for letting me know, and for the feedback - I appreciate it.", time: "1 week ago", read: true },
+      ],
+      files: [],
+    },
+  ],
 };
 
 const STORE_KEY = "careergo-v4-state";
@@ -431,6 +1280,8 @@ const APPLICATION_STAGES = [
   { key: "archived", label: "Archived", icon: "archive", tone: "" }
 ];
 
+function daysAgoIso(n) { return new Date(Date.now() - n * 86400000).toISOString(); }
+
 function readState() {
   const fallback = {
     auth: { users: [] },
@@ -485,7 +1336,30 @@ function readState() {
     autopilotPaused: false,
     autopilotAutoApplyLog: [],
     autopilotAutoApplyExcluded: [],
-    posts: DATA.communityPosts
+    posts: DATA.communityPosts,
+    employerTalentPools: [{ id: "pool-1", name: "Backend Prospects", candidateIds: [] }],
+    employerInvitations: {},
+    employerRoleDrafts: {},
+    employerCompanyDraft: null,
+    feedFollowing: ["ai-talent-malaysia"],
+    feedMuted: [],
+    feedSavedPosts: [],
+    feedPostingIdentity: "Maybank",
+    feedConnections: [],
+    feedDismissedCandidates: [],
+    // Unified Save Candidate system: one array covers both real pipeline
+    // candidates (DATA.candidates) and passive-talent discoveries
+    // (HIRING_PASSIVE_TALENT), tagged by type so the Saved Candidates page
+    // can render/act on both with the same UI. savedAt is a real
+    // timestamp (not a canned "2 days ago" string) so "Saved today / this
+    // week / this month" grouping is computed correctly, not hardcoded.
+    savedTalent: [
+      { id: "c6", type: "candidate", savedAt: daysAgoIso(9) },
+      { id: "pt2", type: "passive", savedAt: daysAgoIso(20) },
+    ],
+    recentSearches: [],
+    feedDrafts: [],
+    feedScheduledPosts: [],
   };
   try {
     return normalizeState({ ...fallback, ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") });
@@ -1988,9 +2862,9 @@ function workspaceTopNav() {
           <span class="account-avatar-icon">${icon(isEmployer ? "building-2" : "user-round")}</span><span>${getFirstName(state)}</span>
         </button>
         <div class="account-menu glass-card" data-account-menu hidden role="menu">
-          <a role="menuitem" href="${isEmployer ? "employer-app.html#company-profile" : "profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
+          <a role="menuitem" href="${isEmployer ? "employer-app.html#company" : "profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
           <a role="menuitem" href="${isEmployer ? "employer-app.html#settings" : "settings.html"}">${icon("settings")} Settings</a>
-          ${isEmployer ? `<a role="menuitem" href="employer-app.html#talent-pool">${icon("bookmark")} Talent Pool</a>` : `<a role="menuitem" href="posts.html#saved">${icon("bookmark")} Saved Items</a>`}
+          ${isEmployer ? `<a role="menuitem" href="employer-app.html#pipeline">${icon("bookmark")} Talent Pool</a>` : `<a role="menuitem" href="posts.html#saved">${icon("bookmark")} Saved Items</a>`}
           <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
         </div>
       </div>
@@ -2776,7 +3650,7 @@ function renderNavigation() {
         : lower.includes("company") || lower.includes("culture") || lower.includes("review") || lower.includes("maybank") || lower.includes("grab") || lower.includes("cimb")
           ? "discover-companies.html"
           : "discover.html";
-      location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#candidates` : `${destination}?q=${encodeURIComponent(q)}`;
+      location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#pipeline` : `${destination}?q=${encodeURIComponent(q)}`;
     });
   }
 }
@@ -2924,8 +3798,7 @@ function renderSiteFooter() {
             <h3>For Employers</h3>
             <a href="employers.html">Employer entry</a>
             <a href="register.html">Create employer account</a>
-            <a href="employer-app.html#candidates">Candidate search</a>
-            <a href="employer-app.html#pipeline">Hiring pipeline</a>
+            <a href="employer-app.html#pipeline">Talent Pipeline</a>
           </nav>
           <nav class="footer-column" aria-label="Company">
             <h3>Company</h3>
@@ -2963,8 +3836,7 @@ function renderSiteFooter() {
           <h3>For Employers</h3>
           <a href="employers.html">Employer entry</a>
           <a href="register.html">Create employer account</a>
-          <a href="employer-app.html#candidates">Candidate search</a>
-          <a href="employer-app.html#pipeline">Hiring pipeline</a>
+          <a href="employer-app.html#pipeline">Talent Pipeline</a>
         </nav>
         <nav class="footer-column" aria-label="Company">
           <h3>Company</h3>
@@ -3234,6 +4106,17 @@ function money(value) {
   return `RM${Number(value).toLocaleString("en-MY")}`;
 }
 
+function ordinalSuffix(n) {
+  const v = n % 100;
+  if (v >= 11 && v <= 13) return "th";
+  switch (n % 10) {
+    case 1: return "st";
+    case 2: return "nd";
+    case 3: return "rd";
+    default: return "th";
+  }
+}
+
 function showToast(message, type = "success") {
   let stack = qs("[data-toast-stack]");
   if (!stack) {
@@ -3247,6 +4130,124 @@ function showToast(message, type = "success") {
   toast.innerHTML = `<strong>${type === "success" ? "Done" : "Note"}</strong><span>${message}</span>`;
   stack.appendChild(toast);
   setTimeout(() => toast.remove(), 3600);
+}
+
+function showUndoToast(message, onUndo) {
+  let stack = qs("[data-toast-stack]");
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.className = "toast-stack";
+    stack.dataset.toastStack = "";
+    document.body.appendChild(stack);
+  }
+  const toast = document.createElement("div");
+  toast.className = "toast success";
+  toast.innerHTML = `<strong>Done</strong><span>${message}</span><button type="button" class="toast-undo-btn">Undo</button>`;
+  qs(".toast-undo-btn", toast).addEventListener("click", () => {
+    onUndo();
+    toast.remove();
+  });
+  stack.appendChild(toast);
+  setTimeout(() => toast.remove(), 5000);
+}
+
+/* ---------- Shared floating overlay (menus/popovers) ----------
+   Vanilla-JS equivalent of a React portal + anchored-position hook: content
+   is appended directly to document.body, completely outside the trigger's
+   own DOM subtree, positioned via getBoundingClientRect. Because it lives
+   outside the trigger, it can never be clipped by an ancestor's overflow or
+   trapped by an ancestor's stacking context, and opening/closing it never
+   touches the trigger's own DOM - so no page redraw, no layout shift, and
+   nothing else on the page repaints when it opens or closes. */
+let activeFloatingOverlay = null;
+
+function getFloatingOverlayHost() {
+  let host = document.getElementById("emp-floating-overlay-host");
+  if (!host) {
+    host = document.createElement("div");
+    host.id = "emp-floating-overlay-host";
+    document.body.appendChild(host);
+  }
+  return host;
+}
+
+function positionFloatingOverlay(el, triggerEl, { width = 220, align = "right", gap = 6 } = {}) {
+  const rect = triggerEl.getBoundingClientRect();
+  const margin = 8;
+  el.style.width = `${width}px`;
+  el.style.visibility = "hidden";
+  el.style.position = "fixed";
+  el.style.top = "0px";
+  el.style.left = "0px";
+  const elHeight = el.offsetHeight;
+  let left = align === "left" ? rect.left : rect.right - width;
+  left = Math.max(margin, Math.min(left, window.innerWidth - width - margin));
+  let top = rect.bottom + gap;
+  if (top + elHeight > window.innerHeight - margin && rect.top - gap - elHeight > margin) {
+    top = rect.top - gap - elHeight;
+  }
+  top = Math.max(margin, top);
+  el.style.left = `${left}px`;
+  el.style.top = `${top}px`;
+  el.style.visibility = "visible";
+}
+
+function handleFloatingOverlayReposition() {
+  if (!activeFloatingOverlay) return;
+  const { el, triggerEl, width, align } = activeFloatingOverlay;
+  if (!document.body.contains(triggerEl)) { closeFloatingOverlay(); return; }
+  positionFloatingOverlay(el, triggerEl, { width, align });
+}
+
+function handleFloatingOverlayOutsideClick(event) {
+  if (!activeFloatingOverlay) return;
+  const { el, triggerEl } = activeFloatingOverlay;
+  if (el.contains(event.target) || triggerEl?.contains(event.target)) return;
+  closeFloatingOverlay();
+}
+
+function handleFloatingOverlayKeydown(event) {
+  if (!activeFloatingOverlay) return;
+  if (event.key === "Escape") {
+    event.stopPropagation();
+    const { triggerEl } = activeFloatingOverlay;
+    closeFloatingOverlay();
+    triggerEl?.focus();
+  }
+}
+
+function closeFloatingOverlay() {
+  if (!activeFloatingOverlay) return;
+  const { triggerEl, onClose } = activeFloatingOverlay;
+  getFloatingOverlayHost().innerHTML = "";
+  triggerEl?.setAttribute("aria-expanded", "false");
+  activeFloatingOverlay = null;
+  document.removeEventListener("click", handleFloatingOverlayOutsideClick, true);
+  document.removeEventListener("keydown", handleFloatingOverlayKeydown, true);
+  window.removeEventListener("scroll", handleFloatingOverlayReposition, true);
+  window.removeEventListener("resize", handleFloatingOverlayReposition);
+  if (onClose) onClose();
+}
+
+function openFloatingOverlay(triggerEl, html, { width = 220, align = "right", className = "", onClose = null, focusFirst = false } = {}) {
+  if (activeFloatingOverlay && activeFloatingOverlay.triggerEl === triggerEl) {
+    closeFloatingOverlay();
+    return null;
+  }
+  closeFloatingOverlay();
+  const host = getFloatingOverlayHost();
+  host.innerHTML = `<div class="emp-floating-overlay ${className}" role="menu" tabindex="-1">${html}</div>`;
+  const el = host.firstElementChild;
+  positionFloatingOverlay(el, triggerEl, { width, align });
+  createIcons();
+  triggerEl.setAttribute("aria-expanded", "true");
+  activeFloatingOverlay = { el, triggerEl, onClose, width, align };
+  document.addEventListener("click", handleFloatingOverlayOutsideClick, true);
+  document.addEventListener("keydown", handleFloatingOverlayKeydown, true);
+  window.addEventListener("scroll", handleFloatingOverlayReposition, true);
+  window.addEventListener("resize", handleFloatingOverlayReposition);
+  if (focusFirst) qs("button, [href], input, select, textarea", el)?.focus();
+  return el;
 }
 
 function showSignupPrompt(reason = "unlock CareerGo personalization") {
@@ -3922,25 +4923,18 @@ function initGlobalInteractionAnimations() {
     "button[data-market-role]"
   ].join(",");
 
+  // Click feedback is intentionally limited to this: a fast, subtle
+  // press-state class, nothing else. A ripple effect used to run alongside
+  // this (addRipple()), but it relied on position:absolute positioned
+  // relative to the clicked button - the base .btn class never sets
+  // position:relative, so on any button without a positioned ancestor the
+  // ripple escaped to the document's containing block instead of the
+  // button, rendering as a huge circle in the wrong place. Deleted outright
+  // rather than fixing containment, since a ripple isn't the desired effect.
   function animatePress(target) {
     if (reducedMotion.matches) return;
     target.classList.add("is-pressed");
-    window.setTimeout(() => target.classList.remove("is-pressed"), 180);
-  }
-
-  function addRipple(target, event) {
-    if (reducedMotion.matches || target.dataset.noRipple === "true") return;
-    const rect = target.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
-    const ripple = document.createElement("span");
-    const size = Math.max(rect.width, rect.height);
-    ripple.className = "interaction-ripple";
-    ripple.style.width = `${size}px`;
-    ripple.style.height = `${size}px`;
-    ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
-    ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
-    target.appendChild(ripple);
-    ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+    window.setTimeout(() => target.classList.remove("is-pressed"), 140);
   }
 
   document.addEventListener("mousedown", event => {
@@ -3948,9 +4942,6 @@ function initGlobalInteractionAnimations() {
     const target = event.target.closest(interactiveSelector);
     if (!target || target.disabled || target.getAttribute("aria-disabled") === "true") return;
     animatePress(target);
-    if (target.matches("button, a.btn, [role='button'], .btn, .home-btn, .pipeline-stage, .application-stage-actions button, .tab-row button, .pill")) {
-      addRipple(target, event);
-    }
   }, { passive: true });
 
   document.addEventListener("keydown", event => {
@@ -13609,138 +14600,9298 @@ function renderPosts() {
   if (!isDirectoryTab) initPageTour("posts");
 }
 
-function renderEmployerPortal() {
-  const root = qs("[data-employer-app]");
-  if (!root) return;
-  if (!requireRole(root, "employer", "open your employer portal")) return;
-  const pipeline = ["Saved", "Screen", "Interview", "Offer"];
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;"
+  }[char]));
+}
+
+const EMPLOYER_NAV_GROUPS = [
+  { label: "", items: [
+    ["dashboard", "Dashboard", "layout-dashboard"],
+    ["roles", "Roles", "briefcase"],
+    ["pipeline", "Talent Pipeline", "kanban"],
+    ["company", "Company Profile", "building-2"],
+    ["feed", "Feed", "messages-square"]
+  ] }
+];
+
+const EMPLOYER_VIEW_KEYS = [...EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key]) => key)), "role-builder", "company-edit", "settings", "messages", "saved-candidates"];
+const EMPLOYER_VIEW_TITLES = Object.fromEntries(EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key, label]) => [key, label])));
+
+let employerRouteState = { view: "", params: {} };
+let employerVeraDrawerOpen = false;
+let employerVeraPrompt = "What needs my attention today?";
+let employerCopilotOpen = false;
+
+const REMINDER_PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
+
+// Item 13: Smart Hiring Reminders. Feeds the Floating Copilot (item 7) -
+// computed live off DATA.candidates/DATA.employerRoles every time the
+// copilot is opened, not cached, so acting on one reminder (e.g.
+// following up on an offer) removes it from the list on the next open
+// rather than needing a manual refresh.
+function getSmartHiringReminders() {
+  const active = DATA.candidates.filter(c => !c.archived);
+  const reminders = [];
+
+  active.filter(c => c.offer && c.offer.status === "Sent").forEach(c => {
+    const days = parseInt((c.offer.expiryDate || "").match(/\d+/)?.[0] || "99", 10);
+    reminders.push({ priority: days <= 3 ? "high" : "medium", icon: "file-text", text: `${c.name}'s offer expires ${c.offer.expiryDate} with no response yet.`, cta: "Follow up", nav: "pipeline", navId: c.id });
+  });
+  active.filter(c => c.interview && c.interview.feedbackSubmitted < c.interview.feedbackTotal).forEach(c => {
+    const missing = c.interview.feedbackTotal - c.interview.feedbackSubmitted;
+    reminders.push({ priority: "high", icon: "clipboard-check", text: `${c.name} is waiting on ${missing} interview scorecard${missing === 1 ? "" : "s"}.`, cta: "Collect feedback", nav: "pipeline", navId: c.id });
+  });
+  active.filter(c => c.stage === "New").forEach(c => {
+    reminders.push({ priority: "medium", icon: "clock", text: `${c.name}'s application to ${c.role} hasn't been reviewed yet.`, cta: "Review now", nav: "pipeline", navId: c.id });
+  });
+  active.filter(c => ["Shortlisted", "Interview"].includes(c.stage)).forEach(c => {
+    const signals = getCandidateSignals(c);
+    if (signals.lastActive === "2 days ago" || signals.lastActive === "Yesterday") {
+      reminders.push({ priority: "low", icon: "user-x", text: `${c.name} has gone quiet (last active ${signals.lastActive.toLowerCase()}) while at ${c.stage}.`, cta: "Send a nudge", nav: "pipeline", navId: c.id });
+    }
+  });
+  DATA.employerRoles.filter(r => r.status === "Open" && r.health === "Needs attention").forEach(r => {
+    reminders.push({ priority: "medium", icon: "alert-triangle", text: `${r.title} is a hiring bottleneck - talent supply or speed is off pace.`, cta: "Review role", nav: "role-builder", navId: r.id });
+  });
+
+  return reminders.sort((a, b) => REMINDER_PRIORITY_ORDER[a.priority] - REMINDER_PRIORITY_ORDER[b.priority]);
+}
+
+// Item 7: Floating Vera Hiring Copilot. Lives in the persistent app shell
+// (rendered once, not per-page), so it's genuinely omnipresent across the
+// whole Employer OS rather than a Feed-only widget. Never auto-opens -
+// "never interrupting workflows" - but the FAB carries a live reminder
+// count so its presence is proactive without forcing attention. Distinct
+// from the existing header "Ask Vera" drawer (a reactive Q&A surface,
+// left untouched): the copilot leads with what Vera already found, and
+// links out to that same drawer for open-ended questions instead of
+// duplicating its prompt-matching engine.
+function renderCopilotReminderRow(r) {
+  return `
+    <div class="emp-copilot-reminder">
+      <span class="emp-copilot-reminder-icon emp-copilot-reminder-icon--${r.priority}">${icon(r.icon)}</span>
+      <p>${r.text}</p>
+      <button type="button" class="btn btn-ghost btn-sm" data-copilot-reminder-action data-copilot-nav="${r.nav}" data-copilot-nav-id="${r.navId || ""}">${r.cta}</button>
+    </div>
+  `;
+}
+
+// Item 16's "Quick Action Floating Button" is folded into this existing
+// copilot panel rather than a second bottom-right FAB - two floating
+// buttons in the same corner would be exactly the kind of duplicated
+// action surface the redesign explicitly asks to avoid. "Ask Vera" was
+// previously both a footer button here AND would have been one of these
+// six quick actions; kept as one entry in this grid instead of both.
+const COPILOT_QUICK_ACTIONS = [
+  { id: "ask-vera", label: "Ask Vera", icon: "sparkles" },
+  { id: "create-job", label: "Create Job", icon: "plus" },
+  { id: "message", label: "Message", icon: "message-circle" },
+  { id: "invite", label: "Invite Candidate", icon: "send" },
+  { id: "post", label: "Post Update", icon: "edit-3" },
+  { id: "search", label: "Search Candidate", icon: "search" },
+];
+
+function renderHiringCopilotPanelBody() {
+  const reminders = getSmartHiringReminders();
+  const top = reminders.slice(0, 5);
+  return `
+    <div class="emp-copilot-head">
+      <div><span class="emp-callout-label">${icon("sparkles")} Vera Hiring Copilot</span><p>Monitoring your hiring activity in the background.</p></div>
+      <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-copilot-close aria-label="Close">${icon("x")}</button>
+    </div>
+    <div class="emp-copilot-body">
+      ${top.length ? `
+        <span class="emp-tags-label">Needs your attention (${reminders.length})</span>
+        <div class="emp-copilot-reminder-list">${top.map(renderCopilotReminderRow).join("")}</div>
+      ` : `<p class="emp-empty-hint">Nothing urgent right now - Vera will surface reminders here as your pipeline changes.</p>`}
+    </div>
+    <div class="emp-copilot-quick-actions">
+      <span class="emp-tags-label">Quick actions</span>
+      <div class="emp-copilot-quick-grid">
+        ${COPILOT_QUICK_ACTIONS.map(a => `<button type="button" class="emp-copilot-quick-btn" data-copilot-quick="${a.id}">${icon(a.icon)}<span>${a.label}</span></button>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderHiringCopilot() {
+  const reminders = getSmartHiringReminders();
+  const highCount = reminders.filter(r => r.priority === "high").length;
+  return `
+    <div class="emp-hiring-copilot" data-hiring-copilot>
+      <div class="emp-copilot-panel" data-copilot-panel ${employerCopilotOpen ? "" : "hidden"} role="dialog" aria-label="Vera Hiring Copilot">
+        ${renderHiringCopilotPanelBody()}
+      </div>
+      <button type="button" class="emp-copilot-fab" data-copilot-toggle aria-haspopup="dialog" aria-expanded="${employerCopilotOpen}" aria-label="Vera Hiring Copilot${reminders.length ? `, ${reminders.length} items need attention` : ""}">
+        ${icon("sparkles")}
+        ${reminders.length ? `<span class="emp-copilot-badge ${highCount ? "emp-copilot-badge--urgent" : ""}">${reminders.length}</span>` : ""}
+      </button>
+    </div>
+  `;
+}
+
+function refreshHiringCopilot(root) {
+  const panel = qs("[data-copilot-panel]", root);
+  if (panel) { panel.innerHTML = renderHiringCopilotPanelBody(); createIcons(); bindHiringCopilotPanel(root); }
+  const fabWrap = qs("[data-hiring-copilot]", root);
+  if (fabWrap) {
+    const reminders = getSmartHiringReminders();
+    const highCount = reminders.filter(r => r.priority === "high").length;
+    const fab = qs("[data-copilot-toggle]", fabWrap);
+    let badge = qs(".emp-copilot-badge", fab);
+    if (reminders.length) {
+      if (!badge) { badge = document.createElement("span"); badge.className = "emp-copilot-badge"; fab.appendChild(badge); }
+      badge.className = `emp-copilot-badge ${highCount ? "emp-copilot-badge--urgent" : ""}`;
+      badge.textContent = String(reminders.length);
+    } else if (badge) badge.remove();
+    fab.setAttribute("aria-label", `Vera Hiring Copilot${reminders.length ? `, ${reminders.length} items need attention` : ""}`);
+  }
+}
+
+function closeCopilotPanel(root) {
+  employerCopilotOpen = false;
+  const panel = qs("[data-copilot-panel]", root);
+  if (panel) panel.hidden = true;
+  qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", "false");
+}
+
+function bindHiringCopilotPanel(root) {
+  qs("[data-copilot-close]", root)?.addEventListener("click", () => closeCopilotPanel(root));
+  qsa("[data-copilot-reminder-action]", root).forEach(btn => btn.addEventListener("click", () => {
+    const nav = btn.dataset.copilotNav;
+    const navId = btn.dataset.copilotNavId;
+    closeCopilotPanel(root);
+    employerNavigateTo(nav, navId ? { id: navId } : {});
+  }));
+  qsa("[data-copilot-quick]", root).forEach(btn => btn.addEventListener("click", () => {
+    const action = btn.dataset.copilotQuick;
+    closeCopilotPanel(root);
+    if (action === "ask-vera") { openEmployerVera("What needs my attention today?"); return; }
+    if (action === "create-job") { employerNavigateTo("role-builder"); return; }
+    if (action === "message") { employerNavigateTo("messages"); return; }
+    if (action === "invite") { employerNavigateTo("pipeline"); showToast("Pick a candidate in Talent Pipeline to invite.", "info"); return; }
+    if (action === "search") {
+      qs("[data-emp-search-input]")?.focus();
+      return;
+    }
+    if (action === "post") {
+      // The copilot is global, so "Post Update" may be clicked from any
+      // page - navigate to Feed first, then focus the composer once its
+      // draw() has actually run (a fixed short delay, since there's no
+      // render-complete event to await across a full page navigation).
+      employerNavigateTo("feed");
+      setTimeout(() => qs("[data-feed-composer-text]")?.focus(), 150);
+    }
+  }));
+}
+
+function bindHiringCopilot(root) {
+  bindHiringCopilotPanel(root);
+  qs("[data-copilot-toggle]", root)?.addEventListener("click", event => {
+    event.stopPropagation();
+    employerCopilotOpen = !employerCopilotOpen;
+    const panel = qs("[data-copilot-panel]", root);
+    if (employerCopilotOpen) { refreshHiringCopilot(root); panel.hidden = false; }
+    else panel.hidden = true;
+    qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", String(employerCopilotOpen));
+  });
+  qs("[data-copilot-panel]", root)?.addEventListener("click", event => event.stopPropagation());
+  document.addEventListener("click", () => {
+    const panel = qs("[data-copilot-panel]", root);
+    if (panel && !panel.hidden && employerCopilotOpen) closeCopilotPanel(root);
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && employerCopilotOpen) closeCopilotPanel(root);
+  });
+}
+
+function renderEmployerShell(root) {
   const state = readState();
   const employer = state.employerProfile || {};
-  const currentHash = location.hash || "#cockpit";
-  const query = new URLSearchParams(location.search).get("q") || "";
-  const talentPool = DATA.candidates.filter(candidate => ["Saved", "Screen", "Interview"].includes(candidate.stage));
   root.innerHTML = `
-    <section class="workspace-nav glass-card">
-      <nav class="os-nav" id="employer-os-nav" aria-label="Employer OS navigation">
-        ${[
-          ["#cockpit", "Employer Dashboard", "layout-dashboard"],
-          ["#candidates", "Candidate Search", "search"],
-          ["#talent-pool", "Talent Pool", "bookmark"],
-          ["#roles", "Job Posts", "briefcase"],
-          ["#applicants", "Applicants", "users"],
-          ["#pipeline", "Hiring Pipeline", "kanban"],
-          ["#company-profile", "Company Profile", "building-2"],
-          ["#analytics", "Analytics", "bar-chart-3"],
-          ["#settings", "Settings", "settings"]
-        ].map(([href, label, ic]) => `<a class="${currentHash === href ? "active" : ""}" href="${href}">${icon(ic)} ${label}</a>`).join("")}
-        <button class="os-nav-button" type="button" data-logout>${icon("log-out")} Logout</button>
-      </nav>
-    </section>
-    <div class="os-main">
-      <section class="glass-card" id="cockpit"><div class="eyebrow"><span class="spark">*</span> Hiring cockpit</div><h1 class="section-title">Fit, pipeline, reputation, and action in one place.</h1><div class="metric-strip"><div class="metric"><strong>257</strong><span>Applicants</span></div><div class="metric"><strong>71</strong><span>Qualified</span></div><div class="metric"><strong>21d</strong><span>Time to hire</span></div><div class="metric"><strong>86%</strong><span>Offer acceptance</span></div></div></section>
-      <section class="glass-card employer-search" id="candidates">
-        <div class="section-head"><div><div class="section-kicker">Candidate Search</div><h2 class="section-title mini">Find job seekers by fit, skills, stage, and evidence.</h2></div><span class="pill cyan">Privacy-aware</span></div>
-        <div class="candidate-filter-bar">
-          <div class="field"><i data-lucide="search"></i><input data-candidate-query value="${query}" placeholder="Search role, skill, education, location"></div>
-          <div class="field"><i data-lucide="briefcase"></i><input data-candidate-role placeholder="Role interest"></div>
-          <div class="field"><i data-lucide="map-pin"></i><input data-candidate-location placeholder="Location"></div>
+    <header class="emp-app-header">
+      <div class="emp-app-header-inner">
+        <a class="emp-app-brand" href="index.html">
+          <img class="emp-app-logo" src="assets/careergo-logo-script.png" alt="CareerGo">
+          <span class="emp-app-badge">Employer</span>
+        </a>
+        <button type="button" class="emp-app-menu-btn" data-emp-menu-toggle aria-label="Open navigation">${icon("menu")}</button>
+        <nav class="emp-app-nav" aria-label="Employer navigation" data-emp-nav-list>
+          ${EMPLOYER_NAV_GROUPS[0].items.map(([key, label]) => `<a href="#${key}" class="emp-nav-item" data-emp-nav="${key}">${label}</a>`).join("")}
+        </nav>
+        <div class="emp-app-header-actions">
+          <div class="emp-app-search-field">
+            ${icon("search")}
+            <input type="text" placeholder="Search candidates, roles, applicants..." data-emp-search-input autocomplete="off">
+            <div class="emp-search-results" data-emp-search-results hidden></div>
+          </div>
+          <button type="button" class="emp-icon-btn" data-emp-ask-vera data-vera-prompt="What needs my attention today?" aria-label="Ask Vera">${icon("sparkles")}</button>
+          <button type="button" class="emp-icon-btn" data-emp-messages aria-label="Inbox">${icon("inbox")}</button>
+          <button type="button" class="emp-icon-btn" aria-label="Notifications">${icon("bell")}</button>
+          <div class="emp-account-menu-wrap">
+            <button type="button" class="emp-avatar-trigger" data-emp-account-toggle aria-haspopup="menu" aria-expanded="false">
+              <span>${getFirstName(state).charAt(0).toUpperCase()}</span>
+            </button>
+            <div class="emp-account-menu" data-emp-account-menu hidden role="menu">
+              <div class="emp-account-menu-identity"><strong>${getFirstName(state)}</strong><small>${employer.company || "Your Workspace"}</small></div>
+              <a role="menuitem" href="#settings" data-emp-nav="settings">${icon("settings")} Settings</a>
+              <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
+            </div>
+          </div>
         </div>
-        <div class="candidate-grid" data-candidate-list>
-          ${DATA.candidates.map(candidate => candidateCard(candidate)).join("")}
-        </div>
-      </section>
-      <section class="content-grid" id="talent-pool"><div class="glass-card"><div class="section-kicker">Talent Pool</div>${talentPool.map(candidate => `<div class="list-card"><div class="list-card-top"><div><h3>${safeCandidateName(candidate)}</h3><div class="muted small">${candidate.role} - ${candidate.availability}</div></div><span class="pill gold">${candidate.stage}</span></div></div>`).join("")}</div><div class="glass-card vera-box"><h2 class="section-title mini">Fit explanation</h2><p class="muted">CareerGo explains why a person may fit a role using visible skills, portfolio evidence, career stage, availability, and role interest. Private profile fields stay hidden.</p></div></section>
-      <section class="content-grid" id="roles"><div class="glass-card"><div class="section-kicker">Job Posts</div>${DATA.employerRoles.map(role => `<div class="list-card"><div class="list-card-top"><div><h3>${role.title}</h3><div class="muted small">${role.applicants} applicants - ${role.qualified} qualified</div></div><span class="pill ${role.status === "Active" ? "green" : "gold"}">${role.status}</span></div></div>`).join("")}</div><form class="glass-card form-grid" id="company-profile" data-employer-profile-form><h2 class="section-title mini">Company Profile</h2><label>Company <input name="company" value="${employer.company || ""}" placeholder="Company name"></label><label>Brand note <textarea name="hiringGoal" placeholder="Describe your hiring brand and candidate promise">${employer.hiringGoal || ""}</textarea></label><button class="btn btn-primary" type="submit">${icon("save")} Save profile</button></form></section>
-      <section class="glass-card" id="applicants"><div class="section-head"><div><div class="section-kicker">Applicants</div><h2 class="section-title mini">Review applicants by fit and pipeline stage.</h2></div><button class="btn btn-cyan" type="button" data-invite-all-applicants>${icon("user-plus")} Invite candidates</button></div><div class="grid-3">${DATA.candidates.map(candidate => candidateCard(candidate, true)).join("")}</div></section>
-      <section class="glass-card" id="pipeline"><div class="section-kicker">Hiring pipeline</div><div class="kanban">${pipeline.map(stage => `<div class="kanban-col"><h3>${stage}</h3>${DATA.candidates.filter(c => c.stage === stage || (stage === "Saved" && c.stage === "Saved")).map(c => `<div class="review-card"><strong>${c.name}</strong><p class="muted small">${c.role} - ${c.fit}% fit</p></div>`).join("") || `<div class="review-card"><p class="muted small">No candidates yet</p></div>`}</div>`).join("")}</div></section>
-      <section class="content-grid" id="analytics"><div class="glass-card"><div class="section-kicker">Analytics</div><div class="metric-strip"><div class="metric"><strong>34%</strong><span>Qualified rate</span></div><div class="metric"><strong>11</strong><span>Saved candidates</span></div><div class="metric"><strong>4.2</strong><span>Candidate experience</span></div></div></div><div class="glass-card" id="settings"><div class="section-kicker">Settings</div><h2 class="section-title mini">Hiring preferences</h2><p class="muted">Set screening priorities, privacy rules, interview stages, and notification preferences.</p></div></section>
-      <section class="content-grid" id="assistant"><div class="glass-card"><div class="section-kicker">Posts and updates</div>${DATA.communityPosts.slice(0, 2).map(post => `<div class="list-card"><h3>${post.title}</h3><p class="muted">${post.body}</p></div>`).join("")}</div><div class="glass-card vera-box"><h2 class="section-title mini">AI hiring assistant</h2><p class="muted">Vera can summarize candidates, draft outreach, generate interview questions, and explain pipeline bottlenecks.</p><div class="hero-actions"><button class="btn btn-primary" type="button" data-vera-draft-outreach>${icon("sparkles")} Draft outreach</button><button class="btn btn-cyan" type="button" data-vera-interview-questions>${icon("list-checks")} Interview questions</button></div></div></section>
-    </div>
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+      </div>
+    </header>
+    <main id="employer-view" class="emp-app-main"></main>
+    <div data-emp-vera-drawer-root></div>
+    ${renderHiringCopilot()}
   `;
   createIcons();
-  
-  // Wire up nav links to update active state and close drawer on mobile
-  const navLinks = root.querySelectorAll("#employer-os-nav a");
-  navLinks.forEach(link => {
-    link.addEventListener("click", () => {
-      navLinks.forEach(l => l.classList.remove("active"));
-      link.classList.add("active");
-      document.body.classList.remove("sidebar-open");
-    });
-  });
-  function bindCandidateActions(scope = root) {
-    qsa("[data-save-candidate], [data-invite-candidate]", scope).forEach(button => {
-    button.addEventListener("click", () => showToast(button.dataset.saveCandidate ? "Candidate saved to Talent Pool." : "Invite prepared with role context."));
-    });
-  }
-  bindCandidateActions();
-  const candidateList = qs("[data-candidate-list]", root);
-  const candidateInputs = qsa("[data-candidate-query], [data-candidate-role], [data-candidate-location]", root);
-  function renderCandidateResults() {
-    if (!candidateList) return;
-    const general = String(qs("[data-candidate-query]", root)?.value || "").toLowerCase();
-    const role = String(qs("[data-candidate-role]", root)?.value || "").toLowerCase();
-    const locationValue = String(qs("[data-candidate-location]", root)?.value || "").toLowerCase();
-    const matches = DATA.candidates.filter(candidate => {
-      const hay = [candidate.name, candidate.role, candidate.location, candidate.education, candidate.experience, candidate.careerStage, candidate.portfolio, ...candidate.skills].join(" ").toLowerCase();
-      return hay.includes(general) && candidate.role.toLowerCase().includes(role) && candidate.location.toLowerCase().includes(locationValue);
-    });
-    candidateList.innerHTML = matches.map(candidate => candidateCard(candidate)).join("") || `<div class="card">No candidates match those filters yet.</div>`;
-    createIcons();
-    bindCandidateActions(candidateList);
-  }
-  candidateInputs.forEach(input => input.addEventListener("input", renderCandidateResults));
 
-  qs("[data-employer-profile-form]", root)?.addEventListener("submit", event => {
+  root.addEventListener("click", event => {
+    const veraTrigger = event.target.closest("[data-emp-ask-vera]");
+    if (veraTrigger && root.contains(veraTrigger)) {
+      event.preventDefault();
+      openEmployerVera(veraTrigger.dataset.veraPrompt || veraTrigger.dataset.prompt || "");
+      return;
+    }
+    if (event.target.closest("[data-emp-messages]")) {
+      employerNavigateTo("messages");
+    }
+  });
+
+  bindHiringCopilot(root);
+
+  qsa("[data-emp-nav]", root).forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    qs("[data-emp-nav-list]", root)?.classList.remove("emp-nav-open");
+    qs("[data-emp-account-menu]", root)?.setAttribute("hidden", "");
+    employerNavigateTo(link.dataset.empNav);
+  }));
+
+  qs("[data-emp-menu-toggle]", root)?.addEventListener("click", () => {
+    qs("[data-emp-nav-list]", root)?.classList.toggle("emp-nav-open");
+  });
+
+  const accountToggle = qs("[data-emp-account-toggle]", root);
+  const accountMenu = qs("[data-emp-account-menu]", root);
+  accountToggle?.addEventListener("click", event => {
+    event.stopPropagation();
+    const isHidden = accountMenu.hidden;
+    accountMenu.hidden = !isHidden;
+    accountToggle.setAttribute("aria-expanded", String(isHidden));
+  });
+  document.addEventListener("click", event => {
+    if (accountMenu && !accountMenu.hidden && !accountMenu.contains(event.target) && event.target !== accountToggle) {
+      accountMenu.hidden = true;
+      accountToggle?.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  renderEmployerVeraDrawer();
+}
+
+function parseEmployerHash() {
+  const raw = (location.hash || "").replace(/^#\/?/, "");
+  const [view, id] = raw.split("/");
+  return {
+    view: EMPLOYER_VIEW_KEYS.includes(view) ? view : "dashboard",
+    params: id ? { id } : {}
+  };
+}
+
+function employerNavigateTo(view, params = {}, options = {}) {
+  const root = qs("#employer-view");
+  if (!root) return;
+  const isSameRoute = employerRouteState.view === view && employerRouteState.params.id === params.id;
+  if (isSameRoute && !options.force) return;
+
+  employerRouteState = { view, params };
+  const activeNavKey = view === "role-builder" ? "roles" : view === "company-edit" ? "company" : view;
+  qsa("[data-emp-nav]").forEach(link => link.classList.toggle("active", link.dataset.empNav === activeNavKey));
+
+  renderEmployerView(view, params, root);
+  renderEmployerVeraDrawer();
+  root.scrollTop = 0;
+
+  const nextHash = `#${view}${params.id ? "/" + params.id : ""}`;
+  if (location.hash !== nextHash) history.pushState(null, "", nextHash);
+}
+
+function getEmployerVeraContext() {
+  const view = employerRouteState.view || "dashboard";
+  const params = employerRouteState.params || {};
+  const candidate = params.id ? DATA.candidates.find(c => c.id === params.id) : null;
+  const role = params.id ? DATA.employerRoles.find(r => r.id === params.id) : null;
+
+  if (candidate) {
+    return {
+      type: "candidate",
+      label: `${candidate.name} for ${candidate.role}`,
+      title: "Candidate context",
+      suggestions: [
+        `Why is ${candidate.name} a strong fit?`,
+        "What should I verify in the interview?",
+        "What evidence is still missing?",
+        "Compare this candidate with Siti Nur."
+      ]
+    };
+  }
+
+  if (view === "role-builder" && role) {
+    return {
+      type: "role",
+      label: role.title,
+      title: "Role context",
+      suggestions: [
+        `Why is ${role.title} struggling?`,
+        "Are the requirements too restrictive?",
+        "Is the salary competitive?",
+        "Find high-fit candidates for this role."
+      ]
+    };
+  }
+
+  if (view === "roles") {
+    return {
+      type: "roles",
+      label: "Roles in your company",
+      title: "Roles context",
+      suggestions: [
+        "Which role needs attention first?",
+        "Are any requirements reducing supply?",
+        "Which open roles are healthy?",
+        "Find roles with stalled hiring momentum."
+      ]
+    };
+  }
+
+  if (view === "pipeline") {
+    return {
+      type: "pipeline",
+      label: "Talent Pipeline",
+      title: "Pipeline context",
+      suggestions: [
+        "Who needs action today?",
+        "Which candidates are stuck?",
+        "Compare the finalists.",
+        "Which interview feedback is still missing?"
+      ]
+    };
+  }
+
+  if (view === "company" || view === "company-edit") {
+    return {
+      type: "company",
+      label: "Company Profile",
+      title: "Company profile context",
+      suggestions: [
+        "What information is missing?",
+        "What may reduce candidate interest?",
+        "How does our profile appear to junior engineers?",
+        "What should we improve first?"
+      ]
+    };
+  }
+
+  if (view === "feed") {
+    return {
+      type: "feed",
+      label: "Feed",
+      title: "Feed context",
+      suggestions: [
+        "Summarise the useful hiring themes.",
+        "Why is this relevant to our company?",
+        "What are candidates saying about graduate hiring?",
+        "Which topic should we respond to?"
+      ]
+    };
+  }
+
+  return {
+    type: "dashboard",
+    label: "Employer Dashboard",
+    title: "Dashboard context",
+    suggestions: [
+      "Which candidate needs my attention most?",
+      "Why is Junior Data Analyst struggling?",
+      "What changed since yesterday?",
+      "Find candidates we may have overlooked.",
+      "Which interview feedback is still missing?"
+    ]
+  };
+}
+
+function getEmployerVeraStructuredResponse(prompt, context) {
+  const text = (prompt || "").toLowerCase();
+  const juniorRole = DATA.employerRoles.find(r => r.id === "er2") || DATA.employerRoles[0];
+  const weiJun = DATA.candidates.find(c => c.id === "c5");
+  const daniel = DATA.candidates.find(c => c.id === "c2");
+  const ahmad = DATA.candidates.find(c => c.id === "c4");
+
+  if (text.includes("junior data analyst") || text.includes("struggling") || text.includes("restrictive")) {
+    return {
+      eyebrow: "Role analysis",
+      title: "Why Junior Data Analyst is slowing",
+      points: [
+        ["Requirement mismatch", "The 3-5 year experience requirement is high for a junior title. Comparable junior talent is concentrated around 0-2 years."],
+        ["Evidence remains strong", "126 applicants have applied and 34 are qualified, but only 8 are strong matches under the current filters."],
+        ["Uncertainty", "Vera cannot confirm final supply until the requirement change is tested against live candidates."]
+      ],
+      move: "Review the minimum experience requirement before changing sourcing spend.",
+      impact: "+34 potentially relevant candidates if the experience bar moves closer to 1-2 years.",
+      actions: [["Review requirement", "role-builder", juniorRole.id], ["Show affected candidates", "pipeline", null], ["Compare alternatives", "roles", null]]
+    };
+  }
+
+  if (text.includes("changed") || text.includes("yesterday") || text.includes("overnight")) {
+    return {
+      eyebrow: "What changed",
+      title: "Changes since your last check",
+      points: [
+        ["New supply", "12 qualified candidates appeared overnight across Junior Data Analyst and Product Design Intern."],
+        ["Feedback risk", `${daniel?.name || "Daniel Lim"} still has 0 of 1 required scorecards submitted.`],
+        ["Offer timing", `${weiJun?.name || "Wei Jun Tan"} has an offer expiring in 4 days with no response yet.`]
+      ],
+      move: "Handle the offer follow-up first, then collect Daniel's interview feedback.",
+      impact: "Two blocked decisions can move today.",
+      actions: [["Follow up", "pipeline", weiJun?.id], ["Collect feedback", "pipeline", daniel?.id], ["Open pipeline", "pipeline", null]]
+    };
+  }
+
+  if (text.includes("overlooked") || text.includes("find candidates") || text.includes("natural") || text.includes("search")) {
+    return {
+      eyebrow: "Talent search",
+      title: "Candidates worth another look",
+      points: [
+        [ahmad?.name || "Ahmad Zulkifli", "Relevant Java, SQL and microservices evidence for Backend Engineer, but still unreviewed."],
+        ["Siti Nur", "Strong portfolio and research evidence for Product Design Intern. Verify design-system depth."],
+        ["Priya Nair", "Strong project delivery and testing habits, with full-time employment still unverified."]
+      ],
+      move: "Review Ahmad first because the Backend Engineer role is tight on supply.",
+      impact: "This may unblock a role that has been open for 21 days.",
+      actions: [["Review Ahmad", "pipeline", ahmad?.id], ["Open pipeline", "pipeline", null], ["Review role", "role-builder", "er5"]]
+    };
+  }
+
+  if (text.includes("feedback") || text.includes("scorecard") || text.includes("interview")) {
+    return {
+      eyebrow: "Interview support",
+      title: "Missing interview feedback",
+      points: [
+        ["Daniel Lim", "Recruiter screen feedback is incomplete: 0 of 1 scorecards submitted."],
+        ["What is verified", "SQL, Python and dashboard project evidence are already visible."],
+        ["Still verify", "Ask for a concrete example of ambiguous data analysis and stakeholder trade-offs."]
+      ],
+      move: "Collect the scorecard before comparing Daniel with other Junior Data Analyst candidates.",
+      impact: "One scorecard is blocking the next decision.",
+      actions: [["Collect feedback", "pipeline", daniel?.id], ["Ask for interview focus", "pipeline", daniel?.id], ["Open pipeline", "pipeline", null]]
+    };
+  }
+
+  if (context.type === "candidate") {
+    return {
+      eyebrow: "Candidate analysis",
+      title: `Vera's read on ${context.label}`,
+      points: [
+        ["Strongest evidence", "Evidence suggests the candidate has role-relevant project or interview proof, not just a fit percentage."],
+        ["Missing information", "Availability, collaboration evidence and scale of ownership should still be verified."],
+        ["Decision boundary", "Vera can explain the signal, but the hiring team should make the final decision."]
+      ],
+      move: "Use the next interview or review step to verify the weakest evidence area.",
+      impact: "Better decision quality without turning Vera into a black-box decision maker.",
+      actions: [["Open candidate", "pipeline", employerRouteState.params.id], ["Compare finalists", "pipeline", null], ["Open pipeline", "pipeline", null]]
+    };
+  }
+
+  if (context.type === "company") {
+    return {
+      eyebrow: "Company profile analysis",
+      title: "What may reduce candidate interest",
+      points: [
+        ["Growth information", "Candidates often inspect Growth & Culture before applying, but mentorship details are the easiest area to strengthen."],
+        ["Salary transparency", "Open roles include ranges, which helps trust. Keep this consistent across future drafts."],
+        ["Missing proof", "Add one concrete example of graduate development after joining."]
+      ],
+      move: "Improve mentorship and early-career progression details first.",
+      impact: "Graduate candidates can understand how they develop after joining.",
+      actions: [["Improve section", "company-edit", null], ["View profile", "company", null], ["Open roles", "roles", null]]
+    };
+  }
+
+  if (context.type === "feed") {
+    return {
+      eyebrow: "Market conversation",
+      title: "Hiring themes worth acting on",
+      points: [
+        ["Salary transparency", "Junior engineers are repeatedly discussing unclear pay ranges."],
+        ["Progression clarity", "Graduate candidates are asking how growth works after the first role."],
+        ["Relevance", "Your open junior roles benefit from clearer development and mentorship proof."]
+      ],
+      move: "Use this in role copy and company profile updates rather than creating another analytics report.",
+      impact: "Better candidate trust before the first application.",
+      actions: [["Open company profile", "company", null], ["Review roles", "roles", null], ["Open feed", "feed", null]]
+    };
+  }
+
+  return {
+    eyebrow: "Morning brief",
+    title: "What needs attention today",
+    points: [
+      ["Offer response", `${weiJun?.name || "Wei Jun Tan"} has an offer expiring in 4 days and no response yet.`],
+      ["Interview feedback", `${daniel?.name || "Daniel Lim"} has incomplete feedback, so the Junior Data Analyst decision is blocked.`],
+      ["Role friction", "Junior Data Analyst may be filtering out strong junior talent because the experience requirement is too high."]
+    ],
+    move: "Follow up on Wei Jun's offer first, then fix the Junior Data Analyst requirement.",
+    impact: "This clears the highest urgency decision and improves candidate supply.",
+    actions: [["Follow up", "pipeline", weiJun?.id], ["Review requirement", "role-builder", juniorRole.id], ["Open action queue", "dashboard", null]]
+  };
+}
+
+/* ---------- Ask Vera — Roles page assistant (separate modal from the global drawer) ---------- */
+function buildRoleFocusVeraAnswer(role) {
+  if (role.status === "Draft") {
+    const c = calculateDraftCompletion(role);
+    return {
+      eyebrow: "Draft role review",
+      title: `${role.title} is ${c.percent}% complete`,
+      points: [
+        ["What's missing", c.missing.length ? c.missing.join(", ") : "Nothing — ready for a final preview."],
+        ["Owner", role.owner || "Unassigned"],
+        ["Last edited", role.lastUpdated || "—"]
+      ],
+      move: c.missing.length ? `Fill in "${c.missing[0]}" next — it has the largest effect on completion.` : "Preview the job post and publish when ready.",
+      impact: `Completing the remaining ${c.missing.length} section${c.missing.length === 1 ? "" : "s"} will make this role ready to publish.`,
+      actions: [["Continue setup", "role-builder", role.id], ["Preview draft", "role-builder", role.id]]
+    };
+  }
+  if (role.status === "Paused") {
+    return {
+      eyebrow: "Paused role",
+      title: `${role.title} is paused`,
+      points: [
+        ["Why it's paused", role.pauseReason || "No reason recorded."],
+        ["Retained candidates", `${role.applicants} applicants, ${role.strongMatches} strong matches still on file.`],
+        ["Paused since", role.pausedSince || "—"]
+      ],
+      move: "Review the requirement that triggered the pause, then resume hiring.",
+      impact: "Resuming keeps the existing candidate pool instead of restarting sourcing.",
+      actions: [["Edit role", "role-builder", role.id], ["Resume from Roles list", "roles", null]]
+    };
+  }
+  if (role.status === "Closed") {
+    const r = getRoleResultsData(role);
+    return {
+      eyebrow: "Closed-role retrospective",
+      title: `${role.title}: ${r.finalHire}`,
+      points: [
+        ["Funnel", `${r.reviewed} reviewed → ${r.shortlisted} shortlisted → ${r.interviewed} interviewed → ${r.offersAccepted} hired.`],
+        ["Time to hire", r.timeToHire],
+        ["Drop-off stage", r.dropOffStage]
+      ],
+      move: r.improvement,
+      impact: "Applying this to the next similar role should reduce avoidable drop-off.",
+      actions: [["View full results", "roles", null]]
+    };
+  }
+  if (role.status === "Archived") {
+    return {
+      eyebrow: "Archived role",
+      title: `${role.title} — historical summary`,
+      points: [
+        ["Previous status", role.previousStatus || "—"],
+        ["Total applicants", String(role.applicants || 0)],
+        ["Archived date", role.archivedDate || "—"]
+      ],
+      move: "Restore this role from the Archived tab if you want to reopen hiring.",
+      impact: "Archived roles keep their history but are not actively hiring.",
+      actions: [["Open Roles", "roles", null]]
+    };
+  }
+  const h = getOpenRoleHealth(role);
+  const suggestion = role.roleIntelligence?.suggestions?.[0];
+  return {
+    eyebrow: "Role analysis",
+    title: `${role.title} has ${role.applicants || 0} applicants, but ${h.label.toLowerCase()}`,
+    points: [
+      ["What the data shows", h.reason],
+      ["Requirement check", role.roleIntelligence?.potentialIssue || "No specific requirement issue detected."],
+      ["Uncertainty", "Vera is reasoning from current applicant and match data — the hiring team makes the final call."]
+    ],
+    move: suggestion ? suggestion.recommendation : "Review the current requirements against the applicant pool.",
+    impact: suggestion ? suggestion.expectedEffect : "Adjusting the requirement should widen the qualified candidate pool.",
+    actions: [
+      ["Edit requirement", "role-builder", role.id],
+      ["View affected candidates", "pipeline", null],
+      ["Compare with other roles", "roles", null]
+    ]
+  };
+}
+
+function getRolesVeraResponse(promptText, focusRoleId) {
+  const text = (promptText || "").toLowerCase();
+  const roles = DATA.employerRoles;
+  const focusRole = focusRoleId ? roles.find(r => r.id === focusRoleId) : null;
+  const openRoles = roles.filter(r => r.status === "Open");
+  const rankedOpen = openRoles.map(r => ({ r, health: getOpenRoleHealth(r) }));
+  const worstOpen = rankedOpen.find(x => x.health.label !== "On track") || rankedOpen[0];
+
+  if (focusRole) return buildRoleFocusVeraAnswer(focusRole);
+
+  const mentioned = roles.find(r => text.includes(r.title.toLowerCase()));
+  if (mentioned) return buildRoleFocusVeraAnswer(mentioned);
+
+  if (text.includes("draft")) {
+    const draft = roles.find(r => r.status === "Draft");
+    if (draft) {
+      const completion = calculateDraftCompletion(draft);
+      return {
+        eyebrow: "Draft role review",
+        title: `${draft.title} is ${completion.percent}% complete`,
+        points: [
+          ["What's missing", completion.missing.length ? completion.missing.join(", ") : "Nothing — this draft is ready for a final preview."],
+          ["Owner", draft.owner || "Unassigned"],
+          ["Last edited", draft.lastUpdated || "—"]
+        ],
+        move: completion.missing.length ? `Fill in "${completion.missing[0]}" next — it has the largest effect on completion.` : "Preview the job post and publish when ready.",
+        impact: `Completing the remaining ${completion.missing.length} section${completion.missing.length === 1 ? "" : "s"} will make this role ready to publish.`,
+        actions: [["Continue setup", "role-builder", draft.id], ["Preview draft", "role-builder", draft.id]]
+      };
+    }
+  }
+
+  if (text.includes("supply") || text.includes("strongest")) {
+    const best = openRoles.slice().sort((a, b) => (b.strongMatches / Math.max(1, b.applicants)) - (a.strongMatches / Math.max(1, a.applicants)))[0];
+    if (best) {
+      return {
+        eyebrow: "Candidate supply",
+        title: `${best.title} has the strongest candidate supply`,
+        points: [
+          ["Match quality", `${best.strongMatches} strong matches out of ${best.applicants} applicants.`],
+          ["Talent availability", best.talentSupply || "—"],
+          ["Days open", `${best.daysOpen} days`]
+        ],
+        move: "Prioritise moving strong matches on this role to interview while supply is high.",
+        impact: "Roles with high match density tend to fill faster and with less screening effort.",
+        actions: [["View candidates", "pipeline", null], ["Open role", "role-builder", best.id]]
+      };
+    }
+  }
+
+  if (text.includes("paused") && text.includes("resume")) {
+    const paused = roles.filter(r => r.status === "Paused");
+    if (paused.length) {
+      const pick = paused[0];
+      return {
+        eyebrow: "Paused roles",
+        title: `${pick.title} is the best candidate to resume`,
+        points: [
+          ["Why it's paused", pick.pauseReason || "No reason recorded."],
+          ["Retained candidates", `${pick.applicants} applicants, ${pick.strongMatches} strong matches still on file.`],
+          ["Paused since", pick.pausedSince || "—"]
+        ],
+        move: "Review the requirement that triggered the pause, then resume hiring.",
+        impact: "Resuming keeps the existing candidate pool instead of restarting sourcing.",
+        actions: [["Review role", "role-builder", pick.id], ["Resume from Roles list", "roles", null]]
+      };
+    }
+  }
+
+  if (text.includes("closed") || text.includes("summar")) {
+    const closed = roles.filter(r => r.status === "Closed");
+    if (closed.length) {
+      const results = getRoleResultsData(closed[0]);
+      return {
+        eyebrow: "Closed-role results",
+        title: `${closed[0].title}: ${results.finalHire}`,
+        points: [
+          ["Funnel", `${results.reviewed} reviewed → ${results.shortlisted} shortlisted → ${results.interviewed} interviewed → ${results.offersAccepted} hired.`],
+          ["Time to hire", results.timeToHire],
+          ["Drop-off stage", results.dropOffStage]
+        ],
+        move: results.improvement,
+        impact: "Applying this to the next similar role should reduce avoidable drop-off.",
+        actions: [["View results", "roles", null]]
+      };
+    }
+  }
+
+  if (text.includes("compare")) {
+    const sorted = openRoles.slice().sort((a, b) => b.strongMatches - a.strongMatches);
+    return {
+      eyebrow: "Open roles compared",
+      title: "How your open roles compare",
+      points: sorted.slice(0, 3).map(r => [r.title, `${r.strongMatches} strong matches, ${r.daysOpen} days open, health: ${getOpenRoleHealth(r).label}.`]),
+      move: sorted[0] ? `${sorted[0].title} has the most momentum right now.` : "No open roles to compare yet.",
+      impact: "Use this to decide where to spend recruiter time this week.",
+      actions: [["Open strongest role", "role-builder", sorted[0]?.id || null]]
+    };
+  }
+
+  if (text.includes("requirement")) {
+    const flagged = roles.find(r => (r.roleIntelligence?.concerns || []).length > 0);
+    if (flagged) {
+      return {
+        eyebrow: "Requirement review",
+        title: `${flagged.title} requirements may be too strict`,
+        points: (flagged.roleIntelligence.concerns || []).slice(0, 3).map(c => [c.issue, c.why]),
+        move: flagged.roleIntelligence.suggestions?.[0]?.recommendation || "Review must-have requirements against the applicant pool.",
+        impact: flagged.roleIntelligence.suggestions?.[0]?.expectedEffect || "Loosening non-essential requirements should widen the candidate pool.",
+        actions: [["Edit requirement", "role-builder", flagged.id], ["View affected candidates", "pipeline", null]]
+      };
+    }
+  }
+
+  if (worstOpen) return buildRoleFocusVeraAnswer(worstOpen.r, worstOpen.health);
+
+  return {
+    eyebrow: "Roles overview",
+    title: "What needs attention across your roles",
+    points: [
+      ["Open roles", `${openRoles.length} open, ${roles.filter(r => r.status === "Draft").length} draft, ${roles.filter(r => r.status === "Paused").length} paused.`],
+      ["Biggest risk", "No roles currently need attention."],
+      ["Drafts", roles.filter(r => r.status === "Draft").length ? "At least one draft role is not yet published." : "No drafts waiting."]
+    ],
+    move: "Hiring is on track across your roles.",
+    impact: "Keeping requirements realistic is the fastest way to grow candidate supply.",
+    actions: [["Open Roles", "roles", null]]
+  };
+}
+
+const ROLES_VERA_STARTERS = [
+  "Which role needs attention first?",
+  "Why is Junior Data Analyst underperforming?",
+  "Review my role requirements",
+  "Which role has the strongest candidate supply?",
+  "Help me improve a draft role",
+  "Compare my open roles",
+  "Which paused role should I resume?",
+  "Summarize closed-role results",
+  "Suggest the next action for each role"
+];
+
+let rolesVeraFocusRoleId = null;
+let rolesVeraLastPrompt = "";
+
+function renderRolesVeraModalContent(promptText, focusRoleId) {
+  const focusRole = focusRoleId ? DATA.employerRoles.find(r => r.id === focusRoleId) : null;
+  return `
+    <div class="emp-roles-vera-head">
+      <div>
+        ${focusRole ? `<span class="emp-vera-context">Role context: ${escapeHtml(focusRole.title)}</span>` : `<span class="emp-vera-context">All roles</span>`}
+        <h2>Vera for hiring roles</h2>
+        <p>Ask about role performance, requirements, candidate supply, applicant quality, or hiring bottlenecks.</p>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+    </div>
+    <div class="emp-roles-vera-scroll" data-roles-vera-scroll>
+      ${!promptText ? `
+        <div class="emp-vera-starters emp-roles-vera-starters">
+          <span class="emp-tags-label">Try asking</span>
+          ${ROLES_VERA_STARTERS.map(s => `<button type="button" data-roles-vera-suggestion="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join("")}
+        </div>
+      ` : renderEmployerVeraResponse(getRolesVeraResponse(promptText, focusRoleId))}
+    </div>
+    <form class="emp-vera-compose emp-roles-vera-compose" data-roles-vera-form>
+      <textarea name="prompt" rows="2" placeholder="Ask Vera about your roles...">${escapeHtml(promptText || "")}</textarea>
+      <button type="submit" class="btn btn-primary" data-roles-vera-submit>${icon("send")} Ask</button>
+    </form>
+  `;
+}
+
+function bindRolesVeraModal(host) {
+  const card = qs(".emp-modal-card", host);
+  if (!card) return;
+  qs("[data-roles-vera-form]", card)?.addEventListener("submit", event => {
+    event.preventDefault();
+    const submitBtn = qs("[data-roles-vera-submit]", card);
+    if (submitBtn?.disabled) return;
+    const form = new FormData(event.currentTarget);
+    const val = String(form.get("prompt") || "").trim();
+    if (!val) return;
+    if (submitBtn) submitBtn.disabled = true;
+    rolesVeraLastPrompt = val;
+    refreshRolesVeraModal(host);
+  });
+  qsa("[data-roles-vera-suggestion]", card).forEach(btn => btn.addEventListener("click", () => {
+    if (btn.disabled) return;
+    qsa("[data-roles-vera-suggestion]", card).forEach(b => b.disabled = true);
+    rolesVeraLastPrompt = btn.dataset.rolesVeraSuggestion;
+    refreshRolesVeraModal(host);
+  }));
+  qsa("[data-vera-nav]", card).forEach(btn => btn.addEventListener("click", () => {
+    if (btn.disabled) return;
+    qsa("[data-vera-nav]", card).forEach(b => b.disabled = true);
+    const view = btn.dataset.veraNav; const id = btn.dataset.veraId && btn.dataset.veraId !== "null" ? btn.dataset.veraId : null;
+    closeEmpModal();
+    if (view && view !== "roles") employerNavigateTo(view, id ? { id } : {});
+    else if (view === "roles") employerNavigateTo("roles", {}, { force: true });
+  }));
+}
+
+function refreshRolesVeraModal(host) {
+  const card = qs(".emp-modal-card", host);
+  if (!card) return;
+  card.innerHTML = renderRolesVeraModalContent(rolesVeraLastPrompt, rolesVeraFocusRoleId);
+  createIcons();
+  bindRolesVeraModal(host);
+}
+
+function openRolesVeraModal(promptSeed = "", focusRoleId = null) {
+  rolesVeraFocusRoleId = focusRoleId;
+  rolesVeraLastPrompt = promptSeed;
+  openEmpModal("roles-vera", renderRolesVeraModalContent(promptSeed, focusRoleId), {
+    label: "Vera for hiring roles",
+    className: "emp-roles-vera-card",
+    onOpen: bindRolesVeraModal
+  });
+}
+
+function renderEmployerVeraResponse(response) {
+  return `
+    <div class="emp-vera-answer-card">
+      <div class="emp-callout-label">${icon("sparkles")} ${response.eyebrow}</div>
+      <h3>${response.title}</h3>
+      <ol class="emp-vera-answer-points">
+        ${response.points.map(([label, body]) => `<li><strong>${label}</strong><span>${body}</span></li>`).join("")}
+      </ol>
+      <div class="emp-vera-recommendation">
+        <span class="emp-tags-label">Recommended first move</span>
+        <p>${response.move}</p>
+        <small>${response.impact}</small>
+      </div>
+      <div class="emp-vera-answer-actions">
+        ${response.actions.map(([label, view, id]) => `<button type="button" class="btn btn-ghost btn-sm" data-vera-nav="${view}" ${id ? `data-vera-id="${id}"` : ""}>${label}</button>`).join("")}
+      </div>
+      <p class="emp-vera-principle">${icon("shield-check")} Evidence, uncertainty and next action are shown so the employer keeps the decision.</p>
+    </div>
+  `;
+}
+
+function renderEmployerVeraDrawer() {
+  const host = qs("[data-emp-vera-drawer-root]");
+  if (!host) return;
+  if (!employerVeraDrawerOpen) {
+    host.innerHTML = "";
+    return;
+  }
+
+  const context = getEmployerVeraContext();
+  const response = getEmployerVeraStructuredResponse(employerVeraPrompt, context);
+  const promptValue = escapeHtml(employerVeraPrompt || "");
+  const contextTitle = escapeHtml(context.title);
+  const contextLabel = escapeHtml(context.label);
+  host.innerHTML = `
+    <div class="emp-vera-drawer-backdrop" data-emp-vera-close></div>
+    <aside class="emp-vera-drawer" aria-label="Ask Vera drawer">
+      <div class="emp-vera-drawer-head">
+        <div>
+          <span class="emp-vera-context">${contextTitle}: ${contextLabel}</span>
+          <h2>Ask Vera</h2>
+          <p>Vera uses the page you are viewing as context. Search still finds known things; Vera explains, compares and recommends next actions.</p>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" data-emp-vera-close>${icon("x")}</button>
+      </div>
+      <form class="emp-vera-compose" data-emp-vera-form>
+        <textarea name="prompt" rows="3" placeholder="Ask Vera anything about this hiring workflow...">${promptValue}</textarea>
+        <button type="submit" class="btn btn-primary">${icon("send")} Ask</button>
+      </form>
+      <div class="emp-vera-starters">
+        <span class="emp-tags-label">Try asking</span>
+        ${context.suggestions.slice(0, 5).map(item => {
+          const safeItem = escapeHtml(item);
+          return `<button type="button" data-emp-vera-suggestion="${safeItem}">${safeItem}</button>`;
+        }).join("")}
+      </div>
+      ${renderEmployerVeraResponse(response)}
+    </aside>
+  `;
+  createIcons();
+
+  qsa("[data-emp-vera-close]", host).forEach(btn => btn.addEventListener("click", () => {
+    employerVeraDrawerOpen = false;
+    renderEmployerVeraDrawer();
+  }));
+  qs("[data-emp-vera-form]", host)?.addEventListener("submit", event => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const next = readState();
-    next.employerProfile = {
-      ...(next.employerProfile || {}),
-      company: String(form.get("company") || "").trim(),
-      hiringGoal: String(form.get("hiringGoal") || "").trim(),
-      updatedAt: nowStamp()
-    };
-    writeState(next);
-    showToast("Company profile saved.");
+    const prompt = String(form.get("prompt") || "").trim();
+    if (prompt) employerVeraPrompt = prompt;
+    renderEmployerVeraDrawer();
   });
-  qs("[data-invite-all-applicants]", root)?.addEventListener("click", () => {
-    showToast(`Invite drafted for ${DATA.candidates.length} qualified applicants.`);
-  });
-  qs("[data-vera-draft-outreach]", root)?.addEventListener("click", () => {
-    showToast("Vera drafted outreach messages for your shortlisted candidates.");
-  });
-  qs("[data-vera-interview-questions]", root)?.addEventListener("click", () => {
-    showToast("Vera generated interview questions based on your active roles.");
-  });
+  qsa("[data-emp-vera-suggestion]", host).forEach(btn => btn.addEventListener("click", () => {
+    employerVeraPrompt = btn.dataset.empVeraSuggestion;
+    renderEmployerVeraDrawer();
+  }));
+  qsa("[data-vera-nav]", host).forEach(btn => btn.addEventListener("click", () => {
+    employerVeraDrawerOpen = false;
+    renderEmployerVeraDrawer();
+    employerNavigateTo(btn.dataset.veraNav, btn.dataset.veraId ? { id: btn.dataset.veraId } : {});
+  }));
 }
 
-function safeCandidateName(candidate) {
-  return candidate.privacy === "Anonymized" ? `${candidate.role} candidate` : candidate.name;
+function openEmployerVera(prompt = "") {
+  if (prompt) employerVeraPrompt = prompt;
+  if (!employerVeraPrompt) employerVeraPrompt = getEmployerVeraContext().suggestions[0] || "What needs my attention today?";
+  employerVeraDrawerOpen = true;
+  renderEmployerVeraDrawer();
 }
 
-function candidateCard(candidate, compact = false) {
-  return `
-    <article class="tool-card candidate-card">
-      <div class="list-card-top"><div><h3>${safeCandidateName(candidate)}</h3><div class="muted small">${candidate.careerStage} - ${candidate.location}</div></div><span class="score">${candidate.fit}%</span></div>
-      <p>${candidate.role}</p>
-      ${pills(candidate.skills, "cyan")}
-      ${compact ? "" : `
-        <div class="candidate-facts">
-          <span>${icon("graduation-cap")} ${candidate.education}</span>
-          <span>${icon("clock")} ${candidate.availability}</span>
-          <span>${icon("folder-open")} ${candidate.portfolio} portfolio</span>
-          <span>${icon("wallet")} ${candidate.salary}</span>
-        </div>
-        <div class="vera-box subtle"><strong>Match reason</strong><p class="muted small">${candidate.reason}</p></div>
-      `}
-      <div class="hero-actions compact-actions">
-        <button class="btn btn-ghost" data-save-candidate="${candidate.id}">${icon("bookmark")} Save</button>
-        <button class="btn btn-primary" data-invite-candidate="${candidate.id}">${icon("send")} Invite</button>
+function renderEmployerView(view, params, root) {
+  switch (view) {
+    case "dashboard": return renderEmployerDashboard(root);
+    case "roles": return renderEmployerRolesList(root);
+    case "role-builder": return renderEmployerRoleBuilder(root, params.id || null);
+    case "pipeline": return renderEmployerTalentPipeline(root, params);
+    case "feed": return renderEmployerFeed(root);
+    case "messages": return renderEmployerMessages(root, params);
+    case "saved-candidates": return renderEmployerSavedCandidates(root);
+    case "company": return renderEmployerCompany(root);
+    case "company-edit": return renderEmployerCompanyEdit(root);
+    default: return renderEmployerPlaceholder(root, view);
+  }
+}
+
+function renderEmployerDashboard(root) {
+  const state = readState();
+  const employer = state.employerProfile || {};
+  const roles = DATA.employerRoles;
+  const activeCandidates = DATA.candidates.filter(c => !c.archived);
+  const priorityRole = roles.find(r => r.id === "er2") || roles.find(r => r.health === "Needs attention") || roles[0];
+  const backendRole = roles.find(r => r.id === "er5") || roles.find(r => r.title.includes("Backend"));
+  const designRole = roles.find(r => r.id === "er1") || roles[0];
+  const weiJun = DATA.candidates.find(c => c.id === "c5");
+  const daniel = DATA.candidates.find(c => c.id === "c2");
+  const ahmad = DATA.candidates.find(c => c.id === "c4");
+  const priya = DATA.candidates.find(c => c.id === "c3");
+  const farah = DATA.candidates.find(c => c.id === "c6");
+  const openCount = roles.filter(r => r.status === "Open").length;
+  const candidatesNeedingAction = activeCandidates.filter(c => c.stage !== "Hired" && (candidateNeedsAction(c) || ["Shortlisted", "Final Review"].includes(c.stage))).length;
+  const interviewsThisWeek = Math.max(4, activeCandidates.filter(c => c.interview?.nextInterview).length);
+  const offersAwaiting = activeCandidates.filter(offerOutstanding).length;
+  const stageCounts = EMPLOYER_TALENT_PIPELINE_STAGES.map(stage => ({ stage, count: activeCandidates.filter(c => c.stage === stage).length }));
+  const rolesNeedingAttentionCount = roles.filter(r => { const m = computeHiringMomentum(r); return m && m.status !== "On Track"; }).length;
+  const bottleneckStage = stageCounts.filter(s => s.stage !== "Hired").reduce((max, s) => s.count > max.count ? s : max, stageCounts[0]);
+
+  const today = new Date();
+  const overline = `${today.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()} · ${today.toLocaleDateString("en-US", { month: "long", day: "numeric" }).toUpperCase()} · ${(employer.company || "YOUR COMPANY").toUpperCase()} · ${openCount} ACTIVE ROLE${openCount === 1 ? "" : "S"}`;
+
+  const actionQueue = [
+    {
+      tone: "urgent", label: "Urgent", object: weiJun?.name || "Wei Jun Tan",
+      reason: "Offer expires in 4 days", meta: "No response yet.",
+      action: "Follow up", view: "pipeline", id: weiJun?.id
+    },
+    {
+      tone: "today", label: "Today", object: daniel?.name || "Daniel Lim",
+      reason: "Interview feedback is incomplete", meta: "0 of 1 required scorecards submitted.",
+      action: "Collect feedback", view: "pipeline", id: daniel?.id
+    },
+    {
+      tone: "new", label: "New", object: ahmad?.role || "Backend Engineer",
+      reason: "1 high-potential application has not been reviewed", meta: "Oldest waiting: 3 weeks.",
+      action: "Review candidate", view: "pipeline", id: ahmad?.id
+    },
+    {
+      tone: "attention", label: "Attention", object: priorityRole.title,
+      reason: "Experience requirement may be filtering junior talent", meta: "126 applicants, but only 8 strong matches.",
+      action: "Review requirement", view: "role-builder", id: priorityRole.id
+    }
+  ];
+
+  const upcoming = [
+    { time: "2:00 PM", title: "Interview", detail: `${ahmad?.name || "Ahmad Zulkifli"} - Backend Engineer`, action: "Open interview", view: "pipeline", id: ahmad?.id },
+    { time: "Tomorrow", title: "Recruiter screen", detail: `${daniel?.name || "Daniel Lim"} - Junior Data Analyst`, action: "Open candidate", view: "pipeline", id: daniel?.id },
+    { time: "Friday", title: "Offer expires", detail: `${weiJun?.name || "Wei Jun Tan"} - Junior Data Analyst`, action: "Follow up", view: "pipeline", id: weiJun?.id }
+  ];
+
+  const rolesNeedingAttention = [
+    {
+      role: priorityRole,
+      signal: "Candidate supply mismatch",
+      why: "3-5 year requirement may be too restrictive",
+      action: "Review requirement",
+      view: "role-builder"
+    },
+    backendRole ? {
+      role: backendRole,
+      signal: "Hiring slowing",
+      why: `${backendRole.daysOpen} days open - only ${backendRole.strongMatches} strong matches`,
+      action: "Review role",
+      view: "role-builder"
+    } : null,
+    designRole ? {
+      role: designRole,
+      signal: "Strong new supply",
+      why: `${designRole.strongMatches} high-fit candidates available`,
+      action: "View candidates",
+      view: "pipeline"
+    } : null
+  ].filter(Boolean).slice(0, 3);
+
+  const signals = [
+    daniel ? { name: daniel.name, text: "accepted your interview invitation.", time: "12m ago" } : null,
+    priya ? { name: priya.name, text: "was referred by a current employee.", time: "1h ago" } : null,
+    weiJun ? { name: weiJun.name, text: "opened your offer.", time: "3h ago" } : null,
+    farah ? { name: farah.name, text: "is ready for a final decision.", time: "Yesterday" } : null
+  ].filter(Boolean);
+
+  const askVeraPrompts = [
+    "Which candidates should I review first?",
+    `Why is ${backendRole?.title || "Backend Engineer"} slowing down?`,
+    "Compare my final two candidates for Backend Engineer."
+  ];
+
+  root.innerHTML = `
+    <div class="emp-page-container">
+      <div class="emp-dash-opening">
+        <span class="emp-section-label">${overline}</span>
+        <h1>Good morning, ${getFirstName(state)}.</h1>
+        <p>Here is what needs attention across your hiring today.</p>
       </div>
-    </article>
+
+      <div class="emp-dash-hero-grid">
+        <section class="emp-dash-hero">
+          <div>
+            <div class="emp-dash-hero-label">${icon("sparkles")} Vera · Highest-impact action</div>
+            <h2>${priorityRole.title} has ${priorityRole.applicants} applicants, but only ${priorityRole.strongMatches} strong matches after ${priorityRole.daysOpen} days open.</h2>
+            <p class="emp-dash-hero-support">${priorityRole.roleIntelligence.potentialIssue} Comparable junior talent is concentrated at ${priorityRole.roleIntelligence.typicalExperience}.</p>
+          </div>
+          <div class="emp-dash-hero-actions">
+            <button type="button" class="btn btn-primary" data-dashboard-nav="role-builder" data-dashboard-id="${priorityRole.id}">Review requirement</button>
+            <button type="button" class="btn btn-ghost" data-dashboard-nav="pipeline">Why this?</button>
+          </div>
+        </section>
+        <aside class="emp-dash-impact-card">
+          <div>
+            <span class="emp-section-label">Potential impact</span>
+            <strong>Move candidates forward faster</strong>
+            <p>Adjusting this requirement is estimated to widen your strong-match pool for ${priorityRole.title}.</p>
+          </div>
+          <div class="emp-dash-avatars">
+            ${[weiJun, daniel, ahmad].filter(Boolean).map(c => `<span class="emp-dash-avatar" title="${c.name}">${initialsOf(c.name)}</span>`).join("")}
+          </div>
+        </aside>
+      </div>
+
+      <div class="emp-kpi-row">
+        <button type="button" class="emp-kpi-tile emp-kpi-clickable tone-1" data-dashboard-nav="roles">
+          <span>Active Roles</span><strong>${openCount}</strong><span class="emp-kpi-sub">${rolesNeedingAttentionCount} needs attention</span>
+        </button>
+        <button type="button" class="emp-kpi-tile emp-kpi-clickable tone-2" data-dashboard-nav="pipeline">
+          <span>Waiting for Review</span><strong>${candidatesNeedingAction}</strong><span class="emp-kpi-sub">Oldest · 2 days</span>
+        </button>
+        <button type="button" class="emp-kpi-tile emp-kpi-clickable tone-3" data-dashboard-nav="pipeline">
+          <span>Interviews This Week</span><strong>${interviewsThisWeek}</strong><span class="emp-kpi-sub">Next · today 2:00 PM</span>
+        </button>
+        <button type="button" class="emp-kpi-tile emp-kpi-clickable tone-4" data-dashboard-nav="pipeline">
+          <span>Offers Awaiting Response</span><strong>${offersAwaiting}</strong><span class="emp-kpi-sub">${weiJun ? `${weiJun.name.split(" ")[0]} expires in 4 days` : "1 expires in 4 days"}</span>
+        </button>
+      </div>
+
+      <div class="emp-dash-panels-grid">
+        <section class="emp-priorities-panel">
+          <div class="emp-editorial-head">
+            <div><span class="emp-section-label">Today</span><h2>Priorities</h2></div>
+            <span class="emp-editorial-support">Ranked by urgency</span>
+          </div>
+          ${actionQueue.map(item => `
+            <div class="emp-priority-row">
+              <span class="emp-priority-row-label">${item.label.toUpperCase()}${item.tone === "urgent" ? "" : ""}</span>
+              <div>
+                <strong>${item.object}</strong>
+                <p>${item.reason} · ${item.meta}</p>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" data-dashboard-nav="${item.view}" ${item.id ? `data-dashboard-id="${item.id}"` : ""}>${item.action}</button>
+            </div>
+          `).join("")}
+        </section>
+
+        <section class="emp-coming-up-panel">
+          <div class="emp-editorial-head"><div><span class="emp-section-label">Schedule</span><h2>Coming up</h2></div></div>
+          ${upcoming.map(item => `
+            <div class="emp-priority-row">
+              <span class="emp-priority-row-label">${item.time}</span>
+              <div>
+                <strong>${item.title}</strong>
+                <p>${item.detail}</p>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" data-dashboard-nav="${item.view}" ${item.id ? `data-dashboard-id="${item.id}"` : ""}>${item.action}</button>
+            </div>
+          `).join("")}
+        </section>
+      </div>
+
+      <section class="emp-flow-panel">
+        <div class="emp-editorial-head"><div><span class="emp-section-label">Hiring Flow</span><h2>Where hiring stands right now</h2></div></div>
+        <div class="emp-flow-row">
+          ${stageCounts.map(item => `<div class="emp-flow-stage"><strong>${item.count}</strong><span>${item.stage}</span></div>`).join("")}
+        </div>
+        <div class="emp-flow-bottleneck">
+          <span class="emp-tags-label">Current bottleneck: ${bottleneckStage.stage}</span>
+          <p>${bottleneckStage.count} candidate${bottleneckStage.count === 1 ? "" : "s"} are currently at this stage — the largest concentration in your pipeline.</p>
+          <button type="button" class="btn btn-primary btn-sm" data-dashboard-nav="pipeline">Resolve</button>
+        </div>
+      </section>
+
+      <section class="emp-priorities-panel">
+        <div class="emp-editorial-head"><div><span class="emp-section-label">Roles</span><h2>Needing attention</h2></div>
+          <button type="button" class="emp-attention-role-link" data-dashboard-nav="roles">See all roles →</button>
+        </div>
+        <div class="emp-attention-list">
+          ${rolesNeedingAttention.map(item => `
+            <div class="emp-attention-role-card">
+              <div class="emp-attention-role-head"><strong>${item.role.title}</strong></div>
+              <p class="emp-attention-role-meta">${item.role.applicants} applicants · ${item.role.strongMatches} strong matches · ${item.role.daysOpen}d open</p>
+              <p class="emp-attention-role-why">${item.why}.</p>
+              <button type="button" class="emp-attention-role-link" data-dashboard-nav="${item.view}" ${item.view === "role-builder" ? `data-dashboard-id="${item.role.id}"` : ""}>${item.action} →</button>
+            </div>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="emp-signals-panel">
+        <div class="emp-editorial-head"><div><span class="emp-section-label">Signals</span><h2>From your candidates</h2></div></div>
+        <div class="emp-signals-list">
+          ${signals.map(s => `<div class="emp-signal-row"><p><strong>${s.name}</strong> ${s.text}</p><time>${s.time}</time></div>`).join("")}
+        </div>
+      </section>
+
+      <section class="emp-ask-vera-strip">
+        <span class="emp-section-label">Ask Vera</span>
+        <div class="emp-ask-vera-chips">
+          ${askVeraPrompts.map(p => `<button type="button" class="emp-ask-vera-chip" data-dashboard-vera-prompt="${p}">${p}</button>`).join("")}
+        </div>
+      </section>
+    </div>
   `;
+  createIcons();
+
+  qsa("[data-dashboard-nav]", root).forEach(btn => btn.addEventListener("click", () => {
+    employerNavigateTo(btn.dataset.dashboardNav, btn.dataset.dashboardId ? { id: btn.dataset.dashboardId } : {});
+  }));
+  qsa("[data-dashboard-vera-prompt]", root).forEach(btn => btn.addEventListener("click", () => {
+    openEmployerVera(btn.dataset.dashboardVeraPrompt);
+  }));
+}
+
+function parseSalaryRangeMid(str) {
+  if (!str) return null;
+  const nums = str.match(/[\d.]+k?/gi);
+  if (!nums || nums.length < 2) return null;
+  const toNum = s => (/k$/i.test(s) ? parseFloat(s) * 1000 : parseFloat(s));
+  return (toNum(nums[0]) + toNum(nums[1])) / 2;
+}
+
+function computeHiringMomentum(role) {
+  if (role.status === "Draft" || role.status === "Archived") return null;
+  const { applicants, strongMatches, daysOpen, minExperience } = role;
+
+  const veryRestrictive = minExperience === "5+ years";
+  const marketMid = parseSalaryRangeMid(role.roleIntelligence?.commonSalary);
+  const roleMid = role.salary && role.salary.min && role.salary.max ? (role.salary.min + role.salary.max) / 2 : null;
+  const belowMarket = !!(marketMid && roleMid && roleMid < marketMid * 0.9);
+  const pendingCandidates = DATA.candidates.filter(c => c.role === role.title && c.stage === "New").length;
+  const hasPendingActions = pendingCandidates >= 3;
+  const lowMatchRate = applicants > 0 && strongMatches / applicants < 0.1;
+
+  let riskScore = 0;
+  if (veryRestrictive) riskScore += 1;
+  if (belowMarket) riskScore += 1;
+  if (lowMatchRate) riskScore += 1;
+
+  let status;
+  if (daysOpen >= 21 && strongMatches <= 2) status = "At Risk";
+  else if (daysOpen >= 10 && (strongMatches < 6 || riskScore >= 2)) status = "Needs Attention";
+  else if (riskScore >= 1 || hasPendingActions) status = "Needs Attention";
+  else status = "On Track";
+
+  const reasons = [
+    `${applicants} applicant${applicants === 1 ? "" : "s"}`,
+    `${strongMatches} strong match${strongMatches === 1 ? "" : "es"}`,
+    `open ${daysOpen} day${daysOpen === 1 ? "" : "s"}`
+  ];
+  if (veryRestrictive) reasons.push("minimum experience requirement is on the high end");
+  if (belowMarket) reasons.push("salary may be below the typical range");
+  if (hasPendingActions) reasons.push(`${pendingCandidates} candidates waiting for review`);
+
+  let nextAction;
+  if (status === "On Track") nextAction = "Keep monitoring";
+  else if (veryRestrictive) nextAction = "Review the minimum experience requirement";
+  else if (belowMarket) nextAction = "Review salary against the market";
+  else if (hasPendingActions) nextAction = `Review ${pendingCandidates} candidates waiting for a decision`;
+  else nextAction = "Review requirements";
+
+  const summary = status === "At Risk"
+    ? `Open for ${daysOpen} days with only ${strongMatches} strong match${strongMatches === 1 ? "" : "es"}.`
+    : status === "Needs Attention"
+      ? `Only ${strongMatches} strong match${strongMatches === 1 ? "" : "es"} after ${daysOpen} days.`
+      : `${strongMatches} strong match${strongMatches === 1 ? "" : "es"} in ${daysOpen} days.`;
+
+  return { status, summary, reasons, nextAction };
+}
+
+const ROLE_STATUS_PILL_CLASS = { Open: "green", Draft: "gold", Paused: "cyan", Closed: "red", Archived: "" };
+const ROLE_MOMENTUM_CLASS = { "On Track": "green", "Needs Attention": "gold", "At Risk": "red" };
+
+const ROLE_STATUS_PRIMARY = {
+  Draft: "Continue setup", Open: "View candidates", Paused: "Resume hiring", Closed: "View results", Archived: "View summary"
+};
+
+const ROLE_STATUS_MENU = {
+  Draft: [["Continue setup", "edit"], ["Preview draft", "preview"], ["Ask Vera", "ask-vera"], ["Save as template", "save-template"], ["Duplicate", "duplicate"], ["Delete draft", "delete"]],
+  Open: [["Edit role", "edit"], ["Preview job", "preview"], ["View candidates", "candidates"], ["Share role", "share"], ["Pause hiring", "pause"], ["Close role", "close"], ["Duplicate role", "duplicate"], ["Ask Vera", "ask-vera"]],
+  Paused: [["Resume hiring", "resume"], ["Edit role", "edit"], ["Preview job", "preview"], ["Review existing candidates", "candidates"], ["Close role", "close"], ["Archive role", "archive"], ["Ask Vera", "ask-vera"]],
+  Closed: [["View results", "results"], ["Duplicate as new role", "duplicate"], ["Reopen role", "reopen"], ["Export summary", "export-summary"], ["Archive role", "archive"], ["Ask Vera for retrospective", "ask-vera"]],
+  Archived: [["View summary", "results"], ["Restore role", "restore"], ["Duplicate", "duplicate"], ["Export data", "export-summary"], ["Permanently delete", "permanent-delete"]]
+};
+
+const ROLE_CLOSE_REASONS = ["Position filled", "Hiring paused indefinitely", "Role changed", "Duplicate role", "Other"];
+const ROLE_PAUSE_REASONS = ["Requirements under review", "Budget on hold", "Reassessing hiring plan", "Waiting on stakeholder decision", "Other"];
+
+function changeRoleStatus(role, newStatus, meta = {}) {
+  const prevStatus = role.status;
+  role.status = newStatus;
+  role.lastUpdated = "Just now";
+  if (newStatus === "Closed") {
+    role.closeReason = meta.reason || role.closeReason || "Other";
+    role.closedDate = "Just now";
+    role.pauseReason = null; role.pausedSince = null;
+  } else if (newStatus === "Paused") {
+    role.pauseReason = meta.reason || role.pauseReason || "Other";
+    role.pausedSince = "Just now";
+    role.lastActivity = "Just now";
+  } else if (newStatus === "Open") {
+    role.closeReason = null;
+    role.pauseReason = null; role.pausedSince = null;
+  } else if (newStatus === "Archived") {
+    role.previousStatus = prevStatus;
+    role.archivedDate = "Just now";
+    role.retentionPeriod = "Data retained for 12 months from archive date";
+  } else if (newStatus === "Draft" && prevStatus === "Archived") {
+    role.previousStatus = null; role.archivedDate = null;
+  }
+}
+
+function duplicateEmployerRole(role) {
+  const copy = JSON.parse(JSON.stringify(role));
+  copy.id = `er-${Date.now()}`;
+  copy.title = `${role.title} (Copy)`;
+  copy.status = "Draft";
+  copy.closeReason = null; copy.pauseReason = null; copy.pausedSince = null; copy.lastActivity = null;
+  copy.closedDate = null; copy.archivedDate = null; copy.previousStatus = null; copy.retentionPeriod = null;
+  copy.results = null;
+  copy.applicants = 0; copy.qualified = 0; copy.strongMatches = 0; copy.daysOpen = 0;
+  copy.newApplicants = 0; copy.interviews = 0; copy.offers = 0; copy.hires = 0;
+  copy.owner = role.owner || "You"; copy.lastUpdated = "Just now";
+  DATA.employerRoles.push(copy);
+  return copy;
+}
+
+const DRAFT_REQUIRED_SECTIONS = [
+  { label: "Role basics", check: r => !!(r.title && r.department && r.employmentType) },
+  { label: "Role description", check: r => !!(r.roleSummary && r.roleSummary.trim().length > 20) },
+  { label: "Responsibilities", check: r => (r.responsibilities || []).filter(x => x.trim()).length >= 3 },
+  { label: "Candidate requirements", check: r => (r.mustHaveSkills || []).length > 0 && !!r.minExperience },
+  { label: "Compensation and benefits", check: r => !!(r.salary && r.salary.min && r.salary.max) },
+  { label: "Location and work arrangement", check: r => !!(r.location && r.workMode) },
+  { label: "Hiring process", check: r => (r.hiringStages || []).length > 0 },
+  { label: "Application method", check: r => !!(r.applicationDeadline || r.contactPerson) },
+  { label: "Company information", check: r => !!(r.companySummary || r.useCompanyProfile) },
+  { label: "Preview validation", check: r => !!r.previewReviewed }
+];
+
+function calculateDraftCompletion(roleOrDraft) {
+  const sections = DRAFT_REQUIRED_SECTIONS.map(s => ({ label: s.label, done: !!s.check(roleOrDraft) }));
+  const doneCount = sections.filter(s => s.done).length;
+  const percent = Math.round((doneCount / sections.length) * 100);
+  return { percent, missing: sections.filter(s => !s.done).map(s => s.label), sections };
+}
+
+function getOpenRoleHealth(role) {
+  const momentum = computeHiringMomentum(role);
+  if (!momentum || momentum.status === "On Track") {
+    return { label: "On track", reason: momentum ? momentum.summary : "Hiring is progressing normally." };
+  }
+  const applicants = role.applicants || 0;
+  const qualifiedRate = applicants > 0 ? (role.qualified || 0) / applicants : 1;
+  const matchRate = applicants > 0 ? (role.strongMatches || 0) / applicants : 1;
+  if (role.talentSupply === "Tight" || matchRate < 0.08) {
+    return { label: "Low candidate supply", reason: `Only ${role.strongMatches} suitable candidates match out of ${applicants} applicants.` };
+  }
+  if (qualifiedRate < 0.3) {
+    return { label: "Too many unqualified applicants", reason: `Only ${role.qualified} of ${applicants} applicants meet the must-have requirements.` };
+  }
+  if ((role.interviews || 0) >= 4 && (role.offers || 0) === 0 && (role.daysOpen || 0) >= 10) {
+    return { label: "Interview bottleneck", reason: `${role.interviews} candidates have been interviewed with no offer decision after ${role.daysOpen} days.` };
+  }
+  if ((role.offers || 0) > 0 && (role.hires || 0) === 0 && (role.daysOpen || 0) >= 14) {
+    return { label: "Offer stage delay", reason: `An offer has been sent but not yet accepted after ${role.daysOpen} days open.` };
+  }
+  return { label: "Needs attention", reason: momentum.summary };
+}
+
+function getRoleResultsData(role) {
+  if (role.results) return role.results;
+  const reviewed = role.applicants || 0;
+  const shortlisted = role.qualified || Math.round(reviewed * 0.35);
+  const interviewed = role.interviews || Math.round(shortlisted * 0.4);
+  const offersSent = role.offers || (role.hires ? role.hires : 0);
+  const offersAccepted = role.hires || 0;
+  return {
+    reviewed, shortlisted, interviewed, offersSent, offersAccepted,
+    finalHire: offersAccepted > 0 ? "Candidate hired" : "No hire recorded",
+    timeToHire: role.timeToHire || (role.daysOpen ? `${role.daysOpen} days` : "—"),
+    sourcingChannel: "CareerGo direct apply",
+    dropOffStage: interviewed > 0 ? "Screening call" : "Application review",
+    retrospective: "Vera does not have enough recorded activity on this role for a detailed retrospective yet.",
+    improvement: "Add more structured screening questions next time to surface stronger signal earlier."
+  };
+}
+
+/* ---------- Shared modal system: single-instance, Escape/backdrop close, focus return ---------- */
+let empModalReturnFocus = null;
+
+function ensureEmpModalRoot() {
+  let host = qs("[data-emp-modal-root]");
+  if (!host) {
+    host = document.createElement("div");
+    host.dataset.empModalRoot = "";
+    document.body.appendChild(host);
+  }
+  if (!host.dataset.empModalBound) {
+    host.dataset.empModalBound = "1";
+    host.addEventListener("click", event => {
+      if (event.target.closest("[data-emp-modal-backdrop]") === event.target) closeEmpModal();
+    });
+  }
+  return host;
+}
+
+function closeEmpModal() {
+  const host = qs("[data-emp-modal-root]");
+  if (!host || !host.dataset.openModalId) return;
+  host.innerHTML = "";
+  delete host.dataset.openModalId;
+  const restore = empModalReturnFocus;
+  empModalReturnFocus = null;
+  if (restore && document.body.contains(restore)) restore.focus();
+}
+
+function openEmpModal(id, html, opts = {}) {
+  const host = ensureEmpModalRoot();
+  if (host.dataset.openModalId === id) {
+    qs(".emp-modal-card", host)?.focus();
+    return;
+  }
+  if (host.dataset.openModalId) closeEmpModal();
+  empModalReturnFocus = document.activeElement;
+  host.dataset.openModalId = id;
+  host.innerHTML = `
+    <div class="emp-modal-backdrop" data-emp-modal-backdrop>
+      <div class="emp-modal-card ${opts.className || ""}" role="dialog" aria-modal="true" aria-label="${escapeHtml(opts.label || "Dialog")}" tabindex="-1">
+        ${html}
+      </div>
+    </div>
+  `;
+  createIcons();
+  qs(".emp-modal-card", host)?.focus();
+  qsa("[data-emp-modal-close]", host).forEach(btn => btn.addEventListener("click", () => closeEmpModal()));
+  if (opts.onOpen) opts.onOpen(host);
+}
+
+if (!window.__empModalGlobalKeyReady) {
+  window.__empModalGlobalKeyReady = true;
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    const host = qs("[data-emp-modal-root]");
+    if (host && host.dataset.openModalId) closeEmpModal();
+  });
+}
+
+function openEmpConfirm({ title, body, confirmLabel = "Confirm", cancelLabel = "Cancel", danger = false, onConfirm }) {
+  openEmpModal("confirm", `
+    <div class="emp-confirm-modal">
+      <h2>${escapeHtml(title)}</h2>
+      <p>${body}</p>
+      <div class="emp-compose-actions">
+        <button type="button" class="btn btn-ghost" data-emp-modal-close>${escapeHtml(cancelLabel)}</button>
+        <button type="button" class="btn ${danger ? "btn-danger" : "btn-primary"}" data-emp-confirm-action>${escapeHtml(confirmLabel)}</button>
+      </div>
+    </div>
+  `, {
+    label: title,
+    onOpen: host => {
+      qs("[data-emp-confirm-action]", host)?.addEventListener("click", () => {
+        closeEmpModal();
+        onConfirm();
+      });
+    }
+  });
+}
+
+/* ---------- Roles table: status-specific columns, single delegated listener ---------- */
+const ROLE_STATUS_FILTERS = ["All", "Open", "Draft", "Paused", "Closed", "Archived"];
+
+function getRoleTableHeaders(filter) {
+  switch (filter) {
+    case "Open": return ["Role", "Applicants", "New", "Strong matches", "Hiring health", "Days open", "Recommended action"];
+    case "Draft": return ["Role", "Completion", "Missing information", "Last edited", "Draft owner", "Vera check"];
+    case "Paused": return ["Role", "Applicants retained", "Strong matches retained", "Paused since", "Pause reason", "Last activity", "Recommended next action"];
+    case "Closed": return ["Role", "Total applicants", "Strong matches", "Interviews", "Hires made", "Time to hire", "Closed date"];
+    case "Archived": return ["Role", "Previous status", "Total applicants", "Final outcome", "Archived date", "Retention period"];
+    default: return ["Role", "Status", "Applicants", "Strong matches", "Hiring health", "Last updated", "Recommended next action"];
+  }
+}
+
+function roleTitleCell(role) {
+  return `<td><button type="button" class="emp-role-title-link" data-action="open-role" data-role-id="${role.id}">${escapeHtml(role.title)}</button></td>`;
+}
+
+function roleActionCells(role) {
+  const menu = ROLE_STATUS_MENU[role.status] || [];
+  return `
+    <td class="emp-table-actions"><button type="button" class="btn btn-primary btn-sm" data-action="primary" data-role-id="${role.id}">${ROLE_STATUS_PRIMARY[role.status]}</button></td>
+    <td class="emp-table-actions">
+      ${menu.length ? `
+        <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-action="toggle-menu" data-role-id="${role.id}" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${escapeHtml(role.title)}">${icon("more-horizontal")}</button>
+        <div class="emp-actions-menu" data-emp-role-menu-panel="${role.id}" role="menu" hidden>
+          ${menu.map(([label, act]) => `<button type="button" role="menuitem" data-action="role-action" data-role-action="${act}" data-role-id="${role.id}">${label}</button>`).join("")}
+        </div>
+      ` : ""}
+    </td>
+  `;
+}
+
+function renderAllTabRow(role) {
+  let applicants = "—", strong = "—", health = "—", recommended = "—";
+  if (role.status === "Draft") {
+    const c = calculateDraftCompletion(role);
+    health = "Incomplete";
+    recommended = c.missing[0] || "Ready for preview";
+  } else if (role.status === "Open") {
+    applicants = role.applicants; strong = role.strongMatches;
+    health = getOpenRoleHealth(role).label;
+    const momentum = computeHiringMomentum(role);
+    recommended = momentum ? momentum.nextAction : "Keep monitoring";
+  } else if (role.status === "Paused") {
+    applicants = role.applicants; strong = role.strongMatches;
+    health = "Paused"; recommended = "Review before resuming";
+  } else if (role.status === "Closed") {
+    applicants = role.applicants; strong = role.strongMatches;
+    health = "Completed"; recommended = "Review hiring outcome";
+  } else if (role.status === "Archived") {
+    applicants = role.applicants; strong = role.strongMatches;
+    health = "Archived"; recommended = "—";
+  }
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td><span class="pill ${ROLE_STATUS_PILL_CLASS[role.status]}">${role.status}</span></td>
+      <td>${applicants}</td>
+      <td>${strong}</td>
+      <td>${escapeHtml(String(health))}</td>
+      <td>${escapeHtml(role.lastUpdated || "—")}</td>
+      <td>${escapeHtml(String(recommended))}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderOpenRow(role) {
+  const h = getOpenRoleHealth(role);
+  const momentum = computeHiringMomentum(role);
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td>${role.applicants}</td>
+      <td>${role.newApplicants ? `<span class="pill green">+${role.newApplicants}</span>` : "—"}</td>
+      <td>${role.strongMatches}</td>
+      <td><span class="pill ${h.label === "On track" ? "green" : "gold"}" title="${escapeHtml(h.reason)}">${h.label}</span></td>
+      <td>${role.daysOpen}d</td>
+      <td>${escapeHtml(momentum ? momentum.nextAction : h.reason)}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderDraftRow(role) {
+  const c = calculateDraftCompletion(role);
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td><div class="emp-completion-cell">${progressBar(c.percent)}<span>${c.percent}%</span></div></td>
+      <td>${c.missing.length ? escapeHtml(c.missing.slice(0, 3).join(", ")) : "Nothing — ready to preview"}</td>
+      <td>${escapeHtml(role.lastUpdated || "—")}</td>
+      <td>${escapeHtml(role.owner || "Unassigned")}</td>
+      <td>${role.veraCheckCount ? `${role.veraCheckCount} recommendation${role.veraCheckCount === 1 ? "" : "s"}` : "No open recommendations"}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderPausedRow(role) {
+  const momentum = computeHiringMomentum(role);
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td>${role.applicants}</td>
+      <td>${role.strongMatches}</td>
+      <td>${escapeHtml(role.pausedSince || "—")}</td>
+      <td>${escapeHtml(role.pauseReason || "—")}</td>
+      <td>${escapeHtml(role.lastActivity || "—")}</td>
+      <td>${escapeHtml(momentum ? momentum.nextAction : "Review before resuming")}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderClosedRow(role) {
+  const r = getRoleResultsData(role);
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td>${role.applicants}</td>
+      <td>${role.strongMatches}</td>
+      <td>${role.interviews ?? r.interviewed ?? "—"}</td>
+      <td>${role.hires ?? r.offersAccepted ?? 0}</td>
+      <td>${escapeHtml(role.timeToHire || r.timeToHire || "—")}</td>
+      <td>${escapeHtml(role.closedDate || "—")}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderArchivedRow(role) {
+  const outcome = role.results ? `${role.results.offersAccepted || 0} hire${(role.results.offersAccepted || 0) === 1 ? "" : "s"}` : (role.closeReason || "—");
+  return `
+    <tr class="emp-table-row">
+      ${roleTitleCell(role)}
+      <td>${escapeHtml(role.previousStatus || "—")}</td>
+      <td>${role.applicants}</td>
+      <td>${escapeHtml(outcome)}</td>
+      <td>${escapeHtml(role.archivedDate || "—")}</td>
+      <td>${escapeHtml(role.retentionPeriod || "—")}</td>
+      ${roleActionCells(role)}
+    </tr>
+  `;
+}
+
+function renderStatusTabRow(role) {
+  switch (role.status) {
+    case "Open": return renderOpenRow(role);
+    case "Draft": return renderDraftRow(role);
+    case "Paused": return renderPausedRow(role);
+    case "Closed": return renderClosedRow(role);
+    case "Archived": return renderArchivedRow(role);
+    default: return renderAllTabRow(role);
+  }
+}
+
+function clampMenuToViewport(panel) {
+  panel.style.top = ""; panel.style.bottom = "";
+  const rect = panel.getBoundingClientRect();
+  if (rect.bottom > window.innerHeight - 8) {
+    panel.style.top = "auto";
+    panel.style.bottom = "calc(100% + 6px)";
+  }
+}
+
+function openCloseReasonModal(role, onDone) {
+  openEmpModal("close-role", `
+    <h2>Why are you closing "${escapeHtml(role.title)}"?</h2>
+    <p class="emp-preview-note">Closing this role stops new applications. Existing applicants and hiring history will remain available.</p>
+    <div class="emp-close-reasons">
+      ${ROLE_CLOSE_REASONS.map((reason, i) => `<label class="check-field custom-checkbox"><input type="radio" name="close-reason" value="${escapeHtml(reason)}" ${i === 0 ? "checked" : ""}> ${escapeHtml(reason)}</label>`).join("")}
+    </div>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Cancel</button>
+      <button type="button" class="btn btn-primary" data-close-confirm>Close role</button>
+    </div>
+  `, {
+    label: `Close ${role.title}`,
+    onOpen: host => {
+      qs("[data-close-confirm]", host)?.addEventListener("click", () => {
+        const reason = qs('input[name="close-reason"]:checked', host)?.value || "Other";
+        closeEmpModal();
+        changeRoleStatus(role, "Closed", { reason });
+        onDone();
+        showToast(`${role.title} closed.`);
+      });
+    }
+  });
+}
+
+function openPauseReasonModal(role, onDone) {
+  openEmpModal("pause-role", `
+    <h2>Why are you pausing "${escapeHtml(role.title)}"?</h2>
+    <p class="emp-preview-note">Pausing stops new applications temporarily. Existing applicants and strong matches stay attached to this role.</p>
+    <div class="emp-close-reasons">
+      ${ROLE_PAUSE_REASONS.map((reason, i) => `<label class="check-field custom-checkbox"><input type="radio" name="pause-reason" value="${escapeHtml(reason)}" ${i === 0 ? "checked" : ""}> ${escapeHtml(reason)}</label>`).join("")}
+    </div>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Cancel</button>
+      <button type="button" class="btn btn-primary" data-pause-confirm>Pause role</button>
+    </div>
+  `, {
+    label: `Pause ${role.title}`,
+    onOpen: host => {
+      qs("[data-pause-confirm]", host)?.addEventListener("click", () => {
+        const reason = qs('input[name="pause-reason"]:checked', host)?.value || "Other";
+        closeEmpModal();
+        changeRoleStatus(role, "Paused", { reason });
+        onDone();
+        showToast(`${role.title} paused.`);
+      });
+    }
+  });
+}
+
+function openResumeConfirmModal(role, onDone) {
+  openEmpModal("resume-role", `
+    <h2>Resume hiring for "${escapeHtml(role.title)}"?</h2>
+    <p class="emp-preview-note">This role was paused ${escapeHtml(role.pausedSince || "recently")}${role.pauseReason ? ` — reason recorded: "${escapeHtml(role.pauseReason)}".` : "."} Existing applicants and strong matches are retained.</p>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Cancel</button>
+      <button type="button" class="btn btn-ghost" data-resume-edit>Edit role first</button>
+      <button type="button" class="btn btn-primary" data-resume-now>Resume immediately</button>
+    </div>
+  `, {
+    label: `Resume ${role.title}`,
+    onOpen: host => {
+      qs("[data-resume-now]", host)?.addEventListener("click", () => {
+        closeEmpModal();
+        changeRoleStatus(role, "Open");
+        onDone();
+        showToast(`${role.title} reopened for applicants.`);
+      });
+      qs("[data-resume-edit]", host)?.addEventListener("click", () => {
+        closeEmpModal();
+        employerNavigateTo("role-builder", { id: role.id });
+      });
+    }
+  });
+}
+
+function openRestoreModal(role, onDone) {
+  const target = role.previousStatus === "Draft" ? "Draft" : "Closed";
+  openEmpModal("restore-role", `
+    <h2>Restore "${escapeHtml(role.title)}"?</h2>
+    <p class="emp-preview-note">Choose where this role should return to.</p>
+    <div class="emp-close-reasons">
+      <label class="check-field custom-checkbox"><input type="radio" name="restore-target" value="Closed" ${target === "Closed" ? "checked" : ""}> Restore to Closed — hiring already finished</label>
+      <label class="check-field custom-checkbox"><input type="radio" name="restore-target" value="Draft" ${target === "Draft" ? "checked" : ""}> Restore to Draft — continue editing before republishing</label>
+    </div>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Cancel</button>
+      <button type="button" class="btn btn-primary" data-restore-confirm>Restore role</button>
+    </div>
+  `, {
+    label: `Restore ${role.title}`,
+    onOpen: host => {
+      qs("[data-restore-confirm]", host)?.addEventListener("click", () => {
+        const dest = qs('input[name="restore-target"]:checked', host)?.value || "Closed";
+        closeEmpModal();
+        changeRoleStatus(role, dest);
+        onDone();
+        showToast(`${role.title} restored to ${dest}.`);
+      });
+    }
+  });
+}
+
+function openRoleResultsModal(role, onDone) {
+  const r = getRoleResultsData(role);
+  const label = role.status === "Archived" ? "Role summary" : "Hiring results";
+  openEmpModal("role-results", `
+    <div class="emp-results-head">
+      <div><span class="emp-vera-context">${escapeHtml(label)}</span><h2>${escapeHtml(role.title)}</h2></div>
+      <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+    </div>
+    <div class="emp-results-funnel">
+      ${[["Reviewed", r.reviewed], ["Shortlisted", r.shortlisted], ["Interviewed", r.interviewed], ["Offers sent", r.offersSent], ["Offers accepted", r.offersAccepted]].map(([lbl, val]) => `
+        <div class="emp-results-stage"><strong>${val}</strong><span>${lbl}</span></div>
+      `).join("")}
+    </div>
+    <div class="emp-results-grid">
+      <div><span class="emp-tags-label">Final hire</span><p>${escapeHtml(r.finalHire)}</p></div>
+      <div><span class="emp-tags-label">Time to hire</span><p>${escapeHtml(r.timeToHire)}</p></div>
+      <div><span class="emp-tags-label">Most effective sourcing channel</span><p>${escapeHtml(r.sourcingChannel)}</p></div>
+      <div><span class="emp-tags-label">Key drop-off stage</span><p>${escapeHtml(r.dropOffStage)}</p></div>
+    </div>
+    <div class="emp-callout-label">${icon("sparkles")} Vera retrospective</div>
+    <p>${escapeHtml(r.retrospective)}</p>
+    <p class="emp-suggestion-rec">Suggested improvement for the next similar role</p>
+    <p>${escapeHtml(r.improvement)}</p>
+    <div class="emp-compose-actions">
+      <button type="button" class="btn btn-ghost" data-emp-modal-close>Close</button>
+      <button type="button" class="btn btn-primary" data-results-duplicate>${icon("copy")} Duplicate as new role</button>
+    </div>
+  `, {
+    label: `${label}: ${role.title}`,
+    className: "emp-results-card",
+    onOpen: host => {
+      qs("[data-results-duplicate]", host)?.addEventListener("click", () => {
+        closeEmpModal();
+        const copy = duplicateEmployerRole(role);
+        onDone();
+        showToast(`Duplicated as "${copy.title}".`);
+      });
+    }
+  });
+}
+
+let currentRolesClickHandler = null;
+function ensureRolesDelegation(root) {
+  if (root.dataset.rolesDelegated) return;
+  root.dataset.rolesDelegated = "1";
+  root.addEventListener("click", event => { if (currentRolesClickHandler) currentRolesClickHandler(event); });
+}
+
+/* Root cause of the original button-growth / duplicate-menu bug: this outside-click
+   closer used to be registered with document.addEventListener() inside bind(), which
+   re-ran on every draw() (every filter change, every action) — each call permanently
+   added another listener to document that was never removed. Registering it once here,
+   guarded by a global flag, keeps exactly one instance for the life of the page. */
+if (!window.__empRoleMenuGlobalReady) {
+  window.__empRoleMenuGlobalReady = true;
+  document.addEventListener("click", () => {
+    qsa("[data-emp-role-menu-panel]:not([hidden])").forEach(p => {
+      p.hidden = true;
+      qsa(`[data-action="toggle-menu"][data-role-id="${p.dataset.empRoleMenuPanel}"]`).forEach(b => b.setAttribute("aria-expanded", "false"));
+    });
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    qsa("[data-emp-role-menu-panel]:not([hidden])").forEach(p => { p.hidden = true; });
+  });
+}
+
+function renderEmployerRolesList(root) {
+  let activeFilter = "All";
+
+  function draw() {
+    const roles = DATA.employerRoles.filter(r => activeFilter === "All" || r.status === activeFilter);
+    const headers = [...getRoleTableHeaders(activeFilter), "", ""];
+    root.innerHTML = `
+      <div class="emp-view-header">
+        <div class="emp-view-header-top">
+          <div>
+            <span class="emp-section-label">Roles</span>
+            <h1>Roles in your company</h1>
+            <p>Create, publish, monitor, pause, close, and archive every role your company manages.</p>
+          </div>
+          <div class="emp-view-header-actions">
+            <button type="button" class="btn btn-ghost" data-action="ask-vera-global">${icon("sparkles")} Ask Vera</button>
+            <button type="button" class="btn btn-primary" data-action="create-role">${icon("plus")} Create role</button>
+          </div>
+        </div>
+      </div>
+      <div class="emp-subtabs" role="tablist" aria-label="Role status">
+        ${ROLE_STATUS_FILTERS.map(f => `<button type="button" class="emp-subtab ${activeFilter === f ? "active" : ""}" role="tab" aria-selected="${activeFilter === f}" data-action="filter" data-filter="${f}">${f}</button>`).join("")}
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table class="emp-table">
+            <thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>
+            <tbody>
+              ${roles.length ? roles.map(r => activeFilter === "All" ? renderAllTabRow(r) : renderStatusTabRow(r)).join("") : `<tr><td colspan="${headers.length}"><p class="emp-empty-hint">No roles match this filter.</p></td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    createIcons();
+  }
+
+  function handleClick(event) {
+    const el = event.target.closest("[data-action]");
+    if (!el || !root.contains(el)) return;
+    const action = el.dataset.action;
+    if (action === "create-role") { employerNavigateTo("role-builder", {}); return; }
+    if (action === "ask-vera-global") { openRolesVeraModal("", null); return; }
+    if (action === "filter") { activeFilter = el.dataset.filter; draw(); return; }
+    if (action === "open-role") {
+      const role = DATA.employerRoles.find(r => r.id === el.dataset.roleId);
+      if (!role) return;
+      runRoleAction(role, role.status === "Closed" || role.status === "Archived" ? "results" : "edit");
+      return;
+    }
+    if (action === "toggle-menu") {
+      event.stopPropagation();
+      const panel = qs(`[data-emp-role-menu-panel="${el.dataset.roleId}"]`, root);
+      if (!panel) return;
+      const isHidden = panel.hidden;
+      qsa("[data-emp-role-menu-panel]", root).forEach(p => { p.hidden = true; });
+      qsa('[data-action="toggle-menu"]', root).forEach(b => b.setAttribute("aria-expanded", "false"));
+      if (isHidden) {
+        panel.hidden = false;
+        el.setAttribute("aria-expanded", "true");
+        clampMenuToViewport(panel);
+      }
+      return;
+    }
+    if (action === "role-action") {
+      const role = DATA.employerRoles.find(r => r.id === el.dataset.roleId);
+      if (role) runRoleAction(role, el.dataset.roleAction);
+      return;
+    }
+    if (action === "primary") {
+      const role = DATA.employerRoles.find(r => r.id === el.dataset.roleId);
+      if (role) runRoleAction(role, role.status === "Draft" ? "edit" : role.status === "Paused" ? "resume" : role.status === "Open" ? "candidates" : "results");
+      return;
+    }
+  }
+
+  function runRoleAction(role, action) {
+    switch (action) {
+      case "edit": case "preview":
+        employerNavigateTo("role-builder", { id: role.id });
+        break;
+      case "candidates":
+        employerNavigateTo("pipeline", { role: role.id });
+        break;
+      case "results":
+        openRoleResultsModal(role, draw);
+        break;
+      case "duplicate": {
+        const copy = duplicateEmployerRole(role);
+        draw();
+        showToast(`Duplicated as "${copy.title}".`);
+        break;
+      }
+      case "delete":
+        openEmpConfirm({
+          title: `Delete the draft "${role.title}"?`,
+          body: "This cannot be undone.",
+          confirmLabel: "Delete draft", danger: true,
+          onConfirm: () => {
+            DATA.employerRoles.splice(DATA.employerRoles.indexOf(role), 1);
+            draw();
+            showToast("Draft deleted.");
+          }
+        });
+        break;
+      case "pause":
+        openPauseReasonModal(role, draw);
+        break;
+      case "resume":
+        openResumeConfirmModal(role, draw);
+        break;
+      case "reopen":
+        changeRoleStatus(role, "Open");
+        draw();
+        showToast(`${role.title} reopened.`);
+        break;
+      case "archive":
+        changeRoleStatus(role, "Archived");
+        draw();
+        showToast(`${role.title} archived.`);
+        break;
+      case "restore":
+        openRestoreModal(role, draw);
+        break;
+      case "permanent-delete":
+        openEmpConfirm({
+          title: `Permanently delete "${role.title}"?`,
+          body: "This removes all role data, applicant history, and results. This cannot be undone.",
+          confirmLabel: "Permanently delete", danger: true,
+          onConfirm: () => {
+            DATA.employerRoles.splice(DATA.employerRoles.indexOf(role), 1);
+            draw();
+            showToast("Role permanently deleted.");
+          }
+        });
+        break;
+      case "close":
+        openCloseReasonModal(role, draw);
+        break;
+      case "save-template": {
+        const state = readState();
+        state.roleTemplates = state.roleTemplates || [];
+        state.roleTemplates.push({ id: `tpl-${Date.now()}`, title: role.title, savedFrom: role.id, savedAt: new Date().toISOString(), draft: makeEmployerRoleDraft(role) });
+        writeState(state);
+        showToast(`"${role.title}" saved as a reusable template.`);
+        break;
+      }
+      case "export-summary": {
+        const r = getRoleResultsData(role);
+        const lines = [
+          `Hiring summary — ${role.title}`, `Status: ${role.status}`,
+          `Reviewed: ${r.reviewed}`, `Shortlisted: ${r.shortlisted}`, `Interviewed: ${r.interviewed}`,
+          `Offers sent: ${r.offersSent}`, `Offers accepted: ${r.offersAccepted}`,
+          `Final hire: ${r.finalHire}`, `Time to hire: ${r.timeToHire}`,
+          `Sourcing channel: ${r.sourcingChannel}`, `Drop-off stage: ${r.dropOffStage}`
+        ];
+        const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = `${role.title.replace(/\s+/g, "-").toLowerCase()}-summary.txt`;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+        showToast("Summary exported.");
+        break;
+      }
+      case "share": {
+        const link = `${location.origin}${location.pathname}#role-${role.id}`;
+        if (navigator.clipboard?.writeText) {
+          navigator.clipboard.writeText(link).then(() => showToast("Public role link copied.")).catch(() => showToast(`Copy this link: ${link}`, "info"));
+        } else {
+          showToast(`Link: ${link}`, "info");
+        }
+        break;
+      }
+      case "ask-vera":
+        openRolesVeraModal("", role.id);
+        break;
+    }
+  }
+
+  ensureRolesDelegation(root);
+  currentRolesClickHandler = handleClick;
+  draw();
+}
+
+const EMPLOYER_ROLE_BUILDER_STEPS = ["Role Basics", "Role Details", "Candidate Profile", "Offer & Hiring Setup", "Preview & Publish"];
+
+const FALLBACK_ROLE_INTELLIGENCE = {
+  talentAvailability: "Not enough data", typicalExperience: "—", commonSalary: "—", commonSkills: [],
+  potentialIssue: "", hiringCompetition: "—", locationContext: "",
+  dataContext: { region: "Malaysia", category: "General", confidence: "Low" },
+  strengths: [], concerns: [], suggestions: []
+};
+
+const EMPLOYMENT_TYPES = ["Full-time", "Part-time", "Internship", "Contract", "Temporary", "Freelance", "Graduate programme", "Apprenticeship"];
+const SENIORITY_LEVELS = ["Internship", "Entry level", "Junior", "Mid-level", "Senior", "Lead", "Manager", "Director", "Executive"];
+const BENEFIT_OPTIONS = ["Medical coverage", "Dental coverage", "Insurance", "Paid leave", "Flexible working", "Remote-work support", "Training budget", "Certification support", "Equipment provided", "Transport allowance", "Parking", "Meal allowance", "Wellness benefits", "Relocation support"];
+
+const CREATE_VERA_QUESTIONS = [
+  { field: "title", prompt: "What role are you hiring for?", type: "text", required: true, placeholder: "e.g. Backend Engineer" },
+  { field: "seniority", prompt: "What level is this role?", type: "chips", options: SENIORITY_LEVELS },
+  { field: "location", prompt: "Where is this role located?", type: "text", placeholder: "e.g. Kuala Lumpur", autocomplete: () => CREATE_VERA_LOCATIONS },
+  { field: "workMode", prompt: "What's the work arrangement?", type: "chips", options: ["On-site", "Hybrid", "Remote"] },
+  { field: "employmentType", prompt: "What's the employment type?", type: "chips", options: EMPLOYMENT_TYPES },
+  { field: "salary", prompt: "What's the salary range? (RM / month)", type: "salary", required: true },
+  { field: "mustHaveSkills", prompt: "What skills are required?", type: "tags", required: true, autocomplete: () => CREATE_VERA_SKILL_VOCAB },
+  { field: "niceToHaveSkills", prompt: "Any nice-to-have skills?", type: "tags", skippable: true, autocomplete: () => CREATE_VERA_SKILL_VOCAB },
+  { field: "minExperience", prompt: "What's the minimum experience?", type: "chips", options: ["No experience required", "Less than 1 year", "1-2 years", "3-5 years", "5+ years"] },
+  { field: "educationOrCertification", prompt: "Any required education or certification?", type: "text", skippable: true, placeholder: "e.g. Bachelor's degree preferred" },
+  { field: "urgency", prompt: "How urgent is this hire?", type: "chips", options: ["Standard", "Urgent", "Critical"] }
+];
+
+const CREATE_VERA_ARCHETYPES = [
+  {
+    id: "engineer", match: /engineer|developer|programmer/i,
+    summaryVariants: [
+      (a, skill) => `Build and ship ${skill ? `${skill}-powered ` : ""}features across the product, from design to deployment.`,
+      (a, skill) => `Own end-to-end delivery of reliable, well-tested systems${skill ? ` built with ${skill}` : ""}.`
+    ],
+    responsibilityPool: [
+      "Design, build, and maintain core product features.",
+      "Write clean, tested, and well-documented code.",
+      "Participate in code review and technical design discussions.",
+      "Debug and resolve production issues in a timely manner.",
+      "Collaborate with product and design on technical feasibility.",
+      "Improve engineering practices, tooling, and test coverage."
+    ]
+  },
+  {
+    id: "designer", match: /designer|ux|ui\b/i,
+    summaryVariants: [
+      (a, skill) => `Design and prototype product experiences${skill ? ` in ${skill}` : ""}, working closely with product and engineering.`,
+      (a, skill) => `Shape end-to-end user experience${skill ? ` using ${skill}` : ""}, from research through polished UI.`
+    ],
+    responsibilityPool: [
+      "Conduct user research and usability testing.",
+      "Design and prototype product flows and interfaces.",
+      "Contribute to and maintain the design system.",
+      "Collaborate with product and engineering on feasibility.",
+      "Present design rationale to stakeholders.",
+      "Iterate on designs based on user feedback and data."
+    ]
+  },
+  {
+    id: "analyst", match: /analyst|data|bi\b/i,
+    summaryVariants: [
+      (a, skill) => `Turn data into decisions${skill ? ` using ${skill}` : ""}, building dashboards and analysis for the business.`,
+      (a, skill) => `Partner with the business to answer key questions with data${skill ? `, primarily in ${skill}` : ""}.`
+    ],
+    responsibilityPool: [
+      "Build and maintain dashboards and reports.",
+      "Write queries and analyze data to answer business questions.",
+      "Partner with stakeholders to define metrics.",
+      "Present findings and recommendations to the team.",
+      "Ensure data quality and consistency across sources.",
+      "Support ad-hoc analysis for cross-functional teams."
+    ]
+  },
+  {
+    id: "manager", match: /manager|lead|head\b/i,
+    summaryVariants: [
+      (a) => `Lead a team to deliver on ${a.title ? a.title.replace(/manager|lead/i, "").trim() || "key" : "key"} priorities, setting direction and unblocking execution.`,
+      () => `Own team outcomes end-to-end, balancing delivery, people growth, and cross-functional alignment.`
+    ],
+    responsibilityPool: [
+      "Set team priorities and hold the roadmap accountable.",
+      "Coach and develop team members.",
+      "Partner cross-functionally to align on goals.",
+      "Report on progress and remove execution blockers.",
+      "Run planning and performance conversations for the team.",
+      "Represent the team in leadership and stakeholder reviews."
+    ]
+  },
+  {
+    id: "marketing", match: /marketing|campaign|brand/i,
+    summaryVariants: [
+      () => `Plan and execute marketing campaigns that grow the business and strengthen the brand.`,
+      () => `Drive demand and brand awareness through integrated marketing campaigns.`
+    ],
+    responsibilityPool: [
+      "Plan and execute campaign calendars.",
+      "Coordinate with design and content on creative assets.",
+      "Report on campaign performance and ROI.",
+      "Manage budget and vendor relationships.",
+      "Own messaging and positioning for key initiatives.",
+      "Analyze channel performance and optimize spend."
+    ]
+  },
+  {
+    id: "sales", match: /sales|account executive|business development/i,
+    summaryVariants: [
+      () => `Drive revenue growth by building relationships and closing new business.`,
+      () => `Own the full sales cycle, from prospecting through close, to hit revenue targets.`
+    ],
+    responsibilityPool: [
+      "Prospect and qualify new business opportunities.",
+      "Run the sales cycle from pitch to close.",
+      "Maintain accurate pipeline records.",
+      "Build long-term relationships with key accounts.",
+      "Collaborate with marketing on lead quality and handoff.",
+      "Forecast revenue and report on quota attainment."
+    ]
+  },
+  {
+    id: "finance", match: /finance|accounting|account(ant)?\b/i,
+    summaryVariants: [
+      () => `Support financial reporting, budgeting, and compliance for the business.`,
+      () => `Keep the numbers accurate and timely, supporting sound financial decisions.`
+    ],
+    responsibilityPool: [
+      "Support financial reporting and reconciliation.",
+      "Assist with budgeting and forecasting.",
+      "Ensure compliance with financial policies.",
+      "Prepare periodic financial reports.",
+      "Support month-end and year-end close processes.",
+      "Identify and help resolve accounting discrepancies."
+    ]
+  },
+  {
+    id: "support", match: /support|customer|service/i,
+    summaryVariants: [
+      () => `Resolve customer issues and maintain a high standard of service quality.`,
+      () => `Be the front line for customers, solving problems quickly and clearly.`
+    ],
+    responsibilityPool: [
+      "Handle customer inquiries and issues.",
+      "Maintain service quality standards.",
+      "Escalate complex cases appropriately.",
+      "Support process improvement initiatives.",
+      "Document common issues and resolutions.",
+      "Track and report on customer satisfaction metrics."
+    ]
+  },
+  {
+    id: "admin", match: /admin|coordinator|operations|office/i,
+    summaryVariants: [
+      () => `Keep day-to-day operations running smoothly and support the wider team.`,
+      () => `Own operational logistics so the rest of the team can focus on their work.`
+    ],
+    responsibilityPool: [
+      "Coordinate vendors, supplies, and logistics.",
+      "Support onboarding and administrative processes.",
+      "Maintain accurate records and documentation.",
+      "Assist the team with day-to-day operational needs.",
+      "Schedule and coordinate meetings and events.",
+      "Help maintain office/operational compliance."
+    ]
+  }
+];
+
+const CREATE_VERA_FALLBACK_ARCHETYPE = {
+  id: "general",
+  summaryVariants: [
+    (a, skill) => `Take ownership of ${a.title || "this role"}${skill ? `, applying ${skill}` : ""} to help the team achieve its goals.`,
+    (a) => `Drive outcomes for ${a.title || "this role"}, working closely with the wider team.`
+  ],
+  responsibilityPool: [
+    "Own day-to-day delivery for this role.",
+    "Collaborate with the wider team on shared goals.",
+    "Maintain clear communication on progress and blockers.",
+    "Continuously improve ways of working.",
+    "Support cross-functional initiatives as needed.",
+    "Report on progress against goals."
+  ]
+};
+
+function pickCreateVeraArchetype(title) {
+  const t = title || "";
+  return CREATE_VERA_ARCHETYPES.find(a => a.match.test(t)) || CREATE_VERA_FALLBACK_ARCHETYPE;
+}
+
+function generateRoleSummary(answers, seed = 0) {
+  const archetype = pickCreateVeraArchetype(answers.title);
+  const topSkill = (answers.mustHaveSkills || []).slice(0, 2).join(" and ");
+  const variants = archetype.summaryVariants;
+  return variants[seed % variants.length](answers, topSkill);
+}
+
+function generateResponsibilities(answers, seed = 0) {
+  const archetype = pickCreateVeraArchetype(answers.title);
+  const pool = archetype.responsibilityPool;
+  const offset = seed % pool.length;
+  return [0, 1, 2, 3].map(i => pool[(offset + i) % pool.length]);
+}
+
+function generateBenefits(answers, seed = 0) {
+  const benefits = [];
+  const addBenefit = b => { if (!benefits.includes(b) && BENEFIT_OPTIONS.includes(b)) benefits.push(b); };
+  addBenefit("Medical coverage");
+  addBenefit("Paid leave");
+  if (answers.workMode === "Remote") addBenefit("Remote-work support");
+  else if (answers.workMode === "Hybrid") addBenefit("Flexible working");
+  if (["Senior", "Lead", "Manager", "Director", "Executive"].includes(answers.seniority)) addBenefit("Training budget");
+  if (seed % 2 === 1) addBenefit("Certification support");
+  return benefits.slice(0, 4);
+}
+
+function generateRoleContentFromAnswers(answers) {
+  return {
+    roleSummary: generateRoleSummary(answers, 0),
+    responsibilities: generateResponsibilities(answers, 0),
+    benefits: generateBenefits(answers, 0)
+  };
+}
+
+const DISTRIBUTION_CHANNELS_CONFIG = [
+  { key: "CareerGo", state: "Connected" },
+  { key: "LinkedIn", state: "Manual posting required" },
+  { key: "JobStreet", state: "Manual posting required" },
+  { key: "Indeed", state: "Manual posting required" },
+  { key: "Company careers page", state: "Link export available" },
+  { key: "Custom external job board", state: "Manual posting required" }
+];
+const DEFAULT_HIRING_STAGES = [
+  { name: "Application review", duration: "2 days", owner: "", format: "" },
+  { name: "Screening call", duration: "3 days", owner: "", format: "Phone / video" },
+  { name: "Interview", duration: "5 days", owner: "", format: "Video call" },
+  { name: "Offer", duration: "3 days", owner: "", format: "" }
+];
+
+function makeEmployerRoleDraft(existing) {
+  const base = {
+    // Step 1: Role Basics
+    title: "", department: "", jobCategory: "", seniority: "Entry level", employmentType: "Full-time",
+    openings: 1, reportsTo: "", hiringOwner: "", urgency: "Standard",
+    targetStartDate: "", contractDuration: "", visaSponsorship: "Not available", internalJobId: "",
+    // Step 2: Role Details
+    rolePurpose: "", roleSummary: "", responsibilities: [], firstNinetyDays: "", successLooksLike: "",
+    teamStructure: "", stakeholders: "", tools: "", workingHours: "", travelExpectations: "",
+    // Step 3: Candidate Profile
+    mustHaveSkills: [], niceToHaveSkills: [], trainableSkills: [],
+    minExperience: "No experience required", educationOrCertification: "", equivalentExperienceAccepted: false,
+    languageRequirements: "", portfolioRequirement: "Optional", requiredLicences: "", domainKnowledge: "",
+    behaviouralCompetencies: "", availabilityRequirement: "", workAuthorization: "", accessibilityConsiderations: "",
+    // Step 4: Offer & Hiring Setup
+    salary: { min: null, max: null, currency: "MYR", period: "Monthly", visibility: "Visible to candidates", negotiable: true },
+    bonus: "", commission: "", allowances: "", overtimePolicy: "", equity: "",
+    benefits: [],
+    location: "", workMode: "Hybrid", officeLocation: "", hybridDays: "", workingDays: "", shiftPattern: "",
+    matchThreshold: 70,
+    hiringStages: DEFAULT_HIRING_STAGES.map(s => ({ ...s })),
+    applicationDeadline: "", contactPerson: "", requiredDocuments: "", resumeRequired: true, coverLetterRequired: "Optional",
+    applicationPortfolioLink: "", screeningQuestions: [], candidateConsent: false,
+    requiredDocumentTypes: { resume: "Required", coverLetter: "Optional", portfolio: "Optional" },
+    distributionChannels: ["CareerGo"], externalPostingUrl: "", trackingSource: "", campaignName: "", distributionExpiry: "",
+    companySummary: "", useCompanyProfile: false,
+    accommodationStatement: "Candidates who require an accommodation during the hiring process may contact our recruiting team — we're happy to help.",
+    additionalCompensation: [],
+    previewReviewed: false,
+    lastSavedAt: null,
+    // One Vera chat thread per wizard step, keyed by step index (0-4).
+    // Each entry is [{ role: "vera"|"employer", text, quickReplies? }, ...].
+    veraThreads: {}
+  };
+  if (!existing) return base;
+  const merged = { ...base };
+  if (!existing.requiredDocumentTypes) {
+    merged.requiredDocumentTypes = {
+      resume: existing.resumeRequired ? "Required" : "Optional",
+      coverLetter: existing.coverLetterRequired === "Required" ? "Required" : "Optional",
+      portfolio: existing.portfolioRequirement === "Required" ? "Required" : "Optional"
+    };
+  }
+  if (!existing.additionalCompensation) {
+    const legacyComp = [
+      ["Bonus", existing.bonus], ["Commission", existing.commission], ["Allowances", existing.allowances],
+      ["Overtime policy", existing.overtimePolicy], ["Equity", existing.equity]
+    ];
+    merged.additionalCompensation = legacyComp.filter(([, value]) => value && String(value).trim()).map(([type, value]) => ({ type, value }));
+  }
+  Object.keys(base).forEach(key => {
+    if (existing[key] === undefined) return;
+    if (Array.isArray(base[key])) merged[key] = Array.isArray(existing[key]) ? existing[key].map(v => typeof v === "object" ? { ...v } : v) : base[key];
+    else if (key === "salary") merged.salary = { ...base.salary, ...(existing.salary || {}) };
+    else merged[key] = existing[key];
+  });
+  // domainKnowledge/behaviouralCompetencies/accessibilityConsiderations were retired as
+  // standalone Step 3 fields; fold any previously-entered content into rolePurpose so it
+  // stays visible instead of becoming an orphaned, unrendered key on the draft. Runs after
+  // the generic copy loop above (which would otherwise overwrite rolePurpose with the
+  // unmigrated value) and is guarded by a substring check, not a one-time flag, so
+  // re-running this merge on an already-migrated draft is idempotent.
+  const legacyNotes = [
+    ["Domain knowledge", existing.domainKnowledge], ["Behavioural competencies", existing.behaviouralCompetencies],
+    ["Accessibility considerations", existing.accessibilityConsiderations]
+  ].filter(([, value]) => value && String(value).trim() && !String(existing.rolePurpose || "").includes(value));
+  if (legacyNotes.length) {
+    const basePurpose = existing.rolePurpose ? String(existing.rolePurpose) : "";
+    merged.rolePurpose = [basePurpose, ...legacyNotes.map(([label, value]) => `${label}: ${value}`)].filter(Boolean).join("\n\n");
+  }
+  return merged;
+}
+
+function formatSavedLabel(iso) {
+  if (!iso) return "Not saved yet";
+  const secs = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
+  if (secs < 10) return "Saved just now";
+  if (secs < 60) return `Saved ${secs}s ago`;
+  const mins = Math.round(secs / 60);
+  return `Saved ${mins} minute${mins === 1 ? "" : "s"} ago`;
+}
+
+function renderTagInput(field, values) {
+  return `
+    <div class="emp-tag-input" data-tag-field="${field}">
+      <div class="pill-row" data-tag-list>
+        ${values.map((v, i) => `<span class="pill emp-tag-pill">${v} <button type="button" data-tag-remove="${i}" aria-label="Remove ${v}">${icon("x")}</button></span>`).join("")}
+      </div>
+      <input type="text" data-tag-new placeholder="Type a skill and press Enter">
+    </div>
+  `;
+}
+
+function renderRoleIntelligencePanel(ri, pendingSuggestions, draft) {
+  return `
+    <div class="emp-callout-label">${icon("sparkles")} Role Intelligence</div>
+
+    <div class="emp-intel-section">
+      <h3 class="emp-intel-heading">Market snapshot</h3>
+      <div class="emp-stat-row"><span>Talent availability</span><strong>${ri.talentAvailability}</strong></div>
+      <div class="emp-stat-row"><span>Typical experience</span><strong>${ri.typicalExperience}</strong></div>
+      <div class="emp-stat-row"><span>Typical salary</span><strong>${ri.commonSalary}</strong></div>
+      <div class="emp-stat-row"><span>Hiring competition</span><strong>${ri.hiringCompetition}</strong></div>
+      <div class="emp-stat-row"><span>Location context</span><strong>${ri.locationContext || "—"}</strong></div>
+      ${ri.dataContext ? `<p class="emp-intel-datacontext">${ri.dataContext.region} · ${ri.dataContext.category} · Updated recently · Confidence: ${ri.dataContext.confidence}</p>` : ""}
+    </div>
+
+    ${ri.strengths && ri.strengths.length ? `
+      <div class="emp-intel-section">
+        <h3 class="emp-intel-heading">What looks strong</h3>
+        <ul class="emp-intel-strengths">${ri.strengths.map(s => `<li>${icon("check")} ${s}</li>`).join("")}</ul>
+      </div>
+    ` : ""}
+
+    ${ri.concerns && ri.concerns.length ? `
+      <div class="emp-intel-section">
+        <h3 class="emp-intel-heading">Potential concerns</h3>
+        ${ri.concerns.map(c => `
+          <div class="emp-callout emp-callout-warn">
+            <div class="emp-callout-label warn">${icon("alert-triangle")} ${c.issue}</div>
+            <p>${c.why}</p>
+          </div>
+        `).join("")}
+      </div>
+    ` : ""}
+
+    ${pendingSuggestions.length ? `
+      <div class="emp-intel-section">
+        <h3 class="emp-intel-heading">Suggested adjustments</h3>
+        ${pendingSuggestions.map(s => `
+          <div class="card emp-suggestion-card">
+            <p class="emp-suggestion-rec">${s.recommendation}</p>
+            <div class="emp-suggestion-compare" data-suggestion-compare="${s.recommendation}" hidden>
+              <span>Current: <strong>${(draft[s.field] ?? "—")}</strong></span>
+              <span>Suggested: <strong>${s.suggestedValue}</strong></span>
+            </div>
+            <div class="emp-suggestion-grid">
+              <div><span class="emp-tags-label">Pros</span><ul>${s.pros.map(p => `<li>${p}</li>`).join("")}</ul></div>
+              <div><span class="emp-tags-label">Cons</span><ul>${s.cons.map(c => `<li>${c}</li>`).join("")}</ul></div>
+            </div>
+            <p class="emp-suggestion-effect">${s.effectIsEstimated ? "Estimated impact" : "Expected effect"}: ${s.expectedEffect} · Confidence: ${s.confidence}</p>
+            <div class="emp-suggestion-actions">
+              <button type="button" class="btn btn-ghost btn-sm" data-emp-compare-suggestion="${s.recommendation}">Compare change</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-emp-apply-suggestion="${s.recommendation}">Apply suggestion</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-emp-keep-suggestion="${s.recommendation}">Keep current</button>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    ` : ""}
+
+    <p class="emp-vera-principle">${icon("shield-check")} Vera advises and explains. You make the final decision.</p>
+  `;
+}
+
+function getRequirementWarnings(draft) {
+  const warnings = [];
+  const juniorish = ["Internship", "Entry level", "Junior"].includes(draft.seniority);
+  if (juniorish && ["3-5 years", "5+ years"].includes(draft.minExperience)) {
+    warnings.push(`${draft.minExperience} of experience for a ${draft.seniority.toLowerCase()} role may reduce your available candidate pool.`);
+  }
+  if (draft.mustHaveSkills.length > 8) {
+    warnings.push(`${draft.mustHaveSkills.length} must-have skills is a lot — candidates rarely match every one. Consider moving some to nice-to-have or trainable.`);
+  }
+  if (draft.educationOrCertification && /degree/i.test(draft.educationOrCertification) && juniorish && draft.equivalentExperienceAccepted === false) {
+    warnings.push("A degree requirement with no equivalent-experience option can exclude strong self-taught or bootcamp candidates.");
+  }
+  if (draft.portfolioRequirement === "Required" && !draft.trainableSkills.length && !draft.mustHaveSkills.length) {
+    warnings.push("A required portfolio with no listed skills makes it hard for candidates to know what to submit.");
+  }
+  return warnings;
+}
+
+function renderRequirementWarnings(draft) {
+  const warnings = getRequirementWarnings(draft);
+  if (!warnings.length) return "";
+  return `<div class="emp-callout emp-callout-warn">${warnings.map(w => `<p>${icon("alert-triangle")} ${escapeHtml(w)}</p>`).join("")}</div>`;
+}
+
+function renderRequiredDocumentsControl(draft) {
+  const docs = [["resume", "Resume"], ["coverLetter", "Cover letter"], ["portfolio", "Portfolio"]];
+  return `
+    <div class="emp-required-docs">
+      ${docs.map(([key, label]) => `
+        <div class="emp-required-doc-row">
+          <span>${label}</span>
+          <div class="emp-required-doc-toggle" data-doc-toggle="${key}">
+            <button type="button" class="${draft.requiredDocumentTypes[key] === "Required" ? "active" : ""}" data-doc-value="Required">Required</button>
+            <button type="button" class="${draft.requiredDocumentTypes[key] === "Optional" ? "active" : ""}" data-doc-value="Optional">Optional</button>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderScreeningQuestionsList(draft) {
+  return `
+    <div data-screening-list>
+      ${draft.screeningQuestions.map((q, i) => `
+        <div class="emp-resp-row">
+          <input type="text" data-screening-index="${i}" value="${escapeHtml(q)}" placeholder="e.g. Do you have a portfolio you can share?">
+          <button type="button" class="btn btn-ghost btn-sm" data-screening-remove="${i}" aria-label="Remove question">${icon("x")}</button>
+        </div>
+      `).join("")}
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm" data-screening-add>${icon("plus")} Add screening question</button>
+  `;
+}
+
+function renderHiringStagesEditor(draft) {
+  return `
+    <div data-stages-list>
+      ${draft.hiringStages.map((s, i) => `
+        <div class="emp-stage-editor-row" data-stage-row="${i}">
+          <button type="button" class="emp-drag-handle" data-stage-drag="${i}" draggable="true" aria-label="Drag to reorder stage">${icon("grip-vertical")}</button>
+          <div class="emp-stage-editor-fields">
+            <input type="text" data-stage-field="name" data-stage-index="${i}" value="${escapeHtml(s.name)}" placeholder="Stage name">
+            <input type="text" data-stage-field="duration" data-stage-index="${i}" value="${escapeHtml(s.duration || "")}" placeholder="Expected duration">
+            <input type="text" data-stage-field="owner" data-stage-index="${i}" value="${escapeHtml(s.owner || "")}" placeholder="Responsible person">
+            <input type="text" data-stage-field="format" data-stage-index="${i}" value="${escapeHtml(s.format || "")}" placeholder="Format, e.g. video call">
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" data-stage-remove="${i}" aria-label="Remove stage">${icon("x")}</button>
+        </div>
+      `).join("")}
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm" data-stage-add>${icon("plus")} Add hiring stage</button>
+  `;
+}
+
+function renderDistributionSection(draft) {
+  return `
+    <p class="emp-field-help">CareerGo publishing happens automatically when you publish this role. The other boards below don't have a live posting integration in this prototype — use copy or export to post manually, and mark them posted once you have.</p>
+    <div class="emp-checkbox-grid">
+      ${DISTRIBUTION_CHANNELS_CONFIG.map(c => `
+        <div class="check-field custom-checkbox emp-distribution-card">
+          <label class="emp-distribution-card-check">
+            <input type="checkbox" data-distribution-channel="${escapeHtml(c.key)}" ${draft.distributionChannels.includes(c.key) ? "checked" : ""}> ${escapeHtml(c.key)}
+          </label>
+          <div class="emp-distribution-card-meta">
+            <span class="emp-distribution-state">${c.state}</span>
+            ${c.key !== "CareerGo" ? `<button type="button" class="btn btn-ghost btn-sm" data-copy-posting="${escapeHtml(c.key)}">${icon("copy")} Copy job description</button>` : ""}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="emp-form-grid-2">
+      <label>External posting URL<input type="url" data-field-externalPostingUrl value="${escapeHtml(draft.externalPostingUrl)}" placeholder="Optional"></label>
+      <label>Tracking source<input type="text" data-field-trackingSource value="${escapeHtml(draft.trackingSource)}" placeholder="Optional"></label>
+      <label>Campaign name<input type="text" data-field-campaignName value="${escapeHtml(draft.campaignName)}" placeholder="Optional"></label>
+      <label>Expiry date<input type="date" data-field-distributionExpiry value="${escapeHtml(draft.distributionExpiry)}"></label>
+    </div>
+  `;
+}
+
+function renderCompanySection(draft) {
+  return `
+    <div class="emp-company-reuse-row">
+      <p class="emp-field-help">Reuse your existing Company Profile instead of retyping company information.</p>
+      <button type="button" class="btn btn-ghost btn-sm" data-use-company-profile>${icon("building-2")} Use company profile details</button>
+    </div>
+    <label>Company introduction<textarea data-field-companySummary rows="3" placeholder="Short company introduction, mission, and why join this team">${escapeHtml(draft.companySummary)}</textarea></label>
+  `;
+}
+
+function buildPlainTextJobPosting(draft) {
+  const lines = [
+    draft.title || "Role title", `${[draft.location, draft.workMode, draft.employmentType].filter(Boolean).join(" · ")}`,
+    draft.salary.min && draft.salary.max ? `${draft.salary.currency} ${draft.salary.min.toLocaleString()} - ${draft.salary.max.toLocaleString()} / ${draft.salary.period.toLowerCase()}` : "",
+    "", "About the role", draft.roleSummary || "",
+    "", "What you'll do", ...draft.responsibilities.filter(r => r.trim()).map(r => `- ${r}`),
+    "", "Must-have skills", draft.mustHaveSkills.join(", "),
+    draft.niceToHaveSkills.length ? `\nNice-to-have: ${draft.niceToHaveSkills.join(", ")}` : ""
+  ];
+  return lines.filter(Boolean).join("\n");
+}
+
+/* ---------- Publication readiness — single source of truth ----------
+   Every checklist row on Step 5 and the "Role readiness: N%" figure in the
+   Vera role review panel derive from these named predicates, not from two
+   independently-tuned formulas. Each predicate reads only from `draft`,
+   the same object the wizard's fields write into.
+
+   `department` is deliberately not part of isRoleBasicsComplete: the
+   "Create with Vera" guided flow (CREATE_VERA_QUESTIONS) never asks about
+   or generates it, so requiring it here made "Role basics complete" show
+   Missing for roles built through the guided flow even when title,
+   seniority, employment type, and urgency were all set. */
+function hasText(v) { return !!(v && String(v).trim()); }
+function countNonEmptyResponsibilities(draft) { return draft.responsibilities.filter(r => r.trim()).length; }
+
+function isRoleBasicsComplete(draft) { return hasText(draft.title) && hasText(draft.employmentType) && hasText(draft.seniority); }
+function isRoleSummaryAdded(draft) { return !!(draft.roleSummary && draft.roleSummary.trim().length > 20); }
+function isResponsibilitiesAdded(draft) { return countNonEmptyResponsibilities(draft) >= 3; }
+function isCandidateRequirementsComplete(draft) { return draft.mustHaveSkills.length > 0 && hasText(draft.minExperience); }
+function isSalaryAndLocationComplete(draft) { return !!(draft.salary.min && draft.salary.max && hasText(draft.location)); }
+function isBenefitsReviewed(draft) { return draft.benefits.length > 0; }
+function isHiringProcessConfigured(draft) { return draft.hiringStages.length > 0; }
+function isApplicationMethodConfigured(draft) { return hasText(draft.contactPerson) || hasText(draft.applicationDeadline) || draft.requiredDocumentTypes.resume === "Required"; }
+function isCompanyIntroductionAvailable(draft) { return hasText(draft.companySummary); }
+function isAccommodationStatementReviewed(draft) { return hasText(draft.accommodationStatement); }
+function isDistributionChannelsSelected(draft) { return draft.distributionChannels.length > 0; }
+function isPreviewReviewed(draft) { return !!draft.previewReviewed; }
+
+function getPublishReadinessChecks(draft) {
+  const respCount = countNonEmptyResponsibilities(draft);
+  return [
+    { key: "role_basics_complete", label: "Role basics complete", status: isRoleBasicsComplete(draft) ? "Complete" : "Missing" },
+    { key: "role_summary_added", label: "Role summary added", status: isRoleSummaryAdded(draft) ? "Complete" : "Missing" },
+    { key: "responsibilities_added", label: "Responsibilities added", status: respCount >= 3 ? "Complete" : respCount > 0 ? "Needs attention" : "Missing" },
+    { key: "candidate_requirements_complete", label: "Candidate requirements complete", status: isCandidateRequirementsComplete(draft) ? "Complete" : "Missing" },
+    { key: "salary_and_location_complete", label: "Salary and location complete", status: isSalaryAndLocationComplete(draft) ? "Complete" : "Missing" },
+    { key: "benefits_reviewed", label: "Benefits reviewed", status: isBenefitsReviewed(draft) ? "Complete" : "Optional" },
+    { key: "hiring_process_configured", label: "Hiring process configured", status: isHiringProcessConfigured(draft) ? "Complete" : "Missing" },
+    { key: "application_method_configured", label: "Application method configured", status: isApplicationMethodConfigured(draft) ? "Complete" : "Needs attention" },
+    { key: "company_introduction_available", label: "Company introduction available", status: isCompanyIntroductionAvailable(draft) ? "Complete" : "Optional" },
+    { key: "accommodation_statement_reviewed", label: "Accommodation statement reviewed", status: isAccommodationStatementReviewed(draft) ? "Complete" : "Optional" },
+    { key: "distribution_channels_selected", label: "Distribution channels selected", status: isDistributionChannelsSelected(draft) ? "Complete" : "Needs attention" },
+    { key: "preview_reviewed", label: "Preview reviewed", status: isPreviewReviewed(draft) ? "Complete" : "Needs attention" }
+  ];
+}
+
+function getDraftReadiness(draft) {
+  const checks = getPublishReadinessChecks(draft);
+  const completeCount = checks.filter(c => c.status === "Complete").length;
+  return checks.length ? Math.round((completeCount / checks.length) * 100) : 0;
+}
+
+function getReadinessPredicates(draft) {
+  const checks = getPublishReadinessChecks(draft);
+  const result = {};
+  checks.forEach(c => { result[c.key] = c.status === "Complete"; });
+  result.readiness = getDraftReadiness(draft);
+  return result;
+}
+
+const CANDIDATE_POOL_BASE_BY_SENIORITY = {
+  "Internship": 400, "Entry level": 320, "Junior": 260, "Mid-level": 180,
+  "Senior": 110, "Lead": 60, "Manager": 45, "Director": 20, "Executive": 10
+};
+function estimateCandidatePool(draft) {
+  const base = CANDIDATE_POOL_BASE_BY_SENIORITY[draft.seniority] || 150;
+  const skillPenalty = Math.pow(0.82, draft.mustHaveSkills.length);
+  const thresholdPenalty = 1 - ((draft.matchThreshold - 50) / 100);
+  return Math.max(3, Math.round(base * skillPenalty * thresholdPenalty));
+}
+
+const SALARY_BENCHMARK_BY_SENIORITY = {
+  "Internship": [800, 1500], "Entry level": [2500, 3800], "Junior": [3500, 5000], "Mid-level": [5000, 8000],
+  "Senior": [8000, 13000], "Lead": [12000, 18000], "Manager": [14000, 20000], "Director": [20000, 30000], "Executive": [28000, 45000]
+};
+
+function normalizeSalaryToMonthly(amount, period) {
+  if (amount === null || amount === undefined || amount === "") return null;
+  if (period === "Annual") return amount / 12;
+  if (period === "Hourly") return amount * 173;
+  return amount;
+}
+
+function computeSalaryBenchmark(draft) {
+  if (draft.salary.currency !== "MYR") return null;
+  const [benchmarkMin, benchmarkMax] = SALARY_BENCHMARK_BY_SENIORITY[draft.seniority] || SALARY_BENCHMARK_BY_SENIORITY["Mid-level"];
+  const min = normalizeSalaryToMonthly(draft.salary.min, draft.salary.period);
+  const max = normalizeSalaryToMonthly(draft.salary.max, draft.salary.period);
+  if (min == null && max == null) return { benchmarkMin, benchmarkMax, offeredMid: null, verdict: "none" };
+  const mid = min != null && max != null ? (min + max) / 2 : (min ?? max);
+  const verdict = mid < benchmarkMin ? "below" : mid > benchmarkMax ? "above" : "within";
+  return { benchmarkMin, benchmarkMax, offeredMid: Math.round(mid), verdict };
+}
+
+const BIAS_LANGUAGE_TERMS = [
+  ["rockstar", "skilled professional"], ["ninja", "specialist"], ["guru", "expert"],
+  ["young", "early-career"], ["energetic", "motivated"], ["guys", "team"],
+  ["manpower", "staffing"], ["dominant", "confident"], ["aggressive", "proactive"],
+  ["fearless", "confident"], ["digital native", "digitally fluent"], ["work hard play hard", "fast-paced, collaborative environment"]
+];
+
+function scanBiasLanguage(text) {
+  const hits = [];
+  BIAS_LANGUAGE_TERMS.forEach(([term, suggestion]) => {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (new RegExp(`\\b${escaped}\\b`, "i").test(text)) hits.push({ term, suggestion });
+  });
+  return hits;
+}
+
+function countSyllables(word) {
+  const w = word.toLowerCase().replace(/[^a-z]/g, "");
+  if (!w) return 0;
+  const matches = w.match(/[aeiouy]+/g);
+  let count = matches ? matches.length : 1;
+  if (w.endsWith("e") && count > 1) count -= 1;
+  return Math.max(1, count);
+}
+
+function computeReadingLevel(text) {
+  const sentences = (text.match(/[.!?]+/g) || [text]).length || 1;
+  const words = text.split(/\s+/).filter(Boolean);
+  if (!words.length) return { grade: 0, label: "No text yet" };
+  const syllables = words.reduce((sum, w) => sum + countSyllables(w), 0);
+  const grade = Math.max(0, Math.round(0.39 * (words.length / sentences) + 11.8 * (syllables / words.length) - 15.59));
+  const label = grade <= 8 ? "Clear and accessible" : grade <= 12 ? "Moderately dense" : "Dense — consider simplifying";
+  return { grade, label };
+}
+
+function scanJobPostingLanguage(draft) {
+  const combinedText = [draft.roleSummary, ...(draft.responsibilities || [])].filter(Boolean).join(". ");
+  return { biasHits: scanBiasLanguage(combinedText), reading: computeReadingLevel(combinedText), hasText: combinedText.trim().length > 0 };
+}
+
+function renderSalaryBenchmarkCard(draft) {
+  const benchmark = computeSalaryBenchmark(draft);
+  const label = `<div class="emp-callout-label emp-vera-accent">${icon("sparkles")} Vera's market check</div>`;
+  if (!benchmark) {
+    return `<div class="emp-callout emp-vera-benchmark">${label}<p class="emp-empty-hint">Market benchmark data is only available for MYR right now.</p></div>`;
+  }
+  const { benchmarkMin, benchmarkMax, offeredMid, verdict } = benchmark;
+  const verdictText = {
+    none: `Add a salary range to see how it compares to the typical range for ${draft.seniority}.`,
+    below: `Below the typical range for ${draft.seniority} — consider raising the range to stay competitive.`,
+    within: `Within the typical range for ${draft.seniority}.`,
+    above: `Above the typical range for ${draft.seniority} — you may attract more applicants, or this may signal a very senior hire.`
+  }[verdict];
+  if (verdict === "none") {
+    return `<div class="emp-callout emp-vera-benchmark">${label}<p>${verdictText}</p></div>`;
+  }
+  const visualMin = benchmarkMin * 0.6;
+  const visualMax = benchmarkMax * 1.4;
+  const pct = v => Math.min(100, Math.max(0, Math.round(((v - visualMin) / (visualMax - visualMin)) * 100)));
+  const markerPct = Math.min(98, Math.max(2, pct(offeredMid)));
+  const bandStartPct = pct(benchmarkMin);
+  const bandEndPct = pct(benchmarkMax);
+  return `
+    <div class="emp-callout emp-vera-benchmark">
+      ${label}
+      <div class="emp-benchmark-bar">
+        <div class="emp-benchmark-track">
+          <span class="emp-benchmark-band" style="left:${bandStartPct}%; width:${bandEndPct - bandStartPct}%"></span>
+          <span class="emp-benchmark-marker emp-benchmark-marker-${verdict}" style="left:${markerPct}%"></span>
+        </div>
+        <div class="emp-benchmark-labels"><span>RM ${benchmarkMin.toLocaleString()}</span><span>Typical range for ${draft.seniority}</span><span>RM ${benchmarkMax.toLocaleString()}</span></div>
+      </div>
+      <p>${verdictText}</p>
+    </div>
+  `;
+}
+
+function renderLanguageCheckSection(draft) {
+  const lang = scanJobPostingLanguage(draft);
+  if (!lang.hasText) {
+    return `
+      <div class="emp-intel-section">
+        <h3 class="emp-intel-heading">Language check</h3>
+        <p class="emp-empty-hint">Add a role summary or responsibilities to run a language check.</p>
+      </div>
+    `;
+  }
+  return `
+    <div class="emp-intel-section">
+      <h3 class="emp-intel-heading">Language check</h3>
+      <p class="emp-field-help">Reading level: <strong>Grade ${lang.reading.grade}</strong> — ${lang.reading.label}</p>
+      ${lang.biasHits.length ? lang.biasHits.map(h => `<div class="emp-callout emp-callout-warn"><p>${icon("alert-triangle")} "${escapeHtml(h.term)}" may read as biased — consider "${escapeHtml(h.suggestion)}" instead.</p></div>`).join("") : `<p class="emp-cand-evidence">${icon("check")} No flagged language found.</p>`}
+    </div>
+  `;
+}
+
+function computeDraftVeraReview(draft) {
+  const strengths = [];
+  const needsAttention = [];
+  const estimatedEffect = [];
+
+  if (draft.salary.min && draft.salary.max) strengths.push("Salary range is visible.");
+  else needsAttention.push({ text: "No salary range set yet.", action: null });
+
+  if (draft.roleSummary && draft.roleSummary.trim().length > 20) strengths.push("Role purpose is clear.");
+  else needsAttention.push({ text: "Role summary is missing or too short.", action: null });
+
+  if (draft.workMode) strengths.push(`${draft.workMode} work arrangement is stated.`);
+
+  const juniorish = ["Internship", "Entry level", "Junior"].includes(draft.seniority);
+  if (juniorish && ["3-5 years", "5+ years"].includes(draft.minExperience)) {
+    needsAttention.push({ text: `${draft.minExperience} of experience conflicts with the ${draft.seniority} seniority.`, action: { label: "Change experience to 1-2 years", type: "set-field", field: "minExperience", value: "1-2 years" } });
+    estimatedEffect.push("Changing the experience requirement may increase the relevant candidate pool.");
+  }
+
+  if (!draft.benefits.length) {
+    needsAttention.push({ text: "No benefits are listed.", action: { label: "Add common benefits", type: "add-benefits" } });
+  } else {
+    strengths.push(`${draft.benefits.length} benefit${draft.benefits.length === 1 ? "" : "s"} listed.`);
+  }
+
+  if (draft.hiringStages.length > 5) {
+    needsAttention.push({ text: `The interview process has ${draft.hiringStages.length} stages.`, action: { label: "Reduce to 4 stages", type: "trim-stages" } });
+    estimatedEffect.push("Reducing the interview process may improve candidate completion.");
+  } else if (draft.hiringStages.length > 0) {
+    strengths.push(`Hiring process has ${draft.hiringStages.length} clear stage${draft.hiringStages.length === 1 ? "" : "s"}.`);
+  }
+
+  if (draft.mustHaveSkills.length > 8) {
+    needsAttention.push({ text: `${draft.mustHaveSkills.length} must-have skills may be too strict.`, action: { label: "Move extra skills to preferred", type: "trim-musthave" } });
+  }
+
+  if (draft.responsibilities.filter(r => r.trim()).length < 3) {
+    needsAttention.push({ text: "Fewer than 3 responsibilities are listed.", action: null });
+  }
+
+  if (!draft.companySummary && !draft.useCompanyProfile) {
+    needsAttention.push({ text: "No company introduction added yet.", action: { label: "Use company profile", type: "use-company" } });
+  }
+
+  return { readiness: getDraftReadiness(draft), strengths, needsAttention, estimatedEffect };
+}
+
+/* ---------- Create with Vera: paste text -> pattern-matched structured suggestions ----------
+   This is regex/keyword matching against a known vocabulary, not a live AI model. It is
+   deliberately conservative: it only ever proposes values, never writes into the draft
+   without an explicit Apply action from the employer. */
+const CREATE_VERA_SKILL_VOCAB = ["Node.js", "SQL", "React", "Python", "Java", "AWS", "Excel", "Figma", "JavaScript", "TypeScript", "Kubernetes", "Docker", "Kafka", "Power BI", "Tableau", "PHP", "C++", "C#", "Go", "Swift", "Vue", "Angular", "MongoDB", "PostgreSQL", "MySQL", "GraphQL", "Salesforce", "SAP", "Photoshop", "Illustrator", "Copywriting", "SEO", "Machine Learning"];
+const CREATE_VERA_LOCATIONS = ["Kuala Lumpur", "Petaling Jaya", "Penang", "Johor Bahru", "Cyberjaya", "Selangor", "Putrajaya", "Shah Alam", "Subang Jaya", "Georgetown", "Ipoh", "Kuching", "Kota Kinabalu"];
+const CREATE_VERA_FIELD_LABELS = {
+  title: "Role title", employmentType: "Employment type", seniority: "Seniority",
+  location: "Location", workMode: "Work mode", salary: "Salary range",
+  mustHaveSkills: "Must-have skills", roleSummary: "Role summary",
+  niceToHaveSkills: "Nice-to-have skills", minExperience: "Minimum experience",
+  educationOrCertification: "Education / certification", urgency: "Hiring urgency",
+  responsibilities: "Responsibilities", benefits: "Benefits"
+};
+
+function applyCreateVeraSuggestions(draft, suggestions, fields) {
+  fields.forEach(f => {
+    const s = suggestions[f];
+    if (!s) return;
+    if (f === "salary") { draft.salary.min = s.value.min; draft.salary.max = s.value.max; draft.salary.currency = s.value.currency; }
+    else if (f === "mustHaveSkills" || f === "niceToHaveSkills") s.value.forEach(skill => { if (!draft[f].includes(skill)) draft[f].push(skill); });
+    else draft[f] = s.value;
+  });
+}
+
+function buildCreateVeraSuggestions(answers) {
+  const suggestions = {};
+  const directReason = "You answered this in the conversation.";
+  const addIfPresent = (field, value) => { if (value !== undefined && value !== "" && !(Array.isArray(value) && value.length === 0)) suggestions[field] = { value, reason: directReason }; };
+
+  addIfPresent("title", answers.title);
+  addIfPresent("seniority", answers.seniority);
+  addIfPresent("location", answers.location);
+  addIfPresent("workMode", answers.workMode);
+  addIfPresent("employmentType", answers.employmentType);
+  if (answers.salary && (answers.salary.min || answers.salary.max)) {
+    suggestions.salary = { value: { min: answers.salary.min, max: answers.salary.max, currency: "MYR" }, reason: directReason };
+  }
+  addIfPresent("mustHaveSkills", answers.mustHaveSkills);
+  addIfPresent("niceToHaveSkills", answers.niceToHaveSkills);
+  addIfPresent("minExperience", answers.minExperience);
+  addIfPresent("educationOrCertification", answers.educationOrCertification);
+  addIfPresent("urgency", answers.urgency);
+
+  const generatedReason = "Vera generated this from your answers — edit or regenerate below.";
+  const generated = generateRoleContentFromAnswers(answers);
+  suggestions.roleSummary = { value: generated.roleSummary, reason: generatedReason, generated: true };
+  suggestions.responsibilities = { value: generated.responsibilities, reason: generatedReason, generated: true };
+  suggestions.benefits = { value: generated.benefits, reason: generatedReason, generated: true };
+  return suggestions;
+}
+
+/* ---------- Vera chat panel — shared by all 5 wizard steps ----------
+   One component, one interaction model: a persistent per-step message
+   thread stored on the draft (draft.veraThreads[stepIndex]), rendered as
+   chat bubbles with an always-visible text input. Each step's scripted
+   reply logic reuses the same mock computations the old one-off modals
+   used (buildCreateVeraSuggestions, getRequirementWarnings,
+   computeSalaryBenchmark, computeDraftVeraReview) - only the presentation
+   changed, from a paginated "Question N of 11" wizard / static "Got it"
+   modal into a back-and-forth conversation. Nothing here is a real model:
+   replies are picked by which turn number the thread is on, same
+   prototype-honesty as the rest of this app's "AI".
+   ---------------------------------------------------------------- */
+const VERA_STEP_OPENING_MESSAGES = [
+  "Tell me about the role and I'll help set up the basics — what's the title, and where's it based?",
+  "Let's define what this person will actually own. What's the main gap this role fills?",
+  "Which of your requirements are truly must-have, and which could someone learn on the job?",
+  "What's your budget range for this role? I can tell you how it compares to similar roles.",
+  "I've reviewed the role — want me to walk you through what's strong and what needs attention before you publish?"
+];
+
+// CREATE_VERA_QUESTIONS indices asked during the Step 1 chat, in order -
+// title(0) and location(2) are skipped since the opening message already asks for those.
+const VERA_STEP1_QUESTION_ORDER = [1, 3, 4, 5, 6, 7, 8, 9, 10];
+
+function getVeraThread(draft, stepIndex) {
+  if (!draft.veraThreads) draft.veraThreads = {};
+  if (!draft.veraThreads[stepIndex] || !draft.veraThreads[stepIndex].length) {
+    draft.veraThreads[stepIndex] = [{ role: "vera", text: VERA_STEP_OPENING_MESSAGES[stepIndex] }];
+  }
+  return draft.veraThreads[stepIndex];
+}
+
+function parseVeraStep1FirstReply(text) {
+  const trimmed = text.trim();
+  const foundLocation = CREATE_VERA_LOCATIONS.find(loc => trimmed.toLowerCase().includes(loc.toLowerCase()));
+  let title = trimmed;
+  if (foundLocation) {
+    const escaped = foundLocation.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    title = trimmed.replace(new RegExp(escaped, "i"), "").replace(/\b(in|at|based)\b/gi, " ").replace(/[,-]/g, " ").replace(/\s+/g, " ").trim();
+  }
+  return { title: title || trimmed, location: foundLocation || "" };
+}
+
+function parseVeraQuestionAnswer(question, text) {
+  const trimmed = text.trim();
+  if (/^skip$/i.test(trimmed)) return question.type === "tags" ? [] : "";
+  if (question.type === "tags") return trimmed.split(",").map(s => s.trim()).filter(Boolean);
+  if (question.type === "salary") {
+    const nums = (trimmed.match(/\d[\d,]*/g) || []).map(n => Number(n.replace(/,/g, "")));
+    if (!nums.length) return { min: null, max: null };
+    if (nums.length === 1) return { min: nums[0], max: nums[0] };
+    return { min: Math.min(nums[0], nums[1]), max: Math.max(nums[0], nums[1]) };
+  }
+  if (question.type === "chips") {
+    const match = question.options.find(o => o.toLowerCase() === trimmed.toLowerCase());
+    return match || trimmed;
+  }
+  return trimmed;
+}
+
+function computeVeraStep1Reply(draft, employerMessages) {
+  const n = employerMessages.length;
+  const order = VERA_STEP1_QUESTION_ORDER;
+  if (n === 1) {
+    const { title, location } = parseVeraStep1FirstReply(employerMessages[0].text);
+    if (title) draft.title = title;
+    if (location) draft.location = location;
+    const q = CREATE_VERA_QUESTIONS[order[0]];
+    return {
+      text: `Got it${title ? ` — ${title}` : ""}${location ? ` in ${location}` : ""}. ${q.prompt}`,
+      quickReplies: q.type === "chips" ? q.options : q.skippable ? ["Skip"] : undefined
+    };
+  }
+  const answeredIndex = n - 2;
+  if (answeredIndex < order.length - 1) {
+    const nextQ = CREATE_VERA_QUESTIONS[order[answeredIndex + 1]];
+    return {
+      text: nextQ.prompt,
+      quickReplies: nextQ.type === "chips" ? nextQ.options : nextQ.skippable ? ["Skip"] : undefined
+    };
+  }
+  if (answeredIndex === order.length - 1) {
+    const { title, location } = parseVeraStep1FirstReply(employerMessages[0].text);
+    const answers = { title: draft.title || title, location: draft.location || location };
+    order.forEach((qIdx, i) => {
+      const question = CREATE_VERA_QUESTIONS[qIdx];
+      answers[question.field] = parseVeraQuestionAnswer(question, employerMessages[i + 1].text);
+    });
+    const suggestions = buildCreateVeraSuggestions(answers);
+    const fields = Object.keys(suggestions);
+    applyCreateVeraSuggestions(draft, suggestions, fields);
+    const labels = fields.map(f => CREATE_VERA_FIELD_LABELS[f] || f);
+    return { text: `Done — I've filled in ${labels.join(", ")}. Take a look at Role Basics and Role Details to fine-tune anything, or keep chatting if there's something you want to change.` };
+  }
+  return { text: "You're all set for this step — feel free to keep editing the fields directly, or ask me anything else." };
+}
+
+function computeVeraStep2Reply(draft, employerMessages) {
+  const seed = employerMessages.length;
+  const hadResponsibilities = draft.responsibilities.some(r => r.trim());
+  const generatedSummary = generateRoleSummary(draft, seed);
+  const generatedResponsibilities = generateResponsibilities(draft, seed);
+  draft.roleSummary = generatedSummary;
+  draft.responsibilities = hadResponsibilities
+    ? [...draft.responsibilities, ...generatedResponsibilities.filter(r => !draft.responsibilities.includes(r))].slice(0, 8)
+    : generatedResponsibilities;
+  return { text: `Got it. Based on that, I've drafted a role summary and ${generatedResponsibilities.length} responsibilities below in Role Details — take a look and adjust anything that's off.` };
+}
+
+function computeVeraStep3Reply(draft) {
+  const warnings = getRequirementWarnings(draft);
+  if (!warnings.length) return { text: "No obvious requirement issues found — the must-have list and experience bar look reasonable for the stated seniority." };
+  return { text: `Here's what's worth reviewing:\n${warnings.map(w => `• ${w}`).join("\n")}` };
+}
+
+function computeVeraStep4Reply(draft, employerText) {
+  if (!draft.salary.min || !draft.salary.max) {
+    const nums = (employerText.match(/\d[\d,]*/g) || []).map(n => Number(n.replace(/,/g, "")));
+    if (nums.length >= 2) { draft.salary.min = Math.min(nums[0], nums[1]); draft.salary.max = Math.max(nums[0], nums[1]); }
+    else if (nums.length === 1) { draft.salary.min = draft.salary.min || nums[0]; draft.salary.max = draft.salary.max || nums[0]; }
+  }
+  const benchmark = computeSalaryBenchmark(draft);
+  if (!benchmark) return { text: "Market benchmark data is only available for MYR right now — switch the currency to MYR and I can compare it." };
+  if (benchmark.verdict === "none") return { text: `Add a salary range and I can compare it to the typical range for ${draft.seniority} (RM ${benchmark.benchmarkMin.toLocaleString()} - RM ${benchmark.benchmarkMax.toLocaleString()} / month).` };
+  const verdictText = benchmark.verdict === "below" ? `That's below the typical range — consider raising it to stay competitive for ${draft.seniority} candidates.`
+    : benchmark.verdict === "above" ? `That's above the typical range — you may attract more applicants, or this may signal a very senior hire.`
+    : `That's within the typical range for ${draft.seniority}.`;
+  return { text: `Typical range for ${draft.seniority} is RM ${benchmark.benchmarkMin.toLocaleString()} - RM ${benchmark.benchmarkMax.toLocaleString()} / month. This role's midpoint is RM ${benchmark.offeredMid.toLocaleString()} / month. ${verdictText}` };
+}
+
+function computeVeraStep5Reply(draft) {
+  const review = computeDraftVeraReview(draft);
+  const parts = [`Role readiness is at ${review.readiness}%.`];
+  if (review.strengths.length) parts.push(`Strengths: ${review.strengths.join(" ")}`);
+  parts.push(review.needsAttention.length ? `Needs attention: ${review.needsAttention.map(n => n.text).join(" ")}` : "Nothing urgent needs attention before you publish.");
+  return { text: parts.join("\n\n") };
+}
+
+function computeVeraChatReply(stepIndex, draft, thread, employerText) {
+  const employerMessages = thread.filter(m => m.role === "employer");
+  if (stepIndex === 0) return computeVeraStep1Reply(draft, employerMessages);
+  if (stepIndex === 1) return computeVeraStep2Reply(draft, employerMessages);
+  if (stepIndex === 2) return computeVeraStep3Reply(draft);
+  if (stepIndex === 3) return computeVeraStep4Reply(draft, employerText);
+  if (stepIndex === 4) return computeVeraStep5Reply(draft);
+  return { text: "Noted." };
+}
+
+function renderVeraChatPanel(stepIndex, draft) {
+  const thread = getVeraThread(draft, stepIndex);
+  const lastMsg = thread[thread.length - 1];
+  const quickReplies = lastMsg && lastMsg.role === "vera" && lastMsg.quickReplies ? lastMsg.quickReplies : null;
+  return `
+    <div class="emp-vera-chat">
+      <div class="emp-vera-chat-header">
+        <h2>${icon("sparkles")} Vera</h2>
+        <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="emp-vera-chat-messages" data-vera-chat-messages>
+        ${thread.map(m => `<div class="emp-vera-chat-bubble emp-vera-chat-bubble-${m.role}">${escapeHtml(m.text)}</div>`).join("")}
+      </div>
+      ${quickReplies ? `
+        <div class="emp-vera-chat-quick-replies" data-vera-quick-replies>
+          ${quickReplies.map(q => `<button type="button" class="emp-vera-chat-quick-reply" data-vera-quick-reply="${escapeHtml(q)}">${escapeHtml(q)}</button>`).join("")}
+        </div>
+      ` : ""}
+      <form class="emp-vera-chat-input-row" data-vera-chat-form>
+        <input type="text" data-vera-chat-input placeholder="Type a message..." autocomplete="off" aria-label="Message Vera">
+        <button type="submit" class="btn btn-primary btn-sm" aria-label="Send">${icon("send")}</button>
+      </form>
+    </div>
+  `;
+}
+
+function bindVeraChatPanel(host, stepIndex, draft, onUpdate) {
+  const card = qs(".emp-modal-card", host);
+  if (!card) return;
+
+  function scrollToBottom() {
+    const messagesEl = qs("[data-vera-chat-messages]", card);
+    if (messagesEl) messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function bind() {
+    // openEmpModal's [data-emp-modal-close] auto-bind only wired the button that
+    // existed at open time - refresh() (called after every message) replaces
+    // card.innerHTML and creates a new, unbound one. Re-bind it every time.
+    qs("[data-emp-modal-close]", card)?.addEventListener("click", () => closeEmpModal());
+    qs("[data-vera-chat-form]", card)?.addEventListener("submit", event => {
+      event.preventDefault();
+      const input = qs("[data-vera-chat-input]", card);
+      const value = input?.value || "";
+      if (input) input.value = "";
+      send(value);
+    });
+    qsa("[data-vera-quick-reply]", card).forEach(btn => btn.addEventListener("click", () => send(btn.dataset.veraQuickReply)));
+  }
+
+  function refresh() {
+    card.innerHTML = renderVeraChatPanel(stepIndex, draft);
+    createIcons();
+    bind();
+    scrollToBottom();
+    qs("[data-vera-chat-input]", card)?.focus();
+  }
+
+  function send(text) {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    const thread = getVeraThread(draft, stepIndex);
+    thread.push({ role: "employer", text: trimmed });
+    const reply = computeVeraChatReply(stepIndex, draft, thread, trimmed);
+    thread.push({ role: "vera", text: reply.text, quickReplies: reply.quickReplies });
+    onUpdate();
+    refresh();
+  }
+
+  bind();
+  scrollToBottom();
+  qs("[data-vera-chat-input]", card)?.focus();
+}
+
+function openVeraChatPanel(stepIndex, draft, onUpdate) {
+  openEmpModal("vera-chat", renderVeraChatPanel(stepIndex, draft), {
+    className: "emp-vera-chat-card",
+    label: "Vera",
+    onOpen: host => bindVeraChatPanel(host, stepIndex, draft, onUpdate)
+  });
+}
+
+function renderEmployerRoleBuilder(root, roleId) {
+  // Same redraw-on-every-interaction architecture as the Talent Pipeline:
+  // root.innerHTML gets replaced on every field edit/step change, so the
+  // global count-up number animation's MutationObserver treats every numeric
+  // element (including the tiny step-index digits) as newly added and
+  // re-animates it from 0 every time, even when the value didn't change -
+  // the confirmed cause of the flashing on this page. See the identical fix
+  // and its comment in renderEmployerTalentPipeline.
+  root.setAttribute("data-no-number-animation", "");
+  let existing = roleId ? DATA.employerRoles.find(r => r.id === roleId) : null;
+  const draftId = existing ? existing.id : `draft-${Date.now()}`;
+  const seedState = readState();
+  const draft = seedState.employerRoleDrafts[draftId] || makeEmployerRoleDraft(existing);
+  if (!seedState.employerRoleDrafts[draftId]) {
+    seedState.employerRoleDrafts[draftId] = draft;
+    writeState(seedState);
+  }
+  let activeStep = 0;
+  let publishActiveTab = "preview";
+  const advancedOpen = { roleBasics: false, compensation: false };
+  let saveTimer = null;
+  const dismissedSuggestions = new Set();
+  const appliedSuggestions = new Set();
+  let currentSaveState = "idle";
+
+  function setSaveIndicator(state) {
+    const labels = qsa("[data-emp-saved-label]", root);
+    const retry = qs("[data-emp-retry-save]", root);
+    if (!labels.length) return;
+    currentSaveState = state;
+    const text = state === "saving" ? "Saving…"
+      : state === "saved" ? formatSavedLabel(draft.lastSavedAt)
+      : state === "unsaved" ? "Unsaved changes"
+      : state === "error" ? "Save failed —"
+      : labels[0].textContent;
+    labels.forEach(label => {
+      label.classList.toggle("emp-save-error", state === "error");
+      label.textContent = text;
+    });
+    if (retry) retry.hidden = state !== "error";
+  }
+
+  // The "Saved Xs/Xm ago" text goes stale the moment the clock ticks past
+  // the next formatSavedLabel bucket, since nothing else re-renders it -
+  // refresh it on an interval while this page is on screen. Self-clears
+  // once #employer-view has moved on to a different view (this app has no
+  // page-unmount hook to key off of).
+  const autosaveTicker = setInterval(() => {
+    if (!qs("[data-emp-saved-label]", root)) { clearInterval(autosaveTicker); return; }
+    if (currentSaveState === "saved") setSaveIndicator("saved");
+  }, 15000);
+
+  function persistDraft() {
+    try {
+      draft.lastSavedAt = new Date().toISOString();
+      const state = readState();
+      state.employerRoleDrafts[draftId] = draft;
+      writeState(state);
+      setSaveIndicator("saved");
+      refreshStepDots();
+    } catch (e) {
+      setSaveIndicator("error");
+    }
+  }
+
+  function scheduleAutosave() {
+    setSaveIndicator("unsaved");
+    refreshStepDots();
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { setSaveIndicator("saving"); window.setTimeout(persistDraft, 150); }, 900);
+  }
+
+  function flushAndPersist() {
+    if (saveTimer) clearTimeout(saveTimer);
+    persistDraft();
+  }
+
+  function bindField(selector, field) {
+    const el = qs(selector, root);
+    if (!el) return;
+    el.addEventListener("input", () => { draft[field] = el.value; scheduleAutosave(); });
+    el.addEventListener("blur", flushAndPersist);
+  }
+
+  function bindCheckbox(selector, field) {
+    const el = qs(selector, root);
+    if (!el) return;
+    el.addEventListener("change", () => { draft[field] = el.checked; persistDraft(); });
+  }
+
+  function bindSelect(selector, field, isNumber) {
+    const el = qs(selector, root);
+    if (!el) return;
+    el.addEventListener("change", () => { draft[field] = isNumber ? Number(el.value) : el.value; persistDraft(); });
+  }
+
+  function bindSalaryField(sub) {
+    const el = qs(`[data-field-salary-${sub}]`, root);
+    if (!el) return;
+    el.addEventListener("input", () => {
+      draft.salary[sub] = el.value === "" ? null : Number(el.value);
+      scheduleAutosave();
+      const benchmarkCard = qs(".emp-vera-benchmark", root);
+      if (benchmarkCard) { benchmarkCard.outerHTML = renderSalaryBenchmarkCard(draft); createIcons(); }
+    });
+    el.addEventListener("blur", flushAndPersist);
+  }
+
+  function bindSalarySelect(sub) {
+    const el = qs(`[data-field-salary-${sub}]`, root);
+    if (!el) return;
+    el.addEventListener("change", () => { draft.salary[sub] = el.value; persistDraft(); });
+  }
+
+  function bindSalaryCheckbox(sub) {
+    const el = qs(`[data-field-salary-${sub}]`, root);
+    if (!el) return;
+    el.addEventListener("change", () => { draft.salary[sub] = el.checked; persistDraft(); });
+  }
+
+  function renderResponsibilityList() {
+    return `
+      <div data-resp-list>
+        ${draft.responsibilities.map((r, i) => `
+          <div class="emp-resp-row">
+            <div class="emp-resp-reorder">
+              <button type="button" class="btn btn-ghost btn-sm" data-resp-up="${i}" ${i === 0 ? "disabled" : ""} aria-label="Move up">${icon("chevron-up")}</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-resp-down="${i}" ${i === draft.responsibilities.length - 1 ? "disabled" : ""} aria-label="Move down">${icon("chevron-down")}</button>
+            </div>
+            <input type="text" data-resp-index="${i}" value="${escapeHtml(r)}" placeholder="e.g. Build and maintain backend services">
+            <button type="button" class="btn btn-ghost btn-sm" data-resp-remove="${i}" aria-label="Remove">${icon("x")}</button>
+          </div>
+        `).join("")}
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" data-resp-add>${icon("plus")} Add responsibility</button>
+    `;
+  }
+
+  function bindResponsibilityList() {
+    qsa("[data-resp-index]", root).forEach(input => {
+      input.addEventListener("input", () => { draft.responsibilities[Number(input.dataset.respIndex)] = input.value; scheduleAutosave(); });
+      input.addEventListener("blur", flushAndPersist);
+    });
+    qsa("[data-resp-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      draft.responsibilities.splice(Number(btn.dataset.respRemove), 1);
+      persistDraft();
+      draw();
+    }));
+    qsa("[data-resp-up]", root).forEach(btn => btn.addEventListener("click", () => {
+      const i = Number(btn.dataset.respUp);
+      if (i > 0) { [draft.responsibilities[i - 1], draft.responsibilities[i]] = [draft.responsibilities[i], draft.responsibilities[i - 1]]; persistDraft(); draw(); }
+    }));
+    qsa("[data-resp-down]", root).forEach(btn => btn.addEventListener("click", () => {
+      const i = Number(btn.dataset.respDown);
+      if (i < draft.responsibilities.length - 1) { [draft.responsibilities[i + 1], draft.responsibilities[i]] = [draft.responsibilities[i], draft.responsibilities[i + 1]]; persistDraft(); draw(); }
+    }));
+    qs("[data-resp-add]", root)?.addEventListener("click", () => {
+      draft.responsibilities.push("");
+      persistDraft();
+      draw();
+      const inputs = qsa("[data-resp-index]", root);
+      inputs[inputs.length - 1]?.focus();
+    });
+  }
+
+  function bindTagInput(field) {
+    const container = qs(`[data-tag-field="${field}"]`, root);
+    if (!container) return;
+    const input = qs("[data-tag-new]", container);
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === ",") {
+        event.preventDefault();
+        const val = input.value.trim().replace(/,$/, "");
+        if (val && !draft[field].includes(val)) {
+          draft[field].push(val);
+          persistDraft();
+          draw();
+          qs(`[data-tag-field="${field}"] [data-tag-new]`, root)?.focus();
+        } else {
+          input.value = "";
+        }
+      }
+    });
+    qsa("[data-tag-remove]", container).forEach(btn => btn.addEventListener("click", () => {
+      draft[field].splice(Number(btn.dataset.tagRemove), 1);
+      persistDraft();
+      draw();
+    }));
+  }
+
+  function bindHiringStagesEditor() {
+    qsa("[data-stage-field]", root).forEach(input => {
+      input.addEventListener("input", () => {
+        draft.hiringStages[Number(input.dataset.stageIndex)][input.dataset.stageField] = input.value;
+        scheduleAutosave();
+      });
+      input.addEventListener("blur", flushAndPersist);
+    });
+    qsa("[data-stage-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      draft.hiringStages.splice(Number(btn.dataset.stageRemove), 1);
+      persistDraft(); draw();
+    }));
+    let dragFromIndex = null;
+    qsa("[data-stage-drag]", root).forEach(handle => {
+      handle.addEventListener("dragstart", event => {
+        dragFromIndex = Number(handle.dataset.stageDrag);
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", String(dragFromIndex));
+        handle.closest("[data-stage-row]")?.classList.add("emp-stage-dragging");
+      });
+      handle.addEventListener("dragend", () => {
+        handle.closest("[data-stage-row]")?.classList.remove("emp-stage-dragging");
+        dragFromIndex = null;
+      });
+    });
+    qsa("[data-stage-row]", root).forEach(row => {
+      row.addEventListener("dragover", event => {
+        if (dragFromIndex === null) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+      });
+      row.addEventListener("drop", event => {
+        if (dragFromIndex === null) return;
+        event.preventDefault();
+        const toIndex = Number(row.dataset.stageRow);
+        if (toIndex !== dragFromIndex) {
+          const [moved] = draft.hiringStages.splice(dragFromIndex, 1);
+          draft.hiringStages.splice(toIndex, 0, moved);
+          persistDraft(); draw();
+        }
+        dragFromIndex = null;
+      });
+    });
+    qs("[data-stage-add]", root)?.addEventListener("click", () => {
+      draft.hiringStages.push({ name: "", duration: "", owner: "", format: "" });
+      persistDraft(); draw();
+    });
+  }
+
+  function bindRequiredDocumentsControl() {
+    qsa("[data-doc-toggle]", root).forEach(group => {
+      const key = group.dataset.docToggle;
+      qsa("button", group).forEach(btn => btn.addEventListener("click", () => {
+        draft.requiredDocumentTypes[key] = btn.dataset.docValue;
+        persistDraft(); draw();
+      }));
+    });
+  }
+
+  function bindScreeningQuestionsList() {
+    qsa("[data-screening-index]", root).forEach(input => {
+      input.addEventListener("input", () => { draft.screeningQuestions[Number(input.dataset.screeningIndex)] = input.value; scheduleAutosave(); });
+      input.addEventListener("blur", flushAndPersist);
+    });
+    qsa("[data-screening-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      draft.screeningQuestions.splice(Number(btn.dataset.screeningRemove), 1);
+      persistDraft(); draw();
+    }));
+    qs("[data-screening-add]", root)?.addEventListener("click", () => {
+      draft.screeningQuestions.push("");
+      persistDraft(); draw();
+    });
+  }
+
+  // One consistent Vera entry point per step: same component, same visual
+  // treatment (outlined pill, sparkle icon), positioned directly under the
+  // step's heading/subtitle - only the label and trigger attribute vary.
+  function renderAskVeraButton(label, triggerAttr, extra = "") {
+    return `<button type="button" class="btn btn-ghost btn-sm emp-vera-accent-btn" ${triggerAttr} ${extra}>${icon("sparkles")} ${escapeHtml(label)}</button>`;
+  }
+
+  function renderWizardStepContent(step) {
+    switch (step) {
+      case 0:
+        return `
+          <div class="emp-form-section-head"><h2>${icon("briefcase")} Role Basics</h2><p>Start with the essentials candidates and your team need to understand this role.</p></div>
+          ${renderAskVeraButton("Do this with Vera", "data-emp-create-vera")}
+          <div class="emp-form-grid-2">
+            <label>Role title<input type="text" data-field-title value="${escapeHtml(draft.title)}" placeholder="e.g. Backend Engineer"></label>
+            <label>Department<input type="text" data-field-department value="${escapeHtml(draft.department)}" placeholder="e.g. Engineering"></label>
+            <label>Job category<input type="text" data-field-jobCategory value="${escapeHtml(draft.jobCategory)}" placeholder="Optional"></label>
+            <label>Seniority<select data-field-seniority>${SENIORITY_LEVELS.map(o => `<option ${draft.seniority === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Employment type<select data-field-employmentType>${EMPLOYMENT_TYPES.map(o => `<option ${draft.employmentType === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Number of openings<input type="number" min="1" data-field-openings value="${draft.openings}"></label>
+            <label>Location<input type="text" data-field-location value="${escapeHtml(draft.location)}" placeholder="e.g. Kuala Lumpur"></label>
+            <label>Work mode<select data-field-workMode>${["On-site", "Hybrid", "Remote"].map(o => `<option ${draft.workMode === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Target start date<input type="date" data-field-targetStartDate value="${draft.targetStartDate}"></label>
+            <label>Hiring urgency<select data-field-urgency>${["Standard", "Urgent", "Critical"].map(o => `<option ${draft.urgency === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+          </div>
+          <details class="emp-advanced-disclosure" data-advanced="roleBasics" ${advancedOpen.roleBasics ? "open" : ""}>
+            <summary>Advanced</summary>
+            <div class="emp-form-grid-2">
+              <label>Internal job ID<input type="text" data-field-internalJobId value="${escapeHtml(draft.internalJobId)}" placeholder="Optional"></label>
+              <label>Reports to<input type="text" data-field-reportsTo value="${escapeHtml(draft.reportsTo)}" placeholder="Optional"></label>
+              <label>Hiring owner<input type="text" data-field-hiringOwner value="${escapeHtml(draft.hiringOwner)}" placeholder="Optional"></label>
+              <label>Visa sponsorship<select data-field-visaSponsorship>${["Not available", "Available", "Case by case"].map(o => `<option ${draft.visaSponsorship === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+              ${["Contract", "Temporary", "Internship", "Freelance"].includes(draft.employmentType) ? `<label>Contract duration<input type="text" data-field-contractDuration value="${escapeHtml(draft.contractDuration)}" placeholder="e.g. 6 months"></label>` : ""}
+            </div>
+          </details>
+        `;
+      case 1:
+        return `
+          <div class="emp-form-section-head"><h2>${icon("list-checks")} Role Details</h2><p>Explain why this role exists, what they'll own, and how success is measured.</p></div>
+          ${renderAskVeraButton("Do this with Vera", "data-generate-role-details", draft.title.trim() ? "" : `disabled title="Add a role title first"`)}
+          <label>Why this role exists<textarea data-field-rolePurpose rows="2" placeholder="Optional">${escapeHtml(draft.rolePurpose)}</textarea></label>
+          <label>Role summary<textarea data-field-roleSummary rows="3" placeholder="Describe the role in 2-4 sentences. Focus on the purpose of the position.">${escapeHtml(draft.roleSummary)}</textarea></label>
+          <div>
+            <span class="emp-tags-label">Key responsibilities — recommended 3-8</span>
+            ${renderResponsibilityList()}
+          </div>
+          <label>First 90-day outcomes<textarea data-field-firstNinetyDays rows="2" placeholder="Optional">${escapeHtml(draft.firstNinetyDays)}</textarea></label>
+          <label>Long-term success looks like<textarea data-field-successLooksLike rows="2" placeholder="Optional">${escapeHtml(draft.successLooksLike)}</textarea></label>
+          <div class="emp-form-grid-2">
+            <label>Team structure<input type="text" data-field-teamStructure value="${escapeHtml(draft.teamStructure)}" placeholder="Optional"></label>
+            <label>Key stakeholders<input type="text" data-field-stakeholders value="${escapeHtml(draft.stakeholders)}" placeholder="Optional"></label>
+            <label>Tools & technologies<input type="text" data-field-tools value="${escapeHtml(draft.tools)}" placeholder="Optional"></label>
+            <label>Travel expectations<input type="text" data-field-travelExpectations value="${escapeHtml(draft.travelExpectations)}" placeholder="Optional"></label>
+          </div>
+        `;
+      case 2:
+        return `
+          <div class="emp-form-section-head"><h2>${icon("users")} Candidate Profile</h2><p>Separate what's essential from what's preferred or trainable.</p></div>
+          ${renderAskVeraButton("Do this with Vera", "data-review-requirements")}
+          ${renderRequirementWarnings(draft)}
+          <div><span class="emp-tags-label">Must-have — failure to meet may affect eligibility</span>${renderTagInput("mustHaveSkills", draft.mustHaveSkills)}</div>
+          <div><span class="emp-tags-label">Preferred — improves fit, won't automatically reject candidates</span>${renderTagInput("niceToHaveSkills", draft.niceToHaveSkills)}</div>
+          <div><span class="emp-tags-label">Trainable — can be learned after joining</span>${renderTagInput("trainableSkills", draft.trainableSkills)}</div>
+          <label>Match threshold<select data-field-matchThreshold>
+            ${[[60, "Broad pool — 60%"], [70, "Balanced — 70%"], [80, "Focused — 80%"], [90, "Very selective — 90%"]].map(([v, l]) => `<option value="${v}" ${draft.matchThreshold === v ? "selected" : ""}>${l}</option>`).join("")}
+          </select></label>
+          <p class="emp-field-help">~${estimateCandidatePool(draft)} candidates at this threshold.</p>
+          <div class="emp-form-grid-2">
+            <label>Minimum experience<select data-field-minExperience>${["No experience required", "Less than 1 year", "1-2 years", "3-5 years", "5+ years"].map(o => `<option ${draft.minExperience === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-equivalentExperienceAccepted ${draft.equivalentExperienceAccepted ? "checked" : ""}> Equivalent project/portfolio evidence accepted</label>
+            <label>Education or certification<input type="text" data-field-educationOrCertification value="${escapeHtml(draft.educationOrCertification)}" placeholder="Optional"></label>
+            <label>Required licences<input type="text" data-field-requiredLicences value="${escapeHtml(draft.requiredLicences)}" placeholder="Optional"></label>
+            <label>Language requirements<input type="text" data-field-languageRequirements value="${escapeHtml(draft.languageRequirements)}" placeholder="Optional"></label>
+            <label>Availability requirement<input type="text" data-field-availabilityRequirement value="${escapeHtml(draft.availabilityRequirement)}" placeholder="Optional"></label>
+            <label>Work authorization<input type="text" data-field-workAuthorization value="${escapeHtml(draft.workAuthorization)}" placeholder="Optional"></label>
+          </div>
+        `;
+      case 3:
+        return `
+          <div class="emp-form-section-head"><h2>${icon("wallet")} Offer</h2><p>Set compensation, benefits, and schedule detail.</p></div>
+          ${renderAskVeraButton("Do this with Vera", "data-ask-vera-market-rate")}
+
+          <h3 class="emp-form-subhead">Compensation</h3>
+          <div class="emp-salary-row">
+            <label>Minimum<input type="number" data-field-salary-min value="${draft.salary.min ?? ""}" placeholder="e.g. 4500"></label>
+            <label>Maximum<input type="number" data-field-salary-max value="${draft.salary.max ?? ""}" placeholder="e.g. 7000"></label>
+            <label>Pay period<select data-field-salary-period>${["Monthly", "Annual", "Hourly"].map(o => `<option ${draft.salary.period === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+          </div>
+          <div class="emp-form-grid-2">
+            <label>Currency<select data-field-salary-currency>${["MYR", "USD", "SGD"].map(o => `<option ${draft.salary.currency === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label>Salary visibility<select data-field-salary-visibility>${["Visible to candidates", "Hidden until applied", "Hidden entirely"].map(o => `<option ${draft.salary.visibility === o ? "selected" : ""}>${o}</option>`).join("")}</select></label>
+            <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-salary-negotiable ${draft.salary.negotiable ? "checked" : ""}> Negotiable</label>
+          </div>
+          ${renderSalaryBenchmarkCard(draft)}
+          <details class="emp-advanced-disclosure" data-advanced="compensation" ${advancedOpen.compensation ? "open" : ""}>
+            <summary>Advanced — additional compensation</summary>
+            <div class="emp-form-grid-2">
+              <label>Bonus<input type="text" data-field-bonus value="${escapeHtml(draft.bonus)}" placeholder="Optional"></label>
+              <label>Commission<input type="text" data-field-commission value="${escapeHtml(draft.commission)}" placeholder="Optional"></label>
+              <label>Allowances<input type="text" data-field-allowances value="${escapeHtml(draft.allowances)}" placeholder="Optional"></label>
+              <label>Overtime policy<input type="text" data-field-overtimePolicy value="${escapeHtml(draft.overtimePolicy)}" placeholder="Optional"></label>
+              <label>Equity<input type="text" data-field-equity value="${escapeHtml(draft.equity)}" placeholder="Optional"></label>
+            </div>
+          </details>
+
+          <h3 class="emp-form-subhead">Benefits</h3>
+          <div class="emp-checkbox-grid">${BENEFIT_OPTIONS.map(b => `<label class="check-field custom-checkbox"><input type="checkbox" data-benefit="${escapeHtml(b)}" ${draft.benefits.includes(b) ? "checked" : ""}> ${b}</label>`).join("")}</div>
+
+          <h3 class="emp-form-subhead">Schedule</h3>
+          <div class="emp-form-grid-2">
+            <label>Exact office location<input type="text" data-field-officeLocation value="${escapeHtml(draft.officeLocation)}" placeholder="Optional"></label>
+            <label>Hybrid attendance<input type="text" data-field-hybridDays value="${escapeHtml(draft.hybridDays)}" placeholder="Optional"></label>
+            <label>Working days<input type="text" data-field-workingDays value="${escapeHtml(draft.workingDays)}" placeholder="Optional"></label>
+            <label>Shift pattern<input type="text" data-field-shiftPattern value="${escapeHtml(draft.shiftPattern)}" placeholder="Optional"></label>
+            <label>Working hours<input type="text" data-field-workingHours value="${escapeHtml(draft.workingHours)}" placeholder="Optional"></label>
+          </div>
+        `;
+      default:
+        return "";
+    }
+  }
+
+  // Every keystroke autosaves, so "unsaved" can't mean "not yet written to
+  // storage" the way it would in a traditional form - it means "diverged
+  // from the last published/loaded version" (existing roles) or "not blank"
+  // (brand-new drafts). Compares against a fresh baseline, ignoring the
+  // bookkeeping fields (autosave timestamp, Vera chat history) that change
+  // just from opening the wizard without the employer editing anything.
+  function hasWizardDraftDiverged() {
+    const baseline = makeEmployerRoleDraft(existing);
+    const strip = d => { const { lastSavedAt, veraThreads, ...rest } = d; return rest; };
+    return JSON.stringify(strip(draft)) !== JSON.stringify(strip(baseline));
+  }
+
+  function commitDraft(status, { stay = false } = {}) {
+    const state = readState();
+    if (existing) {
+      Object.assign(existing, draft, { status });
+    } else {
+      const created = Object.assign({
+        id: draftId, applicants: 0, qualified: 0, strongMatches: 0, daysOpen: 0, health: "Healthy", closeReason: null,
+        owner: "You", lastUpdated: "Just now",
+        roleIntelligence: FALLBACK_ROLE_INTELLIGENCE
+      }, draft, { status });
+      DATA.employerRoles.push(created);
+      existing = created;
+    }
+    delete state.employerRoleDrafts[draftId];
+    writeState(state);
+    showToast(status === "Open" ? "Role published." : status === "Draft" ? "Draft saved." : "Role updated.");
+    if (stay) {
+      // "Save draft" now lives in the shared action row on every step, next to
+      // Back/Continue - it must save in place, not boot the user out of the
+      // wizard the way the old one-shot Step-5-only button could get away with.
+      draft.lastSavedAt = new Date().toISOString();
+      setSaveIndicator("saved");
+      return;
+    }
+    employerNavigateTo("roles", {}, { force: true });
+  }
+
+  function applyVeraReviewAction(action) {
+    if (action.type === "set-field") draft[action.field] = action.value;
+    else if (action.type === "add-benefits") ["Medical coverage", "Paid leave", "Flexible working"].forEach(b => { if (!draft.benefits.includes(b)) draft.benefits.push(b); });
+    else if (action.type === "trim-stages") draft.hiringStages = draft.hiringStages.slice(0, 4);
+    else if (action.type === "trim-musthave") draft.niceToHaveSkills.push(...draft.mustHaveSkills.splice(6));
+    else if (action.type === "use-company") {
+      const company = DATA.companies.find(c => c.id === "maybank");
+      if (company) { draft.companySummary = company.summary || ""; draft.useCompanyProfile = true; }
+    }
+  }
+
+  function isStepComplete(stepIndex, predicates) {
+    if (stepIndex === 0) return predicates.role_basics_complete && !!(draft.location && draft.location.trim());
+    if (stepIndex === 1) return predicates.role_summary_added && predicates.responsibilities_added;
+    if (stepIndex === 2) return predicates.candidate_requirements_complete;
+    if (stepIndex === 3) return !!(draft.salary.min && draft.salary.max);
+    if (stepIndex === 4) return predicates.hiring_process_configured && predicates.application_method_configured && predicates.distribution_channels_selected && predicates.preview_reviewed;
+    return false;
+  }
+
+  // Plain text fields (bindField) only call scheduleAutosave/persistDraft, neither
+  // of which runs a full draw() - so without this, the step dots would go stale
+  // mid-typing until some unrelated interaction happened to force a redraw. This
+  // patches just the step nav in place, so it never touches (or steals focus from)
+  // whatever field the user is currently typing into.
+  function refreshStepDots() {
+    const stepPredicates = getReadinessPredicates(draft);
+    qsa(".emp-wizard-step", root).forEach((btn, i) => {
+      const complete = isStepComplete(i, stepPredicates);
+      btn.classList.toggle("done", complete);
+      const indexEl = qs(".emp-wizard-step-index", btn);
+      if (indexEl) indexEl.innerHTML = complete ? icon("check") : String(i + 1);
+      const dot = qs(".emp-wizard-step-dot", btn);
+      if (complete && dot) dot.remove();
+      if (!complete && !dot && indexEl) {
+        const newDot = document.createElement("span");
+        newDot.className = "emp-wizard-step-dot";
+        indexEl.insertAdjacentElement("afterend", newDot);
+      }
+    });
+    createIcons();
+  }
+
+  function renderHiringAndPublishExtras(draft) {
+    return `
+      <h3 class="emp-form-subhead">Hiring process</h3>
+      ${renderHiringStagesEditor(draft)}
+
+      <h3 class="emp-form-subhead">Application setup</h3>
+      <div class="emp-form-grid-2">
+        <label>Application deadline<input type="date" data-field-applicationDeadline value="${draft.applicationDeadline}"></label>
+        <label>Contact person<input type="text" data-field-contactPerson value="${escapeHtml(draft.contactPerson)}" placeholder="Optional"></label>
+      </div>
+      ${renderRequiredDocumentsControl(draft)}
+      <div>
+        <span class="emp-tags-label">Screening questions shown at application</span>
+        ${renderScreeningQuestionsList(draft)}
+      </div>
+      <label class="check-field custom-checkbox emp-checkbox-inline"><input type="checkbox" data-field-candidateConsent ${draft.candidateConsent ? "checked" : ""}> Require a candidate consent checkbox before applying</label>
+
+      <h3 class="emp-form-subhead">Job distribution</h3>
+      ${renderDistributionSection(draft)}
+
+      <h3 class="emp-form-subhead">About the company</h3>
+      ${renderCompanySection(draft)}
+
+      <h3 class="emp-form-subhead">Accessibility & equal opportunity</h3>
+      <label>Accommodation statement<textarea data-field-accommodationStatement rows="2">${escapeHtml(draft.accommodationStatement)}</textarea></label>
+    `;
+  }
+
+  function renderPublishReadinessTab(checks) {
+    const statusIcon = s => s === "Complete" ? "check" : s === "Missing" ? "x" : s === "Optional" ? "circle" : "alert-triangle";
+    return `
+      <div class="emp-callout-label">${icon("list-checks")} Publication readiness</div>
+      <ul class="emp-checklist emp-checklist--status">
+        ${checks.map(c => `<li class="emp-check-${c.status.toLowerCase().replace(/\s+/g, "-")}">${icon(statusIcon(c.status))} <span>${c.label}</span><span class="emp-check-status">${c.status}</span></li>`).join("")}
+      </ul>
+    `;
+  }
+
+  function renderPublishVeraTab(review, ri, pendingSuggestions, draft) {
+    return `
+      <div class="emp-callout-label">${icon("sparkles")} Vera role review</div>
+      <p class="emp-vera-readiness">Role readiness: <strong>${review.readiness}%</strong></p>
+      ${review.strengths.length ? `
+        <div class="emp-intel-section">
+          <h3 class="emp-intel-heading">Strengths</h3>
+          <ul class="emp-intel-strengths">${review.strengths.map(s => `<li>${icon("check")} ${escapeHtml(s)}</li>`).join("")}</ul>
+        </div>` : ""}
+      ${review.needsAttention.length ? `
+        <div class="emp-intel-section">
+          <h3 class="emp-intel-heading">Needs attention</h3>
+          ${review.needsAttention.map(n => `<div class="emp-callout emp-callout-warn"><p>${icon("alert-triangle")} ${escapeHtml(n.text)}</p></div>`).join("")}
+        </div>` : ""}
+      ${review.estimatedEffect.length ? `
+        <div class="emp-intel-section">
+          <h3 class="emp-intel-heading">Estimated effect</h3>
+          <ul class="emp-intel-strengths">${review.estimatedEffect.map(e => `<li>${icon("trending-up")} ${escapeHtml(e)}</li>`).join("")}</ul>
+        </div>` : ""}
+      ${review.needsAttention.some(n => n.action) ? `
+        <div class="emp-intel-section">
+          <h3 class="emp-intel-heading">Recommended actions</h3>
+          <div class="emp-suggestion-actions emp-suggestion-actions--wrap">
+            ${review.needsAttention.filter(n => n.action).map(n => `<button type="button" class="btn btn-ghost btn-sm" data-vera-review-action="${escapeHtml(JSON.stringify(n.action))}">${escapeHtml(n.action.label)}</button>`).join("")}
+            <button type="button" class="btn btn-ghost btn-sm" data-vera-review-apply-all>Apply all selected changes</button>
+          </div>
+        </div>` : ""}
+      ${renderLanguageCheckSection(draft)}
+      <p class="emp-vera-principle">${icon("shield-check")} The final hiring and publishing decision remains with you.</p>
+      ${ri && ri.talentAvailability && ri.talentAvailability !== "Not enough data" ? `
+        <div class="card emp-role-intelligence" style="margin-top:16px;">
+          ${renderRoleIntelligencePanel(ri, pendingSuggestions, draft)}
+        </div>
+      ` : ""}
+    `;
+  }
+
+  function renderPublishPreviewTab(draft) {
+    const company = DATA.companies.find(c => c.id === "maybank");
+    return `
+      <div class="emp-job-preview-frame">
+        ${renderJobPreviewContent(company, draft.responsibilities.filter(r => r.trim()))}
+      </div>
+    `;
+  }
+
+  function renderPreviewPublishStep() {
+    return `
+      <div class="emp-form-section-head"><h2>${icon("eye")} Preview & Publish</h2><p>Review everything before publishing this role.</p></div>
+      <div class="emp-publish-top-actions">
+        ${renderAskVeraButton("Do this with Vera", "data-ask-vera-publish-tab")}
+      </div>
+      <div class="card emp-publish-form-card">
+        ${renderHiringAndPublishExtras(draft)}
+      </div>
+      <div class="card emp-publish-checklist" style="margin-top:16px;">
+        ${renderWizardActionRow(`<button type="button" class="btn btn-primary" data-emp-publish>${icon("check")} ${existing && existing.status !== "Draft" ? "Save changes" : "Publish role"}</button>`, {
+          showPreviewJob: true,
+          leftExtraHtml: `<button type="button" class="btn btn-ghost" data-emp-open-review-modal>${icon("list-checks")} Review, Readiness & Vera</button>`
+        })}
+      </div>
+    `;
+  }
+
+  // Preview / Readiness / Vera used to live in a persistent sidebar next to
+  // the Step 5 form; now it's an on-demand centered modal (opened via
+  // "Review, Readiness & Vera") so the form can be full-width. Same content,
+  // same tab-switching, same publishActiveTab state - just rendered into
+  // [data-emp-modal-root] instead of `root`, so it needs its own bind/refresh
+  // pair rather than reusing bindPreviewPublishEvents (which only reaches
+  // elements inside `root`).
+  function renderReviewReadinessVeraModal() {
+    const ri = existing ? existing.roleIntelligence : null;
+    const pendingSuggestions = ri ? (ri.suggestions || []).filter(s => !dismissedSuggestions.has(s.recommendation) && !appliedSuggestions.has(s.recommendation)) : [];
+    const checks = getPublishReadinessChecks(draft);
+    const review = computeDraftVeraReview(draft);
+    return `
+      <div class="emp-review-modal-head">
+        <h2>Review, Readiness & Vera</h2>
+        <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="emp-tab-strip">
+        <button type="button" class="${publishActiveTab === "preview" ? "active" : ""}" data-publish-tab="preview">Preview</button>
+        <button type="button" class="${publishActiveTab === "readiness" ? "active" : ""}" data-publish-tab="readiness">Readiness</button>
+        <button type="button" class="${publishActiveTab === "vera" ? "active" : ""}" data-publish-tab="vera">Vera</button>
+      </div>
+      <div class="emp-review-modal-body">
+        ${publishActiveTab === "preview" ? renderPublishPreviewTab(draft)
+          : publishActiveTab === "readiness" ? renderPublishReadinessTab(checks)
+          : renderPublishVeraTab(review, ri, pendingSuggestions, draft)}
+      </div>
+    `;
+  }
+
+  function bindReviewReadinessVeraModal(host) {
+    const card = qs(".emp-modal-card", host);
+    if (!card) return;
+
+    function refresh() {
+      card.innerHTML = renderReviewReadinessVeraModal();
+      createIcons();
+      bind();
+    }
+
+    function bind() {
+      // openEmpModal's own [data-emp-modal-close] auto-bind only ran once, against
+      // the button that existed at open time - refresh() replaces card.innerHTML
+      // (e.g. on every tab switch), which destroys that button and creates a new,
+      // unbound one. Re-bind it here every time so the X keeps working after any refresh.
+      qs("[data-emp-modal-close]", card)?.addEventListener("click", () => closeEmpModal());
+      qsa("[data-publish-tab]", card).forEach(btn => btn.addEventListener("click", () => {
+        publishActiveTab = btn.dataset.publishTab;
+        if (publishActiveTab === "preview") { draft.previewReviewed = true; persistDraft(); draw(); }
+        refresh();
+      }));
+      qsa("[data-emp-compare-suggestion]", card).forEach(btn => btn.addEventListener("click", () => {
+        const panel = qs(`[data-suggestion-compare="${btn.dataset.empCompareSuggestion}"]`, card);
+        if (panel) panel.hidden = !panel.hidden;
+      }));
+      qsa("[data-emp-apply-suggestion]", card).forEach(btn => btn.addEventListener("click", () => {
+        const currentRi = existing ? existing.roleIntelligence : null;
+        const suggestion = currentRi ? (currentRi.suggestions || []).find(s => s.recommendation === btn.dataset.empApplySuggestion) : null;
+        if (suggestion) {
+          draft[suggestion.field] = suggestion.suggestedValue;
+          appliedSuggestions.add(suggestion.recommendation);
+          persistDraft();
+          draw();
+          refresh();
+          showToast("Suggestion applied.");
+        }
+      }));
+      qsa("[data-emp-keep-suggestion]", card).forEach(btn => btn.addEventListener("click", () => {
+        dismissedSuggestions.add(btn.dataset.empKeepSuggestion);
+        refresh();
+      }));
+      qsa("[data-vera-review-action]", card).forEach(btn => btn.addEventListener("click", () => {
+        applyVeraReviewAction(JSON.parse(btn.dataset.veraReviewAction));
+        persistDraft();
+        draw();
+        refresh();
+        showToast("Applied.");
+      }));
+      qs("[data-vera-review-apply-all]", card)?.addEventListener("click", () => {
+        computeDraftVeraReview(draft).needsAttention.filter(n => n.action).forEach(n => applyVeraReviewAction(n.action));
+        persistDraft();
+        draw();
+        refresh();
+        showToast("Applied all suggested changes.");
+      });
+    }
+
+    bind();
+  }
+
+  function openReviewReadinessVeraModal() {
+    openEmpModal("review-readiness-vera", renderReviewReadinessVeraModal(), {
+      className: "emp-review-modal-card",
+      label: "Review, Readiness & Vera",
+      onOpen: host => bindReviewReadinessVeraModal(host)
+    });
+  }
+
+  function renderJobPreviewContent(company, responsibilities) {
+    const initial = (company ? company.name : "Y").charAt(0).toUpperCase();
+    return `
+      <div class="emp-job-preview-company">
+        <span class="emp-job-preview-logo">${initial}</span>
+        <strong>${company ? escapeHtml(company.name) : "Your Company"}</strong>
+        ${company?.verified ? `<span class="pill cyan">Verified</span>` : ""}
+      </div>
+      <h2>${escapeHtml(draft.title) || "Role title"}</h2>
+      <div class="emp-job-preview-meta">${[draft.location, draft.workMode, draft.employmentType].filter(Boolean).join(" · ") || "Location · Work mode · Employment type"}</div>
+      ${draft.salary.min && draft.salary.max ? `<div class="emp-job-preview-salary">${draft.salary.currency} ${draft.salary.min.toLocaleString()} – ${draft.salary.max.toLocaleString()} / ${draft.salary.period.toLowerCase()}</div>` : ""}
+      <h3>About the role</h3>
+      <p>${escapeHtml(draft.roleSummary) || "Add a role summary in Role Details."}</p>
+      ${responsibilities.length ? `<h3>What you'll do</h3><ul>${responsibilities.map(r => `<li>${escapeHtml(r)}</li>`).join("")}</ul>` : ""}
+      ${draft.successLooksLike ? `<h3>What success looks like</h3><p>${escapeHtml(draft.successLooksLike)}</p>` : ""}
+      ${draft.mustHaveSkills.length ? `<h3>Must-have skills</h3><div class="pill-row">${draft.mustHaveSkills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>` : ""}
+      ${draft.niceToHaveSkills.length ? `<h3>Nice-to-have</h3><div class="pill-row">${draft.niceToHaveSkills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>` : ""}
+      ${draft.benefits.length ? `<h3>Benefits</h3><div class="pill-row">${draft.benefits.map(b => `<span class="pill">${escapeHtml(b)}</span>`).join("")}</div>` : ""}
+      ${draft.hiringStages.length ? `<h3>Hiring process</h3><ol>${draft.hiringStages.map(s => `<li>${escapeHtml(s.name || "Stage")}${s.duration ? ` — ${escapeHtml(s.duration)}` : ""}</li>`).join("")}</ol>` : ""}
+      ${draft.companySummary ? `<h3>About ${company ? escapeHtml(company.name) : "the company"}</h3><p>${escapeHtml(draft.companySummary)}</p>` : ""}
+      ${draft.accommodationStatement ? `<h3>Accessibility</h3><p>${escapeHtml(draft.accommodationStatement)}</p>` : ""}
+      <button type="button" class="btn btn-primary" disabled>Apply</button>
+    `;
+  }
+
+  function openRolePreviewModal() {
+    draft.previewReviewed = true;
+    persistDraft();
+    const company = DATA.companies.find(c => c.id === "maybank");
+    openEmpModal("role-preview", `
+      <div class="emp-preview-toolbar">
+        <h2>Job preview</h2>
+        <div class="emp-preview-device-toggle">
+          <button type="button" class="active" data-emp-preview-device="desktop">Desktop</button>
+          <button type="button" data-emp-preview-device="mobile">Mobile</button>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="emp-job-preview-frame" data-emp-preview-frame>
+        ${renderJobPreviewContent(company, draft.responsibilities.filter(r => r.trim()))}
+      </div>
+    `, {
+      label: "Job preview",
+      className: "emp-preview-modal-card",
+      onOpen: host => {
+        qsa("[data-emp-preview-device]", host).forEach(btn => btn.addEventListener("click", () => {
+          qsa("[data-emp-preview-device]", host).forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          qs("[data-emp-preview-frame]", host)?.classList.toggle("emp-preview-mobile", btn.dataset.empPreviewDevice === "mobile");
+        }));
+      }
+    });
+  }
+
+  function bindPreviewPublishEvents() {
+    qs("[data-emp-publish]", root)?.addEventListener("click", () => commitDraft(existing ? existing.status : "Open"));
+    qs("[data-ask-vera-publish-tab]", root)?.addEventListener("click", () => openVeraChatPanel(4, draft, () => { persistDraft(); draw(); }));
+    qs("[data-emp-open-review-modal]", root)?.addEventListener("click", () => openReviewReadinessVeraModal());
+
+    bindHiringStagesEditor();
+    bindRequiredDocumentsControl();
+    bindField("[data-field-applicationDeadline]", "applicationDeadline");
+    bindField("[data-field-contactPerson]", "contactPerson");
+    bindScreeningQuestionsList();
+    bindCheckbox("[data-field-candidateConsent]", "candidateConsent");
+    qsa("[data-distribution-channel]", root).forEach(cb => cb.addEventListener("change", () => {
+      const ch = cb.dataset.distributionChannel;
+      if (cb.checked) { if (!draft.distributionChannels.includes(ch)) draft.distributionChannels.push(ch); }
+      else draft.distributionChannels = draft.distributionChannels.filter(x => x !== ch);
+      persistDraft();
+    }));
+    qsa("[data-copy-posting]", root).forEach(btn => btn.addEventListener("click", () => {
+      const text = buildPlainTextJobPosting(draft);
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast(`Copied job description for ${btn.dataset.copyPosting}.`)).catch(() => showToast("Could not copy — select and copy manually.", "info"));
+      } else showToast("Clipboard is not available in this browser.", "info");
+    }));
+    bindField("[data-field-externalPostingUrl]", "externalPostingUrl");
+    bindField("[data-field-trackingSource]", "trackingSource");
+    bindField("[data-field-campaignName]", "campaignName");
+    bindField("[data-field-distributionExpiry]", "distributionExpiry");
+    qs("[data-use-company-profile]", root)?.addEventListener("click", () => {
+      const company = DATA.companies.find(c => c.id === "maybank");
+      if (!company) { showToast("No company profile found yet.", "info"); return; }
+      draft.companySummary = company.summary || "";
+      draft.useCompanyProfile = true;
+      persistDraft();
+      draw();
+      showToast("Pulled details from your Company Profile.");
+    });
+    bindField("[data-field-companySummary]", "companySummary");
+    bindField("[data-field-accommodationStatement]", "accommodationStatement");
+  }
+
+  // One action row per step, used by every step (Steps 1-4 and Step 5) -
+  // Back [+ leftExtraHtml on Step 5 only] / [Preview job on Step 5 only] /
+  // a step-specific final button (Continue, or Publish role on Step 5).
+  // Save is NOT here - it's a single button in the page header next to
+  // Cancel, functional from every step (see draw()'s header markup).
+  function renderWizardActionRow(finalButtonHtml, { showPreviewJob = false, leftExtraHtml = "" } = {}) {
+    return `
+      <div class="emp-wizard-actions">
+        <div class="emp-wizard-actions-left">
+          ${activeStep > 0 ? `<button type="button" class="btn btn-ghost" data-emp-prev>Back</button>` : ""}
+          ${leftExtraHtml}
+        </div>
+        <div class="emp-publish-buttons">
+          ${showPreviewJob ? `<button type="button" class="btn btn-ghost" data-emp-preview-open>${icon("eye")} Preview job</button>` : ""}
+          ${finalButtonHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  function draw() {
+    // Every field/step change fully replaces root's innerHTML, which drops
+    // keyboard focus to <body> - same architecture as the Talent Pipeline's
+    // draw(), same fix: capture a selector for the focused element (from its
+    // own data-* attributes) before the replace, restore it after.
+    const focusedEl = document.activeElement;
+    const focusRestoreSelector = focusedEl && root.contains(focusedEl) && focusedEl.attributes
+      ? Array.from(focusedEl.attributes).filter(a => a.name.startsWith("data-")).map(a => `[${a.name}="${CSS.escape(a.value)}"]`).join("") || null
+      : null;
+    root.innerHTML = `
+      <div class="emp-view-header">
+        <div class="emp-view-header-top">
+          <div>
+            <h1>${existing ? "Edit your role" : "Create a role"}</h1>
+            <p>${existing ? escapeHtml(existing.title) : "Set up the role candidates will see and CareerGo will match against."}</p>
+          </div>
+          <div class="emp-wizard-header-actions">
+            <button type="button" class="emp-wizard-cancel-link" data-emp-nav="roles">Cancel</button>
+            <div class="emp-wizard-save-group">
+              <button type="button" class="btn btn-ghost btn-sm" data-emp-save-draft>Save</button>
+              <span class="emp-save-indicator emp-save-indicator--inline" data-emp-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span>
+              <button type="button" class="emp-save-retry" data-emp-retry-save hidden>Retry</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="emp-wizard-steps">
+        ${(() => {
+          const stepPredicates = getReadinessPredicates(draft);
+          return EMPLOYER_ROLE_BUILDER_STEPS.map((label, i) => {
+            const complete = isStepComplete(i, stepPredicates);
+            // Derived purely from current field-completion state (isStepComplete,
+            // evaluated fresh every render) - never from navigation history. A
+            // step's dot is now identical no matter which step you view it from.
+            const showDot = !complete;
+            return `
+              <button type="button" class="emp-wizard-step ${i === activeStep ? "active" : ""} ${complete ? "done" : ""}" data-emp-step="${i}">
+                <span class="emp-wizard-step-index">${complete ? icon("check") : i + 1}</span>
+                ${showDot ? `<span class="emp-wizard-step-dot"></span>` : ""}
+                <span>${label}</span>
+              </button>
+            `;
+          }).join("");
+        })()}
+      </div>
+      ${activeStep === 4 ? renderPreviewPublishStep() : `
+        <div class="card emp-wizard-form">
+          ${renderWizardStepContent(activeStep)}
+          ${renderWizardActionRow(`<button type="button" class="btn btn-primary" data-emp-next>Continue</button>`)}
+        </div>
+      `}
+    `;
+    createIcons();
+    bindEvents();
+    if (focusRestoreSelector) {
+      try { qs(focusRestoreSelector, root)?.focus(); } catch (e) { /* selector built from stale attrs, ignore */ }
+    }
+  }
+
+  function bindEvents() {
+    qsa("[data-advanced]", root).forEach(details => details.addEventListener("toggle", () => {
+      advancedOpen[details.dataset.advanced] = details.open;
+    }));
+    qsa("[data-emp-step]", root).forEach(btn => btn.addEventListener("click", () => {
+      activeStep = Number(btn.dataset.empStep);
+      draw();
+    }));
+    qs("[data-emp-prev]", root)?.addEventListener("click", () => { activeStep = Math.max(0, activeStep - 1); draw(); });
+    qs("[data-emp-next]", root)?.addEventListener("click", () => { activeStep = Math.min(EMPLOYER_ROLE_BUILDER_STEPS.length - 1, activeStep + 1); draw(); });
+    qs("[data-emp-nav]", root)?.addEventListener("click", event => {
+      event.preventDefault();
+      if (!hasWizardDraftDiverged()) { employerNavigateTo("roles"); return; }
+      openEmpConfirm({
+        title: "Discard this draft?",
+        body: existing
+          ? "Unsaved changes to this role will be discarded. The last saved version will be kept."
+          : "This role hasn't been saved or published yet. Your progress will be discarded.",
+        confirmLabel: "Discard",
+        cancelLabel: "Keep editing",
+        danger: true,
+        onConfirm: () => {
+          const state = readState();
+          delete state.employerRoleDrafts[draftId];
+          writeState(state);
+          employerNavigateTo("roles", {}, { force: true });
+        }
+      });
+    });
+    qs("[data-emp-retry-save]", root)?.addEventListener("click", persistDraft);
+    qs("[data-emp-preview-open]", root)?.addEventListener("click", openRolePreviewModal);
+    qs("[data-emp-save-draft]", root)?.addEventListener("click", () => commitDraft("Draft", { stay: true }));
+    qs("[data-emp-create-vera]", root)?.addEventListener("click", () => openVeraChatPanel(0, draft, () => { persistDraft(); draw(); }));
+
+    if (activeStep === 0) {
+      bindField("[data-field-title]", "title");
+      bindField("[data-field-internalJobId]", "internalJobId");
+      bindField("[data-field-department]", "department");
+      bindField("[data-field-jobCategory]", "jobCategory");
+      bindSelect("[data-field-seniority]", "seniority");
+      qs("[data-field-employmentType]", root)?.addEventListener("change", e => { draft.employmentType = e.target.value; persistDraft(); draw(); });
+      qs("[data-field-openings]", root)?.addEventListener("input", e => { draft.openings = Number(e.target.value) || 1; scheduleAutosave(); });
+      qs("[data-field-openings]", root)?.addEventListener("blur", flushAndPersist);
+      bindField("[data-field-location]", "location");
+      qs("[data-field-workMode]", root)?.addEventListener("change", e => { draft.workMode = e.target.value; persistDraft(); draw(); });
+      bindSelect("[data-field-urgency]", "urgency");
+      bindField("[data-field-reportsTo]", "reportsTo");
+      bindField("[data-field-hiringOwner]", "hiringOwner");
+      bindField("[data-field-targetStartDate]", "targetStartDate");
+      bindSelect("[data-field-visaSponsorship]", "visaSponsorship");
+      bindField("[data-field-contractDuration]", "contractDuration");
+    } else if (activeStep === 1) {
+      bindField("[data-field-rolePurpose]", "rolePurpose");
+      bindField("[data-field-roleSummary]", "roleSummary");
+      bindResponsibilityList();
+      bindField("[data-field-firstNinetyDays]", "firstNinetyDays");
+      bindField("[data-field-successLooksLike]", "successLooksLike");
+      bindField("[data-field-teamStructure]", "teamStructure");
+      bindField("[data-field-stakeholders]", "stakeholders");
+      bindField("[data-field-tools]", "tools");
+      bindField("[data-field-travelExpectations]", "travelExpectations");
+      qs("[data-generate-role-details]", root)?.addEventListener("click", () => openVeraChatPanel(1, draft, () => { persistDraft(); draw(); }));
+    } else if (activeStep === 2) {
+      bindTagInput("mustHaveSkills");
+      bindTagInput("niceToHaveSkills");
+      bindTagInput("trainableSkills");
+      qs("[data-field-matchThreshold]", root)?.addEventListener("change", e => { draft.matchThreshold = Number(e.target.value); persistDraft(); draw(); });
+      qs("[data-field-minExperience]", root)?.addEventListener("change", e => { draft.minExperience = e.target.value; persistDraft(); draw(); });
+      bindCheckbox("[data-field-equivalentExperienceAccepted]", "equivalentExperienceAccepted");
+      bindField("[data-field-educationOrCertification]", "educationOrCertification");
+      bindField("[data-field-requiredLicences]", "requiredLicences");
+      bindField("[data-field-languageRequirements]", "languageRequirements");
+      bindField("[data-field-availabilityRequirement]", "availabilityRequirement");
+      bindField("[data-field-workAuthorization]", "workAuthorization");
+      qs("[data-review-requirements]", root)?.addEventListener("click", () => openVeraChatPanel(2, draft, () => { persistDraft(); draw(); }));
+    } else if (activeStep === 3) {
+      qs("[data-ask-vera-market-rate]", root)?.addEventListener("click", () => openVeraChatPanel(3, draft, () => { persistDraft(); draw(); }));
+      bindSalaryField("min");
+      bindSalaryField("max");
+      bindSalarySelect("period");
+      bindSalarySelect("currency");
+      bindSalarySelect("visibility");
+      bindSalaryCheckbox("negotiable");
+      bindField("[data-field-bonus]", "bonus");
+      bindField("[data-field-commission]", "commission");
+      bindField("[data-field-allowances]", "allowances");
+      bindField("[data-field-overtimePolicy]", "overtimePolicy");
+      bindField("[data-field-equity]", "equity");
+      qsa("[data-benefit]", root).forEach(cb => cb.addEventListener("change", () => {
+        const b = cb.dataset.benefit;
+        if (cb.checked) { if (!draft.benefits.includes(b)) draft.benefits.push(b); }
+        else draft.benefits = draft.benefits.filter(x => x !== b);
+        persistDraft();
+      }));
+      bindField("[data-field-officeLocation]", "officeLocation");
+      bindField("[data-field-hybridDays]", "hybridDays");
+      bindField("[data-field-workingDays]", "workingDays");
+      bindField("[data-field-shiftPattern]", "shiftPattern");
+      bindField("[data-field-workingHours]", "workingHours");
+    } else if (activeStep === 4) {
+      bindPreviewPublishEvents();
+    }
+  }
+
+  draw();
+}
+
+// Set by a "Posts" search result just before navigating to Feed, so the
+// feed can seed its trendingKeyword filter with what the user searched
+// for. Consumed once on mount (see renderEmployerFeed) rather than
+// threaded through employerNavigateTo's params, since that only carries
+// a single {id} today and search queries aren't an "id".
+let pendingFeedSearchQuery = null;
+
+function pushRecentEmployerSearch(query) {
+  const q = query.trim();
+  if (!q) return;
+  const state = readState();
+  state.recentSearches = [q, ...state.recentSearches.filter(x => x.toLowerCase() !== q.toLowerCase())].slice(0, 6);
+  writeState(state);
+}
+
+function filterEmployerSearch(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const groups = [];
+  const roleMatches = DATA.employerRoles.filter(r => r.title.toLowerCase().includes(q));
+  if (roleMatches.length) groups.push({ label: "Roles", items: roleMatches.map(r => ({ type: "role", id: r.id, primary: r.title, secondary: r.status })) });
+  const candidateMatches = DATA.candidates.filter(c =>
+    c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q) || (c.skills || []).some(s => s.toLowerCase().includes(q))
+  );
+  if (candidateMatches.length) groups.push({ label: "Candidates", items: candidateMatches.map(c => ({ type: "candidate", id: c.id, primary: c.name, secondary: c.role })) });
+  const conversationMatches = (DATA.employerConversations || []).filter(conv => {
+    const cand = DATA.candidates.find(c => c.id === conv.candidateId);
+    return cand && cand.name.toLowerCase().includes(q);
+  });
+  if (conversationMatches.length) {
+    groups.push({
+      label: "Messages", items: conversationMatches.map(conv => {
+        const cand = DATA.candidates.find(c => c.id === conv.candidateId);
+        const lastMsg = conv.messages[conv.messages.length - 1];
+        return { type: "conversation", id: conv.candidateId, primary: cand.name, secondary: lastMsg ? lastMsg.text.slice(0, 44) : "No messages yet" };
+      })
+    });
+  }
+  const postMatches = DATA.communityPosts.filter(p => (p.author + " " + p.body + " " + p.category).toLowerCase().includes(q)).slice(0, 4);
+  if (postMatches.length) {
+    groups.push({
+      label: "Posts", items: postMatches.map(p => ({ type: "post", id: p.id, primary: p.author, secondary: p.body.slice(0, 54) }))
+    });
+  }
+  return groups;
+}
+
+function initEmployerGlobalSearch() {
+  const input = qs("[data-emp-search-input]");
+  const results = qs("[data-emp-search-results]");
+  if (!input || !results) return;
+  let highlightIndex = -1;
+
+  function resultEls() { return qsa("[data-emp-search-result]", results); }
+
+  function applyHighlight() {
+    resultEls().forEach((el, i) => el.classList.toggle("highlighted", i === highlightIndex));
+    const active = resultEls()[highlightIndex];
+    if (active) active.scrollIntoView({ block: "nearest" });
+  }
+
+  function close() {
+    results.hidden = true;
+    results.innerHTML = "";
+    highlightIndex = -1;
+  }
+
+  function selectResult(btn) {
+    if (!btn) return;
+    const { type, id } = btn.dataset;
+    pushRecentEmployerSearch(input.value);
+    if (type === "role") employerNavigateTo("role-builder", { id });
+    else if (type === "candidate") { employerNavigateTo("pipeline"); openCandidateProfileModal(id); }
+    else if (type === "conversation") openConversationForCandidate(id);
+    else if (type === "post") {
+      pendingFeedSearchQuery = input.value.trim();
+      employerNavigateTo("feed", {}, { force: true });
+    }
+    input.value = "";
+    close();
+  }
+
+  function renderRecent() {
+    const state = readState();
+    const recent = state.recentSearches || [];
+    if (!recent.length) { close(); return; }
+    results.innerHTML = `
+      <div class="emp-search-recent-head">
+        <span class="emp-search-group-label">Recent searches</span>
+        <button type="button" data-emp-search-clear-recent>Clear</button>
+      </div>
+      ${recent.map(q => `<button type="button" class="emp-search-result" data-emp-search-recent="${escapeHtml(q)}">${icon("clock")}<span>${escapeHtml(q)}</span></button>`).join("")}
+    `;
+    results.hidden = false;
+    highlightIndex = -1;
+  }
+
+  function renderGroups(groups) {
+    if (!groups.length) { close(); return; }
+    results.innerHTML = groups.map(group => `
+      <div class="emp-search-group">
+        <span class="emp-search-group-label">${group.label}</span>
+        ${group.items.map(item => `<button type="button" class="emp-search-result" data-emp-search-result data-type="${item.type}" data-id="${item.id}"><strong>${item.primary}</strong><span>${item.secondary}</span></button>`).join("")}
+      </div>
+    `).join("");
+    results.hidden = false;
+    highlightIndex = -1;
+  }
+
+  input.addEventListener("input", () => {
+    const q = input.value.trim();
+    if (!q) { renderRecent(); return; }
+    renderGroups(filterEmployerSearch(q));
+  });
+
+  input.addEventListener("focus", () => {
+    if (!input.value.trim()) renderRecent();
+  });
+  // A modal opened from a search result (e.g. the candidate profile
+  // modal) restores focus to this input on close - at that point it's
+  // already the activeElement, so a re-click won't fire a fresh native
+  // "focus" event. Cover that case explicitly rather than leaving the
+  // panel silently stuck closed until the user types.
+  input.addEventListener("click", () => {
+    if (!input.value.trim() && results.hidden) renderRecent();
+  });
+
+  input.addEventListener("keydown", event => {
+    const items = resultEls();
+    if (event.key === "ArrowDown") {
+      if (!items.length) return;
+      event.preventDefault();
+      highlightIndex = (highlightIndex + 1) % items.length;
+      applyHighlight();
+    } else if (event.key === "ArrowUp") {
+      if (!items.length) return;
+      event.preventDefault();
+      highlightIndex = (highlightIndex - 1 + items.length) % items.length;
+      applyHighlight();
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      const target = items[highlightIndex] || items[0];
+      if (target) selectResult(target);
+      else pushRecentEmployerSearch(input.value);
+    }
+  });
+
+  results.addEventListener("click", event => {
+    const recentBtn = event.target.closest("[data-emp-search-recent]");
+    if (recentBtn) {
+      input.value = recentBtn.dataset.empSearchRecent;
+      renderGroups(filterEmployerSearch(input.value));
+      input.focus();
+      return;
+    }
+    if (event.target.closest("[data-emp-search-clear-recent]")) {
+      const state = readState();
+      state.recentSearches = [];
+      writeState(state);
+      close();
+      return;
+    }
+    selectResult(event.target.closest("[data-emp-search-result]"));
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") close();
+  });
+  document.addEventListener("click", event => {
+    // composedPath(), not event.target.closest(): a click on a recent-search
+    // row re-renders results.innerHTML synchronously (to show the re-run
+    // query's matches), which detaches the clicked node from the DOM before
+    // this document-level handler runs. closest() on a parentless node
+    // would then wrongly conclude "outside click" and undo the re-render;
+    // composedPath() captures the path at dispatch time, unaffected by that.
+    if (!event.composedPath().some(el => el.classList?.contains("emp-app-search-field"))) close();
+  });
+}
+
+const EMPLOYER_TALENT_PIPELINE_STAGES = ["New", "Shortlisted", "Interview", "Final Review", "Offer", "Hired"];
+const REJECTION_REASONS_PIPELINE = ["Skill mismatch", "Experience mismatch", "Interview result", "Role closed", "Other candidate selected", "Availability mismatch", "Compensation mismatch"];
+const INTERVIEW_TYPES_PIPELINE = ["Recruiter Screen", "Technical Interview", "Portfolio Review", "Case Interview", "Behavioural Interview", "Final Interview"];
+
+function feedbackWaiting(c) { return !!(c.interview && c.interview.feedbackSubmitted < c.interview.feedbackTotal); }
+function offerOutstanding(c) { return !!(c.offer && ["Sent", "Viewed", "Countered"].includes(c.offer.status)); }
+function candidateNeedsAction(c) { return c.stage === "New" || feedbackWaiting(c) || offerOutstanding(c); }
+function pickPriorityCandidate(candidates) {
+  const needingAction = candidates.filter(c => !c.archived && candidateNeedsAction(c));
+  if (!needingAction.length) return null;
+  return needingAction.slice().sort((a, b) => b.fit - a.fit)[0];
+}
+function offerStatusTone(status) { return { Draft: "", Sent: "gold", Viewed: "gold", Countered: "cyan", Accepted: "green", Declined: "red" }[status] || ""; }
+
+function computeMatchBreakdown(c) {
+  // Deterministic pseudo-random offsets seeded by candidate id, so the same
+  // candidate always shows the same sub-score breakdown across renders/sessions
+  // (no per-role sub-scores exist in the mock data to compute this "for real").
+  let seed = 0;
+  for (let i = 0; i < c.id.length; i++) seed = (seed * 31 + c.id.charCodeAt(i)) >>> 0;
+  const rand = () => { seed = (seed * 1103515245 + 12345) >>> 0; return (seed % 1000) / 1000; };
+  const clamp = v => Math.max(40, Math.min(99, Math.round(v)));
+  const offset = () => Math.round((rand() - 0.5) * 24);
+  return {
+    skills: clamp(c.fit + offset()),
+    experience: clamp(c.fit + offset()),
+    education: clamp(c.fit + offset()),
+    culture: clamp(c.fit + offset()),
+    salary: clamp(c.fit + offset())
+  };
+}
+
+function primaryActionFor(c) {
+  switch (c.stage) {
+    case "New": return { label: "Review", action: "review" };
+    case "Shortlisted": return { label: "Schedule interview", action: "schedule" };
+    case "Interview": return { label: "Open interview", action: "review" };
+    case "Final Review": return { label: "Compare & decide", action: "review" };
+    case "Offer":
+      if (c.offer?.status === "Draft") return { label: "Send offer", action: "send-offer" };
+      if (c.offer?.status === "Countered") return { label: "Review counter", action: "review-counter" };
+      if (c.offer?.status === "Accepted") return { label: "View offer", action: "review" };
+      return { label: "Follow up", action: "follow-up" };
+    case "Hired": return { label: "View onboarding", action: "review" };
+    default: return { label: "View", action: "review" };
+  }
+}
+
+function pickVeraContextCandidate(candidates, openDrawerId) {
+  if (openDrawerId) {
+    const active = candidates.find(c => c.id === openDrawerId);
+    if (active) return active;
+  }
+  const priority = pickPriorityCandidate(candidates);
+  if (priority) return priority;
+  return candidates[0] || null;
+}
+
+function generateInterviewQuestions(c) {
+  const primarySkill = c.skills[0] || "this role";
+  const secondarySkill = c.skills[1] || primarySkill;
+  return [
+    `Walk me through a project where you applied ${primarySkill}.`,
+    `Tell me about a time ${secondarySkill} mattered under a tight deadline.`,
+    `What's a mistake you made in a past role, and what did you change afterward?`
+  ];
+}
+
+function summarizeCandidateResume(c) {
+  const topSkills = c.skills.slice(0, 2).join(" and ") || "a relevant skill set";
+  return `${c.name} brings ${c.experience} relevant to ${c.role}, with standout strength in ${topSkills}. ${c.strength}`;
+}
+
+function explainMatchScoreText(c) {
+  const breakdown = computeMatchBreakdown(c);
+  const labelNames = { skills: "Skills", experience: "Experience", education: "Education", culture: "Culture", salary: "Salary" };
+  const entries = Object.entries(breakdown).sort((a, b) => b[1] - a[1]);
+  const [topKey, topScore] = entries[0];
+  const [lowKey, lowScore] = entries[entries.length - 1];
+  return `${c.name} scores ${c.fit}% overall. Strongest on ${labelNames[topKey]} (${topScore}) — ${c.strength} Weakest area is ${labelNames[lowKey]} (${lowScore}), worth a closer look before advancing.`;
+}
+
+function compareWithTopCandidatesText(c, pool) {
+  const others = pool.filter(x => x.id !== c.id && x.roleId === c.roleId).sort((a, b) => b.fit - a.fit).slice(0, 2);
+  if (!others.length) return [`${c.name} is the only candidate in this role's pipeline right now — no one to compare against yet.`];
+  return [
+    `${c.name} — ${c.fit}% match (this candidate)`,
+    ...others.map(o => `${o.name} — ${o.fit}% match, strong in ${o.skills.slice(0, 2).join(" and ") || "no listed skills"}`)
+  ];
+}
+
+function recommendNextStageText(c) {
+  const primary = primaryActionFor(c);
+  const reasons = {
+    New: "Review the application against the must-have skills before deciding to shortlist.",
+    Shortlisted: "Strong shortlisted candidates should move to interview quickly, before another employer wins them first.",
+    Interview: feedbackWaiting(c) ? "Interview feedback is still coming in — chase the outstanding scorecards before deciding." : "Interview feedback looks complete — ready to compare in Final Review.",
+    "Final Review": "This candidate is ready for a hire / no-hire decision against the other finalists.",
+    Offer: c.offer?.status === "Countered" ? "Candidate countered — review the counter with the hiring manager before responding." : "Offer is outstanding — a follow-up keeps momentum before the candidate cools.",
+    Hired: "Candidate is hired — the next step is onboarding, not pipeline movement."
+  };
+  return `Recommended next step: ${primary.label}. ${reasons[c.stage] || ""}`;
+}
+
+function draftCandidateEmailText(c) {
+  const firstName = c.name.split(" ")[0];
+  const templates = {
+    New: { subject: `Thanks for applying, ${firstName}`, body: `Hi ${firstName},\n\nThanks for applying for the ${c.role} role. We're reviewing your application and will follow up shortly with next steps.\n\nBest,\nHiring Team` },
+    Shortlisted: { subject: `Next steps for your ${c.role} application`, body: `Hi ${firstName},\n\nWe'd like to move forward with your application for ${c.role}. Could you share your availability for a short interview this week?\n\nBest,\nHiring Team` },
+    Interview: { subject: `Interview details — ${c.role}`, body: `Hi ${firstName},\n\nLooking forward to your interview for the ${c.role} role. We'll send a calendar invite with the details shortly.\n\nBest,\nHiring Team` },
+    "Final Review": { subject: `Update on your ${c.role} application`, body: `Hi ${firstName},\n\nYou're now in final review for the ${c.role} role. We expect to make a decision soon and will be in touch.\n\nBest,\nHiring Team` },
+    Offer: { subject: `Your offer for ${c.role}`, body: `Hi ${firstName},\n\nWe're excited to offer you the ${c.role} position. Please review the offer details and let us know if you have any questions.\n\nBest,\nHiring Team` },
+    Hired: { subject: `Welcome to the team, ${firstName}!`, body: `Hi ${firstName},\n\nWelcome aboard! We'll be in touch shortly with onboarding details for your ${c.role} role.\n\nBest,\nHiring Team` }
+  };
+  return templates[c.stage] || templates.New;
+}
+
+/* ---------- Vera floating panel: Ask query engine ----------
+   Deterministic pattern matching over real candidate/role data - not a real
+   language model, matching this app's existing "mock but honest" convention
+   for every other AI feature. Order matters: more specific patterns run
+   first so a generic name mention doesn't swallow a more precise question. */
+function answerPipelineQuery(question, candidates, roles) {
+  const q = (question || "").trim().toLowerCase();
+  const roleFor = c => roles.find(r => r.id === c.roleId);
+  const findByName = fragment => {
+    const frag = (fragment || "").trim().toLowerCase();
+    if (!frag) return null;
+    return candidates.find(c => c.name.toLowerCase() === frag)
+      || candidates.find(c => frag.includes(c.name.toLowerCase()))
+      || candidates.find(c => c.name.toLowerCase().includes(frag))
+      || null;
+  };
+
+  let m = q.match(/compare (.+?) (?:and|with|vs\.?|to) (.+)/);
+  if (m) {
+    const a = findByName(m[1]);
+    const b = findByName(m[2]);
+    if (a && b) {
+      const lead = a.fit === b.fit ? "They're evenly matched on overall fit." : `${a.fit > b.fit ? a.name : b.name} has the higher overall fit.`;
+      return {
+        answer: `${a.name} (${a.fit}%) vs ${b.name} (${b.fit}%): ${a.name} is strong in ${a.skills.slice(0, 2).join(" and ") || "no listed skills"}; ${b.name} is strong in ${b.skills.slice(0, 2).join(" and ") || "no listed skills"}. ${lead}`,
+        matchedCandidateIds: [a.id, b.id]
+      };
+    }
+  }
+
+  m = q.match(/draft (?:an )?email (?:to|for) (.+)/);
+  if (m) {
+    const c = findByName(m[1]);
+    if (c) {
+      const draft = draftCandidateEmailText(c);
+      return { answer: `Subject: ${draft.subject}\n\n${draft.body}`, matchedCandidateIds: [c.id] };
+    }
+  }
+
+  m = q.match(/(?:generate )?interview questions for (.+)/);
+  if (m) {
+    const c = findByName(m[1]);
+    if (c) return { answer: generateInterviewQuestions(c).join(" "), matchedCandidateIds: [c.id] };
+  }
+
+  m = q.match(/(?:why did |explain )(.+?)(?:'s)?\s*score/);
+  if (m) {
+    const c = findByName(m[1]);
+    if (c) return { answer: explainMatchScoreText(c), matchedCandidateIds: [c.id] };
+  }
+
+  m = q.match(/should i hire (.+)/);
+  if (m) {
+    const c = findByName(m[1]);
+    if (c) {
+      const verdict = c.fit >= 80 && !c.concern
+        ? "yes - strong overall fit with no major concerns."
+        : c.concern ? `worth a closer look first: ${c.concern}` : "borderline - review the full profile before deciding.";
+      return { answer: `${c.name}: ${verdict}`, matchedCandidateIds: [c.id] };
+    }
+  }
+
+  if (/summarize.*pipeline|pipeline summary/.test(q)) {
+    const byStage = {};
+    candidates.forEach(c => { byStage[c.stage] = (byStage[c.stage] || 0) + 1; });
+    const stageText = Object.entries(byStage).map(([s, n]) => `${n} in ${s}`).join(", ");
+    return { answer: `${candidates.length} active candidates: ${stageText}.`, matchedCandidateIds: [] };
+  }
+
+  m = q.match(/summarize (.+?)(?:'s resume)?$/);
+  if (m) {
+    const c = findByName(m[1]);
+    if (c) return { answer: summarizeCandidateResume(c), matchedCandidateIds: [c.id] };
+  }
+
+  if (/ready (for offer|to hire)/.test(q)) {
+    const ready = candidates.filter(c => c.stage === "Offer" || (c.stage === "Final Review" && !(c.finalReview?.openQuestions || []).length));
+    if (!ready.length) return { answer: "No candidates are ready for an offer right now.", matchedCandidateIds: [] };
+    return { answer: `Ready for offer: ${ready.map(c => c.name).join(", ")}.`, matchedCandidateIds: ready.map(c => c.id) };
+  }
+
+  m = q.match(/interview (today|tomorrow|this week)/);
+  if (m) {
+    const when = m[1];
+    const matching = candidates.filter(c => (c.interview?.nextInterview?.date || "").toLowerCase() === when);
+    if (!matching.length) return { answer: `No one has an interview scheduled for ${when}.`, matchedCandidateIds: [] };
+    return { answer: `Interview ${when}: ${matching.map(c => `${c.name} (${c.interview.nextInterview.type} at ${c.interview.nextInterview.time})`).join(", ")}.`, matchedCandidateIds: matching.map(c => c.id) };
+  }
+
+  m = q.match(/missing ([a-z0-9 .+#]+?)$/);
+  if (m) {
+    const skillLower = m[1].trim();
+    const missing = candidates.filter(c => {
+      const role = roleFor(c);
+      return role && (role.mustHaveSkills || []).some(s => s.toLowerCase() === skillLower) && !c.skills.some(s => s.toLowerCase() === skillLower);
+    });
+    if (!missing.length) return { answer: `No candidates are missing ${skillLower}.`, matchedCandidateIds: [] };
+    const canonicalSkill = (roleFor(missing[0]).mustHaveSkills || []).find(s => s.toLowerCase() === skillLower) || skillLower;
+    return { answer: `Missing ${canonicalSkill}: ${missing.map(c => c.name).join(", ")}.`, matchedCandidateIds: missing.map(c => c.id) };
+  }
+
+  if (/fresh graduate/.test(q)) {
+    const grads = candidates.filter(c => c.careerStage === "Fresh Graduate").sort((a, b) => b.fit - a.fit);
+    if (!grads.length) return { answer: "No fresh graduates in the current pipeline.", matchedCandidateIds: [] };
+    return { answer: `Strongest fresh graduate: ${grads[0].name} (${grads[0].fit}% match).`, matchedCandidateIds: [grads[0].id] };
+  }
+
+  m = q.match(/(?:strongest|best) ([a-z0-9 .+#]+?)(?: developer| engineer| candidate)?$/);
+  if (m) {
+    const skillLower = m[1].trim();
+    const matching = candidates.filter(c => c.skills.some(s => s.toLowerCase().includes(skillLower))).sort((a, b) => b.fit - a.fit);
+    if (!matching.length) return { answer: `No candidates list ${skillLower} as a skill.`, matchedCandidateIds: [] };
+    const canonicalSkill = matching[0].skills.find(s => s.toLowerCase().includes(skillLower)) || skillLower;
+    return { answer: `Strongest ${canonicalSkill}: ${matching[0].name} (${matching[0].fit}% match).`, matchedCandidateIds: [matching[0].id] };
+  }
+
+  if (/interview first|recommend next|next hiring action/.test(q)) {
+    const priority = pickPriorityCandidate(candidates);
+    if (!priority) return { answer: "Nothing urgent right now - no candidate needs immediate action.", matchedCandidateIds: [] };
+    return { answer: `${priority.name}: ${recommendNextStageText(priority).replace(/^Recommended next step: /, "")}`, matchedCandidateIds: [priority.id] };
+  }
+
+  if (/risky/.test(q)) {
+    const risky = candidates.filter(c => c.concern || (c.stage === "Interview" && !c.interview?.nextInterview));
+    if (!risky.length) return { answer: "No candidates currently look risky.", matchedCandidateIds: [] };
+    return { answer: `Risky: ${risky.map(c => `${c.name} (${c.concern || "no interview currently scheduled"})`).join("; ")}.`, matchedCandidateIds: risky.map(c => c.id) };
+  }
+
+  if (/few applicants|attracting/.test(q)) {
+    const counts = {};
+    candidates.forEach(c => { counts[c.roleId] = (counts[c.roleId] || 0) + 1; });
+    const thinnest = roles.slice().sort((a, b) => (counts[a.id] || 0) - (counts[b.id] || 0))[0];
+    if (!thinnest) return { answer: "Not enough role data to answer that.", matchedCandidateIds: [] };
+    const count = counts[thinnest.id] || 0;
+    const skillCount = (thinnest.mustHaveSkills || []).length;
+    return { answer: `${thinnest.title} has the fewest candidates (${count})${skillCount > 5 ? ` - its ${skillCount} must-have skills may be narrowing the pool` : ""}.`, matchedCandidateIds: [] };
+  }
+
+  const named = candidates.filter(c => q.includes(c.name.toLowerCase()));
+  if (named.length === 1) {
+    const c = named[0];
+    return { answer: `${c.name} — ${c.role}, ${c.fit}% match, currently in ${c.stage}.`, matchedCandidateIds: [c.id] };
+  }
+  if (named.length > 1) {
+    return { answer: named.map(c => `${c.name} (${c.fit}%, ${c.stage})`).join("; "), matchedCandidateIds: named.map(c => c.id) };
+  }
+
+  return {
+    answer: `I didn't recognize that question. Try things like "find [name]", "who is ready for offer", "compare [name] and [name]", or "summarize the pipeline".`,
+    matchedCandidateIds: []
+  };
+}
+
+/* ---------- Vera floating panel: Hiring Copilot insights ----------
+   Six fixed cards computed from the current filtered pipeline. Confidence is
+   a simple deterministic High/Medium/Low derived from how much underlying
+   data supports each signal - never fabricated precision. */
+function computePipelineInsights(candidates, roles) {
+  const roleFor = c => roles.find(r => r.id === c.roleId);
+
+  const priority = pickPriorityCandidate(candidates);
+  const recommendation = {
+    id: "recommendation", title: "Candidate Recommendation",
+    why: priority ? `${priority.name} (${priority.fit}% match) needs attention: ${priority.strength}` : "No candidate currently needs urgent attention.",
+    confidence: priority && candidates.length >= 3 ? "High" : "Low",
+    action: { label: priority ? `Review ${priority.name}` : "View pipeline", type: "open-candidate", id: priority ? priority.id : null }
+  };
+
+  const stageCounts = {};
+  candidates.forEach(c => { stageCounts[c.stage] = (stageCounts[c.stage] || 0) + 1; });
+  const stalledInterview = candidates.filter(c => c.stage === "Interview" && !c.interview?.nextInterview).length;
+  const busiestStage = Object.entries(stageCounts).sort((a, b) => b[1] - a[1])[0] || null;
+  const bottleneck = {
+    id: "bottleneck", title: "Hiring Bottleneck",
+    why: stalledInterview
+      ? `${stalledInterview} candidate${stalledInterview === 1 ? "" : "s"} stalled in Interview with no next round scheduled.`
+      : busiestStage ? `${busiestStage[0]} has the most candidates (${busiestStage[1]}).` : "No bottleneck detected.",
+    confidence: candidates.length >= 5 ? "High" : candidates.length >= 2 ? "Medium" : "Low",
+    action: { label: "View stage", type: "filter-stage", stage: stalledInterview ? "Interview" : (busiestStage ? busiestStage[0] : null) }
+  };
+
+  const missingCounts = {};
+  candidates.forEach(c => {
+    const role = roleFor(c);
+    (role?.mustHaveSkills || []).forEach(skill => {
+      if (!c.skills.some(s => s.toLowerCase() === skill.toLowerCase())) missingCounts[skill] = (missingCounts[skill] || 0) + 1;
+    });
+  });
+  const topGap = Object.entries(missingCounts).sort((a, b) => b[1] - a[1])[0] || null;
+  const skillGap = {
+    id: "skill-gap", title: "Skill Gap",
+    why: topGap ? `${topGap[0]} is the most common missing must-have skill (${topGap[1]} candidate${topGap[1] === 1 ? "" : "s"}).` : "No common skill gaps found.",
+    confidence: topGap && topGap[1] >= 3 ? "High" : topGap && topGap[1] >= 2 ? "Medium" : "Low",
+    action: { label: "View affected candidates", type: "filter-skill", skill: topGap ? topGap[0] : null }
+  };
+
+  const withSalary = candidates.filter(c => c.salaryExpectation && /RM/.test(c.salaryExpectation));
+  const salary = {
+    id: "salary", title: "Salary Competitiveness",
+    why: withSalary.length ? `${withSalary.length} of ${candidates.length} candidates listed a salary expectation - compare these against the role's benchmark range before making an offer.` : "No salary expectations recorded yet.",
+    confidence: withSalary.length >= 3 ? "Medium" : "Low",
+    action: { label: "Review compensation", type: "open-role" }
+  };
+
+  const lateStageCount = candidates.filter(c => ["Final Review", "Offer"].includes(c.stage)).length;
+  const weeks = lateStageCount ? Math.max(1, 3 - lateStageCount) : 4;
+  const timeToHire = {
+    id: "time-to-hire", title: "Time-to-Hire Prediction",
+    why: `Based on the current stage mix, expect roughly ${weeks} more week${weeks === 1 ? "" : "s"} to your next hire.`,
+    confidence: candidates.length >= 4 ? "Medium" : "Low",
+    action: { label: "View pipeline", type: "view-board" }
+  };
+
+  const hiredOrOffered = candidates.filter(c => ["Offer", "Hired"].includes(c.stage)).length;
+  const health = {
+    id: "pipeline-health", title: "Pipeline Health",
+    why: `${candidates.length} active candidates, ${hiredOrOffered} at offer stage or beyond.`,
+    confidence: "High",
+    action: { label: "View all candidates", type: "view-board" }
+  };
+
+  return [recommendation, bottleneck, skillGap, salary, timeToHire, health];
+}
+
+function openCandidateAiModal(title, bodyHtml) {
+  openEmpModal("candidate-ai", `
+    <div class="emp-create-vera-head">
+      <div><span class="emp-vera-context">Vera</span><h2>${escapeHtml(title)}</h2></div>
+      <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close aria-label="Close">${icon("x")}</button>
+    </div>
+    ${bodyHtml}
+    <p class="emp-vera-principle">${icon("shield-check")} Generated from this candidate's profile. Review before using.</p>
+    <div class="emp-compose-actions"><button type="button" class="btn btn-primary" data-emp-modal-close>Close</button></div>
+  `, { label: title });
+}
+
+// Fixed list, exact order, identical for every candidate card - no per-stage
+// variation. `null` entries render as a divider.
+function menuActionsFor() {
+  return [
+    ["View Profile", "view-profile"],
+    ["Open Resume", "open-resume"],
+    ["Move Stage", "move-stage"],
+    ["Send Message", "send-message"],
+    ["Schedule Interview", "schedule-interview"],
+    ["Generate Interview Questions", "interview-questions"],
+    ["Compare Candidate", "compare"],
+    null,
+    ["Archive", "archive"],
+    ["Reject", "reject"],
+    null,
+    ["Copy Candidate Link", "copy-link"]
+  ];
+}
+
+function nextActionText(c) {
+  if (c.stage === "New") return "Review application";
+  if (c.stage === "Shortlisted") return "Schedule interview";
+  if (c.stage === "Interview") return feedbackWaiting(c) ? "Collect feedback" : "Move to Final Review";
+  if (c.stage === "Final Review") return "Compare and make a decision";
+  if (c.stage === "Offer") return c.offer?.status === "Countered" ? "Review counter offer" : c.offer?.status === "Draft" ? "Send offer" : "Waiting on candidate";
+  if (c.stage === "Hired") return "Prepare onboarding";
+  return "";
+}
+
+function renderStageDetail(c) {
+  if (c.stage === "Interview" && c.interview) {
+    return `<div class="emp-cand-stage-detail">
+      <span>Round ${c.interview.round} of ${c.interview.totalRounds}</span>
+      <span>${c.interview.nextInterview ? `${c.interview.nextInterview.type} · ${c.interview.nextInterview.date} · ${c.interview.nextInterview.time}` : "No interview scheduled"}</span>
+      <span>${c.interview.feedbackSubmitted} of ${c.interview.feedbackTotal} feedback submitted</span>
+    </div>`;
+  }
+  if (c.stage === "Final Review" && c.finalReview) {
+    return `<div class="emp-cand-stage-detail"><span>${c.finalReview.overallResult}</span><span>${c.finalReview.teamRecommendations.map(t => `${t.name}: ${t.verdict}`).join(", ")}</span></div>`;
+  }
+  if (c.stage === "Offer" && c.offer) {
+    return `<div class="emp-cand-stage-detail"><span>${c.offer.amount}</span><span>Sent ${c.offer.sentDate}${c.offer.expiryDate ? ` · Expires ${c.offer.expiryDate}` : ""}</span><span class="pill ${offerStatusTone(c.offer.status)}">${c.offer.status}</span></div>`;
+  }
+  if (c.stage === "Hired" && c.hired) {
+    return `<div class="emp-cand-stage-detail"><span>Starts ${c.hired.startDate}</span><span>${c.hired.onboardingStatus}</span></div>`;
+  }
+  return "";
+}
+
+function renderEmployerTalentPipeline(root, params = {}) {
+  // This page redraws its whole subtree (root.innerHTML = ...) on every
+  // interaction - menu open/close, card expand, filter change, drag. The
+  // global count-up number animation (initGlobalNumberAnimations) detects
+  // "new" numeric elements via a MutationObserver, so on every one of those
+  // redraws every number on the page (even ones whose value didn't change)
+  // gets treated as newly added and re-animated from 0 - a visible flash on
+  // every click. Opting this page's root out is a targeted fix at the root
+  // cause, not a page-wide change to the animation system other pages rely on.
+  root.setAttribute("data-no-number-animation", "");
+  let roleFilter = params.role || "all";
+  let query = "";
+  let stageFilterX = "all";
+  let specialFilter = null;
+  let viewMode = "board";
+  let openDrawerId = params.id || null;
+  let drawerTab = "overview";
+  let pendingAction = null;
+  let lastMovedId = null;
+  let dragCandidateId = null;
+  let veraPanelOpen = false;
+  let veraPanelTab = "ask";
+  let veraAskInput = "";
+  let veraAskAnswer = null;
+  const expandedCandidateIds = new Set();
+
+  function activeList() { return DATA.candidates.filter(c => !c.archived); }
+
+  function filtered() {
+    const q = query.trim().toLowerCase();
+    const list = activeList().filter(c => {
+      if (roleFilter !== "all" && c.roleId !== roleFilter) return false;
+      if (stageFilterX !== "all" && c.stage !== stageFilterX) return false;
+      if (q && !(c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q) || c.skills.some(s => s.toLowerCase().includes(q)))) return false;
+      if (specialFilter === "feedback" && !feedbackWaiting(c)) return false;
+      if (specialFilter === "offers" && !offerOutstanding(c)) return false;
+      if (specialFilter === "needs-action" && !candidateNeedsAction(c)) return false;
+      return true;
+    });
+    list.sort((a, b) => b.fit - a.fit);
+    return list;
+  }
+
+  function moveStage(c, stage, label) {
+    c.stage = stage;
+    c.timeline.push({ label: label || stage, date: "Just now", done: true });
+    c.activity.unshift({ text: `Moved to ${stage}`, date: "Just now" });
+  }
+
+  function renderVeraWhyPopoverContent(c) {
+    const role = DATA.employerRoles.find(r => r.id === c.roleId);
+    const missing = role ? (role.mustHaveSkills || []).filter(s => !c.skills.includes(s)) : [];
+    const strengths = [c.strength, ...c.skills.slice(0, 2).map(s => `Strong ${s} skills`)].filter(Boolean);
+    const confidence = c.fit >= 85 && !missing.length ? "High" : c.fit >= 70 ? "Medium" : "Low";
+    return `
+      <div class="emp-vera-why-head">
+        <span class="emp-vera-why-title">${icon("sparkles")} Why Vera recommends ${escapeHtml(c.name)}</span>
+        <button type="button" class="emp-vera-why-close" data-close-vera-why aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="emp-vera-why-score"><span>Match Score</span><strong>${c.fit}%</strong></div>
+      <div class="emp-vera-why-section">
+        <span class="emp-tags-label">Strengths</span>
+        <ul class="emp-vera-why-strengths">${strengths.map(s => `<li>${icon("check")} ${escapeHtml(s)}</li>`).join("")}</ul>
+      </div>
+      ${missing.length ? `
+        <div class="emp-vera-why-section">
+          <span class="emp-tags-label">Missing</span>
+          <div class="pill-row">${missing.map(s => `<span class="pill red">${escapeHtml(s)}</span>`).join("")}</div>
+        </div>
+      ` : ""}
+      <p class="emp-vera-why-reason">${escapeHtml(primaryActionFor(c).label)} — ${escapeHtml(c.strength || "strong overall match for this role.")}</p>
+      <div class="emp-vera-why-confidence"><span>Confidence</span><span class="pill ${confidence === "High" ? "green" : confidence === "Medium" ? "gold" : ""}">${confidence}</span></div>
+    `;
+  }
+
+  function renderCandidateCard(c, isRecommended) {
+    const primary = primaryActionFor(c);
+    const role = DATA.employerRoles.find(r => r.id === c.roleId);
+    const missingSkills = role ? (role.mustHaveSkills || []).filter(s => !c.skills.includes(s)).slice(0, 2) : [];
+    const topSkills = c.skills.slice(0, 3);
+    const insight = [c.strength, c.concern].filter(Boolean).join(" ");
+    const breakdown = computeMatchBreakdown(c);
+    const matchTone = c.fit >= 85 ? "green" : c.fit >= 70 ? "gold" : "";
+    const expanded = expandedCandidateIds.has(c.id);
+    const latestNote = c.notes[0];
+    return `
+      <div class="card emp-cand-card ${expanded ? "emp-cand-card-expanded" : ""} ${c.id === lastMovedId ? "emp-cand-card-moved" : ""}" data-candidate-card="${c.id}" draggable="true" data-drag-candidate="${c.id}" tabindex="0" role="button" aria-expanded="${expanded}" aria-label="${escapeHtml(c.name)} — press Enter to ${expanded ? "collapse" : "expand"}, left or right arrow to move between stages">
+        <div class="emp-cand-card-top">
+          <div class="emp-cand-identity">
+            <strong class="emp-cand-name">${escapeHtml(c.name)}</strong>
+            <p class="emp-cand-position">${escapeHtml(c.role)}</p>
+            ${expanded ? `<p class="emp-cand-location">${escapeHtml(c.location)}</p>` : ""}
+          </div>
+          <div class="emp-cand-match" data-match-hover="${c.id}">
+            <span class="emp-cand-match-badge ${matchTone}">${c.fit}%</span>
+            <div class="emp-cand-match-popover" data-match-popover="${c.id}" hidden>
+              ${[["skills", "Skills"], ["experience", "Experience"], ["education", "Education"], ["culture", "Culture"], ["salary", "Salary"]].map(([key, label]) => `<div class="emp-match-row"><span>${label}</span><strong>${breakdown[key]}</strong></div>`).join("")}
+            </div>
+          </div>
+        </div>
+        ${isRecommended ? `
+          <div class="emp-cand-vera-badge">
+            <span>${icon("sparkles")} Vera Recommended</span>
+            <button type="button" class="emp-vera-why-btn" data-vera-why="${c.id}" aria-haspopup="dialog" aria-expanded="false" aria-label="Why Vera recommends ${escapeHtml(c.name)}">${icon("info")}</button>
+          </div>
+        ` : ""}
+        ${expanded ? `
+          ${topSkills.length || missingSkills.length ? `
+            <div class="emp-cand-skill-rows">
+              ${topSkills.length ? `<div class="pill-row">${topSkills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>` : ""}
+              ${missingSkills.length ? `<div class="emp-cand-skill-row"><span>Missing</span><div class="pill-row">${missingSkills.map(s => `<span class="pill red">${escapeHtml(s)}</span>`).join("")}</div></div>` : ""}
+            </div>
+          ` : ""}
+          ${insight ? `<p class="emp-cand-insight">${escapeHtml(insight)}</p>` : ""}
+          <div class="emp-cand-next-action">${icon("arrow-right-circle")}<span>${escapeHtml(nextActionText(c))}</span></div>
+          ${latestNote ? `<p class="emp-cand-notes-preview">${icon("sticky-note")} ${c.notes.length} note${c.notes.length === 1 ? "" : "s"} · "${escapeHtml(latestNote.text.length > 60 ? latestNote.text.slice(0, 60) + "…" : latestNote.text)}"</p>` : ""}
+          <div class="emp-cand-actions">
+            <button type="button" class="btn btn-primary emp-primary-card-action" data-candidate-primary="${c.id}">${primary.label}</button>
+            <button type="button" class="btn btn-ghost emp-menu-toggle" data-candidate-menu="${c.id}" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${escapeHtml(c.name)}">${icon("more-vertical")}</button>
+          </div>
+        ` : ""}
+      </div>
+    `;
+  }
+
+  function renderBoard(list) {
+    const priorityId = pickPriorityCandidate(list)?.id || null;
+    return `
+      <div class="emp-pipeline-board">
+        ${EMPLOYER_TALENT_PIPELINE_STAGES.map(stage => {
+          const stageCandidates = list.filter(c => c.stage === stage);
+          return `
+            <div class="emp-pipeline-col">
+              <h3>${stage} <span class="pill">${stageCandidates.length}</span></h3>
+              <div class="emp-pipeline-col-body" data-drop-stage="${stage}">
+                ${stageCandidates.length ? stageCandidates.map(c => renderCandidateCard(c, c.id === priorityId)).join("") : `<p class="emp-empty-hint">No candidates.</p>`}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+
+  function renderListView(list) {
+    return `
+      <div class="card">
+        <div class="table-wrap">
+          <table class="emp-table">
+            <thead><tr><th>Candidate</th><th>Role</th><th>Stage</th><th>Role fit</th><th>Source</th><th>Owner</th><th>Next action</th><th></th></tr></thead>
+            <tbody>
+              ${list.length ? list.map(c => `
+                <tr class="emp-table-row" data-candidate-card="${c.id}">
+                  <td>${c.name}</td><td>${c.role}</td><td>${c.stage}</td><td>${c.fit}%</td><td>${c.source}</td><td>${c.owner}</td><td>${nextActionText(c)}</td>
+                  <td class="emp-table-actions"><button type="button" class="btn btn-primary btn-sm" data-candidate-primary="${c.id}">${primaryActionFor(c).label}</button></td>
+                </tr>
+              `).join("") : `<tr><td colspan="8"><p class="emp-empty-hint">No candidates match these filters.</p></td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderDrawer(id) {
+    const c = DATA.candidates.find(cand => cand.id === id);
+    if (!c) return "";
+    const role = DATA.employerRoles.find(r => r.id === c.roleId);
+    const missing = role ? (role.mustHaveSkills || []).filter(s => !c.skills.includes(s)) : [];
+    const primary = primaryActionFor(c);
+    const breakdown = computeMatchBreakdown(c);
+    const matchTone = c.fit >= 85 ? "green" : c.fit >= 70 ? "gold" : "";
+    const tabs = [["overview", "Profile"], ["why", "AI Summary"], ["application", "Documents"], ["timeline", "Timeline"], ["notes", "Notes"], ["activity", "Activity"]];
+
+    return `
+      <div class="emp-drawer-backdrop" data-drawer-close></div>
+      <div class="emp-drawer">
+        <div class="emp-drawer-head">
+          <div>
+            <h2>${c.name}</h2>
+            <p class="emp-cand-meta">${c.role} · ${c.location}</p>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" data-drawer-close>${icon("x")}</button>
+        </div>
+        <div class="emp-drawer-score">
+          <div class="emp-drawer-score-head"><span>Hiring Score</span><span class="pill ${matchTone}">${c.fit}% Match</span></div>
+          <div class="emp-drawer-score-rows">
+            ${[["skills", "Skills"], ["experience", "Experience"], ["education", "Education"], ["culture", "Culture"], ["salary", "Salary"]].map(([key, label]) => `
+              <div class="emp-match-row"><span>${label}</span><i><em style="width:${breakdown[key]}%"></em></i><strong>${breakdown[key]}</strong></div>
+            `).join("")}
+          </div>
+        </div>
+        <div class="emp-drawer-primary"><button type="button" class="btn btn-primary" data-candidate-primary="${c.id}">${primary.label}</button></div>
+        <div class="emp-subtabs emp-drawer-tabs">
+          ${tabs.map(([key, label]) => `<button type="button" class="emp-subtab ${drawerTab === key ? "active" : ""}" data-drawer-tab="${key}">${label}</button>`).join("")}
+        </div>
+        <div class="emp-drawer-body">
+          ${drawerTab === "overview" ? `
+            <div class="emp-stat-row"><span>Experience</span><strong>${c.experience}</strong></div>
+            <div class="emp-stat-row"><span>Education</span><strong>${c.education}</strong></div>
+            <div class="emp-stat-row"><span>Career stage</span><strong>${c.careerStage}</strong></div>
+            <div class="emp-stat-row"><span>Portfolio</span><strong>${c.portfolio}</strong></div>
+            <div class="emp-stat-row"><span>Availability</span><strong>${c.availability}</strong></div>
+            <div class="emp-stat-row"><span>Salary expectation</span><strong>${c.salaryExpectation}</strong></div>
+            <div class="emp-tags"><span class="emp-tags-label">Skills</span><div class="pill-row">${c.skills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
+          ` : ""}
+          ${drawerTab === "why" ? `
+            <div class="emp-callout-label emp-vera-accent">${icon("sparkles")} AI summary</div>
+            <p>${escapeHtml(summarizeCandidateResume(c))}</p>
+            <p class="emp-cand-evidence">${icon("check")} ${c.strength}</p>
+            ${c.concern ? `<p class="emp-cand-concern">${icon("alert-triangle")} ${c.concern}</p>` : ""}
+            ${missing.length ? `<div class="emp-tags"><span class="emp-tags-label">Missing must-have skills for this role</span><div class="pill-row">${missing.map(s => `<span class="pill red">${s}</span>`).join("")}</div></div>` : `<p class="emp-empty-hint">No missing must-have skills for this role.</p>`}
+          ` : ""}
+          ${drawerTab === "application" ? `
+            <div class="emp-stat-row"><span>Source</span><strong>${c.source}</strong></div>
+            <div class="emp-stat-row"><span>Owner</span><strong>${c.owner}</strong></div>
+            <div class="emp-stat-row"><span>Applied</span><strong>${c.timeline[0]?.date || "—"}</strong></div>
+            <div class="emp-stat-row"><span>Resume</span><strong>On file</strong></div>
+            <div class="emp-stat-row"><span>Portfolio</span><strong>${c.portfolio === "Not provided" ? "Not provided" : "Attached"}</strong></div>
+          ` : ""}
+          ${drawerTab === "timeline" ? `
+            <ul class="emp-drawer-timeline">
+              ${c.timeline.map(t => `<li class="${t.done ? "done" : ""}">${icon(t.done ? "check" : "circle")} <span>${t.label}</span>${t.date ? `<span class="emp-timeline-date">${t.date}</span>` : ""}</li>`).join("")}
+            </ul>
+            ${c.interview && c.interview.scorecards.length ? `
+              <span class="emp-tags-label">Scorecards</span>
+              ${c.interview.scorecards.map(sc => `
+                <div class="card emp-scorecard-card">
+                  <div class="emp-card-head"><strong>${sc.interviewer}</strong><span class="pill ${sc.recommendation.toLowerCase().includes("yes") ? "green" : ""}">${sc.recommendation}</span></div>
+                  ${sc.strengths.length ? `<p><strong>Strengths:</strong> ${sc.strengths.join(", ")}</p>` : ""}
+                  ${sc.concerns.length ? `<p><strong>Concerns:</strong> ${sc.concerns.join(", ")}</p>` : ""}
+                  <p class="emp-talent-meta">${sc.notes}</p>
+                </div>
+              `).join("")}
+            ` : ""}
+          ` : ""}
+          ${drawerTab === "notes" ? `
+            <div class="emp-drawer-notes">
+              ${c.notes.length ? c.notes.map(n => `<div class="emp-note-item"><strong>${n.author}</strong> <span class="emp-timeline-date">${n.date}</span><p>${n.text}</p></div>`).join("") : `<p class="emp-empty-hint">No internal notes yet.</p>`}
+            </div>
+            <textarea data-drawer-note-input rows="3" placeholder="Add an internal note (not visible to the candidate)"></textarea>
+            <button type="button" class="btn btn-ghost btn-sm" data-drawer-add-note>${icon("plus")} Add note</button>
+          ` : ""}
+          ${drawerTab === "activity" ? `
+            <ul class="emp-drawer-activity">${c.activity.map(a => `<li><span>${a.text}</span><span class="emp-timeline-date">${a.date}</span></li>`).join("")}</ul>
+          ` : ""}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderActionModal({ type, id }) {
+    const c = DATA.candidates.find(cand => cand.id === id);
+    if (!c) return "";
+    if (type === "reject") {
+      return `
+        <div class="emp-compose-modal">
+          <div class="card emp-compose-card">
+            <h2>Why are you rejecting ${c.name}?</h2>
+            <div class="emp-close-reasons">
+              ${REJECTION_REASONS_PIPELINE.map((r, i) => `<label class="check-field custom-checkbox"><input type="radio" name="reject-reason" value="${r}" ${i === 0 ? "checked" : ""}> ${r}</label>`).join("")}
+            </div>
+            <label>Candidate-facing message <span class="emp-optional-tag">Optional</span><textarea data-reject-message rows="3" placeholder="Vera can help draft a respectful message..."></textarea></label>
+            <p class="emp-preview-note">Rejecting moves this candidate to Archive. Their history is preserved, not deleted.</p>
+            <div class="emp-compose-actions">
+              <button type="button" class="btn btn-ghost" data-action-cancel>Cancel</button>
+              <button type="button" class="btn btn-primary" data-action-confirm="reject" data-candidate-id="${c.id}">Reject candidate</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    if (type === "schedule") {
+      return `
+        <div class="emp-compose-modal">
+          <div class="card emp-compose-card">
+            <h2>Schedule interview: ${c.name}</h2>
+            <label>Interview type<select data-schedule-type>${INTERVIEW_TYPES_PIPELINE.map(t => `<option ${c.interview?.nextInterview?.type === t ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+            <label>Date<input type="text" data-schedule-date placeholder="e.g. Tue" value="${c.interview?.nextInterview?.date || ""}"></label>
+            <label>Time<input type="text" data-schedule-time placeholder="e.g. 2:30 PM" value="${c.interview?.nextInterview?.time || ""}"></label>
+            <div class="emp-compose-actions">
+              <button type="button" class="btn btn-ghost" data-action-cancel>Cancel</button>
+              <button type="button" class="btn btn-primary" data-action-confirm="schedule" data-candidate-id="${c.id}">Schedule</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    if (type === "offer") {
+      return `
+        <div class="emp-compose-modal">
+          <div class="card emp-compose-card">
+            <h2>Offer Builder: ${c.name}</h2>
+            <label>Role<input type="text" value="${c.role}" disabled></label>
+            <label>Base salary (RM / month)<input type="text" data-offer-amount placeholder="e.g. 5,200"></label>
+            <label>Start date<input type="text" data-offer-start placeholder="e.g. 1 Sep 2026"></label>
+            <label>Offer expiry<input type="text" data-offer-expiry placeholder="e.g. in 5 days"></label>
+            <label>Optional message <span class="emp-optional-tag">Optional</span><textarea data-offer-message rows="2" placeholder="A short welcome note for the candidate"></textarea></label>
+            <div class="emp-compose-actions">
+              <button type="button" class="btn btn-ghost" data-action-cancel>Cancel</button>
+              <button type="button" class="btn btn-ghost" data-action-confirm="save-offer-draft" data-candidate-id="${c.id}">Save draft</button>
+              <button type="button" class="btn btn-primary" data-action-confirm="send-offer" data-candidate-id="${c.id}">Send offer</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    if (type === "counter") {
+      return `
+        <div class="emp-compose-modal">
+          <div class="card emp-compose-card">
+            <h2>Counter offer: ${c.name}</h2>
+            <div class="emp-stat-row"><span>Candidate requested</span><strong>${c.offer.counterAmount}</strong></div>
+            <div class="emp-stat-row"><span>Original offer</span><strong>${c.offer.amount}</strong></div>
+            <div class="emp-stat-row"><span>Company-approved range</span><strong>${c.offer.approvedRange.min} – ${c.offer.approvedRange.max}</strong></div>
+            <div class="emp-compose-actions">
+              <button type="button" class="btn btn-ghost" data-action-confirm="decline-offer" data-candidate-id="${c.id}">Decline</button>
+              <button type="button" class="btn btn-ghost" data-action-confirm="respond-offer" data-candidate-id="${c.id}">Respond</button>
+              <button type="button" class="btn btn-primary" data-action-confirm="accept-offer" data-candidate-id="${c.id}">Accept</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    return "";
+  }
+
+  function moveStageWithUndo(c, stage, label) {
+    if (c.stage === stage) return;
+    const previousStage = c.stage;
+    moveStage(c, stage, label);
+    lastMovedId = c.id;
+    draw();
+    showUndoToast(`${c.name} moved to ${stage}.`, () => {
+      moveStage(c, previousStage, "Reverted");
+      lastMovedId = c.id;
+      draw();
+    });
+  }
+
+  function runCandidateAction(c, action) {
+    if (action.startsWith("move:")) { moveStageWithUndo(c, action.slice(5)); return; }
+    switch (action) {
+      case "review": openDrawerId = c.id; drawerTab = "overview"; draw(); break;
+      case "shortlist": moveStageWithUndo(c, "Shortlisted"); break;
+      case "schedule": case "reschedule": pendingAction = { type: "schedule", id: c.id }; draw(); break;
+      case "move-final": moveStageWithUndo(c, "Final Review"); break;
+      case "make-offer": case "send-offer": pendingAction = { type: "offer", id: c.id }; draw(); break;
+      case "review-counter": pendingAction = { type: "counter", id: c.id }; draw(); break;
+      case "follow-up": showToast(`Follow-up reminder sent for ${c.name}.`); break;
+      case "reject": pendingAction = { type: "reject", id: c.id }; draw(); break;
+      case "compare": showToast("Candidate comparison is coming in the next update.", "info"); break;
+    }
+  }
+
+  function archiveWithUndo(c) {
+    c.archived = true;
+    draw();
+    showUndoToast(`${c.name} archived.`, () => {
+      c.archived = false;
+      draw();
+    });
+  }
+
+  function copyCandidateLink(c) {
+    const url = `${location.origin}${location.pathname}#pipeline/${c.id}`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(() => showToast("Candidate link copied.")).catch(() => showToast("Couldn't copy link.", "error"));
+    } else {
+      showToast("Clipboard not available in this browser.", "error");
+    }
+  }
+
+  function runMenuAction(c, action) {
+    switch (action) {
+      case "view-profile": openDrawerId = c.id; drawerTab = "overview"; draw(); break;
+      case "open-resume": openDrawerId = c.id; drawerTab = "application"; draw(); break;
+      case "send-message": showToast("Candidate messaging is coming in a future update.", "info"); break;
+      case "schedule-interview": pendingAction = { type: "schedule", id: c.id }; draw(); break;
+      case "interview-questions": openCandidateAiModal(`Interview questions for ${c.name}`, `<ol class="emp-ai-question-list">${generateInterviewQuestions(c).map(q => `<li>${escapeHtml(q)}</li>`).join("")}</ol>`); break;
+      case "compare": showToast("Candidate comparison is coming in the next update.", "info"); break;
+      case "archive": archiveWithUndo(c); break;
+      case "reject": pendingAction = { type: "reject", id: c.id }; draw(); break;
+      case "copy-link": copyCandidateLink(c); break;
+    }
+  }
+
+  function renderCandidateMenuOverlay(triggerEl, c, view) {
+    const html = view === "move-stage" ? `
+      <button type="button" class="emp-menu-back" data-menu-back>${icon("arrow-left")} Back</button>
+      ${EMPLOYER_TALENT_PIPELINE_STAGES.filter(s => s !== c.stage).map(s => `<button type="button" role="menuitem" data-move-stage-target="${s}">${escapeHtml(s)}</button>`).join("")}
+    ` : menuActionsFor().map(item => item === null
+      ? `<div class="emp-menu-divider" role="separator"></div>`
+      : `<button type="button" role="menuitem" data-menu-item-action="${item[1]}">${escapeHtml(item[0])}</button>`
+    ).join("");
+    const el = openFloatingOverlay(triggerEl, html, { width: 220, align: "right", className: "emp-cand-menu-overlay", focusFirst: true });
+    if (!el) return;
+    qs("[data-menu-back]", el)?.addEventListener("click", event => {
+      event.stopPropagation();
+      renderCandidateMenuOverlay(triggerEl, c, "main");
+    });
+    qsa("[data-move-stage-target]", el).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      closeFloatingOverlay();
+      moveStageWithUndo(c, btn.dataset.moveStageTarget);
+    }));
+    qsa("[data-menu-item-action]", el).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      const action = btn.dataset.menuItemAction;
+      if (action === "move-stage") { renderCandidateMenuOverlay(triggerEl, c, "move-stage"); return; }
+      closeFloatingOverlay();
+      runMenuAction(c, action);
+    }));
+  }
+
+  function renderVeraAskTab(list) {
+    const suggestions = ["Who is ready for offer?", "Who should I interview first?", "Summarize the pipeline", "Which candidates are risky?"];
+    const matchedCandidates = veraAskAnswer ? veraAskAnswer.matchedCandidateIds.map(id => list.find(c => c.id === id)).filter(Boolean) : [];
+    return `
+      <form class="emp-vera-ask-form" data-vera-ask-form>
+        <input type="text" data-vera-ask-input placeholder="Ask about this pipeline..." value="${escapeHtml(veraAskInput)}" autocomplete="off">
+        <button type="submit" class="btn btn-primary btn-sm" aria-label="Ask">${icon("send")}</button>
+      </form>
+      ${veraAskAnswer ? `
+        <div class="emp-vera-fab-result">
+          ${matchedCandidates.length ? `<div class="emp-vera-ask-chips">${matchedCandidates.map(c => `<button type="button" class="pill" data-action-item="${c.id}">${escapeHtml(c.name)}</button>`).join("")}</div>` : ""}
+          <p>${escapeHtml(veraAskAnswer.answer).replace(/\n/g, "<br>")}</p>
+        </div>
+      ` : `
+        <div class="emp-vera-ask-suggestions">
+          ${suggestions.map(s => `<button type="button" data-vera-ask-suggestion="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join("")}
+        </div>
+      `}
+      <p class="emp-vera-principle">${icon("shield-check")} Answered from candidate data already in this pipeline.</p>
+    `;
+  }
+
+  function renderVeraInsightsTab(list) {
+    const insights = computePipelineInsights(list, DATA.employerRoles);
+    return `
+      <div class="emp-vera-insights-list">
+        ${insights.map(card => `
+          <div class="emp-vera-insight-card">
+            <div class="emp-vera-insight-head">
+              <strong>${escapeHtml(card.title)}</strong>
+              <span class="pill ${card.confidence === "High" ? "green" : card.confidence === "Medium" ? "gold" : ""}">${card.confidence}</span>
+            </div>
+            <p>${escapeHtml(card.why)}</p>
+            <button type="button" class="btn btn-ghost btn-sm" data-vera-insight-action="${escapeHtml(JSON.stringify(card.action))}">${escapeHtml(card.action.label)}</button>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  function renderVeraPanel(list) {
+    // The only Vera entry point on this page is the header pill
+    // (data-vera-fab-toggle, rendered in the header actions row) - no
+    // separate floating action button.
+    if (!veraPanelOpen) return "";
+    const context = pickVeraContextCandidate(list, openDrawerId);
+    return `
+      <div class="emp-vera-fab-panel" role="dialog" aria-label="Vera assistant">
+        <div class="emp-vera-fab-head">
+          <div>
+            <span class="emp-vera-fab-eyebrow">${icon("sparkles")} Vera</span>
+            <h3>${context ? escapeHtml(context.name) : "Talent Pipeline"}</h3>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" data-vera-fab-close aria-label="Close">${icon("x")}</button>
+        </div>
+        <div class="emp-subtabs emp-vera-fab-tabs">
+          <button type="button" class="emp-subtab ${veraPanelTab === "ask" ? "active" : ""}" data-vera-fab-tab="ask">Ask</button>
+          <button type="button" class="emp-subtab ${veraPanelTab === "insights" ? "active" : ""}" data-vera-fab-tab="insights">Insights</button>
+        </div>
+        ${veraPanelTab === "ask" ? renderVeraAskTab(list) : renderVeraInsightsTab(list)}
+      </div>
+    `;
+  }
+
+  function draw() {
+    // This page replaces root's entire subtree below, which destroys whatever
+    // DOM node currently has focus (e.g. a card expanded via keyboard) and
+    // drops focus back to <body> - breaking keyboard navigation on every
+    // redraw. Capture a stable selector for the focused element before the
+    // replace and restore focus to its equivalent after re-render.
+    const focusedEl = document.activeElement;
+    let focusRestoreSelector = null;
+    if (focusedEl && root.contains(focusedEl)) {
+      for (const attr of ["data-candidate-menu", "data-candidate-primary", "data-drag-candidate", "data-vera-why"]) {
+        if (focusedEl.hasAttribute(attr)) { focusRestoreSelector = `[${attr}="${CSS.escape(focusedEl.getAttribute(attr))}"]`; break; }
+      }
+    }
+
+    const list = filtered();
+    const openRoles = DATA.employerRoles.filter(r => ["Open", "Paused"].includes(r.status));
+
+    const interviewsThisWeek = activeList().filter(c => c.interview?.nextInterview).length;
+    const feedbackWaitingCount = activeList().filter(feedbackWaiting).length;
+    const offersOutstandingCount = activeList().filter(offerOutstanding).length;
+    const newCount = activeList().filter(c => c.stage === "New").length;
+    const hiredCount = activeList().filter(c => c.stage === "Hired").length;
+
+    const actionItems = [];
+    activeList().forEach(c => {
+      if (c.stage === "New") actionItems.push({ candidate: c, text: `Review ${c.name}` });
+      if (feedbackWaiting(c)) actionItems.push({ candidate: c, text: `Submit ${c.name.split(" ")[0]}'s interview feedback` });
+      if (offerOutstanding(c)) actionItems.push({ candidate: c, text: `${c.name} waiting for offer response` });
+    });
+
+    root.innerHTML = `
+      <div class="emp-pipeline-header">
+        <div>
+          <h1>Talent Pipeline</h1>
+          <p>Manage candidates through every hiring stage.</p>
+        </div>
+        <div class="emp-pipeline-header-actions">
+          <select data-pipeline-role>
+            <option value="all" ${roleFilter === "all" ? "selected" : ""}>All open roles</option>
+            ${openRoles.map(r => `<option value="${r.id}" ${roleFilter === r.id ? "selected" : ""}>${r.title}</option>`).join("")}
+          </select>
+          <input type="text" data-pipeline-search placeholder="Search..." value="${query}">
+          <button type="button" class="btn btn-ghost btn-sm emp-vera-accent-btn" data-vera-fab-toggle aria-haspopup="dialog" aria-expanded="${veraPanelOpen}">${icon("sparkles")} Vera</button>
+        </div>
+      </div>
+
+      <div class="emp-pipeline-summary" aria-label="Pipeline summary">
+        <div class="emp-pipeline-summary-item">${icon("user-plus")}<strong>${newCount}</strong><span>New Applications</span></div>
+        <div class="emp-pipeline-summary-item">${icon("calendar")}<strong>${interviewsThisWeek}</strong><span>Interviews Today</span></div>
+        <div class="emp-pipeline-summary-item">${icon("message-square")}<strong>${feedbackWaitingCount}</strong><span>Feedback Pending</span></div>
+        <div class="emp-pipeline-summary-item">${icon("badge-check")}<strong>${offersOutstandingCount}</strong><span>Offers Waiting</span></div>
+        <div class="emp-pipeline-summary-item">${icon("check-circle")}<strong>${hiredCount}</strong><span>Ready for Onboarding</span></div>
+      </div>
+
+      ${actionItems.length ? `
+        <div class="emp-today-priority">
+          <div class="emp-today-priority-head">
+            <span>Today's Priority</span>
+            ${actionItems.length > 3 ? `<button type="button" data-action-center-view-all>View All ${icon("arrow-right")}</button>` : ""}
+          </div>
+          <ul class="emp-today-priority-list">
+            ${actionItems.slice(0, 3).map(item => `<li><button type="button" data-action-item="${item.candidate.id}">${escapeHtml(item.text)}</button></li>`).join("")}
+          </ul>
+        </div>
+      ` : ""}
+
+      <div class="emp-pipeline-section-head">
+        <div>
+          <h2>Candidate Pipeline</h2>
+          <p>See every active candidate, understand what needs to happen next, and move hiring forward.</p>
+        </div>
+        <div class="emp-pipeline-view-toggle">
+          <button type="button" class="${viewMode === "board" ? "active" : ""}" data-pipeline-view="board">Board</button>
+          <button type="button" class="${viewMode === "list" ? "active" : ""}" data-pipeline-view="list">List</button>
+        </div>
+      </div>
+
+      ${stageFilterX !== "all" ? `<p class="emp-field-help">Showing <strong>${escapeHtml(stageFilterX)}</strong> only. <button type="button" class="emp-inline-clear" data-clear-stage-filter>Clear</button></p>` : ""}
+      ${specialFilter ? `<p class="emp-field-help">Showing items needing action only. <button type="button" class="emp-inline-clear" data-attention-clear>Clear</button></p>` : ""}
+
+      ${viewMode === "board" ? renderBoard(list) : renderListView(list)}
+
+      ${openDrawerId ? renderDrawer(openDrawerId) : ""}
+      ${pendingAction ? renderActionModal(pendingAction) : ""}
+      ${renderVeraPanel(list)}
+    `;
+    createIcons();
+    bind();
+    if (focusRestoreSelector) qs(focusRestoreSelector, root)?.focus();
+  }
+
+  function bind() {
+    qs("[data-pipeline-role]", root)?.addEventListener("change", e => { roleFilter = e.target.value; draw(); });
+    qs("[data-pipeline-search]", root)?.addEventListener("input", e => { query = e.target.value; draw(); });
+    qs("[data-clear-stage-filter]", root)?.addEventListener("click", () => { stageFilterX = "all"; draw(); });
+    qs("[data-attention-clear]", root)?.addEventListener("click", () => { specialFilter = null; draw(); });
+    qsa("[data-pipeline-view]", root).forEach(btn => btn.addEventListener("click", () => { viewMode = btn.dataset.pipelineView; draw(); }));
+    qsa("[data-action-item]", root).forEach(el => el.addEventListener("click", () => {
+      openDrawerId = el.dataset.actionItem;
+      drawerTab = "overview";
+      veraPanelOpen = false;
+      draw();
+    }));
+    qs("[data-action-center-view-all]", root)?.addEventListener("click", () => { specialFilter = "needs-action"; draw(); });
+
+    qsa("[data-candidate-card]", root).forEach(el => el.addEventListener("click", event => {
+      if (event.target.closest("[data-candidate-primary], [data-candidate-menu], [data-match-hover], [data-vera-why]")) return;
+      const id = el.dataset.candidateCard;
+      if (expandedCandidateIds.has(id)) expandedCandidateIds.delete(id); else expandedCandidateIds.add(id);
+      draw();
+    }));
+
+    qsa("[data-drag-candidate]", root).forEach(el => {
+      el.addEventListener("dragstart", event => {
+        dragCandidateId = el.dataset.dragCandidate;
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", dragCandidateId);
+        el.classList.add("emp-cand-card-dragging");
+      });
+      el.addEventListener("dragend", () => {
+        el.classList.remove("emp-cand-card-dragging");
+        dragCandidateId = null;
+        qsa("[data-drop-stage]", root).forEach(zone => zone.classList.remove("emp-drop-target"));
+      });
+      el.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          if (event.target !== el) return;
+          event.preventDefault();
+          const id = el.dataset.dragCandidate;
+          if (expandedCandidateIds.has(id)) expandedCandidateIds.delete(id); else expandedCandidateIds.add(id);
+          draw();
+          return;
+        }
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const c = DATA.candidates.find(cand => cand.id === el.dataset.dragCandidate);
+        if (!c) return;
+        const idx = EMPLOYER_TALENT_PIPELINE_STAGES.indexOf(c.stage);
+        const nextIdx = event.key === "ArrowRight" ? idx + 1 : idx - 1;
+        if (nextIdx < 0 || nextIdx >= EMPLOYER_TALENT_PIPELINE_STAGES.length) return;
+        moveStageWithUndo(c, EMPLOYER_TALENT_PIPELINE_STAGES[nextIdx]);
+      });
+    });
+    qsa("[data-drop-stage]", root).forEach(zone => {
+      zone.addEventListener("dragover", event => {
+        if (!dragCandidateId) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+        zone.classList.add("emp-drop-target");
+      });
+      zone.addEventListener("dragleave", () => zone.classList.remove("emp-drop-target"));
+      zone.addEventListener("drop", event => {
+        event.preventDefault();
+        zone.classList.remove("emp-drop-target");
+        const c = DATA.candidates.find(cand => cand.id === dragCandidateId);
+        if (c) moveStageWithUndo(c, zone.dataset.dropStage);
+      });
+    });
+
+    qsa("[data-candidate-menu]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      const c = DATA.candidates.find(cand => cand.id === btn.dataset.candidateMenu);
+      if (c) renderCandidateMenuOverlay(btn, c, "main");
+    }));
+
+    qsa("[data-candidate-primary]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      const c = DATA.candidates.find(cand => cand.id === btn.dataset.candidatePrimary);
+      runCandidateAction(c, primaryActionFor(c).action);
+    }));
+
+    qsa("[data-match-hover]", root).forEach(el => {
+      const popover = qs(`[data-match-popover="${el.dataset.matchHover}"]`, el);
+      el.addEventListener("mouseenter", () => { if (popover) popover.hidden = false; });
+      el.addEventListener("mouseleave", () => { if (popover) popover.hidden = true; });
+    });
+
+    qsa("[data-vera-why]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      const c = DATA.candidates.find(cand => cand.id === btn.dataset.veraWhy);
+      if (!c) return;
+      const el = openFloatingOverlay(btn, renderVeraWhyPopoverContent(c), { width: 260, align: "left", className: "emp-vera-why-overlay", focusFirst: true });
+      if (!el) return;
+      qs("[data-close-vera-why]", el)?.addEventListener("click", event2 => { event2.stopPropagation(); closeFloatingOverlay(); });
+    }));
+
+    qs("[data-vera-fab-toggle]", root)?.addEventListener("click", event => {
+      event.stopPropagation();
+      veraPanelOpen = !veraPanelOpen;
+      draw();
+    });
+    qs("[data-vera-fab-close]", root)?.addEventListener("click", event => {
+      event.stopPropagation();
+      veraPanelOpen = false;
+      draw();
+    });
+    qs(".emp-vera-fab-panel", root)?.addEventListener("click", event => event.stopPropagation());
+    qsa("[data-vera-fab-tab]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      veraPanelTab = btn.dataset.veraFabTab;
+      draw();
+    }));
+    qs("[data-vera-ask-form]", root)?.addEventListener("submit", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const input = qs("[data-vera-ask-input]", root);
+      veraAskInput = input ? input.value : "";
+      if (!veraAskInput.trim()) return;
+      veraAskAnswer = answerPipelineQuery(veraAskInput, filtered(), DATA.employerRoles);
+      draw();
+    });
+    qsa("[data-vera-ask-suggestion]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      veraAskInput = btn.dataset.veraAskSuggestion;
+      veraAskAnswer = answerPipelineQuery(veraAskInput, filtered(), DATA.employerRoles);
+      draw();
+    }));
+    qsa("[data-vera-insight-action]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      let action;
+      try { action = JSON.parse(btn.dataset.veraInsightAction); } catch (e) { return; }
+      if (action.type === "open-candidate" && action.id) { openDrawerId = action.id; drawerTab = "overview"; }
+      else if (action.type === "filter-stage" && action.stage) { stageFilterX = action.stage; }
+      else if (action.type === "filter-skill" && action.skill) { query = action.skill; }
+      veraPanelOpen = false;
+      draw();
+    }));
+    document.addEventListener("click", () => { if (veraPanelOpen) { veraPanelOpen = false; draw(); } });
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      if (veraPanelOpen) { veraPanelOpen = false; draw(); return; }
+      if (openDrawerId) { openDrawerId = null; draw(); }
+    });
+
+    qs("[data-drawer-close]", root)?.addEventListener("click", () => { openDrawerId = null; draw(); });
+    qsa("[data-drawer-tab]", root).forEach(btn => btn.addEventListener("click", () => { drawerTab = btn.dataset.drawerTab; draw(); }));
+    qs("[data-drawer-add-note]", root)?.addEventListener("click", () => {
+      const textarea = qs("[data-drawer-note-input]", root);
+      const text = textarea.value.trim();
+      if (!text) return;
+      const c = DATA.candidates.find(cand => cand.id === openDrawerId);
+      c.notes.unshift({ author: "You", text, date: "Just now" });
+      c.activity.unshift({ text: "Internal note added", date: "Just now" });
+      draw();
+    });
+
+    qs("[data-action-cancel]", root)?.addEventListener("click", () => { pendingAction = null; draw(); });
+    qsa("[data-action-confirm]", root).forEach(btn => btn.addEventListener("click", () => {
+      const c = DATA.candidates.find(cand => cand.id === btn.dataset.candidateId);
+      const kind = btn.dataset.actionConfirm;
+      if (kind === "reject") {
+        const reason = qs('input[name="reject-reason"]:checked', root)?.value || "Other";
+        const message = qs("[data-reject-message]", root)?.value || "";
+        c.archived = true; c.stage = null;
+        c.rejection = { reason, message, date: "Just now" };
+        c.activity.unshift({ text: `Rejected: ${reason}`, date: "Just now" });
+        showToast(`${c.name} moved to Archive.`);
+      }
+      if (kind === "schedule") {
+        const type = qs("[data-schedule-type]", root).value;
+        const date = qs("[data-schedule-date]", root).value || "TBD";
+        const time = qs("[data-schedule-time]", root).value || "TBD";
+        if (c.stage === "Shortlisted") {
+          c.interview = { round: 1, totalRounds: 2, nextInterview: { type, date, time }, interviewers: [], feedbackSubmitted: 0, feedbackTotal: 1, scorecards: [] };
+          moveStage(c, "Interview", `Interview scheduled: ${type}`);
+        } else {
+          c.interview.nextInterview = { type, date, time };
+          c.interview.round += 1;
+          c.activity.unshift({ text: `Interview rescheduled: ${type}`, date: "Just now" });
+        }
+        showToast(`Interview scheduled for ${c.name}.`);
+      }
+      if (kind === "save-offer-draft" || kind === "send-offer") {
+        const amount = qs("[data-offer-amount]", root).value || "0";
+        const expiry = qs("[data-offer-expiry]", root).value || "";
+        c.offer = {
+          status: kind === "send-offer" ? "Sent" : "Draft",
+          amount: `RM ${amount} / month`, sentDate: kind === "send-offer" ? "Just now" : null, expiryDate: expiry || null,
+          counterAmount: null, approvedRange: c.offer?.approvedRange || { min: `RM ${amount}`, max: `RM ${amount}` }
+        };
+        if (c.stage !== "Offer") moveStage(c, "Offer", kind === "send-offer" ? "Offer sent" : "Offer drafted");
+        c.activity.unshift({ text: kind === "send-offer" ? `Offer sent: ${c.offer.amount}` : "Offer draft saved", date: "Just now" });
+        showToast(kind === "send-offer" ? `Offer sent to ${c.name}.` : "Offer draft saved.");
+      }
+      if (kind === "accept-offer") {
+        c.offer.status = "Accepted";
+        moveStage(c, "Hired", "Offer accepted");
+        c.hired = { startDate: "TBD", onboardingStatus: "Onboarding not started" };
+        showToast(`${c.name} hired!`);
+      }
+      if (kind === "decline-offer") {
+        c.offer.status = "Declined";
+        c.activity.unshift({ text: "Candidate declined the offer", date: "Just now" });
+        showToast(`${c.name} declined the offer.`);
+      }
+      if (kind === "respond-offer") {
+        c.offer.status = "Sent";
+        c.activity.unshift({ text: "Responded to counter offer", date: "Just now" });
+        showToast("Response sent to candidate.");
+      }
+      pendingAction = null;
+      draw();
+    }));
+  }
+
+  draw();
+}
+
+function initialsOf(name) {
+  return name.split(/[ ,]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+}
+
+const EMPLOYER_MOCK_NETWORK = {
+  followers: [
+    { name: "Wei Jun Tan", title: "Junior Data Analyst candidate" },
+    { name: "Farah Alia", title: "Software Engineer candidate" },
+    { name: "Kevin Ong", title: "Product Design Intern · Hired" }
+  ],
+  connections: [
+    { name: "Jason Lee", title: "Hiring Manager · Grab" },
+    { name: "Aisha Rahman", title: "University Relations · APU" }
+  ],
+  mutual: [
+    { name: "Priya Menon", title: "Senior PM · Stripe", note: "Mutual with Jason Lee" }
+  ]
+};
+
+// ---------- Vera Hiring Intelligence ----------
+// Shared derivation layer for the Feed's AI widgets (recommendations, daily
+// brief, opportunity cards, "why Vera showed this", hiring-opportunities
+// rail). Everything here reads DATA.candidates / DATA.employerRoles rather
+// than duplicating candidate data into parallel mock arrays, so every
+// widget always agrees with Talent Pipeline. Signal fields that aren't in
+// the base candidate record (last active, resume-updated, competitor
+// views, AI confidence) are derived deterministically from candidate.id,
+// so a given candidate shows identical signals everywhere on every render
+// instead of visibly re-randomizing each redraw.
+function hashSeed(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  return h;
+}
+function seededPick(seedStr, arr) { return arr[hashSeed(seedStr) % arr.length]; }
+function seededRange(seedStr, min, max) { return min + (hashSeed(seedStr) % (max - min + 1)); }
+
+const HIRING_LAST_ACTIVE_OPTIONS = ["Just now", "1 hour ago", "3 hours ago", "6 hours ago", "Yesterday", "2 days ago"];
+const HIRING_COMPETITOR_NAMES = ["Grab", "CIMB", "Shopee", "AirAsia", "Petronas Digital"];
+
+function getCandidateSignals(c) {
+  const viewedByCompetitors = seededRange(c.id + "-comp", 0, 9) > 6;
+  return {
+    lastActive: seededPick(c.id + "-active", HIRING_LAST_ACTIVE_OPTIONS),
+    resumeUpdatedDaysAgo: seededRange(c.id + "-resume", 1, 12),
+    viewedByCompetitors,
+    competitorCount: viewedByCompetitors ? seededRange(c.id + "-compcount", 1, 3) : 0,
+    competitorName: seededPick(c.id + "-compname", HIRING_COMPETITOR_NAMES),
+    interviewSuccessProbability: Math.max(45, Math.min(97, c.fit + seededRange(c.id + "-isp", -8, 6))),
+    offerAcceptLikelihood: Math.max(40, Math.min(96, c.fit + (c.availability === "Immediate" ? 8 : -4) + seededRange(c.id + "-oal", -6, 6))),
+    aiConfidence: Math.max(72, Math.min(98, c.fit + seededRange(c.id + "-conf", -4, 8))),
+    recentlyAvailable: c.availability === "Immediate" || c.availability === "2 weeks",
+  };
+}
+
+// Compares a candidate against a specific role so every "why recommended"
+// explanation is computed from real overlaps (skills / salary / location)
+// rather than static copy - two candidates with the same fit score can
+// still get different reasons if their actual overlap differs.
+function getMatchReasons(c, role) {
+  const reasons = [];
+  const signals = getCandidateSignals(c);
+  if (role) {
+    const required = [...(role.mustHaveSkills || []), ...(role.niceToHaveSkills || [])];
+    const overlap = c.skills.filter(s => required.includes(s));
+    if (overlap.length) reasons.push(`Matches ${overlap.length} of ${required.length} required/preferred skills (${overlap.slice(0, 2).join(", ")}${overlap.length > 2 ? ", …" : ""})`);
+    if (role.location && c.location && c.location.split(" / ")[0].includes(role.location.split(" ")[0])) {
+      reasons.push(`Based in ${role.location}, matching the role's location`);
+    }
+    if (role.salary && role.salary.min) {
+      const expNum = parseFloat((c.salaryExpectation.match(/[\d.]+/g) || [])[0] || "0");
+      if (expNum && expNum * 1000 <= role.salary.max * 1.05) reasons.push(`Salary expectation (${c.salaryExpectation}) fits your published range`);
+    }
+  }
+  if (c.fit >= 88) reasons.push("Among your highest-fit candidates this month");
+  if (signals.recentlyAvailable) reasons.push(`Available ${c.availability.toLowerCase()}`);
+  if (signals.viewedByCompetitors) reasons.push(`Viewed by ${signals.competitorCount} other ${signals.competitorCount === 1 ? "company" : "companies"} this week — act before they do`);
+  if (signals.resumeUpdatedDaysAgo <= 3) reasons.push(`Updated their resume ${signals.resumeUpdatedDaysAgo} day${signals.resumeUpdatedDaysAgo === 1 ? "" : "s"} ago`);
+  return reasons.length ? reasons : [c.strength];
+}
+
+const FEED_CONTENT_FILTERS = [
+  ["all", "All"], ["hiring", "Hiring"], ["candidate", "Candidate"], ["discussion", "Discussion"],
+  ["company", "Company"], ["universities", "Universities"], ["market", "Market"], ["salary", "Salary"],
+  ["remote", "Remote"], ["ai", "AI"], ["saved", "Saved"],
+];
+
+const HIRING_RECOMMENDATION_TYPES = {
+  "high-fit": { label: "High-fit candidate", icon: "target" },
+  "likely-to-accept": { label: "Likely to accept an offer", icon: "handshake" },
+  "recently-available": { label: "Recently became available", icon: "clock" },
+  "urgent-need": { label: "Matches an urgent hiring need", icon: "alert-triangle" },
+  "competitor-interest": { label: "Viewed by competitors", icon: "eye" },
+  "resume-updated": { label: "Recently updated resume", icon: "file-text" },
+  "interview-ready": { label: "High interview success probability", icon: "check-circle" },
+};
+
+// Ranks every active (non-archived, in-pipeline) candidate into a single
+// scored pool that every recommendation widget slices from, so "top 3 in
+// the nav rail" and "1 injected into the feed" never show the same
+// candidate twice in the same view.
+function getHiringRecommendationPool() {
+  return DATA.candidates
+    .filter(c => !c.archived && c.stage && c.stage !== "Hired")
+    .map(c => {
+      const role = DATA.employerRoles.find(r => r.id === c.roleId);
+      const signals = getCandidateSignals(c);
+      const reasons = getMatchReasons(c, role);
+      let recommendationType = "high-fit";
+      if (c.stage === "Offer" && signals.offerAcceptLikelihood >= 80) recommendationType = "likely-to-accept";
+      else if (signals.viewedByCompetitors) recommendationType = "competitor-interest";
+      else if (role && role.health === "Needs attention") recommendationType = "urgent-need";
+      else if (c.stage === "New" && signals.recentlyAvailable) recommendationType = "recently-available";
+      else if (signals.resumeUpdatedDaysAgo <= 3) recommendationType = "resume-updated";
+      else if (signals.interviewSuccessProbability >= 88) recommendationType = "interview-ready";
+      const score = c.fit * 0.5 + signals.aiConfidence * 0.3 + signals.offerAcceptLikelihood * 0.2;
+      return { candidate: c, role, signals, reasons, recommendationType, score };
+    })
+    .sort((a, b) => b.score - a.score);
+}
+
+// Net-new people outside the applicant pool that Vera claims to have
+// surfaced proactively (graduating soon, passive, switching jobs, hidden
+// talent). Deliberately a separate small dataset from DATA.candidates -
+// these people haven't applied, so they don't belong in Talent Pipeline.
+const HIRING_PASSIVE_TALENT = [
+  { id: "pt1", name: "Aisyah Rahman", type: "graduating-soon", headline: "Final-year Computer Science, UTM", relevantRoleId: "er4", matchScore: 81, note: "Graduating in 3 months · active in AI Talent Malaysia community", skills: ["Python", "React"] },
+  { id: "pt2", name: "Marcus Wong", type: "switching", headline: "Software Engineer · currently at Grab", relevantRoleId: "er4", matchScore: 88, note: "Updated their headline to \"Open to opportunities\" this week", skills: ["React", "Node.js", "AWS"] },
+  { id: "pt3", name: "Nur Iman", type: "passive", headline: "Data Analyst · currently at CIMB", relevantRoleId: "er2", matchScore: 76, note: "Engages with your Hiring Insight posts but hasn't applied yet", skills: ["SQL", "Power BI"] },
+  { id: "pt4", name: "Ben Tan", type: "hidden", headline: "Backend Engineer · open-source contributor", relevantRoleId: "er5", matchScore: 85, note: "Found through GitHub activity matching your tech stack", skills: ["Java", "Microservices", "Kafka"] },
+];
+const HIRING_PASSIVE_TYPE_META = {
+  "graduating-soon": { label: "Graduating soon", icon: "graduation-cap" },
+  switching: { label: "Switching jobs", icon: "refresh-cw" },
+  passive: { label: "Passive candidate", icon: "eye" },
+  hidden: { label: "Hidden talent, found by Vera", icon: "sparkles" },
+};
+
+// ---------- Unified Save Candidate system ----------
+// One saved-talent list covers both real pipeline candidates and passive-
+// talent discoveries (tagged by type), so every "Save" button anywhere in
+// the app - recommendation card, profile modal, Hiring Opportunities,
+// feed post, search results - reads and writes the exact same state and
+// the Saved Candidates page can show both kinds together.
+function isSavedTalent(state, id, type) { return (state.savedTalent || []).some(s => s.id === id && s.type === type); }
+function toggleSavedTalent(state, id, type) {
+  const list = state.savedTalent || (state.savedTalent = []);
+  const idx = list.findIndex(s => s.id === id && s.type === type);
+  if (idx === -1) { list.push({ id, type, savedAt: new Date().toISOString() }); return true; }
+  list.splice(idx, 1);
+  return false;
+}
+// Resolves a saved-talent record (which only stores id/type/savedAt) into
+// a display-ready shape, so the Saved Candidates page never duplicates
+// candidate/passive-talent field data - it's always read live from
+// DATA.candidates / HIRING_PASSIVE_TALENT at render time.
+function resolveSavedTalent(entry) {
+  if (entry.type === "candidate") {
+    const c = DATA.candidates.find(x => x.id === entry.id);
+    if (!c) return null;
+    const role = DATA.employerRoles.find(r => r.id === c.roleId);
+    return { id: c.id, type: "candidate", name: c.name, role: c.role, location: c.location, salary: c.salaryExpectation, availability: c.availability, fit: c.fit, savedAt: entry.savedAt, roleObj: role };
+  }
+  const p = HIRING_PASSIVE_TALENT.find(x => x.id === entry.id);
+  if (!p) return null;
+  const role = DATA.employerRoles.find(r => r.id === p.relevantRoleId);
+  return { id: p.id, type: "passive", name: p.name, role: role ? role.title : p.headline, location: null, salary: null, availability: null, fit: p.matchScore, savedAt: entry.savedAt, roleObj: role };
+}
+function bindSaveTalentButtons(scopeEl, onChange) {
+  qsa("[data-save-talent]", scopeEl).forEach(btn => btn.addEventListener("click", event => {
+    event.stopPropagation();
+    const state = readState();
+    const id = btn.dataset.saveTalent;
+    const type = btn.dataset.saveType;
+    const nowSaved = toggleSavedTalent(state, id, type);
+    writeState(state);
+    const name = btn.dataset.saveName || "Candidate";
+    showToast(nowSaved ? `${name} saved.` : `${name} removed from saved.`);
+    if (onChange) onChange(nowSaved, state);
+  }));
+}
+// ---------- Candidate Profile Modal ----------
+// Page-independent, like the existing Vera drawer: appended to <body>,
+// not tied to any one page's draw()/bind() cycle, so "View Profile" works
+// identically from the Feed recommendation carousel, Saved Candidates,
+// Hiring Opportunities or search results without each page needing its
+// own copy of this modal. Everything shown is read from the real
+// candidate record (+ the same signals/match-reason layer the rest of
+// the app uses) rather than fabricated fields the data doesn't have.
+let candidateProfileModalState = { open: false, candidateId: null };
+
+function openCandidateProfileModal(candidateId) {
+  candidateProfileModalState = { open: true, candidateId };
+  renderCandidateProfileModalRoot();
+}
+function closeCandidateProfileModal() {
+  candidateProfileModalState = { open: false, candidateId: null };
+  renderCandidateProfileModalRoot();
+}
+function candidateProfileModalRootEl() {
+  let root = document.querySelector("[data-candidate-profile-modal-root]");
+  if (!root) {
+    root = document.createElement("div");
+    root.setAttribute("data-candidate-profile-modal-root", "");
+    document.body.appendChild(root);
+  }
+  return root;
+}
+function renderCandidateProfileModalRoot() {
+  const root = candidateProfileModalRootEl();
+  if (!candidateProfileModalState.open) { root.innerHTML = ""; return; }
+  const c = DATA.candidates.find(x => x.id === candidateProfileModalState.candidateId);
+  if (!c) { root.innerHTML = ""; return; }
+  const role = DATA.employerRoles.find(r => r.id === c.roleId);
+  const signals = getCandidateSignals(c);
+  const reasons = getMatchReasons(c, role);
+  const state = readState();
+  const saved = isSavedTalent(state, c.id, "candidate");
+
+  root.innerHTML = `
+    <div class="emp-compose-modal" data-cpm-backdrop role="presentation">
+      <div class="card emp-cpm-card" role="dialog" aria-modal="true" aria-label="${escapeHtml(c.name)}'s profile">
+        <div class="emp-cpm-head">
+          <div class="emp-cpm-head-id">
+            <span class="emp-feed-avatar lg">${initialsOf(c.name)}</span>
+            <div>
+              <h2>${escapeHtml(c.name)}</h2>
+              <p class="emp-cand-meta">${escapeHtml(c.role)} · ${escapeHtml(c.location)}</p>
+            </div>
+          </div>
+          <div class="emp-cpm-head-actions">
+            <span class="emp-vera-rec-match">${c.fit}%<small>match</small></span>
+            <button type="button" class="btn-icon-sm" data-cpm-close aria-label="Close profile">${icon("x")}</button>
+          </div>
+        </div>
+
+        <div class="emp-cpm-body">
+          <div class="emp-cpm-why">${icon("sparkles")} <span>${reasons[0]}</span></div>
+
+          <div class="emp-cpm-stat-grid">
+            <div><span class="emp-tags-label">Expected salary</span><strong>${c.salaryExpectation}</strong></div>
+            <div><span class="emp-tags-label">Availability</span><strong>${c.availability}</strong></div>
+            <div><span class="emp-tags-label">Education</span><strong>${escapeHtml(c.education)}</strong></div>
+            <div><span class="emp-tags-label">Experience</span><strong>${escapeHtml(c.experience)}</strong></div>
+            <div><span class="emp-tags-label">Career stage</span><strong>${escapeHtml(c.careerStage)}</strong></div>
+            <div><span class="emp-tags-label">Interview readiness</span><strong>${signals.interviewSuccessProbability}%</strong></div>
+          </div>
+
+          <div class="emp-cpm-section">
+            <span class="emp-tags-label">Skills</span>
+            <div class="pill-row">${c.skills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>
+          </div>
+
+          <div class="emp-cpm-section">
+            <span class="emp-tags-label">Resume summary</span>
+            <p class="emp-cpm-text">${escapeHtml(c.strength)}</p>
+            ${c.concern ? `<span class="emp-tags-label">Watch-out</span><p class="emp-cpm-text">${escapeHtml(c.concern)}</p>` : ""}
+          </div>
+
+          <div class="emp-cpm-section">
+            <span class="emp-tags-label">Portfolio</span>
+            <p class="emp-cpm-text">${c.portfolio} portfolio evidence provided for this application.</p>
+          </div>
+
+          ${c.interview && c.interview.scorecards.length ? `
+            <div class="emp-cpm-section">
+              <span class="emp-tags-label">Interview notes</span>
+              ${c.interview.scorecards.map(s => `<p class="emp-cpm-text"><strong>${escapeHtml(s.interviewer)}</strong> (${escapeHtml(s.recommendation)}): ${escapeHtml(s.notes)}</p>`).join("")}
+            </div>
+          ` : ""}
+
+          <div class="emp-cpm-section">
+            <span class="emp-tags-label">Recent activity</span>
+            <ul class="emp-cpm-activity">${c.activity.slice(0, 4).map(a => `<li>${icon("clock")} ${escapeHtml(a.text)} <span>· ${escapeHtml(a.date)}</span></li>`).join("")}</ul>
+          </div>
+        </div>
+
+        <div class="emp-cpm-footer">
+          ${renderSaveButton(c.id, "candidate", c.name, saved)}
+          <button type="button" class="btn btn-ghost btn-sm" data-cpm-action="message" data-cpm-candidate="${c.id}">${icon("message-circle")} Message</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-cpm-action="shortlist" data-cpm-candidate="${c.id}">${icon("list-checks")} Shortlist</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-cpm-action="schedule" data-cpm-candidate="${c.id}">${icon("calendar")} Schedule Interview</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-cpm-action="invite" data-cpm-candidate="${c.id}">${icon("send")} Send Invite</button>
+          <button type="button" class="btn btn-primary btn-sm" data-cpm-action="offer" data-cpm-candidate="${c.id}">${icon("award")} Generate Offer</button>
+        </div>
+      </div>
+    </div>
+  `;
+  createIcons();
+  bindCandidateProfileModal(root);
+}
+function bindCandidateProfileModal(root) {
+  qs("[data-cpm-close]", root)?.addEventListener("click", closeCandidateProfileModal);
+  qs("[data-cpm-backdrop]", root)?.addEventListener("click", event => { if (event.target === event.currentTarget) closeCandidateProfileModal(); });
+  bindSaveTalentButtons(root, () => renderCandidateProfileModalRoot());
+  qsa("[data-cpm-action]", root).forEach(btn => btn.addEventListener("click", () => {
+    const c = DATA.candidates.find(x => x.id === btn.dataset.cpmCandidate);
+    const action = btn.dataset.cpmAction;
+    if (action === "message") { closeCandidateProfileModal(); openConversationForCandidate(c.id); }
+    else if (action === "shortlist") {
+      if (c.stage === "New") {
+        c.stage = "Shortlisted";
+        c.timeline.push({ label: "Shortlisted", date: "Just now", done: true });
+        c.activity.unshift({ text: "Shortlisted from candidate profile", date: "Just now" });
+        showToast(`${c.name} moved to Shortlisted.`);
+        renderCandidateProfileModalRoot();
+      } else showToast(`${c.name} is already at ${c.stage}.`, "info");
+    } else if (action === "schedule" || action === "offer") { closeCandidateProfileModal(); employerNavigateTo("pipeline", { id: c.id }); showToast(`Opening Talent Pipeline to ${action === "offer" ? "prepare the offer" : "schedule the interview"}.`, "info"); }
+    else if (action === "invite") showToast(`Invitation sent to ${c.name}.`);
+  }));
+  document.addEventListener("keydown", function escHandler(event) {
+    if (event.key === "Escape" && candidateProfileModalState.open) { closeCandidateProfileModal(); document.removeEventListener("keydown", escHandler); }
+  });
+}
+
+function renderSaveButton(id, type, name, saved, opts = {}) {
+  const variant = opts.iconOnly ? "btn-icon-sm" : "btn btn-ghost btn-sm";
+  const label = opts.iconOnly ? "" : (saved ? " Saved" : " Save");
+  return `
+    <button type="button" class="${variant} emp-save-talent-btn ${saved ? "saved" : ""}" data-save-talent="${id}" data-save-type="${type}" data-save-name="${escapeHtml(name)}" aria-pressed="${saved}" aria-label="${saved ? "Remove from saved" : "Save"} ${escapeHtml(name)}">
+      ${icon(saved ? "heart" : "heart")}${label}
+    </button>
+  `;
+}
+
+// "Since your last visit" summary. Reads live off DATA.candidates /
+// DATA.employerRoles so it never drifts out of sync with what's actually
+// in the pipeline; every count is real, so a 0-count item is simply
+// omitted rather than shown as a fabricated "0 of something".
+function getDailyHiringBrief() {
+  const active = DATA.candidates.filter(c => !c.archived);
+  const openRoles = DATA.employerRoles.filter(r => r.status === "Open");
+  const newCandidates = active.filter(c => c.stage === "New");
+  const awaitingReview = active.filter(c => ["New", "Shortlisted"].includes(c.stage));
+  const upcomingInterviews = active.filter(c => c.interview && c.interview.nextInterview);
+  const offersAwaiting = active.filter(c => c.offer && c.offer.status === "Sent");
+  const needsAttentionRoles = openRoles.filter(r => r.health === "Needs attention");
+  const highSignal = getHiringRecommendationPool().filter(r => r.recommendationType === "competitor-interest" || r.recommendationType === "resume-updated");
+
+  const items = [];
+  if (newCandidates.length) items.push({ icon: "user-plus", text: `${newCandidates.length} new candidate${newCandidates.length === 1 ? "" : "s"} matched your active roles`, cta: "Review candidates", nav: "pipeline" });
+  if (awaitingReview.length) items.push({ icon: "clock", text: `${awaitingReview.length} applicant${awaitingReview.length === 1 ? "" : "s"} waiting for review`, cta: "Review now", nav: "pipeline" });
+  if (upcomingInterviews.length) items.push({ icon: "calendar", text: `${upcomingInterviews.length} interview${upcomingInterviews.length === 1 ? "" : "s"} coming up — ${upcomingInterviews.map(c => `${c.name.split(" ")[0]} (${c.interview.nextInterview.date})`).join(", ")}`, cta: "View schedule", nav: "pipeline" });
+  if (offersAwaiting.length) items.push({ icon: "file-text", text: `${offersAwaiting.length} offer${offersAwaiting.length === 1 ? "" : "s"} awaiting a candidate response`, cta: "View offers", nav: "pipeline" });
+  if (needsAttentionRoles.length) items.push({ icon: "alert-triangle", text: `${needsAttentionRoles.map(r => r.title).join(", ")} ${needsAttentionRoles.length === 1 ? "needs" : "need"} attention — talent supply or hiring speed is off pace`, cta: "Review role", nav: "roles" });
+  if (highSignal.length) items.push({ icon: "trending-up", text: `${highSignal.length} candidate${highSignal.length === 1 ? "" : "s"} showing urgent signal — competitor views or fresh resume updates`, cta: "See who", nav: "pipeline" });
+  items.push({ icon: "bar-chart-2", text: "Junior Data Analyst salary expectations are trending 6% higher this month across your target market.", cta: null, nav: null });
+
+  const suggestedActions = [];
+  if (offersAwaiting.length) suggestedActions.push(`Follow up on ${offersAwaiting[0].name}'s offer before it expires ${offersAwaiting[0].offer.expiryDate}.`);
+  if (needsAttentionRoles.length) suggestedActions.push(`Loosen the experience requirement on ${needsAttentionRoles[0].title} to widen your candidate pool.`);
+  if (upcomingInterviews.length) suggestedActions.push(`Prep interview notes for ${upcomingInterviews[0].name} ahead of ${upcomingInterviews[0].interview.nextInterview.date}.`);
+
+  // Today's Summary dashboard tiles (section 11 of the redesign). Unread
+  // Messages counts conversations with at least one unread reply, while
+  // Candidate Replies counts the individual unread messages themselves -
+  // a candidate who sent two follow-ups shows as 1 unread conversation
+  // but 2 replies, both genuinely different, useful numbers. Brand
+  // Mentions is real too: posts authored by the company or mentioning it
+  // by name, not a fabricated count.
+  const conversations = DATA.employerConversations || [];
+  const unreadConversations = conversations.filter(c => c.messages.some(m => m.sender === "candidate" && !m.read));
+  const unreadMessageCount = conversations.reduce((sum, c) => sum + c.messages.filter(m => m.sender === "candidate" && !m.read).length, 0);
+  const brandMentions = DATA.communityPosts.filter(p => p.authorType === "employer" || p.body.includes("Maybank")).length;
+
+  const stats = [
+    { label: "New Matches", value: getHiringRecommendationPool().length, icon: "user-plus", nav: "feed" },
+    { label: "Interviews", value: upcomingInterviews.length, icon: "calendar", nav: "pipeline" },
+    { label: "Pending Reviews", value: awaitingReview.length, icon: "clock", nav: "pipeline" },
+    { label: "Offers", value: offersAwaiting.length, icon: "file-text", nav: "pipeline" },
+    { label: "Unread Messages", value: unreadConversations.length, icon: "inbox", nav: "messages" },
+    { label: "Candidate Replies", value: unreadMessageCount, icon: "message-circle", nav: "messages" },
+    { label: "Brand Mentions", value: brandMentions, icon: "megaphone", nav: "feed" },
+  ];
+  const quickActions = [
+    { label: "Review Candidates", icon: "users", nav: "pipeline" },
+    { label: "Open Inbox", icon: "inbox", nav: "messages" },
+    { label: "Create Job", icon: "plus", nav: "role-builder" },
+    { label: "Pipeline", icon: "kanban", nav: "pipeline" },
+  ];
+
+  return { items, suggestedActions, totalSignals: items.length, stats, quickActions };
+}
+
+function fmtSalaryK(n) { return (n / 1000).toFixed(1).replace(".0", ""); }
+
+// Assembles the Feed's Brand Health Dashboard entirely from data the
+// Company Profile page already owns (healthDashboard, hiringStages,
+// hiringFunnel, reputationSummary) so the two pages never disagree about
+// the company's health score or its drivers.
+function getBrandHealthSummary(company) {
+  const hd = company.healthDashboard;
+  const funnel30 = company.hiringFunnel.ranges["30d"].stages;
+  const funnel90 = company.hiringFunnel.ranges["90d"].stages;
+  const offers30 = funnel30.find(s => s.stage === "Offers").value;
+  const accepted30 = funnel30.find(s => s.stage === "Accepted").value;
+  const offers90 = funnel90.find(s => s.stage === "Offers").value;
+  const accepted90 = funnel90.find(s => s.stage === "Accepted").value;
+  const acceptanceRate30 = Math.round((accepted30 / offers30) * 100);
+  const acceptanceRate90 = Math.round((accepted90 / offers90) * 100);
+  const biggestDropOff = [...company.hiringTimeline].sort((a, b) => b.dropOffPercent - a.dropOffPercent)[0];
+  const topSuggestion = [...hd.subscores].sort((a, b) => (b.predictedScore - b.score) - (a.predictedScore - a.score))[0];
+  return {
+    overallScore: hd.overallScore,
+    overallPredictedScore: hd.overallPredictedScore,
+    overallExplanation: hd.overallExplanation,
+    profileCompleteness: computeCompanyCompleteness(company),
+    avgResponseDays: company.avgResponseDays,
+    interviewRating: company.scores.growth,
+    acceptanceRate: acceptanceRate30,
+    acceptanceTrend: acceptanceRate30 - acceptanceRate90,
+    sentiment: company.reputationSummary,
+    biggestDropOff,
+    subscores: hd.subscores,
+    topSuggestion,
+  };
+}
+
+// "Why Vera showed this" (item 4). Every post gets a real explanation -
+// posts that already carry a hand-written veraLine use it as the headline
+// reason; every post additionally gets 1-2 concrete supporting factors
+// computed from its own data (engagement, category, authorship) so the
+// panel never reads as generic filler.
+const VERA_POST_REASON_TEMPLATES = {
+  DISCUSSION: "Candidates in your pipeline engage with discussions like this.",
+  MILESTONE: "This reflects the kind of story your recently-hired candidates have shared.",
+  "COMPANY UPDATE": "This is your own company's post, shown to keep your hiring team aligned.",
+  "HIRING INSIGHT": "Hiring insights are prioritized for employers actively screening applicants.",
+  QUESTION: "Employer questions like this often surface useful market signal from candidates.",
+};
+function getPostVeraReason(post, state) {
+  const summary = post.veraLine || VERA_POST_REASON_TEMPLATES[post.category] || "This is relevant to your current hiring activity.";
+  const factors = [];
+  if (post.reactions > 100) factors.push(`High engagement in your talent market (${post.reactions} reactions)`);
+  if (["HIRING INSIGHT", "QUESTION"].includes(post.category)) factors.push("Directly relevant to your open roles");
+  if (post.authorType === "employer") factors.push("Posted by your own company");
+  if (state.feedFollowing.includes(post.followId)) factors.push("From someone you follow");
+  if (!factors.length) factors.push("General relevance to your hiring activity");
+  return { summary, factors };
+}
+
+// Shared "why Vera showed this" disclosure, used on both feed posts and
+// candidate opportunity cards. Native <details>/<summary> rather than a
+// JS-tracked open/close flag: it's keyboard-operable and announced by
+// screen readers with zero extra wiring, and since this codebase re-draws
+// the whole page on most interactions anyway, a JS-tracked flag would
+// reset just as often as this does.
+// Shared AI health-score ring, used by the Company Profile page's AI
+// Health Score section and the Feed's Brand Health Dashboard modal - one
+// SVG renderer so the visual stays identical wherever a health score
+// appears. Pure function: strokeDashoffset starts full (0% drawn) and the
+// caller animates it toward data-target-offset after mount.
+function renderHealthRing(score, { size = 120, strokeWidth = 10 } = {}) {
+  const clamped = Math.max(0, Math.min(100, score));
+  const radius = 50 - strokeWidth / 2 - 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - clamped / 100);
+  const tier = clamped >= 85 ? "strong" : clamped >= 70 ? "moderate" : "attention";
+  return `
+    <svg viewBox="0 0 100 100" class="emp-health-ring emp-health-ring--${tier}" style="width:${size}px;height:${size}px" data-health-ring data-target-offset="${offset}">
+      <circle cx="50" cy="50" r="${radius}" class="emp-health-ring-track" stroke-width="${strokeWidth}"></circle>
+      <circle cx="50" cy="50" r="${radius}" class="emp-health-ring-fill" stroke-width="${strokeWidth}" stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}"></circle>
+      <text x="50" y="50" class="emp-health-ring-text" text-anchor="middle" dominant-baseline="central">${Math.round(clamped)}</text>
+    </svg>
+  `;
+}
+
+function renderWhyVeraPanel(reason) {
+  return `
+    <details class="emp-feed-why-panel">
+      <summary>${icon("sparkles")} <span>Why Vera showed this</span></summary>
+      <div class="emp-feed-why-body">
+        <p>${reason.summary}</p>
+        <ul>${reason.factors.map(f => `<li>${icon("check")} ${f}</li>`).join("")}</ul>
+      </div>
+    </details>
+  `;
+}
+
+function renderEmployerFeed(root) {
+  let activeFilter = "foryou";
+  // Seeded once from a "Posts" global-search result (see
+  // initEmployerGlobalSearch); consumed immediately so a later
+  // in-page "Clear" or plain navigation back to Feed starts fresh.
+  let trendingKeyword = pendingFeedSearchQuery;
+  pendingFeedSearchQuery = null;
+  let composerOpen = false;
+  let composerCategory = "DISCUSSION";
+  let composerRoleId = "";
+  let openCommentsPostId = null;
+  let replyingCommentId = null;
+  let recRotateIndex = 0;
+  let briefExpanded = false;
+  let hiringOppsExpanded = false;
+  let contentFilter = "all";
+  let brandDashboardOpen = false;
+  let composerAiOpen = false;
+  let composerAiInsight = null;
+  let composerDraftText = "";
+  let composerPollOptions = ["", ""];
+  let composerEvent = { title: "", date: "", location: "" };
+  let composerMedia = null; // {kind:"image"|"video"|"pdf"|"article", label}
+  let composerMediaPickerOpen = false;
+  let composerSchedulePickerOpen = false;
+  let composerScheduleValue = "";
+  let draftsPanelOpen = false;
+  let scheduledPanelOpen = false;
+
+  // Smart Feed Intelligence (item 8): on "For You" specifically - the only
+  // view framed as AI-personalized - rank by hiring relevance instead of
+  // raw recency. Explicit filters (Following/Discussions/Hiring/Company
+  // Updates/Trending) keep their natural order since the employer chose
+  // that lens deliberately; re-ranking there would be surprising, not
+  // helpful. Relevance = has an explicit "why you're seeing this" signal,
+  // is hiring-flavoured content, is from your own company/network, or has
+  // real engagement - each a genuine hiring-relevance signal, not just
+  // popularity.
+  function hiringRelevanceScore(post, state) {
+    let score = 0;
+    if (post.veraLine) score += 30;
+    if (["HIRING INSIGHT", "QUESTION"].includes(post.category)) score += 25;
+    if (post.authorType === "employer") score += 15;
+    if (state.feedFollowing.includes(post.followId)) score += 15;
+    score += Math.min(post.reactions / 10, 20);
+    return score;
+  }
+
+  // Smart Filter Bar (section 12): an independent content-type layer on
+  // top of the sidebar's broad view (For You / Following). Genuinely
+  // functional, not decorative - Market/Salary/Remote/AI match real post
+  // text since those topics aren't already a distinct category field on
+  // DATA.communityPosts, the same substring-match approach already used
+  // for the trending-keyword banner.
+  function matchesContentFilter(p, state) {
+    const haystack = (p.body + " " + p.category).toLowerCase();
+    switch (contentFilter) {
+      case "hiring": return ["HIRING INSIGHT", "QUESTION"].includes(p.category);
+      case "candidate": return p.authorType === "person";
+      case "discussion": return ["DISCUSSION", "MILESTONE"].includes(p.category);
+      case "company": return p.category === "COMPANY UPDATE" || p.authorType === "employer";
+      case "universities": return p.authorType === "university";
+      case "market": return /market|trend|demand/.test(haystack);
+      case "salary": return /salary|pay|compensation/.test(haystack);
+      case "remote": return /remote/.test(haystack);
+      case "ai": return /\bai\b|artificial intelligence/.test(haystack);
+      case "saved": return state.feedSavedPosts.includes(p.id);
+      default: return true;
+    }
+  }
+
+  function visiblePosts(state) {
+    let posts = DATA.communityPosts.filter(p => !state.feedMuted.includes(p.followId));
+    if (activeFilter === "following") posts = posts.filter(p => state.feedFollowing.includes(p.followId));
+    if (contentFilter !== "all") posts = posts.filter(p => matchesContentFilter(p, state));
+    // Trending keyword is a layer on top of whatever filter is active
+    // (set by clicking a right-rail Trending topic), not a dedicated tab.
+    if (trendingKeyword) posts = posts.filter(p => (p.author + " " + p.body + " " + p.category).toLowerCase().includes(trendingKeyword.toLowerCase()));
+    if (activeFilter === "foryou") posts = [...posts].sort((a, b) => hiringRelevanceScore(b, state) - hiringRelevanceScore(a, state));
+    return posts;
+  }
+
+  function renderAttachment(att, post, preview) {
+    if (att.type === "poll") {
+      const total = att.options.reduce((sum, o) => sum + o.count, 0);
+      return `
+        <div class="emp-feed-poll">
+          ${att.options.map((o, i) => {
+            const pct = total ? Math.round((o.count / total) * 100) : 0;
+            return `
+              <button type="button" class="emp-feed-poll-option ${att.voted ? "voted" : ""}" data-poll-vote="${post.id}:${i}" ${(att.voted || preview) ? "disabled" : ""}>
+                ${att.voted ? `<span class="emp-feed-poll-bar" style="width:${pct}%"></span>` : ""}
+                <span class="emp-feed-poll-option-label">${escapeHtml(o.text)}</span>
+                ${att.voted ? `<span class="emp-feed-poll-option-pct">${pct}%</span>` : ""}
+              </button>
+            `;
+          }).join("")}
+          <p class="emp-cand-meta">${total} vote${total === 1 ? "" : "s"}${att.voted ? "" : " · Tap an option to vote"}</p>
+        </div>
+      `;
+    }
+    if (att.type === "event") {
+      return `
+        <div class="emp-feed-event-card">
+          <div class="emp-feed-event-date-row">${icon("calendar")} <span>${escapeHtml(att.date || "Date TBC")}${att.location ? ` · ${escapeHtml(att.location)}` : ""}</span></div>
+          <strong class="emp-feed-event-title">${escapeHtml(att.title)}</strong>
+          <button type="button" class="btn btn-ghost btn-sm ${att.interested ? "active" : ""}" data-event-interested="${post.id}" ${preview ? "disabled" : ""}>${icon("star")} ${att.interested ? "Interested ✓" : "Interested"}${att.interestedCount ? ` · ${att.interestedCount}` : ""}</button>
+        </div>
+      `;
+    }
+    if (att.type === "media") {
+      const mediaIconName = att.kind === "video" ? "video" : att.kind === "pdf" ? "file-text" : att.kind === "article" ? "newspaper" : "image";
+      return `
+        <div class="emp-feed-media-preview">
+          ${icon(mediaIconName)}
+          <span>${escapeHtml(att.label)}</span>
+        </div>
+      `;
+    }
+    if (att.type === "role") {
+      const role = DATA.employerRoles.find(r => r.id === att.roleId);
+      if (!role) return "";
+      const fmt = n => (n / 1000).toFixed(1).replace(".0", "");
+      const salaryText = role.salary && role.salary.min ? `RM ${fmt(role.salary.min)}k–${fmt(role.salary.max)}k / ${role.salary.period.toLowerCase()}` : "Salary not published";
+      return `
+        <div class="emp-feed-attachment">
+          <span class="emp-tags-label">Maybank is hiring</span>
+          <strong>${role.title}</strong>
+          <p class="emp-cand-meta">${role.location} · ${role.workMode} · ${salaryText}</p>
+          <button type="button" class="btn btn-ghost btn-sm" data-feed-explore-role="${role.id}">Explore role</button>
+        </div>
+      `;
+    }
+    if (att.type === "program") {
+      return `
+        <div class="emp-feed-attachment">
+          <strong>${att.title}</strong>
+          <div class="pill-row">${att.meta.map(m => `<span class="pill">${m}</span>`).join("")}</div>
+          <button type="button" class="btn btn-ghost btn-sm" data-feed-follow-updates>Follow for updates</button>
+        </div>
+      `;
+    }
+    return "";
+  }
+
+  function renderComments(post) {
+    return `
+      <div class="emp-feed-comments">
+        ${post.comments.map(c => `
+          <div class="emp-feed-comment">
+            <span class="emp-feed-avatar sm">${initialsOf(c.author)}</span>
+            <div class="emp-feed-comment-body">
+              <strong>${c.author}</strong>
+              <p>${c.body}</p>
+              <div class="emp-feed-comment-actions">
+                <button type="button" data-feed-comment-like="${c.id}" data-post-id="${post.id}">${icon("heart")} ${c.likes}</button>
+                <button type="button" data-feed-comment-reply="${c.id}">Reply</button>
+                <button type="button" data-feed-comment-report>Report</button>
+              </div>
+              ${c.replies.map(r => `<div class="emp-feed-reply"><strong>${r.author}</strong><p>${r.body}</p></div>`).join("")}
+              ${replyingCommentId === c.id ? `
+                <div class="emp-feed-reply-input">
+                  <input type="text" data-feed-reply-text placeholder="Write a reply...">
+                  <button type="button" class="btn btn-ghost btn-sm" data-feed-reply-submit="${c.id}" data-post-id="${post.id}">Reply</button>
+                </div>
+              ` : ""}
+            </div>
+          </div>
+        `).join("")}
+        <div class="emp-feed-comment-input">
+          <input type="text" data-feed-comment-text placeholder="Write a comment...">
+          <button type="button" class="btn btn-primary btn-sm" data-feed-comment-submit="${post.id}">Post</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderPostCard(post, state, opts = {}) {
+    const preview = !!opts.preview;
+    const isFollowing = state.feedFollowing.includes(post.followId);
+    const isSaved = state.feedSavedPosts.includes(post.id);
+    const commentsOpen = !preview && openCommentsPostId === post.id;
+    return `
+      <div class="card emp-feed-post ${preview ? "emp-feed-post--preview" : ""}" ${preview ? "" : `data-feed-post="${post.id}"`}>
+        <div class="emp-feed-post-head">
+          <span class="emp-feed-avatar">${initialsOf(post.author)}</span>
+          <div class="emp-feed-post-author">
+            <div class="emp-feed-author-line">
+              <strong>${post.author}</strong>
+              ${post.verified ? `<span class="pill cyan">${icon("shield-check")} Verified ${post.authorType === "university" ? "University" : "Employer"}</span>` : ""}
+              ${post.authorType === "community" ? `<span class="pill">Community</span>` : ""}
+            </div>
+            <p class="emp-cand-meta">${post.authorTitle} · ${post.timestamp}</p>
+          </div>
+          <span class="emp-feed-category">${post.category}</span>
+          ${preview ? "" : `
+          <div class="emp-feed-post-menu-wrap">
+            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-feed-post-menu="${post.id}" aria-label="More options for this post" aria-haspopup="menu" aria-expanded="false">${icon("more-horizontal")}</button>
+            <div class="emp-actions-menu" data-feed-post-menu-panel="${post.id}" hidden>
+              <button type="button" data-feed-action="profile" data-post-id="${post.id}">View profile</button>
+              <button type="button" data-feed-action="follow" data-post-id="${post.id}">${isFollowing ? "Following ✓" : "Follow"}</button>
+              <button type="button" data-feed-action="message" data-post-id="${post.id}">Message</button>
+              <button type="button" data-feed-action="mute" data-post-id="${post.id}">Mute</button>
+              <button type="button" data-feed-action="report" data-post-id="${post.id}">Report</button>
+            </div>
+          </div>`}
+        </div>
+        ${preview ? "" : renderWhyVeraPanel(getPostVeraReason(post, state))}
+        ${post.title ? `<h3>${post.title}</h3>` : ""}
+        <p class="emp-feed-post-body">${post.body}</p>
+        ${post.attachment ? renderAttachment(post.attachment, post, preview) : ""}
+        ${preview ? `
+        <div class="emp-feed-post-actions" aria-hidden="true">
+          <span class="emp-feed-action-btn">${icon("heart")} 0</span>
+          <span class="emp-feed-action-btn">${icon("message-circle")} 0</span>
+          <span class="emp-feed-action-btn">${icon("bookmark")} Save</span>
+          <span class="emp-feed-action-btn">${icon("send")} Share</span>
+        </div>` : `
+        <div class="emp-feed-post-actions">
+          <button type="button" class="emp-feed-action-btn" data-feed-like="${post.id}">${icon("heart")} ${post.reactions}</button>
+          <button type="button" class="emp-feed-action-btn" data-feed-comment-toggle="${post.id}">${icon("message-circle")} ${post.comments.length}</button>
+          <button type="button" class="emp-feed-action-btn ${isSaved ? "active" : ""}" data-feed-save="${post.id}">${icon("bookmark")} Save</button>
+          <button type="button" class="emp-feed-action-btn" data-feed-share="${post.id}">${icon("send")} Share</button>
+        </div>`}
+        ${commentsOpen ? renderComments(post) : ""}
+      </div>
+    `;
+  }
+
+  // AI Content Composer (item 9). Text-transform actions (generate,
+  // rewrite, hashtags, optimize) actually rewrite the textarea so the
+  // employer gets a real draft to edit, not just a toast; analysis actions
+  // (predict engagement, suggest posting time) surface an inline AI
+  // insight strip instead, since there's no text for them to change.
+  function renderComposerAiBar(state) {
+    return `
+      <div class="emp-feed-composer-ai">
+        <button type="button" class="emp-feed-ai-toggle" data-feed-ai-toggle aria-expanded="${composerAiOpen}">
+          ${icon("sparkles")} <span>Write with Vera</span> ${icon(composerAiOpen ? "chevron-up" : "chevron-down")}
+        </button>
+        ${composerAiOpen ? `
+          <div class="emp-feed-ai-actions">
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="generate">${icon("sparkles")} Generate hiring announcement</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="rewrite">${icon("edit-3")} Rewrite for employer branding</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="engagement">${icon("trending-up")} Improve engagement</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="hashtags">${icon("hash")} Add hashtags</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="media">${icon("image")} Recommend media</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="optimize">${icon("wand-2")} Optimize wording</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="predict">${icon("bar-chart-2")} Predict engagement</button>
+            <button type="button" class="emp-feed-ai-chip" data-feed-ai-action="timing">${icon("clock")} Suggest posting time</button>
+          </div>
+          ${composerAiInsight ? `<p class="emp-feed-ai-insight">${icon("sparkles")} ${composerAiInsight}</p>` : ""}
+        ` : ""}
+      </div>
+    `;
+  }
+
+  function mediaIconFor(kind) {
+    return kind === "video" ? "video" : kind === "pdf" ? "file-text" : kind === "article" ? "newspaper" : "image";
+  }
+  function mockMediaLabel(kind) {
+    if (kind === "image") return "team-hiring-day.jpg";
+    if (kind === "video") return "office-tour.mp4";
+    if (kind === "pdf") return "2026-benefits-guide.pdf";
+    return "Attached article link";
+  }
+  function formatScheduleDate(iso) {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "an upcoming date";
+    return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  }
+
+  function renderComposer(state) {
+    const drafts = state.feedDrafts || [];
+    const scheduled = state.feedScheduledPosts || [];
+    return `
+      <div class="card emp-feed-composer">
+        <div class="emp-feed-composer-head">
+          <span class="emp-tags-label">Posting as</span>
+          <select data-feed-identity>
+            <option value="Maybank" ${state.feedPostingIdentity === "Maybank" ? "selected" : ""}>Maybank</option>
+            <option value="Mira — Talent Acquisition" ${state.feedPostingIdentity === "Mira — Talent Acquisition" ? "selected" : ""}>Mira — Talent Acquisition</option>
+          </select>
+        </div>
+        <textarea data-feed-composer-text placeholder="Share an update, ask a question, or start a discussion…" rows="2">${composerDraftText || ""}</textarea>
+        ${renderComposerAiBar(state)}
+        ${composerOpen ? `
+          <div class="emp-feed-composer-types">
+            ${["Discussion", "Company Update", "Hiring Insight", "Question", "Event", "Role Share", "Media", "Poll"].map(t => `<button type="button" class="emp-feed-type-chip ${composerCategory === t.toUpperCase() ? "active" : ""}" data-feed-type="${t}">${t}</button>`).join("")}
+          </div>
+          ${composerCategory === "ROLE SHARE" ? `
+            <label class="emp-feed-role-select">Select role
+              <select data-feed-role-select>
+                <option value="">Choose a role...</option>
+                ${DATA.employerRoles.filter(r => r.status === "Open").map(r => `<option value="${r.id}" ${composerRoleId === r.id ? "selected" : ""}>${r.title}</option>`).join("")}
+              </select>
+            </label>
+          ` : ""}
+          ${composerCategory === "POLL" ? `
+            <div class="emp-feed-composer-poll">
+              ${composerPollOptions.map((val, i) => `
+                <div class="emp-feed-composer-poll-row">
+                  <input type="text" data-poll-option-input="${i}" placeholder="Option ${i + 1}" value="${escapeHtml(val)}" maxlength="60">
+                  ${composerPollOptions.length > 2 ? `<button type="button" class="btn-icon-sm" data-poll-option-remove="${i}" aria-label="Remove option">${icon("x")}</button>` : ""}
+                </div>
+              `).join("")}
+              ${composerPollOptions.length < 4 ? `<button type="button" class="emp-feed-poll-add" data-poll-option-add>${icon("plus")} Add option</button>` : ""}
+            </div>
+          ` : ""}
+          ${composerCategory === "EVENT" ? `
+            <div class="emp-feed-composer-event">
+              <input type="text" data-event-title placeholder="Event title" value="${escapeHtml(composerEvent.title)}">
+              <input type="text" data-event-date placeholder="Date, e.g. 12 Aug, 3pm" value="${escapeHtml(composerEvent.date)}">
+              <input type="text" data-event-location placeholder="Location or 'Online'" value="${escapeHtml(composerEvent.location)}">
+            </div>
+          ` : ""}
+          ${composerMediaPickerOpen ? `
+            <div class="emp-feed-media-picker">
+              <button type="button" data-media-pick="image">${icon("image")} Image</button>
+              <button type="button" data-media-pick="video">${icon("video")} Video</button>
+              <button type="button" data-media-pick="pdf">${icon("file-text")} PDF</button>
+              <button type="button" data-media-pick="article">${icon("newspaper")} Article</button>
+            </div>
+          ` : ""}
+          ${composerMedia ? `
+            <div class="emp-feed-composer-media-chip">
+              ${icon(mediaIconFor(composerMedia.kind))} <span>${escapeHtml(composerMedia.label)}</span>
+              <button type="button" data-media-remove aria-label="Remove attachment">${icon("x")}</button>
+            </div>
+          ` : ""}
+          ${composerSchedulePickerOpen ? `
+            <div class="emp-feed-schedule-picker">
+              <input type="datetime-local" data-feed-schedule-value value="${composerScheduleValue}">
+              <button type="button" class="btn btn-primary btn-sm" data-feed-schedule-confirm>Schedule</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-feed-schedule-cancel>Cancel</button>
+            </div>
+          ` : ""}
+        ` : ""}
+        <div class="emp-feed-composer-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-feed-media>${icon("image")} Media</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-feed-add-context>${icon("plus")} Add context</button>
+          <span class="emp-feed-composer-utility">
+            <button type="button" class="btn-icon-sm" data-feed-mention title="Mention someone" aria-label="Mention someone">${icon("at-sign")}</button>
+            <button type="button" class="btn-icon-sm" data-feed-hashtag title="Add a hashtag" aria-label="Add a hashtag">${icon("hash")}</button>
+            <button type="button" class="btn-icon-sm" data-feed-save-draft title="Save as draft" aria-label="Save as draft">${icon("save")}</button>
+            <button type="button" class="btn-icon-sm ${composerSchedulePickerOpen ? "active" : ""}" data-feed-schedule-toggle title="Schedule post" aria-label="Schedule post">${icon("clock")}</button>
+            <button type="button" class="btn-icon-sm" data-feed-preview title="Preview post" aria-label="Preview post">${icon("eye")}</button>
+          </span>
+          <button type="button" class="btn btn-primary btn-sm" data-feed-post>${icon("send")} Post</button>
+        </div>
+        ${(drafts.length || scheduled.length) ? `
+          <div class="emp-feed-composer-meta-links">
+            ${drafts.length ? `<button type="button" data-feed-drafts-toggle>${icon("save")} ${drafts.length} draft${drafts.length === 1 ? "" : "s"}</button>` : ""}
+            ${scheduled.length ? `<button type="button" data-feed-scheduled-toggle>${icon("clock")} ${scheduled.length} scheduled</button>` : ""}
+          </div>
+        ` : ""}
+        ${draftsPanelOpen && drafts.length ? `
+          <div class="emp-feed-composer-panel">
+            ${drafts.map(d => `
+              <div class="emp-feed-composer-panel-row">
+                <p>${escapeHtml(d.body.slice(0, 70))}${d.body.length > 70 ? "…" : ""}</p>
+                <div class="emp-feed-composer-panel-actions">
+                  <button type="button" class="btn btn-ghost btn-sm" data-feed-draft-load="${d.id}">Load</button>
+                  <button type="button" class="btn-icon-sm" data-feed-draft-delete="${d.id}" aria-label="Delete draft">${icon("trash-2")}</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        ` : ""}
+        ${scheduledPanelOpen && scheduled.length ? `
+          <div class="emp-feed-composer-panel">
+            ${scheduled.map(s => `
+              <div class="emp-feed-composer-panel-row">
+                <p>${escapeHtml(s.body.slice(0, 60))}${s.body.length > 60 ? "…" : ""}<br><span class="emp-tags-label">Scheduled for ${formatScheduleDate(s.scheduledFor)}</span></p>
+                <div class="emp-feed-composer-panel-actions">
+                  <button type="button" class="btn btn-ghost btn-sm" data-feed-scheduled-publish="${s.id}">Publish now</button>
+                  <button type="button" class="btn-icon-sm" data-feed-scheduled-delete="${s.id}" aria-label="Delete scheduled post">${icon("trash-2")}</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        ` : ""}
+      </div>
+    `;
+  }
+
+  // ---------- One-Click Talent Action Bar ----------
+  // The full 8-action bar (Preview/Message/Save/Shortlist/Schedule/Offer/
+  // Invite/Compare) used on the spacious in-feed opportunity card. The
+  // compact carousel widget deliberately does NOT use this - it shows
+  // only Preview + Save per the redesign spec, with everything else
+  // living in the profile modal Preview opens.
+  function renderTalentActionBar(c) {
+    return `
+      <div class="emp-talent-action-bar">
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="preview" data-rec-candidate="${c.id}">${icon("eye")} Preview</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="message" data-rec-candidate="${c.id}">${icon("message-circle")} Message</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="shortlist" data-rec-candidate="${c.id}">${icon("list-checks")} Shortlist</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="schedule" data-rec-candidate="${c.id}">${icon("calendar")} Schedule</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="offer" data-rec-candidate="${c.id}">${icon("file-text")} Offer</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="invite" data-rec-candidate="${c.id}">${icon("send")} Invite</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-rec-action="compare" data-rec-candidate="${c.id}">${icon("scale")} Compare</button>
+      </div>
+    `;
+  }
+
+  // Item 1 (redesigned): the compact carousel card. Only what's needed to
+  // decide "is this worth a closer look" - avatar, name, match %, role,
+  // salary, availability, one AI-generated line. Everything else (skills,
+  // interview readiness, activity, full action bar) lives behind View
+  // Profile in the modal, not crammed into this card.
+  function renderRecommendationCompact(entry) {
+    const { candidate: c, reasons } = entry;
+    const state = readState();
+    const saved = isSavedTalent(state, c.id, "candidate");
+    return `
+      <div class="emp-rec-compact-head">
+        <span class="emp-feed-avatar lg">${initialsOf(c.name)}</span>
+        <div class="emp-rec-compact-id">
+          <strong>${c.name}</strong>
+          <p class="emp-cand-meta">${c.role}</p>
+        </div>
+        <span class="emp-vera-rec-match" title="AI match score">${c.fit}%<small>match</small></span>
+      </div>
+      <div class="emp-rec-compact-stats">
+        <div><span class="emp-tags-label">Salary</span><strong>${c.salaryExpectation}</strong></div>
+        <div><span class="emp-tags-label">Availability</span><strong>${c.availability}</strong></div>
+      </div>
+      <p class="emp-rec-compact-note">${icon("sparkles")} ${reasons[0]}</p>
+      <div class="emp-rec-compact-actions">
+        <button type="button" class="btn btn-primary" data-rec-action="preview" data-rec-candidate="${c.id}">${icon("eye")} View Profile</button>
+        ${renderSaveButton(c.id, "candidate", c.name, saved, { iconOnly: true })}
+      </div>
+    `;
+  }
+
+  // Item 1: manual carousel only - no auto-play. Prev/next by click,
+  // keyboard left/right when the widget holds focus, and touch swipe.
+  function renderVeraRecommendationsWidget() {
+    const pool = getHiringRecommendationPool();
+    if (!pool.length) {
+      return `
+        <div class="card emp-vera-rec-widget">
+          <div class="emp-vera-rec-widget-head"><span class="emp-callout-label">${icon("sparkles")} Vera Hiring Recommendations</span></div>
+          <p class="emp-empty-hint">No active candidates to recommend right now. Vera will surface matches as new applicants come in.</p>
+        </div>
+      `;
+    }
+    const index = recRotateIndex % pool.length;
+    const entry = pool[index];
+    return `
+      <div class="card emp-vera-rec-widget" data-vera-rec-widget tabindex="0" aria-roledescription="carousel" aria-label="Vera hiring recommendations">
+        <div class="emp-vera-rec-widget-head">
+          <span class="emp-callout-label">${icon("sparkles")} Vera Hiring Recommendations</span>
+          <div class="emp-vera-rec-nav">
+            <button type="button" class="btn-icon-sm" data-rec-prev aria-label="Previous recommendation">${icon("chevron-left")}</button>
+            <span class="emp-vera-rec-count" data-vera-rec-count>Recommendation ${index + 1} of ${pool.length}</span>
+            <button type="button" class="btn-icon-sm" data-rec-next aria-label="Next recommendation">${icon("chevron-right")}</button>
+          </div>
+        </div>
+        <div class="emp-vera-rec-widget-body" data-vera-rec-body>
+          ${renderRecommendationCompact(entry)}
+        </div>
+      </div>
+    `;
+  }
+
+  // Steps the widget to a different recommendation via a scoped innerHTML
+  // swap + rebind of just [data-vera-rec-body] - not a full draw() - so
+  // stepping never disturbs scroll position, an open composer draft, or
+  // expanded comment threads elsewhere on the page.
+  function stepRecommendation(delta) {
+    const pool = getHiringRecommendationPool();
+    if (!pool.length) return;
+    recRotateIndex = (recRotateIndex + delta + pool.length) % pool.length;
+    const widget = qs("[data-vera-rec-widget]", root);
+    if (!widget) { draw(); return; }
+    const countEl = qs("[data-vera-rec-count]", widget);
+    if (countEl) countEl.textContent = `Recommendation ${recRotateIndex + 1} of ${pool.length}`;
+    const body = qs("[data-vera-rec-body]", widget);
+    body.style.opacity = "0";
+    setTimeout(() => {
+      body.innerHTML = renderRecommendationCompact(pool[recRotateIndex]);
+      createIcons();
+      bindRecommendationCardActions(body);
+      bindSaveTalentButtons(body, () => stepRecommendation(0));
+      body.style.opacity = "1";
+    }, 150);
+  }
+
+  // Candidate action buttons shared by the widget and every in-feed
+  // opportunity card. "Preview" opens the shared Candidate Profile Modal
+  // (no page navigation); "Shortlist" genuinely mutates the candidate's
+  // stage (same field Talent Pipeline's kanban reads); "Message" always
+  // finds-or-creates a conversation and opens Inbox on it; "Compare"
+  // is a mocked comparison (no dedicated compare UI yet, same honesty
+  // policy as the rest of this build - say so rather than pretend).
+  function bindRecommendationCardActions(scopeEl) {
+    qsa("[data-rec-action]", scopeEl).forEach(btn => btn.addEventListener("click", () => {
+      const c = DATA.candidates.find(cand => cand.id === btn.dataset.recCandidate);
+      if (!c) return;
+      const action = btn.dataset.recAction;
+      if (action === "preview") openCandidateProfileModal(c.id);
+      else if (action === "offer") { employerNavigateTo("pipeline", { id: c.id }); showToast("Opening Talent Pipeline to prepare the offer.", "info"); }
+      else if (action === "message") openConversationForCandidate(c.id);
+      else if (action === "invite") showToast(`Invitation sent to ${c.name}.`);
+      else if (action === "compare") showToast("Side-by-side candidate comparison is coming in a future update.", "info");
+      else if (action === "shortlist") {
+        if (c.stage === "New") {
+          c.stage = "Shortlisted";
+          c.timeline.push({ label: "Shortlisted", date: "Just now", done: true });
+          c.activity.unshift({ text: "Shortlisted from Feed recommendation", date: "Just now" });
+          showToast(`${c.name} moved to Shortlisted.`);
+          draw();
+        } else showToast(`${c.name} is already at ${c.stage}.`, "info");
+      } else if (action === "schedule") { employerNavigateTo("pipeline", { id: c.id }); showToast("Opening Talent Pipeline to schedule the interview.", "info"); }
+    }));
+  }
+
+  // Item 3: injected between feed posts. Every 4th slot is an opportunity
+  // card rather than a post, cycling through the same ranked pool from a
+  // different starting offset than the widget so the two surfaces don't
+  // spotlight the identical candidate at once. Dismissed candidates
+  // (per-employer, persisted) are skipped.
+  function renderOpportunityCard(entry, state) {
+    const c = entry.candidate;
+    const saved = isSavedTalent(state, c.id, "candidate");
+    return `
+      <div class="card emp-feed-opportunity-card" data-feed-opportunity="${c.id}">
+        <div class="emp-vera-rec-widget-head">
+          <span class="emp-callout-label">${icon("sparkles")} AI Candidate Opportunity</span>
+          <button type="button" class="btn-icon-sm" data-opportunity-dismiss="${c.id}" aria-label="Dismiss this recommendation">${icon("x")}</button>
+        </div>
+        <div class="emp-vera-rec-candidate-head">
+          <span class="emp-feed-avatar">${initialsOf(c.name)}</span>
+          <div class="emp-vera-rec-candidate-id">
+            <strong>${c.name}</strong>
+            <p class="emp-cand-meta">${c.role}${entry.role ? ` · ${entry.role.location}` : ""}</p>
+          </div>
+          <span class="emp-vera-rec-match" title="AI match score">${c.fit}%<small>match</small></span>
+        </div>
+        <div class="emp-vera-rec-stat-row">
+          <div><span class="emp-tags-label">Expected salary</span><strong>${c.salaryExpectation}</strong></div>
+          <div><span class="emp-tags-label">Availability</span><strong>${c.availability}</strong></div>
+          <div><span class="emp-tags-label">Last active</span><strong>${entry.signals.lastActive}</strong></div>
+          <div><span class="emp-tags-label">AI confidence</span><strong>${entry.signals.aiConfidence}%</strong></div>
+        </div>
+        <div class="pill-row emp-vera-rec-skills">${c.skills.slice(0, 4).map(s => `<span class="pill">${s}</span>`).join("")}</div>
+        ${renderWhyVeraPanel({ summary: entry.reasons[0], factors: entry.reasons.slice(1).length ? entry.reasons.slice(1) : [`AI confidence ${entry.signals.aiConfidence}% based on fit, availability and engagement signals.`] })}
+        ${renderTalentActionBar(c)}
+        <div class="emp-feed-opportunity-save">${renderSaveButton(c.id, "candidate", c.name, saved)}</div>
+      </div>
+    `;
+  }
+
+  // Item 2: "Today's Hiring Brief" - everything that changed since last
+  // visit, in one scannable card. Collapsed to a headline + top 3 items by
+  // default (keeps the top of the feed from being dominated by the brief);
+  // "See full brief" expands the rest plus suggested next actions.
+  function renderDailyBriefCard() {
+    const brief = getDailyHiringBrief();
+    const shown = briefExpanded ? brief.items : brief.items.slice(0, 3);
+    return `
+      <div class="card emp-daily-brief" data-daily-brief>
+        <div class="emp-daily-brief-head">
+          <span class="emp-callout-label">${icon("sparkles")} Today's Hiring Brief</span>
+          <span class="emp-source-tag">Vera</span>
+        </div>
+        <p class="emp-daily-brief-sub">Here's what changed in your hiring pipeline since your last visit.</p>
+
+        <div class="emp-daily-brief-stats">
+          ${brief.stats.map(s => `
+            <button type="button" class="emp-daily-brief-stat" data-brief-nav="${s.nav}">
+              <span class="emp-daily-brief-stat-icon">${icon(s.icon)}</span>
+              <strong>${s.value}</strong>
+              <span>${s.label}</span>
+            </button>
+          `).join("")}
+        </div>
+
+        <ul class="emp-daily-brief-list">
+          ${shown.map(item => `
+            <li>
+              <span class="emp-daily-brief-icon">${icon(item.icon)}</span>
+              <span class="emp-daily-brief-text">${item.text}</span>
+              ${item.cta ? `<button type="button" class="emp-daily-brief-cta" data-brief-nav="${item.nav}">${item.cta}</button>` : ""}
+            </li>
+          `).join("")}
+        </ul>
+        ${brief.items.length > 3 ? `
+          <button type="button" class="emp-daily-brief-toggle" data-brief-toggle>${briefExpanded ? "Show less" : `See full brief (${brief.items.length})`} ${icon(briefExpanded ? "chevron-up" : "chevron-down")}</button>
+        ` : ""}
+        ${briefExpanded && brief.suggestedActions.length ? `
+          <div class="emp-daily-brief-suggested">
+            <span class="emp-tags-label">Suggested next actions</span>
+            <ul>${brief.suggestedActions.map(a => `<li>${icon("arrow-right")} ${a}</li>`).join("")}</ul>
+          </div>
+        ` : ""}
+
+        <div class="emp-daily-brief-quick-actions">
+          ${brief.quickActions.map(a => `<button type="button" class="btn btn-ghost btn-sm" data-brief-nav="${a.nav}">${icon(a.icon)} ${a.label}</button>`).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // Item 5: replaces "Suggested to follow" with hiring-focused talent
+  // discovery - people outside the applicant pool Vera has proactively
+  // surfaced, not generic profile-follow suggestions.
+  function renderHiringOpportunitiesCard() {
+    const state = readState();
+    const visible = hiringOppsExpanded ? HIRING_PASSIVE_TALENT : HIRING_PASSIVE_TALENT.slice(0, 4);
+    return `
+      <div class="card emp-feed-rail-card emp-hiring-opportunities">
+        <h3>${icon("radar")} Hiring Opportunities</h3>
+        <div class="emp-hiring-opp-list">
+          ${visible.map(p => {
+            const typeMeta = HIRING_PASSIVE_TYPE_META[p.type];
+            const role = DATA.employerRoles.find(r => r.id === p.relevantRoleId);
+            const saved = isSavedTalent(state, p.id, "passive");
+            return `
+              <div class="emp-hiring-opp-row">
+                <span class="emp-feed-avatar">${initialsOf(p.name)}</span>
+                <div class="emp-hiring-opp-info">
+                  <strong>${p.name}</strong>
+                  <p class="emp-cand-meta">${p.headline}</p>
+                  <span class="emp-hiring-opp-type">${icon(typeMeta.icon)} ${typeMeta.label}${role ? ` · fits ${role.title}` : ""}</span>
+                  <p class="emp-feed-suggest-reason">${p.note}</p>
+                </div>
+                <span class="emp-vera-rec-match sm">${p.matchScore}%</span>
+              </div>
+              <div class="emp-hiring-opp-actions">
+                <button type="button" class="btn btn-ghost btn-sm" data-passive-action="preview" data-passive-id="${p.id}">${icon("eye")} Preview</button>
+                <button type="button" class="btn btn-ghost btn-sm" data-passive-action="compare" data-passive-id="${p.id}">${icon("scale")} Compare</button>
+                ${renderSaveButton(p.id, "passive", p.name, saved)}
+                <button type="button" class="btn btn-primary btn-sm" data-passive-action="invite" data-passive-id="${p.id}">${icon("send")} Invite</button>
+              </div>
+            `;
+          }).join("")}
+        </div>
+        ${HIRING_PASSIVE_TALENT.length > 4 ? `
+          <button type="button" class="emp-daily-brief-toggle" data-hiring-opps-toggle>${hiringOppsExpanded ? "Show less" : `Show more (${HIRING_PASSIVE_TALENT.length - 4})`} ${icon(hiringOppsExpanded ? "chevron-up" : "chevron-down")}</button>
+        ` : ""}
+      </div>
+    `;
+  }
+
+  // Item 6: Employer Brand Health Dashboard. Compact scorecard in the
+  // rail (fits the 280px column); "View full report" opens a modal with
+  // the complete 6-dimension breakdown, sentiment, drop-off and AI
+  // suggestions - all pulled from the same company.healthDashboard data
+  // as the Company Profile page's AI Health Score, not a second dataset.
+  function renderBrandHealthCard(company) {
+    const b = getBrandHealthSummary(company);
+    return `
+      <div class="card emp-feed-rail-card emp-brand-health-card">
+        <div class="emp-brand-health-head">
+          <h3>${icon("shield-check")} Employer Brand Health</h3>
+          <span class="emp-brand-health-score">${b.overallScore}<small>/100</small></span>
+        </div>
+        <p>${b.sentiment.mostCommonPositive} is your most-cited strength; candidates most often ask about "${b.sentiment.biggestQuestion.toLowerCase()}".</p>
+        <div class="emp-brand-health-mini-stats">
+          <div><span class="emp-tags-label">Response time</span><strong>${b.avgResponseDays}d</strong></div>
+          <div><span class="emp-tags-label">Offer acceptance</span><strong>${b.acceptanceRate}%</strong></div>
+          <div><span class="emp-tags-label">Profile complete</span><strong>${b.profileCompleteness}%</strong></div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" data-brand-dashboard-open>${icon("bar-chart-2")} View full brand report</button>
+      </div>
+    `;
+  }
+
+  function renderBrandHealthModal(company) {
+    if (!brandDashboardOpen) return "";
+    const b = getBrandHealthSummary(company);
+    return `
+      <div class="emp-compose-modal" data-brand-modal>
+        <div class="card emp-compose-card emp-brand-modal-card">
+          <div class="emp-brand-modal-head">
+            <div>
+              <h2>Employer Brand Health</h2>
+              <p class="emp-cand-meta">${b.sentiment.basis}</p>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-brand-dashboard-close aria-label="Close">${icon("x")}</button>
+          </div>
+          <div class="emp-brand-modal-overview">
+            <div class="emp-brand-modal-ring">${renderHealthRing(b.overallScore, { size: 120, strokeWidth: 10 })}<span>Overall health</span></div>
+            <div class="emp-brand-modal-overview-text">
+              <p>${icon("sparkles")} ${b.overallExplanation}</p>
+              <div class="emp-health-predicted-banner">
+                <div><span class="emp-tags-label">Predicted after recommendations</span><strong>${b.overallPredictedScore}</strong></div>
+                <span class="emp-health-predicted-delta">${icon("trending-up")} +${b.overallPredictedScore - b.overallScore} points</span>
+              </div>
+            </div>
+          </div>
+          <div class="emp-brand-modal-stats">
+            <div class="emp-score-tile"><strong>${b.avgResponseDays}d</strong><span>Avg response time</span></div>
+            <div class="emp-score-tile"><strong>${b.acceptanceRate}%</strong><span>Offer acceptance rate</span></div>
+            <div class="emp-score-tile"><strong>${b.interviewRating}/5</strong><span>Interview experience rating</span></div>
+            <div class="emp-score-tile"><strong>${b.profileCompleteness}%</strong><span>Profile completeness</span></div>
+          </div>
+          <div class="emp-brand-modal-dropoff">
+            <span class="emp-tags-label">Biggest candidate drop-off</span>
+            <p>${icon("alert-triangle")} <strong>${b.biggestDropOff.stage}</strong> — ${b.biggestDropOff.dropOffPercent}% of candidates don't proceed past this stage. ${b.biggestDropOff.tooltip}</p>
+          </div>
+          <div class="emp-brand-modal-subscores">
+            ${b.subscores.map(s => `
+              <div class="emp-brand-modal-subscore">
+                <div class="emp-brand-modal-subscore-head"><span>${icon(s.icon)} ${s.label}</span><strong>${s.score}</strong></div>
+                <div class="emp-brand-modal-bar"><div class="emp-brand-modal-bar-fill" style="width:${s.score}%"></div></div>
+              </div>
+            `).join("")}
+          </div>
+          <div class="emp-brand-modal-suggestion">
+            <span class="emp-callout-label">${icon("sparkles")} AI recommendation</span>
+            <p><strong>${b.topSuggestion.suggestions[0].action}</strong> — projected ${b.topSuggestion.label} score ${b.topSuggestion.predictedScore} (${b.topSuggestion.suggestions[0].impact} points).</p>
+            <button type="button" class="btn btn-primary btn-sm" data-brand-review-gap>Review company profile</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Item 3: builds the post list with an opportunity card injected every
+  // 4th slot (not on "communities"/"network" sub-views where a candidate
+  // card would be out of place). Slices from the same ranked pool as the
+  // nav widget but offset by +1 so the two surfaces don't spotlight the
+  // same candidate at once, and skips anything the employer dismissed.
+  function renderFeedPostList(state) {
+    const posts = visiblePosts(state);
+    if (!posts.length) return `<p class="emp-empty-hint">No posts match this view yet.</p>`;
+    const pool = getHiringRecommendationPool().filter(e => !(state.feedDismissedCandidates || []).includes(e.candidate.id));
+    const injectOpportunities = activeFilter !== "communities" && pool.length;
+    const html = [];
+    posts.forEach((p, i) => {
+      html.push(renderPostCard(p, state));
+      if (injectOpportunities && i > 0 && (i + 1) % 4 === 0) {
+        const entry = pool[(Math.floor(i / 4) + 1) % pool.length];
+        html.push(renderOpportunityCard(entry, state));
+      }
+    });
+    return html.join("");
+  }
+
+  // Simplified primary nav (item 1 of the redesign): For You / Following /
+  // Inbox only. Network, Communities and Trending were removed as
+  // dedicated tabs - each overlapped an existing surface (Network with
+  // Following, Communities with joined-community posts already appearing
+  // in the feed, Trending with the right-rail Trending card, which stays
+  // and still drives the keyword-filter banner below without needing its
+  // own tab). Inbox navigates away entirely rather than filtering in
+  // place, since it's a full page now.
+  function renderFeedSidebarNav(state) {
+    const savedCount = (state.savedTalent || []).length;
+    return `
+      <nav class="emp-feed-nav-list">
+        <button type="button" class="emp-feed-nav-item ${activeFilter === "foryou" ? "active" : ""}" data-feed-nav="foryou">${icon("sparkles")} For You</button>
+        <button type="button" class="emp-feed-nav-item ${activeFilter === "following" ? "active" : ""}" data-feed-nav="following">${icon("users")} Following</button>
+        <button type="button" class="emp-feed-nav-item" data-feed-nav="inbox">${icon("inbox")} Inbox</button>
+      </nav>
+      <div class="emp-feed-sidebar-shortcuts">
+        <button type="button" class="emp-feed-shortcut-row" data-feed-nav="saved">
+          <span class="emp-feed-shortcut-icon">${icon("heart")}</span>
+          <span>Saved Candidates</span>
+          ${savedCount ? `<span class="emp-feed-shortcut-count">${savedCount}</span>` : ""}
+        </button>
+      </div>
+    `;
+  }
+
+  function draw() {
+    const state = readState();
+    const company = DATA.companies.find(c => c.id === "maybank");
+
+    root.innerHTML = `
+      <div class="emp-view-header"><span class="emp-section-label">Feed</span><h1>Feed</h1></div>
+      <div class="emp-feed-layout">
+        <div class="emp-feed-nav">
+          ${renderFeedSidebarNav(state)}
+          ${renderVeraRecommendationsWidget()}
+        </div>
+
+        <div class="emp-feed-main">
+          ${renderDailyBriefCard()}
+          <div class="emp-feed-headline">
+            <h2>Your AI-powered hiring intelligence feed.</h2>
+            <p>Vera surfaces candidates, market signal and hiring conversations relevant to your open roles — ranked by hiring relevance, not popularity.</p>
+          </div>
+          ${renderComposer(state)}
+          <div class="emp-feed-filters" data-feed-filters-bar>
+            ${FEED_CONTENT_FILTERS.map(([key, label]) => `<button type="button" class="emp-feed-filter-chip ${contentFilter === key ? "active" : ""}" data-content-filter="${key}">${label}</button>`).join("")}
+          </div>
+          ${trendingKeyword ? `<p class="emp-empty-hint">Showing posts related to "${trendingKeyword}". <button type="button" class="emp-feed-clear-trend" data-feed-clear-trend>Clear</button></p>` : ""}
+          <div class="emp-feed-post-list">
+            ${renderFeedPostList(state)}
+          </div>
+        </div>
+
+        <div class="emp-feed-rail">
+          <div class="card emp-feed-rail-card">
+            <h3>Trending</h3>
+            <div class="emp-feed-trending-list">
+              ${DATA.trendingTopics.map(t => `<button type="button" class="emp-feed-trending-item" data-feed-trending="${t.id}"><span>${t.label}</span><span class="emp-feed-trending-count">${t.count}</span></button>`).join("")}
+            </div>
+          </div>
+          ${renderHiringOpportunitiesCard()}
+          ${renderBrandHealthCard(company)}
+        </div>
+      </div>
+
+      ${renderBrandHealthModal(company)}
+    `;
+    createIcons();
+    if (brandDashboardOpen) requestAnimationFrame(() => requestAnimationFrame(() => {
+      qsa("[data-health-ring] .emp-health-ring-fill", root).forEach(fill => { fill.style.strokeDashoffset = fill.closest("[data-health-ring]").dataset.targetOffset; });
+    }));
+    bind();
+  }
+
+  function bind() {
+    qsa("[data-feed-nav]", root).forEach(btn => btn.addEventListener("click", () => {
+      const key = btn.dataset.feedNav;
+      if (key === "inbox") { employerNavigateTo("messages"); return; }
+      if (key === "saved") { employerNavigateTo("saved-candidates"); return; }
+      activeFilter = key;
+      trendingKeyword = null;
+      draw();
+    }));
+    qsa("[data-content-filter]", root).forEach(btn => btn.addEventListener("click", () => {
+      contentFilter = btn.dataset.contentFilter;
+      trendingKeyword = null;
+      draw();
+    }));
+    qs("[data-feed-clear-trend]", root)?.addEventListener("click", () => { trendingKeyword = null; draw(); });
+
+    qs("[data-feed-identity]", root)?.addEventListener("change", event => {
+      const state = readState();
+      state.feedPostingIdentity = event.target.value;
+      writeState(state);
+    });
+    qs("[data-feed-add-context]", root)?.addEventListener("click", () => { composerOpen = !composerOpen; draw(); });
+    qs("[data-feed-media]", root)?.addEventListener("click", () => { composerMediaPickerOpen = !composerMediaPickerOpen; composerOpen = true; draw(); });
+    qsa("[data-media-pick]", root).forEach(btn => btn.addEventListener("click", () => {
+      const kind = btn.dataset.mediaPick;
+      composerMedia = { kind, label: mockMediaLabel(kind) };
+      composerMediaPickerOpen = false;
+      draw();
+    }));
+    qs("[data-media-remove]", root)?.addEventListener("click", () => { composerMedia = null; draw(); });
+    qsa("[data-feed-type]", root).forEach(btn => btn.addEventListener("click", () => {
+      composerCategory = btn.dataset.feedType.toUpperCase();
+      draw();
+    }));
+    qs("[data-feed-role-select]", root)?.addEventListener("change", event => { composerRoleId = event.target.value; });
+    qsa("[data-poll-option-input]", root).forEach(input => input.addEventListener("input", event => {
+      composerPollOptions[Number(input.dataset.pollOptionInput)] = event.target.value;
+    }));
+    qs("[data-poll-option-add]", root)?.addEventListener("click", () => {
+      if (composerPollOptions.length < 4) { composerPollOptions.push(""); draw(); }
+    });
+    qsa("[data-poll-option-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      if (composerPollOptions.length > 2) { composerPollOptions.splice(Number(btn.dataset.pollOptionRemove), 1); draw(); }
+    }));
+    qs("[data-event-title]", root)?.addEventListener("input", event => { composerEvent.title = event.target.value; });
+    qs("[data-event-date]", root)?.addEventListener("input", event => { composerEvent.date = event.target.value; });
+    qs("[data-event-location]", root)?.addEventListener("input", event => { composerEvent.location = event.target.value; });
+    qs("[data-feed-mention]", root)?.addEventListener("click", () => {
+      const sep = composerDraftText && !/\s$/.test(composerDraftText) ? " " : "";
+      composerDraftText = `${composerDraftText || ""}${sep}@`;
+      draw();
+      setTimeout(() => { const ta = qs("[data-feed-composer-text]"); if (ta) { ta.focus(); ta.selectionStart = ta.selectionEnd = ta.value.length; } }, 30);
+    });
+    qs("[data-feed-hashtag]", root)?.addEventListener("click", () => {
+      const sep = composerDraftText && !/\s$/.test(composerDraftText) ? " " : "";
+      composerDraftText = `${composerDraftText || ""}${sep}#`;
+      draw();
+      setTimeout(() => { const ta = qs("[data-feed-composer-text]"); if (ta) { ta.focus(); ta.selectionStart = ta.selectionEnd = ta.value.length; } }, 30);
+    });
+
+    const buildComposerAttachment = () => {
+      if (composerCategory === "ROLE SHARE" && composerRoleId) return { type: "role", roleId: composerRoleId };
+      if (composerCategory === "POLL") {
+        const opts = composerPollOptions.map(t => t.trim()).filter(Boolean).slice(0, 4);
+        if (opts.length < 2) return null;
+        return { type: "poll", options: opts.map((text, i) => ({ id: `o${i}`, text, count: 0 })), voted: false };
+      }
+      if (composerCategory === "EVENT") {
+        if (!composerEvent.title.trim()) return null;
+        return { type: "event", title: composerEvent.title.trim(), date: composerEvent.date, location: composerEvent.location, interested: false, interestedCount: 0 };
+      }
+      if (composerMedia) return { type: "media", kind: composerMedia.kind, label: composerMedia.label };
+      return null;
+    };
+    const composerValidationError = () => {
+      if (composerCategory === "POLL" && composerPollOptions.map(t => t.trim()).filter(Boolean).length < 2) return "Add at least 2 poll options.";
+      if (composerCategory === "EVENT" && !composerEvent.title.trim()) return "Add an event title.";
+      return null;
+    };
+    const resetComposer = () => {
+      composerOpen = false; composerCategory = "DISCUSSION"; composerRoleId = "";
+      composerPollOptions = ["", ""]; composerEvent = { title: "", date: "", location: "" };
+      composerMedia = null; composerMediaPickerOpen = false;
+      composerSchedulePickerOpen = false; composerScheduleValue = "";
+      composerDraftText = ""; composerAiInsight = null;
+    };
+
+    qs("[data-feed-post]", root)?.addEventListener("click", () => {
+      const textarea = qs("[data-feed-composer-text]", root);
+      const body = textarea.value.trim();
+      if (!body) return;
+      const validationError = composerValidationError();
+      if (validationError) { showToast(validationError, "info"); return; }
+      const identity = qs("[data-feed-identity]", root).value;
+      const isCompany = identity === "Maybank";
+      const attachment = buildComposerAttachment();
+      DATA.communityPosts.unshift({
+        id: `p-${Date.now()}`, followId: isCompany ? "maybank" : "mira", author: isCompany ? "Maybank" : "Mira",
+        authorType: isCompany ? "employer" : "person", authorTitle: isCompany ? "Verified Employer" : "Talent Acquisition · Maybank",
+        verified: isCompany, category: composerCategory || "DISCUSSION", timestamp: "Just now", title: "", body,
+        reactions: 0, attachment, communityId: null, veraLine: null, comments: []
+      });
+      const state = readState();
+      state.feedPostingIdentity = identity;
+      writeState(state);
+      resetComposer();
+      draw();
+      showToast("Post published.");
+    });
+
+    qs("[data-feed-preview]", root)?.addEventListener("click", () => {
+      const body = qs("[data-feed-composer-text]", root)?.value.trim();
+      if (!body) { showToast("Write something to preview first.", "info"); return; }
+      const identity = qs("[data-feed-identity]", root)?.value || readState().feedPostingIdentity;
+      const isCompany = identity === "Maybank";
+      const fakePost = {
+        id: "preview", followId: isCompany ? "maybank" : "mira", author: isCompany ? "Maybank" : "Mira",
+        authorType: isCompany ? "employer" : "person", authorTitle: isCompany ? "Verified Employer" : "Talent Acquisition · Maybank",
+        verified: isCompany, category: composerCategory || "DISCUSSION", timestamp: "Just now", title: "", body,
+        reactions: 0, attachment: buildComposerAttachment(), communityId: null, veraLine: null, comments: []
+      };
+      openEmpModal("feed-preview", `
+        <div class="emp-feed-preview-modal">
+          <div class="emp-feed-preview-modal-head">
+            <h2>Preview</h2>
+            <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close>${icon("x")} Close</button>
+          </div>
+          ${renderPostCard(fakePost, readState(), { preview: true })}
+        </div>
+      `, { label: "Post preview" });
+    });
+
+    qs("[data-feed-save-draft]", root)?.addEventListener("click", () => {
+      const body = qs("[data-feed-composer-text]", root)?.value.trim();
+      if (!body) { showToast("Nothing to save yet.", "info"); return; }
+      const state = readState();
+      state.feedDrafts.unshift({
+        id: `d-${Date.now()}`, body, category: composerCategory || "DISCUSSION", roleId: composerRoleId,
+        pollOptions: [...composerPollOptions], event: { ...composerEvent }, media: composerMedia,
+        savedAt: new Date().toISOString()
+      });
+      writeState(state);
+      resetComposer();
+      draw();
+      showToast("Draft saved.");
+    });
+    qs("[data-feed-drafts-toggle]", root)?.addEventListener("click", () => { draftsPanelOpen = !draftsPanelOpen; draw(); });
+    qsa("[data-feed-draft-load]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      const d = state.feedDrafts.find(x => x.id === btn.dataset.feedDraftLoad);
+      if (!d) return;
+      composerOpen = true; composerDraftText = d.body; composerCategory = d.category; composerRoleId = d.roleId || "";
+      composerPollOptions = d.pollOptions && d.pollOptions.length ? [...d.pollOptions] : ["", ""];
+      composerEvent = d.event || { title: "", date: "", location: "" };
+      composerMedia = d.media || null;
+      draftsPanelOpen = false;
+      draw();
+      setTimeout(() => qs("[data-feed-composer-text]")?.focus(), 100);
+    }));
+    qsa("[data-feed-draft-delete]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      state.feedDrafts = state.feedDrafts.filter(x => x.id !== btn.dataset.feedDraftDelete);
+      writeState(state);
+      draw();
+    }));
+
+    qs("[data-feed-schedule-toggle]", root)?.addEventListener("click", () => { composerSchedulePickerOpen = !composerSchedulePickerOpen; draw(); });
+    qs("[data-feed-schedule-cancel]", root)?.addEventListener("click", () => { composerSchedulePickerOpen = false; draw(); });
+    qs("[data-feed-schedule-value]", root)?.addEventListener("change", event => { composerScheduleValue = event.target.value; });
+    qs("[data-feed-schedule-confirm]", root)?.addEventListener("click", () => {
+      const body = qs("[data-feed-composer-text]", root)?.value.trim();
+      if (!body) { showToast("Write something to schedule first.", "info"); return; }
+      if (!composerScheduleValue) { showToast("Pick a date and time.", "info"); return; }
+      const validationError = composerValidationError();
+      if (validationError) { showToast(validationError, "info"); return; }
+      const identity = qs("[data-feed-identity]", root).value;
+      const attachment = buildComposerAttachment();
+      const scheduledFor = new Date(composerScheduleValue).toISOString();
+      const state = readState();
+      state.feedScheduledPosts.push({
+        id: `sp-${Date.now()}`, body, category: composerCategory || "DISCUSSION", attachment, identity, scheduledFor
+      });
+      writeState(state);
+      resetComposer();
+      draw();
+      showToast(`Post scheduled for ${formatScheduleDate(scheduledFor)}.`);
+    });
+    qs("[data-feed-scheduled-toggle]", root)?.addEventListener("click", () => { scheduledPanelOpen = !scheduledPanelOpen; draw(); });
+    qsa("[data-feed-scheduled-publish]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      const idx = state.feedScheduledPosts.findIndex(x => x.id === btn.dataset.feedScheduledPublish);
+      if (idx === -1) return;
+      const sp = state.feedScheduledPosts[idx];
+      const isCompany = sp.identity === "Maybank";
+      DATA.communityPosts.unshift({
+        id: `p-${Date.now()}`, followId: isCompany ? "maybank" : "mira", author: isCompany ? "Maybank" : "Mira",
+        authorType: isCompany ? "employer" : "person", authorTitle: isCompany ? "Verified Employer" : "Talent Acquisition · Maybank",
+        verified: isCompany, category: sp.category, timestamp: "Just now", title: "", body: sp.body,
+        reactions: 0, attachment: sp.attachment, communityId: null, veraLine: null, comments: []
+      });
+      state.feedScheduledPosts.splice(idx, 1);
+      writeState(state);
+      draw();
+      showToast("Post published.");
+    }));
+    qsa("[data-feed-scheduled-delete]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      state.feedScheduledPosts = state.feedScheduledPosts.filter(x => x.id !== btn.dataset.feedScheduledDelete);
+      writeState(state);
+      draw();
+    }));
+
+    qsa("[data-poll-vote]", root).forEach(btn => btn.addEventListener("click", () => {
+      const [postId, idxStr] = btn.dataset.pollVote.split(":");
+      const post = DATA.communityPosts.find(p => p.id === postId);
+      if (!post || !post.attachment || post.attachment.voted) return;
+      post.attachment.options[Number(idxStr)].count += 1;
+      post.attachment.voted = true;
+      draw();
+    }));
+    qsa("[data-event-interested]", root).forEach(btn => btn.addEventListener("click", () => {
+      const post = DATA.communityPosts.find(p => p.id === btn.dataset.eventInterested);
+      if (!post || !post.attachment) return;
+      post.attachment.interested = !post.attachment.interested;
+      post.attachment.interestedCount = Math.max(0, (post.attachment.interestedCount || 0) + (post.attachment.interested ? 1 : -1));
+      draw();
+    }));
+
+    qsa("[data-feed-like]", root).forEach(btn => btn.addEventListener("click", () => {
+      const post = DATA.communityPosts.find(p => p.id === btn.dataset.feedLike);
+      post.reactions += 1;
+      draw();
+    }));
+    qsa("[data-feed-comment-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      openCommentsPostId = openCommentsPostId === btn.dataset.feedCommentToggle ? null : btn.dataset.feedCommentToggle;
+      draw();
+    }));
+    qsa("[data-feed-save]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      const id = btn.dataset.feedSave;
+      const idx = state.feedSavedPosts.indexOf(id);
+      if (idx === -1) { state.feedSavedPosts.push(id); showToast("Saved."); } else { state.feedSavedPosts.splice(idx, 1); showToast("Removed from saved."); }
+      writeState(state);
+      draw();
+    }));
+    qsa("[data-feed-share]", root).forEach(btn => btn.addEventListener("click", () => showToast("Link copied.")));
+
+    qsa("[data-feed-post-menu]", root).forEach(btn => btn.addEventListener("click", event => {
+      event.stopPropagation();
+      const panel = qs(`[data-feed-post-menu-panel="${btn.dataset.feedPostMenu}"]`, root);
+      const isHidden = panel.hidden;
+      qsa("[data-feed-post-menu-panel]", root).forEach(p => p.hidden = true);
+      qsa("[data-feed-post-menu]", root).forEach(b => b.setAttribute("aria-expanded", "false"));
+      panel.hidden = !isHidden;
+      btn.setAttribute("aria-expanded", String(isHidden));
+    }));
+    document.addEventListener("click", () => {
+      qsa("[data-feed-post-menu-panel]", root).forEach(p => p.hidden = true);
+      qsa("[data-feed-post-menu]", root).forEach(b => b.setAttribute("aria-expanded", "false"));
+    });
+
+    qsa("[data-feed-action]", root).forEach(btn => btn.addEventListener("click", () => {
+      const post = DATA.communityPosts.find(p => p.id === btn.dataset.postId);
+      const action = btn.dataset.feedAction;
+      const state = readState();
+      if (action === "profile") showToast("Profile view opens in a later phase.", "info");
+      if (action === "follow") {
+        const idx = state.feedFollowing.indexOf(post.followId);
+        if (idx === -1) { state.feedFollowing.push(post.followId); showToast(`Following ${post.author}.`); } else { state.feedFollowing.splice(idx, 1); showToast(`Unfollowed ${post.author}.`); }
+        writeState(state); draw();
+      }
+      if (action === "message") { employerNavigateTo("messages"); showToast(`Messages doesn't have a thread with ${post.author} yet - candidate conversations appear once they're in your pipeline.`, "info"); }
+      if (action === "mute") {
+        if (!state.feedMuted.includes(post.followId)) { state.feedMuted.push(post.followId); writeState(state); showToast(`Muted ${post.author}.`); draw(); }
+      }
+      if (action === "report") showToast("Reported. Our team will review this.", "info");
+    }));
+
+    qsa("[data-feed-comment-submit]", root).forEach(btn => btn.addEventListener("click", () => {
+      const post = DATA.communityPosts.find(p => p.id === btn.dataset.feedCommentSubmit);
+      const input = qs(`[data-feed-post="${post.id}"] [data-feed-comment-text]`, root);
+      const body = input.value.trim();
+      if (!body) return;
+      post.comments.push({ id: `c-${Date.now()}`, author: "You", body, likes: 0, replies: [] });
+      draw();
+    }));
+    qsa("[data-feed-comment-like]", root).forEach(btn => btn.addEventListener("click", () => {
+      const post = DATA.communityPosts.find(p => p.id === btn.dataset.postId);
+      const comment = post.comments.find(c => c.id === btn.dataset.feedCommentLike);
+      comment.likes += 1;
+      draw();
+    }));
+    qsa("[data-feed-comment-reply]", root).forEach(btn => btn.addEventListener("click", () => {
+      replyingCommentId = replyingCommentId === btn.dataset.feedCommentReply ? null : btn.dataset.feedCommentReply;
+      draw();
+    }));
+    qsa("[data-feed-reply-submit]", root).forEach(btn => btn.addEventListener("click", () => {
+      const post = DATA.communityPosts.find(p => p.id === btn.dataset.postId);
+      const comment = post.comments.find(c => c.id === btn.dataset.feedReplySubmit);
+      const input = btn.closest(".emp-feed-reply-input").querySelector("[data-feed-reply-text]");
+      const body = input.value.trim();
+      if (!body) return;
+      comment.replies.push({ author: "You", body });
+      replyingCommentId = null;
+      draw();
+    }));
+    qsa("[data-feed-comment-report]", root).forEach(btn => btn.addEventListener("click", () => showToast("Reported. Our team will review this.", "info")));
+
+    qsa("[data-feed-trending]", root).forEach(btn => btn.addEventListener("click", () => {
+      const topic = DATA.trendingTopics.find(t => t.id === btn.dataset.feedTrending);
+      trendingKeyword = topic.label.split(" ")[0];
+      draw();
+    }));
+    qsa("[data-feed-follow-suggestion]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      const item = DATA.suggestedConnections.find(c => c.id === btn.dataset.feedFollowSuggestion);
+      state.feedFollowing.push(item.id);
+      writeState(state);
+      showToast(`${item.type === "community" ? "Joined" : "Following"} ${item.name}.`);
+      draw();
+    }));
+    qs("[data-feed-view-discussion]", root)?.addEventListener("click", () => { trendingKeyword = "salary"; draw(); });
+    qs("[data-feed-review-gap]", root)?.addEventListener("click", () => employerNavigateTo("company-edit"));
+
+    qsa("[data-feed-explore-role]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo("role-builder", { id: btn.dataset.feedExploreRole })));
+    qs("[data-feed-follow-updates]", root)?.addEventListener("click", () => showToast("You'll be notified about updates."));
+
+    // Item 1 widget: manual carousel only - click, keyboard left/right
+    // while the card holds focus, and touch swipe. No auto-play.
+    qs("[data-rec-prev]", root)?.addEventListener("click", () => stepRecommendation(-1));
+    qs("[data-rec-next]", root)?.addEventListener("click", () => stepRecommendation(1));
+    const recWidget = qs("[data-vera-rec-widget]", root);
+    if (recWidget) {
+      recWidget.addEventListener("keydown", event => {
+        if (event.target.closest("button, a, input, select, textarea") && event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        if (event.key === "ArrowLeft") { event.preventDefault(); stepRecommendation(-1); }
+        else if (event.key === "ArrowRight") { event.preventDefault(); stepRecommendation(1); }
+      });
+      let touchStartX = null;
+      recWidget.addEventListener("touchstart", event => { touchStartX = event.touches[0].clientX; }, { passive: true });
+      recWidget.addEventListener("touchend", event => {
+        if (touchStartX === null) return;
+        const dx = event.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) stepRecommendation(dx < 0 ? 1 : -1);
+        touchStartX = null;
+      });
+    }
+    bindRecommendationCardActions(root);
+    bindSaveTalentButtons(root, () => draw());
+
+    // Item 3: dismiss an in-feed opportunity card. Persisted so a
+    // dismissed candidate stays dismissed across visits, same durability
+    // as feedMuted/feedSavedPosts.
+    qsa("[data-opportunity-dismiss]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      state.feedDismissedCandidates = state.feedDismissedCandidates || [];
+      if (!state.feedDismissedCandidates.includes(btn.dataset.opportunityDismiss)) state.feedDismissedCandidates.push(btn.dataset.opportunityDismiss);
+      writeState(state);
+      showToast("Recommendation dismissed.");
+      draw();
+    }));
+
+    // Item 2: Daily Brief expand/collapse + per-item quick navigation.
+    qs("[data-brief-toggle]", root)?.addEventListener("click", () => { briefExpanded = !briefExpanded; draw(); });
+    qsa("[data-brief-nav]", root).forEach(btn => btn.addEventListener("click", () => {
+      const target = btn.dataset.briefNav;
+      // "feed" targets (New Matches, Brand Mentions) mean "look further
+      // down this same page" - employerNavigateTo no-ops on the current
+      // route, so scroll to the relevant widget instead of doing nothing.
+      if (target === "feed") { qs("[data-vera-rec-widget]", root)?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+      employerNavigateTo(target);
+    }));
+
+    // Item 5: Hiring Opportunities (passive talent) actions.
+    qsa("[data-passive-action]", root).forEach(btn => btn.addEventListener("click", () => {
+      const person = HIRING_PASSIVE_TALENT.find(p => p.id === btn.dataset.passiveId);
+      const action = btn.dataset.passiveAction;
+      if (action === "preview") showToast(`${person.name} hasn't applied yet, so there's no full profile - here's what Vera found: ${person.note}`, "info");
+      if (action === "compare") showToast("Side-by-side talent comparison is coming in a future update.", "info");
+      if (action === "invite") showToast(`Invitation sent to ${person.name} to apply for ${DATA.employerRoles.find(r => r.id === person.relevantRoleId)?.title || "an open role"}.`);
+    }));
+    qs("[data-hiring-opps-toggle]", root)?.addEventListener("click", () => { hiringOppsExpanded = !hiringOppsExpanded; draw(); });
+
+    // Item 6: Brand Health Dashboard modal open/close + jump to profile.
+    qs("[data-brand-dashboard-open]", root)?.addEventListener("click", () => { brandDashboardOpen = true; draw(); });
+    qs("[data-brand-dashboard-close]", root)?.addEventListener("click", () => { brandDashboardOpen = false; draw(); });
+    qs("[data-brand-modal]", root)?.addEventListener("click", event => { if (event.target.closest("[data-brand-modal]") === event.currentTarget) { brandDashboardOpen = false; draw(); } });
+    qs("[data-brand-review-gap]", root)?.addEventListener("click", () => employerNavigateTo("company-edit"));
+
+    // Item 9: AI Content Composer. composerDraftText mirrors the textarea
+    // so it survives the draw() that opening/using the AI bar triggers -
+    // otherwise toggling "Write with Vera" would silently wipe whatever
+    // the employer had already typed.
+    const composerTextarea = qs("[data-feed-composer-text]", root);
+    composerTextarea?.addEventListener("input", event => { composerDraftText = event.target.value; });
+    qs("[data-feed-ai-toggle]", root)?.addEventListener("click", () => { composerAiOpen = !composerAiOpen; draw(); });
+    qsa("[data-feed-ai-action]", root).forEach(btn => btn.addEventListener("click", () => {
+      composerDraftText = qs("[data-feed-composer-text]", root)?.value ?? composerDraftText;
+      runComposerAiAction(btn.dataset.feedAiAction);
+      draw();
+    }));
+  }
+
+  // Item 9 action handlers. Text-transform actions write a real draft into
+  // composerDraftText (an honest, editable starting point - not a live
+  // rewrite of the employer's own words, since that needs a real model);
+  // analysis actions set composerAiInsight instead, since there's no text
+  // for them to change.
+  function runComposerAiAction(action) {
+    const openRole = DATA.employerRoles.find(r => r.status === "Open");
+    const roleLine = openRole ? `${openRole.title} (${openRole.location}, ${openRole.salary.min ? `RM ${fmtSalaryK(openRole.salary.min)}k–${fmtSalaryK(openRole.salary.max)}k` : "salary on request"})` : "one of our open roles";
+    if (action === "generate") {
+      composerDraftText = `We're hiring for ${roleLine}! If you're looking for a role with real ownership and a clear growth path, we'd love to hear from you. Apply through CareerGo or tag someone who'd be a great fit.`;
+      composerAiInsight = null;
+      composerCategory = "HIRING INSIGHT"; composerOpen = true;
+      showToast("Draft generated. Review and edit before posting.");
+    } else if (action === "rewrite") {
+      const base = composerDraftText.trim();
+      composerDraftText = base ? `${base}\n\nAt Maybank, we back this with real mentorship and a structured path for growth - not just a job description.` : composerDraftText;
+      if (!base) showToast("Write a draft first, then Vera can rewrite it for employer branding.", "info");
+      else showToast("Rewritten with employer-branding language.");
+    } else if (action === "engagement") {
+      const base = composerDraftText.trim();
+      composerDraftText = base ? `${base}\n\nWhat would you want to know before applying? Drop a question below.` : composerDraftText;
+      if (!base) showToast("Write a draft first, then Vera can suggest an engagement hook.", "info");
+      else showToast("Added a question to invite replies.");
+    } else if (action === "hashtags") {
+      const base = composerDraftText.trim();
+      composerDraftText = base ? `${base}\n\n#Hiring #MaybankCareers #NowHiring` : composerDraftText;
+      if (!base) showToast("Write a draft first, then Vera can suggest hashtags.", "info");
+      else showToast("Hashtags added.");
+    } else if (action === "optimize") {
+      const base = composerDraftText.trim().replace(/\s+/g, " ");
+      composerDraftText = base;
+      composerAiInsight = base ? "Wording tightened - shorter sentences read better in-feed and on mobile." : "Write a draft first, then Vera can optimize the wording.";
+    } else if (action === "media") {
+      composerAiInsight = "Posts with a role banner or team photo get noticeably more engagement than text-only posts. Add media before publishing.";
+    } else if (action === "predict") {
+      const est = 40 + seededRange(composerDraftText.length + "-predict-" + Date.now() % 97, 5, 55);
+      composerAiInsight = `Predicted engagement: roughly ${est} reactions based on similar posts from your company and current candidate activity.`;
+    } else if (action === "timing") {
+      composerAiInsight = "Candidate engagement in your target market peaks Tuesday-Thursday, 9-11am - posting in this window typically performs best.";
+    }
+  }
+
+  draw();
+}
+
+// ---------- Employer Direct Messaging (items 10, 11, 12, 14) ----------
+// Item 11: AI Reply Assistant. Real templated generation (name/role/salary
+// interpolated from the actual candidate record), not a static string per
+// type - two candidates requesting the same reply type get genuinely
+// different text. Tone is a first-class axis so switching Formal/Friendly/
+// Direct regenerates rather than just relabeling the same copy.
+const AI_REPLY_TYPES = [
+  { id: "interview", label: "Interview invitation" },
+  { id: "negotiation", label: "Salary negotiation" },
+  { id: "portfolio", label: "Portfolio request" },
+  { id: "assessment", label: "Assessment invitation" },
+  { id: "rejection", label: "Rejection" },
+  { id: "offer", label: "Offer" },
+  { id: "followup", label: "Follow-up" },
+  { id: "reminder", label: "Friendly reminder" },
+];
+const AI_REPLY_TONES = ["Formal", "Friendly", "Direct"];
+const AI_REPLY_TEMPLATES = {
+  interview: {
+    Formal: c => `Dear ${c.first}, we would like to invite you to an interview for the ${c.role} position. Please let us know your availability this week so we can confirm a time.`,
+    Friendly: c => `Hi ${c.first}! We'd love to chat with you about the ${c.role} role - when are you free for a quick interview this week?`,
+    Direct: c => `Hi ${c.first}, are you available for an interview for ${c.role} this week? Let me know a couple of times that work.`,
+  },
+  negotiation: {
+    Formal: c => `Dear ${c.first}, thank you for sharing your salary expectations. We would like to discuss the compensation package further to find an arrangement that works well for both sides.`,
+    Friendly: c => `Hi ${c.first}, thanks for being upfront about your salary expectations! Let's find a number that works well for both of us - do you have a few minutes to talk this week?`,
+    Direct: c => `Hi ${c.first}, we'd like to discuss your salary expectations (${c.salaryExpectation}) against our approved range. Can we set up a call?`,
+  },
+  portfolio: {
+    Formal: c => `Dear ${c.first}, could you please share additional examples of your work relevant to the ${c.role} position?`,
+    Friendly: c => `Hi ${c.first}! Loved what we've seen so far - would you mind sharing a couple more portfolio pieces relevant to ${c.role}?`,
+    Direct: c => `Hi ${c.first}, please send over 1-2 more portfolio samples relevant to ${c.role} when you get a chance.`,
+  },
+  assessment: {
+    Formal: c => `Dear ${c.first}, as the next step for the ${c.role} role, we would like to invite you to complete a short online assessment.`,
+    Friendly: c => `Hi ${c.first}! Next step is a short online assessment for ${c.role} - should take about 45 minutes. I'll send the link shortly!`,
+    Direct: c => `Hi ${c.first}, next step is a short assessment for ${c.role}. Link coming shortly - should take ~45 minutes.`,
+  },
+  rejection: {
+    Formal: c => `Dear ${c.first}, thank you for your interest in the ${c.role} position. After careful consideration, we have decided to move forward with other candidates whose experience more closely matches our current needs. We wish you the best in your search.`,
+    Friendly: c => `Hi ${c.first}, thank you so much for the time you put into the process for ${c.role}. We've decided to move forward with other candidates this time, but we were genuinely impressed and would love to stay in touch for future opportunities.`,
+    Direct: c => `Hi ${c.first}, we've decided to move forward with other candidates for ${c.role}. Thank you for your time and interest.`,
+  },
+  offer: {
+    Formal: c => `Dear ${c.first}, we are pleased to extend an offer for the ${c.role} position at ${c.salaryExpectation}. Full details are attached - please let us know if you have any questions.`,
+    Friendly: c => `Hi ${c.first}! We'd love to have you join us as ${c.role} - offer details are attached. So excited about the possibility of working together!`,
+    Direct: c => `Hi ${c.first}, please find the offer for ${c.role} attached. Let me know if you have questions.`,
+  },
+  followup: {
+    Formal: c => `Dear ${c.first}, following up on our previous conversation - please let us know if you have any updates or questions.`,
+    Friendly: c => `Hi ${c.first}, just checking in! Would love to hear your thoughts whenever you get a chance.`,
+    Direct: c => `Hi ${c.first}, following up - any updates on your end?`,
+  },
+  reminder: {
+    Formal: c => `Dear ${c.first}, this is a gentle reminder regarding the pending item in our conversation. Please let us know if you need any additional information.`,
+    Friendly: c => `Hi ${c.first}, just a friendly nudge on the pending item whenever you have a moment - no rush at all!`,
+    Direct: c => `Hi ${c.first}, quick reminder on the pending item - let me know if you need anything from us.`,
+  },
+};
+function generateAiReply(typeId, tone, candidate) {
+  const ctx = { first: candidate.name.split(" ")[0], role: candidate.role, salaryExpectation: candidate.salaryExpectation };
+  return AI_REPLY_TEMPLATES[typeId]?.[tone]?.(ctx) || "";
+}
+
+const DM_FILE_TYPE_META = {
+  resume: { icon: "file-text", label: "Resume" },
+  portfolio: { icon: "image", label: "Portfolio" },
+  contract: { icon: "file-check", label: "Contract" },
+  offer: { icon: "award", label: "Offer letter" },
+  assessment: { icon: "clipboard-check", label: "Assessment" },
+};
+
+// Chat redirection (item 9): every "Message" action anywhere in the app
+// calls this instead of showing a toast or dead-ending - opens the
+// existing conversation with this candidate if one exists, otherwise
+// creates an empty one first, so Inbox never needs its own "start a new
+// conversation" flow.
+function openConversationForCandidate(candidateId) {
+  let conv = DATA.employerConversations.find(c => c.candidateId === candidateId);
+  if (!conv) {
+    conv = { id: `conv-${candidateId}-${Date.now()}`, candidateId, pinned: false, archived: false, messages: [], files: [] };
+    DATA.employerConversations.unshift(conv);
+  } else if (conv.archived) {
+    conv.archived = false;
+  }
+  employerNavigateTo("messages", { id: candidateId });
+}
+
+function sourceTag(label) { return `<span class="emp-source-tag">${label}</span>`; }
+
+// Groups saved talent by real elapsed time since savedAt, not a canned
+// label - "Saved today" genuinely means < 24h old, computed at render
+// time, so it stays correct as time passes in a long-running session.
+function groupSavedTalentByRecency(entries) {
+  const now = Date.now();
+  const groups = { today: [], week: [], month: [], older: [] };
+  entries.forEach(e => {
+    const days = (now - new Date(e.savedAt).getTime()) / 86400000;
+    if (days < 1) groups.today.push(e);
+    else if (days < 7) groups.week.push(e);
+    else if (days < 30) groups.month.push(e);
+    else groups.older.push(e);
+  });
+  return groups;
+}
+
+function renderEmployerSavedCandidates(root) {
+  let filterRole = "";
+  let filterAvailability = "";
+  let filterStatus = "";
+
+  function resolvedEntries(state) {
+    return (state.savedTalent || []).map(resolveSavedTalent).filter(Boolean);
+  }
+
+  function filteredEntries(state) {
+    let entries = resolvedEntries(state);
+    if (filterRole) entries = entries.filter(e => e.role === filterRole);
+    if (filterAvailability) entries = entries.filter(e => e.availability === filterAvailability);
+    if (filterStatus) entries = entries.filter(e => (e.type === "passive" ? "Passive" : DATA.candidates.find(c => c.id === e.id)?.stage) === filterStatus);
+    return entries;
+  }
+
+  function renderSavedRow(e) {
+    return `
+      <div class="card emp-saved-row" data-saved-row="${e.id}">
+        <span class="emp-feed-avatar">${initialsOf(e.name)}</span>
+        <div class="emp-saved-row-info">
+          <div class="emp-saved-row-top"><strong>${e.name}</strong>${e.type === "passive" ? `<span class="pill">Passive talent</span>` : ""}</div>
+          <p class="emp-cand-meta">${e.role}${e.location ? ` · ${e.location}` : ""}</p>
+          <div class="emp-saved-row-meta">
+            ${e.salary ? `<span>${icon("badge-dollar-sign")} ${e.salary}</span>` : ""}
+            ${e.availability ? `<span>${icon("clock")} ${e.availability}</span>` : ""}
+            <span>${icon("target")} ${e.fit}% match</span>
+          </div>
+        </div>
+        <div class="emp-saved-row-actions">
+          <button type="button" class="btn-icon-sm" data-saved-action="preview" data-saved-id="${e.id}" data-saved-type="${e.type}" aria-label="Preview ${e.name}">${icon("eye")}</button>
+          <button type="button" class="btn-icon-sm" data-saved-action="message" data-saved-id="${e.id}" data-saved-type="${e.type}" aria-label="Message ${e.name}">${icon("message-circle")}</button>
+          <button type="button" class="btn-icon-sm" data-saved-action="invite" data-saved-id="${e.id}" data-saved-type="${e.type}" aria-label="Invite ${e.name}">${icon("send")}</button>
+          <button type="button" class="btn-icon-sm" data-saved-action="compare" data-saved-id="${e.id}" data-saved-type="${e.type}" aria-label="Compare ${e.name}">${icon("scale")}</button>
+          <button type="button" class="btn-icon-sm emp-saved-delete" data-saved-action="delete" data-saved-id="${e.id}" data-saved-type="${e.type}" aria-label="Remove ${e.name} from saved">${icon("trash-2")}</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderGroup(label, entries) {
+    if (!entries.length) return "";
+    return `
+      <div class="emp-saved-group">
+        <h3>${label} <span class="emp-saved-group-count">${entries.length}</span></h3>
+        <div class="emp-saved-group-list">${entries.map(renderSavedRow).join("")}</div>
+      </div>
+    `;
+  }
+
+  function draw() {
+    const state = readState();
+    const all = resolvedEntries(state);
+    const entries = filteredEntries(state);
+    const groups = groupSavedTalentByRecency(entries);
+    const roleOptions = [...new Set(all.map(e => e.role))].sort();
+    const availabilityOptions = [...new Set(all.map(e => e.availability).filter(Boolean))];
+    const statusOptions = [...new Set(all.map(e => e.type === "passive" ? "Passive" : DATA.candidates.find(c => c.id === e.id)?.stage).filter(Boolean))];
+
+    root.innerHTML = `
+      <div class="emp-view-header"><span class="emp-section-label">Saved Candidates</span><h1>Saved Candidates</h1></div>
+      <div class="emp-saved-page">
+        <div class="card emp-saved-filters">
+          <label>Role
+            <select data-saved-filter="role">
+              <option value="">All roles</option>
+              ${roleOptions.map(r => `<option value="${escapeHtml(r)}" ${filterRole === r ? "selected" : ""}>${escapeHtml(r)}</option>`).join("")}
+            </select>
+          </label>
+          <label>Availability
+            <select data-saved-filter="availability">
+              <option value="">Any availability</option>
+              ${availabilityOptions.map(a => `<option value="${escapeHtml(a)}" ${filterAvailability === a ? "selected" : ""}>${escapeHtml(a)}</option>`).join("")}
+            </select>
+          </label>
+          <label>Status
+            <select data-saved-filter="status">
+              <option value="">Any status</option>
+              ${statusOptions.map(s => `<option value="${escapeHtml(s)}" ${filterStatus === s ? "selected" : ""}>${escapeHtml(s)}</option>`).join("")}
+            </select>
+          </label>
+          ${(filterRole || filterAvailability || filterStatus) ? `<button type="button" class="btn btn-ghost btn-sm" data-saved-clear-filters>${icon("x")} Clear filters</button>` : ""}
+        </div>
+
+        ${entries.length ? `
+          ${renderGroup("Saved today", groups.today)}
+          ${renderGroup("Saved this week", groups.week)}
+          ${renderGroup("Saved this month", groups.month)}
+          ${renderGroup("Saved earlier", groups.older)}
+        ` : `
+          <div class="emp-empty-state card">
+            <div class="feature-icon">${icon("heart")}</div>
+            <h2>${all.length ? "No saved candidates match these filters." : "No saved candidates yet."}</h2>
+            <p>${all.length ? "Try clearing a filter to see more." : "Save candidates from the Feed's recommendations, Hiring Opportunities, or any candidate profile - they'll show up here."}</p>
+          </div>
+        `}
+      </div>
+    `;
+    createIcons();
+    bind();
+  }
+
+  function bind() {
+    qsa("[data-saved-filter]", root).forEach(sel => sel.addEventListener("change", () => {
+      if (sel.dataset.savedFilter === "role") filterRole = sel.value;
+      if (sel.dataset.savedFilter === "availability") filterAvailability = sel.value;
+      if (sel.dataset.savedFilter === "status") filterStatus = sel.value;
+      draw();
+    }));
+    qs("[data-saved-clear-filters]", root)?.addEventListener("click", () => { filterRole = ""; filterAvailability = ""; filterStatus = ""; draw(); });
+
+    qsa("[data-saved-action]", root).forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.savedId;
+      const type = btn.dataset.savedType;
+      const action = btn.dataset.savedAction;
+      if (action === "preview") { if (type === "candidate") openCandidateProfileModal(id); else showToast("This talent hasn't applied yet, so there's no full profile to preview.", "info"); }
+      else if (action === "message") { if (type === "candidate") openConversationForCandidate(id); else showToast("Messaging passive talent directly is coming in a future update.", "info"); }
+      else if (action === "invite") { const name = resolveSavedTalent({ id, type }).name; showToast(`Invitation sent to ${name}.`); }
+      else if (action === "compare") showToast("Side-by-side candidate comparison is coming in a future update.", "info");
+      else if (action === "delete") {
+        const state = readState();
+        const name = resolveSavedTalent({ id, type }).name;
+        toggleSavedTalent(state, id, type);
+        writeState(state);
+        showToast(`${name} removed from saved.`);
+        draw();
+      }
+    }));
+  }
+
+  draw();
+}
+
+function computeCompanyCompleteness(company) {
+  const checks = [
+    !!company.summary, !!company.averageRequirements, !!company.hiringProcess, !!company.salaryBenefits,
+    !!company.careerGrowth, !!company.workCulture, !!(company.highlights && company.highlights.length),
+    false // workplace media - not yet supported, counted as a gap
+  ];
+  return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+}
+
+function renderEmployerMessages(root, params = {}) {
+  let activeConversationId = null;
+  let conversationFilter = "all";
+  let searchQuery = "";
+  let rightTab = "intelligence";
+  let replyAssistantOpen = false;
+  let replyAssistantType = "interview";
+  let replyAssistantTone = "Friendly";
+  let composerDraftText = "";
+  let typingIndicatorFor = null;
+  let typingTimer = null;
+  let fileUploadPickerOpen = false;
+
+  function getConversations() { return DATA.employerConversations; }
+  function findConversation(id) { return getConversations().find(c => c.id === id); }
+  function candidateFor(conv) { return DATA.candidates.find(c => c.id === conv.candidateId); }
+  function lastMessage(conv) { return conv.messages[conv.messages.length - 1]; }
+  function isUnread(conv) { return conv.messages.some(m => m.sender === "candidate" && !m.read); }
+
+  function filteredConversations() {
+    let list = getConversations();
+    if (conversationFilter === "unread") list = list.filter(isUnread);
+    else if (conversationFilter === "pinned") list = list.filter(c => c.pinned);
+    else if (conversationFilter === "archived") list = list.filter(c => c.archived);
+    else list = list.filter(c => !c.archived);
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      list = list.filter(conv => {
+        const cand = candidateFor(conv);
+        return cand.name.toLowerCase().includes(q) || cand.role.toLowerCase().includes(q);
+      });
+    }
+    return [...list].sort((a, b) => (b.pinned === a.pinned ? 0 : b.pinned ? 1 : -1));
+  }
+
+  function renderConversationRow(conv) {
+    const cand = candidateFor(conv);
+    const last = lastMessage(conv);
+    const unread = isUnread(conv);
+    const saved = isSavedTalent(readState(), cand.id, "candidate");
+    return `
+      <button type="button" class="emp-dm-convo-row ${activeConversationId === conv.id ? "active" : ""} ${unread ? "unread" : ""}" data-dm-select-convo="${conv.id}">
+        <span class="emp-feed-avatar">${initialsOf(cand.name)}</span>
+        <span class="emp-dm-convo-info">
+          <span class="emp-dm-convo-top">
+            <strong>${cand.name}</strong>
+            <span class="emp-dm-convo-badges">
+              ${conv.pinned ? `<span class="emp-dm-pin-dot" title="Pinned">${icon("pin")}</span>` : ""}
+              ${unread ? `<span class="emp-dm-unread-dot" title="Unread" aria-hidden="true"></span>` : ""}
+              <span class="emp-dm-convo-time">${last.time}</span>
+            </span>
+          </span>
+          <span class="emp-dm-convo-role">${cand.role}${saved ? ` · <span class="emp-dm-saved-badge">${icon("heart")} Saved</span>` : ""}</span>
+          <span class="emp-dm-convo-preview">${last.sender === "employer" ? "You: " : ""}${last.text}</span>
+        </span>
+      </button>
+    `;
+  }
+
+  function renderConversationList() {
+    const list = filteredConversations();
+    const counts = { all: getConversations().filter(c => !c.archived).length, unread: getConversations().filter(isUnread).length, pinned: getConversations().filter(c => c.pinned).length, archived: getConversations().filter(c => c.archived).length };
+    return `
+      <div class="emp-dm-conversations">
+        <div class="emp-dm-search-field">
+          ${icon("search")}
+          <input type="text" placeholder="Search candidates or roles..." data-dm-search value="${searchQuery}">
+        </div>
+        <div class="emp-dm-filter-row">
+          <button type="button" class="emp-dm-filter-chip ${conversationFilter === "all" ? "active" : ""}" data-dm-filter="all">All <span>${counts.all}</span></button>
+          <button type="button" class="emp-dm-filter-chip ${conversationFilter === "unread" ? "active" : ""}" data-dm-filter="unread">Unread <span>${counts.unread}</span></button>
+          <button type="button" class="emp-dm-filter-chip ${conversationFilter === "pinned" ? "active" : ""}" data-dm-filter="pinned">Pinned <span>${counts.pinned}</span></button>
+          <button type="button" class="emp-dm-filter-chip ${conversationFilter === "archived" ? "active" : ""}" data-dm-filter="archived">Archived <span>${counts.archived}</span></button>
+        </div>
+        <div class="emp-dm-convo-list">
+          ${list.length ? list.map(renderConversationRow).join("") : `<p class="emp-empty-hint">No conversations match this filter.</p>`}
+        </div>
+      </div>
+    `;
+  }
+
+  // Center column: message thread. Read receipts render on the employer's
+  // own sent messages only (a real receipt reports what the OTHER party
+  // has seen, not what you've seen of theirs); the typing indicator is a
+  // transient closure-state flag set right after the employer sends a
+  // message and cleared either by the simulated candidate reply landing
+  // or a timeout, never a real websocket - this is mocked, in-session
+  // behaviour, not a live feature.
+  function renderMessageBubble(m) {
+    const isEmployer = m.sender === "employer";
+    return `
+      <div class="emp-dm-bubble-row ${isEmployer ? "outgoing" : "incoming"}">
+        <div class="emp-dm-bubble">
+          <p>${m.text}</p>
+          <span class="emp-dm-bubble-meta">${m.time}${isEmployer ? ` · ${icon(m.read ? "check-check" : "check")}` : ""}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderThread(conv) {
+    const cand = candidateFor(conv);
+    const signals = getCandidateSignals(cand);
+    const saved = isSavedTalent(readState(), cand.id, "candidate");
+    return `
+      <div class="emp-dm-thread">
+        <div class="emp-dm-thread-head">
+          <span class="emp-feed-avatar">${initialsOf(cand.name)}</span>
+          <div class="emp-dm-thread-head-info">
+            <span class="emp-dm-thread-head-name"><strong>${cand.name}</strong>${saved ? `<span class="emp-dm-saved-badge">${icon("heart")} Saved</span>` : `<span class="emp-dm-saved-badge emp-dm-saved-badge--muted">Not saved</span>`}</span>
+            <p class="emp-cand-meta">${cand.role} · ${signals.lastActive}</p>
+          </div>
+          <div class="emp-dm-thread-head-actions">
+            ${renderSaveButton(cand.id, "candidate", cand.name, saved, { iconOnly: true })}
+            <button type="button" class="btn btn-ghost btn-sm" data-dm-pin-toggle="${conv.id}">${icon("pin")} ${conv.pinned ? "Unpin" : "Pin"}</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-dm-archive-toggle="${conv.id}">${icon("archive")} ${conv.archived ? "Unarchive" : "Archive"}</button>
+          </div>
+        </div>
+        <div class="emp-dm-thread-body" data-dm-thread-body>
+          ${conv.messages.map(renderMessageBubble).join("")}
+          ${typingIndicatorFor === conv.id ? `<div class="emp-dm-typing"><span></span><span></span><span></span></div>` : ""}
+        </div>
+        ${renderComposerArea(conv, cand)}
+      </div>
+    `;
+  }
+
+  function renderComposerArea(conv, cand) {
+    return `
+      <div class="emp-dm-composer">
+        ${replyAssistantOpen ? `
+          <div class="emp-dm-reply-assistant">
+            <div class="emp-dm-reply-assistant-head">
+              <span class="emp-callout-label">${icon("sparkles")} Reply with Vera</span>
+              <button type="button" class="btn-icon-sm" data-dm-reply-close aria-label="Close">${icon("x")}</button>
+            </div>
+            <div class="emp-dm-reply-row">
+              <select data-dm-reply-type>${AI_REPLY_TYPES.map(t => `<option value="${t.id}" ${replyAssistantType === t.id ? "selected" : ""}>${t.label}</option>`).join("")}</select>
+              <div class="emp-dm-tone-row">${AI_REPLY_TONES.map(t => `<button type="button" class="emp-dm-tone-chip ${replyAssistantTone === t ? "active" : ""}" data-dm-reply-tone="${t}">${t}</button>`).join("")}</div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" data-dm-reply-generate>${icon("wand-2")} Generate reply</button>
+          </div>
+        ` : ""}
+        <div class="emp-dm-composer-input-row">
+          <button type="button" class="btn-icon-sm" data-dm-attach aria-label="Attach file">${icon("paperclip")}</button>
+          <button type="button" class="btn-icon-sm" data-dm-voice aria-label="Record voice note">${icon("mic")}</button>
+          <textarea data-dm-composer-text placeholder="Write a message to ${cand.name.split(" ")[0]}..." rows="1">${composerDraftText}</textarea>
+          <button type="button" class="btn-icon-sm" data-dm-reply-toggle aria-label="Reply with Vera" title="Reply with Vera">${icon("sparkles")}</button>
+          <button type="button" class="btn btn-primary btn-sm" data-dm-send="${conv.id}">${icon("send")} Send</button>
+        </div>
+        <div class="emp-dm-composer-quick-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-dm-quick="schedule" data-dm-convo="${conv.id}">${icon("calendar")} Schedule interview</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-dm-quick="offer" data-dm-convo="${conv.id}">${icon("award")} Generate offer</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Right column tab 1: AI Candidate Intelligence (item 10's right pane).
+  // Every field reads off the real candidate record + the same signals
+  // layer the Feed's recommendation widgets use, so a candidate's match
+  // score/salary/availability never disagrees between Feed, Pipeline and
+  // this panel.
+  function renderIntelligenceTab(conv, cand) {
+    const role = DATA.employerRoles.find(r => r.id === cand.roleId);
+    const signals = getCandidateSignals(cand);
+    const reasons = getMatchReasons(cand, role);
+    const reminders = getSmartHiringReminders().filter(r => r.text.includes(cand.name));
+    return `
+      <div class="emp-dm-intel-section">
+        <div class="emp-dm-intel-match"><span>${cand.fit}%</span><small>Match score</small></div>
+        <p class="emp-dm-intel-summary">${icon("sparkles")} ${reasons[0]}</p>
+      </div>
+      <div class="emp-dm-intel-section">
+        <span class="emp-tags-label">Strengths</span>
+        <p class="emp-dm-intel-text">${cand.strength}</p>
+        ${cand.concern ? `<span class="emp-tags-label">Watch-out</span><p class="emp-dm-intel-text">${cand.concern}</p>` : ""}
+      </div>
+      <div class="emp-dm-intel-stat-row">
+        <div><span class="emp-tags-label">Salary expectation</span><strong>${cand.salaryExpectation}</strong></div>
+        <div><span class="emp-tags-label">Availability</span><strong>${cand.availability}</strong></div>
+        <div><span class="emp-tags-label">Location</span><strong>${cand.location}</strong></div>
+        <div><span class="emp-tags-label">Interview success</span><strong>${signals.interviewSuccessProbability}%</strong></div>
+      </div>
+      ${cand.interview ? `
+        <div class="emp-dm-intel-section">
+          <span class="emp-tags-label">Interview notes</span>
+          ${cand.interview.scorecards.length ? cand.interview.scorecards.map(s => `<p class="emp-dm-intel-text"><strong>${s.interviewer}:</strong> ${s.notes}</p>`).join("") : `<p class="emp-dm-intel-text">No scorecards submitted yet.</p>`}
+        </div>
+      ` : ""}
+      <div class="emp-dm-intel-section">
+        <span class="emp-tags-label">AI-suggested replies</span>
+        <div class="emp-dm-intel-suggestions">
+          ${AI_REPLY_TYPES.slice(0, 3).map(t => `<button type="button" class="emp-dm-suggest-chip" data-dm-suggest-reply="${t.id}">${t.label}</button>`).join("")}
+        </div>
+      </div>
+      ${reminders.length ? `
+        <div class="emp-dm-intel-section">
+          <span class="emp-tags-label">Reminders</span>
+          ${reminders.map(r => `<p class="emp-dm-intel-text">${icon(r.icon)} ${r.text}</p>`).join("")}
+        </div>
+      ` : ""}
+      <div class="emp-dm-intel-actions">
+        <button type="button" class="btn btn-ghost btn-sm" data-dm-open-pipeline="${cand.id}">${icon("kanban")} Open in Pipeline</button>
+      </div>
+    `;
+  }
+
+  // Right column tab 2: Candidate Hiring Timeline (item 12). Reuses
+  // candidate.timeline verbatim (already the source of truth for Talent
+  // Pipeline's own timeline view) instead of a parallel messaging-specific
+  // copy, plus a synthesized "pending" tail for stages not yet reached so
+  // the full Application -> ... -> Accepted/Rejected arc is always shown.
+  function renderTimelineTab(conv, cand) {
+    const fullStages = ["Applied", "Reviewed", "Shortlisted", "Interview scheduled", "Feedback submitted", "Decision"];
+    const doneLabels = cand.timeline.map(t => t.label);
+    const rows = fullStages.map(label => {
+      const entry = cand.timeline.find(t => t.label === label);
+      return entry || { label, date: "", done: false };
+    });
+    return `
+      <div class="emp-dm-timeline">
+        ${rows.map((t, i) => `
+          <div class="emp-dm-timeline-row ${t.done ? "done" : "pending"}">
+            <span class="emp-dm-timeline-dot">${t.done ? icon("check") : ""}</span>
+            <div class="emp-dm-timeline-info">
+              <strong>${t.label}</strong>
+              <p class="emp-cand-meta">${t.done ? t.date : "Pending"}</p>
+            </div>
+          </div>
+        `).join("")}
+        ${cand.rejection ? `<div class="emp-dm-timeline-row done rejected"><span class="emp-dm-timeline-dot">${icon("x")}</span><div class="emp-dm-timeline-info"><strong>Rejected</strong><p class="emp-cand-meta">${cand.rejection.date} · ${cand.rejection.reason}</p></div></div>` : ""}
+        ${cand.hired ? `<div class="emp-dm-timeline-row done accepted"><span class="emp-dm-timeline-dot">${icon("check")}</span><div class="emp-dm-timeline-info"><strong>Accepted</strong><p class="emp-cand-meta">Starts ${cand.hired.startDate}</p></div></div>` : ""}
+      </div>
+      ${cand.notes.length ? `
+        <div class="emp-dm-intel-section">
+          <span class="emp-tags-label">Recruiter notes</span>
+          ${cand.notes.map(n => `<p class="emp-dm-intel-text"><strong>${n.author}</strong> (${n.date}): ${n.text}</p>`).join("")}
+        </div>
+      ` : ""}
+    `;
+  }
+
+  // Right column tab 3: Shared Hiring Workspace (item 14). Files exchanged
+  // in-thread with a lightweight version history; "Upload" is a mocked
+  // picker (no real file I/O in this static build) that appends a new
+  // version entry so the version-history behaviour is still exercised.
+  function renderFilesTab(conv) {
+    return `
+      <div class="emp-dm-files-list">
+        ${conv.files.length ? conv.files.map(f => {
+          const meta = DM_FILE_TYPE_META[f.type] || { icon: "file", label: "File" };
+          return `
+            <div class="emp-dm-file-row">
+              <span class="emp-dm-file-icon">${icon(meta.icon)}</span>
+              <div class="emp-dm-file-info">
+                <strong>${f.name}</strong>
+                <p class="emp-cand-meta">${meta.label} · ${f.uploadedBy === "employer" ? "You" : "Candidate"} · ${f.date}${f.version > 1 ? ` · v${f.version}` : ""}</p>
+              </div>
+              <button type="button" class="btn-icon-sm" data-dm-file-preview="${f.id}" data-dm-convo="${conv.id}" aria-label="Preview">${icon("eye")}</button>
+            </div>
+          `;
+        }).join("") : `<p class="emp-empty-hint">No files shared in this conversation yet.</p>`}
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm emp-dm-upload-btn" data-dm-upload="${conv.id}">${icon("upload")} Upload document</button>
+    `;
+  }
+
+  function renderIntelligencePanel(conv) {
+    const cand = candidateFor(conv);
+    const tabs = [["intelligence", "Intelligence"], ["timeline", "Timeline"], ["files", "Files"]];
+    return `
+      <div class="emp-dm-intelligence">
+        <div class="emp-subtabs emp-dm-subtabs">${tabs.map(([k, l]) => `<button type="button" class="emp-subtab ${rightTab === k ? "active" : ""}" data-dm-right-tab="${k}">${l}</button>`).join("")}</div>
+        <div class="emp-dm-intelligence-body">
+          ${rightTab === "intelligence" ? renderIntelligenceTab(conv, cand) : rightTab === "timeline" ? renderTimelineTab(conv, cand) : renderFilesTab(conv)}
+        </div>
+      </div>
+    `;
+  }
+
+  function scrollThreadToBottom() {
+    const body = qs("[data-dm-thread-body]", root);
+    if (body) body.scrollTop = body.scrollHeight;
+  }
+
+  function draw() {
+    if (!activeConversationId || !findConversation(activeConversationId)) {
+      const preferred = params.id ? getConversations().find(c => c.candidateId === params.id) : null;
+      activeConversationId = (preferred || filteredConversations()[0] || getConversations()[0])?.id || null;
+    }
+    const conv = activeConversationId ? findConversation(activeConversationId) : null;
+
+    root.innerHTML = `
+      <div class="emp-view-header"><span class="emp-section-label">Inbox</span><h1>Inbox</h1></div>
+      <div class="emp-dm-layout">
+        ${renderConversationList()}
+        ${conv ? renderThread(conv) : `
+          <div class="emp-dm-thread emp-dm-empty-thread">
+            <div class="emp-empty-state">
+              <div class="feature-icon">${icon("message-circle")}</div>
+              <h2>No conversation selected</h2>
+              <p>Choose a conversation from the left, or start one from a candidate's profile in Talent Pipeline.</p>
+            </div>
+          </div>
+        `}
+        ${conv ? renderIntelligencePanel(conv) : `<div class="emp-dm-intelligence"></div>`}
+      </div>
+    `;
+    createIcons();
+    scrollThreadToBottom();
+    bind();
+  }
+
+  function bind() {
+    qs("[data-dm-search]", root)?.addEventListener("input", event => { searchQuery = event.target.value; draw(); qs("[data-dm-search]", root)?.focus(); qs("[data-dm-search]", root).selectionStart = qs("[data-dm-search]", root).value.length; });
+    qsa("[data-dm-filter]", root).forEach(btn => btn.addEventListener("click", () => { conversationFilter = btn.dataset.dmFilter; draw(); }));
+    qsa("[data-dm-select-convo]", root).forEach(btn => btn.addEventListener("click", () => {
+      activeConversationId = btn.dataset.dmSelectConvo;
+      const conv = findConversation(activeConversationId);
+      conv.messages.forEach(m => { if (m.sender === "candidate") m.read = true; });
+      replyAssistantOpen = false;
+      composerDraftText = "";
+      rightTab = "intelligence";
+      draw();
+    }));
+
+    qsa("[data-dm-pin-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const conv = findConversation(btn.dataset.dmPinToggle);
+      conv.pinned = !conv.pinned;
+      showToast(conv.pinned ? "Conversation pinned." : "Conversation unpinned.");
+      draw();
+    }));
+    qsa("[data-dm-archive-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const conv = findConversation(btn.dataset.dmArchiveToggle);
+      conv.archived = !conv.archived;
+      showToast(conv.archived ? "Conversation archived." : "Conversation restored.");
+      if (conv.archived && activeConversationId === conv.id) activeConversationId = null;
+      draw();
+    }));
+
+    qsa("[data-dm-right-tab]", root).forEach(btn => btn.addEventListener("click", () => { rightTab = btn.dataset.dmRightTab; draw(); }));
+    bindSaveTalentButtons(root, () => draw());
+
+    const composerTextarea = qs("[data-dm-composer-text]", root);
+    composerTextarea?.addEventListener("input", event => { composerDraftText = event.target.value; });
+    qs("[data-dm-attach]", root)?.addEventListener("click", () => showToast("Attach a file from your device - opens the Files tab for a full upload.", "info"));
+    qs("[data-dm-voice]", root)?.addEventListener("click", () => showToast("Voice notes are recorded and attached inline once your mic is connected.", "info"));
+
+    qs("[data-dm-reply-toggle]", root)?.addEventListener("click", () => { replyAssistantOpen = !replyAssistantOpen; draw(); });
+    qs("[data-dm-reply-close]", root)?.addEventListener("click", () => { replyAssistantOpen = false; draw(); });
+    qs("[data-dm-reply-type]", root)?.addEventListener("change", event => { replyAssistantType = event.target.value; });
+    qsa("[data-dm-reply-tone]", root).forEach(btn => btn.addEventListener("click", () => { replyAssistantTone = btn.dataset.dmReplyTone; draw(); }));
+    qs("[data-dm-reply-generate]", root)?.addEventListener("click", () => {
+      const conv = findConversation(activeConversationId);
+      const cand = candidateFor(conv);
+      composerDraftText = generateAiReply(replyAssistantType, replyAssistantTone, cand);
+      replyAssistantOpen = false;
+      draw();
+      showToast("Draft generated. Review and edit before sending.");
+    });
+    qsa("[data-dm-suggest-reply]", root).forEach(btn => btn.addEventListener("click", () => {
+      const conv = findConversation(activeConversationId);
+      const cand = candidateFor(conv);
+      replyAssistantType = btn.dataset.dmSuggestReply;
+      composerDraftText = generateAiReply(replyAssistantType, replyAssistantTone, cand);
+      draw();
+      showToast("Draft generated. Review and edit before sending.");
+    }));
+
+    qs("[data-dm-send]", root)?.addEventListener("click", () => {
+      const conv = findConversation(qs("[data-dm-send]", root).dataset.dmSend);
+      const text = (qs("[data-dm-composer-text]", root)?.value || "").trim();
+      if (!text) return;
+      conv.messages.push({ id: `m-${Date.now()}`, sender: "employer", text, time: "Just now", read: false });
+      composerDraftText = "";
+      draw();
+      // Simulated typing indicator + candidate reply, mirroring the
+      // request/response feel of a live thread without a real backend -
+      // self-guards against the conversation having been switched away
+      // from before the timer fires.
+      typingIndicatorFor = conv.id;
+      const thisConvoId = conv.id;
+      if (typingTimer) clearTimeout(typingTimer);
+      const body = qs("[data-dm-thread-body]", root);
+      if (body) { const indicator = document.createElement("div"); indicator.className = "emp-dm-typing"; indicator.innerHTML = "<span></span><span></span><span></span>"; body.appendChild(indicator); body.scrollTop = body.scrollHeight; }
+      typingTimer = setTimeout(() => {
+        if (activeConversationId !== thisConvoId) { typingIndicatorFor = null; return; }
+        conv.messages.push({ id: `m-${Date.now()}`, sender: "candidate", text: "Thanks for the message - I'll get back to you shortly!", time: "Just now", read: true });
+        typingIndicatorFor = null;
+        draw();
+      }, 1800);
+    });
+
+    qsa("[data-dm-quick]", root).forEach(btn => btn.addEventListener("click", () => {
+      const action = btn.dataset.dmQuick;
+      const conv = findConversation(btn.dataset.dmConvo);
+      const cand = candidateFor(conv);
+      if (action === "schedule") { employerNavigateTo("pipeline", { id: cand.id }); showToast("Opening Talent Pipeline to schedule the interview.", "info"); }
+      if (action === "offer") { employerNavigateTo("pipeline", { id: cand.id }); showToast("Opening Talent Pipeline to prepare the offer.", "info"); }
+    }));
+
+    qs("[data-dm-open-pipeline]", root)?.addEventListener("click", () => employerNavigateTo("pipeline", { id: qs("[data-dm-open-pipeline]", root).dataset.dmOpenPipeline }));
+
+    qs("[data-dm-upload]", root)?.addEventListener("click", () => {
+      const conv = findConversation(qs("[data-dm-upload]", root).dataset.dmUpload);
+      const existing = conv.files.find(f => f.type === "resume");
+      if (existing) { existing.version += 1; existing.date = "Just now"; showToast(`New version of ${existing.name} uploaded (v${existing.version}).`); }
+      else { conv.files.push({ id: `f-${Date.now()}`, name: "New_Document.pdf", type: "resume", uploadedBy: "employer", date: "Just now", version: 1 }); showToast("Document uploaded."); }
+      draw();
+    });
+    qsa("[data-dm-file-preview]", root).forEach(btn => btn.addEventListener("click", () => {
+      const conv = findConversation(btn.dataset.dmConvo);
+      const file = conv.files.find(f => f.id === btn.dataset.dmFilePreview);
+      showToast(`Previewing ${file.name} (v${file.version}). Full document preview opens in a later phase.`, "info");
+    }));
+  }
+
+  draw();
+}
+
+const ROLE_SORT_OPTIONS = [
+  ["newest", "Newest"],
+  ["salary", "Highest Salary"],
+  ["popular", "Most Popular"],
+  ["applied", "Most Applied"],
+  ["ai", "AI Recommended"]
+];
+
+const COMPARE_VERDICT_META = {
+  better: { label: "Better", icon: "check-circle" },
+  equal: { label: "Equal", icon: "minus-circle" },
+  needsImprovement: { label: "Needs Improvement", icon: "alert-circle" }
+};
+
+// Priority color convention here is the standard project-management one
+// (High = red/urgent, Medium = amber, Low = green) - the opposite polarity
+// from COMPARE_VERDICT_META's green=good, since "priority" measures
+// urgency, not performance.
+const RECOMMENDATION_PRIORITY_META = {
+  high: { label: "High Priority", order: 0 },
+  medium: { label: "Medium Priority", order: 1 },
+  low: { label: "Low Priority", order: 2 }
+};
+const RECOMMENDATION_SORT_OPTIONS = [
+  ["priority", "Priority"],
+  ["impact", "Highest Application Increase"],
+  ["confidence", "Highest Confidence"],
+  ["fastest", "Fastest to Implement"]
+];
+
+function renderEmployerCompany(root) {
+  const company = DATA.companies.find(c => c.id === "maybank");
+  let showAllRoles = false;
+  let roleSort = "newest";
+  let expandedSalaryLevels = new Set();
+  let tabsStuckObserver = null;
+  let tabsSectionObserver = null;
+  let tabsResizeHandler = null;
+  let timelineObserver = null;
+  // Reviews: filter/sort state, infinite-scroll window (no pagination - the
+  // sentinel observer below grows this by REVIEW_BATCH_SIZE as the user
+  // scrolls), and per-card interaction state (expand/like/helpful).
+  let reviewFilters = { department: "all", role: "all", minRating: "all", country: "all", location: "all", verified: false, graduate: false, intern: false };
+  let reviewSort = "newest";
+  const REVIEW_BATCH_SIZE = 5;
+  let reviewsLoadedCount = REVIEW_BATCH_SIZE;
+  let reviewsLoadingMore = false;
+  let expandedReviews = new Set();
+  let likedReviews = new Set();
+  let helpfulReviews = new Set();
+  let reviewsObserver = null;
+  // Hiring funnel: "30d" | "90d" | "12mo" | "custom". Custom has no fixed
+  // dataset, see getFunnelStages().
+  let funnelRange = "30d";
+  let funnelCustomFrom = "";
+  let funnelCustomTo = "";
+  let expandedHealthScores = new Set();
+  // FAQ: single-open accordion (null = none open), plus a live search query.
+  let faqSearchQuery = "";
+  let expandedFaqId = null;
+  let recommendationSort = "priority";
+
+  function sortRoles(roles) {
+    const sorted = roles.slice();
+    if (roleSort === "salary") return sorted.sort((a, b) => (b.salary?.max || 0) - (a.salary?.max || 0));
+    if (roleSort === "popular") return sorted.sort((a, b) => (b.roleViews || 0) - (a.roleViews || 0));
+    if (roleSort === "applied") return sorted.sort((a, b) => (b.applicants || 0) - (a.applicants || 0));
+    if (roleSort === "ai") return sorted.sort((a, b) => (b.avgCandidateMatch || 0) - (a.avgCandidateMatch || 0));
+    return sorted.sort((a, b) => (a.daysOpen || 0) - (b.daysOpen || 0)); // newest = fewest days open
+  }
+
+  function formatRoleSalary(r) {
+    if (!r.salary || !r.salary.min || !r.salary.max) return "Salary not published";
+    const fmt = n => (n / 1000).toFixed(1).replace(".0", "");
+    return `RM ${fmt(r.salary.min)}k–${fmt(r.salary.max)}k / ${r.salary.period.toLowerCase()}`;
+  }
+
+  // diffPercent is derived here from company/market, not stored on the
+  // data object, so it can't drift out of sync with the two figures it's
+  // computed from (same reasoning as hiringTimeline's success rate).
+  function salaryDiffInfo(companyVal, marketVal) {
+    const diffPercent = Math.round(((companyVal - marketVal) / marketVal) * 100);
+    const cls = diffPercent >= 5 ? "positive" : diffPercent <= -5 ? "negative" : "neutral";
+    return { diffPercent, cls, label: `${diffPercent > 0 ? "+" : ""}${diffPercent}%` };
+  }
+
+  // Plain class toggling, not a draw() - hovering/focusing a node highlights
+  // it plus every earlier node/connector (the path leading up to it), which
+  // a pure CSS sibling selector can't express since earlier siblings aren't
+  // reachable from a later element's :hover.
+  function setCareerPathHighlight(uptoIndex) {
+    qsa("[data-career-node]", root).forEach(n => n.classList.toggle("in-path", uptoIndex >= 0 && Number(n.dataset.careerNode) <= uptoIndex));
+    qsa("[data-career-connector]", root).forEach(c => c.classList.toggle("in-path", uptoIndex >= 0 && Number(c.dataset.careerConnector) <= uptoIndex));
+  }
+
+  function uniqueSorted(values) { return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b)); }
+
+  // Custom ranges have no fixed dataset - scale the 30-day stage values by
+  // the selected day count using the 30-day daily rate, so the funnel stays
+  // internally consistent (conversion ratios are preserved exactly, since
+  // every stage is scaled by the same factor) without needing a real
+  // date-indexed dataset for a mock feature. Returns null if either date is
+  // still unset, so the caller can show a prompt instead of a funnel.
+  function getFunnelStages() {
+    if (funnelRange !== "custom") return company.hiringFunnel.ranges[funnelRange].stages;
+    if (!funnelCustomFrom || !funnelCustomTo) return null;
+    const days = Math.round((new Date(funnelCustomTo) - new Date(funnelCustomFrom)) / 86400000) + 1;
+    if (!Number.isFinite(days) || days < 1) return null;
+    const base = company.hiringFunnel.ranges["30d"].stages;
+    return base.map(s => ({ stage: s.stage, value: Math.max(1, Math.round((s.value / 30) * days)), trend: "Estimated from your 30-day daily average" }));
+  }
+
+  function funnelConversionPercent(stages, i) {
+    if (i === 0) return null;
+    return Math.round((stages[i].value / stages[i - 1].value) * 1000) / 10;
+  }
+
+  function getFilteredFaqs() {
+    const q = faqSearchQuery.trim().toLowerCase();
+    if (!q) return company.faqs;
+    return company.faqs.filter(f => f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q));
+  }
+
+  function getSortedRecommendations() {
+    const list = company.executiveRecommendations.slice();
+    if (recommendationSort === "impact") return list.sort((a, b) => parseFloat(b.applicationIncrease) - parseFloat(a.applicationIncrease));
+    if (recommendationSort === "confidence") return list.sort((a, b) => b.confidence - a.confidence);
+    if (recommendationSort === "fastest") return list.sort((a, b) => a.timeWeeks - b.timeWeeks);
+    return list.sort((a, b) => RECOMMENDATION_PRIORITY_META[a.priority].order - RECOMMENDATION_PRIORITY_META[b.priority].order);
+  }
+
+  // Renders at stroke-dashoffset = full circumference (0% filled) with the
+  // real target offset stashed in a data attribute - animateHealthRings()
+  // grows it to the actual score on the next frame, the same "render empty,
+  // animate to target" technique as the funnel bars (a real CSS transition
+  // needs an observable "before" state, which the synchronous initial
+  // render alone can't provide).
+
+  function getFilteredSortedReviews() {
+    let list = company.companyReviews.filter(r => {
+      if (reviewFilters.department !== "all" && r.department !== reviewFilters.department) return false;
+      if (reviewFilters.role !== "all" && r.role !== reviewFilters.role) return false;
+      if (reviewFilters.minRating !== "all" && r.rating < Number(reviewFilters.minRating)) return false;
+      if (reviewFilters.country !== "all" && r.country !== reviewFilters.country) return false;
+      if (reviewFilters.location !== "all" && r.location !== reviewFilters.location) return false;
+      if (reviewFilters.verified && !r.verified) return false;
+      // Graduate/Intern are OR'd together within this one facet (either
+      // toggled type qualifies) rather than ANDed, since a review can only
+      // ever have one employmentType - requiring both would always be empty.
+      if (reviewFilters.graduate || reviewFilters.intern) {
+        const matches = (reviewFilters.graduate && r.employmentType === "Graduate") || (reviewFilters.intern && r.employmentType === "Intern");
+        if (!matches) return false;
+      }
+      return true;
+    });
+    return list.slice().sort((a, b) => reviewSort === "helpful" ? b.helpfulCount - a.helpfulCount : new Date(b.date) - new Date(a.date));
+  }
+
+  function renderReviewCard(r) {
+    const expanded = expandedReviews.has(r.id);
+    const liked = likedReviews.has(r.id);
+    const foundHelpful = helpfulReviews.has(r.id);
+    return `
+      <div class="card emp-review-card ${expanded ? "is-expanded" : ""}" data-review-card="${r.id}">
+        <div class="emp-review-card-head">
+          <div class="emp-review-card-head-main">
+            <div class="emp-review-card-title-row">
+              <h3>${escapeHtml(r.title)}</h3>
+              ${r.verified ? `<span class="emp-review-verified-badge">${icon("badge-check")} Verified</span>` : ""}
+            </div>
+            <p class="emp-review-meta">${escapeHtml(r.role)} · ${escapeHtml(r.department)} · ${escapeHtml(r.location)}, ${escapeHtml(r.country)}</p>
+            <p class="emp-review-meta emp-review-meta-sub">Posted ${escapeHtml(r.date)} · Timeline: ${escapeHtml(r.tenure)}</p>
+          </div>
+          <span class="pill green">${r.rating} / 5</span>
+        </div>
+
+        <div class="emp-review-card-fields">
+          <div class="emp-review-field emp-review-field--pros">
+            <span class="emp-tags-label">${icon("thumbs-up")} Pros</span>
+            <p>${escapeHtml(r.pros)}</p>
+          </div>
+          <div class="emp-review-field emp-review-field--cons">
+            <span class="emp-tags-label">${icon("thumbs-down")} Cons</span>
+            <p>${escapeHtml(r.cons)}</p>
+          </div>
+        </div>
+
+        <div class="emp-review-card-expand" ${expanded ? "" : "hidden"}>
+          <div class="emp-review-field">
+            <span class="emp-tags-label">${icon("lightbulb")} Advice to Management</span>
+            <p>${escapeHtml(r.advice)}</p>
+          </div>
+          ${r.managerResponse ? `
+            <div class="emp-review-manager-response">
+              <div class="emp-callout-label">${icon("building-2")} Response from ${escapeHtml(company.name)}</div>
+              <p>${escapeHtml(r.managerResponse)}</p>
+            </div>
+          ` : ""}
+        </div>
+
+        <div class="emp-review-card-footer">
+          <button type="button" class="emp-review-action-btn ${liked ? "is-active" : ""}" data-review-like="${r.id}">
+            ${icon("heart")}<span>${r.likes + (liked ? 1 : 0)}</span>
+          </button>
+          <button type="button" class="emp-review-action-btn ${foundHelpful ? "is-active" : ""}" data-review-helpful="${r.id}">
+            ${icon("thumbs-up")}<span>${r.helpfulCount + (foundHelpful ? 1 : 0)} found this helpful</span>
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm emp-review-expand-toggle" data-review-toggle="${r.id}">
+            ${expanded ? "Show less" : "Read more"}${icon(expanded ? "chevron-up" : "chevron-down")}
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-company-respond-review>Respond to review</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderSalaryLevel(lvl, i) {
+    const { cls, label } = salaryDiffInfo(lvl.company, lvl.market);
+    const barMax = Math.max(lvl.company, lvl.market);
+    const companyPct = Math.round((lvl.company / barMax) * 100);
+    const marketPct = Math.round((lvl.market / barMax) * 100);
+    const expanded = expandedSalaryLevels.has(i);
+    const diffIcon = cls === "positive" ? "trending-up" : cls === "negative" ? "trending-down" : "minus";
+    return `
+      <div class="emp-salary-level ${expanded ? "is-expanded" : ""}">
+        <button type="button" class="emp-salary-level-head" data-salary-toggle="${i}" aria-expanded="${expanded}">
+          <span class="emp-salary-level-name">${escapeHtml(lvl.level)}</span>
+          <div class="emp-salary-level-figures">
+            <span class="emp-salary-figure"><small>Company</small><strong>${money(lvl.company)}</strong></span>
+            <span class="emp-salary-figure"><small>Market</small><strong>${money(lvl.market)}</strong></span>
+            <span class="emp-salary-diff emp-salary-diff--${cls}">${icon(diffIcon)}${label}</span>
+          </div>
+          <span class="emp-salary-chevron">${icon("chevron-down")}</span>
+        </button>
+        <div class="emp-salary-bars">
+          <div class="emp-salary-bar-row">
+            <span class="emp-salary-bar-label">Company</span>
+            <div class="emp-salary-bar-track"><div class="emp-salary-bar-fill emp-salary-bar-fill--company" style="width:${companyPct}%"></div></div>
+          </div>
+          <div class="emp-salary-bar-row">
+            <span class="emp-salary-bar-label">Market</span>
+            <div class="emp-salary-bar-track"><div class="emp-salary-bar-fill emp-salary-bar-fill--market" style="width:${marketPct}%"></div></div>
+          </div>
+        </div>
+        <div class="emp-salary-level-detail emp-requirements-grid" ${expanded ? "" : "hidden"}>
+          <div class="emp-stat-row"><span>Company range</span><strong>${money(lvl.companyRange[0])}–${money(lvl.companyRange[1])}</strong></div>
+          <div class="emp-stat-row"><span>Market range</span><strong>${money(lvl.marketRange[0])}–${money(lvl.marketRange[1])}</strong></div>
+          <div class="emp-stat-row"><span>Open roles at this level</span><strong>${lvl.openRoles}</strong></div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Lightweight, self-contained candidate-facing preview - the wizard has a
+  // richer version (renderJobPreviewContent/openRolePreviewModal), but it's
+  // closure-scoped to renderEmployerRoleBuilder and not reachable from here.
+  // Reuses the same .emp-job-preview-* CSS classes for visual consistency.
+  function openRoleApplyPreview(r) {
+    const responsibilities = (r.responsibilities || []).filter(Boolean);
+    openEmpModal(`role-apply-preview-${r.id}`, `
+      <div class="emp-job-preview-frame">
+        <div class="emp-job-preview-company">
+          <span class="emp-job-preview-logo">${escapeHtml(company.name.charAt(0))}</span>
+          <strong>${escapeHtml(company.name)}</strong>
+          ${company.verified ? `<span class="pill cyan">${icon("shield-check")} Verified</span>` : ""}
+        </div>
+        <h2>${escapeHtml(r.title)}</h2>
+        <div class="emp-job-preview-meta">${[r.location, r.workMode, r.employmentType].filter(Boolean).map(escapeHtml).join(" · ")}</div>
+        ${r.salary?.min && r.salary?.max ? `<div class="emp-job-preview-salary">${escapeHtml(r.salary.currency)} ${r.salary.min.toLocaleString()} – ${r.salary.max.toLocaleString()} / ${r.salary.period.toLowerCase()}</div>` : ""}
+        <h3>About the role</h3>
+        <p>${escapeHtml(r.roleSummary || "No summary added yet.")}</p>
+        ${responsibilities.length ? `<h3>What you'll do</h3><ul>${responsibilities.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>` : ""}
+        ${r.mustHaveSkills?.length ? `<h3>Must-have skills</h3><div class="pill-row">${r.mustHaveSkills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>` : ""}
+        <button type="button" class="btn btn-primary" disabled>Apply</button>
+      </div>
+    `, { label: `${r.title} - candidate preview`, className: "emp-preview-modal-card" });
+  }
+
+  function openCareerPathNodeModal(node, index) {
+    openEmpModal(`career-node-${index}`, `
+      <div class="emp-career-node-modal">
+        <div class="emp-career-node-modal-head">
+          <span class="emp-career-node-modal-index">${index + 1}</span>
+          <div>
+            <h2>${escapeHtml(node.role)}</h2>
+            <p>${index === 0 ? "Entry point of this career path" : `Stage ${index + 1} of ${company.careerPath.length}`}</p>
+          </div>
+        </div>
+        <div class="emp-requirements-grid emp-career-node-modal-stats">
+          <div class="emp-stat-row"><span>Average promotion time</span><strong>${node.avgTimeToReach ? escapeHtml(node.avgTimeToReach) : "Entry level"}</strong></div>
+          <div class="emp-stat-row"><span>Typical salary</span><strong>${money(node.salary.min)}–${money(node.salary.max)} / month</strong></div>
+        </div>
+        <div class="emp-career-node-modal-section">
+          <span class="emp-tags-label">Skills required</span>
+          <div class="pill-row">${node.skills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div>
+        </div>
+        <div class="emp-career-node-modal-section">
+          <span class="emp-tags-label">Recommended learning</span>
+          <ul>${node.learning.map(l => `<li>${escapeHtml(l)}</li>`).join("")}</ul>
+        </div>
+      </div>
+    `, { label: `${node.role} - career path stage`, className: "emp-career-node-modal-card" });
+  }
+
+  function draw() {
+    const openRoles = sortRoles(DATA.employerRoles.filter(r => r.status === "Open"));
+    const rolesToShow = showAllRoles ? openRoles : openRoles.slice(0, 4);
+    const filteredReviews = getFilteredSortedReviews();
+    const reviewsToShow = filteredReviews.slice(0, reviewsLoadedCount);
+    const reviewDepartments = uniqueSorted(company.companyReviews.map(r => r.department));
+    const reviewRoles = uniqueSorted(company.companyReviews.map(r => r.role));
+    const reviewCountries = uniqueSorted(company.companyReviews.map(r => r.country));
+    const reviewLocations = uniqueSorted(company.companyReviews.map(r => r.location));
+    const funnelStages = getFunnelStages();
+    const filteredFaqs = getFilteredFaqs();
+    const sortedRecommendations = getSortedRecommendations();
+    const completeness = computeCompanyCompleteness(company);
+
+    // The FAQ search input redraws on every keystroke (root.innerHTML is
+    // replaced wholesale), which would otherwise drop focus and reset the
+    // cursor to the end after each character - capture both before the
+    // replace and restore them on the fresh input node afterward.
+    const faqSearchEl = qs("[data-faq-search]", root);
+    const faqSearchHadFocus = document.activeElement === faqSearchEl;
+    const faqSearchSelection = faqSearchHadFocus ? [faqSearchEl.selectionStart, faqSearchEl.selectionEnd] : null;
+
+    root.innerHTML = `
+      <div class="emp-view-header">
+        <div>
+          <span class="emp-section-label">Company Profile</span>
+          <h1>How candidates see your company.</h1>
+          <p>Manage the information, reputation and signals that shape candidate interest.</p>
+        </div>
+      </div>
+
+      <div class="card emp-company-hero">
+        <div class="emp-company-hero-left">
+          <div class="emp-company-hero-identity">
+            <span class="emp-company-logo emp-company-hero-logo">${company.name.charAt(0)}</span>
+            <div class="emp-company-name-row"><h2>${company.name}</h2>${company.verified ? `<span class="pill cyan">${icon("shield-check")} Verified company</span>` : ""}</div>
+          </div>
+          <div class="emp-company-hero-facts">
+            <div class="emp-company-hero-fact"><span>Industry</span><strong>${company.industry}</strong></div>
+            <div class="emp-company-hero-fact"><span>Headquarters</span><strong>${company.location}</strong></div>
+            <div class="emp-company-hero-fact"><span>Employee count</span><strong>${company.size}</strong></div>
+            <div class="emp-company-hero-fact"><span>Followers</span><strong>${company.followers.toLocaleString()}</strong></div>
+            <div class="emp-company-hero-fact"><span>Active roles</span><strong>${openRoles.length}</strong></div>
+            <div class="emp-company-hero-fact"><span>Work arrangement</span><strong>${company.workMode}</strong></div>
+          </div>
+          <div class="emp-company-hero-chips">
+            <span class="emp-company-hero-chip">${icon("star")} ${company.rating} Employee Rating</span>
+            ${company.activelyHiring ? `<span class="emp-company-hero-chip emp-company-hero-chip--positive">${icon("zap")} Hiring Actively</span>` : ""}
+            <span class="emp-company-hero-chip">${icon("clock")} Average Response Time: ${company.avgResponseDays} Days</span>
+            <span class="emp-company-hero-chip">${icon("target")} Candidate Match Score: ${company.avgCandidateMatchScore}%</span>
+          </div>
+        </div>
+        <div class="emp-company-hero-right">
+          <div class="emp-company-hero-actions">
+            <button type="button" class="btn btn-primary" data-company-edit>Edit Profile</button>
+            <a class="btn btn-ghost" href="companies.html?org=${company.id}" target="_blank" rel="noopener">Preview Candidate View</a>
+            <button type="button" class="btn btn-ghost" data-company-share>Share Public Profile</button>
+            <div class="emp-company-hero-menu-wrap">
+              <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-company-menu aria-haspopup="menu" aria-expanded="false">${icon("more-horizontal")}</button>
+              <div class="emp-actions-menu" data-company-menu-panel hidden>
+                <button type="button" data-company-share>Share public profile</button>
+              </div>
+            </div>
+          </div>
+          <div class="emp-company-hero-kpis">
+            <div class="emp-company-hero-kpi">
+              <strong>${company.healthScore}<span class="emp-company-hero-kpi-suffix">/100</span></strong>
+              <span class="emp-company-hero-kpi-label">Company Health</span>
+            </div>
+            <div class="emp-company-hero-kpi">
+              <strong>${company.hiringActivityLevel}</strong>
+              <span class="emp-company-hero-kpi-label">Hiring Activity</span>
+            </div>
+            <div class="emp-company-hero-kpi">
+              <strong>${company.applicationConversionRate}%</strong>
+              <span class="emp-company-hero-kpi-label">Application Conversion</span>
+            </div>
+            <div class="emp-company-hero-kpi">
+              <strong>${completeness}%</strong>
+              <span class="emp-company-hero-kpi-label">Profile Completeness</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-tabs-sentinel></div>
+      <div class="emp-detail-tabs" data-company-nav>
+        <span class="emp-detail-tabs-underline" data-tabs-underline></span>
+        <a href="#comp-overview" data-jump="comp-overview">Overview</a>
+        <a href="#comp-roles" data-jump="comp-roles">Roles</a>
+        <a href="#comp-requirements" data-jump="comp-requirements">Requirements</a>
+        <a href="#comp-hiring" data-jump="comp-hiring">Hiring</a>
+        <a href="#comp-salary" data-jump="comp-salary">Salary &amp; Benefits</a>
+        <a href="#comp-growth" data-jump="comp-growth">Growth &amp; Culture</a>
+        <a href="#comp-reviews" data-jump="comp-reviews">Reviews</a>
+        <a href="#comp-insights" data-jump="comp-insights">Insights</a>
+        <a href="#comp-health" data-jump="comp-health">Health Score</a>
+        <a href="#comp-compare" data-jump="comp-compare">Compare</a>
+        <a href="#comp-faq" data-jump="comp-faq">FAQ</a>
+        <a href="#comp-actions" data-jump="comp-actions">Actions</a>
+      </div>
+
+      <div class="card emp-company-section" id="comp-overview">
+        <div class="emp-company-section-head"><h2>Company at a Glance</h2>${sourceTag("Company provided")}</div>
+        <div class="emp-glance-grid">
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("building-2")}</span>
+            <span class="emp-glance-label">Industry</span>
+            <strong class="emp-glance-value">${escapeHtml(company.industry)}</strong>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("users")}</span>
+            <span class="emp-glance-label">Employee Size</span>
+            <strong class="emp-glance-value">${escapeHtml(company.size)}</strong>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("calendar")}</span>
+            <span class="emp-glance-label">Founded</span>
+            <strong class="emp-glance-value">${company.founded}</strong>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("map-pin")}</span>
+            <span class="emp-glance-label">Headquarters</span>
+            <strong class="emp-glance-value">${escapeHtml(company.location)}</strong>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("laptop")}</span>
+            <span class="emp-glance-label">Work Mode</span>
+            <strong class="emp-glance-value">${escapeHtml(company.workMode)}</strong>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("globe")}</span>
+            <span class="emp-glance-label">Website</span>
+            <a class="emp-glance-value emp-glance-link" href="https://${escapeHtml(company.website)}" target="_blank" rel="noopener">${escapeHtml(company.website)}</a>
+          </div>
+          <div class="emp-glance-card">
+            <span class="emp-glance-icon">${icon("map")}</span>
+            <span class="emp-glance-label">Office Locations</span>
+            <div class="emp-glance-value emp-glance-list">${company.officeLocations.map(loc => `<span>${escapeHtml(loc)}</span>`).join("")}</div>
+          </div>
+        </div>
+        <p class="emp-company-description">${company.summary}</p>
+        <div class="emp-tags">
+          <span class="emp-tags-label">Profile characteristics ${sourceTag("Verified by CareerGo")}</span>
+          <div class="pill-row">${company.tags.map(t => `<span class="pill">${t}</span>`).join("")}</div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-roles">
+        <div class="emp-company-section-head">
+          <div><h2>Roles Candidates Can Explore</h2><p>Current opportunities and common career paths associated with your company.</p></div>
+          <div class="emp-role-sort-row">
+            <label class="emp-role-sort-label">
+              Sort by
+              <select data-role-sort>
+                ${ROLE_SORT_OPTIONS.map(([key, label]) => `<option value="${key}" ${roleSort === key ? "selected" : ""}>${label}</option>`).join("")}
+              </select>
+            </label>
+            <button type="button" class="btn btn-ghost btn-sm" data-company-manage-roles>Manage roles</button>
+          </div>
+        </div>
+        <div class="emp-company-role-list">
+          ${rolesToShow.length ? rolesToShow.map(r => `
+            <div class="emp-role-card">
+              <div class="emp-role-card-main">
+                <div class="emp-role-card-title-row">
+                  <strong class="emp-role-card-title">${escapeHtml(r.title)}</strong>
+                  <span class="pill green emp-role-card-status">${escapeHtml(r.status)}</span>
+                </div>
+                <p class="emp-role-card-meta">${[r.department, r.location, r.workMode].filter(Boolean).map(escapeHtml).join(" · ")}</p>
+                <p class="emp-role-card-salary">${formatRoleSalary(r)}</p>
+                <div class="emp-role-card-stats">
+                  <span class="emp-role-card-stat">${icon("briefcase")} ${escapeHtml(r.minExperience || "—")}</span>
+                  <span class="emp-role-card-stat">${icon("users")} ${r.applicants} Applicants</span>
+                  <span class="emp-role-card-stat">${icon("clock")} Average Response ${r.avgHiringDays != null ? `${r.avgHiringDays} Days` : "—"}</span>
+                  <span class="emp-role-card-stat">${icon("trending-up")} Career Growth ${r.careerGrowthScore}</span>
+                  <span class="emp-role-card-stat">${icon("target")} Candidate Match ${r.avgCandidateMatch}%</span>
+                </div>
+              </div>
+              <div class="emp-role-card-side">
+                <button type="button" class="btn btn-ghost btn-sm" data-company-role-preview="${r.id}">${icon("eye")} Apply Preview</button>
+                <button type="button" class="btn btn-primary btn-sm" data-company-view-role="${r.id}">View Details</button>
+              </div>
+            </div>
+          `).join("") : `<p class="emp-empty-hint">No open roles right now.</p>`}
+        </div>
+        ${openRoles.length > 4 ? `<button type="button" class="btn btn-ghost btn-sm" data-company-toggle-roles>${showAllRoles ? "Show fewer roles" : `Show all ${openRoles.length} roles`}</button>` : ""}
+      </div>
+
+      <div class="card emp-company-section" id="comp-requirements">
+        <div class="emp-company-section-head"><h2>What Candidates Usually Need</h2>${sourceTag("Company provided")}</div>
+        <p class="emp-company-section-desc">Typical requirements candidates should understand before applying.</p>
+        <p class="emp-req-experience-note"><strong>Experience:</strong> ${escapeHtml(company.averageRequirements.experience)}</p>
+        <div class="emp-req-tier">
+          <h3 class="emp-req-tier-heading">Required</h3>
+          <div class="emp-req-chip-row">${company.requirementTiers.required.map(r => `<span class="emp-req-chip emp-req-chip--required">${escapeHtml(r)}</span>`).join("")}</div>
+        </div>
+        <div class="emp-req-tier">
+          <h3 class="emp-req-tier-heading">Preferred</h3>
+          <div class="emp-req-chip-row">${company.requirementTiers.preferred.map(r => `<span class="emp-req-chip emp-req-chip--preferred">${escapeHtml(r)}</span>`).join("")}</div>
+        </div>
+        <div class="emp-req-tier">
+          <h3 class="emp-req-tier-heading">Bonus</h3>
+          <div class="emp-req-chip-row">${company.requirementTiers.bonus.map(r => `<span class="emp-req-chip emp-req-chip--bonus">${escapeHtml(r)}</span>`).join("")}</div>
+        </div>
+        <div class="emp-vera-insight-box">
+          <div class="emp-callout-label">${icon("sparkles")} Vera Insight</div>
+          <p>Candidates with these skills have a <strong>${company.requirementsInsight.higherInterviewRatePercent}% higher</strong> interview rate.</p>
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-hiring">
+        <div class="emp-company-section-head"><h2>How Hiring Works</h2>${sourceTag("Company provided")}</div>
+        <p class="emp-company-section-desc">Help candidates understand what usually happens after they apply.</p>
+        <div class="emp-timeline" data-timeline>
+          ${company.hiringTimeline.map((s, i) => `
+            <div class="emp-timeline-stage ${s.isCurrent ? "emp-timeline-stage--current" : ""}" data-timeline-stage style="transition-delay:${i * 80}ms" tabindex="0">
+              <div class="emp-timeline-node">
+                <span class="emp-timeline-dot">${icon(s.icon)}</span>
+                ${i < company.hiringTimeline.length - 1 ? `<span class="emp-timeline-connector"></span>` : ""}
+              </div>
+              <strong class="emp-timeline-stage-name">${escapeHtml(s.stage)}</strong>
+              <div class="emp-timeline-stat-row">
+                <span>${s.avgDays}d avg</span>
+                <span>${s.dropOffPercent}% drop-off</span>
+                <span>${100 - s.dropOffPercent}% success</span>
+              </div>
+              <div class="emp-timeline-tooltip" role="tooltip">${escapeHtml(s.tooltip)}</div>
+            </div>
+          `).join("")}
+        </div>
+        <div class="emp-requirements-grid">
+          <div class="emp-stat-row"><span>Typical duration</span><strong>${company.hiringProcess.avgResponseTime}</strong></div>
+          <div class="emp-stat-row"><span>Interview rounds</span><strong>${company.hiringProcess.steps.length}</strong></div>
+          <div class="emp-stat-row"><span>Assessment</span><strong>${company.hiringProcess.assessmentNote}</strong></div>
+          <div class="emp-stat-row"><span>Candidate feedback</span><strong>Varies by role</strong></div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-salary">
+        <div class="emp-company-section-head"><h2>Salary &amp; Benefits</h2>${sourceTag("Company provided + live roles")}</div>
+        <p class="emp-company-section-desc">How pay compares to the market at every level, and what candidates receive beyond salary.</p>
+
+        <div class="emp-salary-meta-grid">
+          <div class="emp-salary-meta-tile">
+            <span>Industry Percentile</span>
+            <strong>${company.salaryComparison.industryPercentile}<sup>${ordinalSuffix(company.salaryComparison.industryPercentile)}</sup></strong>
+            <p>Pays above ${company.salaryComparison.industryPercentile}% of industry peers</p>
+          </div>
+          <div class="emp-salary-meta-tile">
+            <span>Salary Transparency Score</span>
+            <strong>${company.salaryComparison.transparencyScore}<small>/100</small></strong>
+            <p>${company.salaryComparison.transparencyScore >= 80 ? "Most roles publish clear ranges" : company.salaryComparison.transparencyScore >= 50 ? "Some roles are missing published ranges" : "Most roles don't publish a range yet"}</p>
+          </div>
+        </div>
+
+        <div class="emp-salary-levels">
+          ${company.salaryComparison.levels.map((lvl, i) => renderSalaryLevel(lvl, i)).join("")}
+        </div>
+
+        <div class="card emp-vera-insight-box">
+          <div class="emp-callout-label">${icon("sparkles")} Vera Insight</div>
+          <p>${company.salaryComparison.aiInsight.text} <span class="emp-insight-confidence">${company.salaryComparison.aiInsight.confidencePercent}% confidence</span></p>
+        </div>
+
+        <div class="emp-salary-benefits-sub">
+          <h3>Benefits</h3>
+          <div class="emp-requirements-grid">
+            <div class="emp-stat-row"><span>Bonus / incentives</span><strong>${company.salaryBenefits.bonus}</strong></div>
+            <div class="emp-stat-row"><span>Medical benefits</span><strong>${company.salaryBenefits.medical}</strong></div>
+            <div class="emp-stat-row"><span>Flexible work</span><strong>${company.salaryBenefits.flexibleWork}</strong></div>
+            <div class="emp-stat-row"><span>Training</span><strong>${company.salaryBenefits.training}</strong></div>
+            <div class="emp-stat-row"><span>Leave benefits</span><strong>${company.salaryBenefits.leave}</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-growth">
+        <div class="emp-company-section-head"><h2>Growth &amp; Development</h2>${sourceTag("Company provided")}</div>
+        <p class="emp-company-section-desc">How people learn, move and progress inside the company.</p>
+        <div class="emp-requirements-grid">
+          <div class="emp-stat-row"><span>Training quality</span><strong>${company.careerGrowth.trainingQuality}</strong></div>
+          <div class="emp-stat-row"><span>Promotion path</span><strong>${company.careerGrowth.promotionPath}</strong></div>
+          <div class="emp-stat-row"><span>Graduate program</span><strong>${company.careerGrowth.graduateProgram}</strong></div>
+          <div class="emp-stat-row"><span>Mentorship</span><strong>${company.careerGrowth.mentorship}</strong></div>
+          <div class="emp-stat-row"><span>Internal transfer</span><strong>${company.careerGrowth.internalTransfer}</strong></div>
+          <div class="emp-stat-row"><span>Learning opportunities</span><strong>${company.careerGrowth.learningOpportunities}</strong></div>
+        </div>
+
+        <div class="emp-career-path-sub">
+          <h3>Career Path</h3>
+          <p class="emp-career-path-hint">A typical progression through this company. Click a stage for promotion time, required skills, salary and recommended learning.</p>
+          <div class="emp-career-path" data-career-path>
+            ${company.careerPath.map((node, i) => `
+              ${i > 0 ? `
+                <div class="emp-career-path-connector" data-career-connector="${i}">
+                  <span class="emp-career-path-connector-line"></span>
+                  <span class="emp-career-path-connector-time">${escapeHtml(node.avgTimeToReach)}</span>
+                </div>
+              ` : ""}
+              <button type="button" class="emp-career-path-node" data-career-node="${i}">
+                <span class="emp-career-path-node-index">${i + 1}</span>
+                <span class="emp-career-path-node-body">
+                  <span class="emp-career-path-node-role">${escapeHtml(node.role)}</span>
+                  <span class="emp-career-path-node-salary">${money(node.salary.min)}–${money(node.salary.max)} / month</span>
+                </span>
+                <span class="emp-career-path-node-arrow">${icon("chevron-right")}</span>
+              </button>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section">
+        <div class="emp-company-section-head"><h2>Work Culture</h2></div>
+        <p class="emp-company-section-desc">What day-to-day work may feel like.</p>
+        <div class="emp-requirements-grid">
+          <div class="emp-stat-row"><span>Pace</span><strong>${company.workCulture.pace}</strong></div>
+          <div class="emp-stat-row"><span>Team style</span><strong>${company.workCulture.teamStyle}</strong></div>
+          <div class="emp-stat-row"><span>Work-life balance</span><strong>${company.workCulture.workLifeBalance}</strong></div>
+          <div class="emp-stat-row"><span>Management style ${sourceTag("Employee reviews")}</span><strong>${company.workCulture.managementStyle}</strong></div>
+          <div class="emp-stat-row"><span>Collaboration</span><strong>${company.workCulture.collaboration}</strong></div>
+          <div class="emp-stat-row"><span>Overtime signal ${sourceTag("Employee reviews")}</span><strong>${company.workCulture.overtimeSignal}</strong></div>
+          <div class="emp-stat-row"><span>Review themes ${sourceTag("Employee reviews")}</span><strong>${company.workCulture.reviewThemes}</strong></div>
+        </div>
+        <div class="emp-highlight-watchout-grid">
+          <div class="card emp-highlight-card">
+            <div class="emp-callout-label">${icon("check")} What candidates like ${sourceTag("Vera Insight")}</div>
+            <ul>${company.highlights.map(h => `<li>${h}</li>`).join("")}</ul>
+          </div>
+          <div class="card emp-watchout-card">
+            <div class="emp-callout-label warn">${icon("alert-triangle")} What candidates should know ${sourceTag("Vera Insight")}</div>
+            <ul>${company.watchouts.map(w => `<li>${w}</li>`).join("")}</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-reviews">
+        <div class="emp-company-section-head"><h2>Reputation &amp; Employee Voice</h2>${sourceTag("Employee reviews")}</div>
+        <p class="emp-company-section-desc">What employees consistently say about working here.</p>
+        <div class="emp-score-grid">
+          <div class="emp-score-tile main"><strong>${company.rating}</strong><span>Overall</span></div>
+          <div class="emp-score-tile"><strong>${company.scores.culture}</strong><span>Culture</span></div>
+          <div class="emp-score-tile"><strong>${company.scores.growth}</strong><span>Growth</span></div>
+          <div class="emp-score-tile"><strong>${company.scores.pay}</strong><span>Pay</span></div>
+          <div class="emp-score-tile"><strong>${company.scores.balance}</strong><span>Work-life balance</span></div>
+        </div>
+
+        <div class="emp-review-filter-bar">
+          <div class="emp-review-filter-selects">
+            <select data-review-filter="department" aria-label="Filter by department">
+              <option value="all">All Departments</option>
+              ${reviewDepartments.map(d => `<option value="${escapeHtml(d)}" ${reviewFilters.department === d ? "selected" : ""}>${escapeHtml(d)}</option>`).join("")}
+            </select>
+            <select data-review-filter="role" aria-label="Filter by role">
+              <option value="all">All Roles</option>
+              ${reviewRoles.map(r => `<option value="${escapeHtml(r)}" ${reviewFilters.role === r ? "selected" : ""}>${escapeHtml(r)}</option>`).join("")}
+            </select>
+            <select data-review-filter="minRating" aria-label="Filter by rating">
+              <option value="all">Any Rating</option>
+              <option value="4" ${reviewFilters.minRating === "4" ? "selected" : ""}>4+ stars</option>
+              <option value="3" ${reviewFilters.minRating === "3" ? "selected" : ""}>3+ stars</option>
+              <option value="2" ${reviewFilters.minRating === "2" ? "selected" : ""}>2+ stars</option>
+            </select>
+            <select data-review-filter="country" aria-label="Filter by country">
+              <option value="all">All Countries</option>
+              ${reviewCountries.map(c => `<option value="${escapeHtml(c)}" ${reviewFilters.country === c ? "selected" : ""}>${escapeHtml(c)}</option>`).join("")}
+            </select>
+            <select data-review-filter="location" aria-label="Filter by location">
+              <option value="all">All Locations</option>
+              ${reviewLocations.map(l => `<option value="${escapeHtml(l)}" ${reviewFilters.location === l ? "selected" : ""}>${escapeHtml(l)}</option>`).join("")}
+            </select>
+            <select data-review-sort aria-label="Sort reviews">
+              <option value="newest" ${reviewSort === "newest" ? "selected" : ""}>Newest</option>
+              <option value="helpful" ${reviewSort === "helpful" ? "selected" : ""}>Most Helpful</option>
+            </select>
+          </div>
+          <div class="emp-review-filter-chips">
+            <button type="button" class="emp-review-chip ${reviewFilters.verified ? "active" : ""}" data-review-toggle-filter="verified">${icon("badge-check")} Verified</button>
+            <button type="button" class="emp-review-chip ${reviewFilters.graduate ? "active" : ""}" data-review-toggle-filter="graduate">Graduate</button>
+            <button type="button" class="emp-review-chip ${reviewFilters.intern ? "active" : ""}" data-review-toggle-filter="intern">Intern</button>
+            ${JSON.stringify(reviewFilters) !== JSON.stringify({ department: "all", role: "all", minRating: "all", country: "all", location: "all", verified: false, graduate: false, intern: false }) ? `<button type="button" class="btn btn-ghost btn-sm" data-review-clear-filters>Clear filters</button>` : ""}
+          </div>
+        </div>
+
+        <p class="emp-empty-hint" data-review-count>${filteredReviews.length.toLocaleString()} of ${company.reviews.toLocaleString()} reviews${filteredReviews.length !== company.companyReviews.length ? " match your filters" : ""}</p>
+
+        <div class="emp-review-list" data-review-list>
+          ${reviewsToShow.map(renderReviewCard).join("")}
+          ${filteredReviews.length === 0 ? `<div class="emp-review-empty-state">${icon("search-x")}<p>No reviews match your filters.</p><button type="button" class="btn btn-ghost btn-sm" data-review-clear-filters>Clear filters</button></div>` : ""}
+        </div>
+
+        ${reviewsLoadedCount < filteredReviews.length ? `
+          <div class="emp-review-infinite-sentinel" data-review-sentinel>
+            <span class="emp-review-loading-spinner"></span> Loading more reviews…
+          </div>
+        ` : ""}
+      </div>
+
+      <div class="card emp-company-section" id="comp-insights">
+        <div class="emp-company-section-head"><h2>How Candidates See Your Company</h2></div>
+        <p class="emp-company-section-desc">Candidate behaviour, profile quality and reputation signals — explained in one place.</p>
+
+        <div class="emp-company-subsection">
+          <span class="emp-tags-label">Hiring Funnel ${sourceTag("Candidate activity")}</span>
+          <div class="emp-funnel-range-row">
+            <div class="emp-funnel-range-tabs">
+              ${[["30d", "30 days"], ["90d", "90 days"], ["12mo", "12 months"], ["custom", "Custom"]].map(([key, label]) => `
+                <button type="button" class="emp-funnel-range-tab ${funnelRange === key ? "active" : ""}" data-funnel-range="${key}">${label}</button>
+              `).join("")}
+            </div>
+            ${funnelRange === "custom" ? `
+              <div class="emp-funnel-custom-dates">
+                <label>From <input type="date" data-funnel-custom-from value="${funnelCustomFrom}"></label>
+                <label>To <input type="date" data-funnel-custom-to value="${funnelCustomTo}"></label>
+              </div>
+            ` : ""}
+          </div>
+
+          ${funnelStages ? `
+            <div class="emp-funnel" data-funnel>
+              ${funnelStages.map((s, i) => {
+                const pct = funnelConversionPercent(funnelStages, i);
+                const widthPct = Math.round((s.value / funnelStages[0].value) * 100);
+                return `
+                  ${i > 0 ? `
+                    <div class="emp-funnel-arrow">
+                      ${icon("chevron-down")}
+                      ${pct !== null ? `<span class="emp-funnel-conversion">${pct}%</span>` : ""}
+                    </div>
+                  ` : ""}
+                  <div class="emp-funnel-stage" style="opacity:${(1 - i * 0.08).toFixed(2)}">
+                    <div class="emp-funnel-stage-head">
+                      <span class="emp-funnel-stage-label">${escapeHtml(s.stage)}</span>
+                      <span class="emp-funnel-stage-value">${s.value.toLocaleString()}</span>
+                    </div>
+                    <div class="emp-funnel-bar-track">
+                      <div class="emp-funnel-bar-fill" data-funnel-bar data-target-width="${widthPct}" style="width:0%"></div>
+                    </div>
+                    <div class="emp-funnel-tooltip" role="tooltip">${escapeHtml(s.trend)}</div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          ` : `<p class="emp-empty-hint">Select a start and end date to see funnel data for that range.</p>`}
+        </div>
+
+        <div class="emp-company-subsection">
+          <span class="emp-tags-label">Reputation summary ${sourceTag("Vera Insight")}</span>
+          <div class="emp-requirements-grid">
+            <div class="emp-stat-row"><span>Strongest signal</span><strong>${company.reputationSummary.strongestSignal.label} — ${company.reputationSummary.strongestSignal.value}</strong></div>
+            <div class="emp-stat-row"><span>Most common positive theme</span><strong>${company.reputationSummary.mostCommonPositive}</strong></div>
+            <div class="emp-stat-row"><span>Biggest candidate question</span><strong>${company.reputationSummary.biggestQuestion}</strong></div>
+            <div class="emp-stat-row"><span>Most common watchout</span><strong>${company.reputationSummary.mostCommonWatchout}</strong></div>
+          </div>
+          <p class="emp-empty-hint">${company.reputationSummary.basis}</p>
+        </div>
+
+        <div class="emp-company-subsection" id="comp-gaps">
+          <span class="emp-tags-label">What candidates still need to know</span>
+          <ul class="emp-gap-list">${company.profileGaps.map(g => `<li>${icon("alert-triangle")} ${g}</li>`).join("")}</ul>
+        </div>
+
+        <div class="emp-company-vera-card">
+          <div class="emp-company-vera-card-head">
+            <span class="emp-company-vera-card-icon">${icon("sparkles")}</span>
+            <h3>Vera Insight</h3>
+            <span class="emp-vera-insight-confidence-badge">${icon("shield-check")} ${company.veraCompanyRead.confidencePercent}% confidence</span>
+          </div>
+          <p class="emp-company-vera-card-summary">${escapeHtml(company.veraCompanyRead.summary)}</p>
+
+          <div class="emp-company-vera-card-grid">
+            <div class="emp-company-vera-card-col">
+              <span class="emp-tags-label">Strengths</span>
+              <ul>${company.veraCompanyRead.strengths.map(s => `<li>${icon("check")} ${escapeHtml(s)}</li>`).join("")}</ul>
+            </div>
+            <div class="emp-company-vera-card-col">
+              <span class="emp-tags-label">Weaknesses</span>
+              <ul>${company.veraCompanyRead.weaknesses.map(w => `<li>${icon("alert-triangle")} ${escapeHtml(w)}</li>`).join("")}</ul>
+            </div>
+          </div>
+
+          <div class="emp-company-vera-card-section">
+            <span class="emp-tags-label">Recommended Actions</span>
+            <div class="emp-vera-rec-list">
+              ${company.veraCompanyRead.recommendedActions.map(rec => `
+                <div class="emp-vera-rec-card">
+                  <p class="emp-vera-rec-action">${escapeHtml(rec.action)}</p>
+                  <div class="emp-vera-rec-stats">
+                    <span class="emp-vera-rec-stat"><small>Difficulty</small><strong class="emp-vera-rec-difficulty emp-vera-rec-difficulty--${rec.difficulty.toLowerCase()}">${escapeHtml(rec.difficulty)}</strong></span>
+                    <span class="emp-vera-rec-stat"><small>Expected Impact</small><strong class="emp-vera-rec-impact">${escapeHtml(rec.expectedImpact)}</strong></span>
+                    <span class="emp-vera-rec-stat"><small>Confidence</small><strong class="emp-vera-rec-confidence">${rec.confidencePercent}%</strong></span>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+
+          <div class="emp-vera-insight-predicted">
+            <span class="emp-tags-label">Predicted Impact</span>
+            <strong>${escapeHtml(company.veraCompanyRead.predictedImpact.headline)}</strong>
+            <p>${escapeHtml(company.veraCompanyRead.predictedImpact.note)}</p>
+          </div>
+
+          <div class="emp-company-vera-card-actions">
+            <button type="button" class="btn btn-primary" data-company-edit>Edit profile</button>
+            <button type="button" class="btn btn-ghost" data-company-jump-gaps>Review missing information</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-health">
+        <div class="emp-company-section-head"><h2>AI Health Score</h2>${sourceTag("Vera Insight")}</div>
+        <p class="emp-company-section-desc">A weighted, AI-scored breakdown of employer brand health, with the reasoning and improvement plan behind every number.</p>
+
+        <div class="emp-health-overview">
+          <div class="emp-health-overview-ring">
+            ${renderHealthRing(company.healthDashboard.overallScore, { size: 168, strokeWidth: 14 })}
+            <span class="emp-health-overview-label">Overall Company Health</span>
+          </div>
+          <div class="emp-health-overview-detail">
+            <p>${icon("sparkles")} ${escapeHtml(company.healthDashboard.overallExplanation)}</p>
+            <div class="emp-health-predicted-banner">
+              <div>
+                <span class="emp-tags-label">Predicted After Recommendations</span>
+                <strong>${company.healthDashboard.overallPredictedScore}</strong>
+              </div>
+              <span class="emp-health-predicted-delta">${icon("trending-up")} +${company.healthDashboard.overallPredictedScore - company.healthDashboard.overallScore} points</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="emp-health-subscore-grid" data-health-grid>
+          ${company.healthDashboard.subscores.map(s => {
+            const expanded = expandedHealthScores.has(s.key);
+            return `
+              <div class="emp-health-subscore-card ${expanded ? "is-expanded" : ""}">
+                <button type="button" class="emp-health-subscore-head" data-health-toggle="${s.key}">
+                  ${renderHealthRing(s.score, { size: 84, strokeWidth: 8 })}
+                  <div class="emp-health-subscore-info">
+                    <span class="emp-health-subscore-label">${icon(s.icon)} ${escapeHtml(s.label)}</span>
+                    <span class="emp-health-subscore-chevron">${icon(expanded ? "chevron-up" : "chevron-down")}</span>
+                  </div>
+                </button>
+                <div class="emp-health-subscore-detail" ${expanded ? "" : "hidden"}>
+                  <p class="emp-health-subscore-explanation">${icon("sparkles")} ${escapeHtml(s.explanation)}</p>
+                  <div class="emp-health-subscore-suggestions">
+                    <span class="emp-tags-label">Improvement Suggestions</span>
+                    <ul>
+                      ${s.suggestions.map(sg => `<li><span>${escapeHtml(sg.action)}</span><strong>${escapeHtml(sg.impact)}</strong></li>`).join("")}
+                    </ul>
+                  </div>
+                  <div class="emp-health-subscore-predicted">
+                    <span>Current <strong>${s.score}</strong></span>
+                    ${icon("arrow-right")}
+                    <span>Predicted <strong>${s.predictedScore}</strong></span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-compare">
+        <div class="emp-company-section-head"><h2>AI Competitor Comparison</h2>${sourceTag("Vera Insight")}</div>
+        <p class="emp-company-section-desc">How you stack up against the industry average and your top competitor, with the reasoning behind every verdict. No real company APIs - all figures are illustrative.</p>
+
+        <div class="emp-compare-header-row">
+          <span>Metric</span>
+          <span>${escapeHtml(company.name)}</span>
+          <span>Industry Average</span>
+          <span>${escapeHtml(company.competitorComparison.competitorLabel)}</span>
+          <span>Verdict</span>
+        </div>
+
+        <div class="emp-compare-list">
+          ${company.competitorComparison.metrics.map(m => {
+            const verdict = COMPARE_VERDICT_META[m.verdict];
+            return `
+              <div class="emp-compare-row">
+                <div class="emp-compare-row-main">
+                  <span class="emp-compare-metric-label">${icon(m.icon)} ${escapeHtml(m.label)}</span>
+                  <span class="emp-compare-value emp-compare-value--company" data-label="${escapeHtml(company.name)}">${escapeHtml(m.companyValue)}</span>
+                  <span class="emp-compare-value" data-label="Industry Average">${escapeHtml(m.industryAvgValue)}</span>
+                  <span class="emp-compare-value" data-label="${escapeHtml(company.competitorComparison.competitorLabel)}">${escapeHtml(m.competitorValue)}</span>
+                  <span class="emp-compare-verdict emp-compare-verdict--${m.verdict}">${icon(verdict.icon)} ${verdict.label}</span>
+                </div>
+                <p class="emp-compare-explanation">${icon("sparkles")} ${escapeHtml(m.explanation)}</p>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-faq">
+        <div class="emp-company-section-head"><h2>AI-Generated FAQ</h2>${sourceTag("Vera Insight")}</div>
+        <p class="emp-company-section-desc">Vera answers the questions candidates ask most, generated from employee reviews, applications, and search activity.</p>
+
+        <div class="emp-faq-search">
+          ${icon("search")}
+          <input type="text" placeholder="Search questions..." value="${escapeHtml(faqSearchQuery)}" data-faq-search>
+          ${faqSearchQuery ? `<button type="button" class="emp-faq-search-clear" data-faq-search-clear aria-label="Clear search">${icon("x")}</button>` : ""}
+        </div>
+        <p class="emp-empty-hint">${filteredFaqs.length} of ${company.faqs.length} questions${faqSearchQuery ? ` match "${escapeHtml(faqSearchQuery)}"` : ""}</p>
+
+        <div class="emp-faq-list">
+          ${filteredFaqs.map(f => {
+            const expanded = expandedFaqId === f.id;
+            return `
+              <div class="emp-faq-item ${expanded ? "is-expanded" : ""}">
+                <button type="button" class="emp-faq-question" data-faq-toggle="${f.id}" aria-expanded="${expanded}">
+                  <span class="emp-faq-question-text">${escapeHtml(f.question)}</span>
+                  ${sourceTag(f.source)}
+                  <span class="emp-faq-chevron">${icon(expanded ? "chevron-up" : "chevron-down")}</span>
+                </button>
+                <div class="emp-faq-answer" ${expanded ? "" : "hidden"}>
+                  <div class="emp-callout-label">${icon("sparkles")} Answered by Vera</div>
+                  <p>${escapeHtml(f.answer)}</p>
+                </div>
+              </div>
+            `;
+          }).join("")}
+          ${filteredFaqs.length === 0 ? `
+            <div class="emp-faq-empty">
+              ${icon("search-x")}
+              <p>No questions match "${escapeHtml(faqSearchQuery)}".</p>
+            </div>
+          ` : ""}
+        </div>
+      </div>
+
+      <div class="card emp-company-section" id="comp-actions">
+        <div class="emp-company-section-head"><h2>Executive Recommendations</h2>${sourceTag("Vera Insight")}</div>
+        <p class="emp-company-section-desc">A prioritized action plan, synthesized from every signal above, with the estimated impact and effort behind each recommendation.</p>
+
+        <div class="emp-rec-sort-row">
+          <label class="emp-rec-sort-label">
+            Sort by
+            <select data-rec-sort>
+              ${RECOMMENDATION_SORT_OPTIONS.map(([key, label]) => `<option value="${key}" ${recommendationSort === key ? "selected" : ""}>${label}</option>`).join("")}
+            </select>
+          </label>
+        </div>
+
+        <div class="emp-rec-grid" data-rec-grid>
+          ${sortedRecommendations.map(r => {
+            const priority = RECOMMENDATION_PRIORITY_META[r.priority];
+            return `
+              <div class="emp-rec-card emp-rec-card--${r.priority}" data-rec-card="${r.id}">
+                <span class="emp-rec-priority-badge emp-rec-priority-badge--${r.priority}">${escapeHtml(priority.label)}</span>
+                <h3 class="emp-rec-action">${escapeHtml(r.action)}</h3>
+                <div class="emp-rec-metrics">
+                  <div class="emp-rec-metric">
+                    ${icon("trending-up")}
+                    <span class="emp-rec-metric-label">Application Increase</span>
+                    <strong class="emp-rec-metric-value">${escapeHtml(r.applicationIncrease)}</strong>
+                  </div>
+                  <div class="emp-rec-metric">
+                    ${icon("gauge")}
+                    <span class="emp-rec-metric-label">Hiring Speed</span>
+                    <strong class="emp-rec-metric-value">${escapeHtml(r.hiringSpeedImprovement)}</strong>
+                  </div>
+                  <div class="emp-rec-metric">
+                    ${icon("smile")}
+                    <span class="emp-rec-metric-label">Satisfaction Increase</span>
+                    <strong class="emp-rec-metric-value">${escapeHtml(r.satisfactionIncrease)}</strong>
+                  </div>
+                </div>
+                <div class="emp-rec-footer">
+                  <span>Difficulty <strong>${escapeHtml(r.difficulty)}</strong></span>
+                  <span>Time <strong>${escapeHtml(r.estimatedTime)}</strong></span>
+                  <span>Confidence <strong>${r.confidence}%</strong></span>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+    createIcons();
+    bind();
+    if (faqSearchHadFocus) {
+      const newFaqSearchEl = qs("[data-faq-search]", root);
+      if (newFaqSearchEl) {
+        newFaqSearchEl.focus();
+        if (faqSearchSelection) newFaqSearchEl.setSelectionRange(faqSearchSelection[0], faqSearchSelection[1]);
+      }
+    }
+  }
+
+  function bind() {
+    qsa("[data-company-edit]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo("company-edit")));
+    qs("[data-company-menu]", root)?.addEventListener("click", event => {
+      event.stopPropagation();
+      const panel = qs("[data-company-menu-panel]", root);
+      panel.hidden = !panel.hidden;
+    });
+    document.addEventListener("click", () => { const p = qs("[data-company-menu-panel]", root); if (p) p.hidden = true; });
+    qsa("[data-company-share]", root).forEach(btn => btn.addEventListener("click", () => showToast("Public profile link copied.")));
+    qs("[data-company-nav]", root)?.addEventListener("click", event => {
+      const link = event.target.closest("[data-jump]");
+      if (!link) return;
+      event.preventDefault();
+      qs(`#${link.dataset.jump}`, root)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    qs("[data-company-manage-roles]", root)?.addEventListener("click", () => employerNavigateTo("roles"));
+    qsa("[data-company-view-role]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo("role-builder", { id: btn.dataset.companyViewRole })));
+    qs("[data-role-sort]", root)?.addEventListener("change", event => { roleSort = event.target.value; draw(); });
+    qsa("[data-company-role-preview]", root).forEach(btn => btn.addEventListener("click", () => {
+      const r = DATA.employerRoles.find(role => role.id === btn.dataset.companyRolePreview);
+      if (r) openRoleApplyPreview(r);
+    }));
+    qs("[data-company-toggle-roles]", root)?.addEventListener("click", () => { showAllRoles = !showAllRoles; draw(); });
+    qsa("[data-review-filter]", root).forEach(sel => sel.addEventListener("change", event => {
+      reviewFilters[sel.dataset.reviewFilter] = event.target.value;
+      reviewsLoadedCount = REVIEW_BATCH_SIZE;
+      draw();
+    }));
+    qs("[data-review-sort]", root)?.addEventListener("change", event => { reviewSort = event.target.value; reviewsLoadedCount = REVIEW_BATCH_SIZE; draw(); });
+    qsa("[data-review-toggle-filter]", root).forEach(btn => btn.addEventListener("click", () => {
+      const key = btn.dataset.reviewToggleFilter;
+      reviewFilters[key] = !reviewFilters[key];
+      reviewsLoadedCount = REVIEW_BATCH_SIZE;
+      draw();
+    }));
+    qsa("[data-review-clear-filters]", root).forEach(btn => btn.addEventListener("click", () => {
+      reviewFilters = { department: "all", role: "all", minRating: "all", country: "all", location: "all", verified: false, graduate: false, intern: false };
+      reviewsLoadedCount = REVIEW_BATCH_SIZE;
+      draw();
+    }));
+    qsa("[data-review-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.reviewToggle;
+      if (expandedReviews.has(id)) expandedReviews.delete(id); else expandedReviews.add(id);
+      draw();
+    }));
+    qsa("[data-review-like]", root).forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.reviewLike;
+      if (likedReviews.has(id)) likedReviews.delete(id); else likedReviews.add(id);
+      draw();
+    }));
+    qsa("[data-review-helpful]", root).forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.reviewHelpful;
+      if (helpfulReviews.has(id)) helpfulReviews.delete(id); else helpfulReviews.add(id);
+      draw();
+    }));
+    qsa("[data-salary-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const i = Number(btn.dataset.salaryToggle);
+      if (expandedSalaryLevels.has(i)) expandedSalaryLevels.delete(i); else expandedSalaryLevels.add(i);
+      draw();
+    }));
+    qsa("[data-company-respond-review]", root).forEach(btn => btn.addEventListener("click", () => showToast("Response drafted. Full response workflow is coming soon.", "info")));
+    qs("[data-company-jump-gaps]", root)?.addEventListener("click", () => qs("#comp-insights", root)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    qsa("[data-funnel-range]", root).forEach(btn => btn.addEventListener("click", () => { funnelRange = btn.dataset.funnelRange; draw(); }));
+    qs("[data-funnel-custom-from]", root)?.addEventListener("change", event => { funnelCustomFrom = event.target.value; draw(); });
+    qs("[data-funnel-custom-to]", root)?.addEventListener("change", event => { funnelCustomTo = event.target.value; draw(); });
+    animateFunnelBars();
+    qsa("[data-health-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const key = btn.dataset.healthToggle;
+      if (expandedHealthScores.has(key)) expandedHealthScores.delete(key); else expandedHealthScores.add(key);
+      draw();
+    }));
+    animateHealthRings();
+    qs("[data-faq-search]", root)?.addEventListener("input", event => { faqSearchQuery = event.target.value; draw(); });
+    qs("[data-faq-search-clear]", root)?.addEventListener("click", () => { faqSearchQuery = ""; draw(); });
+    qsa("[data-faq-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.faqToggle;
+      expandedFaqId = expandedFaqId === id ? null : id; // strict accordion: opening one collapses any other
+      draw();
+    }));
+    qs("[data-rec-sort]", root)?.addEventListener("change", event => { recommendationSort = event.target.value; draw(); });
+    qsa("[data-career-node]", root).forEach(btn => {
+      const i = Number(btn.dataset.careerNode);
+      btn.addEventListener("click", () => openCareerPathNodeModal(company.careerPath[i], i));
+      btn.addEventListener("mouseenter", () => setCareerPathHighlight(i));
+      btn.addEventListener("mouseleave", () => setCareerPathHighlight(-1));
+      btn.addEventListener("focus", () => setCareerPathHighlight(i));
+      btn.addEventListener("blur", () => setCareerPathHighlight(-1));
+    });
+    initCompanyTabsBehavior();
+    initTimelineReveal();
+    initReviewsInfiniteScroll();
+  }
+
+  // Bars render at width:0% (see draw()) so there's a real "before" state to
+  // transition from - setting the target width in the same synchronous pass
+  // as the render would skip the CSS transition entirely (no observable
+  // change to animate from). A nested rAF guarantees the 0% state has
+  // actually been painted before the target width is applied.
+  function animateFunnelBars() {
+    const bars = qsa("[data-funnel-bar]", root);
+    if (!bars.length) return;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        bars.forEach(bar => { bar.style.width = `${bar.dataset.targetWidth}%`; });
+      });
+    });
+  }
+
+  // Same render-empty-then-grow technique as animateFunnelBars(), applied to
+  // each ring's fill-circle stroke-dashoffset instead of a bar's width.
+  function animateHealthRings() {
+    const fills = qsa("[data-health-ring] .emp-health-ring-fill", root);
+    if (!fills.length) return;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        fills.forEach(fill => { fill.style.strokeDashoffset = fill.closest("[data-health-ring]").dataset.targetOffset; });
+      });
+    });
+  }
+
+  // Infinite scroll, not pagination: the sentinel sits right after the
+  // rendered review batch and only exists in the DOM while more filtered
+  // reviews remain (reviewsLoadedCount < filteredReviews.length in draw()).
+  // A short artificial delay before growing reviewsLoadedCount gives a real
+  // "lazy loading" flash instead of an instant swap. Same disconnect-before-
+  // recreate discipline as the other observers - draw() replaces
+  // root.innerHTML wholesale, so a stale observer would watch a detached node.
+  function initReviewsInfiniteScroll() {
+    if (reviewsObserver) reviewsObserver.disconnect();
+    const sentinel = qs("[data-review-sentinel]", root);
+    if (!sentinel) return;
+    if (!("IntersectionObserver" in window)) { reviewsLoadedCount += REVIEW_BATCH_SIZE; draw(); return; }
+    reviewsObserver = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !reviewsLoadingMore) {
+        reviewsLoadingMore = true;
+        setTimeout(() => {
+          reviewsLoadingMore = false;
+          reviewsLoadedCount += REVIEW_BATCH_SIZE;
+          draw();
+        }, 500);
+      }
+    }, { rootMargin: "200px 0px 0px 0px", threshold: 0 });
+    reviewsObserver.observe(sentinel);
+  }
+
+  // Same disconnect-before-recreate discipline as initCompanyTabsBehavior():
+  // draw() replaces root.innerHTML wholesale, so [data-timeline] is a fresh
+  // node every call and any prior observer would be watching a detached one.
+  function initTimelineReveal() {
+    if (timelineObserver) timelineObserver.disconnect();
+    const timeline = qs("[data-timeline]", root);
+    if (!timeline) return;
+    if (!("IntersectionObserver" in window)) { timeline.classList.add("is-visible"); return; }
+    timelineObserver = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        timeline.classList.add("is-visible");
+        timelineObserver.disconnect();
+      }
+    }, { threshold: 0.2 });
+    timelineObserver.observe(timeline);
+  }
+
+  // Every draw() replaces root.innerHTML, so the sentinel/section nodes any
+  // prior observers were watching are gone - disconnect before re-observing
+  // the fresh ones, or they'd silently pile up on every showAllRoles/
+  // showAllReviews toggle.
+  function initCompanyTabsBehavior() {
+    if (tabsStuckObserver) tabsStuckObserver.disconnect();
+    if (tabsSectionObserver) tabsSectionObserver.disconnect();
+    if (!("IntersectionObserver" in window)) return;
+
+    const nav = qs("[data-company-nav]", root);
+    const sentinel = qs("[data-tabs-sentinel]", root);
+    if (!nav) return;
+    const links = qsa("[data-jump]", nav);
+    const sections = links.map(l => qs(`#${l.dataset.jump}`, root)).filter(Boolean);
+
+    function positionUnderline() {
+      const underline = qs("[data-tabs-underline]", nav);
+      const activeLink = qs("a.active", nav);
+      if (!underline || !activeLink) return;
+      underline.style.width = `${activeLink.offsetWidth}px`;
+      underline.style.transform = `translateX(${activeLink.offsetLeft}px)`;
+    }
+
+    function setActive(id) {
+      links.forEach(l => l.classList.toggle("active", l.dataset.jump === id));
+      positionUnderline();
+    }
+
+    if (sentinel) {
+      // Standard "detect when a sticky element has stuck" trick: watch a
+      // zero-height sentinel placed immediately before it. Once the
+      // sentinel scrolls above the tabs' own sticky offset (64px, the app
+      // header height), it stops intersecting - that's exactly the moment
+      // the tabs bar has reached the top and started sticking.
+      tabsStuckObserver = new IntersectionObserver(([entry]) => {
+        nav.classList.toggle("is-stuck", !entry.isIntersecting);
+      }, { rootMargin: "-65px 0px 0px 0px", threshold: [1] });
+      tabsStuckObserver.observe(sentinel);
+    }
+
+    if (sections.length) {
+      tabsSectionObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); });
+      }, { rootMargin: "-140px 0px -60% 0px", threshold: 0 });
+      sections.forEach(s => tabsSectionObserver.observe(s));
+    }
+
+    setActive(links[0]?.dataset.jump);
+    if (tabsResizeHandler) window.removeEventListener("resize", tabsResizeHandler);
+    tabsResizeHandler = positionUnderline;
+    window.addEventListener("resize", tabsResizeHandler);
+  }
+
+  draw();
+}
+
+const COMPANY_EDIT_SECTIONS = [
+  ["basics", "Company basics"],
+  ["requirements", "Candidate requirements"],
+  ["hiring", "Hiring process"],
+  ["salary", "Salary & benefits"],
+  ["growth", "Growth"],
+  ["culture", "Culture"],
+  ["media", "Media"]
+];
+
+function makeCompanyDraft(company) {
+  return {
+    name: company.name, industry: company.industry, location: company.location, size: company.size,
+    workMode: company.workMode, website: company.website, founded: company.founded, summary: company.summary,
+    requirements: { ...company.averageRequirements, commonSkills: [...company.averageRequirements.commonSkills], techSkills: [...company.averageRequirements.techSkills] },
+    hiringSteps: [...company.hiringProcess.steps], avgResponseTime: company.hiringProcess.avgResponseTime, assessmentNote: company.hiringProcess.assessmentNote,
+    salaryBenefits: { ...company.salaryBenefits }, salary: company.salary,
+    careerGrowth: { ...company.careerGrowth },
+    workCulture: { ...company.workCulture },
+    lastSavedAt: null
+  };
+}
+
+function renderEmployerCompanyEdit(root) {
+  const company = DATA.companies.find(c => c.id === "maybank");
+  const seedState = readState();
+  const draft = seedState.employerCompanyDraft || makeCompanyDraft(company);
+  let savedSnapshot = JSON.stringify(draft);
+
+  function persistDraft() {
+    draft.lastSavedAt = new Date().toISOString();
+    const state = readState();
+    state.employerCompanyDraft = draft;
+    writeState(state);
+    const label = qs("[data-company-saved-label]", root);
+    if (label) label.textContent = formatSavedLabel(draft.lastSavedAt);
+  }
+
+  function bindField(selector, path) {
+    const el = qs(selector, root);
+    if (!el) return;
+    const keys = path.split(".");
+    el.addEventListener("input", () => {
+      let obj = draft;
+      for (let i = 0; i < keys.length - 1; i++) obj = obj[keys[i]];
+      obj[keys[keys.length - 1]] = el.value;
+    });
+    el.addEventListener("blur", persistDraft);
+  }
+
+  function renderTagField(field, values) {
+    return `
+      <div class="emp-tag-input" data-company-tag-field="${field}">
+        <div class="pill-row" data-tag-list>
+          ${values.map((v, i) => `<span class="pill emp-tag-pill">${v} <button type="button" data-company-tag-remove="${i}" aria-label="Remove ${v}">${icon("x")}</button></span>`).join("")}
+        </div>
+        <input type="text" data-company-tag-new placeholder="Type a skill and press Enter">
+      </div>
+    `;
+  }
+
+  function bindTagField(field) {
+    const container = qs(`[data-company-tag-field="${field}"]`, root);
+    if (!container) return;
+    const input = qs("[data-company-tag-new]", container);
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === ",") {
+        event.preventDefault();
+        const val = input.value.trim().replace(/,$/, "");
+        if (val && !draft.requirements[field].includes(val)) {
+          draft.requirements[field].push(val);
+          persistDraft();
+          draw();
+          qs(`[data-company-tag-field="${field}"] [data-company-tag-new]`, root)?.focus();
+        } else { input.value = ""; }
+      }
+    });
+    qsa("[data-company-tag-remove]", container).forEach(btn => btn.addEventListener("click", () => {
+      draft.requirements[field].splice(Number(btn.dataset.companyTagRemove), 1);
+      persistDraft();
+      draw();
+    }));
+  }
+
+  function bindHiringSteps() {
+    qsa("[data-company-step-index]", root).forEach(input => {
+      input.addEventListener("input", () => { draft.hiringSteps[Number(input.dataset.companyStepIndex)] = input.value; });
+      input.addEventListener("blur", persistDraft);
+    });
+    qsa("[data-company-step-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      draft.hiringSteps.splice(Number(btn.dataset.companyStepRemove), 1);
+      persistDraft();
+      draw();
+    }));
+    qs("[data-company-step-add]", root)?.addEventListener("click", () => {
+      draft.hiringSteps.push("");
+      persistDraft();
+      draw();
+      const inputs = qsa("[data-company-step-index]", root);
+      inputs[inputs.length - 1]?.focus();
+    });
+  }
+
+  function tempMergedCompany() {
+    return {
+      ...company, summary: draft.summary,
+      averageRequirements: draft.requirements,
+      hiringProcess: { steps: draft.hiringSteps, avgResponseTime: draft.avgResponseTime, assessmentNote: draft.assessmentNote },
+      salaryBenefits: draft.salaryBenefits,
+      careerGrowth: draft.careerGrowth,
+      workCulture: draft.workCulture
+    };
+  }
+
+  function commitPublish() {
+    Object.assign(company, {
+      name: draft.name, industry: draft.industry, location: draft.location, size: draft.size, workMode: draft.workMode,
+      website: draft.website, founded: draft.founded, summary: draft.summary,
+      averageRequirements: draft.requirements,
+      hiringProcess: { steps: draft.hiringSteps, avgResponseTime: draft.avgResponseTime, assessmentNote: draft.assessmentNote },
+      salaryBenefits: draft.salaryBenefits, salary: draft.salary,
+      careerGrowth: draft.careerGrowth,
+      workCulture: draft.workCulture,
+      lastUpdated: "Just now"
+    });
+    const state = readState();
+    state.employerCompanyDraft = null;
+    writeState(state);
+    savedSnapshot = JSON.stringify(draft);
+    showToast("Company profile updated.");
+    employerNavigateTo("company", {}, { force: true });
+  }
+
+  function draw() {
+    root.innerHTML = `
+      <div class="emp-view-header">
+        <div>
+          <h1>Edit Company Profile</h1>
+          <p>Keep your public company information accurate, complete and useful to candidates. <span data-company-saved-label>${formatSavedLabel(draft.lastSavedAt)}</span></p>
+        </div>
+        <button type="button" class="btn btn-ghost" data-company-edit-cancel>${icon("x")} Cancel</button>
+      </div>
+
+      <div class="emp-detail-tabs" data-company-edit-nav>
+        ${COMPANY_EDIT_SECTIONS.map(([id, label]) => `<a href="#edit-${id}" data-jump="edit-${id}">${label}</a>`).join("")}
+      </div>
+
+      <div class="emp-edit-layout">
+        <div class="emp-edit-main">
+          <div class="card emp-company-section" id="edit-basics">
+            <h2>Company Basics</h2>
+            <label>Company name<input type="text" data-field="name" value="${draft.name}"></label>
+            <label>Industry<input type="text" data-field="industry" value="${draft.industry}"></label>
+            <label>Headquarters<input type="text" data-field="location" value="${draft.location}"></label>
+            <label>Company size<input type="text" data-field="size" value="${draft.size}"></label>
+            <label>Work mode<input type="text" data-field="workMode" value="${draft.workMode}"></label>
+            <label>Website<input type="text" data-field="website" value="${draft.website}"></label>
+            <label>Founded<input type="text" data-field="founded" value="${draft.founded}"></label>
+            <label>Description<textarea data-field="summary" rows="3">${draft.summary}</textarea></label>
+            <p class="emp-field-help">Logo, cover image and office locations editing are coming in a future update.</p>
+          </div>
+
+          <div class="card emp-company-section" id="edit-requirements">
+            <h2>Candidate Requirements</h2>
+            <label>Typical education<input type="text" data-field="requirements.education" value="${draft.requirements.education}"></label>
+            <label>CGPA expectation<input type="text" data-field="requirements.cgpa" value="${draft.requirements.cgpa}"></label>
+            <label>Typical experience<input type="text" data-field="requirements.experience" value="${draft.requirements.experience}"></label>
+            <label>English expectation<input type="text" data-field="requirements.englishRequirement" value="${draft.requirements.englishRequirement}"></label>
+            <label>Portfolio expectation<input type="text" data-field="requirements.portfolio" value="${draft.requirements.portfolio}"></label>
+            <label>Internship experience<input type="text" data-field="requirements.internshipPreferred" value="${draft.requirements.internshipPreferred}"></label>
+            <label>Certifications<input type="text" data-field="requirements.certifications" value="${draft.requirements.certifications}"></label>
+            <div><span class="emp-tags-label">Common skills</span>${renderTagField("commonSkills", draft.requirements.commonSkills)}</div>
+            <div><span class="emp-tags-label">Common tools</span>${renderTagField("techSkills", draft.requirements.techSkills)}</div>
+          </div>
+
+          <div class="card emp-company-section" id="edit-hiring">
+            <h2>Hiring Process</h2>
+            <span class="emp-tags-label">Hiring stages</span>
+            <div data-step-list>
+              ${draft.hiringSteps.map((s, i) => `
+                <div class="emp-resp-row">
+                  <input type="text" data-company-step-index="${i}" value="${s}" placeholder="e.g. HR interview">
+                  <button type="button" class="btn btn-ghost btn-sm" data-company-step-remove="${i}" aria-label="Remove">${icon("x")}</button>
+                </div>
+              `).join("")}
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm" data-company-step-add>${icon("plus")} Add stage</button>
+            <label>Average timeline<input type="text" data-field="avgResponseTime" value="${draft.avgResponseTime}"></label>
+            <label>Assessment note<input type="text" data-field="assessmentNote" value="${draft.assessmentNote}"></label>
+          </div>
+
+          <div class="card emp-company-section" id="edit-salary">
+            <h2>Salary &amp; Benefits</h2>
+            <label>Average salary range<input type="text" data-field="salary" value="${draft.salary}"></label>
+            <label>Fresh graduate salary<input type="text" data-field="salaryBenefits.freshGradSalary" value="${draft.salaryBenefits.freshGradSalary}"></label>
+            <label>Internship allowance<input type="text" data-field="salaryBenefits.internshipAllowance" value="${draft.salaryBenefits.internshipAllowance}"></label>
+            <label>Bonus / incentives<input type="text" data-field="salaryBenefits.bonus" value="${draft.salaryBenefits.bonus}"></label>
+            <label>Medical benefits<input type="text" data-field="salaryBenefits.medical" value="${draft.salaryBenefits.medical}"></label>
+            <label>Flexible work<input type="text" data-field="salaryBenefits.flexibleWork" value="${draft.salaryBenefits.flexibleWork}"></label>
+            <label>Training support<input type="text" data-field="salaryBenefits.training" value="${draft.salaryBenefits.training}"></label>
+            <label>Leave benefits<input type="text" data-field="salaryBenefits.leave" value="${draft.salaryBenefits.leave}"></label>
+          </div>
+
+          <div class="card emp-company-section" id="edit-growth">
+            <h2>Growth &amp; Development</h2>
+            <label>Training quality<input type="text" data-field="careerGrowth.trainingQuality" value="${draft.careerGrowth.trainingQuality}"></label>
+            <label>Promotion path<input type="text" data-field="careerGrowth.promotionPath" value="${draft.careerGrowth.promotionPath}"></label>
+            <label>Graduate program<input type="text" data-field="careerGrowth.graduateProgram" value="${draft.careerGrowth.graduateProgram}"></label>
+            <label>Mentorship<input type="text" data-field="careerGrowth.mentorship" value="${draft.careerGrowth.mentorship}"></label>
+            <label>Internal transfer<input type="text" data-field="careerGrowth.internalTransfer" value="${draft.careerGrowth.internalTransfer}"></label>
+            <label>Learning opportunities<input type="text" data-field="careerGrowth.learningOpportunities" value="${draft.careerGrowth.learningOpportunities}"></label>
+          </div>
+
+          <div class="card emp-company-section" id="edit-culture">
+            <h2>Culture</h2>
+            <label>Team pace<input type="text" data-field="workCulture.pace" value="${draft.workCulture.pace}"></label>
+            <label>Team style<input type="text" data-field="workCulture.teamStyle" value="${draft.workCulture.teamStyle}"></label>
+            <label>Work-life balance<input type="text" data-field="workCulture.workLifeBalance" value="${draft.workCulture.workLifeBalance}"></label>
+            <label>Collaboration style<input type="text" data-field="workCulture.collaboration" value="${draft.workCulture.collaboration}"></label>
+            <p class="emp-field-help">Management style, overtime signal and review themes are derived from employee reviews and cannot be edited here.</p>
+          </div>
+
+          <div class="card emp-company-section" id="edit-media">
+            <h2>Media</h2>
+            <p class="emp-field-help">Workplace images, team photos, videos and graduate program media uploads are coming in a future update.</p>
+          </div>
+
+          <div class="emp-wizard-actions">
+            <button type="button" class="btn btn-ghost" data-company-save-draft>Save draft</button>
+            <div class="emp-publish-buttons">
+              <button type="button" class="btn btn-ghost" data-company-preview>Preview changes</button>
+              <button type="button" class="btn btn-primary" data-company-publish>${icon("check")} Publish changes</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="emp-edit-side">
+          <div class="card emp-edit-support">
+            <div class="emp-callout-label">${icon("list-checks")} Profile completion</div>
+            <p class="emp-metric-lg-value">${computeCompanyCompleteness(tempMergedCompany())}%</p>
+            <span class="emp-tags-label">Missing information</span>
+            <ul class="emp-gap-list">${company.profileGaps.map(g => `<li>${icon("alert-triangle")} ${g}</li>`).join("")}</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="emp-compose-modal" data-company-preview-modal hidden>
+        <div class="card emp-compose-card emp-public-preview-card">
+          <div class="emp-preview-toolbar"><h2>Preview: ${draft.name}</h2><button type="button" class="btn btn-ghost btn-sm" data-company-preview-close>${icon("x")} Close</button></div>
+          <p class="emp-cand-meta">${draft.industry} · ${draft.location} · ${draft.size}</p>
+          <p class="emp-company-description">${draft.summary}</p>
+          <div class="emp-tags"><span class="emp-tags-label">Common skills</span><div class="pill-row">${draft.requirements.commonSkills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
+          <div class="emp-requirements-grid">
+            <div class="emp-stat-row"><span>Average salary</span><strong>${draft.salary}</strong></div>
+            <div class="emp-stat-row"><span>Hiring timeline</span><strong>${draft.avgResponseTime}</strong></div>
+          </div>
+        </div>
+      </div>
+    `;
+    createIcons();
+    bind();
+  }
+
+  function bind() {
+    bindField("[data-field='name']", "name");
+    bindField("[data-field='industry']", "industry");
+    bindField("[data-field='location']", "location");
+    bindField("[data-field='size']", "size");
+    bindField("[data-field='workMode']", "workMode");
+    bindField("[data-field='website']", "website");
+    bindField("[data-field='founded']", "founded");
+    bindField("[data-field='summary']", "summary");
+    bindField("[data-field='requirements.education']", "requirements.education");
+    bindField("[data-field='requirements.cgpa']", "requirements.cgpa");
+    bindField("[data-field='requirements.experience']", "requirements.experience");
+    bindField("[data-field='requirements.englishRequirement']", "requirements.englishRequirement");
+    bindField("[data-field='requirements.portfolio']", "requirements.portfolio");
+    bindField("[data-field='requirements.internshipPreferred']", "requirements.internshipPreferred");
+    bindField("[data-field='requirements.certifications']", "requirements.certifications");
+    bindField("[data-field='avgResponseTime']", "avgResponseTime");
+    bindField("[data-field='assessmentNote']", "assessmentNote");
+    bindField("[data-field='salary']", "salary");
+    bindField("[data-field='salaryBenefits.freshGradSalary']", "salaryBenefits.freshGradSalary");
+    bindField("[data-field='salaryBenefits.internshipAllowance']", "salaryBenefits.internshipAllowance");
+    bindField("[data-field='salaryBenefits.bonus']", "salaryBenefits.bonus");
+    bindField("[data-field='salaryBenefits.medical']", "salaryBenefits.medical");
+    bindField("[data-field='salaryBenefits.flexibleWork']", "salaryBenefits.flexibleWork");
+    bindField("[data-field='salaryBenefits.training']", "salaryBenefits.training");
+    bindField("[data-field='salaryBenefits.leave']", "salaryBenefits.leave");
+    bindField("[data-field='careerGrowth.trainingQuality']", "careerGrowth.trainingQuality");
+    bindField("[data-field='careerGrowth.promotionPath']", "careerGrowth.promotionPath");
+    bindField("[data-field='careerGrowth.graduateProgram']", "careerGrowth.graduateProgram");
+    bindField("[data-field='careerGrowth.mentorship']", "careerGrowth.mentorship");
+    bindField("[data-field='careerGrowth.internalTransfer']", "careerGrowth.internalTransfer");
+    bindField("[data-field='careerGrowth.learningOpportunities']", "careerGrowth.learningOpportunities");
+    bindField("[data-field='workCulture.pace']", "workCulture.pace");
+    bindField("[data-field='workCulture.teamStyle']", "workCulture.teamStyle");
+    bindField("[data-field='workCulture.workLifeBalance']", "workCulture.workLifeBalance");
+    bindField("[data-field='workCulture.collaboration']", "workCulture.collaboration");
+    bindTagField("commonSkills");
+    bindTagField("techSkills");
+    bindHiringSteps();
+
+    qs("[data-company-edit-nav]", root)?.addEventListener("click", event => {
+      const link = event.target.closest("[data-jump]");
+      if (!link) return;
+      event.preventDefault();
+      qs(`#${link.dataset.jump}`, root)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    qs("[data-company-edit-cancel]", root)?.addEventListener("click", () => {
+      if (JSON.stringify(draft) !== savedSnapshot) {
+        if (!confirm("You have unsaved changes. Leave without saving?")) return;
+      }
+      employerNavigateTo("company");
+    });
+
+    qs("[data-company-save-draft]", root)?.addEventListener("click", () => {
+      persistDraft();
+      savedSnapshot = JSON.stringify(draft);
+      showToast("Draft saved.");
+    });
+    qs("[data-company-preview]", root)?.addEventListener("click", () => { qs("[data-company-preview-modal]", root).hidden = false; });
+    qs("[data-company-preview-close]", root)?.addEventListener("click", () => { qs("[data-company-preview-modal]", root).hidden = true; });
+    qs("[data-company-publish]", root)?.addEventListener("click", commitPublish);
+  }
+
+  if (!seedState.employerCompanyDraft) {
+    seedState.employerCompanyDraft = draft;
+    writeState(seedState);
+  }
+
+  draw();
+}
+
+function renderEmployerPlaceholder(root, view) {
+  const title = EMPLOYER_VIEW_TITLES[view] || "This view";
+  root.innerHTML = `
+    <div class="emp-view-header"><h1>${title}</h1></div>
+    <div class="emp-empty-state card">
+      <div class="feature-icon">${icon("hourglass")}</div>
+      <h2>${title} is coming in a later phase.</h2>
+      <p>This part of the employer workspace is being built next. Dashboard and Roles are fully wired up today.</p>
+    </div>
+  `;
+  createIcons();
+}
+
+function initEmployerRouter() {
+  const shellRoot = qs("[data-employer-app]");
+  if (!shellRoot) return;
+  if (!requireRole(shellRoot, "employer", "open your employer workspace")) return;
+
+  renderEmployerShell(shellRoot);
+  const initial = parseEmployerHash();
+  employerNavigateTo(initial.view, initial.params, { force: true });
+
+  window.addEventListener("hashchange", () => {
+    const next = parseEmployerHash();
+    employerNavigateTo(next.view, next.params);
+  });
 }
 
 function renderEmployers() {
@@ -13923,7 +24074,8 @@ function init() {
   renderAutopilot();
   renderAutopilotJobDetail();
   renderPosts();
-  renderEmployerPortal();
+  initEmployerRouter();
+  initEmployerGlobalSearch();
   renderEmployers();
   renderComparison();
   renderSiteFooter();
@@ -13958,7 +24110,42 @@ function loadDesignSystem() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  await loadDesignSystem();
-  init();
-});
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadDesignSystem();
+    init();
+  });
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    makeEmployerRoleDraft,
+    estimateCandidatePool,
+    pickPriorityCandidate,
+    computeMatchBreakdown,
+    pickVeraContextCandidate,
+    isRoleBasicsComplete,
+    isRoleSummaryAdded,
+    isResponsibilitiesAdded,
+    isCandidateRequirementsComplete,
+    isSalaryAndLocationComplete,
+    isBenefitsReviewed,
+    isHiringProcessConfigured,
+    isApplicationMethodConfigured,
+    isCompanyIntroductionAvailable,
+    isAccommodationStatementReviewed,
+    isDistributionChannelsSelected,
+    isPreviewReviewed,
+    getPublishReadinessChecks,
+    getDraftReadiness,
+    getReadinessPredicates,
+    computeDraftVeraReview,
+    computeSalaryBenchmark,
+    scanBiasLanguage,
+    countSyllables,
+    computeReadingLevel,
+    scanJobPostingLanguage,
+    answerPipelineQuery,
+    computePipelineInsights
+  };
+}
