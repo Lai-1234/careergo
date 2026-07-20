@@ -14938,7 +14938,7 @@ function renderEmployerFeed(root) {
           </div>
           <span class="emp-feed-category">${post.category}</span>
           <div class="emp-feed-post-menu-wrap">
-            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-feed-post-menu="${post.id}">${icon("more-horizontal")}</button>
+            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-feed-post-menu="${post.id}" aria-label="More options for this post" aria-haspopup="menu" aria-expanded="false">${icon("more-horizontal")}</button>
             <div class="emp-actions-menu" data-feed-post-menu-panel="${post.id}" hidden>
               <button type="button" data-feed-action="profile" data-post-id="${post.id}">View profile</button>
               <button type="button" data-feed-action="follow" data-post-id="${post.id}">${isFollowing ? "Following ✓" : "Follow"}</button>
@@ -15576,9 +15576,14 @@ function renderEmployerFeed(root) {
       const panel = qs(`[data-feed-post-menu-panel="${btn.dataset.feedPostMenu}"]`, root);
       const isHidden = panel.hidden;
       qsa("[data-feed-post-menu-panel]", root).forEach(p => p.hidden = true);
+      qsa("[data-feed-post-menu]", root).forEach(b => b.setAttribute("aria-expanded", "false"));
       panel.hidden = !isHidden;
+      btn.setAttribute("aria-expanded", String(isHidden));
     }));
-    document.addEventListener("click", () => qsa("[data-feed-post-menu-panel]", root).forEach(p => p.hidden = true));
+    document.addEventListener("click", () => {
+      qsa("[data-feed-post-menu-panel]", root).forEach(p => p.hidden = true);
+      qsa("[data-feed-post-menu]", root).forEach(b => b.setAttribute("aria-expanded", "false"));
+    });
 
     qsa("[data-feed-action]", root).forEach(btn => btn.addEventListener("click", () => {
       const post = DATA.communityPosts.find(p => p.id === btn.dataset.postId);

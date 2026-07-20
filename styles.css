@@ -14565,12 +14565,13 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    cards, unified 200ms hover per the established Company Profile pattern.
 */
 .btn-icon-sm {
-  display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px;
+  display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px;
   border: 1px solid var(--emp-line, var(--line)); border-radius: 999px; background: #fff; color: var(--muted);
   cursor: pointer; transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
 }
 .btn-icon-sm:hover { background: rgba(7, 56, 47, 0.06); color: var(--emp-ink, var(--text)); border-color: transparent; }
-.btn-icon-sm svg { width: 14px; height: 14px; }
+.btn-icon-sm:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 2px; }
+.btn-icon-sm svg { width: 15px; height: 15px; }
 
 .emp-vera-rec-widget { padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .emp-vera-rec-widget-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
@@ -14816,7 +14817,8 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-dm-layout > * { min-width: 0; }
 
 .emp-dm-conversations { display: flex; flex-direction: column; min-height: 0; min-width: 0; padding: 20px; background: #fff; border: 1px solid var(--emp-line, var(--line)); border-radius: 20px; }
-.emp-dm-search-field { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; margin-bottom: 12px; min-width: 0; }
+.emp-dm-search-field { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; margin-bottom: 12px; min-width: 0; transition: border-color 180ms ease, box-shadow 180ms ease; }
+.emp-dm-search-field:focus-within { border-color: var(--emp-green, #07382f); box-shadow: 0 0 0 3px rgba(7, 56, 47, 0.12); }
 .emp-dm-search-field svg { flex-shrink: 0; width: 15px; height: 15px; color: var(--emp-muted, var(--soft)); }
 .emp-dm-search-field input { flex: 1; min-width: 0; border: none; outline: none; font: inherit; font-size: 13px; background: none; color: var(--emp-ink, var(--text)); }
 .emp-dm-filter-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
