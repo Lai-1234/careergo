@@ -4,6 +4,24 @@ This file gives future agents the current working rules for the CareerGo reposit
 
 **Critical rule:** Never push code to GitHub or run destructive git commands unless the user explicitly asks for it.
 
+## Project Origin & Target Audience
+
+CareerGo is being built as a submission for the **Talentbank Tech Hackathon 2026** ("Build Asia's Career OS"), organized by Talentbank (Malaysia-based career infrastructure company). Full brief: https://www.techhackathon.com/
+
+**Target audience: ages 15–60.** CareerGo is meant to work as someone's "Career OS" across their entire working life — not just an early-career or job-searching tool. (The hackathon brief itself frames the end-user range even wider, "13-65+"; treat 15-60 as CareerGo's own product framing.) When auditing or adding content, check whether it skews toward one narrow age band — the current codebase leans heavily toward students/fresh graduates/early-career switchers (university entry-requirement matching, junior/entry/associate salary bands, mentors framed as "a few steps ahead"), which under-serves both the 15-18 (pre-university/career exploration) and 35-60 (senior/late-career, leadership pivots, encore careers) ends of the range.
+
+**The brief's structure — three module tracks, judged together:**
+- **Candidate**: Career Path Navigator, Living Portfolio, AI Career Coach, Fair Pay Engine
+- **Employer**: Smart Talent Matching, Talent Retention Signals, Talent Re-Engagement
+- **University**: Lifelong Outcome Loop, Future-State Curriculum Engine, Adaptive Readiness Profile
+
+**Current build-out status** (last audited 2026-07-20 — re-check as work continues, this will go stale):
+- **Candidate track**: strong, actively developed — Dashboard, Discover, Grow, Career Value, Pipeline/Autopilot, Feed, people/social features, guided onboarding tours. Nearly all development effort so far has gone here.
+- **Employer track**: exists (`employer-app.html`, `renderEmployerPortal()`) covering candidate search, hiring pipeline, talent pool, company profile — real but modest, and doesn't yet clearly implement the three named Employer modules as distinct features.
+- **University track**: **not built**. `universities.html`/`discover-universities.html` are candidate-facing "browse universities" pages, not an institution-facing portal — none of the three named University modules exist yet.
+
+Since judging is framed around all three tracks together, the missing University track and thin Employer-track module coverage are worth surfacing in any project-direction discussion, rather than only continuing to deepen the already-strong candidate side, unless there's already been a deliberate scope call to focus there.
+
 ## UI Design Specification — Source Of Truth
 
 `CAREERGO_UI_SPEC.md` (repo root) is the frozen, canonical design specification for CareerGo. It was originally written against a React/Tailwind/shadcn/TanStack-Router reference build, so its file paths (`src/routes/...`, `src/components/...`) and class names (Tailwind, shadcn `<Button>`) do not exist in this repo and must not be treated as literal instructions. What is binding, and carries over directly, is the design **values**: colors, spacing scale, typography ramp, radius/shadow scale, card/button/input measurements, and density rules. The "Design System" section below is that specification translated into plain CSS custom properties and pixel values for `enterprise.css` and this repo's other stylesheets.
