@@ -1757,10 +1757,11 @@ function applyDemoAccount(state) {
   return state;
 }
 
-function startDemoDashboard() {
+function startDemoDashboard(role = "candidate") {
   const next = applyDemoAccount(readState());
+  next.session = { ...next.session, role };
   writeState(next);
-  location.href = "dashboard.html";
+  location.href = role === "employer" ? "employer-app.html" : "dashboard.html";
 }
 
 function wireStaticLoginForm() {
@@ -9513,7 +9514,7 @@ function renderCreateAccountWizard(root) {
       wizardStep = 0;
       renderStep();
     });
-    qsa("[data-enter-demo]", root).forEach(btn => btn.addEventListener("click", startDemoDashboard));
+    qsa("[data-enter-demo]", root).forEach(btn => btn.addEventListener("click", () => startDemoDashboard(selectedRole)));
     qs("[data-account-form]", root)?.addEventListener("submit", event => {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
