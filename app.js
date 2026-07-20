@@ -13357,14 +13357,50 @@ function renderEmployerRoleBuilder(root, roleId) {
   draw();
 }
 
+// Set by a "Posts" search result just before navigating to Feed, so the
+// feed can seed its trendingKeyword filter with what the user searched
+// for. Consumed once on mount (see renderEmployerFeed) rather than
+// threaded through employerNavigateTo's params, since that only carries
+// a single {id} today and search queries aren't an "id".
+let pendingFeedSearchQuery = null;
+
+function pushRecentEmployerSearch(query) {
+  const q = query.trim();
+  if (!q) return;
+  const state = readState();
+  state.recentSearches = [q, ...state.recentSearches.filter(x => x.toLowerCase() !== q.toLowerCase())].slice(0, 6);
+  writeState(state);
+}
+
 function filterEmployerSearch(query) {
   const q = query.trim().toLowerCase();
   if (!q) return [];
   const groups = [];
   const roleMatches = DATA.employerRoles.filter(r => r.title.toLowerCase().includes(q));
-  if (roleMatches.length) groups.push({ label: "Roles", items: roleMatches.map(r => ({ id: r.id, primary: r.title, secondary: r.status, view: "role-builder" })) });
-  const candidateMatches = DATA.candidates.filter(c => c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q));
-  if (candidateMatches.length) groups.push({ label: "Candidates", items: candidateMatches.map(c => ({ id: c.id, primary: c.name, secondary: c.role, view: "pipeline" })) });
+  if (roleMatches.length) groups.push({ label: "Roles", items: roleMatches.map(r => ({ type: "role", id: r.id, primary: r.title, secondary: r.status })) });
+  const candidateMatches = DATA.candidates.filter(c =>
+    c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q) || (c.skills || []).some(s => s.toLowerCase().includes(q))
+  );
+  if (candidateMatches.length) groups.push({ label: "Candidates", items: candidateMatches.map(c => ({ type: "candidate", id: c.id, primary: c.name, secondary: c.role })) });
+  const conversationMatches = (DATA.employerConversations || []).filter(conv => {
+    const cand = DATA.candidates.find(c => c.id === conv.candidateId);
+    return cand && cand.name.toLowerCase().includes(q);
+  });
+  if (conversationMatches.length) {
+    groups.push({
+      label: "Messages", items: conversationMatches.map(conv => {
+        const cand = DATA.candidates.find(c => c.id === conv.candidateId);
+        const lastMsg = conv.messages[conv.messages.length - 1];
+        return { type: "conversation", id: conv.candidateId, primary: cand.name, secondary: lastMsg ? lastMsg.text.slice(0, 44) : "No messages yet" };
+      })
+    });
+  }
+  const postMatches = DATA.communityPosts.filter(p => (p.author + " " + p.body + " " + p.category).toLowerCase().includes(q)).slice(0, 4);
+  if (postMatches.length) {
+    groups.push({
+      label: "Posts", items: postMatches.map(p => ({ type: "post", id: p.id, primary: p.author, secondary: p.body.slice(0, 54) }))
+    });
+  }
   return groups;
 }
 
@@ -13372,37 +13408,131 @@ function initEmployerGlobalSearch() {
   const input = qs("[data-emp-search-input]");
   const results = qs("[data-emp-search-results]");
   if (!input || !results) return;
+  let highlightIndex = -1;
+
+  function resultEls() { return qsa("[data-emp-search-result]", results); }
+
+  function applyHighlight() {
+    resultEls().forEach((el, i) => el.classList.toggle("highlighted", i === highlightIndex));
+    const active = resultEls()[highlightIndex];
+    if (active) active.scrollIntoView({ block: "nearest" });
+  }
 
   function close() {
     results.hidden = true;
     results.innerHTML = "";
+    highlightIndex = -1;
   }
 
-  input.addEventListener("input", () => {
-    const groups = filterEmployerSearch(input.value);
+  function selectResult(btn) {
+    if (!btn) return;
+    const { type, id } = btn.dataset;
+    pushRecentEmployerSearch(input.value);
+    if (type === "role") employerNavigateTo("role-builder", { id });
+    else if (type === "candidate") { employerNavigateTo("pipeline"); openCandidateProfileModal(id); }
+    else if (type === "conversation") openConversationForCandidate(id);
+    else if (type === "post") {
+      pendingFeedSearchQuery = input.value.trim();
+      employerNavigateTo("feed", {}, { force: true });
+    }
+    input.value = "";
+    close();
+  }
+
+  function renderRecent() {
+    const state = readState();
+    const recent = state.recentSearches || [];
+    if (!recent.length) { close(); return; }
+    results.innerHTML = `
+      <div class="emp-search-recent-head">
+        <span class="emp-search-group-label">Recent searches</span>
+        <button type="button" data-emp-search-clear-recent>Clear</button>
+      </div>
+      ${recent.map(q => `<button type="button" class="emp-search-result" data-emp-search-recent="${escapeHtml(q)}">${icon("clock")}<span>${escapeHtml(q)}</span></button>`).join("")}
+    `;
+    results.hidden = false;
+    highlightIndex = -1;
+  }
+
+  function renderGroups(groups) {
     if (!groups.length) { close(); return; }
     results.innerHTML = groups.map(group => `
       <div class="emp-search-group">
         <span class="emp-search-group-label">${group.label}</span>
-        ${group.items.map(item => `<button type="button" class="emp-search-result" data-emp-search-result data-view="${item.view}" data-id="${item.id}"><strong>${item.primary}</strong><span>${item.secondary}</span></button>`).join("")}
+        ${group.items.map(item => `<button type="button" class="emp-search-result" data-emp-search-result data-type="${item.type}" data-id="${item.id}"><strong>${item.primary}</strong><span>${item.secondary}</span></button>`).join("")}
       </div>
     `).join("");
     results.hidden = false;
+    highlightIndex = -1;
+  }
+
+  input.addEventListener("input", () => {
+    const q = input.value.trim();
+    if (!q) { renderRecent(); return; }
+    renderGroups(filterEmployerSearch(q));
+  });
+
+  input.addEventListener("focus", () => {
+    if (!input.value.trim()) renderRecent();
+  });
+  // A modal opened from a search result (e.g. the candidate profile
+  // modal) restores focus to this input on close - at that point it's
+  // already the activeElement, so a re-click won't fire a fresh native
+  // "focus" event. Cover that case explicitly rather than leaving the
+  // panel silently stuck closed until the user types.
+  input.addEventListener("click", () => {
+    if (!input.value.trim() && results.hidden) renderRecent();
+  });
+
+  input.addEventListener("keydown", event => {
+    const items = resultEls();
+    if (event.key === "ArrowDown") {
+      if (!items.length) return;
+      event.preventDefault();
+      highlightIndex = (highlightIndex + 1) % items.length;
+      applyHighlight();
+    } else if (event.key === "ArrowUp") {
+      if (!items.length) return;
+      event.preventDefault();
+      highlightIndex = (highlightIndex - 1 + items.length) % items.length;
+      applyHighlight();
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      const target = items[highlightIndex] || items[0];
+      if (target) selectResult(target);
+      else pushRecentEmployerSearch(input.value);
+    }
   });
 
   results.addEventListener("click", event => {
-    const btn = event.target.closest("[data-emp-search-result]");
-    if (!btn) return;
-    employerNavigateTo(btn.dataset.view, { id: btn.dataset.id });
-    input.value = "";
-    close();
+    const recentBtn = event.target.closest("[data-emp-search-recent]");
+    if (recentBtn) {
+      input.value = recentBtn.dataset.empSearchRecent;
+      renderGroups(filterEmployerSearch(input.value));
+      input.focus();
+      return;
+    }
+    if (event.target.closest("[data-emp-search-clear-recent]")) {
+      const state = readState();
+      state.recentSearches = [];
+      writeState(state);
+      close();
+      return;
+    }
+    selectResult(event.target.closest("[data-emp-search-result]"));
   });
 
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") close();
   });
   document.addEventListener("click", event => {
-    if (!event.target.closest(".emp-app-header-search")) close();
+    // composedPath(), not event.target.closest(): a click on a recent-search
+    // row re-renders results.innerHTML synchronously (to show the re-run
+    // query's matches), which detaches the clicked node from the DOM before
+    // this document-level handler runs. closest() on a parentless node
+    // would then wrongly conclude "outside click" and undo the re-render;
+    // composedPath() captures the path at dispatch time, unaffected by that.
+    if (!event.composedPath().some(el => el.classList?.contains("emp-app-search-field"))) close();
   });
 }
 
@@ -15076,7 +15206,11 @@ function renderWhyVeraPanel(reason) {
 
 function renderEmployerFeed(root) {
   let activeFilter = "foryou";
-  let trendingKeyword = null;
+  // Seeded once from a "Posts" global-search result (see
+  // initEmployerGlobalSearch); consumed immediately so a later
+  // in-page "Clear" or plain navigation back to Feed starts fresh.
+  let trendingKeyword = pendingFeedSearchQuery;
+  pendingFeedSearchQuery = null;
   let composerOpen = false;
   let composerCategory = "DISCUSSION";
   let composerRoleId = "";
@@ -15147,7 +15281,7 @@ function renderEmployerFeed(root) {
     if (contentFilter !== "all") posts = posts.filter(p => matchesContentFilter(p, state));
     // Trending keyword is a layer on top of whatever filter is active
     // (set by clicking a right-rail Trending topic), not a dedicated tab.
-    if (trendingKeyword) posts = posts.filter(p => (p.body + " " + p.category).toLowerCase().includes(trendingKeyword.toLowerCase()));
+    if (trendingKeyword) posts = posts.filter(p => (p.author + " " + p.body + " " + p.category).toLowerCase().includes(trendingKeyword.toLowerCase()));
     if (activeFilter === "foryou") posts = [...posts].sort((a, b) => hiringRelevanceScore(b, state) - hiringRelevanceScore(a, state));
     return posts;
   }

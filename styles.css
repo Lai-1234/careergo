@@ -12661,8 +12661,17 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   display: flex; flex-direction: column; width: 100%; text-align: left;
   padding: 8px; border: 0; background: none; border-radius: 8px; cursor: pointer;
 }
-.emp-search-result:hover { background: rgba(7, 56, 47, 0.06); }
+.emp-search-result:hover, .emp-search-result.highlighted { background: rgba(7, 56, 47, 0.06); }
 .emp-search-result span { font-size: 12px; color: var(--emp-muted); }
+.emp-search-result[data-emp-search-recent] { flex-direction: row; align-items: center; gap: 8px; }
+.emp-search-result[data-emp-search-recent] svg { width: 13px; height: 13px; color: var(--emp-muted); flex-shrink: 0; }
+.emp-search-result[data-emp-search-recent] span { color: var(--emp-ink, var(--text)); font-size: 13px; }
+.emp-search-recent-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; }
+.emp-search-recent-head .emp-search-group-label { padding: 0; }
+.emp-search-recent-head button {
+  background: none; border: 0; padding: 0; font-size: 11px; font-weight: 700; color: var(--emp-muted); cursor: pointer;
+}
+.emp-search-recent-head button:hover { color: var(--emp-green, #07382f); }
 .emp-icon-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 34px; height: 34px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.5);
