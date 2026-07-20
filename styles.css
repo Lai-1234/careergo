@@ -14494,6 +14494,98 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-feed-role-select { display: block; margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--muted); }
 .emp-feed-role-select select { display: block; margin-top: 4px; width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; }
 .emp-feed-composer-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+
+/* Post Composer expansion (TIER 3): poll/event structured fields, media
+   attach simulation, mention/hashtag insert, schedule/draft/preview. */
+.emp-feed-composer-poll { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.emp-feed-composer-poll-row { display: flex; align-items: center; gap: 6px; }
+.emp-feed-composer-poll-row input {
+  flex: 1; padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-family: inherit; font-size: 13px;
+}
+.emp-feed-poll-add {
+  align-self: flex-start; display: flex; align-items: center; gap: 5px; padding: 5px 10px; border: 1px dashed var(--emp-line, var(--line));
+  border-radius: 999px; background: none; color: var(--emp-muted, var(--soft)); font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.emp-feed-poll-add:hover { border-color: var(--emp-green, #07382f); color: var(--emp-green, #07382f); }
+.emp-feed-poll-add svg { width: 12px; height: 12px; }
+.emp-feed-composer-event { display: grid; gap: 6px; margin-top: 10px; }
+.emp-feed-composer-event input {
+  padding: 8px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-family: inherit; font-size: 13px;
+}
+.emp-feed-media-picker { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.emp-feed-media-picker button {
+  display: flex; align-items: center; gap: 6px; padding: 7px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 999px;
+  background: #fff; font-size: 12px; font-weight: 600; color: var(--emp-ink, var(--text)); cursor: pointer;
+}
+.emp-feed-media-picker button:hover { background: rgba(7, 56, 47, 0.05); border-color: var(--emp-green, #07382f); }
+.emp-feed-media-picker svg { width: 13px; height: 13px; }
+.emp-feed-composer-media-chip {
+  display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 7px 10px; border: 1px solid var(--emp-line, var(--line));
+  border-radius: 10px; background: rgba(7, 56, 47, 0.04); font-size: 12px; font-weight: 600; color: var(--emp-ink, var(--text));
+}
+.emp-feed-composer-media-chip svg:first-child { width: 14px; height: 14px; color: var(--emp-green, #07382f); }
+.emp-feed-composer-media-chip span { flex: 1; }
+.emp-feed-composer-media-chip button { display: flex; background: none; border: 0; padding: 2px; cursor: pointer; color: var(--emp-muted, var(--soft)); }
+.emp-feed-composer-media-chip button svg { width: 13px; height: 13px; }
+.emp-feed-schedule-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.emp-feed-schedule-picker input[type="datetime-local"] {
+  padding: 7px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-family: inherit; font-size: 13px;
+}
+.emp-feed-composer-utility { display: flex; align-items: center; gap: 2px; margin-right: auto; }
+.emp-feed-composer-utility .btn-icon-sm.active { background: rgba(7, 56, 47, 0.08); color: var(--emp-green, #07382f); border-color: transparent; }
+.emp-feed-composer-meta-links { display: flex; gap: 14px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--emp-line, var(--line)); }
+.emp-feed-composer-meta-links button {
+  display: flex; align-items: center; gap: 5px; background: none; border: 0; padding: 0; font-size: 12px; font-weight: 700;
+  color: var(--emp-muted, var(--soft)); cursor: pointer;
+}
+.emp-feed-composer-meta-links button:hover { color: var(--emp-green, #07382f); }
+.emp-feed-composer-meta-links svg { width: 13px; height: 13px; }
+.emp-feed-composer-panel { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.emp-feed-composer-panel-row {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 8px 10px;
+  border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; background: rgba(7, 56, 47, 0.02);
+}
+.emp-feed-composer-panel-row p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--emp-ink, var(--text)); }
+.emp-feed-composer-panel-row .emp-tags-label { color: var(--emp-muted, var(--soft)); }
+.emp-feed-composer-panel-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+
+/* In-feed rendering: poll, event, media attachments on published posts */
+.emp-feed-poll { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.emp-feed-poll-option {
+  position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 9px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; background: #fff;
+  font-size: 13px; font-weight: 600; color: var(--emp-ink, var(--text)); cursor: pointer; text-align: left;
+}
+.emp-feed-poll-option:not(:disabled):hover { border-color: var(--emp-green, #07382f); }
+.emp-feed-poll-option.voted { cursor: default; }
+.emp-feed-poll-bar {
+  position: absolute; inset: 0 auto 0 0; background: rgba(7, 56, 47, 0.1); z-index: 0; transition: width 300ms ease;
+}
+.emp-feed-poll-option-label, .emp-feed-poll-option-pct { position: relative; z-index: 1; }
+.emp-feed-poll-option-pct { color: var(--emp-green, #07382f); }
+.emp-feed-event-card { margin-top: 10px; padding: 14px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; background: rgba(7, 56, 47, 0.03); }
+.emp-feed-event-date-row { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--emp-green, #07382f); }
+.emp-feed-event-date-row svg { width: 13px; height: 13px; }
+.emp-feed-event-title { display: block; margin: 6px 0 10px; font-size: 15px; }
+.emp-feed-media-preview {
+  display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 12px; border: 1px dashed var(--emp-line, var(--line));
+  border-radius: 10px; background: rgba(7, 56, 47, 0.02); font-size: 13px; font-weight: 600; color: var(--emp-muted, var(--soft));
+}
+.emp-feed-media-preview svg { width: 16px; height: 16px; color: var(--emp-green, #07382f); }
+.emp-feed-preview-modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.emp-feed-preview-modal-head h2 { margin: 0; }
+.emp-feed-post--preview { box-shadow: none !important; }
+.emp-app-shell.emp-app-shell .emp-feed-composer-media-chip span,
+.emp-app-shell.emp-app-shell .emp-feed-composer-panel-row p,
+.emp-app-shell.emp-app-shell .emp-feed-poll-option-label,
+.emp-app-shell.emp-app-shell .emp-feed-media-preview span {
+  color: var(--emp-ink, var(--text)) !important;
+}
+.emp-app-shell.emp-app-shell .emp-feed-poll-option-pct,
+.emp-app-shell.emp-app-shell .emp-feed-event-date-row span {
+  color: var(--emp-green, #07382f) !important;
+}
+
 /* Smart Filter Bar (section 12): sticky under the posting box, scrolls
    horizontally rather than wrapping to a second row - 11 categories at
    comfortable chip width don't fit one line at typical feed-column

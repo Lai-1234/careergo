@@ -1292,6 +1292,8 @@ function readState() {
       { id: "pt2", type: "passive", savedAt: daysAgoIso(20) },
     ],
     recentSearches: [],
+    feedDrafts: [],
+    feedScheduledPosts: [],
   };
   try {
     return normalizeState({ ...fallback, ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") });
@@ -15088,6 +15090,14 @@ function renderEmployerFeed(root) {
   let composerAiOpen = false;
   let composerAiInsight = null;
   let composerDraftText = "";
+  let composerPollOptions = ["", ""];
+  let composerEvent = { title: "", date: "", location: "" };
+  let composerMedia = null; // {kind:"image"|"video"|"pdf"|"article", label}
+  let composerMediaPickerOpen = false;
+  let composerSchedulePickerOpen = false;
+  let composerScheduleValue = "";
+  let draftsPanelOpen = false;
+  let scheduledPanelOpen = false;
 
   // Smart Feed Intelligence (item 8): on "For You" specifically - the only
   // view framed as AI-personalized - rank by hiring relevance instead of
@@ -15142,7 +15152,43 @@ function renderEmployerFeed(root) {
     return posts;
   }
 
-  function renderAttachment(att) {
+  function renderAttachment(att, post, preview) {
+    if (att.type === "poll") {
+      const total = att.options.reduce((sum, o) => sum + o.count, 0);
+      return `
+        <div class="emp-feed-poll">
+          ${att.options.map((o, i) => {
+            const pct = total ? Math.round((o.count / total) * 100) : 0;
+            return `
+              <button type="button" class="emp-feed-poll-option ${att.voted ? "voted" : ""}" data-poll-vote="${post.id}:${i}" ${(att.voted || preview) ? "disabled" : ""}>
+                ${att.voted ? `<span class="emp-feed-poll-bar" style="width:${pct}%"></span>` : ""}
+                <span class="emp-feed-poll-option-label">${escapeHtml(o.text)}</span>
+                ${att.voted ? `<span class="emp-feed-poll-option-pct">${pct}%</span>` : ""}
+              </button>
+            `;
+          }).join("")}
+          <p class="emp-cand-meta">${total} vote${total === 1 ? "" : "s"}${att.voted ? "" : " · Tap an option to vote"}</p>
+        </div>
+      `;
+    }
+    if (att.type === "event") {
+      return `
+        <div class="emp-feed-event-card">
+          <div class="emp-feed-event-date-row">${icon("calendar")} <span>${escapeHtml(att.date || "Date TBC")}${att.location ? ` · ${escapeHtml(att.location)}` : ""}</span></div>
+          <strong class="emp-feed-event-title">${escapeHtml(att.title)}</strong>
+          <button type="button" class="btn btn-ghost btn-sm ${att.interested ? "active" : ""}" data-event-interested="${post.id}" ${preview ? "disabled" : ""}>${icon("star")} ${att.interested ? "Interested ✓" : "Interested"}${att.interestedCount ? ` · ${att.interestedCount}` : ""}</button>
+        </div>
+      `;
+    }
+    if (att.type === "media") {
+      const mediaIconName = att.kind === "video" ? "video" : att.kind === "pdf" ? "file-text" : att.kind === "article" ? "newspaper" : "image";
+      return `
+        <div class="emp-feed-media-preview">
+          ${icon(mediaIconName)}
+          <span>${escapeHtml(att.label)}</span>
+        </div>
+      `;
+    }
     if (att.type === "role") {
       const role = DATA.employerRoles.find(r => r.id === att.roleId);
       if (!role) return "";
@@ -15201,12 +15247,13 @@ function renderEmployerFeed(root) {
     `;
   }
 
-  function renderPostCard(post, state) {
+  function renderPostCard(post, state, opts = {}) {
+    const preview = !!opts.preview;
     const isFollowing = state.feedFollowing.includes(post.followId);
     const isSaved = state.feedSavedPosts.includes(post.id);
-    const commentsOpen = openCommentsPostId === post.id;
+    const commentsOpen = !preview && openCommentsPostId === post.id;
     return `
-      <div class="card emp-feed-post" data-feed-post="${post.id}">
+      <div class="card emp-feed-post ${preview ? "emp-feed-post--preview" : ""}" ${preview ? "" : `data-feed-post="${post.id}"`}>
         <div class="emp-feed-post-head">
           <span class="emp-feed-avatar">${initialsOf(post.author)}</span>
           <div class="emp-feed-post-author">
@@ -15218,6 +15265,7 @@ function renderEmployerFeed(root) {
             <p class="emp-cand-meta">${post.authorTitle} · ${post.timestamp}</p>
           </div>
           <span class="emp-feed-category">${post.category}</span>
+          ${preview ? "" : `
           <div class="emp-feed-post-menu-wrap">
             <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-feed-post-menu="${post.id}" aria-label="More options for this post" aria-haspopup="menu" aria-expanded="false">${icon("more-horizontal")}</button>
             <div class="emp-actions-menu" data-feed-post-menu-panel="${post.id}" hidden>
@@ -15227,18 +15275,25 @@ function renderEmployerFeed(root) {
               <button type="button" data-feed-action="mute" data-post-id="${post.id}">Mute</button>
               <button type="button" data-feed-action="report" data-post-id="${post.id}">Report</button>
             </div>
-          </div>
+          </div>`}
         </div>
-        ${renderWhyVeraPanel(getPostVeraReason(post, state))}
+        ${preview ? "" : renderWhyVeraPanel(getPostVeraReason(post, state))}
         ${post.title ? `<h3>${post.title}</h3>` : ""}
         <p class="emp-feed-post-body">${post.body}</p>
-        ${post.attachment ? renderAttachment(post.attachment) : ""}
+        ${post.attachment ? renderAttachment(post.attachment, post, preview) : ""}
+        ${preview ? `
+        <div class="emp-feed-post-actions" aria-hidden="true">
+          <span class="emp-feed-action-btn">${icon("heart")} 0</span>
+          <span class="emp-feed-action-btn">${icon("message-circle")} 0</span>
+          <span class="emp-feed-action-btn">${icon("bookmark")} Save</span>
+          <span class="emp-feed-action-btn">${icon("send")} Share</span>
+        </div>` : `
         <div class="emp-feed-post-actions">
           <button type="button" class="emp-feed-action-btn" data-feed-like="${post.id}">${icon("heart")} ${post.reactions}</button>
           <button type="button" class="emp-feed-action-btn" data-feed-comment-toggle="${post.id}">${icon("message-circle")} ${post.comments.length}</button>
           <button type="button" class="emp-feed-action-btn ${isSaved ? "active" : ""}" data-feed-save="${post.id}">${icon("bookmark")} Save</button>
           <button type="button" class="emp-feed-action-btn" data-feed-share="${post.id}">${icon("send")} Share</button>
-        </div>
+        </div>`}
         ${commentsOpen ? renderComments(post) : ""}
       </div>
     `;
@@ -15272,7 +15327,24 @@ function renderEmployerFeed(root) {
     `;
   }
 
+  function mediaIconFor(kind) {
+    return kind === "video" ? "video" : kind === "pdf" ? "file-text" : kind === "article" ? "newspaper" : "image";
+  }
+  function mockMediaLabel(kind) {
+    if (kind === "image") return "team-hiring-day.jpg";
+    if (kind === "video") return "office-tour.mp4";
+    if (kind === "pdf") return "2026-benefits-guide.pdf";
+    return "Attached article link";
+  }
+  function formatScheduleDate(iso) {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "an upcoming date";
+    return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  }
+
   function renderComposer(state) {
+    const drafts = state.feedDrafts || [];
+    const scheduled = state.feedScheduledPosts || [];
     return `
       <div class="card emp-feed-composer">
         <div class="emp-feed-composer-head">
@@ -15296,12 +15368,90 @@ function renderEmployerFeed(root) {
               </select>
             </label>
           ` : ""}
+          ${composerCategory === "POLL" ? `
+            <div class="emp-feed-composer-poll">
+              ${composerPollOptions.map((val, i) => `
+                <div class="emp-feed-composer-poll-row">
+                  <input type="text" data-poll-option-input="${i}" placeholder="Option ${i + 1}" value="${escapeHtml(val)}" maxlength="60">
+                  ${composerPollOptions.length > 2 ? `<button type="button" class="btn-icon-sm" data-poll-option-remove="${i}" aria-label="Remove option">${icon("x")}</button>` : ""}
+                </div>
+              `).join("")}
+              ${composerPollOptions.length < 4 ? `<button type="button" class="emp-feed-poll-add" data-poll-option-add>${icon("plus")} Add option</button>` : ""}
+            </div>
+          ` : ""}
+          ${composerCategory === "EVENT" ? `
+            <div class="emp-feed-composer-event">
+              <input type="text" data-event-title placeholder="Event title" value="${escapeHtml(composerEvent.title)}">
+              <input type="text" data-event-date placeholder="Date, e.g. 12 Aug, 3pm" value="${escapeHtml(composerEvent.date)}">
+              <input type="text" data-event-location placeholder="Location or 'Online'" value="${escapeHtml(composerEvent.location)}">
+            </div>
+          ` : ""}
+          ${composerMediaPickerOpen ? `
+            <div class="emp-feed-media-picker">
+              <button type="button" data-media-pick="image">${icon("image")} Image</button>
+              <button type="button" data-media-pick="video">${icon("video")} Video</button>
+              <button type="button" data-media-pick="pdf">${icon("file-text")} PDF</button>
+              <button type="button" data-media-pick="article">${icon("newspaper")} Article</button>
+            </div>
+          ` : ""}
+          ${composerMedia ? `
+            <div class="emp-feed-composer-media-chip">
+              ${icon(mediaIconFor(composerMedia.kind))} <span>${escapeHtml(composerMedia.label)}</span>
+              <button type="button" data-media-remove aria-label="Remove attachment">${icon("x")}</button>
+            </div>
+          ` : ""}
+          ${composerSchedulePickerOpen ? `
+            <div class="emp-feed-schedule-picker">
+              <input type="datetime-local" data-feed-schedule-value value="${composerScheduleValue}">
+              <button type="button" class="btn btn-primary btn-sm" data-feed-schedule-confirm>Schedule</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-feed-schedule-cancel>Cancel</button>
+            </div>
+          ` : ""}
         ` : ""}
         <div class="emp-feed-composer-actions">
-          <button type="button" class="btn btn-ghost btn-sm" data-feed-media>Media</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-feed-media>${icon("image")} Media</button>
           <button type="button" class="btn btn-ghost btn-sm" data-feed-add-context>${icon("plus")} Add context</button>
+          <span class="emp-feed-composer-utility">
+            <button type="button" class="btn-icon-sm" data-feed-mention title="Mention someone" aria-label="Mention someone">${icon("at-sign")}</button>
+            <button type="button" class="btn-icon-sm" data-feed-hashtag title="Add a hashtag" aria-label="Add a hashtag">${icon("hash")}</button>
+            <button type="button" class="btn-icon-sm" data-feed-save-draft title="Save as draft" aria-label="Save as draft">${icon("save")}</button>
+            <button type="button" class="btn-icon-sm ${composerSchedulePickerOpen ? "active" : ""}" data-feed-schedule-toggle title="Schedule post" aria-label="Schedule post">${icon("clock")}</button>
+            <button type="button" class="btn-icon-sm" data-feed-preview title="Preview post" aria-label="Preview post">${icon("eye")}</button>
+          </span>
           <button type="button" class="btn btn-primary btn-sm" data-feed-post>${icon("send")} Post</button>
         </div>
+        ${(drafts.length || scheduled.length) ? `
+          <div class="emp-feed-composer-meta-links">
+            ${drafts.length ? `<button type="button" data-feed-drafts-toggle>${icon("save")} ${drafts.length} draft${drafts.length === 1 ? "" : "s"}</button>` : ""}
+            ${scheduled.length ? `<button type="button" data-feed-scheduled-toggle>${icon("clock")} ${scheduled.length} scheduled</button>` : ""}
+          </div>
+        ` : ""}
+        ${draftsPanelOpen && drafts.length ? `
+          <div class="emp-feed-composer-panel">
+            ${drafts.map(d => `
+              <div class="emp-feed-composer-panel-row">
+                <p>${escapeHtml(d.body.slice(0, 70))}${d.body.length > 70 ? "…" : ""}</p>
+                <div class="emp-feed-composer-panel-actions">
+                  <button type="button" class="btn btn-ghost btn-sm" data-feed-draft-load="${d.id}">Load</button>
+                  <button type="button" class="btn-icon-sm" data-feed-draft-delete="${d.id}" aria-label="Delete draft">${icon("trash-2")}</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        ` : ""}
+        ${scheduledPanelOpen && scheduled.length ? `
+          <div class="emp-feed-composer-panel">
+            ${scheduled.map(s => `
+              <div class="emp-feed-composer-panel-row">
+                <p>${escapeHtml(s.body.slice(0, 60))}${s.body.length > 60 ? "…" : ""}<br><span class="emp-tags-label">Scheduled for ${formatScheduleDate(s.scheduledFor)}</span></p>
+                <div class="emp-feed-composer-panel-actions">
+                  <button type="button" class="btn btn-ghost btn-sm" data-feed-scheduled-publish="${s.id}">Publish now</button>
+                  <button type="button" class="btn-icon-sm" data-feed-scheduled-delete="${s.id}" aria-label="Delete scheduled post">${icon("trash-2")}</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        ` : ""}
       </div>
     `;
   }
@@ -15760,22 +15910,80 @@ function renderEmployerFeed(root) {
       writeState(state);
     });
     qs("[data-feed-add-context]", root)?.addEventListener("click", () => { composerOpen = !composerOpen; draw(); });
-    qs("[data-feed-media]", root)?.addEventListener("click", () => showToast("Media attachments are coming in a future update.", "info"));
+    qs("[data-feed-media]", root)?.addEventListener("click", () => { composerMediaPickerOpen = !composerMediaPickerOpen; composerOpen = true; draw(); });
+    qsa("[data-media-pick]", root).forEach(btn => btn.addEventListener("click", () => {
+      const kind = btn.dataset.mediaPick;
+      composerMedia = { kind, label: mockMediaLabel(kind) };
+      composerMediaPickerOpen = false;
+      draw();
+    }));
+    qs("[data-media-remove]", root)?.addEventListener("click", () => { composerMedia = null; draw(); });
     qsa("[data-feed-type]", root).forEach(btn => btn.addEventListener("click", () => {
-      const type = btn.dataset.feedType;
-      if (["Media", "Event", "Poll"].includes(type)) { showToast(`${type} posts are coming in a future update.`, "info"); return; }
-      composerCategory = type.toUpperCase();
+      composerCategory = btn.dataset.feedType.toUpperCase();
       draw();
     }));
     qs("[data-feed-role-select]", root)?.addEventListener("change", event => { composerRoleId = event.target.value; });
+    qsa("[data-poll-option-input]", root).forEach(input => input.addEventListener("input", event => {
+      composerPollOptions[Number(input.dataset.pollOptionInput)] = event.target.value;
+    }));
+    qs("[data-poll-option-add]", root)?.addEventListener("click", () => {
+      if (composerPollOptions.length < 4) { composerPollOptions.push(""); draw(); }
+    });
+    qsa("[data-poll-option-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      if (composerPollOptions.length > 2) { composerPollOptions.splice(Number(btn.dataset.pollOptionRemove), 1); draw(); }
+    }));
+    qs("[data-event-title]", root)?.addEventListener("input", event => { composerEvent.title = event.target.value; });
+    qs("[data-event-date]", root)?.addEventListener("input", event => { composerEvent.date = event.target.value; });
+    qs("[data-event-location]", root)?.addEventListener("input", event => { composerEvent.location = event.target.value; });
+    qs("[data-feed-mention]", root)?.addEventListener("click", () => {
+      const sep = composerDraftText && !/\s$/.test(composerDraftText) ? " " : "";
+      composerDraftText = `${composerDraftText || ""}${sep}@`;
+      draw();
+      setTimeout(() => { const ta = qs("[data-feed-composer-text]"); if (ta) { ta.focus(); ta.selectionStart = ta.selectionEnd = ta.value.length; } }, 30);
+    });
+    qs("[data-feed-hashtag]", root)?.addEventListener("click", () => {
+      const sep = composerDraftText && !/\s$/.test(composerDraftText) ? " " : "";
+      composerDraftText = `${composerDraftText || ""}${sep}#`;
+      draw();
+      setTimeout(() => { const ta = qs("[data-feed-composer-text]"); if (ta) { ta.focus(); ta.selectionStart = ta.selectionEnd = ta.value.length; } }, 30);
+    });
+
+    const buildComposerAttachment = () => {
+      if (composerCategory === "ROLE SHARE" && composerRoleId) return { type: "role", roleId: composerRoleId };
+      if (composerCategory === "POLL") {
+        const opts = composerPollOptions.map(t => t.trim()).filter(Boolean).slice(0, 4);
+        if (opts.length < 2) return null;
+        return { type: "poll", options: opts.map((text, i) => ({ id: `o${i}`, text, count: 0 })), voted: false };
+      }
+      if (composerCategory === "EVENT") {
+        if (!composerEvent.title.trim()) return null;
+        return { type: "event", title: composerEvent.title.trim(), date: composerEvent.date, location: composerEvent.location, interested: false, interestedCount: 0 };
+      }
+      if (composerMedia) return { type: "media", kind: composerMedia.kind, label: composerMedia.label };
+      return null;
+    };
+    const composerValidationError = () => {
+      if (composerCategory === "POLL" && composerPollOptions.map(t => t.trim()).filter(Boolean).length < 2) return "Add at least 2 poll options.";
+      if (composerCategory === "EVENT" && !composerEvent.title.trim()) return "Add an event title.";
+      return null;
+    };
+    const resetComposer = () => {
+      composerOpen = false; composerCategory = "DISCUSSION"; composerRoleId = "";
+      composerPollOptions = ["", ""]; composerEvent = { title: "", date: "", location: "" };
+      composerMedia = null; composerMediaPickerOpen = false;
+      composerSchedulePickerOpen = false; composerScheduleValue = "";
+      composerDraftText = ""; composerAiInsight = null;
+    };
+
     qs("[data-feed-post]", root)?.addEventListener("click", () => {
       const textarea = qs("[data-feed-composer-text]", root);
       const body = textarea.value.trim();
       if (!body) return;
+      const validationError = composerValidationError();
+      if (validationError) { showToast(validationError, "info"); return; }
       const identity = qs("[data-feed-identity]", root).value;
       const isCompany = identity === "Maybank";
-      let attachment = null;
-      if (composerCategory === "ROLE SHARE" && composerRoleId) attachment = { type: "role", roleId: composerRoleId };
+      const attachment = buildComposerAttachment();
       DATA.communityPosts.unshift({
         id: `p-${Date.now()}`, followId: isCompany ? "maybank" : "mira", author: isCompany ? "Maybank" : "Mira",
         authorType: isCompany ? "employer" : "person", authorTitle: isCompany ? "Verified Employer" : "Talent Acquisition · Maybank",
@@ -15785,10 +15993,128 @@ function renderEmployerFeed(root) {
       const state = readState();
       state.feedPostingIdentity = identity;
       writeState(state);
-      composerOpen = false; composerCategory = "DISCUSSION"; composerRoleId = "";
+      resetComposer();
       draw();
       showToast("Post published.");
     });
+
+    qs("[data-feed-preview]", root)?.addEventListener("click", () => {
+      const body = qs("[data-feed-composer-text]", root)?.value.trim();
+      if (!body) { showToast("Write something to preview first.", "info"); return; }
+      const identity = qs("[data-feed-identity]", root)?.value || readState().feedPostingIdentity;
+      const isCompany = identity === "Maybank";
+      const fakePost = {
+        id: "preview", followId: isCompany ? "maybank" : "mira", author: isCompany ? "Maybank" : "Mira",
+        authorType: isCompany ? "employer" : "person", authorTitle: isCompany ? "Verified Employer" : "Talent Acquisition · Maybank",
+        verified: isCompany, category: composerCategory || "DISCUSSION", timestamp: "Just now", title: "", body,
+        reactions: 0, attachment: buildComposerAttachment(), communityId: null, veraLine: null, comments: []
+      };
+      openEmpModal("feed-preview", `
+        <div class="emp-feed-preview-modal">
+          <div class="emp-feed-preview-modal-head">
+            <h2>Preview</h2>
+            <button type="button" class="btn btn-ghost btn-sm" data-emp-modal-close>${icon("x")} Close</button>
+          </div>
+          ${renderPostCard(fakePost, readState(), { preview: true })}
+        </div>
+      `, { label: "Post preview" });
+    });
+
+    qs("[data-feed-save-draft]", root)?.addEventListener("click", () => {
+      const body = qs("[data-feed-composer-text]", root)?.value.trim();
+      if (!body) { showToast("Nothing to save yet.", "info"); return; }
+      const state = readState();
+      state.feedDrafts.unshift({
+        id: `d-${Date.now()}`, body, category: composerCategory || "DISCUSSION", roleId: composerRoleId,
+        pollOptions: [...composerPollOptions], event: { ...composerEvent }, media: composerMedia,
+        savedAt: new Date().toISOString()
+      });
+      writeState(state);
+      resetComposer();
+      draw();
+      showToast("Draft saved.");
+    });
+    qs("[data-feed-drafts-toggle]", root)?.addEventListener("click", () => { draftsPanelOpen = !draftsPanelOpen; draw(); });
+    qsa("[data-feed-draft-load]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      const d = state.feedDrafts.find(x => x.id === btn.dataset.feedDraftLoad);
+      if (!d) return;
+      composerOpen = true; composerDraftText = d.body; composerCategory = d.category; composerRoleId = d.roleId || "";
+      composerPollOptions = d.pollOptions && d.pollOptions.length ? [...d.pollOptions] : ["", ""];
+      composerEvent = d.event || { title: "", date: "", location: "" };
+      composerMedia = d.media || null;
+      draftsPanelOpen = false;
+      draw();
+      setTimeout(() => qs("[data-feed-composer-text]")?.focus(), 100);
+    }));
+    qsa("[data-feed-draft-delete]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      state.feedDrafts = state.feedDrafts.filter(x => x.id !== btn.dataset.feedDraftDelete);
+      writeState(state);
+      draw();
+    }));
+
+    qs("[data-feed-schedule-toggle]", root)?.addEventListener("click", () => { composerSchedulePickerOpen = !composerSchedulePickerOpen; draw(); });
+    qs("[data-feed-schedule-cancel]", root)?.addEventListener("click", () => { composerSchedulePickerOpen = false; draw(); });
+    qs("[data-feed-schedule-value]", root)?.addEventListener("change", event => { composerScheduleValue = event.target.value; });
+    qs("[data-feed-schedule-confirm]", root)?.addEventListener("click", () => {
+      const body = qs("[data-feed-composer-text]", root)?.value.trim();
+      if (!body) { showToast("Write something to schedule first.", "info"); return; }
+      if (!composerScheduleValue) { showToast("Pick a date and time.", "info"); return; }
+      const validationError = composerValidationError();
+      if (validationError) { showToast(validationError, "info"); return; }
+      const identity = qs("[data-feed-identity]", root).value;
+      const attachment = buildComposerAttachment();
+      const scheduledFor = new Date(composerScheduleValue).toISOString();
+      const state = readState();
+      state.feedScheduledPosts.push({
+        id: `sp-${Date.now()}`, body, category: composerCategory || "DISCUSSION", attachment, identity, scheduledFor
+      });
+      writeState(state);
+      resetComposer();
+      draw();
+      showToast(`Post scheduled for ${formatScheduleDate(scheduledFor)}.`);
+    });
+    qs("[data-feed-scheduled-toggle]", root)?.addEventListener("click", () => { scheduledPanelOpen = !scheduledPanelOpen; draw(); });
+    qsa("[data-feed-scheduled-publish]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      const idx = state.feedScheduledPosts.findIndex(x => x.id === btn.dataset.feedScheduledPublish);
+      if (idx === -1) return;
+      const sp = state.feedScheduledPosts[idx];
+      const isCompany = sp.identity === "Maybank";
+      DATA.communityPosts.unshift({
+        id: `p-${Date.now()}`, followId: isCompany ? "maybank" : "mira", author: isCompany ? "Maybank" : "Mira",
+        authorType: isCompany ? "employer" : "person", authorTitle: isCompany ? "Verified Employer" : "Talent Acquisition · Maybank",
+        verified: isCompany, category: sp.category, timestamp: "Just now", title: "", body: sp.body,
+        reactions: 0, attachment: sp.attachment, communityId: null, veraLine: null, comments: []
+      });
+      state.feedScheduledPosts.splice(idx, 1);
+      writeState(state);
+      draw();
+      showToast("Post published.");
+    }));
+    qsa("[data-feed-scheduled-delete]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      state.feedScheduledPosts = state.feedScheduledPosts.filter(x => x.id !== btn.dataset.feedScheduledDelete);
+      writeState(state);
+      draw();
+    }));
+
+    qsa("[data-poll-vote]", root).forEach(btn => btn.addEventListener("click", () => {
+      const [postId, idxStr] = btn.dataset.pollVote.split(":");
+      const post = DATA.communityPosts.find(p => p.id === postId);
+      if (!post || !post.attachment || post.attachment.voted) return;
+      post.attachment.options[Number(idxStr)].count += 1;
+      post.attachment.voted = true;
+      draw();
+    }));
+    qsa("[data-event-interested]", root).forEach(btn => btn.addEventListener("click", () => {
+      const post = DATA.communityPosts.find(p => p.id === btn.dataset.eventInterested);
+      if (!post || !post.attachment) return;
+      post.attachment.interested = !post.attachment.interested;
+      post.attachment.interestedCount = Math.max(0, (post.attachment.interestedCount || 0) + (post.attachment.interested ? 1 : -1));
+      draw();
+    }));
 
     qsa("[data-feed-like]", root).forEach(btn => btn.addEventListener("click", () => {
       const post = DATA.communityPosts.find(p => p.id === btn.dataset.feedLike);
