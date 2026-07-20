@@ -12517,6 +12517,17 @@ body[data-page="home"] .home-metrics span {
   border: 1px solid var(--emp-line);
   background: rgba(255, 255, 255, 0.7) !important;
 }
+.emp-app-shell.emp-app-shell :is(.btn, .pill, a.btn, [role="button"]):focus-visible {
+  outline: 2px solid var(--emp-green, #07382f);
+  outline-offset: 2px;
+}
+.emp-app-shell.emp-app-shell .btn:disabled,
+.emp-app-shell.emp-app-shell .btn[aria-disabled="true"] {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
 .emp-app-shell.emp-app-shell .pill {
   font-family: var(--emp-sans) !important;
   color: var(--emp-ink) !important;
