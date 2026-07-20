@@ -9502,6 +9502,21 @@ function renderCopilotReminderRow(r) {
   `;
 }
 
+// Item 16's "Quick Action Floating Button" is folded into this existing
+// copilot panel rather than a second bottom-right FAB - two floating
+// buttons in the same corner would be exactly the kind of duplicated
+// action surface the redesign explicitly asks to avoid. "Ask Vera" was
+// previously both a footer button here AND would have been one of these
+// six quick actions; kept as one entry in this grid instead of both.
+const COPILOT_QUICK_ACTIONS = [
+  { id: "ask-vera", label: "Ask Vera", icon: "sparkles" },
+  { id: "create-job", label: "Create Job", icon: "plus" },
+  { id: "message", label: "Message", icon: "message-circle" },
+  { id: "invite", label: "Invite Candidate", icon: "send" },
+  { id: "post", label: "Post Update", icon: "edit-3" },
+  { id: "search", label: "Search Candidate", icon: "search" },
+];
+
 function renderHiringCopilotPanelBody() {
   const reminders = getSmartHiringReminders();
   const top = reminders.slice(0, 5);
@@ -9516,8 +9531,11 @@ function renderHiringCopilotPanelBody() {
         <div class="emp-copilot-reminder-list">${top.map(renderCopilotReminderRow).join("")}</div>
       ` : `<p class="emp-empty-hint">Nothing urgent right now - Vera will surface reminders here as your pipeline changes.</p>`}
     </div>
-    <div class="emp-copilot-footer">
-      <button type="button" class="btn btn-ghost btn-sm" data-copilot-ask-vera>${icon("message-circle")} Ask Vera anything</button>
+    <div class="emp-copilot-quick-actions">
+      <span class="emp-tags-label">Quick actions</span>
+      <div class="emp-copilot-quick-grid">
+        ${COPILOT_QUICK_ACTIONS.map(a => `<button type="button" class="emp-copilot-quick-btn" data-copilot-quick="${a.id}">${icon(a.icon)}<span>${a.label}</span></button>`).join("")}
+      </div>
     </div>
   `;
 }
@@ -9556,20 +9574,40 @@ function refreshHiringCopilot(root) {
   }
 }
 
+function closeCopilotPanel(root) {
+  employerCopilotOpen = false;
+  const panel = qs("[data-copilot-panel]", root);
+  if (panel) panel.hidden = true;
+  qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", "false");
+}
+
 function bindHiringCopilotPanel(root) {
-  qs("[data-copilot-close]", root)?.addEventListener("click", () => { employerCopilotOpen = false; qs("[data-copilot-panel]", root).hidden = true; qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", "false"); });
-  qs("[data-copilot-ask-vera]", root)?.addEventListener("click", () => {
-    employerCopilotOpen = false;
-    const panel = qs("[data-copilot-panel]", root);
-    if (panel) panel.hidden = true;
-    openEmployerVera("What needs my attention today?");
-  });
+  qs("[data-copilot-close]", root)?.addEventListener("click", () => closeCopilotPanel(root));
   qsa("[data-copilot-reminder-action]", root).forEach(btn => btn.addEventListener("click", () => {
     const nav = btn.dataset.copilotNav;
     const navId = btn.dataset.copilotNavId;
-    employerCopilotOpen = false;
-    qs("[data-copilot-panel]", root).hidden = true;
+    closeCopilotPanel(root);
     employerNavigateTo(nav, navId ? { id: navId } : {});
+  }));
+  qsa("[data-copilot-quick]", root).forEach(btn => btn.addEventListener("click", () => {
+    const action = btn.dataset.copilotQuick;
+    closeCopilotPanel(root);
+    if (action === "ask-vera") { openEmployerVera("What needs my attention today?"); return; }
+    if (action === "create-job") { employerNavigateTo("role-builder"); return; }
+    if (action === "message") { employerNavigateTo("messages"); return; }
+    if (action === "invite") { employerNavigateTo("pipeline"); showToast("Pick a candidate in Talent Pipeline to invite.", "info"); return; }
+    if (action === "search") {
+      qs("[data-emp-search-input]")?.focus();
+      return;
+    }
+    if (action === "post") {
+      // The copilot is global, so "Post Update" may be clicked from any
+      // page - navigate to Feed first, then focus the composer once its
+      // draw() has actually run (a fixed short delay, since there's no
+      // render-complete event to await across a full page navigation).
+      employerNavigateTo("feed");
+      setTimeout(() => qs("[data-feed-composer-text]")?.focus(), 150);
+    }
   }));
 }
 
@@ -9586,19 +9624,10 @@ function bindHiringCopilot(root) {
   qs("[data-copilot-panel]", root)?.addEventListener("click", event => event.stopPropagation());
   document.addEventListener("click", () => {
     const panel = qs("[data-copilot-panel]", root);
-    if (panel && !panel.hidden && employerCopilotOpen) {
-      employerCopilotOpen = false;
-      panel.hidden = true;
-      qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", "false");
-    }
+    if (panel && !panel.hidden && employerCopilotOpen) closeCopilotPanel(root);
   });
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && employerCopilotOpen) {
-      employerCopilotOpen = false;
-      const panel = qs("[data-copilot-panel]", root);
-      if (panel) panel.hidden = true;
-      qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", "false");
-    }
+    if (event.key === "Escape" && employerCopilotOpen) closeCopilotPanel(root);
   });
 }
 

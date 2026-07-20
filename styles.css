@@ -14939,8 +14939,17 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-copilot-reminder-icon svg { width: 14px; height: 14px; }
 .emp-copilot-reminder-icon--high { background: rgba(220, 38, 38, 0.1); color: #dc2626; }
 .emp-copilot-reminder-icon--medium { background: rgba(217, 119, 6, 0.12); color: #d97706; }
-.emp-copilot-footer { padding-top: 12px; border-top: 1px solid var(--emp-line, var(--line)); }
-.emp-copilot-footer .btn { width: 100%; justify-content: center; }
+/* Quick Action grid (item 16, folded into the copilot panel instead of a
+   second floating button). 2-column grid of icon+label buttons. */
+.emp-copilot-quick-actions { padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); }
+.emp-copilot-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.emp-copilot-quick-btn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px; border: 1px solid var(--emp-line, var(--line));
+  border-radius: 12px; background: #fff; cursor: pointer; text-align: left; transition: background 180ms ease, border-color 180ms ease;
+}
+.emp-copilot-quick-btn:hover { background: rgba(7, 56, 47, 0.05); border-color: transparent; }
+.emp-copilot-quick-btn svg { width: 15px; height: 15px; color: var(--emp-green, #07382f); }
+.emp-copilot-quick-btn span { font-size: 12px; font-weight: 600; color: var(--emp-ink, var(--text)); }
 
 @media (max-width: 480px) {
   .emp-hiring-copilot { right: 16px; bottom: 16px; }
