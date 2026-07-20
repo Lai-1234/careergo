@@ -14911,7 +14911,35 @@ function getDailyHiringBrief() {
   if (needsAttentionRoles.length) suggestedActions.push(`Loosen the experience requirement on ${needsAttentionRoles[0].title} to widen your candidate pool.`);
   if (upcomingInterviews.length) suggestedActions.push(`Prep interview notes for ${upcomingInterviews[0].name} ahead of ${upcomingInterviews[0].interview.nextInterview.date}.`);
 
-  return { items, suggestedActions, totalSignals: items.length };
+  // Today's Summary dashboard tiles (section 11 of the redesign). Unread
+  // Messages counts conversations with at least one unread reply, while
+  // Candidate Replies counts the individual unread messages themselves -
+  // a candidate who sent two follow-ups shows as 1 unread conversation
+  // but 2 replies, both genuinely different, useful numbers. Brand
+  // Mentions is real too: posts authored by the company or mentioning it
+  // by name, not a fabricated count.
+  const conversations = DATA.employerConversations || [];
+  const unreadConversations = conversations.filter(c => c.messages.some(m => m.sender === "candidate" && !m.read));
+  const unreadMessageCount = conversations.reduce((sum, c) => sum + c.messages.filter(m => m.sender === "candidate" && !m.read).length, 0);
+  const brandMentions = DATA.communityPosts.filter(p => p.authorType === "employer" || p.body.includes("Maybank")).length;
+
+  const stats = [
+    { label: "New Matches", value: getHiringRecommendationPool().length, icon: "user-plus", nav: "feed" },
+    { label: "Interviews", value: upcomingInterviews.length, icon: "calendar", nav: "pipeline" },
+    { label: "Pending Reviews", value: awaitingReview.length, icon: "clock", nav: "pipeline" },
+    { label: "Offers", value: offersAwaiting.length, icon: "file-text", nav: "pipeline" },
+    { label: "Unread Messages", value: unreadConversations.length, icon: "inbox", nav: "messages" },
+    { label: "Candidate Replies", value: unreadMessageCount, icon: "message-circle", nav: "messages" },
+    { label: "Brand Mentions", value: brandMentions, icon: "megaphone", nav: "feed" },
+  ];
+  const quickActions = [
+    { label: "Review Candidates", icon: "users", nav: "pipeline" },
+    { label: "Open Inbox", icon: "inbox", nav: "messages" },
+    { label: "Create Job", icon: "plus", nav: "role-builder" },
+    { label: "Pipeline", icon: "kanban", nav: "pipeline" },
+  ];
+
+  return { items, suggestedActions, totalSignals: items.length, stats, quickActions };
 }
 
 function fmtSalaryK(n) { return (n / 1000).toFixed(1).replace(".0", ""); }
@@ -15404,6 +15432,17 @@ function renderEmployerFeed(root) {
           <span class="emp-source-tag">Vera</span>
         </div>
         <p class="emp-daily-brief-sub">Here's what changed in your hiring pipeline since your last visit.</p>
+
+        <div class="emp-daily-brief-stats">
+          ${brief.stats.map(s => `
+            <button type="button" class="emp-daily-brief-stat" data-brief-nav="${s.nav}">
+              <span class="emp-daily-brief-stat-icon">${icon(s.icon)}</span>
+              <strong>${s.value}</strong>
+              <span>${s.label}</span>
+            </button>
+          `).join("")}
+        </div>
+
         <ul class="emp-daily-brief-list">
           ${shown.map(item => `
             <li>
@@ -15422,6 +15461,10 @@ function renderEmployerFeed(root) {
             <ul>${brief.suggestedActions.map(a => `<li>${icon("arrow-right")} ${a}</li>`).join("")}</ul>
           </div>
         ` : ""}
+
+        <div class="emp-daily-brief-quick-actions">
+          ${brief.quickActions.map(a => `<button type="button" class="btn btn-ghost btn-sm" data-brief-nav="${a.nav}">${icon(a.icon)} ${a.label}</button>`).join("")}
+        </div>
       </div>
     `;
   }
@@ -15833,7 +15876,14 @@ function renderEmployerFeed(root) {
 
     // Item 2: Daily Brief expand/collapse + per-item quick navigation.
     qs("[data-brief-toggle]", root)?.addEventListener("click", () => { briefExpanded = !briefExpanded; draw(); });
-    qsa("[data-brief-nav]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo(btn.dataset.briefNav)));
+    qsa("[data-brief-nav]", root).forEach(btn => btn.addEventListener("click", () => {
+      const target = btn.dataset.briefNav;
+      // "feed" targets (New Matches, Brand Mentions) mean "look further
+      // down this same page" - employerNavigateTo no-ops on the current
+      // route, so scroll to the relevant widget instead of doing nothing.
+      if (target === "feed") { qs("[data-vera-rec-widget]", root)?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+      employerNavigateTo(target);
+    }));
 
     // Item 5: Hiring Opportunities (passive talent) actions.
     qsa("[data-passive-action]", root).forEach(btn => btn.addEventListener("click", () => {

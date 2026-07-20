@@ -14636,7 +14636,25 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 
 .emp-daily-brief { padding: 24px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 4px; }
 .emp-daily-brief-head { display: flex; align-items: center; gap: 8px; }
-.emp-daily-brief-sub { margin: 4px 0 12px; font-size: 12px; color: var(--muted); }
+.emp-daily-brief-sub { margin: 4px 0 16px; font-size: 12px; color: var(--muted); }
+
+/* Today's Summary stat tiles (section 11). A 7-up grid that wraps
+   naturally at narrower widths rather than a fixed column count, since
+   7 doesn't divide evenly - auto-fit keeps every tile the same minimum
+   width instead of forcing an awkward last-row remainder. */
+.emp-daily-brief-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.emp-daily-brief-stat {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px; border: 1px solid var(--emp-line, var(--line));
+  border-radius: 14px; background: #fff; cursor: pointer; text-align: left; transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+.emp-daily-brief-stat:hover { box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
+.emp-daily-brief-stat-icon { color: var(--emp-green, #07382f); }
+.emp-daily-brief-stat-icon svg { width: 15px; height: 15px; }
+.emp-daily-brief-stat strong { font-size: 22px; font-weight: 800; line-height: 1; }
+.emp-daily-brief-stat span:last-child { font-size: 11px; font-weight: 600; color: var(--emp-muted, var(--soft)); }
+
+.emp-daily-brief-quick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--emp-line, var(--line)); }
+
 .emp-daily-brief-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
 .emp-daily-brief-list li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--emp-line, var(--line)); }
 .emp-daily-brief-list li:last-child { border-bottom: none; }
@@ -14746,6 +14764,8 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-app-shell.emp-app-shell :is(.emp-vera-rec-type-badge, .emp-hiring-opp-type, .emp-feed-why-panel summary, .emp-feed-why-panel summary span, .emp-feed-ai-toggle, .emp-daily-brief-toggle) { color: var(--emp-ai, #6f5fc4) !important; }
 .emp-app-shell.emp-app-shell .emp-vera-rec-match { color: var(--emp-green, #07382f) !important; }
 .emp-app-shell.emp-app-shell .emp-daily-brief-cta { color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell .emp-daily-brief-stat span:last-child { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-daily-brief-stat strong { color: var(--emp-ink, var(--text)) !important; }
 .emp-app-shell.emp-app-shell :is(.emp-brand-modal-overview-text > p, .emp-brand-modal-dropoff p, .emp-brand-modal-suggestion p) { color: var(--emp-ink, var(--text)) !important; }
 .emp-app-shell.emp-app-shell .emp-brand-modal-suggestion .emp-callout-label { color: var(--emp-ai, #6f5fc4) !important; }
 
