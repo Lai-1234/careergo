@@ -9342,6 +9342,161 @@ const EMPLOYER_VIEW_TITLES = Object.fromEntries(EMPLOYER_NAV_GROUPS.flatMap(grou
 let employerRouteState = { view: "", params: {} };
 let employerVeraDrawerOpen = false;
 let employerVeraPrompt = "What needs my attention today?";
+let employerCopilotOpen = false;
+
+const REMINDER_PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
+
+// Item 13: Smart Hiring Reminders. Feeds the Floating Copilot (item 7) -
+// computed live off DATA.candidates/DATA.employerRoles every time the
+// copilot is opened, not cached, so acting on one reminder (e.g.
+// following up on an offer) removes it from the list on the next open
+// rather than needing a manual refresh.
+function getSmartHiringReminders() {
+  const active = DATA.candidates.filter(c => !c.archived);
+  const reminders = [];
+
+  active.filter(c => c.offer && c.offer.status === "Sent").forEach(c => {
+    const days = parseInt((c.offer.expiryDate || "").match(/\d+/)?.[0] || "99", 10);
+    reminders.push({ priority: days <= 3 ? "high" : "medium", icon: "file-text", text: `${c.name}'s offer expires ${c.offer.expiryDate} with no response yet.`, cta: "Follow up", nav: "pipeline", navId: c.id });
+  });
+  active.filter(c => c.interview && c.interview.feedbackSubmitted < c.interview.feedbackTotal).forEach(c => {
+    const missing = c.interview.feedbackTotal - c.interview.feedbackSubmitted;
+    reminders.push({ priority: "high", icon: "clipboard-check", text: `${c.name} is waiting on ${missing} interview scorecard${missing === 1 ? "" : "s"}.`, cta: "Collect feedback", nav: "pipeline", navId: c.id });
+  });
+  active.filter(c => c.stage === "New").forEach(c => {
+    reminders.push({ priority: "medium", icon: "clock", text: `${c.name}'s application to ${c.role} hasn't been reviewed yet.`, cta: "Review now", nav: "pipeline", navId: c.id });
+  });
+  active.filter(c => ["Shortlisted", "Interview"].includes(c.stage)).forEach(c => {
+    const signals = getCandidateSignals(c);
+    if (signals.lastActive === "2 days ago" || signals.lastActive === "Yesterday") {
+      reminders.push({ priority: "low", icon: "user-x", text: `${c.name} has gone quiet (last active ${signals.lastActive.toLowerCase()}) while at ${c.stage}.`, cta: "Send a nudge", nav: "pipeline", navId: c.id });
+    }
+  });
+  DATA.employerRoles.filter(r => r.status === "Open" && r.health === "Needs attention").forEach(r => {
+    reminders.push({ priority: "medium", icon: "alert-triangle", text: `${r.title} is a hiring bottleneck - talent supply or speed is off pace.`, cta: "Review role", nav: "role-builder", navId: r.id });
+  });
+
+  return reminders.sort((a, b) => REMINDER_PRIORITY_ORDER[a.priority] - REMINDER_PRIORITY_ORDER[b.priority]);
+}
+
+// Item 7: Floating Vera Hiring Copilot. Lives in the persistent app shell
+// (rendered once, not per-page), so it's genuinely omnipresent across the
+// whole Employer OS rather than a Feed-only widget. Never auto-opens -
+// "never interrupting workflows" - but the FAB carries a live reminder
+// count so its presence is proactive without forcing attention. Distinct
+// from the existing header "Ask Vera" drawer (a reactive Q&A surface,
+// left untouched): the copilot leads with what Vera already found, and
+// links out to that same drawer for open-ended questions instead of
+// duplicating its prompt-matching engine.
+function renderCopilotReminderRow(r) {
+  return `
+    <div class="emp-copilot-reminder">
+      <span class="emp-copilot-reminder-icon emp-copilot-reminder-icon--${r.priority}">${icon(r.icon)}</span>
+      <p>${r.text}</p>
+      <button type="button" class="btn btn-ghost btn-sm" data-copilot-reminder-action data-copilot-nav="${r.nav}" data-copilot-nav-id="${r.navId || ""}">${r.cta}</button>
+    </div>
+  `;
+}
+
+function renderHiringCopilotPanelBody() {
+  const reminders = getSmartHiringReminders();
+  const top = reminders.slice(0, 5);
+  return `
+    <div class="emp-copilot-head">
+      <div><span class="emp-callout-label">${icon("sparkles")} Vera Hiring Copilot</span><p>Monitoring your hiring activity in the background.</p></div>
+      <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-copilot-close aria-label="Close">${icon("x")}</button>
+    </div>
+    <div class="emp-copilot-body">
+      ${top.length ? `
+        <span class="emp-tags-label">Needs your attention (${reminders.length})</span>
+        <div class="emp-copilot-reminder-list">${top.map(renderCopilotReminderRow).join("")}</div>
+      ` : `<p class="emp-empty-hint">Nothing urgent right now - Vera will surface reminders here as your pipeline changes.</p>`}
+    </div>
+    <div class="emp-copilot-footer">
+      <button type="button" class="btn btn-ghost btn-sm" data-copilot-ask-vera>${icon("message-circle")} Ask Vera anything</button>
+    </div>
+  `;
+}
+
+function renderHiringCopilot() {
+  const reminders = getSmartHiringReminders();
+  const highCount = reminders.filter(r => r.priority === "high").length;
+  return `
+    <div class="emp-hiring-copilot" data-hiring-copilot>
+      <div class="emp-copilot-panel" data-copilot-panel ${employerCopilotOpen ? "" : "hidden"} role="dialog" aria-label="Vera Hiring Copilot">
+        ${renderHiringCopilotPanelBody()}
+      </div>
+      <button type="button" class="emp-copilot-fab" data-copilot-toggle aria-haspopup="dialog" aria-expanded="${employerCopilotOpen}" aria-label="Vera Hiring Copilot${reminders.length ? `, ${reminders.length} items need attention` : ""}">
+        ${icon("sparkles")}
+        ${reminders.length ? `<span class="emp-copilot-badge ${highCount ? "emp-copilot-badge--urgent" : ""}">${reminders.length}</span>` : ""}
+      </button>
+    </div>
+  `;
+}
+
+function refreshHiringCopilot(root) {
+  const panel = qs("[data-copilot-panel]", root);
+  if (panel) { panel.innerHTML = renderHiringCopilotPanelBody(); createIcons(); bindHiringCopilotPanel(root); }
+  const fabWrap = qs("[data-hiring-copilot]", root);
+  if (fabWrap) {
+    const reminders = getSmartHiringReminders();
+    const highCount = reminders.filter(r => r.priority === "high").length;
+    const fab = qs("[data-copilot-toggle]", fabWrap);
+    let badge = qs(".emp-copilot-badge", fab);
+    if (reminders.length) {
+      if (!badge) { badge = document.createElement("span"); badge.className = "emp-copilot-badge"; fab.appendChild(badge); }
+      badge.className = `emp-copilot-badge ${highCount ? "emp-copilot-badge--urgent" : ""}`;
+      badge.textContent = String(reminders.length);
+    } else if (badge) badge.remove();
+    fab.setAttribute("aria-label", `Vera Hiring Copilot${reminders.length ? `, ${reminders.length} items need attention` : ""}`);
+  }
+}
+
+function bindHiringCopilotPanel(root) {
+  qs("[data-copilot-close]", root)?.addEventListener("click", () => { employerCopilotOpen = false; qs("[data-copilot-panel]", root).hidden = true; qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", "false"); });
+  qs("[data-copilot-ask-vera]", root)?.addEventListener("click", () => {
+    employerCopilotOpen = false;
+    const panel = qs("[data-copilot-panel]", root);
+    if (panel) panel.hidden = true;
+    openEmployerVera("What needs my attention today?");
+  });
+  qsa("[data-copilot-reminder-action]", root).forEach(btn => btn.addEventListener("click", () => {
+    const nav = btn.dataset.copilotNav;
+    const navId = btn.dataset.copilotNavId;
+    employerCopilotOpen = false;
+    qs("[data-copilot-panel]", root).hidden = true;
+    employerNavigateTo(nav, navId ? { id: navId } : {});
+  }));
+}
+
+function bindHiringCopilot(root) {
+  bindHiringCopilotPanel(root);
+  qs("[data-copilot-toggle]", root)?.addEventListener("click", event => {
+    event.stopPropagation();
+    employerCopilotOpen = !employerCopilotOpen;
+    const panel = qs("[data-copilot-panel]", root);
+    if (employerCopilotOpen) { refreshHiringCopilot(root); panel.hidden = false; }
+    else panel.hidden = true;
+    qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", String(employerCopilotOpen));
+  });
+  qs("[data-copilot-panel]", root)?.addEventListener("click", event => event.stopPropagation());
+  document.addEventListener("click", () => {
+    const panel = qs("[data-copilot-panel]", root);
+    if (panel && !panel.hidden && employerCopilotOpen) {
+      employerCopilotOpen = false;
+      panel.hidden = true;
+      qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", "false");
+    }
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && employerCopilotOpen) {
+      employerCopilotOpen = false;
+      const panel = qs("[data-copilot-panel]", root);
+      if (panel) panel.hidden = true;
+      qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", "false");
+    }
+  });
+}
 
 function renderEmployerShell(root) {
   const state = readState();
@@ -9381,6 +9536,7 @@ function renderEmployerShell(root) {
     </header>
     <main id="employer-view" class="emp-app-main"></main>
     <div data-emp-vera-drawer-root></div>
+    ${renderHiringCopilot()}
   `;
   createIcons();
 
@@ -9392,9 +9548,11 @@ function renderEmployerShell(root) {
       return;
     }
     if (event.target.closest("[data-emp-messages]")) {
-      showToast("Full Messages opens from the Feed page.", "info");
+      employerNavigateTo("messages");
     }
   });
+
+  bindHiringCopilot(root);
 
   qsa("[data-emp-nav]", root).forEach(link => link.addEventListener("click", event => {
     event.preventDefault();
