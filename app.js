@@ -1053,6 +1053,98 @@ const DATA = {
     { id: "remote-expectations", label: "Remote work expectations", count: "455 posts today" },
     { id: "skills-gap", label: "University-to-industry skills gap", count: "301 posts today" }
   ],
+  // Employer Direct Messaging (items 10-14). Each conversation links to a
+  // real DATA.candidates record by id rather than duplicating name/role/
+  // fit data, so the AI Candidate Intelligence panel and the message
+  // thread never disagree. `files` models the Shared Hiring Workspace -
+  // documents exchanged in-thread with a lightweight version history.
+  employerConversations: [
+    {
+      id: "conv-c5", candidateId: "c5", pinned: true, archived: false,
+      messages: [
+        { id: "m1", sender: "employer", text: "Hi Wei Jun, congratulations! We'd like to formally offer you the Junior Data Analyst role at RM 5,200/month. Details are attached.", time: "3 days ago", read: true },
+        { id: "m2", sender: "employer", text: "Take your time reviewing it - happy to jump on a call if you have questions about the package.", time: "3 days ago", read: true },
+        { id: "m3", sender: "candidate", text: "Thank you so much! This is really exciting. I have a couple of questions about the start date and the remote-work policy.", time: "2 days ago", read: true },
+        { id: "m4", sender: "employer", text: "Of course - happy to walk through both. Are you free for a quick call tomorrow afternoon?", time: "2 days ago", read: false },
+      ],
+      files: [
+        { id: "f1", name: "Wei_Jun_Tan_Resume.pdf", type: "resume", uploadedBy: "candidate", date: "6 weeks ago", version: 1 },
+        { id: "f2", name: "Offer_Letter_JuniorDataAnalyst.pdf", type: "offer", uploadedBy: "employer", date: "3 days ago", version: 1 },
+      ],
+    },
+    {
+      id: "conv-c2", candidateId: "c2", pinned: true, archived: false,
+      messages: [
+        { id: "m1", sender: "candidate", text: "Hi! Thank you for shortlisting me for the Junior Data Analyst role. Looking forward to the next steps.", time: "6 days ago", read: true },
+        { id: "m2", sender: "employer", text: "Great to have you in the process, Daniel. We'd like to schedule a recruiter screen this week.", time: "5 days ago", read: true },
+        { id: "m3", sender: "employer", text: "Does tomorrow at 2:30 PM work for a 30-minute call?", time: "1 day ago", read: true },
+        { id: "m4", sender: "candidate", text: "That works well for me, thank you! Should I prepare anything specific?", time: "1 day ago", read: false },
+      ],
+      files: [
+        { id: "f1", name: "Daniel_Lim_Resume.pdf", type: "resume", uploadedBy: "candidate", date: "2 weeks ago", version: 1 },
+        { id: "f2", name: "Daniel_Lim_SQL_Dashboard_Sample.pdf", type: "portfolio", uploadedBy: "candidate", date: "2 weeks ago", version: 1 },
+      ],
+    },
+    {
+      id: "conv-c1", candidateId: "c1", pinned: false, archived: false,
+      messages: [
+        { id: "m1", sender: "employer", text: "Hi Siti, your portfolio really stood out - the banking onboarding case study was excellent work.", time: "2 days ago", read: true },
+        { id: "m2", sender: "candidate", text: "Thank you so much! That project taught me a lot about balancing compliance constraints with usability.", time: "2 days ago", read: true },
+        { id: "m3", sender: "candidate", text: "Is there anything else you'd like to see from my portfolio before the next round?", time: "6 hours ago", read: false },
+      ],
+      files: [
+        { id: "f1", name: "Siti_Nur_Portfolio.pdf", type: "portfolio", uploadedBy: "candidate", date: "9 days ago", version: 2 },
+      ],
+    },
+    {
+      id: "conv-c4", candidateId: "c4", pinned: false, archived: false,
+      messages: [
+        { id: "m1", sender: "candidate", text: "Hello, I just submitted my application for the Backend Engineer role. I've included a link to a microservices side project I think is relevant.", time: "3 hours ago", read: false },
+      ],
+      files: [
+        { id: "f1", name: "Ahmad_Zulkifli_Resume.pdf", type: "resume", uploadedBy: "candidate", date: "3 hours ago", version: 1 },
+      ],
+    },
+    {
+      id: "conv-c6", candidateId: "c6", pinned: false, archived: false,
+      messages: [
+        { id: "m1", sender: "employer", text: "Hi Farah, thanks for a strong second-round interview - the team was impressed with your system design walkthrough.", time: "3 days ago", read: true },
+        { id: "m2", sender: "candidate", text: "Thank you, I really enjoyed the discussion! Happy to answer any follow-up questions the team has.", time: "3 days ago", read: true },
+        { id: "m3", sender: "employer", text: "We're finalising the decision this week - just confirming your notice period if we move forward with an offer.", time: "1 day ago", read: true },
+        { id: "m4", sender: "candidate", text: "My notice period is 2 weeks. Let me know if you need anything else in the meantime.", time: "20 hours ago", read: true },
+      ],
+      files: [
+        { id: "f1", name: "Farah_Alia_Resume.pdf", type: "resume", uploadedBy: "candidate", date: "5 weeks ago", version: 1 },
+      ],
+    },
+    {
+      id: "conv-c3", candidateId: "c3", pinned: false, archived: false,
+      messages: [
+        { id: "m1", sender: "employer", text: "Hi Priya, your freelance delivery track record is exactly the kind of evidence we look for. We'd like to move you to Shortlisted.", time: "4 days ago", read: true },
+        { id: "m2", sender: "candidate", text: "That's great to hear, thank you! I'm looking forward to learning more about the role.", time: "4 days ago", read: true },
+      ],
+      files: [],
+    },
+    {
+      id: "conv-c7", candidateId: "c7", pinned: false, archived: true,
+      messages: [
+        { id: "m1", sender: "employer", text: "Welcome to the team, Kevin! Onboarding is scheduled to start 3 Aug 2026 - HR will be in touch with the paperwork.", time: "3 weeks ago", read: true },
+        { id: "m2", sender: "candidate", text: "Thank you, I'm really excited to get started!", time: "3 weeks ago", read: true },
+      ],
+      files: [
+        { id: "f1", name: "Offer_Letter_ProductDesignIntern.pdf", type: "offer", uploadedBy: "employer", date: "3 weeks ago", version: 1 },
+        { id: "f2", name: "Signed_Offer_Kevin_Ong.pdf", type: "contract", uploadedBy: "candidate", date: "3 weeks ago", version: 1 },
+      ],
+    },
+    {
+      id: "conv-c8", candidateId: "c8", pinned: false, archived: true,
+      messages: [
+        { id: "m1", sender: "employer", text: "Hi Hafiz, thank you for your interest in the Backend Engineer role. After review, we've decided to move forward with candidates whose experience more closely matches our distributed-systems requirements.", time: "1 week ago", read: true },
+        { id: "m2", sender: "candidate", text: "Thanks for letting me know, and for the feedback - I appreciate it.", time: "1 week ago", read: true },
+      ],
+      files: [],
+    },
+  ],
 };
 
 const STORE_KEY = "careergo-v4-state";
@@ -9336,7 +9428,7 @@ const EMPLOYER_NAV_GROUPS = [
   ] }
 ];
 
-const EMPLOYER_VIEW_KEYS = [...EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key]) => key)), "role-builder", "company-edit", "settings"];
+const EMPLOYER_VIEW_KEYS = [...EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key]) => key)), "role-builder", "company-edit", "settings", "messages"];
 const EMPLOYER_VIEW_TITLES = Object.fromEntries(EMPLOYER_NAV_GROUPS.flatMap(group => group.items.map(([key, label]) => [key, label])));
 
 let employerRouteState = { view: "", params: {} };
@@ -10236,6 +10328,7 @@ function renderEmployerView(view, params, root) {
     case "role-builder": return renderEmployerRoleBuilder(root, params.id || null);
     case "pipeline": return renderEmployerTalentPipeline(root, params);
     case "feed": return renderEmployerFeed(root);
+    case "messages": return renderEmployerMessages(root, params);
     case "company": return renderEmployerCompany(root);
     case "company-edit": return renderEmployerCompanyEdit(root);
     default: return renderEmployerPlaceholder(root, view);
@@ -15099,7 +15192,11 @@ function renderEmployerFeed(root) {
       if (!c) return;
       const action = btn.dataset.recAction;
       if (action === "preview" || action === "offer") { employerNavigateTo("pipeline", { id: c.id }); showToast(`Opening ${c.name} in Talent Pipeline.`, "info"); }
-      else if (action === "message") showToast("Opens in Messages.", "info");
+      else if (action === "message") {
+        const conv = DATA.employerConversations.find(cv => cv.candidateId === c.id);
+        employerNavigateTo("messages", conv ? { id: c.id } : {});
+        showToast(conv ? `Opening your conversation with ${c.name}.` : `No conversation with ${c.name} yet - start one from Messages.`, "info");
+      }
       else if (action === "invite") showToast(`Invitation sent to ${c.name}.`);
       else if (action === "shortlist") {
         if (c.stage === "New") {
@@ -15493,7 +15590,7 @@ function renderEmployerFeed(root) {
         if (idx === -1) { state.feedFollowing.push(post.followId); showToast(`Following ${post.author}.`); } else { state.feedFollowing.splice(idx, 1); showToast(`Unfollowed ${post.author}.`); }
         writeState(state); draw();
       }
-      if (action === "message") showToast("Opens in Messages.", "info");
+      if (action === "message") { employerNavigateTo("messages"); showToast(`Messages doesn't have a thread with ${post.author} yet - candidate conversations appear once they're in your pipeline.`, "info"); }
       if (action === "mute") {
         if (!state.feedMuted.includes(post.followId)) { state.feedMuted.push(post.followId); writeState(state); showToast(`Muted ${post.author}.`); draw(); }
       }
@@ -15685,6 +15782,78 @@ function renderEmployerFeed(root) {
   draw();
 }
 
+// ---------- Employer Direct Messaging (items 10, 11, 12, 14) ----------
+// Item 11: AI Reply Assistant. Real templated generation (name/role/salary
+// interpolated from the actual candidate record), not a static string per
+// type - two candidates requesting the same reply type get genuinely
+// different text. Tone is a first-class axis so switching Formal/Friendly/
+// Direct regenerates rather than just relabeling the same copy.
+const AI_REPLY_TYPES = [
+  { id: "interview", label: "Interview invitation" },
+  { id: "negotiation", label: "Salary negotiation" },
+  { id: "portfolio", label: "Portfolio request" },
+  { id: "assessment", label: "Assessment invitation" },
+  { id: "rejection", label: "Rejection" },
+  { id: "offer", label: "Offer" },
+  { id: "followup", label: "Follow-up" },
+  { id: "reminder", label: "Friendly reminder" },
+];
+const AI_REPLY_TONES = ["Formal", "Friendly", "Direct"];
+const AI_REPLY_TEMPLATES = {
+  interview: {
+    Formal: c => `Dear ${c.first}, we would like to invite you to an interview for the ${c.role} position. Please let us know your availability this week so we can confirm a time.`,
+    Friendly: c => `Hi ${c.first}! We'd love to chat with you about the ${c.role} role - when are you free for a quick interview this week?`,
+    Direct: c => `Hi ${c.first}, are you available for an interview for ${c.role} this week? Let me know a couple of times that work.`,
+  },
+  negotiation: {
+    Formal: c => `Dear ${c.first}, thank you for sharing your salary expectations. We would like to discuss the compensation package further to find an arrangement that works well for both sides.`,
+    Friendly: c => `Hi ${c.first}, thanks for being upfront about your salary expectations! Let's find a number that works well for both of us - do you have a few minutes to talk this week?`,
+    Direct: c => `Hi ${c.first}, we'd like to discuss your salary expectations (${c.salaryExpectation}) against our approved range. Can we set up a call?`,
+  },
+  portfolio: {
+    Formal: c => `Dear ${c.first}, could you please share additional examples of your work relevant to the ${c.role} position?`,
+    Friendly: c => `Hi ${c.first}! Loved what we've seen so far - would you mind sharing a couple more portfolio pieces relevant to ${c.role}?`,
+    Direct: c => `Hi ${c.first}, please send over 1-2 more portfolio samples relevant to ${c.role} when you get a chance.`,
+  },
+  assessment: {
+    Formal: c => `Dear ${c.first}, as the next step for the ${c.role} role, we would like to invite you to complete a short online assessment.`,
+    Friendly: c => `Hi ${c.first}! Next step is a short online assessment for ${c.role} - should take about 45 minutes. I'll send the link shortly!`,
+    Direct: c => `Hi ${c.first}, next step is a short assessment for ${c.role}. Link coming shortly - should take ~45 minutes.`,
+  },
+  rejection: {
+    Formal: c => `Dear ${c.first}, thank you for your interest in the ${c.role} position. After careful consideration, we have decided to move forward with other candidates whose experience more closely matches our current needs. We wish you the best in your search.`,
+    Friendly: c => `Hi ${c.first}, thank you so much for the time you put into the process for ${c.role}. We've decided to move forward with other candidates this time, but we were genuinely impressed and would love to stay in touch for future opportunities.`,
+    Direct: c => `Hi ${c.first}, we've decided to move forward with other candidates for ${c.role}. Thank you for your time and interest.`,
+  },
+  offer: {
+    Formal: c => `Dear ${c.first}, we are pleased to extend an offer for the ${c.role} position at ${c.salaryExpectation}. Full details are attached - please let us know if you have any questions.`,
+    Friendly: c => `Hi ${c.first}! We'd love to have you join us as ${c.role} - offer details are attached. So excited about the possibility of working together!`,
+    Direct: c => `Hi ${c.first}, please find the offer for ${c.role} attached. Let me know if you have questions.`,
+  },
+  followup: {
+    Formal: c => `Dear ${c.first}, following up on our previous conversation - please let us know if you have any updates or questions.`,
+    Friendly: c => `Hi ${c.first}, just checking in! Would love to hear your thoughts whenever you get a chance.`,
+    Direct: c => `Hi ${c.first}, following up - any updates on your end?`,
+  },
+  reminder: {
+    Formal: c => `Dear ${c.first}, this is a gentle reminder regarding the pending item in our conversation. Please let us know if you need any additional information.`,
+    Friendly: c => `Hi ${c.first}, just a friendly nudge on the pending item whenever you have a moment - no rush at all!`,
+    Direct: c => `Hi ${c.first}, quick reminder on the pending item - let me know if you need anything from us.`,
+  },
+};
+function generateAiReply(typeId, tone, candidate) {
+  const ctx = { first: candidate.name.split(" ")[0], role: candidate.role, salaryExpectation: candidate.salaryExpectation };
+  return AI_REPLY_TEMPLATES[typeId]?.[tone]?.(ctx) || "";
+}
+
+const DM_FILE_TYPE_META = {
+  resume: { icon: "file-text", label: "Resume" },
+  portfolio: { icon: "image", label: "Portfolio" },
+  contract: { icon: "file-check", label: "Contract" },
+  offer: { icon: "award", label: "Offer letter" },
+  assessment: { icon: "clipboard-check", label: "Assessment" },
+};
+
 function sourceTag(label) { return `<span class="emp-source-tag">${label}</span>`; }
 
 function computeCompanyCompleteness(company) {
@@ -15694,6 +15863,423 @@ function computeCompanyCompleteness(company) {
     false // workplace media - not yet supported, counted as a gap
   ];
   return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+}
+
+function renderEmployerMessages(root, params = {}) {
+  let activeConversationId = null;
+  let conversationFilter = "all";
+  let searchQuery = "";
+  let rightTab = "intelligence";
+  let replyAssistantOpen = false;
+  let replyAssistantType = "interview";
+  let replyAssistantTone = "Friendly";
+  let composerDraftText = "";
+  let typingIndicatorFor = null;
+  let typingTimer = null;
+  let fileUploadPickerOpen = false;
+
+  function getConversations() { return DATA.employerConversations; }
+  function findConversation(id) { return getConversations().find(c => c.id === id); }
+  function candidateFor(conv) { return DATA.candidates.find(c => c.id === conv.candidateId); }
+  function lastMessage(conv) { return conv.messages[conv.messages.length - 1]; }
+  function isUnread(conv) { return conv.messages.some(m => m.sender === "candidate" && !m.read); }
+
+  function filteredConversations() {
+    let list = getConversations();
+    if (conversationFilter === "unread") list = list.filter(isUnread);
+    else if (conversationFilter === "pinned") list = list.filter(c => c.pinned);
+    else if (conversationFilter === "archived") list = list.filter(c => c.archived);
+    else list = list.filter(c => !c.archived);
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      list = list.filter(conv => {
+        const cand = candidateFor(conv);
+        return cand.name.toLowerCase().includes(q) || cand.role.toLowerCase().includes(q);
+      });
+    }
+    return [...list].sort((a, b) => (b.pinned === a.pinned ? 0 : b.pinned ? 1 : -1));
+  }
+
+  function renderConversationRow(conv) {
+    const cand = candidateFor(conv);
+    const last = lastMessage(conv);
+    const unread = isUnread(conv);
+    return `
+      <button type="button" class="emp-dm-convo-row ${activeConversationId === conv.id ? "active" : ""} ${unread ? "unread" : ""}" data-dm-select-convo="${conv.id}">
+        <span class="emp-feed-avatar">${initialsOf(cand.name)}</span>
+        <span class="emp-dm-convo-info">
+          <span class="emp-dm-convo-top">
+            <strong>${cand.name}</strong>
+            <span class="emp-dm-convo-badges">
+              ${conv.pinned ? `<span class="emp-dm-pin-dot" title="Pinned">${icon("pin")}</span>` : ""}
+              ${unread ? `<span class="emp-dm-unread-dot" title="Unread" aria-hidden="true"></span>` : ""}
+              <span class="emp-dm-convo-time">${last.time}</span>
+            </span>
+          </span>
+          <span class="emp-dm-convo-role">${cand.role}</span>
+          <span class="emp-dm-convo-preview">${last.sender === "employer" ? "You: " : ""}${last.text}</span>
+        </span>
+      </button>
+    `;
+  }
+
+  function renderConversationList() {
+    const list = filteredConversations();
+    const counts = { all: getConversations().filter(c => !c.archived).length, unread: getConversations().filter(isUnread).length, pinned: getConversations().filter(c => c.pinned).length, archived: getConversations().filter(c => c.archived).length };
+    return `
+      <div class="emp-dm-conversations">
+        <div class="emp-dm-search-field">
+          ${icon("search")}
+          <input type="text" placeholder="Search candidates or roles..." data-dm-search value="${searchQuery}">
+        </div>
+        <div class="emp-dm-filter-row">
+          <button type="button" class="emp-dm-filter-chip ${conversationFilter === "all" ? "active" : ""}" data-dm-filter="all">All <span>${counts.all}</span></button>
+          <button type="button" class="emp-dm-filter-chip ${conversationFilter === "unread" ? "active" : ""}" data-dm-filter="unread">Unread <span>${counts.unread}</span></button>
+          <button type="button" class="emp-dm-filter-chip ${conversationFilter === "pinned" ? "active" : ""}" data-dm-filter="pinned">Pinned <span>${counts.pinned}</span></button>
+          <button type="button" class="emp-dm-filter-chip ${conversationFilter === "archived" ? "active" : ""}" data-dm-filter="archived">Archived <span>${counts.archived}</span></button>
+        </div>
+        <div class="emp-dm-convo-list">
+          ${list.length ? list.map(renderConversationRow).join("") : `<p class="emp-empty-hint">No conversations match this filter.</p>`}
+        </div>
+      </div>
+    `;
+  }
+
+  // Center column: message thread. Read receipts render on the employer's
+  // own sent messages only (a real receipt reports what the OTHER party
+  // has seen, not what you've seen of theirs); the typing indicator is a
+  // transient closure-state flag set right after the employer sends a
+  // message and cleared either by the simulated candidate reply landing
+  // or a timeout, never a real websocket - this is mocked, in-session
+  // behaviour, not a live feature.
+  function renderMessageBubble(m) {
+    const isEmployer = m.sender === "employer";
+    return `
+      <div class="emp-dm-bubble-row ${isEmployer ? "outgoing" : "incoming"}">
+        <div class="emp-dm-bubble">
+          <p>${m.text}</p>
+          <span class="emp-dm-bubble-meta">${m.time}${isEmployer ? ` · ${icon(m.read ? "check-check" : "check")}` : ""}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderThread(conv) {
+    const cand = candidateFor(conv);
+    const signals = getCandidateSignals(cand);
+    return `
+      <div class="emp-dm-thread">
+        <div class="emp-dm-thread-head">
+          <span class="emp-feed-avatar">${initialsOf(cand.name)}</span>
+          <div class="emp-dm-thread-head-info">
+            <strong>${cand.name}</strong>
+            <p class="emp-cand-meta">${cand.role} · ${signals.lastActive}</p>
+          </div>
+          <div class="emp-dm-thread-head-actions">
+            <button type="button" class="btn btn-ghost btn-sm" data-dm-pin-toggle="${conv.id}">${icon("pin")} ${conv.pinned ? "Unpin" : "Pin"}</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-dm-archive-toggle="${conv.id}">${icon("archive")} ${conv.archived ? "Unarchive" : "Archive"}</button>
+          </div>
+        </div>
+        <div class="emp-dm-thread-body" data-dm-thread-body>
+          ${conv.messages.map(renderMessageBubble).join("")}
+          ${typingIndicatorFor === conv.id ? `<div class="emp-dm-typing"><span></span><span></span><span></span></div>` : ""}
+        </div>
+        ${renderComposerArea(conv, cand)}
+      </div>
+    `;
+  }
+
+  function renderComposerArea(conv, cand) {
+    return `
+      <div class="emp-dm-composer">
+        ${replyAssistantOpen ? `
+          <div class="emp-dm-reply-assistant">
+            <div class="emp-dm-reply-assistant-head">
+              <span class="emp-callout-label">${icon("sparkles")} Reply with Vera</span>
+              <button type="button" class="btn-icon-sm" data-dm-reply-close aria-label="Close">${icon("x")}</button>
+            </div>
+            <div class="emp-dm-reply-row">
+              <select data-dm-reply-type>${AI_REPLY_TYPES.map(t => `<option value="${t.id}" ${replyAssistantType === t.id ? "selected" : ""}>${t.label}</option>`).join("")}</select>
+              <div class="emp-dm-tone-row">${AI_REPLY_TONES.map(t => `<button type="button" class="emp-dm-tone-chip ${replyAssistantTone === t ? "active" : ""}" data-dm-reply-tone="${t}">${t}</button>`).join("")}</div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" data-dm-reply-generate>${icon("wand-2")} Generate reply</button>
+          </div>
+        ` : ""}
+        <div class="emp-dm-composer-input-row">
+          <button type="button" class="btn-icon-sm" data-dm-attach aria-label="Attach file">${icon("paperclip")}</button>
+          <button type="button" class="btn-icon-sm" data-dm-voice aria-label="Record voice note">${icon("mic")}</button>
+          <textarea data-dm-composer-text placeholder="Write a message to ${cand.name.split(" ")[0]}..." rows="1">${composerDraftText}</textarea>
+          <button type="button" class="btn-icon-sm" data-dm-reply-toggle aria-label="Reply with Vera" title="Reply with Vera">${icon("sparkles")}</button>
+          <button type="button" class="btn btn-primary btn-sm" data-dm-send="${conv.id}">${icon("send")} Send</button>
+        </div>
+        <div class="emp-dm-composer-quick-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-dm-quick="schedule" data-dm-convo="${conv.id}">${icon("calendar")} Schedule interview</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-dm-quick="offer" data-dm-convo="${conv.id}">${icon("award")} Generate offer</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Right column tab 1: AI Candidate Intelligence (item 10's right pane).
+  // Every field reads off the real candidate record + the same signals
+  // layer the Feed's recommendation widgets use, so a candidate's match
+  // score/salary/availability never disagrees between Feed, Pipeline and
+  // this panel.
+  function renderIntelligenceTab(conv, cand) {
+    const role = DATA.employerRoles.find(r => r.id === cand.roleId);
+    const signals = getCandidateSignals(cand);
+    const reasons = getMatchReasons(cand, role);
+    const reminders = getSmartHiringReminders().filter(r => r.text.includes(cand.name));
+    return `
+      <div class="emp-dm-intel-section">
+        <div class="emp-dm-intel-match"><span>${cand.fit}%</span><small>Match score</small></div>
+        <p class="emp-dm-intel-summary">${icon("sparkles")} ${reasons[0]}</p>
+      </div>
+      <div class="emp-dm-intel-section">
+        <span class="emp-tags-label">Strengths</span>
+        <p class="emp-dm-intel-text">${cand.strength}</p>
+        ${cand.concern ? `<span class="emp-tags-label">Watch-out</span><p class="emp-dm-intel-text">${cand.concern}</p>` : ""}
+      </div>
+      <div class="emp-dm-intel-stat-row">
+        <div><span class="emp-tags-label">Salary expectation</span><strong>${cand.salaryExpectation}</strong></div>
+        <div><span class="emp-tags-label">Availability</span><strong>${cand.availability}</strong></div>
+        <div><span class="emp-tags-label">Location</span><strong>${cand.location}</strong></div>
+        <div><span class="emp-tags-label">Interview success</span><strong>${signals.interviewSuccessProbability}%</strong></div>
+      </div>
+      ${cand.interview ? `
+        <div class="emp-dm-intel-section">
+          <span class="emp-tags-label">Interview notes</span>
+          ${cand.interview.scorecards.length ? cand.interview.scorecards.map(s => `<p class="emp-dm-intel-text"><strong>${s.interviewer}:</strong> ${s.notes}</p>`).join("") : `<p class="emp-dm-intel-text">No scorecards submitted yet.</p>`}
+        </div>
+      ` : ""}
+      <div class="emp-dm-intel-section">
+        <span class="emp-tags-label">AI-suggested replies</span>
+        <div class="emp-dm-intel-suggestions">
+          ${AI_REPLY_TYPES.slice(0, 3).map(t => `<button type="button" class="emp-dm-suggest-chip" data-dm-suggest-reply="${t.id}">${t.label}</button>`).join("")}
+        </div>
+      </div>
+      ${reminders.length ? `
+        <div class="emp-dm-intel-section">
+          <span class="emp-tags-label">Reminders</span>
+          ${reminders.map(r => `<p class="emp-dm-intel-text">${icon(r.icon)} ${r.text}</p>`).join("")}
+        </div>
+      ` : ""}
+      <div class="emp-dm-intel-actions">
+        <button type="button" class="btn btn-ghost btn-sm" data-dm-open-pipeline="${cand.id}">${icon("kanban")} Open in Pipeline</button>
+      </div>
+    `;
+  }
+
+  // Right column tab 2: Candidate Hiring Timeline (item 12). Reuses
+  // candidate.timeline verbatim (already the source of truth for Talent
+  // Pipeline's own timeline view) instead of a parallel messaging-specific
+  // copy, plus a synthesized "pending" tail for stages not yet reached so
+  // the full Application -> ... -> Accepted/Rejected arc is always shown.
+  function renderTimelineTab(conv, cand) {
+    const fullStages = ["Applied", "Reviewed", "Shortlisted", "Interview scheduled", "Feedback submitted", "Decision"];
+    const doneLabels = cand.timeline.map(t => t.label);
+    const rows = fullStages.map(label => {
+      const entry = cand.timeline.find(t => t.label === label);
+      return entry || { label, date: "", done: false };
+    });
+    return `
+      <div class="emp-dm-timeline">
+        ${rows.map((t, i) => `
+          <div class="emp-dm-timeline-row ${t.done ? "done" : "pending"}">
+            <span class="emp-dm-timeline-dot">${t.done ? icon("check") : ""}</span>
+            <div class="emp-dm-timeline-info">
+              <strong>${t.label}</strong>
+              <p class="emp-cand-meta">${t.done ? t.date : "Pending"}</p>
+            </div>
+          </div>
+        `).join("")}
+        ${cand.rejection ? `<div class="emp-dm-timeline-row done rejected"><span class="emp-dm-timeline-dot">${icon("x")}</span><div class="emp-dm-timeline-info"><strong>Rejected</strong><p class="emp-cand-meta">${cand.rejection.date} · ${cand.rejection.reason}</p></div></div>` : ""}
+        ${cand.hired ? `<div class="emp-dm-timeline-row done accepted"><span class="emp-dm-timeline-dot">${icon("check")}</span><div class="emp-dm-timeline-info"><strong>Accepted</strong><p class="emp-cand-meta">Starts ${cand.hired.startDate}</p></div></div>` : ""}
+      </div>
+      ${cand.notes.length ? `
+        <div class="emp-dm-intel-section">
+          <span class="emp-tags-label">Recruiter notes</span>
+          ${cand.notes.map(n => `<p class="emp-dm-intel-text"><strong>${n.author}</strong> (${n.date}): ${n.text}</p>`).join("")}
+        </div>
+      ` : ""}
+    `;
+  }
+
+  // Right column tab 3: Shared Hiring Workspace (item 14). Files exchanged
+  // in-thread with a lightweight version history; "Upload" is a mocked
+  // picker (no real file I/O in this static build) that appends a new
+  // version entry so the version-history behaviour is still exercised.
+  function renderFilesTab(conv) {
+    return `
+      <div class="emp-dm-files-list">
+        ${conv.files.length ? conv.files.map(f => {
+          const meta = DM_FILE_TYPE_META[f.type] || { icon: "file", label: "File" };
+          return `
+            <div class="emp-dm-file-row">
+              <span class="emp-dm-file-icon">${icon(meta.icon)}</span>
+              <div class="emp-dm-file-info">
+                <strong>${f.name}</strong>
+                <p class="emp-cand-meta">${meta.label} · ${f.uploadedBy === "employer" ? "You" : "Candidate"} · ${f.date}${f.version > 1 ? ` · v${f.version}` : ""}</p>
+              </div>
+              <button type="button" class="btn-icon-sm" data-dm-file-preview="${f.id}" data-dm-convo="${conv.id}" aria-label="Preview">${icon("eye")}</button>
+            </div>
+          `;
+        }).join("") : `<p class="emp-empty-hint">No files shared in this conversation yet.</p>`}
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm emp-dm-upload-btn" data-dm-upload="${conv.id}">${icon("upload")} Upload document</button>
+    `;
+  }
+
+  function renderIntelligencePanel(conv) {
+    const cand = candidateFor(conv);
+    const tabs = [["intelligence", "Intelligence"], ["timeline", "Timeline"], ["files", "Files"]];
+    return `
+      <div class="emp-dm-intelligence">
+        <div class="emp-subtabs emp-dm-subtabs">${tabs.map(([k, l]) => `<button type="button" class="emp-subtab ${rightTab === k ? "active" : ""}" data-dm-right-tab="${k}">${l}</button>`).join("")}</div>
+        <div class="emp-dm-intelligence-body">
+          ${rightTab === "intelligence" ? renderIntelligenceTab(conv, cand) : rightTab === "timeline" ? renderTimelineTab(conv, cand) : renderFilesTab(conv)}
+        </div>
+      </div>
+    `;
+  }
+
+  function scrollThreadToBottom() {
+    const body = qs("[data-dm-thread-body]", root);
+    if (body) body.scrollTop = body.scrollHeight;
+  }
+
+  function draw() {
+    if (!activeConversationId || !findConversation(activeConversationId)) {
+      const preferred = params.id ? getConversations().find(c => c.candidateId === params.id) : null;
+      activeConversationId = (preferred || filteredConversations()[0] || getConversations()[0])?.id || null;
+    }
+    const conv = activeConversationId ? findConversation(activeConversationId) : null;
+
+    root.innerHTML = `
+      <div class="emp-view-header"><span class="emp-section-label">Messages</span><h1>Messages</h1></div>
+      <div class="emp-dm-layout">
+        ${renderConversationList()}
+        ${conv ? renderThread(conv) : `
+          <div class="emp-dm-thread emp-dm-empty-thread">
+            <div class="emp-empty-state">
+              <div class="feature-icon">${icon("message-circle")}</div>
+              <h2>No conversation selected</h2>
+              <p>Choose a conversation from the left, or start one from a candidate's profile in Talent Pipeline.</p>
+            </div>
+          </div>
+        `}
+        ${conv ? renderIntelligencePanel(conv) : `<div class="emp-dm-intelligence"></div>`}
+      </div>
+    `;
+    createIcons();
+    scrollThreadToBottom();
+    bind();
+  }
+
+  function bind() {
+    qs("[data-dm-search]", root)?.addEventListener("input", event => { searchQuery = event.target.value; draw(); qs("[data-dm-search]", root)?.focus(); qs("[data-dm-search]", root).selectionStart = qs("[data-dm-search]", root).value.length; });
+    qsa("[data-dm-filter]", root).forEach(btn => btn.addEventListener("click", () => { conversationFilter = btn.dataset.dmFilter; draw(); }));
+    qsa("[data-dm-select-convo]", root).forEach(btn => btn.addEventListener("click", () => {
+      activeConversationId = btn.dataset.dmSelectConvo;
+      const conv = findConversation(activeConversationId);
+      conv.messages.forEach(m => { if (m.sender === "candidate") m.read = true; });
+      replyAssistantOpen = false;
+      composerDraftText = "";
+      rightTab = "intelligence";
+      draw();
+    }));
+
+    qsa("[data-dm-pin-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const conv = findConversation(btn.dataset.dmPinToggle);
+      conv.pinned = !conv.pinned;
+      showToast(conv.pinned ? "Conversation pinned." : "Conversation unpinned.");
+      draw();
+    }));
+    qsa("[data-dm-archive-toggle]", root).forEach(btn => btn.addEventListener("click", () => {
+      const conv = findConversation(btn.dataset.dmArchiveToggle);
+      conv.archived = !conv.archived;
+      showToast(conv.archived ? "Conversation archived." : "Conversation restored.");
+      if (conv.archived && activeConversationId === conv.id) activeConversationId = null;
+      draw();
+    }));
+
+    qsa("[data-dm-right-tab]", root).forEach(btn => btn.addEventListener("click", () => { rightTab = btn.dataset.dmRightTab; draw(); }));
+
+    const composerTextarea = qs("[data-dm-composer-text]", root);
+    composerTextarea?.addEventListener("input", event => { composerDraftText = event.target.value; });
+    qs("[data-dm-attach]", root)?.addEventListener("click", () => showToast("Attach a file from your device - opens the Files tab for a full upload.", "info"));
+    qs("[data-dm-voice]", root)?.addEventListener("click", () => showToast("Voice notes are recorded and attached inline once your mic is connected.", "info"));
+
+    qs("[data-dm-reply-toggle]", root)?.addEventListener("click", () => { replyAssistantOpen = !replyAssistantOpen; draw(); });
+    qs("[data-dm-reply-close]", root)?.addEventListener("click", () => { replyAssistantOpen = false; draw(); });
+    qs("[data-dm-reply-type]", root)?.addEventListener("change", event => { replyAssistantType = event.target.value; });
+    qsa("[data-dm-reply-tone]", root).forEach(btn => btn.addEventListener("click", () => { replyAssistantTone = btn.dataset.dmReplyTone; draw(); }));
+    qs("[data-dm-reply-generate]", root)?.addEventListener("click", () => {
+      const conv = findConversation(activeConversationId);
+      const cand = candidateFor(conv);
+      composerDraftText = generateAiReply(replyAssistantType, replyAssistantTone, cand);
+      replyAssistantOpen = false;
+      draw();
+      showToast("Draft generated. Review and edit before sending.");
+    });
+    qsa("[data-dm-suggest-reply]", root).forEach(btn => btn.addEventListener("click", () => {
+      const conv = findConversation(activeConversationId);
+      const cand = candidateFor(conv);
+      replyAssistantType = btn.dataset.dmSuggestReply;
+      composerDraftText = generateAiReply(replyAssistantType, replyAssistantTone, cand);
+      draw();
+      showToast("Draft generated. Review and edit before sending.");
+    }));
+
+    qs("[data-dm-send]", root)?.addEventListener("click", () => {
+      const conv = findConversation(qs("[data-dm-send]", root).dataset.dmSend);
+      const text = (qs("[data-dm-composer-text]", root)?.value || "").trim();
+      if (!text) return;
+      conv.messages.push({ id: `m-${Date.now()}`, sender: "employer", text, time: "Just now", read: false });
+      composerDraftText = "";
+      draw();
+      // Simulated typing indicator + candidate reply, mirroring the
+      // request/response feel of a live thread without a real backend -
+      // self-guards against the conversation having been switched away
+      // from before the timer fires.
+      typingIndicatorFor = conv.id;
+      const thisConvoId = conv.id;
+      if (typingTimer) clearTimeout(typingTimer);
+      const body = qs("[data-dm-thread-body]", root);
+      if (body) { const indicator = document.createElement("div"); indicator.className = "emp-dm-typing"; indicator.innerHTML = "<span></span><span></span><span></span>"; body.appendChild(indicator); body.scrollTop = body.scrollHeight; }
+      typingTimer = setTimeout(() => {
+        if (activeConversationId !== thisConvoId) { typingIndicatorFor = null; return; }
+        conv.messages.push({ id: `m-${Date.now()}`, sender: "candidate", text: "Thanks for the message - I'll get back to you shortly!", time: "Just now", read: true });
+        typingIndicatorFor = null;
+        draw();
+      }, 1800);
+    });
+
+    qsa("[data-dm-quick]", root).forEach(btn => btn.addEventListener("click", () => {
+      const action = btn.dataset.dmQuick;
+      const conv = findConversation(btn.dataset.dmConvo);
+      const cand = candidateFor(conv);
+      if (action === "schedule") { employerNavigateTo("pipeline", { id: cand.id }); showToast("Opening Talent Pipeline to schedule the interview.", "info"); }
+      if (action === "offer") { employerNavigateTo("pipeline", { id: cand.id }); showToast("Opening Talent Pipeline to prepare the offer.", "info"); }
+    }));
+
+    qs("[data-dm-open-pipeline]", root)?.addEventListener("click", () => employerNavigateTo("pipeline", { id: qs("[data-dm-open-pipeline]", root).dataset.dmOpenPipeline }));
+
+    qs("[data-dm-upload]", root)?.addEventListener("click", () => {
+      const conv = findConversation(qs("[data-dm-upload]", root).dataset.dmUpload);
+      const existing = conv.files.find(f => f.type === "resume");
+      if (existing) { existing.version += 1; existing.date = "Just now"; showToast(`New version of ${existing.name} uploaded (v${existing.version}).`); }
+      else { conv.files.push({ id: `f-${Date.now()}`, name: "New_Document.pdf", type: "resume", uploadedBy: "employer", date: "Just now", version: 1 }); showToast("Document uploaded."); }
+      draw();
+    });
+    qsa("[data-dm-file-preview]", root).forEach(btn => btn.addEventListener("click", () => {
+      const conv = findConversation(btn.dataset.dmConvo);
+      const file = conv.files.find(f => f.id === btn.dataset.dmFilePreview);
+      showToast(`Previewing ${file.name} (v${file.version}). Full document preview opens in a later phase.`, "info");
+    }));
+  }
+
+  draw();
 }
 
 const ROLE_SORT_OPTIONS = [
