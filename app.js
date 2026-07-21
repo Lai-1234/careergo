@@ -14831,6 +14831,13 @@ function bindHiringCopilot(root) {
   });
 }
 
+// Bell badge count (top-nav cluster) - unread candidate replies across
+// every non-archived conversation, the same "unread" definition Inbox's
+// own filter chip uses, so the two numbers never disagree.
+function getUnreadConversationCount() {
+  return DATA.employerConversations.filter(c => !c.archived && c.messages.some(m => m.sender === "candidate" && !m.read)).length;
+}
+
 function renderEmployerShell(root) {
   const state = readState();
   const employer = state.employerProfile || {};
@@ -14851,9 +14858,11 @@ function renderEmployerShell(root) {
             <input type="text" placeholder="Search candidates, roles, applicants..." data-emp-search-input autocomplete="off">
             <div class="emp-search-results" data-emp-search-results hidden></div>
           </div>
-          <button type="button" class="emp-icon-btn" data-emp-ask-vera data-vera-prompt="What needs my attention today?" aria-label="Ask Vera">${icon("sparkles")}</button>
-          <button type="button" class="emp-icon-btn" data-emp-messages aria-label="Inbox">${icon("inbox")}</button>
-          <button type="button" class="emp-icon-btn" aria-label="Notifications">${icon("bell")}</button>
+          <button type="button" class="emp-icon-btn" data-emp-messages aria-label="Inbox">${icon("message-circle")}</button>
+          <button type="button" class="emp-icon-btn emp-icon-btn-badge" aria-label="Notifications${getUnreadConversationCount() ? `, ${getUnreadConversationCount()} unread` : ""}">
+            ${icon("bell")}
+            ${getUnreadConversationCount() ? `<span class="emp-icon-btn-badge-dot">${getUnreadConversationCount()}</span>` : ""}
+          </button>
           <div class="emp-account-menu-wrap">
             <button type="button" class="emp-avatar-trigger" data-emp-account-toggle aria-haspopup="menu" aria-expanded="false">
               <span>${getFirstName(state).charAt(0).toUpperCase()}</span>
@@ -14874,12 +14883,6 @@ function renderEmployerShell(root) {
   createIcons();
 
   root.addEventListener("click", event => {
-    const veraTrigger = event.target.closest("[data-emp-ask-vera]");
-    if (veraTrigger && root.contains(veraTrigger)) {
-      event.preventDefault();
-      openEmployerVera(veraTrigger.dataset.veraPrompt || veraTrigger.dataset.prompt || "");
-      return;
-    }
     if (event.target.closest("[data-emp-messages]")) {
       employerNavigateTo("messages");
     }
@@ -15638,7 +15641,7 @@ function renderEmployerDashboard(root) {
   ];
 
   const today = new Date();
-  const overline = `${today.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()} · ${today.toLocaleDateString("en-US", { month: "long", day: "numeric" }).toUpperCase()} · ${(employer.company || "YOUR COMPANY").toUpperCase()} · ${openCount} ACTIVE ROLE${openCount === 1 ? "" : "S"}`;
+  const todayLabel = `${today.toLocaleDateString("en-US", { weekday: "long" })}, ${today.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`;
 
   const health = company.healthDashboard;
   const junior = company.salaryComparison.levels.find(l => l.level === "Junior");
@@ -15652,7 +15655,7 @@ function renderEmployerDashboard(root) {
 
   root.innerHTML = `
     <div class="emp-page-container">
-      ${renderPageHero({ eyebrowIcon: "calendar-days", eyebrow: overline, title: `Good morning, ${getFirstName(state)}.`, sub: "Here is what needs attention across your hiring today." })}
+      ${renderPageHero({ title: `Good morning, ${getFirstName(state)}.`, sub: `${todayLabel} — here's what needs your attention across hiring today.` })}
 
       <div class="emp-dash-hero-grid">
         <section class="emp-dash-hero">
@@ -16456,10 +16459,8 @@ function renderEmployerRolesList(root) {
     const headers = [...getRoleTableHeaders(activeFilter), "", ""];
     root.innerHTML = `
       ${renderPageHero({
-        eyebrowIcon: "briefcase",
-        eyebrow: "Roles",
-        title: "Roles in your company",
-        sub: "Create, publish, monitor, pause, close, and archive every role your company manages."
+        title: "Every role, in one place.",
+        sub: "Create, publish, monitor, pause, close and archive your company's roles."
       })}
       ${renderPageToolbar(`
         <div class="emp-subtabs" role="tablist" aria-label="Role status">
@@ -19701,10 +19702,8 @@ function renderEmployerTalentPipeline(root, params = {}) {
 
     root.innerHTML = `
       ${renderPageHero({
-        eyebrowIcon: "git-branch",
-        eyebrow: "Talent Pipeline",
-        title: "Talent Pipeline",
-        sub: "Manage candidates through every hiring stage."
+        title: "Move candidates forward.",
+        sub: "Track and advance every active candidate through each stage."
       })}
       ${renderPageToolbar("", `
         <select data-pipeline-role>
@@ -20449,10 +20448,9 @@ function renderHealthRing(score, { size = 120, strokeWidth = 10 } = {}) {
 // renders its hero through this one function so title size/font/spacing
 // can't drift apart per page again. actions is pre-built HTML (buttons,
 // selects, inputs) rendered as-is into the right-side cluster.
-function renderPageHero({ eyebrowIcon, eyebrow, title, sub = "" }) {
+function renderPageHero({ title, sub = "" }) {
   return `
     <header class="emp-page-hero">
-      <p class="emp-page-hero__eyebrow"><span class="emp-page-hero__eyebrow-icon">${icon(eyebrowIcon)}</span>${eyebrow}</p>
       <h1 class="emp-page-hero__title font-display">${title}</h1>
       ${sub ? `<p class="emp-page-hero__sub">${sub}</p>` : ""}
     </header>
@@ -20506,6 +20504,8 @@ function renderEmployerFeed(root) {
   let composerScheduleValue = "";
   let draftsPanelOpen = false;
   let scheduledPanelOpen = false;
+  let savedDropdownOpen = false;
+  let yourReachModalOpen = false;
 
   // Smart Feed Intelligence (item 8): on "For You" specifically - the only
   // view framed as AI-personalized - rank by hiring relevance instead of
@@ -20886,30 +20886,36 @@ function renderEmployerFeed(root) {
 
   // Item 1 (redesigned): the compact carousel card. Only what's needed to
   // decide "is this worth a closer look" - avatar, name, match %, role,
-  // salary, availability, one AI-generated line. Everything else (skills,
-  // interview readiness, activity, full action bar) lives behind View
-  // Profile in the modal, not crammed into this card.
+  // salary, availability. Everything else (skills, interview readiness,
+  // activity, full action bar) lives behind View Profile in the modal or
+  // the Details disclosure, not crammed into the card face.
   function renderRecommendationCompact(entry) {
-    const { candidate: c, reasons } = entry;
+    const { candidate: c, role } = entry;
     const state = readState();
     const saved = isSavedTalent(state, c.id, "candidate");
+    const required = role ? [...(role.mustHaveSkills || []), ...(role.niceToHaveSkills || [])] : [];
+    const overlap = required.length ? c.skills.filter(s => required.includes(s)) : [];
     return `
       <div class="emp-rec-compact-head">
-        <span class="emp-feed-avatar lg">${initialsOf(c.name)}</span>
+        <span class="emp-feed-avatar md">${initialsOf(c.name)}</span>
         <div class="emp-rec-compact-id">
           <strong>${c.name}</strong>
-          <p class="emp-cand-meta">${c.role}</p>
+          <p class="emp-rec-compact-role">${c.role}</p>
         </div>
-        <span class="emp-vera-rec-match" title="AI match score">${c.fit}%<small>match</small></span>
       </div>
-      <div class="emp-rec-compact-stats">
-        <div><span class="emp-tags-label">Salary</span><strong>${c.salaryExpectation}</strong></div>
-        <div><span class="emp-tags-label">Availability</span><strong>${c.availability}</strong></div>
-      </div>
-      <p class="emp-rec-compact-note">${icon("sparkles")} ${reasons[0]}</p>
+      <span class="emp-rec-compact-match">${c.fit}% MATCH</span>
+      <div class="emp-rec-compact-divider"></div>
       <div class="emp-rec-compact-actions">
-        <button type="button" class="btn btn-primary" data-rec-action="preview" data-rec-candidate="${c.id}">${icon("eye")} View Profile</button>
+        <button type="button" class="btn btn-primary btn-sm" data-rec-action="preview" data-rec-candidate="${c.id}">${icon("eye")} View Profile</button>
         ${renderSaveButton(c.id, "candidate", c.name, saved, { iconOnly: true })}
+        <details class="emp-rec-details">
+          <summary>Details ${icon("chevron-down")}</summary>
+          <div class="emp-rec-details-body">
+            <div><span class="emp-tags-label">Salary</span><strong>${c.salaryExpectation}</strong></div>
+            <div><span class="emp-tags-label">Availability</span><strong>${c.availability}</strong></div>
+            ${overlap.length ? `<div><span class="emp-tags-label">Skills</span><strong>Matches ${overlap.length} of ${required.length} required/preferred skills</strong><p class="emp-cand-meta">${overlap.slice(0, 3).join(", ")}${overlap.length > 3 ? ", …" : ""}</p></div>` : ""}
+          </div>
+        </details>
       </div>
     `;
   }
@@ -20921,7 +20927,7 @@ function renderEmployerFeed(root) {
     if (!pool.length) {
       return `
         <div class="card emp-vera-rec-widget">
-          <div class="emp-vera-rec-widget-head"><span class="emp-callout-label">${icon("sparkles")} Vera Hiring Recommendations</span></div>
+          <div class="emp-vera-rec-widget-head"><span class="emp-callout-label"><img class="emp-copilot-vera-mark" src="assets/vera-ai-coach.png" alt="" width="16" height="16"> Vera Hiring Recommendations</span></div>
           <p class="emp-empty-hint">No active candidates to recommend right now. Vera will surface matches as new applicants come in.</p>
         </div>
       `;
@@ -20931,32 +20937,45 @@ function renderEmployerFeed(root) {
     return `
       <div class="card emp-vera-rec-widget" data-vera-rec-widget tabindex="0" aria-roledescription="carousel" aria-label="Vera hiring recommendations">
         <div class="emp-vera-rec-widget-head">
-          <span class="emp-callout-label">${icon("sparkles")} Vera Hiring Recommendations</span>
-          <div class="emp-vera-rec-nav">
-            <button type="button" class="btn-icon-sm" data-rec-prev aria-label="Previous recommendation">${icon("chevron-left")}</button>
-            <span class="emp-vera-rec-count" data-vera-rec-count>Recommendation ${index + 1} of ${pool.length}</span>
-            <button type="button" class="btn-icon-sm" data-rec-next aria-label="Next recommendation">${icon("chevron-right")}</button>
-          </div>
+          <span class="emp-callout-label"><img class="emp-copilot-vera-mark" src="assets/vera-ai-coach.png" alt="" width="16" height="16"> Vera Hiring Recommendations</span>
         </div>
         <div class="emp-vera-rec-widget-body" data-vera-rec-body>
           ${renderRecommendationCompact(entry)}
         </div>
+        ${pool.length > 1 ? `
+          <div class="emp-rec-dots-row" data-vera-rec-dots role="tablist" aria-label="Choose a recommendation">
+            <button type="button" class="emp-rec-arrow" data-rec-prev aria-label="Previous recommendation">${icon("chevron-left")}</button>
+            <span class="emp-rec-dots">
+              ${pool.map((_, i) => `<button type="button" class="emp-rec-dot ${i === index ? "active" : ""}" data-rec-goto="${i}" role="tab" aria-selected="${i === index}" aria-label="Recommendation ${i + 1} of ${pool.length}"></button>`).join("")}
+            </span>
+            <button type="button" class="emp-rec-arrow" data-rec-next aria-label="Next recommendation">${icon("chevron-right")}</button>
+          </div>
+        ` : ""}
       </div>
     `;
   }
 
   // Steps the widget to a different recommendation via a scoped innerHTML
-  // swap + rebind of just [data-vera-rec-body] - not a full draw() - so
-  // stepping never disturbs scroll position, an open composer draft, or
-  // expanded comment threads elsewhere on the page.
+  // swap + rebind of just [data-vera-rec-body]/[data-vera-rec-dots] - not
+  // a full draw() - so stepping never disturbs scroll position, an open
+  // composer draft, or expanded comment threads elsewhere on the page.
   function stepRecommendation(delta) {
     const pool = getHiringRecommendationPool();
     if (!pool.length) return;
-    recRotateIndex = (recRotateIndex + delta + pool.length) % pool.length;
+    goToRecommendation((recRotateIndex + delta + pool.length) % pool.length);
+  }
+
+  function goToRecommendation(index) {
+    const pool = getHiringRecommendationPool();
+    if (!pool.length) return;
+    recRotateIndex = index;
     const widget = qs("[data-vera-rec-widget]", root);
     if (!widget) { draw(); return; }
-    const countEl = qs("[data-vera-rec-count]", widget);
-    if (countEl) countEl.textContent = `Recommendation ${recRotateIndex + 1} of ${pool.length}`;
+    const dotsRow = qs("[data-vera-rec-dots]", widget);
+    if (dotsRow) qsa("[data-rec-goto]", dotsRow).forEach((dot, i) => {
+      dot.classList.toggle("active", i === recRotateIndex);
+      dot.setAttribute("aria-selected", String(i === recRotateIndex));
+    });
     const body = qs("[data-vera-rec-body]", widget);
     body.style.opacity = "0";
     setTimeout(() => {
@@ -21033,37 +21052,101 @@ function renderEmployerFeed(root) {
     `;
   }
 
+  // People/companies/universities appearing in the feed that the employer
+  // doesn't already follow - a real subset of DATA.communityPosts authors,
+  // not a fabricated suggestions list. First match per followId wins so
+  // the same account never appears twice.
+  function getSuggestedToFollow(state) {
+    const seen = new Set();
+    const suggestions = [];
+    for (const p of DATA.communityPosts) {
+      if (p.followId === "maybank" || state.feedFollowing.includes(p.followId) || seen.has(p.followId)) continue;
+      seen.add(p.followId);
+      suggestions.push({ followId: p.followId, name: p.author, type: p.authorType, subtitle: p.authorTitle, verified: p.verified });
+      if (suggestions.length >= 3) break;
+    }
+    return suggestions;
+  }
+  const SUGGESTED_FOLLOW_ICON = { employer: "building-2", university: "graduation-cap", person: "user" };
+
+  function renderSuggestedToFollowCard(state) {
+    const suggestions = getSuggestedToFollow(state);
+    if (!suggestions.length) return "";
+    return `
+      <div class="card emp-feed-rail-card">
+        <h3 class="emp-tags-label">Suggested to follow</h3>
+        <div class="emp-suggested-follow-list">
+          ${suggestions.map(s => `
+            <div class="emp-suggested-follow-row">
+              <span class="emp-suggested-follow-icon">${icon(SUGGESTED_FOLLOW_ICON[s.type] || "user")}</span>
+              <div class="emp-suggested-follow-info">
+                <strong>${s.name}</strong>
+                <p class="emp-cand-meta">${s.subtitle}</p>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" data-suggested-follow="${s.followId}" data-suggested-name="${escapeHtml(s.name)}">Follow</button>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
   // "Hiring Opportunities" (passive-talent recommendations) was a duplicate
   // of the left rail's "Vera Hiring Recommendations" - both were candidate
   // recs. Replaced with the employer's own reach/activity numbers instead,
   // which nothing else on this page surfaces. Every value is read from data
   // that already exists elsewhere in the app (Company Profile's hero KPIs
-  // and hiring funnel), not invented for this card.
-  function renderYourReachCard(company) {
+  // and hiring funnel), not invented for this card. Collapsed to a compact
+  // trigger that opens a centered modal (redesign 2.7) rather than taking
+  // up permanent rail height.
+  function getYourReachMetrics(company) {
     const profileViews = company.hiringFunnel.ranges["30d"].stages.find(s => s.stage === "Profile Views")?.value ?? 0;
     const brandMentions = DATA.communityPosts.filter(p => p.authorType === "employer" || p.body.includes(company.name)).length;
-    const metrics = [
+    return [
       { label: "Followers", value: company.followers.toLocaleString(), trend: company.followersTrend },
       { label: "Profile Views", value: profileViews.toLocaleString(), trend: null },
       { label: "Brand Mentions", value: brandMentions, trend: "today" },
       { label: "Application Conversion", value: `${company.applicationConversionRate}%`, trend: null },
     ];
+  }
+
+  function renderYourReachTrigger() {
     return `
-      <div class="card emp-feed-rail-card emp-your-reach">
-        <div class="emp-your-reach-head">
-          <h3>${icon("radio")} Your Reach</h3>
-          <span class="emp-your-reach-period">Last 30 days</span>
-        </div>
-        <div class="emp-your-reach-grid">
-          ${metrics.map(m => `
-            <div class="emp-your-reach-tile">
-              <span>${m.label}</span>
-              <strong>${m.value}</strong>
-              ${m.trend ? `<small>${m.trend}</small>` : ""}
+      <button type="button" class="card emp-feed-rail-card emp-your-reach-trigger" data-your-reach-open aria-haspopup="dialog" aria-expanded="${yourReachModalOpen}">
+        <span class="emp-your-reach-trigger-icon">${icon("radio")}</span>
+        <span class="emp-your-reach-trigger-text">
+          <strong>Your Reach</strong>
+          <small>Last 30 days</small>
+        </span>
+        ${icon("chevron-right")}
+      </button>
+    `;
+  }
+
+  function renderYourReachModal(company) {
+    if (!yourReachModalOpen) return "";
+    const metrics = getYourReachMetrics(company);
+    return `
+      <div class="emp-modal-overlay" data-your-reach-overlay>
+        <div class="card emp-modal-dialog emp-your-reach-modal" role="dialog" aria-modal="true" aria-label="Your Reach" data-your-reach-modal>
+          <div class="emp-your-reach-modal-head">
+            <div>
+              <h2>Your Reach</h2>
+              <p class="emp-cand-meta">Last 30 days</p>
             </div>
-          `).join("")}
+            <button type="button" class="btn-icon-sm" data-your-reach-close aria-label="Close">${icon("x")}</button>
+          </div>
+          <div class="emp-your-reach-grid">
+            ${metrics.map(m => `
+              <div class="emp-your-reach-tile">
+                <span>${m.label}</span>
+                <strong>${m.value}</strong>
+                ${m.trend ? `<small>${m.trend}</small>` : ""}
+              </div>
+            `).join("")}
+          </div>
+          <button type="button" class="emp-attention-role-link" data-your-reach-insights>View brand insights →</button>
         </div>
-        <button type="button" class="emp-attention-role-link" data-your-reach-insights>View brand insights →</button>
       </div>
     `;
   }
@@ -21164,28 +21247,54 @@ function renderEmployerFeed(root) {
     return html.join("");
   }
 
-  // Simplified primary nav (item 1 of the redesign): For You / Following /
-  // Inbox only. Network, Communities and Trending were removed as
-  // dedicated tabs - each overlapped an existing surface (Network with
-  // Following, Communities with joined-community posts already appearing
-  // in the feed, Trending with the right-rail Trending card, which stays
-  // and still drives the keyword-filter banner below without needing its
-  // own tab). Inbox navigates away entirely rather than filtering in
-  // place, since it's a full page now.
+  // Simplified primary nav (item 1 of the redesign): For You / Following
+  // only. Inbox moved out entirely (it's a full page, reached from the
+  // top-nav chat-bubble now, not a left-rail item) - Network and
+  // Communities were already removed in an earlier pass, each overlapping
+  // an existing surface.
   function renderFeedSidebarNav(state) {
-    const savedCount = (state.savedTalent || []).length;
     return `
       <nav class="emp-feed-nav-list">
         <button type="button" class="emp-feed-nav-item ${activeFilter === "foryou" ? "active" : ""}" data-feed-nav="foryou">${icon("sparkles")} For You</button>
         <button type="button" class="emp-feed-nav-item ${activeFilter === "following" ? "active" : ""}" data-feed-nav="following">${icon("users")} Following</button>
-        <button type="button" class="emp-feed-nav-item" data-feed-nav="inbox">${icon("inbox")} Inbox</button>
       </nav>
-      <div class="emp-feed-sidebar-shortcuts">
-        <button type="button" class="emp-feed-shortcut-row" data-feed-nav="saved">
-          <span class="emp-feed-shortcut-icon">${icon("heart")}</span>
-          <span>Saved Candidates</span>
+    `;
+  }
+
+  // Trending (moved into the left rail from the right, per redesign).
+  function renderTrendingCard() {
+    return `
+      <div class="card emp-feed-rail-card">
+        <h3>Trending</h3>
+        <div class="emp-feed-trending-list">
+          ${DATA.trendingTopics.map(t => `<button type="button" class="emp-feed-trending-item" data-feed-trending="${t.id}">${icon("trending-up")}<span><strong>${t.label}</strong><small>${t.count}</small></span></button>`).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // Saved (renamed from "Saved Candidates"): a dropdown of what kind of
+  // saved item to view. People routes to the existing full Saved page
+  // (real data: state.savedTalent). Posts filters the current feed in
+  // place via the content-filter layer that already exists for this
+  // exact purpose. Organizations has no backing dataset on the employer
+  // side yet (following/saving companies is a candidate-side concept) -
+  // said honestly via a toast rather than faked.
+  function renderSavedDropdown(state) {
+    const savedCount = (state.savedTalent || []).length;
+    return `
+      <div class="emp-feed-saved-wrap">
+        <button type="button" class="emp-feed-shortcut-row" data-saved-dropdown-toggle aria-haspopup="menu" aria-expanded="${savedDropdownOpen}">
+          <span class="emp-feed-shortcut-icon">${icon("bookmark")}</span>
+          <span>Saved</span>
           ${savedCount ? `<span class="emp-feed-shortcut-count">${savedCount}</span>` : ""}
+          ${icon("chevron-down")}
         </button>
+        <div class="emp-actions-menu" data-saved-dropdown-menu role="menu" ${savedDropdownOpen ? "" : "hidden"}>
+          <button type="button" role="menuitem" data-saved-filter-pick="people">${icon("user")} People</button>
+          <button type="button" role="menuitem" data-saved-filter-pick="organizations">${icon("building-2")} Organizations</button>
+          <button type="button" role="menuitem" data-saved-filter-pick="posts">${icon("file-text")} Posts</button>
+        </div>
       </div>
     `;
   }
@@ -21195,18 +21304,16 @@ function renderEmployerFeed(root) {
     const company = DATA.companies.find(c => c.id === "maybank");
 
     root.innerHTML = `
-      ${renderPageHero({ eyebrowIcon: "newspaper", eyebrow: "Feed", title: "Feed", sub: "Your hiring signals, candidate activity and market trends in one place." })}
-      <div class="emp-feed-layout">
+      ${renderPageHero({ title: "See and scroll your feed.", sub: "Share updates, discover talent and catch what's moving." })}
+      <div class="emp-feed-layout" data-feed-region>
         <div class="emp-feed-nav">
           ${renderFeedSidebarNav(state)}
+          ${renderTrendingCard()}
+          ${renderSavedDropdown(state)}
           ${renderVeraRecommendationsWidget()}
         </div>
 
         <div class="emp-feed-main">
-          <div class="emp-feed-headline">
-            <h2>Your AI-powered hiring intelligence feed.</h2>
-            <p>Vera surfaces candidates, market signal and hiring conversations relevant to your open roles — ranked by hiring relevance, not popularity.</p>
-          </div>
           ${renderComposer(state)}
           <div class="emp-feed-filters" data-feed-filters-bar>
             ${FEED_CONTENT_FILTERS.map(([key, label]) => `<button type="button" class="emp-feed-filter-chip ${contentFilter === key ? "active" : ""}" data-content-filter="${key}">${label}</button>`).join("")}
@@ -21218,32 +21325,41 @@ function renderEmployerFeed(root) {
         </div>
 
         <div class="emp-feed-rail">
-          <div class="card emp-feed-rail-card">
-            <h3>Trending</h3>
-            <div class="emp-feed-trending-list">
-              ${DATA.trendingTopics.map(t => `<button type="button" class="emp-feed-trending-item" data-feed-trending="${t.id}">${icon("trending-up")}<span><strong>${t.label}</strong><small>${t.count}</small></span></button>`).join("")}
-            </div>
-          </div>
-          ${renderYourReachCard(company)}
+          ${renderSuggestedToFollowCard(state)}
           ${renderBrandHealthCard(company)}
+          ${renderYourReachTrigger()}
         </div>
       </div>
 
       ${renderBrandHealthModal(company)}
+      ${renderYourReachModal(company)}
     `;
     createIcons();
     if (brandDashboardOpen) requestAnimationFrame(() => requestAnimationFrame(() => {
       qsa("[data-health-ring] .emp-health-ring-fill", root).forEach(fill => { fill.style.strokeDashoffset = fill.closest("[data-health-ring]").dataset.targetOffset; });
     }));
     bind();
+    requestAnimationFrame(sizeFeedRegion);
+  }
+
+  // App-shell scroll model (redesign 2.8): fills the rest of the viewport
+  // below the header+hero at >=1024px so only .emp-feed-main scrolls, the
+  // page itself doesn't. The hero's height depends on wrapped text, which
+  // CSS alone can't know, so this measures wherever the region actually
+  // starts and sizes to that - not a guessed/hardcoded px value. Cleared
+  // below 1024px so the max-width:1023px CSS fallback (natural page
+  // scroll, single column) takes over untouched.
+  function sizeFeedRegion() {
+    const region = qs("[data-feed-region]", root);
+    if (!region) return;
+    if (window.innerWidth < 1024) { region.style.height = ""; return; }
+    const top = region.getBoundingClientRect().top;
+    region.style.height = `calc(100vh - ${Math.round(top)}px)`;
   }
 
   function bind() {
     qsa("[data-feed-nav]", root).forEach(btn => btn.addEventListener("click", () => {
-      const key = btn.dataset.feedNav;
-      if (key === "inbox") { employerNavigateTo("messages"); return; }
-      if (key === "saved") { employerNavigateTo("saved-candidates"); return; }
-      activeFilter = key;
+      activeFilter = btn.dataset.feedNav;
       trendingKeyword = null;
       draw();
     }));
@@ -21253,6 +21369,54 @@ function renderEmployerFeed(root) {
       draw();
     }));
     qs("[data-feed-clear-trend]", root)?.addEventListener("click", () => { trendingKeyword = null; draw(); });
+
+    // Saved dropdown: People routes to the real Saved page; Posts filters
+    // the current feed in place; Organizations is honest about not having
+    // a backing dataset yet on the employer side.
+    qs("[data-saved-dropdown-toggle]", root)?.addEventListener("click", event => {
+      event.stopPropagation();
+      savedDropdownOpen = !savedDropdownOpen;
+      draw();
+    });
+    qsa("[data-saved-filter-pick]", root).forEach(btn => btn.addEventListener("click", () => {
+      const pick = btn.dataset.savedFilterPick;
+      savedDropdownOpen = false;
+      if (pick === "people") { employerNavigateTo("saved-candidates"); return; }
+      if (pick === "posts") { contentFilter = "saved"; trendingKeyword = null; draw(); return; }
+      showToast("Saved organizations aren't tracked for employer accounts yet.", "info");
+      draw();
+    }));
+
+    // Suggested to follow
+    qsa("[data-suggested-follow]", root).forEach(btn => btn.addEventListener("click", () => {
+      const state = readState();
+      const followId = btn.dataset.suggestedFollow;
+      if (!state.feedFollowing.includes(followId)) {
+        state.feedFollowing.push(followId);
+        writeState(state);
+        showToast(`Following ${btn.dataset.suggestedName}.`);
+        draw();
+      }
+    }));
+
+    // Your Reach: compact trigger -> centered modal (Esc/outside-click/X
+    // close, focus trap, focus returns to the trigger).
+    qs("[data-your-reach-open]", root)?.addEventListener("click", () => {
+      yourReachModalOpen = true;
+      draw();
+      qs("[data-your-reach-close]", root)?.focus();
+    });
+    const closeYourReachModal = () => {
+      yourReachModalOpen = false;
+      draw();
+      qs("[data-your-reach-open]", root)?.focus();
+    };
+    qs("[data-your-reach-close]", root)?.addEventListener("click", closeYourReachModal);
+    qs("[data-your-reach-overlay]", root)?.addEventListener("click", event => { if (event.target === event.currentTarget) closeYourReachModal(); });
+    qs("[data-your-reach-modal]", root)?.addEventListener("keydown", event => {
+      if (event.key === "Escape") { closeYourReachModal(); return; }
+      trapCopilotFocus(event, qs("[data-your-reach-modal]", root));
+    });
 
     qs("[data-feed-identity]", root)?.addEventListener("change", event => {
       const state = readState();
@@ -21497,7 +21661,9 @@ function renderEmployerFeed(root) {
     document.addEventListener("click", () => {
       qsa("[data-feed-post-menu-panel]", root).forEach(p => p.hidden = true);
       qsa("[data-feed-post-menu]", root).forEach(b => b.setAttribute("aria-expanded", "false"));
+      if (savedDropdownOpen) { savedDropdownOpen = false; draw(); }
     });
+    qs("[data-saved-dropdown-menu]", root)?.addEventListener("click", event => event.stopPropagation());
 
     qsa("[data-feed-action]", root).forEach(btn => btn.addEventListener("click", () => {
       const post = DATA.communityPosts.find(p => p.id === btn.dataset.postId);
@@ -21569,6 +21735,7 @@ function renderEmployerFeed(root) {
     // while the card holds focus, and touch swipe. No auto-play.
     qs("[data-rec-prev]", root)?.addEventListener("click", () => stepRecommendation(-1));
     qs("[data-rec-next]", root)?.addEventListener("click", () => stepRecommendation(1));
+    qsa("[data-rec-goto]", root).forEach(dot => dot.addEventListener("click", () => goToRecommendation(Number(dot.dataset.recGoto))));
     const recWidget = qs("[data-vera-rec-widget]", root);
     if (recWidget) {
       recWidget.addEventListener("keydown", event => {
@@ -21667,6 +21834,12 @@ function renderEmployerFeed(root) {
       composerAiInsight = "Candidate engagement in your target market peaks Tuesday-Thursday, 9-11am - posting in this window typically performs best.";
     }
   }
+
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(sizeFeedRegion, 120);
+  });
 
   draw();
 }
@@ -22667,8 +22840,6 @@ function renderEmployerCompany(root) {
 
     root.innerHTML = `
       ${renderPageHero({
-        eyebrowIcon: "building-2",
-        eyebrow: "Company Profile",
         title: "How candidates see your company.",
         sub: "Manage the information, reputation and signals that shape candidate interest."
       })}

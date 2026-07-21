@@ -13659,6 +13659,12 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 }
 .emp-icon-btn:hover { background: rgba(255, 255, 255, 0.85); color: var(--emp-ink); }
 .emp-icon-btn svg { width: 17px; height: 17px; }
+.emp-icon-btn-badge { position: relative; }
+.emp-icon-btn-badge-dot {
+  position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; justify-content: center;
+  min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; border: 2px solid #fff;
+  background: var(--emp-destructive); color: #fff; font-family: var(--emp-sans); font-size: 9px; font-weight: 800; line-height: 1;
+}
 .emp-account-menu-wrap { position: relative; }
 .emp-avatar-trigger {
   display: inline-flex; align-items: center; justify-content: center;
@@ -13712,6 +13718,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 /* ---------- Unified page hero (Dashboard/Roles/Talent Pipeline/Company
    Profile/Feed all render through renderPageHero() into this one recipe -
    CAREERGO_UI_SPEC.md Page Title: Fraunces 400, 36/44, lh 1.05, -0.01em).
+   Headline + subline only, no eyebrow - a later spec pass dropped it.
 
    Namespaced .emp-page-hero, NOT .page-hero: the bare `.page-hero` class
    name collides with several older, unrelated candidate-site rules
@@ -13725,21 +13732,14 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    fighting every legacy rule with specificity/!important.
 
    The doubled .emp-app-shell.emp-app-shell prefix + !important on title/
-   eyebrow/sub is still required for a different, unrelated reason: the
-   blanket heading-serif rule forces weight 650/-0.02em on every h1, and
-   a global color-cascade counter-fix forces ink onto bare p/div - both
-   would otherwise win over a plain .emp-page-hero__* rule (this exact
+   sub is still required for a different, unrelated reason: the blanket
+   heading-serif rule forces weight 650/-0.02em on every h1, and a global
+   color-cascade counter-fix forces ink onto bare p/div - both would
+   otherwise win over a plain .emp-page-hero__* rule (this exact
    collision broke the Vera dashboard card's contrast once already). */
 .emp-page-hero {
   padding-top: 40px;
 }
-.emp-app-shell.emp-app-shell .emp-page-hero__eyebrow {
-  display: inline-flex !important; align-items: center; gap: 8px;
-  margin: 0 0 12px !important; font-family: var(--emp-sans) !important; font-size: 11px !important; font-weight: 500 !important;
-  text-transform: uppercase; letter-spacing: 0.16em; line-height: 1.2; color: var(--emp-green) !important;
-}
-.emp-page-hero__eyebrow-icon { display: inline-flex; color: currentColor; }
-.emp-page-hero__eyebrow-icon svg { width: 16px; height: 16px; stroke-width: 2; }
 .emp-app-shell.emp-app-shell .emp-page-hero__title {
   margin: 0 !important; font-family: var(--emp-serif) !important; font-weight: 400 !important; font-size: 36px !important;
   line-height: 1.05 !important; letter-spacing: -0.01em !important; color: var(--emp-ink) !important; text-align: left;
@@ -13991,9 +13991,10 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14); display: grid;
 }
 .emp-actions-menu button {
-  display: block; width: 100%; text-align: left; padding: 8px 10px; border: none; background: none;
+  display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; text-align: left; padding: 8px 10px; border: none; background: none;
   border-radius: 8px; font-size: 13px; color: var(--text); cursor: pointer; font-family: inherit;
 }
+.emp-actions-menu button svg { flex-shrink: 0; width: 14px; height: 14px; }
 .emp-actions-menu button:hover { background: rgba(37, 99, 235, 0.06); }
 .emp-actions-menu[hidden], .emp-momentum-pop[hidden] { display: none; }
 
@@ -15551,9 +15552,21 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 /* 220 / fluid / 260 (CAREERGO_UI_SPEC.md Feed redesign Part B) - narrower
    than the previous 320/340 rails so posts (the actual point of a feed)
    get the visual priority instead of Vera/rail chrome. */
-.emp-feed-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 260px; gap: 24px; align-items: start; }
+/* App-shell scroll model (>=1024px, redesign 2.8): the region fills the
+   rest of the viewport below the header+hero (height set by JS - see
+   sizeFeedRegion() - since the hero's own height depends on its wrapped
+   text, not a value CSS alone can know) and does not itself scroll; only
+   .emp-feed-main scrolls, while both rails independently scroll-if-
+   needed but stay pinned to one viewport's worth of content. Below
+   1024px this collapses to natural single-column page scroll instead
+   (see the max-width:1023px block). */
+.emp-feed-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
 .emp-feed-layout > * { min-width: 0; }
-.emp-feed-nav { position: sticky; top: 0; display: grid; gap: 16px; min-width: 0; }
+.emp-feed-nav { display: grid; gap: 16px; min-width: 0; align-content: start; }
+@media (min-width: 1024px) {
+  .emp-feed-layout { overflow: hidden; }
+  .emp-feed-nav, .emp-feed-rail, .emp-feed-main { height: 100%; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; padding-right: 2px; }
+}
 .emp-feed-nav-list { display: grid; gap: 2px; }
 .emp-feed-nav-item {
   display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: none; background: none; border-radius: 10px;
@@ -15565,9 +15578,6 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-feed-context-card { padding: 16px; }
 .emp-feed-context-card p { margin: 6px 0 12px; font-size: 12px; line-height: 1.5; color: var(--muted); }
 .emp-feed-main { min-width: 0; }
-.emp-feed-headline { margin-bottom: 16px; }
-.emp-feed-headline h2 { margin: 0 0 6px; font-size: var(--emp-title-lg); font-weight: 700; line-height: 1.3; }
-.emp-feed-headline p { margin: 0; font-size: var(--emp-body-sm); color: var(--muted); }
 .emp-feed-composer { padding: 16px 18px; margin-bottom: 16px; }
 .emp-feed-composer-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .emp-feed-composer-head select { padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; font-weight: 600; }
@@ -15698,6 +15708,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   border-radius: 10px; background: rgba(37, 99, 235, 0.1); color: var(--blue); font-weight: 700; font-size: 14px;
 }
 .emp-feed-avatar.sm { width: 28px; height: 28px; font-size: 11px; border-radius: 8px; }
+.emp-feed-avatar.md { width: 40px; height: 40px; font-size: 14px; }
 .emp-feed-post-author { flex: 1; min-width: 0; }
 .emp-feed-author-line { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .emp-feed-author-line strong { font-size: 14px; }
@@ -15741,9 +15752,11 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-network-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .emp-network-row-info { flex: 1; }
 .emp-network-row-info strong { font-size: 13px; }
-.emp-feed-rail { position: sticky; top: 0; display: grid; gap: 16px; }
+.emp-feed-rail { display: grid; gap: 16px; align-content: start; }
+.emp-feed-rail > * { min-width: 0; }
 .emp-feed-rail-card { padding: 16px 18px; }
 .emp-feed-rail-card h3 { margin: 0 0 10px; font-size: 13px; font-weight: 700; }
+.emp-feed-rail-card h3.emp-tags-label { font-size: var(--emp-label); font-weight: 500; letter-spacing: 0.16em; margin: 0 0 10px; }
 .emp-feed-trending-list { display: grid; gap: 2px; }
 .emp-feed-trending-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: none; background: none; border-radius: 8px; text-align: left; cursor: pointer; }
 .emp-feed-trending-item:hover { background: rgba(31, 85, 96, 0.06); }
@@ -15943,19 +15956,60 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    unified Save Candidate button, the Candidate Profile Modal, the
    One-Click Talent Action Bar, and the Saved Candidates page. */
 .emp-feed-sidebar-shortcuts { display: flex; flex-direction: column; gap: 2px; }
+.emp-feed-saved-wrap { position: relative; }
+.emp-feed-saved-wrap .emp-actions-menu { width: 100%; min-width: 0; }
 .emp-feed-shortcut-row {
   display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: none; border-radius: 12px;
-  background: none; font-size: 13px; font-weight: 600; color: var(--emp-ink, var(--text)); cursor: pointer; text-align: left;
+  background: #fff; font-size: 13px; font-weight: 600; color: var(--emp-ink, var(--text)); cursor: pointer; text-align: left;
   transition: background 180ms ease;
 }
 .emp-feed-shortcut-row:hover { background: rgba(7, 56, 47, 0.05); }
 .emp-feed-shortcut-icon { flex-shrink: 0; display: inline-flex; color: var(--emp-green, #07382f); }
 .emp-feed-shortcut-icon svg { width: 16px; height: 16px; }
 .emp-feed-shortcut-row span:nth-child(2) { flex: 1; }
+.emp-feed-shortcut-row > svg { flex-shrink: 0; width: 14px; height: 14px; color: var(--emp-muted); }
 .emp-feed-shortcut-count {
   flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px;
   border-radius: 999px; background: var(--emp-green, #07382f); color: #fff; font-size: 11px; font-weight: 800;
 }
+
+/* Suggested to follow (right rail) */
+.emp-suggested-follow-list { display: flex; flex-direction: column; }
+.emp-suggested-follow-row { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px 0; border-top: 1px solid var(--emp-line, var(--line)); }
+.emp-suggested-follow-row:first-child { border-top: none; padding-top: 0; }
+.emp-suggested-follow-icon {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px;
+  border-radius: var(--emp-radius-md, 8px); background: var(--emp-teal-soft); color: var(--emp-green);
+}
+.emp-suggested-follow-icon svg { width: 15px; height: 15px; }
+.emp-suggested-follow-info { flex: 1; min-width: 0; }
+.emp-suggested-follow-row .btn { flex-shrink: 0; }
+.emp-suggested-follow-info strong { display: block; font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.emp-suggested-follow-info p { margin: 1px 0 0; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Your Reach compact trigger + centered modal (redesign 2.7) */
+.emp-your-reach-trigger { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; cursor: pointer; transition: border-color 150ms var(--emp-motion-ease); }
+.emp-your-reach-trigger:hover { border-color: var(--emp-green); }
+.emp-your-reach-trigger-icon { flex-shrink: 0; display: inline-flex; color: var(--emp-green); }
+.emp-your-reach-trigger-icon svg { width: 16px; height: 16px; }
+.emp-your-reach-trigger-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.emp-your-reach-trigger-text strong { font-size: 13px; }
+.emp-your-reach-trigger-text small { font-size: 12px; }
+.emp-your-reach-trigger > svg:last-child { flex-shrink: 0; width: 15px; height: 15px; color: var(--emp-muted); }
+
+.emp-modal-overlay {
+  position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: rgba(0, 0, 0, 0.4);
+}
+.emp-modal-dialog { width: 100%; max-width: 28rem; padding: 24px; box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.35); }
+.emp-your-reach-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+.emp-your-reach-modal-head h2 { margin: 0; font-size: 20px; }
+@media (prefers-reduced-motion: no-preference) {
+  .emp-modal-overlay { animation: empModalFadeIn 150ms var(--emp-motion-ease); }
+  .emp-modal-dialog { animation: empModalScaleIn 150ms var(--emp-motion-ease); }
+}
+@keyframes empModalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes empModalScaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 
 /* Unified Save button - a filled heart + "saved" tint once toggled on,
    used identically everywhere (recommendation carousel, opportunity
@@ -15967,19 +16021,51 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-save-talent-btn:active svg { transform: scale(1.15); }
 .btn-icon-sm.emp-save-talent-btn.saved { border-color: rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.08); color: #dc2626; }
 
-/* Compact recommendation carousel card (item 1 redesign) - deliberately
-   minimal: avatar, name, match %, one stat row, one AI line, two buttons.
-   Everything else lives in the profile modal Preview opens. */
-.emp-rec-compact-head { display: flex; align-items: center; gap: 12px; }
+/* Compact recommendation carousel card (redesign): avatar+name+role,
+   match label (no circle), divider, then View Profile / Save / Details. */
+.emp-rec-compact-head { display: flex; align-items: center; gap: 10px; }
 .emp-rec-compact-id { flex: 1; min-width: 0; }
-.emp-rec-compact-id strong { display: block; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.emp-rec-compact-id p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.emp-rec-compact-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; padding: 14px 0; border-top: 1px solid var(--emp-line, var(--line)); border-bottom: 1px solid var(--emp-line, var(--line)); }
-.emp-rec-compact-stats strong { display: block; margin-top: 2px; font-size: 14px; }
-.emp-rec-compact-note { display: flex; gap: 8px; margin: 0 0 16px; font-size: 13px; line-height: 1.55; color: var(--emp-ink, var(--text)); }
-.emp-rec-compact-note svg { flex-shrink: 0; width: 14px; height: 14px; margin-top: 2px; color: var(--emp-ai, #6f5fc4); }
-.emp-rec-compact-actions { display: flex; gap: 8px; }
-.emp-rec-compact-actions .btn-primary { flex: 1; justify-content: center; }
+.emp-rec-compact-id strong { display: block; font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+.emp-rec-compact-role { margin: 2px 0 0; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.emp-rec-compact-match {
+  display: block; margin: 10px 0 0; font-family: var(--emp-sans); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--emp-green);
+}
+.emp-rec-compact-divider { margin: 12px 0; border-top: 1px solid var(--emp-line, var(--line)); }
+.emp-rec-compact-actions { display: flex; align-items: center; gap: 8px; }
+.emp-rec-compact-actions .btn-primary { flex: 1; justify-content: center; min-width: 0; }
+.emp-rec-details { position: relative; flex-shrink: 0; }
+.emp-rec-details summary {
+  display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 12px; border: 1px solid var(--emp-line, var(--line));
+  border-radius: var(--emp-radius-md, 8px); background: #fff; font-size: 12px; font-weight: 600; color: var(--emp-ink, var(--text));
+  cursor: pointer; list-style: none; white-space: nowrap; transition: border-color 150ms var(--emp-motion-ease);
+}
+.emp-rec-details summary::-webkit-details-marker { display: none; }
+.emp-rec-details summary svg { width: 13px; height: 13px; transition: transform 150ms var(--emp-motion-ease); }
+.emp-rec-details[open] summary svg { transform: rotate(180deg); }
+.emp-rec-details summary:hover { border-color: var(--emp-green); }
+.emp-rec-details-body {
+  position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; width: max-content; min-width: 220px;
+  padding: 12px; border-radius: var(--emp-radius-lg, 10px); background: #fff; box-shadow: 0 18px 40px -16px rgba(27, 46, 40, 0.28);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.emp-rec-details-body strong { display: block; margin-top: 2px; font-size: 13px; }
+
+/* Carousel dots + boxless arrows (redesign 2.5) - replaces the old
+   "Recommendation N of M" text + boxed prev/next in the card header. */
+.emp-rec-dots-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); }
+.emp-rec-arrow {
+  display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border: none; background: none;
+  padding: 0; color: var(--emp-muted); cursor: pointer; transition: color 150ms var(--emp-motion-ease);
+}
+.emp-rec-arrow:hover { color: var(--emp-ink); }
+.emp-rec-arrow svg { width: 16px; height: 16px; }
+.emp-rec-dots { display: inline-flex; align-items: center; gap: 6px; }
+.emp-rec-dot {
+  width: 7px; height: 7px; border-radius: 999px; border: 1.5px solid var(--emp-muted); background: none; padding: 0; cursor: pointer;
+  transition: background 150ms var(--emp-motion-ease), border-color 150ms var(--emp-motion-ease), transform 150ms var(--emp-motion-ease);
+}
+.emp-rec-dot.active { background: var(--emp-green); border-color: var(--emp-green); transform: scale(1.2); }
 
 /* One-Click Talent Action Bar - the 7/8-action inline row used on the
    spacious in-feed opportunity card. */
@@ -16033,7 +16119,9 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-dm-saved-badge--muted svg { display: none; }
 .emp-dm-thread-head-name { display: flex; align-items: center; gap: 8px; }
 
-.emp-app-shell.emp-app-shell :is(.emp-rec-compact-id p, .emp-cpm-head-id p, .emp-saved-row-info .emp-cand-meta) { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-rec-compact-role, .emp-cpm-head-id p, .emp-saved-row-info .emp-cand-meta, .emp-suggested-follow-info p, .emp-your-reach-trigger-text small) { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-rec-compact-match { color: var(--emp-green) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-suggested-follow-info strong, .emp-your-reach-trigger-text strong) { color: var(--emp-ink, var(--text)) !important; }
 .emp-app-shell.emp-app-shell .emp-cpm-why { color: var(--emp-ink, var(--text)) !important; }
 
 @media (max-width: 720px) {
@@ -16057,15 +16145,16 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-hiring-copilot { position: fixed; right: 24px; bottom: 24px; z-index: 90; }
 .emp-copilot-fab {
   position: relative; display: inline-flex; align-items: center; justify-content: center;
-  width: 56px; height: 56px; border: none; border-radius: 999px; cursor: pointer;
-  background: var(--emp-ink); color: #fff;
-  box-shadow: 0 14px 32px rgba(7, 56, 47, 0.28); transition: transform 200ms var(--emp-motion-ease), box-shadow 200ms var(--emp-motion-ease);
+  width: 56px; height: 56px; border: 1px solid var(--emp-line); border-radius: 999px; cursor: pointer;
+  background: #fff; color: var(--emp-ink);
+  box-shadow: 0 10px 24px -8px rgba(27, 46, 40, 0.28); transition: transform 200ms var(--emp-motion-ease), box-shadow 200ms var(--emp-motion-ease);
 }
-.emp-copilot-fab:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(7, 56, 47, 0.34); }
-.emp-copilot-fab:focus-visible { outline: 2px solid var(--emp-teal-soft); outline-offset: 3px; }
+.emp-copilot-fab:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -8px rgba(27, 46, 40, 0.32); }
+.emp-copilot-fab:focus-visible { outline: 2px solid var(--emp-green); outline-offset: 3px; }
 /* Vera is her owl mark here, never the generic sparkles "AI insight" cue
    used elsewhere in this file (CAREERGO_UI_SPEC.md §9). */
 .emp-copilot-vera-mark { width: 20px; height: 20px; display: block; object-fit: contain; }
+.emp-copilot-fab .emp-copilot-vera-mark { width: 28px; height: 28px; }
 .emp-copilot-badge {
   position: absolute; top: -4px; right: -4px; display: inline-flex; align-items: center; justify-content: center;
   min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; border: 2px solid #fff;
@@ -16312,11 +16401,6 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-compose-card textarea { width: 100%; margin-top: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; font-family: inherit; font-size: var(--emp-body); }
 .emp-compose-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
 
-@media (max-width: 1180px) {
-  .emp-feed-layout { grid-template-columns: 220px minmax(0, 1fr); }
-  .emp-feed-rail { display: none; }
-}
-
 @media (max-width: 1080px) {
   .emp-app-header-inner { gap: 14px; }
   .emp-app-search-field { width: 180px; }
@@ -16353,11 +16437,20 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-company-header-top { flex-direction: column; }
   .emp-funnel-row { grid-template-columns: repeat(4, 1fr); }
   .emp-university-grid { grid-template-columns: 1fr; }
-  .emp-feed-layout { grid-template-columns: 1fr; }
-  .emp-feed-nav { position: static; }
+}
+
+/* Feed responsive fallback (redesign 2.8): below 1024px the fixed-shell
+   scroll model (see the min-width:1024px block above .emp-feed-layout)
+   doesn't apply - collapse to one natural-scrolling column instead, with
+   the feed itself first and both rails moved below it. */
+@media (max-width: 1023px) {
+  .emp-feed-layout { grid-template-columns: 1fr; height: auto !important; overflow: visible; }
+  .emp-feed-nav, .emp-feed-rail, .emp-feed-main { height: auto; overflow: visible; padding-right: 0; }
+  .emp-feed-main { order: 1; }
+  .emp-feed-nav { order: 2; }
+  .emp-feed-rail { order: 3; }
   .emp-feed-nav-list { display: flex; overflow-x: auto; gap: 4px; }
   .emp-feed-nav-item { flex-shrink: 0; }
-  .emp-feed-sidebar-shortcuts { display: none; }
 }
 
 /* ---------- Talent Pipeline redesign — Phase 6 (responsive) ----------
