@@ -15558,9 +15558,23 @@ function renderEmployerView(view, params, root) {
   }
 }
 
+function dashboardRoleHealthText(role) {
+  if (role.status === "Paused") return "Review before resuming";
+  if (role.status === "Open") return getOpenRoleHealth(role).label;
+  return role.health || "—";
+}
+
+function dashboardRoleNextAction(role) {
+  if (role.status === "Paused") return { label: "Resume hiring", view: "role-builder" };
+  const momentum = computeHiringMomentum(role);
+  if (momentum && momentum.status === "On Track") return { label: "Keep monitoring", view: "pipeline" };
+  return { label: "Review requirements", view: "role-builder" };
+}
+
 function renderEmployerDashboard(root) {
   const state = readState();
   const employer = state.employerProfile || {};
+  const company = DATA.companies.find(c => c.id === "maybank");
   const roles = DATA.employerRoles;
   const activeCandidates = DATA.candidates.filter(c => !c.archived);
   const priorityRole = roles.find(r => r.id === "er2") || roles.find(r => r.health === "Needs attention") || roles[0];
@@ -15575,65 +15589,21 @@ function renderEmployerDashboard(root) {
   const candidatesNeedingAction = activeCandidates.filter(c => c.stage !== "Hired" && (candidateNeedsAction(c) || ["Shortlisted", "Final Review"].includes(c.stage))).length;
   const interviewsThisWeek = Math.max(4, activeCandidates.filter(c => c.interview?.nextInterview).length);
   const offersAwaiting = activeCandidates.filter(offerOutstanding).length;
-  const stageCounts = EMPLOYER_TALENT_PIPELINE_STAGES.map(stage => ({ stage, count: activeCandidates.filter(c => c.stage === stage).length }));
   const rolesNeedingAttentionCount = roles.filter(r => { const m = computeHiringMomentum(r); return m && m.status !== "On Track"; }).length;
-  const bottleneckStage = stageCounts.filter(s => s.stage !== "Hired").reduce((max, s) => s.count > max.count ? s : max, stageCounts[0]);
 
-  const today = new Date();
-  const overline = `${today.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()} · ${today.toLocaleDateString("en-US", { month: "long", day: "numeric" }).toUpperCase()} · ${(employer.company || "YOUR COMPANY").toUpperCase()} · ${openCount} ACTIVE ROLE${openCount === 1 ? "" : "S"}`;
+  // Each pipeline column keeps only its single top (highest-fit) candidate -
+  // a preview, not the full board (that lives on Talent Pipeline).
+  const pipelineTop = EMPLOYER_TALENT_PIPELINE_STAGES.map(stage => {
+    const inStage = activeCandidates.filter(c => c.stage === stage);
+    const top = inStage.slice().sort((a, b) => (b.fit || 0) - (a.fit || 0))[0] || null;
+    return { stage, count: inStage.length, top };
+  });
+  const bottleneckStage = pipelineTop.filter(s => s.stage !== "Hired").reduce((max, s) => s.count > max.count ? s : max, pipelineTop[0]);
 
-  const actionQueue = [
-    {
-      tone: "urgent", label: "Urgent", object: weiJun?.name || "Wei Jun Tan",
-      reason: "Offer expires in 4 days", meta: "No response yet.",
-      action: "Follow up", view: "pipeline", id: weiJun?.id
-    },
-    {
-      tone: "today", label: "Today", object: daniel?.name || "Daniel Lim",
-      reason: "Interview feedback is incomplete", meta: "0 of 1 required scorecards submitted.",
-      action: "Collect feedback", view: "pipeline", id: daniel?.id
-    },
-    {
-      tone: "new", label: "New", object: ahmad?.role || "Backend Engineer",
-      reason: "1 high-potential application has not been reviewed", meta: "Oldest waiting: 3 weeks.",
-      action: "Review candidate", view: "pipeline", id: ahmad?.id
-    },
-    {
-      tone: "attention", label: "Attention", object: priorityRole.title,
-      reason: "Experience requirement may be filtering junior talent", meta: "126 applicants, but only 8 strong matches.",
-      action: "Review requirement", view: "role-builder", id: priorityRole.id
-    }
-  ];
-
-  const upcoming = [
-    { time: "2:00 PM", title: "Interview", detail: `${ahmad?.name || "Ahmad Zulkifli"} - Backend Engineer`, action: "Open interview", view: "pipeline", id: ahmad?.id },
-    { time: "Tomorrow", title: "Recruiter screen", detail: `${daniel?.name || "Daniel Lim"} - Junior Data Analyst`, action: "Open candidate", view: "pipeline", id: daniel?.id },
-    { time: "Friday", title: "Offer expires", detail: `${weiJun?.name || "Wei Jun Tan"} - Junior Data Analyst`, action: "Follow up", view: "pipeline", id: weiJun?.id }
-  ];
-
-  const rolesNeedingAttention = [
-    {
-      role: priorityRole,
-      signal: "Candidate supply mismatch",
-      why: "3-5 year requirement may be too restrictive",
-      action: "Review requirement",
-      view: "role-builder"
-    },
-    backendRole ? {
-      role: backendRole,
-      signal: "Hiring slowing",
-      why: `${backendRole.daysOpen} days open - only ${backendRole.strongMatches} strong matches`,
-      action: "Review role",
-      view: "role-builder"
-    } : null,
-    designRole ? {
-      role: designRole,
-      signal: "Strong new supply",
-      why: `${designRole.strongMatches} high-fit candidates available`,
-      action: "View candidates",
-      view: "pipeline"
-    } : null
-  ].filter(Boolean).slice(0, 3);
+  // The three roles Vera is flagging - each appears only here, nowhere
+  // else on the dashboard (the old "Today's Priorities" list repeated
+  // these same roles/candidates in a second shape; removed entirely).
+  const flaggedRoles = [priorityRole, backendRole, designRole].filter(Boolean).slice(0, 3);
 
   const signals = [
     daniel ? { name: daniel.name, text: "accepted your interview invitation.", time: "12m ago" } : null,
@@ -15647,6 +15617,19 @@ function renderEmployerDashboard(root) {
     `Why is ${backendRole?.title || "Backend Engineer"} slowing down?`,
     "Compare my final two candidates for Backend Engineer."
   ];
+
+  const today = new Date();
+  const overline = `${today.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()} · ${today.toLocaleDateString("en-US", { month: "long", day: "numeric" }).toUpperCase()} · ${(employer.company || "YOUR COMPANY").toUpperCase()} · ${openCount} ACTIVE ROLE${openCount === 1 ? "" : "S"}`;
+
+  const health = company.healthDashboard;
+  const junior = company.salaryComparison.levels.find(l => l.level === "Junior");
+  const juniorDiffPercent = junior ? Math.round(((junior.company - junior.market) / junior.market) * 100) : 0;
+  const compareVerdicts = ["salary", "benefits", "growth", "hiringSpeed"]
+    .map(key => company.competitorComparison.metrics.find(m => m.key === key))
+    .filter(Boolean);
+  const VERDICT_LABEL = { better: "Better", equal: "Equal", needsImprovement: "Needs Improvement" };
+  const VERDICT_TONE = { better: "green", equal: "cyan", needsImprovement: "gold" };
+  const featuredReview = company.companyReviews.find(r => r.verified && r.rating >= 4.5) || company.companyReviews[0];
 
   root.innerHTML = `
     <div class="emp-page-container">
@@ -15674,86 +15657,159 @@ function renderEmployerDashboard(root) {
             <strong>Move candidates forward faster</strong>
             <p>Adjusting this requirement is estimated to widen your strong-match pool for ${priorityRole.title}.</p>
           </div>
+          <div class="emp-dash-impact-compare">
+            <div class="emp-dash-impact-compare-item">
+              <span>Now</span>
+              <strong>${priorityRole.strongMatches} strong matches</strong>
+            </div>
+            ${icon("arrow-right")}
+            <div class="emp-dash-impact-compare-item is-projected">
+              <span>Projected</span>
+              <strong>${Math.round(priorityRole.strongMatches * 2.2)} strong matches</strong>
+            </div>
+          </div>
           <div class="emp-dash-avatars">
             ${[weiJun, daniel, ahmad].filter(Boolean).map(c => `<span class="emp-dash-avatar" title="${c.name}">${initialsOf(c.name)}</span>`).join("")}
+            <span class="emp-dash-avatars-label">Candidates this would surface sooner</span>
           </div>
         </aside>
       </div>
 
       <div class="emp-kpi-row">
-        <button type="button" class="emp-kpi-tile emp-kpi-clickable tone-1" data-dashboard-nav="roles">
+        <button type="button" class="emp-kpi-tile emp-kpi-clickable" data-dashboard-nav="roles">
           <span>Active Roles</span><strong>${openCount}</strong><span class="emp-kpi-sub">${rolesNeedingAttentionCount} needs attention</span>
         </button>
-        <button type="button" class="emp-kpi-tile emp-kpi-clickable tone-2" data-dashboard-nav="pipeline">
+        <button type="button" class="emp-kpi-tile emp-kpi-clickable" data-dashboard-nav="pipeline">
           <span>Waiting for Review</span><strong>${candidatesNeedingAction}</strong><span class="emp-kpi-sub">Oldest · 2 days</span>
         </button>
-        <button type="button" class="emp-kpi-tile emp-kpi-clickable tone-3" data-dashboard-nav="pipeline">
+        <button type="button" class="emp-kpi-tile emp-kpi-clickable" data-dashboard-nav="pipeline">
           <span>Interviews This Week</span><strong>${interviewsThisWeek}</strong><span class="emp-kpi-sub">Next · today 2:00 PM</span>
         </button>
-        <button type="button" class="emp-kpi-tile emp-kpi-clickable tone-4" data-dashboard-nav="pipeline">
+        <button type="button" class="emp-kpi-tile emp-kpi-clickable" data-dashboard-nav="pipeline">
           <span>Offers Awaiting Response</span><strong>${offersAwaiting}</strong><span class="emp-kpi-sub">${weiJun ? `${weiJun.name.split(" ")[0]} expires in 4 days` : "1 expires in 4 days"}</span>
         </button>
       </div>
 
-      <div class="emp-dash-panels-grid">
-        <section class="emp-priorities-panel">
-          <div class="emp-editorial-head">
-            <div><span class="emp-section-label">Today</span><h2>Priorities</h2></div>
-            <span class="emp-editorial-support">Ranked by urgency</span>
+      <section class="card emp-dash-health-summary">
+        <div class="emp-editorial-head">
+          <div><span class="emp-section-label">Company Health</span><h2>How your brand looks to candidates</h2></div>
+          <span class="pill cyan">${icon("sparkles")} Vera Insight</span>
+        </div>
+        <div class="emp-dash-health-overview">
+          ${renderHealthRing(health.overallScore, { size: 104, strokeWidth: 10 })}
+          <div class="emp-dash-health-overview-detail">
+            <div class="emp-health-predicted-banner emp-dash-health-predicted">
+              <div><span class="emp-tags-label">Predicted After Recommendations</span><strong>${health.overallPredictedScore}</strong></div>
+              <span class="emp-health-predicted-delta">${icon("trending-up")} +${health.overallPredictedScore - health.overallScore} points</span>
+            </div>
+            <p>${icon("sparkles")} ${escapeHtml(health.overallExplanation)}</p>
           </div>
-          ${actionQueue.map(item => `
-            <div class="emp-priority-row">
-              <span class="emp-priority-row-label">${item.label.toUpperCase()}${item.tone === "urgent" ? "" : ""}</span>
-              <div>
-                <strong>${item.object}</strong>
-                <p>${item.reason} · ${item.meta}</p>
-              </div>
-              <button type="button" class="btn btn-ghost btn-sm" data-dashboard-nav="${item.view}" ${item.id ? `data-dashboard-id="${item.id}"` : ""}>${item.action}</button>
+        </div>
+        <div class="emp-dash-health-rings">
+          ${health.subscores.map(s => `
+            <div class="emp-dash-health-ring-item">
+              ${renderHealthRing(s.score, { size: 56, strokeWidth: 6 })}
+              <span>${escapeHtml(s.label)}</span>
             </div>
           `).join("")}
-        </section>
+        </div>
+        <button type="button" class="emp-attention-role-link" data-dashboard-nav="company" data-dashboard-hash="health">View full health score →</button>
+      </section>
 
-        <section class="emp-coming-up-panel">
-          <div class="emp-editorial-head"><div><span class="emp-section-label">Schedule</span><h2>Coming up</h2></div></div>
-          ${upcoming.map(item => `
-            <div class="emp-priority-row">
-              <span class="emp-priority-row-label">${item.time}</span>
-              <div>
-                <strong>${item.title}</strong>
-                <p>${item.detail}</p>
-              </div>
-              <button type="button" class="btn btn-ghost btn-sm" data-dashboard-nav="${item.view}" ${item.id ? `data-dashboard-id="${item.id}"` : ""}>${item.action}</button>
-            </div>
-          `).join("")}
-        </section>
-      </div>
-
-      <section class="emp-flow-panel">
+      <section class="card emp-dash-pipeline-mini">
         <div class="emp-editorial-head"><div><span class="emp-section-label">Hiring Flow</span><h2>Where hiring stands right now</h2></div></div>
-        <div class="emp-flow-row">
-          ${stageCounts.map(item => `<div class="emp-flow-stage"><strong>${item.count}</strong><span>${item.stage}</span></div>`).join("")}
+        <div class="emp-dash-pipeline-row">
+          ${pipelineTop.map(item => `
+            <div class="emp-dash-pipeline-col">
+              <div class="emp-dash-pipeline-col-head"><span>${item.stage}</span><strong>${item.count}</strong></div>
+              ${item.top ? `
+                <button type="button" class="emp-dash-pipeline-card" data-dashboard-nav="pipeline" data-dashboard-id="${item.top.id}">
+                  <strong>${escapeHtml(item.top.name)}</strong>
+                  <span class="emp-cand-match-badge gold">${item.top.fit}%</span>
+                  <small>${escapeHtml(item.top.role)}</small>
+                </button>
+              ` : `<div class="emp-dash-pipeline-empty">No candidates yet</div>`}
+            </div>
+          `).join("")}
         </div>
         <div class="emp-flow-bottleneck">
           <span class="emp-tags-label">Current bottleneck: ${bottleneckStage.stage}</span>
           <p>${bottleneckStage.count} candidate${bottleneckStage.count === 1 ? "" : "s"} are currently at this stage — the largest concentration in your pipeline.</p>
           <button type="button" class="btn btn-primary btn-sm" data-dashboard-nav="pipeline">Resolve</button>
         </div>
+        <button type="button" class="emp-attention-role-link" data-dashboard-nav="pipeline">Open full pipeline →</button>
       </section>
 
-      <section class="emp-priorities-panel">
+      <section class="card emp-dash-roles-table-card">
         <div class="emp-editorial-head"><div><span class="emp-section-label">Roles</span><h2>Needing attention</h2></div>
           <button type="button" class="emp-attention-role-link" data-dashboard-nav="roles">See all roles →</button>
         </div>
-        <div class="emp-attention-list">
-          ${rolesNeedingAttention.map(item => `
-            <div class="emp-attention-role-card">
-              <div class="emp-attention-role-head"><strong>${item.role.title}</strong></div>
-              <p class="emp-attention-role-meta">${item.role.applicants} applicants · ${item.role.strongMatches} strong matches · ${item.role.daysOpen}d open</p>
-              <p class="emp-attention-role-why">${item.why}.</p>
-              <button type="button" class="emp-attention-role-link" data-dashboard-nav="${item.view}" ${item.view === "role-builder" ? `data-dashboard-id="${item.role.id}"` : ""}>${item.action} →</button>
-            </div>
-          `).join("")}
+        <div class="emp-dash-table-scroll">
+          <table class="emp-table emp-dash-roles-table">
+            <thead><tr><th>Role</th><th>Status</th><th>Applicants</th><th>Strong Matches</th><th>Hiring Health</th><th>Next Action</th></tr></thead>
+            <tbody>
+              ${flaggedRoles.map(role => {
+                const nextAction = dashboardRoleNextAction(role);
+                return `
+                  <tr class="emp-table-row" data-dashboard-nav="${nextAction.view}" ${nextAction.view === "role-builder" ? `data-dashboard-id="${role.id}"` : ""}>
+                    <td><strong>${escapeHtml(role.title)}</strong></td>
+                    <td><span class="pill ${ROLE_STATUS_PILL_CLASS[role.status]}">${role.status}</span></td>
+                    <td>${role.applicants}</td>
+                    <td>${role.strongMatches}</td>
+                    <td>${escapeHtml(dashboardRoleHealthText(role))}</td>
+                    <td><span class="emp-dash-table-action">${escapeHtml(nextAction.label)} →</span></td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
         </div>
+      </section>
+
+      <div class="emp-dash-market-row">
+        <section class="card emp-dash-market-card">
+          <div class="emp-editorial-head"><div><span class="emp-section-label">Salary Position</span><h2>Where you sit vs the market</h2></div></div>
+          <div class="emp-dash-market-stats">
+            <div><strong>${company.salaryComparison.industryPercentile}${ordinalSuffix(company.salaryComparison.industryPercentile)}</strong><span>Industry percentile</span></div>
+            <div><strong>${company.salaryComparison.transparencyScore}/100</strong><span>Transparency — some roles missing published ranges</span></div>
+          </div>
+          ${junior ? `
+            <div class="emp-dash-market-bar">
+              <span class="emp-dash-table-action">Junior</span>
+              <div class="emp-dash-market-bar-track">
+                <div class="emp-dash-market-bar-fill" style="width:${Math.min(100, (junior.company / junior.market) * 60)}%"></div>
+              </div>
+              <span>RM${(junior.company / 1000).toFixed(1)}k vs RM${(junior.market / 1000).toFixed(1)}k (${juniorDiffPercent >= 0 ? "+" : ""}${juniorDiffPercent}%)</span>
+            </div>
+          ` : ""}
+          <button type="button" class="emp-attention-role-link" data-dashboard-nav="company" data-dashboard-hash="salary">View comparison →</button>
+        </section>
+        <section class="card emp-dash-market-card">
+          <div class="emp-editorial-head"><div><span class="emp-section-label">Vs Competitor</span><h2>How you stack up</h2></div></div>
+          <div class="emp-dash-verdict-chips">
+            ${compareVerdicts.map(m => `<span class="pill ${VERDICT_TONE[m.verdict]}">${escapeHtml(m.label)} ${VERDICT_LABEL[m.verdict]}</span>`).join("")}
+          </div>
+          <button type="button" class="emp-attention-role-link" data-dashboard-nav="company" data-dashboard-hash="compare">View comparison →</button>
+        </section>
+      </div>
+
+      <section class="card emp-dash-reputation">
+        <div class="emp-editorial-head"><div><span class="emp-section-label">Employee Voice</span><h2>What people say about working here</h2></div></div>
+        <div class="emp-dash-reputation-stats">
+          <div><strong>${company.rating}</strong><span>Overall</span></div>
+          <div><strong>${company.scores.culture}</strong><span>Culture</span></div>
+          <div><strong>${company.scores.growth}</strong><span>Growth</span></div>
+          <div><strong>${company.scores.pay}</strong><span>Pay</span></div>
+          <div><strong>${company.scores.balance}</strong><span>Work-life</span></div>
+          <span class="emp-dash-reputation-count">of ${company.reviews.toLocaleString()} reviews</span>
+        </div>
+        ${featuredReview ? `
+          <div class="emp-dash-review-mini">
+            <div><span class="emp-tags-label">Pros</span><p>${escapeHtml(featuredReview.pros)}</p></div>
+            <div><span class="emp-tags-label">Cons</span><p>${escapeHtml(featuredReview.cons)}</p></div>
+          </div>
+        ` : ""}
+        <button type="button" class="emp-attention-role-link" data-dashboard-nav="company" data-dashboard-hash="reviews">Read reviews →</button>
       </section>
 
       <section class="emp-signals-panel">
@@ -15772,9 +15828,13 @@ function renderEmployerDashboard(root) {
     </div>
   `;
   createIcons();
+  qsa("[data-health-ring] .emp-health-ring-fill", root).forEach(fill => { fill.style.strokeDashoffset = fill.closest("[data-health-ring]").dataset.targetOffset; });
 
   qsa("[data-dashboard-nav]", root).forEach(btn => btn.addEventListener("click", () => {
     employerNavigateTo(btn.dataset.dashboardNav, btn.dataset.dashboardId ? { id: btn.dataset.dashboardId } : {});
+    if (btn.dataset.dashboardHash) {
+      setTimeout(() => qs(`#comp-${btn.dataset.dashboardHash}`)?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
+    }
   }));
   qsa("[data-dashboard-vera-prompt]", root).forEach(btn => btn.addEventListener("click", () => {
     openEmployerVera(btn.dataset.dashboardVeraPrompt);
