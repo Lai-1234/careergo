@@ -12263,6 +12263,20 @@ body[data-page="home"] .home-metrics span {
   transform: translate3d(0, -2px, 0);
 }
 
+/* Employer OS only: the Vera Hiring Copilot FAB (.emp-hiring-copilot)
+   already owns the bottom-right corner, so back-to-top moves to
+   bottom-left here to avoid overlapping it. Candidate pages, which have
+   no bottom-right FAB, are unaffected. */
+body[data-page="employers"] .home-back-top {
+  right: auto;
+  left: max(28px, env(safe-area-inset-left));
+}
+@media (max-width: 640px) {
+  body[data-page="employers"] .home-back-top {
+    left: max(16px, env(safe-area-inset-left));
+  }
+}
+
 .home-back-top svg {
   width: 21px;
   height: 21px;
