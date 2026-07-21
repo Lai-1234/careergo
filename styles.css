@@ -13325,32 +13325,53 @@ body[data-page="login"] .login-create-account {
    any CSS leakage into candidate pages — same values, separate selectors.
    ========================================================================== */
 .emp-app-shell {
-  --emp-bg: #f8f4eb;
-  --emp-ink: #082f27;
-  --emp-muted: #607069;
-  --emp-line: rgba(7, 56, 47, 0.08);
-  --emp-green: #07382f;
-  --emp-green-2: #052f29;
-  --emp-green-nav: #1f332c;
-  --emp-teal: #6aa59d;
+  /* Employer OS design tokens — migrated onto the Candidate platform's
+     cream/forest system (CAREERGO_UI_SPEC.md) so both products share one
+     visual language. Employer keeps its own --emp-* namespace (never reads
+     the candidate app's bare --green/--soft/etc custom properties) so this
+     mapping is a values-only migration: workflows, IA, and every data-*
+     hook are untouched, only what these tokens resolve to has changed. */
+  --emp-bg: #f7f3ea;
+  --emp-bg-deep: #efe8d8;
+  --emp-ink: #1b2e28;
+  --emp-muted: #5b6a66;
+  --emp-line: #e4dfd3;
+  --emp-green: #1f5560;
+  --emp-green-2: #1a4852;
+  --emp-green-nav: #16414a;
+  --emp-teal: #1f5560;
+  --emp-teal-soft: #c8dddf;
+  --emp-aqua: #a6cbd1;
   --emp-ai: #6f5fc4;
-  --emp-cream-text: #fffaf2;
+  --emp-destructive: #d6342a;
+  --emp-destructive-2: #b32a22;
+  --emp-cream-text: #f7f3ea;
   --emp-serif: "Fraunces", Georgia, "Times New Roman", serif;
   --emp-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --emp-radius-card: 20px;
-  --emp-radius-hero: 28px;
-  --emp-shadow-card: 0 18px 44px rgba(35, 29, 18, 0.065);
-  --emp-shadow-card-hover: 0 26px 60px rgba(35, 29, 18, 0.105);
-  --emp-shadow-hero: 0 26px 64px rgba(7, 56, 47, 0.22);
+  --emp-radius-sm: 6px;
+  --emp-radius-md: 8px;
+  --emp-radius-lg: 10px;
+  --emp-radius-xl: 14px;
+  --emp-radius-2xl: 18px;
+  --emp-radius-3xl: 22px;
+  --emp-radius-4xl: 26px;
+  --emp-radius-card: 18px;
+  --emp-radius-hero: 22px;
+  --emp-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --emp-shadow-card-hover: 0 18px 40px -24px rgba(27, 46, 40, 0.35);
+  --emp-shadow-hero: 0 20px 50px -20px rgba(27, 46, 40, 0.28);
+  --emp-shadow-vera-glow: 0 0 0 1px rgba(31, 85, 96, 0.15), 0 20px 60px -30px rgba(31, 85, 96, 0.5);
   --emp-container-max: 1240px;
-  --emp-title-xl: clamp(40px, 4.4vw, 58px);
-  --emp-title-lg: 26px;
+  --emp-title-xl: clamp(40px, 4.2vw, 56px);
+  --emp-title-lg: 23px;
   --emp-title-md: 18px;
+  --emp-title-card: 14px;
   --emp-body: 14px;
   --emp-body-sm: 13px;
   --emp-label: 11px;
   --emp-metric-lg: 34px;
   --emp-metric-sm: 20px;
+  --emp-motion-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -13376,6 +13397,17 @@ body[data-page="login"] .login-create-account {
   font-weight: 650 !important;
   letter-spacing: -0.02em;
 }
+/* The unscoped bug this whole file's .emp-* overrides work around (see the
+   comment above) also forces bare p/span/small/li/div to old-green
+   (#2FAE7A !important) anywhere they sit inside a .card/.glass-card/etc
+   ancestor - which is most of the Employer OS, since nearly every panel is
+   a .card. Rather than patching each affected class as it's found
+   (dozens, across every page), reset the default here once, at the same
+   elevated specificity. Elements that intentionally carry an accent color
+   (status pills, match badges, links) do so via a class more specific than
+   a bare tag, so they still win over this default. */
+.emp-app-shell.emp-app-shell :is(span, small, li) { color: var(--emp-muted, #5b6a66) !important; }
+.emp-app-shell.emp-app-shell :is(p, div) { color: var(--emp-ink, #1b2e28) !important; }
 .emp-app-shell.emp-app-shell :is(p, span, small, li, time, label, input, textarea, select, button) { font-family: var(--emp-sans) !important; }
 
 /* Placeholders must always read as empty-state hint text, never as filled
@@ -13398,34 +13430,61 @@ body[data-page="login"] .login-create-account {
 .emp-app-shell.emp-app-shell .card {
   border-color: var(--emp-line) !important;
   border-radius: var(--emp-radius-card);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.78)) !important;
+  background: #fff !important;
   box-shadow: var(--emp-shadow-card) !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  transition: transform 220ms var(--emp-motion-ease), box-shadow 220ms var(--emp-motion-ease), border-color 220ms var(--emp-motion-ease);
 }
+/* Button system — Primary/Secondary(Ghost)/Danger share one height, radius,
+   and motion recipe (CAREERGO_UI_SPEC.md §7). Filter/status chips are a
+   separate .pill recipe (full radius) and are not affected by this block -
+   only .btn variants change shape here, nothing about which class an
+   element uses changes. */
 .emp-app-shell.emp-app-shell .btn {
-  border-radius: 999px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--emp-radius-md) !important;
   font-family: var(--emp-sans) !important;
-  font-weight: 700;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background 150ms var(--emp-motion-ease), color 150ms var(--emp-motion-ease), border-color 150ms var(--emp-motion-ease), transform 150ms var(--emp-motion-ease), box-shadow 150ms var(--emp-motion-ease);
 }
+.emp-app-shell.emp-app-shell .btn.btn-sm { min-height: 32px; padding: 0 12px; font-size: 13px; }
 .emp-app-shell.emp-app-shell .btn-primary {
   color: var(--emp-cream-text) !important;
   background: var(--emp-green) !important;
   border-color: var(--emp-green) !important;
-  box-shadow: 0 10px 26px rgba(7, 56, 47, 0.22) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+.emp-app-shell.emp-app-shell .btn-primary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--emp-green-2) !important;
+  border-color: var(--emp-green-2) !important;
+}
+.emp-app-shell.emp-app-shell .btn-secondary {
+  color: var(--emp-ink) !important;
+  background: var(--emp-bg-deep) !important;
+  border-color: transparent !important;
+}
+.emp-app-shell.emp-app-shell .btn-secondary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--emp-teal-soft) !important;
 }
 .emp-app-shell.emp-app-shell .btn-ghost {
   color: var(--emp-ink) !important;
   border: 1px solid var(--emp-line);
-  background: rgba(255, 255, 255, 0.7) !important;
+  background: transparent !important;
+}
+.emp-app-shell.emp-app-shell .btn-ghost:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--emp-teal-soft) !important;
+  border-color: transparent !important;
 }
 .emp-app-shell.emp-app-shell :is(.btn, .pill, a.btn, [role="button"]):focus-visible {
-  outline: 2px solid var(--emp-green, #07382f);
+  outline: 2px solid var(--emp-green, #1f5560);
   outline-offset: 2px;
 }
 .emp-app-shell.emp-app-shell .btn:disabled,
 .emp-app-shell.emp-app-shell .btn[aria-disabled="true"] {
-  opacity: 0.45 !important;
+  opacity: 0.5 !important;
   cursor: not-allowed !important;
   box-shadow: none !important;
   transform: none !important;
@@ -13433,7 +13492,12 @@ body[data-page="login"] .login-create-account {
 .emp-app-shell.emp-app-shell .pill {
   font-family: var(--emp-sans) !important;
   color: var(--emp-ink) !important;
-  background: rgba(7, 56, 47, 0.08) !important;
+  background: var(--emp-bg-deep) !important;
+}
+.emp-app-shell.emp-app-shell .btn-icon-sm {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: var(--emp-radius-md) !important;
 }
 .emp-app-shell.emp-app-shell .pill.green { color: var(--emp-green) !important; background: rgba(7, 56, 47, 0.12) !important; }
 .emp-app-shell.emp-app-shell .pill.gold { color: #92400e !important; background: rgba(217, 119, 6, 0.12) !important; }
@@ -13666,7 +13730,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-dash-impact-card {
   padding: 26px 24px; border-radius: var(--emp-radius-hero);
   border: 1px solid var(--emp-line);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.78));
+  background: #fff;
   box-shadow: var(--emp-shadow-card);
   display: flex; flex-direction: column; justify-content: space-between;
 }
@@ -13689,7 +13753,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   position: relative; overflow: hidden; text-align: left;
   min-height: 128px; padding: 22px 22px 20px;
   border: 1px solid var(--emp-line); border-radius: var(--emp-radius-card);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.78));
+  background: #fff;
   box-shadow: var(--emp-shadow-card);
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
@@ -13711,7 +13775,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-priorities-panel, .emp-coming-up-panel, .emp-signals-panel {
   padding: 26px 28px; margin-bottom: 24px;
   border: 1px solid var(--emp-line); border-radius: var(--emp-radius-card);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.78));
+  background: #fff;
   box-shadow: var(--emp-shadow-card);
 }
 .emp-dash-panels-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: 16px; align-items: start; margin-bottom: 24px; }
@@ -13730,7 +13794,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-flow-panel {
   padding: 26px 28px; margin-bottom: 24px;
   border: 1px solid var(--emp-line); border-radius: var(--emp-radius-card);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.78));
+  background: #fff;
   box-shadow: var(--emp-shadow-card);
 }
 .emp-flow-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin: 18px 0 22px; }
@@ -13745,8 +13809,8 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-attention-list { display: grid; gap: 14px; margin-top: 16px; }
 .emp-attention-role-card {
   padding: 20px 22px;
-  border: 1px solid var(--emp-line); border-radius: 18px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.78));
+  border: 1px solid var(--emp-line); border-radius: var(--emp-radius-card);
+  background: #fff;
   box-shadow: var(--emp-shadow-card);
 }
 .emp-attention-role-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
@@ -14036,6 +14100,18 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-talent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 .emp-talent-card, .emp-pool-card, .emp-interview-card, .emp-candidate-detail, .emp-post-card { padding: 18px; }
 .emp-talent-card h3, .emp-pool-card h3, .emp-interview-card h3, .emp-candidate-detail h3, .emp-post-card h3 { margin: 0; font-size: var(--emp-title-md); font-weight: 700; }
+/* Card headings (candidate/role/post cards) are Inter 14/600, not the
+   Fraunces serif every other h1/h2/h3 gets — matches the Candidate
+   platform's card-heading rule (CAREERGO_UI_SPEC.md §2.1: "Card Heading ...
+   Sans ... 14 ... Company/role/university card titles"). Needs the doubled
+   .emp-app-shell.emp-app-shell prefix + !important to outrank the blanket
+   heading-serif rule above, same pattern used throughout this file. */
+.emp-app-shell.emp-app-shell :is(.emp-talent-card, .emp-pool-card, .emp-interview-card, .emp-candidate-detail, .emp-post-card) h3 {
+  font-family: var(--emp-sans) !important;
+  font-size: var(--emp-title-card) !important;
+  font-weight: 600 !important;
+  letter-spacing: normal !important;
+}
 .emp-talent-meta { margin: 6px 0 10px; font-size: var(--emp-body-sm); color: var(--muted); }
 .emp-talent-reason { margin: 10px 0 0; font-size: var(--emp-body-sm); line-height: 1.5; }
 .emp-talent-actions { display: flex; gap: 8px; margin-top: 12px; }
@@ -16274,9 +16350,9 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-modal-card h2 { margin: 0 0 8px; font-size: var(--emp-title-lg, 22px); }
 .emp-confirm-modal p { margin: 0 0 4px; font-size: 14px; line-height: 1.55; color: var(--muted); }
 .emp-app-shell.emp-app-shell .btn-danger {
-  color: #fff !important; background: #b91c1c !important; border-color: #b91c1c !important;
+  color: #fff !important; background: var(--emp-destructive) !important; border-color: var(--emp-destructive) !important;
 }
-.emp-app-shell.emp-app-shell .btn-danger:hover { background: #991b1b !important; }
+.emp-app-shell.emp-app-shell .btn-danger:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--emp-destructive-2) !important; border-color: var(--emp-destructive-2) !important; }
 
 /* Ask Vera — Roles page assistant modal (distinct from the global right-side drawer) */
 .emp-roles-vera-card { width: min(680px, 100%); max-height: min(82vh, 680px); display: flex; flex-direction: column; padding: 0; }
