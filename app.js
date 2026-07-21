@@ -15652,7 +15652,7 @@ function renderEmployerDashboard(root) {
 
   root.innerHTML = `
     <div class="emp-page-container">
-      ${renderPageHero({ eyebrow: overline, title: `Good morning, ${getFirstName(state)}.`, sub: "Here is what needs attention across your hiring today." })}
+      ${renderPageHero({ eyebrowIcon: "calendar-days", eyebrow: overline, title: `Good morning, ${getFirstName(state)}.`, sub: "Here is what needs attention across your hiring today." })}
 
       <div class="emp-dash-hero-grid">
         <section class="emp-dash-hero">
@@ -16456,17 +16456,19 @@ function renderEmployerRolesList(root) {
     const headers = [...getRoleTableHeaders(activeFilter), "", ""];
     root.innerHTML = `
       ${renderPageHero({
+        eyebrowIcon: "briefcase",
         eyebrow: "Roles",
         title: "Roles in your company",
-        sub: "Create, publish, monitor, pause, close, and archive every role your company manages.",
-        actions: `
-          <button type="button" class="btn btn-ghost" data-action="ask-vera-global">${icon("sparkles")} Ask Vera</button>
-          <button type="button" class="btn btn-primary" data-action="create-role">${icon("plus")} Create role</button>
-        `
+        sub: "Create, publish, monitor, pause, close, and archive every role your company manages."
       })}
-      <div class="emp-subtabs" role="tablist" aria-label="Role status">
-        ${ROLE_STATUS_FILTERS.map(f => `<button type="button" class="emp-subtab ${activeFilter === f ? "active" : ""}" role="tab" aria-selected="${activeFilter === f}" data-action="filter" data-filter="${f}">${f}</button>`).join("")}
-      </div>
+      ${renderPageToolbar(`
+        <div class="emp-subtabs" role="tablist" aria-label="Role status">
+          ${ROLE_STATUS_FILTERS.map(f => `<button type="button" class="emp-subtab ${activeFilter === f ? "active" : ""}" role="tab" aria-selected="${activeFilter === f}" data-action="filter" data-filter="${f}">${f}</button>`).join("")}
+        </div>
+      `, `
+        <button type="button" class="btn btn-ghost" data-action="ask-vera-global">${icon("sparkles")} Ask Vera</button>
+        <button type="button" class="btn btn-primary" data-action="create-role">${icon("plus")} Create role</button>
+      `)}
       <div class="card">
         <div class="table-wrap">
           <table class="emp-table">
@@ -19699,18 +19701,19 @@ function renderEmployerTalentPipeline(root, params = {}) {
 
     root.innerHTML = `
       ${renderPageHero({
+        eyebrowIcon: "git-branch",
         eyebrow: "Talent Pipeline",
         title: "Talent Pipeline",
-        sub: "Manage candidates through every hiring stage.",
-        actions: `
-          <select data-pipeline-role>
-            <option value="all" ${roleFilter === "all" ? "selected" : ""}>All open roles</option>
-            ${openRoles.map(r => `<option value="${r.id}" ${roleFilter === r.id ? "selected" : ""}>${r.title}</option>`).join("")}
-          </select>
-          <input type="text" data-pipeline-search placeholder="Search..." value="${query}">
-          <button type="button" class="btn btn-ghost btn-sm emp-vera-accent-btn" data-vera-fab-toggle aria-haspopup="dialog" aria-expanded="${veraPanelOpen}">${icon("sparkles")} Vera</button>
-        `
+        sub: "Manage candidates through every hiring stage."
       })}
+      ${renderPageToolbar("", `
+        <select data-pipeline-role>
+          <option value="all" ${roleFilter === "all" ? "selected" : ""}>All open roles</option>
+          ${openRoles.map(r => `<option value="${r.id}" ${roleFilter === r.id ? "selected" : ""}>${r.title}</option>`).join("")}
+        </select>
+        <input type="text" data-pipeline-search placeholder="Search..." value="${query}">
+        <button type="button" class="btn btn-ghost btn-sm emp-vera-accent-btn" data-vera-fab-toggle aria-haspopup="dialog" aria-expanded="${veraPanelOpen}">${icon("sparkles")} Vera</button>
+      `)}
 
       <div class="emp-pipeline-summary" aria-label="Pipeline summary">
         <div class="emp-pipeline-summary-item">${icon("user-plus")}<strong>${newCount}</strong><span>New Applications</span></div>
@@ -20446,16 +20449,22 @@ function renderHealthRing(score, { size = 120, strokeWidth = 10 } = {}) {
 // renders its hero through this one function so title size/font/spacing
 // can't drift apart per page again. actions is pre-built HTML (buttons,
 // selects, inputs) rendered as-is into the right-side cluster.
-function renderPageHero({ eyebrow, title, sub = "", actions = "" }) {
+function renderPageHero({ eyebrowIcon, eyebrow, title, sub = "" }) {
   return `
-    <header class="page-hero">
-      <div class="page-hero__lead">
-        <p class="page-hero__eyebrow">${eyebrow}</p>
-        <h1 class="page-hero__title font-display">${title}</h1>
-        ${sub ? `<p class="page-hero__sub">${sub}</p>` : ""}
-      </div>
-      ${actions ? `<div class="page-hero__actions">${actions}</div>` : ""}
+    <header class="emp-page-hero">
+      <p class="emp-page-hero__eyebrow"><span class="emp-page-hero__eyebrow-icon">${icon(eyebrowIcon)}</span>${eyebrow}</p>
+      <h1 class="emp-page-hero__title font-display">${title}</h1>
+      ${sub ? `<p class="emp-page-hero__sub">${sub}</p>` : ""}
     </header>
+  `;
+}
+
+function renderPageToolbar(left = "", right = "") {
+  return `
+    <div class="emp-page-toolbar">
+      <div class="emp-page-toolbar__group">${left}</div>
+      <div class="emp-page-toolbar__group emp-page-toolbar__group--end">${right}</div>
+    </div>
   `;
 }
 
@@ -21186,7 +21195,7 @@ function renderEmployerFeed(root) {
     const company = DATA.companies.find(c => c.id === "maybank");
 
     root.innerHTML = `
-      ${renderPageHero({ eyebrow: "Feed", title: "Feed", sub: "Your hiring signals, candidate activity and market trends in one place." })}
+      ${renderPageHero({ eyebrowIcon: "newspaper", eyebrow: "Feed", title: "Feed", sub: "Your hiring signals, candidate activity and market trends in one place." })}
       <div class="emp-feed-layout">
         <div class="emp-feed-nav">
           ${renderFeedSidebarNav(state)}
@@ -22658,21 +22667,22 @@ function renderEmployerCompany(root) {
 
     root.innerHTML = `
       ${renderPageHero({
+        eyebrowIcon: "building-2",
         eyebrow: "Company Profile",
         title: "How candidates see your company.",
-        sub: "Manage the information, reputation and signals that shape candidate interest.",
-        actions: `
-          <button type="button" class="btn btn-primary" data-company-edit>Edit Profile</button>
-          <a class="btn btn-ghost" href="companies.html?org=${company.id}" target="_blank" rel="noopener">Preview Candidate View</a>
-          <button type="button" class="btn btn-ghost" data-company-share>Share Public Profile</button>
-          <div class="emp-company-hero-menu-wrap">
-            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-company-menu aria-haspopup="menu" aria-expanded="false">${icon("more-horizontal")}</button>
-            <div class="emp-actions-menu" data-company-menu-panel hidden>
-              <button type="button" data-company-share>Share public profile</button>
-            </div>
-          </div>
-        `
+        sub: "Manage the information, reputation and signals that shape candidate interest."
       })}
+      ${renderPageToolbar("", `
+        <button type="button" class="btn btn-primary" data-company-edit>Edit Profile</button>
+        <a class="btn btn-ghost" href="companies.html?org=${company.id}" target="_blank" rel="noopener">Preview Candidate View</a>
+        <button type="button" class="btn btn-ghost" data-company-share>Share Public Profile</button>
+        <div class="emp-company-hero-menu-wrap">
+          <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-company-menu aria-haspopup="menu" aria-expanded="false">${icon("more-horizontal")}</button>
+          <div class="emp-actions-menu" data-company-menu-panel hidden>
+            <button type="button" data-company-share>Share public profile</button>
+          </div>
+        </div>
+      `)}
 
       <div class="card emp-company-hero">
         <div class="emp-company-hero-left">

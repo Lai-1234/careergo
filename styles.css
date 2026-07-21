@@ -13712,34 +13712,60 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 /* ---------- Unified page hero (Dashboard/Roles/Talent Pipeline/Company
    Profile/Feed all render through renderPageHero() into this one recipe -
    CAREERGO_UI_SPEC.md Page Title: Fraunces 400, 36/44, lh 1.05, -0.01em).
+
+   Namespaced .emp-page-hero, NOT .page-hero: the bare `.page-hero` class
+   name collides with several older, unrelated candidate-site rules
+   scattered through this file (a 70px/42px-padding gradient banner with
+   its own box-shadow, defined at multiple unscoped `.page-hero { ... }`
+   breakpoints/theme variants going back to the top of the file). Because
+   those rules are unscoped, they silently applied their background,
+   border, box-shadow and padding to the Employer hero too - THAT, not
+   this component's own CSS, was the source of the "big white card with
+   dead space" bug. Renaming sidesteps the collision entirely instead of
+   fighting every legacy rule with specificity/!important.
+
    The doubled .emp-app-shell.emp-app-shell prefix + !important on title/
-   eyebrow/sub is required, not decorative: the blanket heading-serif rule
-   forces weight 650/-0.02em on every h1, and the color-cascade counter-fix
-   forces ink onto every bare p/div - both would otherwise silently win
-   here over a plain .page-hero__* rule (this exact collision broke the
-   Vera dashboard card's contrast once already; fixed proactively this
-   time instead of reactively). ---------- */
-.page-hero {
-  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
-  gap: 24px; margin-bottom: 32px;
+   eyebrow/sub is still required for a different, unrelated reason: the
+   blanket heading-serif rule forces weight 650/-0.02em on every h1, and
+   a global color-cascade counter-fix forces ink onto bare p/div - both
+   would otherwise win over a plain .emp-page-hero__* rule (this exact
+   collision broke the Vera dashboard card's contrast once already). */
+.emp-page-hero {
+  padding-top: 40px;
 }
-.page-hero__lead { min-width: 0; }
-.emp-app-shell.emp-app-shell .page-hero__eyebrow {
-  margin: 0 0 8px !important; font-family: var(--emp-sans) !important; font-size: 11px !important; font-weight: 500 !important;
-  text-transform: uppercase; letter-spacing: 0.16em; line-height: 1.2; color: var(--emp-muted) !important;
+.emp-app-shell.emp-app-shell .emp-page-hero__eyebrow {
+  display: inline-flex !important; align-items: center; gap: 8px;
+  margin: 0 0 12px !important; font-family: var(--emp-sans) !important; font-size: 11px !important; font-weight: 500 !important;
+  text-transform: uppercase; letter-spacing: 0.16em; line-height: 1.2; color: var(--emp-green) !important;
 }
-.emp-app-shell.emp-app-shell .page-hero__title {
+.emp-page-hero__eyebrow-icon { display: inline-flex; color: currentColor; }
+.emp-page-hero__eyebrow-icon svg { width: 16px; height: 16px; stroke-width: 2; }
+.emp-app-shell.emp-app-shell .emp-page-hero__title {
   margin: 0 !important; font-family: var(--emp-serif) !important; font-weight: 400 !important; font-size: 36px !important;
   line-height: 1.05 !important; letter-spacing: -0.01em !important; color: var(--emp-ink) !important; text-align: left;
 }
 @media (min-width: 768px) {
-  .emp-app-shell.emp-app-shell .page-hero__title { font-size: 44px !important; }
+  .emp-app-shell.emp-app-shell .emp-page-hero__title { font-size: 44px !important; }
 }
-.emp-app-shell.emp-app-shell .page-hero__sub {
+.emp-app-shell.emp-app-shell .emp-page-hero__sub {
   margin: 12px 0 0 !important; font-family: var(--emp-sans) !important; font-size: 14px !important; font-weight: 400 !important;
   line-height: 1.5 !important; color: var(--emp-muted) !important; max-width: 36rem;
 }
-.page-hero__actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+/* Hero holds text only - no reserved height, no margin of its own. The
+   gap to whatever comes next lives on that next element instead (32px
+   by default, 24px when it's the actions/filters toolbar), per spec:
+   "Bottom margin to the next block ... not padding on the hero." */
+.emp-page-hero + * { margin-top: 32px; }
+.emp-page-hero + .emp-page-toolbar { margin-top: 24px; }
+
+/* Slim toolbar row for page actions/filters that used to float beside
+   the hero title - now sits 24px below it instead (CAREERGO_UI_SPEC.md
+   Employer Heroes fix: hero never holds page actions). */
+.emp-page-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.emp-page-toolbar__group { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
+.emp-page-toolbar__group--end { margin-left: auto; }
+.emp-page-toolbar__group:empty { display: none; }
+.emp-page-toolbar .emp-subtabs { margin-bottom: 0; }
 .emp-wizard-header-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; margin-top: 8px; flex-wrap: wrap; }
 .emp-wizard-cancel-link {
   border: 0; background: none; padding: 0; cursor: pointer;
