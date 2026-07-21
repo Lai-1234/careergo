@@ -113,6 +113,7 @@ const DATA = {
       founded: 1960,
       website: "maybank2u.com.my",
       followers: 8600,
+      followersTrend: "+180",
       publicProfileStatus: "Live",
       lastUpdated: "2 days ago",
       size: "10,000+ employees",
@@ -14628,6 +14629,7 @@ let employerRouteState = { view: "", params: {} };
 let employerVeraDrawerOpen = false;
 let employerVeraPrompt = "What needs my attention today?";
 let employerCopilotOpen = false;
+let copilotBriefExpanded = false;
 
 const REMINDER_PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
 
@@ -14667,21 +14669,12 @@ function getSmartHiringReminders() {
 // Item 7: Floating Vera Hiring Copilot. Lives in the persistent app shell
 // (rendered once, not per-page), so it's genuinely omnipresent across the
 // whole Employer OS rather than a Feed-only widget. Never auto-opens -
-// "never interrupting workflows" - but the FAB carries a live reminder
-// count so its presence is proactive without forcing attention. Distinct
-// from the existing header "Ask Vera" drawer (a reactive Q&A surface,
-// left untouched): the copilot leads with what Vera already found, and
-// links out to that same drawer for open-ended questions instead of
-// duplicating its prompt-matching engine.
-function renderCopilotReminderRow(r) {
-  return `
-    <div class="emp-copilot-reminder">
-      <span class="emp-copilot-reminder-icon emp-copilot-reminder-icon--${r.priority}">${icon(r.icon)}</span>
-      <p>${r.text}</p>
-      <button type="button" class="btn btn-ghost btn-sm" data-copilot-reminder-action data-copilot-nav="${r.nav}" data-copilot-nav-id="${r.navId || ""}">${r.cta}</button>
-    </div>
-  `;
-}
+// "never interrupting workflows" - but the FAB carries a live signal count
+// so its presence is proactive without forcing attention. Distinct from the
+// existing header "Ask Vera" drawer (a reactive Q&A surface, left
+// untouched): the copilot leads with what Vera already found, and links out
+// to that same drawer for open-ended questions instead of duplicating its
+// prompt-matching engine.
 
 // Item 16's "Quick Action Floating Button" is folded into this existing
 // copilot panel rather than a second bottom-right FAB - two floating
@@ -14689,49 +14682,68 @@ function renderCopilotReminderRow(r) {
 // action surface the redesign explicitly asks to avoid. "Ask Vera" was
 // previously both a footer button here AND would have been one of these
 // six quick actions; kept as one entry in this grid instead of both.
-const COPILOT_QUICK_ACTIONS = [
-  { id: "ask-vera", label: "Ask Vera", icon: "sparkles" },
-  { id: "create-job", label: "Create Job", icon: "plus" },
-  { id: "message", label: "Message", icon: "message-circle" },
-  { id: "invite", label: "Invite Candidate", icon: "send" },
-  { id: "post", label: "Post Update", icon: "edit-3" },
-  { id: "search", label: "Search Candidate", icon: "search" },
-];
-
+// The FAB popover IS the Daily Hiring Brief (CAREERGO_UI_SPEC.md's Feed
+// redesign §Part A) - previously a large always-visible panel in the Feed's
+// middle column, now collapsed into this global, every-page FAB instead of
+// only living on one route. getDailyHiringBrief() (stats/items/quickActions)
+// is the single source for both this popover and, before this change, the
+// old inline panel - moving it here didn't require a second data model.
 function renderHiringCopilotPanelBody() {
-  const reminders = getSmartHiringReminders();
-  const top = reminders.slice(0, 5);
+  const brief = getDailyHiringBrief();
+  const actionRows = copilotBriefExpanded ? brief.items : brief.items.slice(0, 3);
   return `
     <div class="emp-copilot-head">
-      <div><span class="emp-callout-label">${icon("sparkles")} Vera Hiring Copilot</span><p>Monitoring your hiring activity in the background.</p></div>
-      <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-copilot-close aria-label="Close">${icon("x")}</button>
+      <div class="emp-copilot-head-id">
+        <img class="emp-copilot-vera-mark" src="assets/vera-ai-coach.png" alt="" width="20" height="20">
+        <div>
+          <span class="emp-copilot-eyebrow">Today's Hiring Brief <span class="emp-copilot-vera-chip">Vera</span></span>
+          <p class="emp-copilot-sub">What changed since your last visit.</p>
+        </div>
+      </div>
+      <button type="button" class="btn-icon-sm" data-copilot-close aria-label="Close">${icon("x")}</button>
     </div>
     <div class="emp-copilot-body">
-      ${top.length ? `
-        <span class="emp-tags-label">Needs your attention (${reminders.length})</span>
-        <div class="emp-copilot-reminder-list">${top.map(renderCopilotReminderRow).join("")}</div>
-      ` : `<p class="emp-empty-hint">Nothing urgent right now - Vera will surface reminders here as your pipeline changes.</p>`}
+      <div class="emp-copilot-stat-grid">
+        ${brief.stats.map(s => `
+          <button type="button" class="emp-copilot-stat-tile" data-copilot-nav="${s.nav}">
+            <span class="emp-copilot-stat-icon">${icon(s.icon)}</span>
+            <strong>${s.value}</strong>
+            <span>${s.label}</span>
+          </button>
+        `).join("")}
+      </div>
+      ${actionRows.length ? `
+        <div class="emp-copilot-reminder-list">
+          ${actionRows.map(item => `
+            <div class="emp-copilot-reminder">
+              <span class="emp-copilot-reminder-icon">${icon(item.icon)}</span>
+              <p>${item.text}</p>
+              ${item.cta ? `<button type="button" class="btn btn-ghost btn-sm" data-copilot-nav="${item.nav}">${item.cta}</button>` : ""}
+            </div>
+          `).join("")}
+        </div>
+      ` : `<p class="emp-empty-hint">Nothing urgent right now - Vera will surface changes here as your pipeline updates.</p>`}
     </div>
     <div class="emp-copilot-quick-actions">
       <span class="emp-tags-label">Quick actions</span>
       <div class="emp-copilot-quick-grid">
-        ${COPILOT_QUICK_ACTIONS.map(a => `<button type="button" class="emp-copilot-quick-btn" data-copilot-quick="${a.id}">${icon(a.icon)}<span>${a.label}</span></button>`).join("")}
+        ${brief.quickActions.map(a => `<button type="button" class="emp-copilot-quick-btn" data-copilot-nav="${a.nav}">${icon(a.icon)}<span>${a.label}</span></button>`).join("")}
       </div>
     </div>
+    ${brief.items.length > 3 ? `<button type="button" class="emp-attention-role-link emp-copilot-see-full" data-copilot-toggle-brief>${copilotBriefExpanded ? "Show less" : `See full brief (${brief.items.length})`} ${icon(copilotBriefExpanded ? "chevron-up" : "chevron-down")}</button>` : ""}
   `;
 }
 
 function renderHiringCopilot() {
-  const reminders = getSmartHiringReminders();
-  const highCount = reminders.filter(r => r.priority === "high").length;
+  const brief = getDailyHiringBrief();
   return `
     <div class="emp-hiring-copilot" data-hiring-copilot>
-      <div class="emp-copilot-panel" data-copilot-panel ${employerCopilotOpen ? "" : "hidden"} role="dialog" aria-label="Vera Hiring Copilot">
+      <div class="emp-copilot-panel" data-copilot-panel ${employerCopilotOpen ? "" : "hidden"} role="dialog" aria-modal="true" aria-label="Today's Hiring Brief">
         ${renderHiringCopilotPanelBody()}
       </div>
-      <button type="button" class="emp-copilot-fab" data-copilot-toggle aria-haspopup="dialog" aria-expanded="${employerCopilotOpen}" aria-label="Vera Hiring Copilot${reminders.length ? `, ${reminders.length} items need attention` : ""}">
-        ${icon("sparkles")}
-        ${reminders.length ? `<span class="emp-copilot-badge ${highCount ? "emp-copilot-badge--urgent" : ""}">${reminders.length}</span>` : ""}
+      <button type="button" class="emp-copilot-fab" data-copilot-toggle aria-haspopup="dialog" aria-expanded="${employerCopilotOpen}" aria-label="Today's Hiring Brief${brief.totalSignals ? `, ${brief.totalSignals} new items` : ""}">
+        <img class="emp-copilot-vera-mark" src="assets/vera-ai-coach.png" alt="" width="20" height="20">
+        ${brief.totalSignals ? `<span class="emp-copilot-badge">${brief.totalSignals}</span>` : ""}
       </button>
     </div>
   `;
@@ -14742,16 +14754,14 @@ function refreshHiringCopilot(root) {
   if (panel) { panel.innerHTML = renderHiringCopilotPanelBody(); createIcons(); bindHiringCopilotPanel(root); }
   const fabWrap = qs("[data-hiring-copilot]", root);
   if (fabWrap) {
-    const reminders = getSmartHiringReminders();
-    const highCount = reminders.filter(r => r.priority === "high").length;
+    const brief = getDailyHiringBrief();
     const fab = qs("[data-copilot-toggle]", fabWrap);
     let badge = qs(".emp-copilot-badge", fab);
-    if (reminders.length) {
+    if (brief.totalSignals) {
       if (!badge) { badge = document.createElement("span"); badge.className = "emp-copilot-badge"; fab.appendChild(badge); }
-      badge.className = `emp-copilot-badge ${highCount ? "emp-copilot-badge--urgent" : ""}`;
-      badge.textContent = String(reminders.length);
+      badge.textContent = String(brief.totalSignals);
     } else if (badge) badge.remove();
-    fab.setAttribute("aria-label", `Vera Hiring Copilot${reminders.length ? `, ${reminders.length} items need attention` : ""}`);
+    fab.setAttribute("aria-label", `Today's Hiring Brief${brief.totalSignals ? `, ${brief.totalSignals} new items` : ""}`);
   }
 }
 
@@ -14759,36 +14769,37 @@ function closeCopilotPanel(root) {
   employerCopilotOpen = false;
   const panel = qs("[data-copilot-panel]", root);
   if (panel) panel.hidden = true;
-  qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", "false");
+  const toggle = qs("[data-copilot-toggle]", root);
+  toggle?.setAttribute("aria-expanded", "false");
+  toggle?.focus();
+}
+
+// Standard focusable-elements trap: while the popover is open, Tab/Shift+Tab
+// cycle only among its own focusable children instead of escaping into the
+// page behind it (CAREERGO_UI_SPEC.md §13 - focus trapped while open).
+function trapCopilotFocus(event, panel) {
+  if (event.key !== "Tab") return;
+  const focusable = qsa('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])', panel)
+    .filter(el => el.offsetParent !== null);
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
 }
 
 function bindHiringCopilotPanel(root) {
   qs("[data-copilot-close]", root)?.addEventListener("click", () => closeCopilotPanel(root));
-  qsa("[data-copilot-reminder-action]", root).forEach(btn => btn.addEventListener("click", () => {
+  qs("[data-copilot-toggle-brief]", root)?.addEventListener("click", () => { copilotBriefExpanded = !copilotBriefExpanded; refreshHiringCopilot(root); });
+  qsa("[data-copilot-nav]", root).forEach(btn => btn.addEventListener("click", () => {
     const nav = btn.dataset.copilotNav;
-    const navId = btn.dataset.copilotNavId;
     closeCopilotPanel(root);
-    employerNavigateTo(nav, navId ? { id: navId } : {});
-  }));
-  qsa("[data-copilot-quick]", root).forEach(btn => btn.addEventListener("click", () => {
-    const action = btn.dataset.copilotQuick;
-    closeCopilotPanel(root);
-    if (action === "ask-vera") { openEmployerVera("What needs my attention today?"); return; }
-    if (action === "create-job") { employerNavigateTo("role-builder"); return; }
-    if (action === "message") { employerNavigateTo("messages"); return; }
-    if (action === "invite") { employerNavigateTo("pipeline"); showToast("Pick a candidate in Talent Pipeline to invite.", "info"); return; }
-    if (action === "search") {
-      qs("[data-emp-search-input]")?.focus();
-      return;
-    }
-    if (action === "post") {
-      // The copilot is global, so "Post Update" may be clicked from any
-      // page - navigate to Feed first, then focus the composer once its
-      // draw() has actually run (a fixed short delay, since there's no
-      // render-complete event to await across a full page navigation).
+    if (nav === "feed") {
       employerNavigateTo("feed");
       setTimeout(() => qs("[data-feed-composer-text]")?.focus(), 150);
+      return;
     }
+    employerNavigateTo(nav);
   }));
 }
 
@@ -14798,11 +14809,19 @@ function bindHiringCopilot(root) {
     event.stopPropagation();
     employerCopilotOpen = !employerCopilotOpen;
     const panel = qs("[data-copilot-panel]", root);
-    if (employerCopilotOpen) { refreshHiringCopilot(root); panel.hidden = false; }
-    else panel.hidden = true;
+    if (employerCopilotOpen) {
+      refreshHiringCopilot(root);
+      panel.hidden = false;
+      // Move focus into the popover on open (§13) - the close button is
+      // always present and always the most sensible first stop.
+      qs("[data-copilot-close]", panel)?.focus();
+    } else {
+      panel.hidden = true;
+    }
     qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", String(employerCopilotOpen));
   });
   qs("[data-copilot-panel]", root)?.addEventListener("click", event => event.stopPropagation());
+  qs("[data-copilot-panel]", root)?.addEventListener("keydown", event => trapCopilotFocus(event, qs("[data-copilot-panel]", root)));
   document.addEventListener("click", () => {
     const panel = qs("[data-copilot-panel]", root);
     if (panel && !panel.hidden && employerCopilotOpen) closeCopilotPanel(root);
@@ -20465,8 +20484,6 @@ function renderEmployerFeed(root) {
   let openCommentsPostId = null;
   let replyingCommentId = null;
   let recRotateIndex = 0;
-  let briefExpanded = false;
-  let hiringOppsExpanded = false;
   let contentFilter = "all";
   let brandDashboardOpen = false;
   let composerAiOpen = false;
@@ -21007,94 +21024,37 @@ function renderEmployerFeed(root) {
     `;
   }
 
-  // Item 2: "Today's Hiring Brief" - everything that changed since last
-  // visit, in one scannable card. Collapsed to a headline + top 3 items by
-  // default (keeps the top of the feed from being dominated by the brief);
-  // "See full brief" expands the rest plus suggested next actions.
-  function renderDailyBriefCard() {
-    const brief = getDailyHiringBrief();
-    const shown = briefExpanded ? brief.items : brief.items.slice(0, 3);
+  // "Hiring Opportunities" (passive-talent recommendations) was a duplicate
+  // of the left rail's "Vera Hiring Recommendations" - both were candidate
+  // recs. Replaced with the employer's own reach/activity numbers instead,
+  // which nothing else on this page surfaces. Every value is read from data
+  // that already exists elsewhere in the app (Company Profile's hero KPIs
+  // and hiring funnel), not invented for this card.
+  function renderYourReachCard(company) {
+    const profileViews = company.hiringFunnel.ranges["30d"].stages.find(s => s.stage === "Profile Views")?.value ?? 0;
+    const brandMentions = DATA.communityPosts.filter(p => p.authorType === "employer" || p.body.includes(company.name)).length;
+    const metrics = [
+      { label: "Followers", value: company.followers.toLocaleString(), trend: company.followersTrend },
+      { label: "Profile Views", value: profileViews.toLocaleString(), trend: null },
+      { label: "Brand Mentions", value: brandMentions, trend: "today" },
+      { label: "Application Conversion", value: `${company.applicationConversionRate}%`, trend: null },
+    ];
     return `
-      <div class="card emp-daily-brief" data-daily-brief>
-        <div class="emp-daily-brief-head">
-          <span class="emp-callout-label">${icon("sparkles")} Today's Hiring Brief</span>
-          <span class="emp-source-tag">Vera</span>
+      <div class="card emp-feed-rail-card emp-your-reach">
+        <div class="emp-your-reach-head">
+          <h3>${icon("radio")} Your Reach</h3>
+          <span class="emp-your-reach-period">Last 30 days</span>
         </div>
-        <p class="emp-daily-brief-sub">Here's what changed in your hiring pipeline since your last visit.</p>
-
-        <div class="emp-daily-brief-stats">
-          ${brief.stats.map(s => `
-            <button type="button" class="emp-daily-brief-stat" data-brief-nav="${s.nav}">
-              <span class="emp-daily-brief-stat-icon">${icon(s.icon)}</span>
-              <strong>${s.value}</strong>
-              <span>${s.label}</span>
-            </button>
+        <div class="emp-your-reach-grid">
+          ${metrics.map(m => `
+            <div class="emp-your-reach-tile">
+              <span>${m.label}</span>
+              <strong>${m.value}</strong>
+              ${m.trend ? `<small>${m.trend}</small>` : ""}
+            </div>
           `).join("")}
         </div>
-
-        <ul class="emp-daily-brief-list">
-          ${shown.map(item => `
-            <li>
-              <span class="emp-daily-brief-icon">${icon(item.icon)}</span>
-              <span class="emp-daily-brief-text">${item.text}</span>
-              ${item.cta ? `<button type="button" class="emp-daily-brief-cta" data-brief-nav="${item.nav}">${item.cta}</button>` : ""}
-            </li>
-          `).join("")}
-        </ul>
-        ${brief.items.length > 3 ? `
-          <button type="button" class="emp-daily-brief-toggle" data-brief-toggle>${briefExpanded ? "Show less" : `See full brief (${brief.items.length})`} ${icon(briefExpanded ? "chevron-up" : "chevron-down")}</button>
-        ` : ""}
-        ${briefExpanded && brief.suggestedActions.length ? `
-          <div class="emp-daily-brief-suggested">
-            <span class="emp-tags-label">Suggested next actions</span>
-            <ul>${brief.suggestedActions.map(a => `<li>${icon("arrow-right")} ${a}</li>`).join("")}</ul>
-          </div>
-        ` : ""}
-
-        <div class="emp-daily-brief-quick-actions">
-          ${brief.quickActions.map(a => `<button type="button" class="btn btn-ghost btn-sm" data-brief-nav="${a.nav}">${icon(a.icon)} ${a.label}</button>`).join("")}
-        </div>
-      </div>
-    `;
-  }
-
-  // Item 5: replaces "Suggested to follow" with hiring-focused talent
-  // discovery - people outside the applicant pool Vera has proactively
-  // surfaced, not generic profile-follow suggestions.
-  function renderHiringOpportunitiesCard() {
-    const state = readState();
-    const visible = hiringOppsExpanded ? HIRING_PASSIVE_TALENT : HIRING_PASSIVE_TALENT.slice(0, 4);
-    return `
-      <div class="card emp-feed-rail-card emp-hiring-opportunities">
-        <h3>${icon("radar")} Hiring Opportunities</h3>
-        <div class="emp-hiring-opp-list">
-          ${visible.map(p => {
-            const typeMeta = HIRING_PASSIVE_TYPE_META[p.type];
-            const role = DATA.employerRoles.find(r => r.id === p.relevantRoleId);
-            const saved = isSavedTalent(state, p.id, "passive");
-            return `
-              <div class="emp-hiring-opp-row">
-                <span class="emp-feed-avatar">${initialsOf(p.name)}</span>
-                <div class="emp-hiring-opp-info">
-                  <strong>${p.name}</strong>
-                  <p class="emp-cand-meta">${p.headline}</p>
-                  <span class="emp-hiring-opp-type">${icon(typeMeta.icon)} ${typeMeta.label}${role ? ` · fits ${role.title}` : ""}</span>
-                  <p class="emp-feed-suggest-reason">${p.note}</p>
-                </div>
-                <span class="emp-vera-rec-match sm">${p.matchScore}%</span>
-              </div>
-              <div class="emp-hiring-opp-actions">
-                <button type="button" class="btn btn-ghost btn-sm" data-passive-action="preview" data-passive-id="${p.id}">${icon("eye")} Preview</button>
-                <button type="button" class="btn btn-ghost btn-sm" data-passive-action="compare" data-passive-id="${p.id}">${icon("scale")} Compare</button>
-                ${renderSaveButton(p.id, "passive", p.name, saved)}
-                <button type="button" class="btn btn-primary btn-sm" data-passive-action="invite" data-passive-id="${p.id}">${icon("send")} Invite</button>
-              </div>
-            `;
-          }).join("")}
-        </div>
-        ${HIRING_PASSIVE_TALENT.length > 4 ? `
-          <button type="button" class="emp-daily-brief-toggle" data-hiring-opps-toggle>${hiringOppsExpanded ? "Show less" : `Show more (${HIRING_PASSIVE_TALENT.length - 4})`} ${icon(hiringOppsExpanded ? "chevron-up" : "chevron-down")}</button>
-        ` : ""}
+        <button type="button" class="emp-attention-role-link" data-your-reach-insights>View brand insights →</button>
       </div>
     `;
   }
@@ -21234,7 +21194,6 @@ function renderEmployerFeed(root) {
         </div>
 
         <div class="emp-feed-main">
-          ${renderDailyBriefCard()}
           <div class="emp-feed-headline">
             <h2>Your AI-powered hiring intelligence feed.</h2>
             <p>Vera surfaces candidates, market signal and hiring conversations relevant to your open roles — ranked by hiring relevance, not popularity.</p>
@@ -21253,10 +21212,10 @@ function renderEmployerFeed(root) {
           <div class="card emp-feed-rail-card">
             <h3>Trending</h3>
             <div class="emp-feed-trending-list">
-              ${DATA.trendingTopics.map(t => `<button type="button" class="emp-feed-trending-item" data-feed-trending="${t.id}"><span>${t.label}</span><span class="emp-feed-trending-count">${t.count}</span></button>`).join("")}
+              ${DATA.trendingTopics.map(t => `<button type="button" class="emp-feed-trending-item" data-feed-trending="${t.id}">${icon("trending-up")}<span><strong>${t.label}</strong><small>${t.count}</small></span></button>`).join("")}
             </div>
           </div>
-          ${renderHiringOpportunitiesCard()}
+          ${renderYourReachCard(company)}
           ${renderBrandHealthCard(company)}
         </div>
       </div>
@@ -21632,26 +21591,11 @@ function renderEmployerFeed(root) {
       draw();
     }));
 
-    // Item 2: Daily Brief expand/collapse + per-item quick navigation.
-    qs("[data-brief-toggle]", root)?.addEventListener("click", () => { briefExpanded = !briefExpanded; draw(); });
-    qsa("[data-brief-nav]", root).forEach(btn => btn.addEventListener("click", () => {
-      const target = btn.dataset.briefNav;
-      // "feed" targets (New Matches, Brand Mentions) mean "look further
-      // down this same page" - employerNavigateTo no-ops on the current
-      // route, so scroll to the relevant widget instead of doing nothing.
-      if (target === "feed") { qs("[data-vera-rec-widget]", root)?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
-      employerNavigateTo(target);
-    }));
-
-    // Item 5: Hiring Opportunities (passive talent) actions.
-    qsa("[data-passive-action]", root).forEach(btn => btn.addEventListener("click", () => {
-      const person = HIRING_PASSIVE_TALENT.find(p => p.id === btn.dataset.passiveId);
-      const action = btn.dataset.passiveAction;
-      if (action === "preview") showToast(`${person.name} hasn't applied yet, so there's no full profile - here's what Vera found: ${person.note}`, "info");
-      if (action === "compare") showToast("Side-by-side talent comparison is coming in a future update.", "info");
-      if (action === "invite") showToast(`Invitation sent to ${person.name} to apply for ${DATA.employerRoles.find(r => r.id === person.relevantRoleId)?.title || "an open role"}.`);
-    }));
-    qs("[data-hiring-opps-toggle]", root)?.addEventListener("click", () => { hiringOppsExpanded = !hiringOppsExpanded; draw(); });
+    // "Your Reach" -> Company Profile's Insights section.
+    qs("[data-your-reach-insights]", root)?.addEventListener("click", () => {
+      employerNavigateTo("company");
+      setTimeout(() => qs("#comp-insights")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }), 150);
+    });
 
     // Item 6: Brand Health Dashboard modal open/close + jump to profile.
     qs("[data-brand-dashboard-open]", root)?.addEventListener("click", () => { brandDashboardOpen = true; draw(); });

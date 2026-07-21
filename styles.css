@@ -15522,7 +15522,10 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-edit-side { position: sticky; top: 70px; }
 .emp-edit-support { padding: 18px 20px; }
 .emp-metric-lg-value { margin: 8px 0 16px; font-size: var(--emp-metric-lg); font-weight: 700; }
-.emp-feed-layout { display: grid; grid-template-columns: 320px 1fr 340px; gap: 24px; align-items: start; }
+/* 220 / fluid / 260 (CAREERGO_UI_SPEC.md Feed redesign Part B) - narrower
+   than the previous 320/340 rails so posts (the actual point of a feed)
+   get the visual priority instead of Vera/rail chrome. */
+.emp-feed-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 260px; gap: 24px; align-items: start; }
 .emp-feed-layout > * { min-width: 0; }
 .emp-feed-nav { position: sticky; top: 0; display: grid; gap: 16px; min-width: 0; }
 .emp-feed-nav-list { display: grid; gap: 2px; }
@@ -15715,11 +15718,13 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-feed-rail { position: sticky; top: 0; display: grid; gap: 16px; }
 .emp-feed-rail-card { padding: 16px 18px; }
 .emp-feed-rail-card h3 { margin: 0 0 10px; font-size: 13px; font-weight: 700; }
-.emp-feed-trending-list { display: grid; gap: 4px; }
-.emp-feed-trending-item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; border: none; background: none; border-radius: 8px; text-align: left; cursor: pointer; }
-.emp-feed-trending-item:hover { background: rgba(37, 99, 235, 0.05); }
-.emp-feed-trending-item span:first-child { font-size: 13px; font-weight: 600; color: var(--text); }
-.emp-feed-trending-count { font-size: 11px; color: var(--soft); }
+.emp-feed-trending-list { display: grid; gap: 2px; }
+.emp-feed-trending-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: none; background: none; border-radius: 8px; text-align: left; cursor: pointer; }
+.emp-feed-trending-item:hover { background: rgba(31, 85, 96, 0.06); }
+.emp-feed-trending-item svg { flex-shrink: 0; width: 14px; height: 14px; color: var(--emp-green, #1F5560); }
+.emp-feed-trending-item > span { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.emp-feed-trending-item strong { font-size: 12px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.emp-feed-trending-item small { font-size: 11px; color: var(--soft); }
 .emp-feed-suggest-list { display: grid; gap: 12px; }
 .emp-feed-suggest-row { display: flex; align-items: flex-start; gap: 10px; }
 .emp-feed-suggest-info { flex: 1; min-width: 0; }
@@ -15808,61 +15813,20 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-feed-opportunity-card { padding: 20px; border: 1px solid rgba(111, 95, 196, 0.18); background: linear-gradient(160deg, rgba(111, 95, 196, 0.05) 0%, rgba(111, 95, 196, 0.01) 45%, #fff 100%); display: flex; flex-direction: column; gap: 14px; }
 .emp-feed-opportunity-card .emp-vera-rec-widget-head { margin: 0; }
 
-.emp-daily-brief { padding: 24px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 4px; }
-.emp-daily-brief-head { display: flex; align-items: center; gap: 8px; }
-.emp-daily-brief-sub { margin: 4px 0 16px; font-size: 12px; color: var(--muted); }
-
-/* Today's Summary stat tiles (section 11). A 7-up grid that wraps
-   naturally at narrower widths rather than a fixed column count, since
-   7 doesn't divide evenly - auto-fit keeps every tile the same minimum
-   width instead of forcing an awkward last-row remainder. */
-.emp-daily-brief-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 10px; margin-bottom: 18px; }
-.emp-daily-brief-stat {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px; border: 1px solid var(--emp-line, var(--line));
-  border-radius: 14px; background: #fff; cursor: pointer; text-align: left; transition: box-shadow 200ms ease, border-color 200ms ease;
+/* "Your Reach" employer-brand-activity card (Feed redesign Part C) -
+   replaces the old duplicate-of-left-rail "Hiring Opportunities" card. */
+.emp-your-reach { display: flex; flex-direction: column; gap: 12px; }
+.emp-your-reach-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.emp-your-reach-head h3 { margin: 0; display: flex; align-items: center; gap: 6px; }
+.emp-your-reach-period { font-size: 11px; color: var(--emp-muted, var(--soft)); }
+.emp-your-reach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.emp-your-reach-tile {
+  display: flex; flex-direction: column; gap: 4px; padding: 10px; border: 1px solid var(--emp-line, var(--line));
+  border-radius: var(--emp-radius-md, 8px); background: var(--emp-bg, #F7F3EA);
 }
-.emp-daily-brief-stat:hover { box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
-.emp-daily-brief-stat-icon { color: var(--emp-green, #07382f); }
-.emp-daily-brief-stat-icon svg { width: 15px; height: 15px; }
-.emp-daily-brief-stat strong { font-size: 22px; font-weight: 800; line-height: 1; }
-.emp-daily-brief-stat span:last-child { font-size: 11px; font-weight: 600; color: var(--emp-muted, var(--soft)); }
-
-.emp-daily-brief-quick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--emp-line, var(--line)); }
-
-.emp-daily-brief-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
-.emp-daily-brief-list li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--emp-line, var(--line)); }
-.emp-daily-brief-list li:last-child { border-bottom: none; }
-.emp-daily-brief-icon {
-  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px;
-  border-radius: 999px; background: rgba(7, 56, 47, 0.07); color: var(--emp-green, #07382f);
-}
-.emp-daily-brief-icon svg { width: 15px; height: 15px; }
-.emp-daily-brief-text { flex: 1; min-width: 0; font-size: 13px; line-height: 1.5; color: var(--emp-ink, var(--text)); }
-.emp-daily-brief-cta {
-  flex-shrink: 0; padding: 6px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 999px; background: #fff;
-  font-size: 12px; font-weight: 700; color: var(--emp-green, #07382f); cursor: pointer; transition: background 180ms ease;
-}
-.emp-daily-brief-cta:hover { background: rgba(7, 56, 47, 0.06); }
-.emp-daily-brief-toggle {
-  align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 0;
-  border: none; background: none; font-size: 12px; font-weight: 700; color: var(--emp-ai, #6f5fc4); cursor: pointer;
-}
-.emp-daily-brief-toggle svg { width: 13px; height: 13px; }
-.emp-daily-brief-suggested { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); }
-.emp-daily-brief-suggested ul { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
-.emp-daily-brief-suggested li { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; line-height: 1.5; color: var(--muted); }
-.emp-daily-brief-suggested li svg { flex-shrink: 0; width: 13px; height: 13px; margin-top: 2px; color: var(--emp-ai, #6f5fc4); }
-
-.emp-hiring-opportunities h3 { display: flex; align-items: center; gap: 6px; }
-.emp-hiring-opp-list { display: flex; flex-direction: column; }
-.emp-hiring-opp-row { display: flex; align-items: flex-start; gap: 10px; padding-top: 14px; }
-.emp-hiring-opp-info { flex: 1; min-width: 0; }
-.emp-hiring-opp-info strong { font-size: 13px; }
-.emp-hiring-opp-type { display: inline-flex; align-items: center; gap: 5px; margin: 3px 0; font-size: 11px; font-weight: 700; color: var(--emp-ai, #6f5fc4); }
-.emp-hiring-opp-type svg { width: 12px; height: 12px; }
-.emp-hiring-opp-actions { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0 14px; margin-bottom: 4px; border-bottom: 1px solid var(--emp-line, var(--line)); }
-.emp-hiring-opp-actions:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-.emp-hiring-opp-actions .btn { padding: 6px 10px; font-size: 11px; }
+.emp-your-reach-tile span:first-child { font-size: 11px; color: var(--emp-muted, var(--soft)); }
+.emp-your-reach-tile strong { font-family: var(--emp-serif); font-size: 20px; font-weight: 600; color: var(--emp-ink, var(--text)); }
+.emp-your-reach-tile small { font-size: 11px; font-weight: 600; color: var(--emp-green, #1F5560); }
 
 .emp-brand-health-card { display: flex; flex-direction: column; gap: 10px; }
 .emp-brand-health-head { display: flex; align-items: center; justify-content: space-between; }
@@ -15923,23 +15887,22 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    keep it. Company Profile never hit this because its cards use
    .emp-company-section, not bare .card - Feed's original cards (.emp-feed-
    post etc.) already used .card and were quietly exposed to the same bug. */
-.emp-app-shell.emp-app-shell :is(.emp-tags-label, .emp-callout-label, .emp-source-tag, .emp-cand-meta, .emp-feed-suggest-reason, .emp-empty-hint, .emp-community-browse-head h3, .emp-feed-trending-count) { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-tags-label, .emp-callout-label, .emp-source-tag, .emp-cand-meta, .emp-feed-suggest-reason, .emp-empty-hint, .emp-community-browse-head h3, .emp-feed-trending-item small, .emp-your-reach-period, .emp-your-reach-tile span:first-child) { color: var(--emp-muted, var(--soft)) !important; }
 .emp-app-shell.emp-app-shell .emp-callout-label.warn { color: #b45309 !important; }
 /* Pre-existing Feed content (built before this pass) also uses bare .card
    for every post/community-row/network-row/trending-item, so it was
    already exposed to the same bug - fixed here rather than left broken
    now that it's been found, not just the newly added widgets. */
-.emp-app-shell.emp-app-shell :is(.emp-feed-post-body, .emp-feed-post h3, .emp-feed-trending-item span:first-child) { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-feed-post-body, .emp-feed-post h3, .emp-feed-trending-item strong) { color: var(--emp-ink, var(--text)) !important; }
 .emp-app-shell.emp-app-shell :is(.emp-feed-comment-body p, .emp-feed-reply p, .emp-community-row p) { color: var(--emp-ink, var(--text)) !important; }
 .emp-app-shell.emp-app-shell :is(.emp-feed-comment-body strong, .emp-feed-reply strong, .emp-community-row strong, .emp-network-row-info strong, .emp-feed-suggest-info strong, .emp-feed-attachment strong) { color: var(--emp-ink, var(--text)) !important; }
 
-.emp-app-shell.emp-app-shell :is(.emp-vera-rec-candidate-id p, .emp-daily-brief-sub, .emp-brand-health-card > p, .emp-feed-why-body li, .emp-vera-rec-count) { color: var(--emp-muted, var(--soft)) !important; }
-.emp-app-shell.emp-app-shell :is(.emp-daily-brief-text, .emp-feed-why-body p, .emp-feed-ai-insight) { color: var(--emp-ink, var(--text)) !important; }
-.emp-app-shell.emp-app-shell :is(.emp-vera-rec-type-badge, .emp-hiring-opp-type, .emp-feed-why-panel summary, .emp-feed-why-panel summary span, .emp-feed-ai-toggle, .emp-daily-brief-toggle) { color: var(--emp-ai, #6f5fc4) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-vera-rec-candidate-id p, .emp-brand-health-card > p, .emp-feed-why-body li, .emp-vera-rec-count) { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-feed-why-body p, .emp-feed-ai-insight) { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-vera-rec-type-badge, .emp-feed-why-panel summary, .emp-feed-why-panel summary span, .emp-feed-ai-toggle) { color: var(--emp-ai, #6f5fc4) !important; }
 .emp-app-shell.emp-app-shell .emp-vera-rec-match { color: var(--emp-green, #07382f) !important; }
-.emp-app-shell.emp-app-shell .emp-daily-brief-cta { color: var(--emp-green, #07382f) !important; }
-.emp-app-shell.emp-app-shell .emp-daily-brief-stat span:last-child { color: var(--emp-muted, var(--soft)) !important; }
-.emp-app-shell.emp-app-shell .emp-daily-brief-stat strong { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-your-reach-tile strong { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-your-reach-tile small { color: var(--emp-green, #1F5560) !important; }
 .emp-app-shell.emp-app-shell :is(.emp-brand-modal-overview-text > p, .emp-brand-modal-dropoff p, .emp-brand-modal-suggestion p) { color: var(--emp-ink, var(--text)) !important; }
 .emp-app-shell.emp-app-shell .emp-brand-modal-suggestion .emp-callout-label { color: var(--emp-ai, #6f5fc4) !important; }
 
@@ -16062,30 +16025,56 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    product's exact treatment. The badge is a static count, not a live-
    updating animation, so it never "flashes" - it only changes value the
    next time the shell or panel actually re-renders. */
+/* Vera FAB + "Today's Hiring Brief" popover (CAREERGO_UI_SPEC.md Feed
+   redesign Part A). Global - lives in the persistent app shell, not the
+   Feed page - so every employer route gets the same brief shortcut. */
 .emp-hiring-copilot { position: fixed; right: 24px; bottom: 24px; z-index: 90; }
 .emp-copilot-fab {
   position: relative; display: inline-flex; align-items: center; justify-content: center;
   width: 56px; height: 56px; border: none; border-radius: 999px; cursor: pointer;
-  background: linear-gradient(135deg, #1A0146 0%, #07382f 100%); color: #fff;
-  box-shadow: 0 14px 32px rgba(7, 56, 47, 0.28); transition: transform 200ms ease, box-shadow 200ms ease;
+  background: var(--emp-ink); color: #fff;
+  box-shadow: 0 14px 32px rgba(7, 56, 47, 0.28); transition: transform 200ms var(--emp-motion-ease), box-shadow 200ms var(--emp-motion-ease);
 }
 .emp-copilot-fab:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(7, 56, 47, 0.34); }
-.emp-copilot-fab svg { width: 24px; height: 24px; }
+.emp-copilot-fab:focus-visible { outline: 2px solid var(--emp-teal-soft); outline-offset: 3px; }
+/* Vera is her owl mark here, never the generic sparkles "AI insight" cue
+   used elsewhere in this file (CAREERGO_UI_SPEC.md §9). */
+.emp-copilot-vera-mark { width: 20px; height: 20px; display: block; object-fit: contain; }
 .emp-copilot-badge {
   position: absolute; top: -4px; right: -4px; display: inline-flex; align-items: center; justify-content: center;
   min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; border: 2px solid #fff;
-  background: var(--emp-green, #07382f); color: #fff; font-size: 11px; font-weight: 800;
+  background: var(--emp-destructive); color: #fff; font-size: 11px; font-weight: 800;
 }
-.emp-copilot-badge--urgent { background: #dc2626; }
 .emp-copilot-panel {
-  position: absolute; right: 0; bottom: 68px; width: min(360px, calc(100vw - 48px)); max-height: min(560px, calc(100vh - 140px));
-  overflow-y: auto; padding: 20px; border-radius: 20px; background: #fff; border: 1px solid var(--emp-line, var(--line));
-  box-shadow: 0 24px 56px rgba(15, 23, 42, 0.18); display: flex; flex-direction: column; gap: 14px;
+  position: absolute; right: 0; bottom: 68px; width: min(360px, calc(100vw - 32px)); max-height: min(70vh, calc(100vh - 140px));
+  overflow-y: auto; padding: 16px; border-radius: 18px; background: #fff; border: none;
+  box-shadow: var(--emp-shadow-vera-glow); display: flex; flex-direction: column; gap: 14px;
 }
 .emp-copilot-panel[hidden] { display: none; }
 .emp-copilot-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-.emp-copilot-head p { margin: 4px 0 0; font-size: 12px; color: var(--emp-muted, var(--soft)); }
-.emp-copilot-body { display: flex; flex-direction: column; gap: 10px; }
+.emp-copilot-head-id { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.emp-copilot-head-id .emp-copilot-vera-mark { margin-top: 2px; flex-shrink: 0; }
+.emp-copilot-eyebrow {
+  display: flex; align-items: center; gap: 8px; font-family: var(--emp-sans); font-size: 11px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--emp-ink);
+}
+.emp-copilot-vera-chip {
+  padding: 2px 8px; border-radius: 999px; background: var(--emp-teal-soft); color: var(--emp-green);
+  font-size: 10px; font-weight: 700; text-transform: none; letter-spacing: normal;
+}
+.emp-copilot-sub { margin: 4px 0 0; font-size: 13px; color: var(--emp-muted); }
+.emp-copilot-body { display: flex; flex-direction: column; gap: 12px; }
+.emp-copilot-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.emp-copilot-stat-tile {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px;
+  border: 1px solid var(--emp-line); border-radius: var(--emp-radius-md); background: #fff; cursor: pointer;
+  transition: border-color 150ms var(--emp-motion-ease);
+}
+.emp-copilot-stat-tile:hover { border-color: var(--emp-green); }
+.emp-copilot-stat-icon { color: var(--emp-green); }
+.emp-copilot-stat-icon svg { width: 16px; height: 16px; }
+.emp-copilot-stat-tile strong { font-family: var(--emp-serif); font-size: 22px; font-weight: 600; color: var(--emp-ink); }
+.emp-copilot-stat-tile span:last-child { font-size: 11px; color: var(--emp-muted); }
 .emp-copilot-reminder-list { display: flex; flex-direction: column; gap: 2px; }
 .emp-copilot-reminder { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--emp-line, var(--line)); }
 .emp-copilot-reminder:last-child { border-bottom: none; }
@@ -16095,15 +16084,14 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   border-radius: 999px; background: rgba(7, 56, 47, 0.08); color: var(--emp-green, #07382f);
 }
 .emp-copilot-reminder-icon svg { width: 14px; height: 14px; }
-.emp-copilot-reminder-icon--high { background: rgba(220, 38, 38, 0.1); color: #dc2626; }
-.emp-copilot-reminder-icon--medium { background: rgba(217, 119, 6, 0.12); color: #d97706; }
+.emp-copilot-see-full { align-self: center; }
 /* Quick Action grid (item 16, folded into the copilot panel instead of a
    second floating button). 2-column grid of icon+label buttons. */
 .emp-copilot-quick-actions { padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); }
 .emp-copilot-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 .emp-copilot-quick-btn {
   display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px; border: 1px solid var(--emp-line, var(--line));
-  border-radius: 12px; background: #fff; cursor: pointer; text-align: left; transition: background 180ms ease, border-color 180ms ease;
+  border-radius: var(--emp-radius-md); background: #fff; cursor: pointer; text-align: left; transition: background 180ms ease, border-color 180ms ease;
 }
 .emp-copilot-quick-btn:hover { background: rgba(7, 56, 47, 0.05); border-color: transparent; }
 .emp-copilot-quick-btn svg { width: 15px; height: 15px; color: var(--emp-green, #07382f); }
@@ -16112,6 +16100,9 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 @media (max-width: 480px) {
   .emp-hiring-copilot { right: 16px; bottom: 16px; }
   .emp-copilot-panel { right: -8px; width: calc(100vw - 32px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .emp-copilot-fab, .emp-copilot-fab:hover { transform: none; }
 }
 
 /* ---------- Employer Direct Messaging (items 10, 11, 12, 14) ----------
@@ -16296,7 +16287,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-compose-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
 
 @media (max-width: 1180px) {
-  .emp-feed-layout { grid-template-columns: 280px 1fr; }
+  .emp-feed-layout { grid-template-columns: 220px minmax(0, 1fr); }
   .emp-feed-rail { display: none; }
 }
 
