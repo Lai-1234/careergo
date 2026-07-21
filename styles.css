@@ -16222,16 +16222,22 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 
 /* ---------- Employer Direct Messaging (items 10, 11, 12, 14) ----------
    Fixed-height 3-column layout (300px conversations | 1fr thread | 320px
-   intelligence) so the thread scrolls internally like a real chat client
-   instead of the whole page scrolling - 230px accounts for the 64px
-   header + .emp-app-main's 40/56px top/bottom padding + the view-header
-   title block. Reuses .card's shared radius/shadow throughout via the
-   .emp-app-shell.emp-app-shell .card rule already established elsewhere
-   in this file, so no separate card treatment needed here. */
-.emp-dm-layout { display: grid; grid-template-columns: 300px 1fr 320px; gap: 20px; height: calc(100vh - 230px); min-height: 480px; align-items: stretch; }
+   intelligence, now folded into the thread instead - redesign Part 3) so
+   the thread scrolls internally like a real chat client instead of the
+   whole page scrolling. Height is measured at runtime by sizeDmRegion()
+   (no hero on this page, but the exact header height still isn't a
+   value CSS alone should hardcode - same reasoning as Feed's
+   sizeFeedRegion()). Reuses .card's shared radius/shadow throughout via
+   the .emp-app-shell.emp-app-shell .card rule already established
+   elsewhere in this file, so no separate card treatment needed here. */
+.emp-dm-layout { display: grid; grid-template-columns: 360px 1fr; gap: 20px; min-height: 480px; align-items: stretch; }
 .emp-dm-layout > * { min-width: 0; }
+@media (min-width: 1024px) {
+  .emp-dm-layout { overflow: hidden; }
+}
 
-.emp-dm-conversations { display: flex; flex-direction: column; min-height: 0; min-width: 0; padding: 20px; background: #fff; border: 1px solid var(--emp-line, var(--line)); border-radius: 20px; }
+.emp-dm-conversations { display: flex; flex-direction: column; min-height: 0; min-width: 0; padding: 20px; background: #fff; border: 1px solid var(--emp-line, var(--line)); border-radius: 20px; overflow-y: auto; }
+.emp-dm-conversations-title { margin: 0 0 16px; font-family: var(--emp-serif); font-size: 22px; font-weight: 400; }
 .emp-dm-search-field { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; margin-bottom: 12px; min-width: 0; transition: border-color 180ms ease, box-shadow 180ms ease; }
 .emp-dm-search-field:focus-within { border-color: var(--emp-green, #07382f); box-shadow: 0 0 0 3px rgba(7, 56, 47, 0.12); }
 .emp-dm-search-field svg { flex-shrink: 0; width: 15px; height: 15px; color: var(--emp-muted, var(--soft)); }
@@ -16255,20 +16261,36 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-dm-convo-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
 .emp-dm-convo-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .emp-dm-convo-top strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--emp-ink, var(--text)); }
-.emp-dm-convo-badges { flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; }
-.emp-dm-convo-time { font-size: 11px; color: var(--emp-muted, var(--soft)); }
+.emp-dm-convo-time { flex-shrink: 0; font-size: 11px; color: var(--emp-muted, var(--soft)); }
 .emp-dm-convo-role { font-size: 11px; font-weight: 600; color: var(--emp-green, #07382f); }
 .emp-dm-convo-preview { font-size: 12px; line-height: 1.4; color: var(--emp-muted, var(--soft)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .emp-dm-convo-row.unread .emp-dm-convo-preview { color: var(--emp-ink, var(--text)); font-weight: 600; }
-.emp-dm-pin-dot { display: inline-flex; color: var(--emp-muted, var(--soft)); }
+.emp-dm-pin-dot { flex-shrink: 0; display: inline-flex; align-self: flex-start; margin-top: 12px; color: var(--emp-muted, var(--soft)); }
 .emp-dm-pin-dot svg { display: block; width: 11px; height: 11px; }
-.emp-dm-unread-dot { flex-shrink: 0; width: 7px; height: 7px; border-radius: 999px; background: var(--emp-green, #07382f); }
+.emp-dm-unread-badge {
+  flex-shrink: 0; align-self: center; display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px;
+  padding: 0 5px; border-radius: 999px; background: var(--emp-green, #07382f); color: #fff; font-size: 10px; font-weight: 800;
+}
 
 .emp-dm-thread { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: #fff; border: 1px solid var(--emp-line, var(--line)); border-radius: 20px; overflow: hidden; }
 .emp-dm-thread-head { flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--emp-line, var(--line)); }
 .emp-dm-thread-head-info { flex: 1; min-width: 0; }
+.emp-dm-thread-head-name { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .emp-dm-thread-head-info strong { display: block; font-size: 15px; }
-.emp-dm-thread-head-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.emp-dm-thread-head-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.emp-dm-files-wrap { position: relative; }
+/* Folded intelligence strip (redesign Part 3): one/two compact lines
+   replacing the old separate Intelligence column entirely. */
+.emp-dm-intel-strip { flex-shrink: 0; padding: 10px 20px; background: var(--emp-bg-deep, #efe8d8); border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-dm-intel-strip p { margin: 0; font-size: 12px; line-height: 1.5; }
+.emp-dm-intel-strip p:first-child strong { color: var(--emp-green); }
+.emp-dm-intel-strip p + p { margin-top: 2px; }
+.emp-dm-status-pill {
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; background: var(--emp-teal-soft);
+  color: var(--emp-green); font-family: var(--emp-sans); font-size: 11px; font-weight: 600;
+}
+.emp-dm-status-pill:not(.warm) { background: var(--emp-line); color: var(--emp-muted); }
+.emp-dm-status-pill svg { width: 11px; height: 11px; }
 .emp-dm-thread-body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
 .emp-dm-bubble-row { display: flex; }
 .emp-dm-bubble-row.outgoing { justify-content: flex-end; }
@@ -16300,53 +16322,40 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   flex: 1; min-width: 0; max-height: 120px; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 14px;
   font: inherit; font-size: 13px; line-height: 1.5; resize: vertical; color: var(--emp-ink, var(--text));
 }
-.emp-dm-composer-quick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-.emp-dm-reply-assistant { margin-bottom: 12px; padding: 14px; border-radius: 14px; background: rgba(111, 95, 196, 0.06); border: 1px solid rgba(111, 95, 196, 0.16); }
-.emp-dm-reply-assistant-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.emp-dm-reply-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; }
-.emp-dm-reply-row select { padding: 7px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 10px; font-size: 12px; font-family: inherit; color: var(--emp-ink, var(--text)); background: #fff; }
-.emp-dm-tone-row { display: flex; gap: 6px; }
-.emp-dm-tone-chip { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line)); background: #fff; font-size: 11px; font-weight: 700; color: var(--emp-muted, var(--soft)); cursor: pointer; }
-.emp-dm-tone-chip.active { background: var(--emp-ai, #6f5fc4); border-color: var(--emp-ai, #6f5fc4); color: #fff; }
+.emp-dm-composer-quick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.btn-icon-sm.active { background: var(--emp-teal-soft); color: var(--emp-green); border-color: var(--emp-teal-soft); }
+
+/* VERA SUGGESTS (redesign Part 3): always-visible inline suggestion sat
+   between the message list and the composer, replacing the old toggled
+   type/tone picker panel. The chip row folds the former Intelligence
+   tab's separate "AI-suggested replies" list into the same component. */
+.emp-dm-vera-suggests { flex-shrink: 0; padding: 12px 20px 0; }
+.emp-dm-vera-suggests-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.emp-dm-vera-suggests-box { padding: 12px 14px; border-radius: 14px; background: rgba(111, 95, 196, 0.06); border: 1px solid rgba(111, 95, 196, 0.16); }
+.emp-dm-vera-suggests-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.emp-dm-vera-suggests-head .emp-copilot-vera-mark { width: 14px; height: 14px; }
+.emp-dm-vera-suggests-box p { margin: 0 0 10px; font-size: 12px; line-height: 1.55; color: var(--emp-ink, var(--text)); }
+.emp-dm-vera-suggests-actions { display: flex; gap: 8px; }
 
 .emp-dm-empty-thread { align-items: center; justify-content: center; }
 .emp-dm-empty-thread .emp-empty-state { border: none; box-shadow: none; padding: 0; }
 
-.emp-dm-intelligence { display: flex; flex-direction: column; min-height: 0; padding: 20px; background: #fff; border: 1px solid var(--emp-line, var(--line)); border-radius: 20px; overflow: hidden; }
-.emp-dm-subtabs { flex-shrink: 0; margin-bottom: 16px !important; }
-.emp-dm-intelligence-body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
-.emp-dm-intel-section { display: flex; flex-direction: column; gap: 6px; padding-bottom: 16px; border-bottom: 1px solid var(--emp-line, var(--line)); }
-.emp-dm-intel-section:last-child { border-bottom: none; padding-bottom: 0; }
-.emp-dm-intel-match { display: flex; align-items: baseline; gap: 8px; }
-.emp-dm-intel-match span { font-size: 32px; font-weight: 800; color: var(--emp-green, #07382f); line-height: 1; }
-.emp-dm-intel-match small { font-size: 12px; font-weight: 600; color: var(--emp-muted, var(--soft)); }
-.emp-dm-intel-summary { margin: 4px 0 0; display: flex; gap: 6px; font-size: 12px; line-height: 1.55; color: var(--emp-ink, var(--text)); }
-.emp-dm-intel-text { margin: 2px 0 0; font-size: 12px; line-height: 1.55; color: var(--emp-muted, var(--soft)); }
-.emp-dm-intel-stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--emp-line, var(--line)); }
-.emp-dm-intel-stat-row strong { display: block; margin-top: 2px; font-size: 13px; color: var(--emp-ink, var(--text)); }
-.emp-dm-intel-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+/* Suggestion-type chips (reused for the Vera Suggests chip row - redesign
+   Part 3 folds the old separate Intelligence-tab "AI-suggested replies"
+   list into this same component, now with a persistent active state
+   since picking one changes what's shown below, not a one-shot action). */
 .emp-dm-suggest-chip {
   padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(111, 95, 196, 0.22); background: rgba(111, 95, 196, 0.05);
   color: var(--emp-ai, #6f5fc4); font-size: 11px; font-weight: 600; cursor: pointer; transition: background 180ms ease;
 }
 .emp-dm-suggest-chip:hover { background: rgba(111, 95, 196, 0.12); }
-.emp-dm-intel-actions .btn { width: 100%; justify-content: center; }
+.emp-dm-suggest-chip.active { background: var(--emp-ai, #6f5fc4); border-color: var(--emp-ai, #6f5fc4); color: #fff; }
 
-.emp-dm-timeline { display: flex; flex-direction: column; }
-.emp-dm-timeline-row { position: relative; display: flex; gap: 12px; padding-bottom: 20px; }
-.emp-dm-timeline-row::before { content: ""; position: absolute; left: 11px; top: 24px; bottom: 0; width: 1px; background: var(--emp-line, var(--line)); }
-.emp-dm-timeline-row:last-child::before { display: none; }
-.emp-dm-timeline-dot {
-  flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 999px;
-  border: 2px solid var(--emp-line, var(--line)); background: #fff; color: #fff; z-index: 1;
-}
-.emp-dm-timeline-dot svg { width: 12px; height: 12px; }
-.emp-dm-timeline-row.done .emp-dm-timeline-dot { border-color: var(--emp-green, #07382f); background: var(--emp-green, #07382f); }
-.emp-dm-timeline-row.rejected .emp-dm-timeline-dot { border-color: #dc2626; background: #dc2626; }
-.emp-dm-timeline-row.accepted .emp-dm-timeline-dot { border-color: var(--emp-green, #07382f); background: var(--emp-green, #07382f); }
-.emp-dm-timeline-row.pending .emp-dm-timeline-info strong { color: var(--emp-muted, var(--soft)); }
-.emp-dm-timeline-info strong { display: block; font-size: 13px; color: var(--emp-ink, var(--text)); }
-
+/* Files popover (redesign Part 3): the old permanent "Files" tab folded
+   into a small popover off the thread-header paperclip icon instead of
+   a persistent third column - same content (renderFilesTab), different
+   presentation. */
+.emp-dm-files-popover { top: 100%; right: 0; left: auto; margin-top: 6px; width: 280px; max-height: 360px; overflow-y: auto; }
 .emp-dm-files-list { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
 .emp-dm-file-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--emp-line, var(--line)); }
 .emp-dm-file-row:last-child { border-bottom: none; }
@@ -16359,19 +16368,19 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-dm-file-info strong { display: block; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--emp-ink, var(--text)); }
 .emp-dm-upload-btn { width: 100%; justify-content: center; }
 
-.emp-app-shell.emp-app-shell :is(.emp-dm-convo-top strong, .emp-dm-convo-info strong, .emp-dm-thread-head-info strong, .emp-dm-intel-match span, .emp-dm-intel-stat-row strong, .emp-dm-timeline-info strong, .emp-dm-file-info strong) { color: var(--emp-ink, var(--text)) !important; }
-.emp-app-shell.emp-app-shell :is(.emp-dm-convo-time, .emp-dm-convo-preview, .emp-dm-intel-text, .emp-dm-file-row .emp-cand-meta) { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-dm-convo-top strong, .emp-dm-convo-info strong, .emp-dm-thread-head-info strong, .emp-dm-file-info strong) { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-dm-convo-time, .emp-dm-convo-preview, .emp-dm-file-row .emp-cand-meta, .emp-dm-intel-strip p:last-child) { color: var(--emp-muted, var(--soft)) !important; }
 .emp-app-shell.emp-app-shell .emp-dm-convo-role { color: var(--emp-green, #07382f) !important; }
 .emp-app-shell.emp-app-shell .emp-dm-bubble-row.incoming .emp-dm-bubble p { color: var(--emp-ink, var(--text)) !important; }
-.emp-app-shell.emp-app-shell .emp-dm-intel-summary { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-dm-bubble-row.outgoing .emp-dm-bubble p { color: #fff !important; }
+.emp-app-shell.emp-app-shell .emp-dm-vera-suggests-box p { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell .emp-dm-intel-strip p:first-child { color: var(--emp-ink, var(--text)) !important; }
 
-@media (max-width: 1180px) {
-  .emp-dm-layout { grid-template-columns: 260px 1fr; }
-  .emp-dm-intelligence { display: none; }
-}
-@media (max-width: 900px) {
-  .emp-dm-layout { grid-template-columns: 1fr; height: auto; }
-  .emp-dm-conversations { max-height: 320px; }
+/* Below 1024px the fixed-shell scroll model (sizeDmRegion()) is cleared
+   in JS - fall back to natural stacked scroll, same pattern as Feed. */
+@media (max-width: 1023px) {
+  .emp-dm-layout { grid-template-columns: 1fr; height: auto !important; overflow: visible; }
+  .emp-dm-conversations { max-height: 320px; overflow-y: auto; }
   .emp-dm-thread { min-height: 480px; }
   .emp-dm-thread-head { flex-wrap: wrap; }
   .emp-dm-thread-head-info { flex-basis: 100%; order: 1; }

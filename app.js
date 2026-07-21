@@ -22097,14 +22097,13 @@ function renderEmployerMessages(root, params = {}) {
   let activeConversationId = null;
   let conversationFilter = "all";
   let searchQuery = "";
-  let rightTab = "intelligence";
-  let replyAssistantOpen = false;
   let replyAssistantType = "interview";
   let replyAssistantTone = "Friendly";
+  let veraSuggestOpen = true;
   let composerDraftText = "";
   let typingIndicatorFor = null;
   let typingTimer = null;
-  let fileUploadPickerOpen = false;
+  let filesPopoverOpen = false;
 
   function getConversations() { return DATA.employerConversations; }
   function findConversation(id) { return getConversations().find(c => c.id === id); }
@@ -22128,26 +22127,25 @@ function renderEmployerMessages(root, params = {}) {
     return [...list].sort((a, b) => (b.pinned === a.pinned ? 0 : b.pinned ? 1 : -1));
   }
 
+  function unreadCount(conv) { return conv.messages.filter(m => m.sender === "candidate" && !m.read).length; }
+
   function renderConversationRow(conv) {
     const cand = candidateFor(conv);
     const last = lastMessage(conv);
-    const unread = isUnread(conv);
-    const saved = isSavedTalent(readState(), cand.id, "candidate");
+    const unread = unreadCount(conv);
     return `
       <button type="button" class="emp-dm-convo-row ${activeConversationId === conv.id ? "active" : ""} ${unread ? "unread" : ""}" data-dm-select-convo="${conv.id}">
+        ${conv.pinned ? `<span class="emp-dm-pin-dot" title="Pinned">${icon("pin")}</span>` : ""}
         <span class="emp-feed-avatar">${initialsOf(cand.name)}</span>
         <span class="emp-dm-convo-info">
           <span class="emp-dm-convo-top">
             <strong>${cand.name}</strong>
-            <span class="emp-dm-convo-badges">
-              ${conv.pinned ? `<span class="emp-dm-pin-dot" title="Pinned">${icon("pin")}</span>` : ""}
-              ${unread ? `<span class="emp-dm-unread-dot" title="Unread" aria-hidden="true"></span>` : ""}
-              <span class="emp-dm-convo-time">${last.time}</span>
-            </span>
+            <span class="emp-dm-convo-time">${last.time}</span>
           </span>
-          <span class="emp-dm-convo-role">${cand.role}${saved ? ` · <span class="emp-dm-saved-badge">${icon("heart")} Saved</span>` : ""}</span>
+          <span class="emp-dm-convo-role">${cand.role}</span>
           <span class="emp-dm-convo-preview">${last.sender === "employer" ? "You: " : ""}${last.text}</span>
         </span>
+        ${unread ? `<span class="emp-dm-unread-badge">${unread}</span>` : ""}
       </button>
     `;
   }
@@ -22157,6 +22155,7 @@ function renderEmployerMessages(root, params = {}) {
     const counts = { all: getConversations().filter(c => !c.archived).length, unread: getConversations().filter(isUnread).length, pinned: getConversations().filter(c => c.pinned).length, archived: getConversations().filter(c => c.archived).length };
     return `
       <div class="emp-dm-conversations">
+        <h1 class="emp-dm-conversations-title">Inbox</h1>
         <div class="emp-dm-search-field">
           ${icon("search")}
           <input type="text" placeholder="Search candidates or roles..." data-dm-search value="${searchQuery}">
@@ -22193,28 +22192,92 @@ function renderEmployerMessages(root, params = {}) {
     `;
   }
 
+  // Folded intelligence strip (redesign: replaces the old separate right-
+  // column "Intelligence" tab) - one line of match/skills, one line of
+  // salary/availability/location, both computed from the same real match
+  // data Feed's recommendation cards use, not a parallel copy.
+  function renderIntelStrip(cand) {
+    const role = DATA.employerRoles.find(r => r.id === cand.roleId);
+    const reasons = getMatchReasons(cand, role);
+    const skillReason = reasons.find(r => r.startsWith("Matches")) || reasons[0];
+    return `
+      <div class="emp-dm-intel-strip">
+        <p><strong>${cand.fit}% match</strong> · ${skillReason}</p>
+        <p class="emp-cand-meta">${cand.salaryExpectation} · ${cand.availability} · ${cand.location}</p>
+      </div>
+    `;
+  }
+
+  // VERA SUGGESTS box (redesign: replaces the old toggled "Reply with
+  // Vera" type/tone picker). Always visible once a conversation is open
+  // unless dismissed; the three suggestion-type chips fold in what used
+  // to be the Intelligence tab's separate "AI-suggested replies" list.
+  // Rewrite cycles the tone so a second click gives a genuinely different
+  // phrasing, not the identical text.
+  function renderVeraSuggestsBox(cand) {
+    if (!veraSuggestOpen) return "";
+    const suggestion = generateAiReply(replyAssistantType, replyAssistantTone, cand);
+    return `
+      <div class="emp-dm-vera-suggests">
+        <div class="emp-dm-vera-suggests-chips">
+          ${AI_REPLY_TYPES.slice(0, 3).map(t => `<button type="button" class="emp-dm-suggest-chip ${replyAssistantType === t.id ? "active" : ""}" data-dm-suggest-type="${t.id}">${t.label}</button>`).join("")}
+        </div>
+        <div class="emp-dm-vera-suggests-box">
+          <div class="emp-dm-vera-suggests-head">
+            <span class="emp-callout-label"><img class="emp-copilot-vera-mark" src="assets/vera-ai-coach.png" alt="" width="14" height="14"> Vera Suggests</span>
+            <button type="button" class="btn-icon-sm" data-dm-vera-suggest-dismiss aria-label="Dismiss suggestion">${icon("x")}</button>
+          </div>
+          <p>${suggestion}</p>
+          <div class="emp-dm-vera-suggests-actions">
+            <button type="button" class="btn btn-primary btn-sm" data-dm-suggest-use>${icon("check")} Use draft</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-dm-suggest-rewrite>${icon("refresh-cw")} Rewrite</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderFilesPopover(conv) {
+    if (!filesPopoverOpen) return "";
+    return `
+      <div class="emp-actions-menu emp-dm-files-popover" data-dm-files-popover role="dialog" aria-label="Shared files">
+        ${renderFilesTab(conv)}
+      </div>
+    `;
+  }
+
   function renderThread(conv) {
     const cand = candidateFor(conv);
-    const signals = getCandidateSignals(cand);
     const saved = isSavedTalent(readState(), cand.id, "candidate");
+    const candReplyCount = conv.messages.filter(m => m.sender === "candidate").length;
+    const statusPill = candReplyCount > 0
+      ? `${icon("flame")} Warm · ${candReplyCount} repl${candReplyCount === 1 ? "y" : "ies"}`
+      : saved ? `${icon("heart")} Saved` : "Not saved";
     return `
       <div class="emp-dm-thread">
         <div class="emp-dm-thread-head">
           <span class="emp-feed-avatar">${initialsOf(cand.name)}</span>
           <div class="emp-dm-thread-head-info">
-            <span class="emp-dm-thread-head-name"><strong>${cand.name}</strong>${saved ? `<span class="emp-dm-saved-badge">${icon("heart")} Saved</span>` : `<span class="emp-dm-saved-badge emp-dm-saved-badge--muted">Not saved</span>`}</span>
-            <p class="emp-cand-meta">${cand.role} · ${signals.lastActive}</p>
+            <span class="emp-dm-thread-head-name"><strong>${cand.name}</strong><span class="emp-dm-status-pill ${candReplyCount > 0 ? "warm" : ""}">${statusPill}</span></span>
+            <p class="emp-cand-meta">${cand.role} · ${lastMessage(conv).time}</p>
           </div>
           <div class="emp-dm-thread-head-actions">
             ${renderSaveButton(cand.id, "candidate", cand.name, saved, { iconOnly: true })}
-            <button type="button" class="btn btn-ghost btn-sm" data-dm-pin-toggle="${conv.id}">${icon("pin")} ${conv.pinned ? "Unpin" : "Pin"}</button>
-            <button type="button" class="btn btn-ghost btn-sm" data-dm-archive-toggle="${conv.id}">${icon("archive")} ${conv.archived ? "Unarchive" : "Archive"}</button>
+            <button type="button" class="btn-icon-sm" data-dm-pin-toggle="${conv.id}" aria-label="${conv.pinned ? "Unpin" : "Pin"}" title="${conv.pinned ? "Unpin" : "Pin"}">${icon("pin")}</button>
+            <button type="button" class="btn-icon-sm" data-dm-archive-toggle="${conv.id}" aria-label="${conv.archived ? "Unarchive" : "Archive"}" title="${conv.archived ? "Unarchive" : "Archive"}">${icon("archive")}</button>
+            <div class="emp-dm-files-wrap">
+              <button type="button" class="btn-icon-sm" data-dm-files-toggle aria-haspopup="dialog" aria-expanded="${filesPopoverOpen}" aria-label="Files (${conv.files.length})" title="Files (${conv.files.length})">${icon("paperclip")}</button>
+              ${renderFilesPopover(conv)}
+            </div>
+            <button type="button" class="btn-icon-sm" data-dm-open-pipeline="${cand.id}" aria-label="Open in Pipeline" title="Open in Pipeline">${icon("kanban")}</button>
           </div>
         </div>
+        ${renderIntelStrip(cand)}
         <div class="emp-dm-thread-body" data-dm-thread-body>
           ${conv.messages.map(renderMessageBubble).join("")}
           ${typingIndicatorFor === conv.id ? `<div class="emp-dm-typing"><span></span><span></span><span></span></div>` : ""}
         </div>
+        ${renderVeraSuggestsBox(cand)}
         ${renderComposerArea(conv, cand)}
       </div>
     `;
@@ -22223,120 +22286,22 @@ function renderEmployerMessages(root, params = {}) {
   function renderComposerArea(conv, cand) {
     return `
       <div class="emp-dm-composer">
-        ${replyAssistantOpen ? `
-          <div class="emp-dm-reply-assistant">
-            <div class="emp-dm-reply-assistant-head">
-              <span class="emp-callout-label">${icon("sparkles")} Reply with Vera</span>
-              <button type="button" class="btn-icon-sm" data-dm-reply-close aria-label="Close">${icon("x")}</button>
-            </div>
-            <div class="emp-dm-reply-row">
-              <select data-dm-reply-type>${AI_REPLY_TYPES.map(t => `<option value="${t.id}" ${replyAssistantType === t.id ? "selected" : ""}>${t.label}</option>`).join("")}</select>
-              <div class="emp-dm-tone-row">${AI_REPLY_TONES.map(t => `<button type="button" class="emp-dm-tone-chip ${replyAssistantTone === t ? "active" : ""}" data-dm-reply-tone="${t}">${t}</button>`).join("")}</div>
-            </div>
-            <button type="button" class="btn btn-primary btn-sm" data-dm-reply-generate>${icon("wand-2")} Generate reply</button>
-          </div>
-        ` : ""}
-        <div class="emp-dm-composer-input-row">
-          <button type="button" class="btn-icon-sm" data-dm-attach aria-label="Attach file">${icon("paperclip")}</button>
-          <button type="button" class="btn-icon-sm" data-dm-voice aria-label="Record voice note">${icon("mic")}</button>
-          <textarea data-dm-composer-text placeholder="Write a message to ${cand.name.split(" ")[0]}..." rows="1">${composerDraftText}</textarea>
-          <button type="button" class="btn-icon-sm" data-dm-reply-toggle aria-label="Reply with Vera" title="Reply with Vera">${icon("sparkles")}</button>
-          <button type="button" class="btn btn-primary btn-sm" data-dm-send="${conv.id}">${icon("send")} Send</button>
-        </div>
         <div class="emp-dm-composer-quick-actions">
           <button type="button" class="btn btn-ghost btn-sm" data-dm-quick="schedule" data-dm-convo="${conv.id}">${icon("calendar")} Schedule interview</button>
           <button type="button" class="btn btn-ghost btn-sm" data-dm-quick="offer" data-dm-convo="${conv.id}">${icon("award")} Generate offer</button>
         </div>
+        <div class="emp-dm-composer-input-row">
+          <button type="button" class="btn-icon-sm" data-dm-attach aria-label="Attach file">${icon("paperclip")}</button>
+          <button type="button" class="btn-icon-sm" data-dm-voice aria-label="Record voice note">${icon("mic")}</button>
+          <textarea data-dm-composer-text placeholder="Write a message to ${cand.name.split(" ")[0]}..." rows="1">${composerDraftText}</textarea>
+          <button type="button" class="btn-icon-sm ${veraSuggestOpen ? "active" : ""}" data-dm-vera-suggest-toggle aria-label="Vera suggestions" title="Vera suggestions" aria-pressed="${veraSuggestOpen}">${icon("sparkles")}</button>
+          <button type="button" class="btn btn-primary btn-sm" data-dm-send="${conv.id}">${icon("send")} Send</button>
+        </div>
       </div>
     `;
   }
 
-  // Right column tab 1: AI Candidate Intelligence (item 10's right pane).
-  // Every field reads off the real candidate record + the same signals
-  // layer the Feed's recommendation widgets use, so a candidate's match
-  // score/salary/availability never disagrees between Feed, Pipeline and
-  // this panel.
-  function renderIntelligenceTab(conv, cand) {
-    const role = DATA.employerRoles.find(r => r.id === cand.roleId);
-    const signals = getCandidateSignals(cand);
-    const reasons = getMatchReasons(cand, role);
-    const reminders = getSmartHiringReminders().filter(r => r.text.includes(cand.name));
-    return `
-      <div class="emp-dm-intel-section">
-        <div class="emp-dm-intel-match"><span>${cand.fit}%</span><small>Match score</small></div>
-        <p class="emp-dm-intel-summary">${icon("sparkles")} ${reasons[0]}</p>
-      </div>
-      <div class="emp-dm-intel-section">
-        <span class="emp-tags-label">Strengths</span>
-        <p class="emp-dm-intel-text">${cand.strength}</p>
-        ${cand.concern ? `<span class="emp-tags-label">Watch-out</span><p class="emp-dm-intel-text">${cand.concern}</p>` : ""}
-      </div>
-      <div class="emp-dm-intel-stat-row">
-        <div><span class="emp-tags-label">Salary expectation</span><strong>${cand.salaryExpectation}</strong></div>
-        <div><span class="emp-tags-label">Availability</span><strong>${cand.availability}</strong></div>
-        <div><span class="emp-tags-label">Location</span><strong>${cand.location}</strong></div>
-        <div><span class="emp-tags-label">Interview success</span><strong>${signals.interviewSuccessProbability}%</strong></div>
-      </div>
-      ${cand.interview ? `
-        <div class="emp-dm-intel-section">
-          <span class="emp-tags-label">Interview notes</span>
-          ${cand.interview.scorecards.length ? cand.interview.scorecards.map(s => `<p class="emp-dm-intel-text"><strong>${s.interviewer}:</strong> ${s.notes}</p>`).join("") : `<p class="emp-dm-intel-text">No scorecards submitted yet.</p>`}
-        </div>
-      ` : ""}
-      <div class="emp-dm-intel-section">
-        <span class="emp-tags-label">AI-suggested replies</span>
-        <div class="emp-dm-intel-suggestions">
-          ${AI_REPLY_TYPES.slice(0, 3).map(t => `<button type="button" class="emp-dm-suggest-chip" data-dm-suggest-reply="${t.id}">${t.label}</button>`).join("")}
-        </div>
-      </div>
-      ${reminders.length ? `
-        <div class="emp-dm-intel-section">
-          <span class="emp-tags-label">Reminders</span>
-          ${reminders.map(r => `<p class="emp-dm-intel-text">${icon(r.icon)} ${r.text}</p>`).join("")}
-        </div>
-      ` : ""}
-      <div class="emp-dm-intel-actions">
-        <button type="button" class="btn btn-ghost btn-sm" data-dm-open-pipeline="${cand.id}">${icon("kanban")} Open in Pipeline</button>
-      </div>
-    `;
-  }
-
-  // Right column tab 2: Candidate Hiring Timeline (item 12). Reuses
-  // candidate.timeline verbatim (already the source of truth for Talent
-  // Pipeline's own timeline view) instead of a parallel messaging-specific
-  // copy, plus a synthesized "pending" tail for stages not yet reached so
-  // the full Application -> ... -> Accepted/Rejected arc is always shown.
-  function renderTimelineTab(conv, cand) {
-    const fullStages = ["Applied", "Reviewed", "Shortlisted", "Interview scheduled", "Feedback submitted", "Decision"];
-    const doneLabels = cand.timeline.map(t => t.label);
-    const rows = fullStages.map(label => {
-      const entry = cand.timeline.find(t => t.label === label);
-      return entry || { label, date: "", done: false };
-    });
-    return `
-      <div class="emp-dm-timeline">
-        ${rows.map((t, i) => `
-          <div class="emp-dm-timeline-row ${t.done ? "done" : "pending"}">
-            <span class="emp-dm-timeline-dot">${t.done ? icon("check") : ""}</span>
-            <div class="emp-dm-timeline-info">
-              <strong>${t.label}</strong>
-              <p class="emp-cand-meta">${t.done ? t.date : "Pending"}</p>
-            </div>
-          </div>
-        `).join("")}
-        ${cand.rejection ? `<div class="emp-dm-timeline-row done rejected"><span class="emp-dm-timeline-dot">${icon("x")}</span><div class="emp-dm-timeline-info"><strong>Rejected</strong><p class="emp-cand-meta">${cand.rejection.date} · ${cand.rejection.reason}</p></div></div>` : ""}
-        ${cand.hired ? `<div class="emp-dm-timeline-row done accepted"><span class="emp-dm-timeline-dot">${icon("check")}</span><div class="emp-dm-timeline-info"><strong>Accepted</strong><p class="emp-cand-meta">Starts ${cand.hired.startDate}</p></div></div>` : ""}
-      </div>
-      ${cand.notes.length ? `
-        <div class="emp-dm-intel-section">
-          <span class="emp-tags-label">Recruiter notes</span>
-          ${cand.notes.map(n => `<p class="emp-dm-intel-text"><strong>${n.author}</strong> (${n.date}): ${n.text}</p>`).join("")}
-        </div>
-      ` : ""}
-    `;
-  }
-
-  // Right column tab 3: Shared Hiring Workspace (item 14). Files exchanged
+  // Files exchanged
   // in-thread with a lightweight version history; "Upload" is a mocked
   // picker (no real file I/O in this static build) that appends a new
   // version entry so the version-history behaviour is still exercised.
@@ -22361,19 +22326,6 @@ function renderEmployerMessages(root, params = {}) {
     `;
   }
 
-  function renderIntelligencePanel(conv) {
-    const cand = candidateFor(conv);
-    const tabs = [["intelligence", "Intelligence"], ["timeline", "Timeline"], ["files", "Files"]];
-    return `
-      <div class="emp-dm-intelligence">
-        <div class="emp-subtabs emp-dm-subtabs">${tabs.map(([k, l]) => `<button type="button" class="emp-subtab ${rightTab === k ? "active" : ""}" data-dm-right-tab="${k}">${l}</button>`).join("")}</div>
-        <div class="emp-dm-intelligence-body">
-          ${rightTab === "intelligence" ? renderIntelligenceTab(conv, cand) : rightTab === "timeline" ? renderTimelineTab(conv, cand) : renderFilesTab(conv)}
-        </div>
-      </div>
-    `;
-  }
-
   function scrollThreadToBottom() {
     const body = qs("[data-dm-thread-body]", root);
     if (body) body.scrollTop = body.scrollHeight;
@@ -22387,8 +22339,7 @@ function renderEmployerMessages(root, params = {}) {
     const conv = activeConversationId ? findConversation(activeConversationId) : null;
 
     root.innerHTML = `
-      <div class="emp-view-header"><span class="emp-section-label">Inbox</span><h1>Inbox</h1></div>
-      <div class="emp-dm-layout">
+      <div class="emp-dm-layout" data-dm-region>
         ${renderConversationList()}
         ${conv ? renderThread(conv) : `
           <div class="emp-dm-thread emp-dm-empty-thread">
@@ -22399,12 +22350,29 @@ function renderEmployerMessages(root, params = {}) {
             </div>
           </div>
         `}
-        ${conv ? renderIntelligencePanel(conv) : `<div class="emp-dm-intelligence"></div>`}
       </div>
     `;
     createIcons();
     scrollThreadToBottom();
     bind();
+    // sizeDmRegion() can shrink .emp-dm-thread-body's available height
+    // (the region starts unconstrained, then gets capped once measured),
+    // which invalidates a scroll position taken before that resize -
+    // re-run the scroll after sizing settles so the latest message is
+    // never left peeking out above the fold.
+    requestAnimationFrame(() => { sizeDmRegion(); scrollThreadToBottom(); });
+  }
+
+  // Full-height app-shell (redesign Part 3): the region fills the rest of
+  // the viewport below the header (no hero on this page) and doesn't
+  // itself scroll - both panes scroll independently. Same measured-not-
+  // guessed approach as Feed's sizeFeedRegion(), for the same reason.
+  function sizeDmRegion() {
+    const region = qs("[data-dm-region]", root);
+    if (!region) return;
+    if (window.innerWidth < 1024) { region.style.height = ""; return; }
+    const top = region.getBoundingClientRect().top;
+    region.style.height = `calc(100vh - ${Math.round(top)}px)`;
   }
 
   function bind() {
@@ -22434,34 +22402,40 @@ function renderEmployerMessages(root, params = {}) {
       draw();
     }));
 
-    qsa("[data-dm-right-tab]", root).forEach(btn => btn.addEventListener("click", () => { rightTab = btn.dataset.dmRightTab; draw(); }));
     bindSaveTalentButtons(root, () => draw());
 
     const composerTextarea = qs("[data-dm-composer-text]", root);
     composerTextarea?.addEventListener("input", event => { composerDraftText = event.target.value; });
-    qs("[data-dm-attach]", root)?.addEventListener("click", () => showToast("Attach a file from your device - opens the Files tab for a full upload.", "info"));
+    qs("[data-dm-attach]", root)?.addEventListener("click", () => showToast("Attach a file from your device - opens Files for a full upload.", "info"));
     qs("[data-dm-voice]", root)?.addEventListener("click", () => showToast("Voice notes are recorded and attached inline once your mic is connected.", "info"));
 
-    qs("[data-dm-reply-toggle]", root)?.addEventListener("click", () => { replyAssistantOpen = !replyAssistantOpen; draw(); });
-    qs("[data-dm-reply-close]", root)?.addEventListener("click", () => { replyAssistantOpen = false; draw(); });
-    qs("[data-dm-reply-type]", root)?.addEventListener("change", event => { replyAssistantType = event.target.value; });
-    qsa("[data-dm-reply-tone]", root).forEach(btn => btn.addEventListener("click", () => { replyAssistantTone = btn.dataset.dmReplyTone; draw(); }));
-    qs("[data-dm-reply-generate]", root)?.addEventListener("click", () => {
+    // Vera Suggests (redesign Part 3): always-visible inline suggestion
+    // instead of a toggled type/tone picker. The three chips fold what
+    // used to be the Intelligence tab's separate "AI-suggested replies".
+    qsa("[data-dm-suggest-type]", root).forEach(btn => btn.addEventListener("click", () => { replyAssistantType = btn.dataset.dmSuggestType; draw(); }));
+    qs("[data-dm-suggest-use]", root)?.addEventListener("click", () => {
       const conv = findConversation(activeConversationId);
       const cand = candidateFor(conv);
       composerDraftText = generateAiReply(replyAssistantType, replyAssistantTone, cand);
-      replyAssistantOpen = false;
       draw();
-      showToast("Draft generated. Review and edit before sending.");
+      qs("[data-dm-composer-text]", root)?.focus();
+      showToast("Draft added. Review and edit before sending.");
     });
-    qsa("[data-dm-suggest-reply]", root).forEach(btn => btn.addEventListener("click", () => {
-      const conv = findConversation(activeConversationId);
-      const cand = candidateFor(conv);
-      replyAssistantType = btn.dataset.dmSuggestReply;
-      composerDraftText = generateAiReply(replyAssistantType, replyAssistantTone, cand);
+    qs("[data-dm-suggest-rewrite]", root)?.addEventListener("click", () => {
+      const idx = AI_REPLY_TONES.indexOf(replyAssistantTone);
+      replyAssistantTone = AI_REPLY_TONES[(idx + 1) % AI_REPLY_TONES.length];
       draw();
-      showToast("Draft generated. Review and edit before sending.");
-    }));
+    });
+    qs("[data-dm-vera-suggest-dismiss]", root)?.addEventListener("click", () => { veraSuggestOpen = false; draw(); });
+    qs("[data-dm-vera-suggest-toggle]", root)?.addEventListener("click", () => { veraSuggestOpen = !veraSuggestOpen; draw(); });
+
+    qs("[data-dm-files-toggle]", root)?.addEventListener("click", event => {
+      event.stopPropagation();
+      filesPopoverOpen = !filesPopoverOpen;
+      draw();
+    });
+    qs("[data-dm-files-popover]", root)?.addEventListener("click", event => event.stopPropagation());
+    document.addEventListener("click", () => { if (filesPopoverOpen) { filesPopoverOpen = false; draw(); } });
 
     qs("[data-dm-send]", root)?.addEventListener("click", () => {
       const conv = findConversation(qs("[data-dm-send]", root).dataset.dmSend);
@@ -22510,6 +22484,12 @@ function renderEmployerMessages(root, params = {}) {
       showToast(`Previewing ${file.name} (v${file.version}). Full document preview opens in a later phase.`, "info");
     }));
   }
+
+  let dmResizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(dmResizeTimer);
+    dmResizeTimer = setTimeout(sizeDmRegion, 120);
+  });
 
   draw();
 }
