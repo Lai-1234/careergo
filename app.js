@@ -15633,11 +15633,7 @@ function renderEmployerDashboard(root) {
 
   root.innerHTML = `
     <div class="emp-page-container">
-      <div class="emp-dash-opening">
-        <span class="emp-section-label">${overline}</span>
-        <h1>Good morning, ${getFirstName(state)}.</h1>
-        <p>Here is what needs attention across your hiring today.</p>
-      </div>
+      ${renderPageHero({ eyebrow: overline, title: `Good morning, ${getFirstName(state)}.`, sub: "Here is what needs attention across your hiring today." })}
 
       <div class="emp-dash-hero-grid">
         <section class="emp-dash-hero">
@@ -16440,19 +16436,15 @@ function renderEmployerRolesList(root) {
     const roles = DATA.employerRoles.filter(r => activeFilter === "All" || r.status === activeFilter);
     const headers = [...getRoleTableHeaders(activeFilter), "", ""];
     root.innerHTML = `
-      <div class="emp-view-header">
-        <div class="emp-view-header-top">
-          <div>
-            <span class="emp-section-label">Roles</span>
-            <h1>Roles in your company</h1>
-            <p>Create, publish, monitor, pause, close, and archive every role your company manages.</p>
-          </div>
-          <div class="emp-view-header-actions">
-            <button type="button" class="btn btn-ghost" data-action="ask-vera-global">${icon("sparkles")} Ask Vera</button>
-            <button type="button" class="btn btn-primary" data-action="create-role">${icon("plus")} Create role</button>
-          </div>
-        </div>
-      </div>
+      ${renderPageHero({
+        eyebrow: "Roles",
+        title: "Roles in your company",
+        sub: "Create, publish, monitor, pause, close, and archive every role your company manages.",
+        actions: `
+          <button type="button" class="btn btn-ghost" data-action="ask-vera-global">${icon("sparkles")} Ask Vera</button>
+          <button type="button" class="btn btn-primary" data-action="create-role">${icon("plus")} Create role</button>
+        `
+      })}
       <div class="emp-subtabs" role="tablist" aria-label="Role status">
         ${ROLE_STATUS_FILTERS.map(f => `<button type="button" class="emp-subtab ${activeFilter === f ? "active" : ""}" role="tab" aria-selected="${activeFilter === f}" data-action="filter" data-filter="${f}">${f}</button>`).join("")}
       </div>
@@ -19687,20 +19679,19 @@ function renderEmployerTalentPipeline(root, params = {}) {
     });
 
     root.innerHTML = `
-      <div class="emp-pipeline-header">
-        <div>
-          <h1>Talent Pipeline</h1>
-          <p>Manage candidates through every hiring stage.</p>
-        </div>
-        <div class="emp-pipeline-header-actions">
+      ${renderPageHero({
+        eyebrow: "Talent Pipeline",
+        title: "Talent Pipeline",
+        sub: "Manage candidates through every hiring stage.",
+        actions: `
           <select data-pipeline-role>
             <option value="all" ${roleFilter === "all" ? "selected" : ""}>All open roles</option>
             ${openRoles.map(r => `<option value="${r.id}" ${roleFilter === r.id ? "selected" : ""}>${r.title}</option>`).join("")}
           </select>
           <input type="text" data-pipeline-search placeholder="Search..." value="${query}">
           <button type="button" class="btn btn-ghost btn-sm emp-vera-accent-btn" data-vera-fab-toggle aria-haspopup="dialog" aria-expanded="${veraPanelOpen}">${icon("sparkles")} Vera</button>
-        </div>
-      </div>
+        `
+      })}
 
       <div class="emp-pipeline-summary" aria-label="Pipeline summary">
         <div class="emp-pipeline-summary-item">${icon("user-plus")}<strong>${newCount}</strong><span>New Applications</span></div>
@@ -20428,6 +20419,24 @@ function renderHealthRing(score, { size = 120, strokeWidth = 10 } = {}) {
       <circle cx="50" cy="50" r="${radius}" class="emp-health-ring-fill" stroke-width="${strokeWidth}" stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}"></circle>
       <text x="50" y="50" class="emp-health-ring-text" text-anchor="middle" dominant-baseline="central">${Math.round(clamped)}</text>
     </svg>
+  `;
+}
+
+// Unified employer page hero (CAREERGO_UI_SPEC.md §2.1/§11) - every
+// employer route (Dashboard/Roles/Talent Pipeline/Company Profile/Feed)
+// renders its hero through this one function so title size/font/spacing
+// can't drift apart per page again. actions is pre-built HTML (buttons,
+// selects, inputs) rendered as-is into the right-side cluster.
+function renderPageHero({ eyebrow, title, sub = "", actions = "" }) {
+  return `
+    <header class="page-hero">
+      <div class="page-hero__lead">
+        <p class="page-hero__eyebrow">${eyebrow}</p>
+        <h1 class="page-hero__title font-display">${title}</h1>
+        ${sub ? `<p class="page-hero__sub">${sub}</p>` : ""}
+      </div>
+      ${actions ? `<div class="page-hero__actions">${actions}</div>` : ""}
+    </header>
   `;
 }
 
@@ -21217,7 +21226,7 @@ function renderEmployerFeed(root) {
     const company = DATA.companies.find(c => c.id === "maybank");
 
     root.innerHTML = `
-      <div class="emp-view-header"><span class="emp-section-label">Feed</span><h1>Feed</h1></div>
+      ${renderPageHero({ eyebrow: "Feed", title: "Feed", sub: "Your hiring signals, candidate activity and market trends in one place." })}
       <div class="emp-feed-layout">
         <div class="emp-feed-nav">
           ${renderFeedSidebarNav(state)}
@@ -22414,9 +22423,7 @@ function renderEmployerCompany(root) {
   let showAllRoles = false;
   let roleSort = "newest";
   let expandedSalaryLevels = new Set();
-  let tabsStuckObserver = null;
   let tabsSectionObserver = null;
-  let tabsResizeHandler = null;
   let timelineObserver = null;
   // Reviews: filter/sort state, infinite-scroll window (no pagination - the
   // sentinel observer below grows this by REVIEW_BATCH_SIZE as the user
@@ -22706,13 +22713,22 @@ function renderEmployerCompany(root) {
     const faqSearchSelection = faqSearchHadFocus ? [faqSearchEl.selectionStart, faqSearchEl.selectionEnd] : null;
 
     root.innerHTML = `
-      <div class="emp-view-header">
-        <div>
-          <span class="emp-section-label">Company Profile</span>
-          <h1>How candidates see your company.</h1>
-          <p>Manage the information, reputation and signals that shape candidate interest.</p>
-        </div>
-      </div>
+      ${renderPageHero({
+        eyebrow: "Company Profile",
+        title: "How candidates see your company.",
+        sub: "Manage the information, reputation and signals that shape candidate interest.",
+        actions: `
+          <button type="button" class="btn btn-primary" data-company-edit>Edit Profile</button>
+          <a class="btn btn-ghost" href="companies.html?org=${company.id}" target="_blank" rel="noopener">Preview Candidate View</a>
+          <button type="button" class="btn btn-ghost" data-company-share>Share Public Profile</button>
+          <div class="emp-company-hero-menu-wrap">
+            <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-company-menu aria-haspopup="menu" aria-expanded="false">${icon("more-horizontal")}</button>
+            <div class="emp-actions-menu" data-company-menu-panel hidden>
+              <button type="button" data-company-share>Share public profile</button>
+            </div>
+          </div>
+        `
+      })}
 
       <div class="card emp-company-hero">
         <div class="emp-company-hero-left">
@@ -22736,17 +22752,6 @@ function renderEmployerCompany(root) {
           </div>
         </div>
         <div class="emp-company-hero-right">
-          <div class="emp-company-hero-actions">
-            <button type="button" class="btn btn-primary" data-company-edit>Edit Profile</button>
-            <a class="btn btn-ghost" href="companies.html?org=${company.id}" target="_blank" rel="noopener">Preview Candidate View</a>
-            <button type="button" class="btn btn-ghost" data-company-share>Share Public Profile</button>
-            <div class="emp-company-hero-menu-wrap">
-              <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-company-menu aria-haspopup="menu" aria-expanded="false">${icon("more-horizontal")}</button>
-              <div class="emp-actions-menu" data-company-menu-panel hidden>
-                <button type="button" data-company-share>Share public profile</button>
-              </div>
-            </div>
-          </div>
           <div class="emp-company-hero-kpis">
             <div class="emp-company-hero-kpi">
               <strong>${company.healthScore}<span class="emp-company-hero-kpi-suffix">/100</span></strong>
@@ -22768,22 +22773,34 @@ function renderEmployerCompany(root) {
         </div>
       </div>
 
-      <div data-tabs-sentinel></div>
-      <div class="emp-detail-tabs" data-company-nav>
-        <span class="emp-detail-tabs-underline" data-tabs-underline></span>
-        <a href="#comp-overview" data-jump="comp-overview">Overview</a>
-        <a href="#comp-roles" data-jump="comp-roles">Roles</a>
-        <a href="#comp-requirements" data-jump="comp-requirements">Requirements</a>
-        <a href="#comp-hiring" data-jump="comp-hiring">Hiring</a>
-        <a href="#comp-salary" data-jump="comp-salary">Salary &amp; Benefits</a>
-        <a href="#comp-growth" data-jump="comp-growth">Growth &amp; Culture</a>
-        <a href="#comp-reviews" data-jump="comp-reviews">Reviews</a>
-        <a href="#comp-insights" data-jump="comp-insights">Insights</a>
-        <a href="#comp-health" data-jump="comp-health">Health Score</a>
-        <a href="#comp-compare" data-jump="comp-compare">Compare</a>
-        <a href="#comp-faq" data-jump="comp-faq">FAQ</a>
-        <a href="#comp-actions" data-jump="comp-actions">Actions</a>
-      </div>
+      <div class="emp-company-body">
+        <nav class="emp-company-sidenav" data-company-nav aria-label="Company profile sections">
+          <div class="emp-company-sidenav-group">
+            <span class="emp-company-sidenav-group-title">Profile</span>
+            <a href="#comp-overview" data-jump="comp-overview">${icon("layout-grid")} Overview</a>
+            <a href="#comp-roles" data-jump="comp-roles">${icon("briefcase")} Roles</a>
+            <a href="#comp-requirements" data-jump="comp-requirements">${icon("list-checks")} Requirements</a>
+            <a href="#comp-hiring" data-jump="comp-hiring">${icon("workflow")} Hiring</a>
+          </div>
+          <div class="emp-company-sidenav-group">
+            <span class="emp-company-sidenav-group-title">Pay &amp; Culture</span>
+            <a href="#comp-salary" data-jump="comp-salary">${icon("wallet")} Salary &amp; Benefits</a>
+            <a href="#comp-growth" data-jump="comp-growth">${icon("trending-up")} Growth &amp; Culture</a>
+          </div>
+          <div class="emp-company-sidenav-group">
+            <span class="emp-company-sidenav-group-title">Reputation</span>
+            <a href="#comp-reviews" data-jump="comp-reviews">${icon("star")} Reviews</a>
+            <a href="#comp-insights" data-jump="comp-insights">${icon("bar-chart-3")} Insights</a>
+            <a href="#comp-health" data-jump="comp-health">${icon("activity")} Health Score</a>
+          </div>
+          <div class="emp-company-sidenav-group">
+            <span class="emp-company-sidenav-group-title">Tools</span>
+            <a href="#comp-compare" data-jump="comp-compare">${icon("scale")} Compare</a>
+            <a href="#comp-faq" data-jump="comp-faq">${icon("help-circle")} FAQ</a>
+            <a href="#comp-actions" data-jump="comp-actions">${icon("zap")} Actions</a>
+          </div>
+        </nav>
+        <div class="emp-company-content">
 
       <div class="card emp-company-section" id="comp-overview">
         <div class="emp-company-section-head"><h2>Company at a Glance</h2>${sourceTag("Company provided")}</div>
@@ -23362,6 +23379,8 @@ function renderEmployerCompany(root) {
           }).join("")}
         </div>
       </div>
+        </div>
+      </div>
     `;
     createIcons();
     bind();
@@ -23387,7 +23406,8 @@ function renderEmployerCompany(root) {
       const link = event.target.closest("[data-jump]");
       if (!link) return;
       event.preventDefault();
-      qs(`#${link.dataset.jump}`, root)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      qs(`#${link.dataset.jump}`, root)?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
     });
     qs("[data-company-manage-roles]", root)?.addEventListener("click", () => employerNavigateTo("roles"));
     qsa("[data-company-view-role]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo("role-builder", { id: btn.dataset.companyViewRole })));
@@ -23541,39 +23561,20 @@ function renderEmployerCompany(root) {
   // the fresh ones, or they'd silently pile up on every showAllRoles/
   // showAllReviews toggle.
   function initCompanyTabsBehavior() {
-    if (tabsStuckObserver) tabsStuckObserver.disconnect();
     if (tabsSectionObserver) tabsSectionObserver.disconnect();
     if (!("IntersectionObserver" in window)) return;
 
     const nav = qs("[data-company-nav]", root);
-    const sentinel = qs("[data-tabs-sentinel]", root);
     if (!nav) return;
     const links = qsa("[data-jump]", nav);
     const sections = links.map(l => qs(`#${l.dataset.jump}`, root)).filter(Boolean);
 
-    function positionUnderline() {
-      const underline = qs("[data-tabs-underline]", nav);
-      const activeLink = qs("a.active", nav);
-      if (!underline || !activeLink) return;
-      underline.style.width = `${activeLink.offsetWidth}px`;
-      underline.style.transform = `translateX(${activeLink.offsetLeft}px)`;
-    }
-
+    // The active item is a filled pill (CAREERGO_UI_SPEC.md §1.3/§6.1), not
+    // an underline - a position:sticky sidebar needs no separate "has it
+    // stuck yet" detection the way the old horizontal tab bar's underline
+    // animation did, so that machinery (sentinel + resize handler) is gone.
     function setActive(id) {
       links.forEach(l => l.classList.toggle("active", l.dataset.jump === id));
-      positionUnderline();
-    }
-
-    if (sentinel) {
-      // Standard "detect when a sticky element has stuck" trick: watch a
-      // zero-height sentinel placed immediately before it. Once the
-      // sentinel scrolls above the tabs' own sticky offset (64px, the app
-      // header height), it stops intersecting - that's exactly the moment
-      // the tabs bar has reached the top and started sticking.
-      tabsStuckObserver = new IntersectionObserver(([entry]) => {
-        nav.classList.toggle("is-stuck", !entry.isIntersecting);
-      }, { rootMargin: "-65px 0px 0px 0px", threshold: [1] });
-      tabsStuckObserver.observe(sentinel);
     }
 
     if (sections.length) {
@@ -23584,9 +23585,6 @@ function renderEmployerCompany(root) {
     }
 
     setActive(links[0]?.dataset.jump);
-    if (tabsResizeHandler) window.removeEventListener("resize", tabsResizeHandler);
-    tabsResizeHandler = positionUnderline;
-    window.addEventListener("resize", tabsResizeHandler);
   }
 
   draw();
