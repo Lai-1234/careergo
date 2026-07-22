@@ -123,7 +123,18 @@ const DATA = {
       signal: "Stable graduate pathway",
       salary: "RM 4.2k - 12k / month",
       tags: ["Stable", "Graduate friendly", "Large teams"],
+      specialties: ["Retail Banking", "Digital Payments", "Risk Analytics", "Wealth Management", "Islamic Banking"],
       summary: "Malaysia's largest financial group with strong graduate programs, structured teams, and broad digital transformation work.",
+      // Fuller "About" copy for the Employer Profile page specifically - a
+      // separate field from `summary` above (which stays a one-line
+      // descriptor used across candidate-facing directory cards/search,
+      // untouched here to avoid overstuffing those surfaces). Required-
+      // checklist item: "About/overview description (2-4 short paragraphs)".
+      aboutParagraphs: [
+        "Maybank is Malaysia's largest financial services group, serving individuals, businesses and institutions across banking, insurance and asset management. With a presence built over more than six decades, the group combines the stability of a national institution with an active push into digital banking and data-driven products.",
+        "Graduates and early-career hires join structured teams with clear onboarding, mentorship and a defined promotion path - most functions run formal graduate and internship programmes rather than ad hoc hiring. Roles span retail and digital banking, risk and analytics, technology, and wealth management.",
+        "The group is mid-way through a multi-year digital transformation, which means growing demand for product, data and engineering talent alongside its traditional banking operations."
+      ],
       scores: { culture: 4.2, growth: 4.3, pay: 4.1, balance: 4.0 },
       activelyHiring: true,
       freshGraduateFriendly: true,
@@ -22553,6 +22564,49 @@ function renderEmployerCompany(root) {
   let faqSearchQuery = "";
   let expandedFaqId = null;
   let recommendationSort = "priority";
+  // Inline edit-in-place (redesign Part 3): editMode toggles .field-value/
+  // .field-input visibility via CSS, not a DOM swap, so entering/exiting
+  // edit causes no layout shift. editDraft is a full snapshot (reusing the
+  // exact makeCompanyDraft() shape the old standalone edit page already
+  // used, so field paths stay consistent across both) taken on entry and
+  // discarded on Cancel; Save copies it onto the real company object.
+  let editMode = false;
+  let editDraft = null;
+
+  // Renders both the view-mode value and the edit-mode input for one
+  // field, always both at once - CSS (not JS) decides which is visible
+  // via the [data-mode] ancestor attribute, so toggling edit mode never
+  // reflows or flashes (the boxes are already in the DOM either way).
+  function editableField(displayValue, path, opts = {}) {
+    const keys = path.split(".");
+    let draftValue = editDraft;
+    for (const k of keys) draftValue = draftValue?.[k];
+    // data-no-number-animation: the site-wide count-up animation
+    // (initGlobalNumberAnimations()) scans every <strong>/<span>/etc for
+    // plain-looking numeric text and animates it on scroll-into-view -
+    // it doesn't know these spans are live-editable values (Founded
+    // year, salary bands), so without this it would visibly hijack them
+    // mid-count on every reveal, showing a wrong in-flight number like
+    // "1,958" instead of the real "1960". Uses the escape hatch
+    // shouldSkip() already checks for, rather than a new mechanism.
+    if (opts.textarea) {
+      return `<span class="field-value" data-no-number-animation>${escapeHtml(displayValue)}</span><textarea class="field-input" data-field-path="${path}" rows="${opts.rows || 3}">${escapeHtml(draftValue ?? "")}</textarea>`;
+    }
+    return `<span class="field-value" data-no-number-animation>${escapeHtml(String(displayValue))}</span><input class="field-input" type="${opts.type || "text"}" data-field-path="${path}" value="${escapeHtml(String(draftValue ?? ""))}">`;
+  }
+
+  // Add/remove chip editor for a list field in editDraft (specialties,
+  // requirement tiers). View mode shows plain pills; edit mode shows the
+  // same pills with a remove "x" plus a type-and-Enter input to add more.
+  function editableChipList(values, path, chipClass = "pill") {
+    return `
+      <div class="field-value pill-row">${values.map(v => `<span class="${chipClass}">${escapeHtml(v)}</span>`).join("") || "—"}</div>
+      <div class="field-input emp-tag-input" data-chip-field="${path}">
+        <div class="pill-row" data-tag-list>${values.map((v, i) => `<span class="pill emp-tag-pill">${escapeHtml(v)} <button type="button" data-chip-remove="${i}" aria-label="Remove ${escapeHtml(v)}">${icon("x")}</button></span>`).join("")}</div>
+        <input type="text" data-chip-new placeholder="Type and press Enter">
+      </div>
+    `;
+  }
 
   function sortRoles(roles) {
     const sorted = roles.slice();
@@ -22717,15 +22771,15 @@ function renderEmployerCompany(root) {
     const diffIcon = cls === "positive" ? "trending-up" : cls === "negative" ? "trending-down" : "minus";
     return `
       <div class="emp-salary-level ${expanded ? "is-expanded" : ""}">
-        <button type="button" class="emp-salary-level-head" data-salary-toggle="${i}" aria-expanded="${expanded}">
+        <div class="emp-salary-level-head">
           <span class="emp-salary-level-name">${escapeHtml(lvl.level)}</span>
           <div class="emp-salary-level-figures">
-            <span class="emp-salary-figure"><small>Company</small><strong>${money(lvl.company)}</strong></span>
+            <span class="emp-salary-figure emp-salary-figure--editable"><small>Company</small>${editableField(money(lvl.company), `salaryLevels.${i}`, { type: "number" })}</span>
             <span class="emp-salary-figure"><small>Market</small><strong>${money(lvl.market)}</strong></span>
             <span class="emp-salary-diff emp-salary-diff--${cls}">${icon(diffIcon)}${label}</span>
           </div>
-          <span class="emp-salary-chevron">${icon("chevron-down")}</span>
-        </button>
+          <button type="button" class="emp-salary-chevron" data-salary-toggle="${i}" aria-expanded="${expanded}" aria-label="${expanded ? "Collapse" : "Expand"} ${escapeHtml(lvl.level)} detail">${icon("chevron-down")}</button>
+        </div>
         <div class="emp-salary-bars">
           <div class="emp-salary-bar-row">
             <span class="emp-salary-bar-label">Company</span>
@@ -22823,17 +22877,13 @@ function renderEmployerCompany(root) {
         title: "How candidates see your company.",
         sub: "Manage the information, reputation and signals that shape candidate interest."
       })}
-      ${renderPageToolbar("", `
-        <button type="button" class="btn btn-primary" data-company-edit>Edit Profile</button>
-        <a class="btn btn-ghost" href="companies.html?org=${company.id}" target="_blank" rel="noopener">Preview Candidate View</a>
-        <button type="button" class="btn btn-ghost" data-company-share>Share Public Profile</button>
-        <div class="emp-company-hero-menu-wrap">
-          <button type="button" class="btn btn-ghost btn-sm emp-menu-toggle" data-company-menu aria-haspopup="menu" aria-expanded="false">${icon("more-horizontal")}</button>
-          <div class="emp-actions-menu" data-company-menu-panel hidden>
-            <button type="button" data-company-share>Share public profile</button>
-          </div>
-        </div>
-      `)}
+      ${renderPageToolbar(
+        editMode ? `<span class="emp-editing-banner">${icon("pencil")} Editing profile — changes aren't saved yet</span>` : "",
+        editMode ? `
+          <button type="button" class="btn btn-ghost" data-company-edit-cancel>Cancel</button>
+          <button type="button" class="btn btn-primary" data-company-edit-save>${icon("check")} Save</button>
+        ` : `<button type="button" class="btn btn-primary" data-company-edit>Edit Profile</button>`
+      )}
 
       <div class="card emp-company-hero">
         <div class="emp-company-hero-left">
@@ -22841,13 +22891,10 @@ function renderEmployerCompany(root) {
             <span class="emp-company-logo emp-company-hero-logo">${company.name.charAt(0)}</span>
             <div class="emp-company-name-row"><h2>${company.name}</h2>${company.verified ? `<span class="pill cyan">${icon("shield-check")} Verified company</span>` : ""}</div>
           </div>
+          <p class="emp-company-hero-tagline" data-mode="${editMode ? "edit" : "view"}">${editableField(company.signal, "signal")}</p>
           <div class="emp-company-hero-facts">
-            <div class="emp-company-hero-fact"><span>Industry</span><strong>${company.industry}</strong></div>
-            <div class="emp-company-hero-fact"><span>Headquarters</span><strong>${company.location}</strong></div>
-            <div class="emp-company-hero-fact"><span>Employee count</span><strong>${company.size}</strong></div>
             <div class="emp-company-hero-fact"><span>Followers</span><strong>${company.followers.toLocaleString()}</strong></div>
             <div class="emp-company-hero-fact"><span>Active roles</span><strong>${openRoles.length}</strong></div>
-            <div class="emp-company-hero-fact"><span>Work arrangement</span><strong>${company.workMode}</strong></div>
           </div>
           <div class="emp-company-hero-chips">
             <span class="emp-company-hero-chip">${icon("star")} ${company.rating} Employee Rating</span>
@@ -22878,34 +22925,24 @@ function renderEmployerCompany(root) {
         </div>
       </div>
 
-      <div class="emp-company-body">
-        <nav class="emp-company-sidenav" data-company-nav aria-label="Company profile sections">
-          <div class="emp-company-sidenav-group">
-            <span class="emp-company-sidenav-group-title">Profile</span>
-            <a href="#comp-overview" data-jump="comp-overview">${icon("layout-grid")} Overview</a>
-            <a href="#comp-roles" data-jump="comp-roles">${icon("briefcase")} Roles</a>
-            <a href="#comp-requirements" data-jump="comp-requirements">${icon("list-checks")} Requirements</a>
-            <a href="#comp-hiring" data-jump="comp-hiring">${icon("workflow")} Hiring</a>
-          </div>
-          <div class="emp-company-sidenav-group">
-            <span class="emp-company-sidenav-group-title">Pay &amp; Culture</span>
-            <a href="#comp-salary" data-jump="comp-salary">${icon("wallet")} Salary &amp; Benefits</a>
-            <a href="#comp-growth" data-jump="comp-growth">${icon("trending-up")} Growth &amp; Culture</a>
-          </div>
-          <div class="emp-company-sidenav-group">
-            <span class="emp-company-sidenav-group-title">Reputation</span>
-            <a href="#comp-reviews" data-jump="comp-reviews">${icon("star")} Reviews</a>
-            <a href="#comp-insights" data-jump="comp-insights">${icon("bar-chart-3")} Insights</a>
-            <a href="#comp-health" data-jump="comp-health">${icon("activity")} Health Score</a>
-          </div>
-          <div class="emp-company-sidenav-group">
-            <span class="emp-company-sidenav-group-title">Tools</span>
-            <a href="#comp-compare" data-jump="comp-compare">${icon("scale")} Compare</a>
-            <a href="#comp-faq" data-jump="comp-faq">${icon("help-circle")} FAQ</a>
-            <a href="#comp-actions" data-jump="comp-actions">${icon("zap")} Actions</a>
-          </div>
+      <div class="emp-company-tabbar-wrap" data-company-tabbar-wrap>
+        <nav class="emp-company-tabbar" data-company-nav aria-label="Company profile sections">
+          <a href="#comp-overview" data-jump="comp-overview" role="tab" class="active" aria-selected="true">Overview</a>
+          <a href="#comp-roles" data-jump="comp-roles" role="tab" aria-selected="false">Roles</a>
+          <a href="#comp-requirements" data-jump="comp-requirements" role="tab" aria-selected="false">Requirements</a>
+          <a href="#comp-hiring" data-jump="comp-hiring" role="tab" aria-selected="false">Hiring</a>
+          <a href="#comp-salary" data-jump="comp-salary" role="tab" aria-selected="false">Salary &amp; Benefits</a>
+          <a href="#comp-growth" data-jump="comp-growth" role="tab" aria-selected="false">Growth &amp; Culture</a>
+          <a href="#comp-reviews" data-jump="comp-reviews" role="tab" aria-selected="false">Reviews</a>
+          <a href="#comp-insights" data-jump="comp-insights" role="tab" aria-selected="false">Insights</a>
+          <a href="#comp-health" data-jump="comp-health" role="tab" aria-selected="false">Health Score</a>
+          <a href="#comp-compare" data-jump="comp-compare" role="tab" aria-selected="false">Compare</a>
+          <a href="#comp-faq" data-jump="comp-faq" role="tab" aria-selected="false">FAQ</a>
+          <a href="#comp-actions" data-jump="comp-actions" role="tab" aria-selected="false">Actions</a>
+          <span class="emp-company-tab-underline" data-company-tab-underline></span>
         </nav>
-        <div class="emp-company-content">
+      </div>
+      <div class="emp-company-content" data-mode="${editMode ? "edit" : "view"}">
 
       <div class="card emp-company-section" id="comp-overview">
         <div class="emp-company-section-head"><h2>Company at a Glance</h2>${sourceTag("Company provided")}</div>
@@ -22913,32 +22950,35 @@ function renderEmployerCompany(root) {
           <div class="emp-glance-card">
             <span class="emp-glance-icon">${icon("building-2")}</span>
             <span class="emp-glance-label">Industry</span>
-            <strong class="emp-glance-value">${escapeHtml(company.industry)}</strong>
+            <strong class="emp-glance-value-wrap">${editableField(company.industry, "industry")}</strong>
           </div>
           <div class="emp-glance-card">
             <span class="emp-glance-icon">${icon("users")}</span>
             <span class="emp-glance-label">Employee Size</span>
-            <strong class="emp-glance-value">${escapeHtml(company.size)}</strong>
+            <strong class="emp-glance-value-wrap">${editableField(company.size, "size")}</strong>
           </div>
           <div class="emp-glance-card">
             <span class="emp-glance-icon">${icon("calendar")}</span>
             <span class="emp-glance-label">Founded</span>
-            <strong class="emp-glance-value">${company.founded}</strong>
+            <strong class="emp-glance-value-wrap">${editableField(company.founded, "founded", { type: "number" })}</strong>
           </div>
           <div class="emp-glance-card">
             <span class="emp-glance-icon">${icon("map-pin")}</span>
             <span class="emp-glance-label">Headquarters</span>
-            <strong class="emp-glance-value">${escapeHtml(company.location)}</strong>
+            <strong class="emp-glance-value-wrap">${editableField(company.location, "location")}</strong>
           </div>
           <div class="emp-glance-card">
             <span class="emp-glance-icon">${icon("laptop")}</span>
             <span class="emp-glance-label">Work Mode</span>
-            <strong class="emp-glance-value">${escapeHtml(company.workMode)}</strong>
+            <strong class="emp-glance-value-wrap">${editableField(company.workMode, "workMode")}</strong>
           </div>
           <div class="emp-glance-card">
             <span class="emp-glance-icon">${icon("globe")}</span>
             <span class="emp-glance-label">Website</span>
-            <a class="emp-glance-value emp-glance-link" href="https://${escapeHtml(company.website)}" target="_blank" rel="noopener">${escapeHtml(company.website)}</a>
+            <strong class="emp-glance-value-wrap">
+              <a class="field-value emp-glance-link" href="https://${escapeHtml(company.website)}" target="_blank" rel="noopener">${escapeHtml(company.website)}</a>
+              <input class="field-input" type="text" data-field-path="website" value="${escapeHtml(editDraft ? editDraft.website : company.website)}">
+            </strong>
           </div>
           <div class="emp-glance-card">
             <span class="emp-glance-icon">${icon("map")}</span>
@@ -22946,10 +22986,18 @@ function renderEmployerCompany(root) {
             <div class="emp-glance-value emp-glance-list">${company.officeLocations.map(loc => `<span>${escapeHtml(loc)}</span>`).join("")}</div>
           </div>
         </div>
-        <p class="emp-company-description">${company.summary}</p>
+        <div class="emp-company-description-wrap">
+          <span class="emp-tags-label">About</span>
+          <div class="field-value emp-company-description">${company.aboutParagraphs.map(p => `<p>${escapeHtml(p)}</p>`).join("")}</div>
+          <textarea class="field-input" data-field-path="aboutParagraphsText" rows="6">${escapeHtml((editMode ? editDraft.aboutParagraphsText : "") ?? "")}</textarea>
+        </div>
         <div class="emp-tags">
           <span class="emp-tags-label">Profile characteristics ${sourceTag("Verified by CareerGo")}</span>
           <div class="pill-row">${company.tags.map(t => `<span class="pill">${t}</span>`).join("")}</div>
+        </div>
+        <div class="emp-tags">
+          <span class="emp-tags-label">Specialties ${sourceTag("Company provided")}</span>
+          ${editableChipList(editMode ? editDraft.specialties : company.specialties, "specialties")}
         </div>
       </div>
 
@@ -22997,18 +23045,18 @@ function renderEmployerCompany(root) {
       <div class="card emp-company-section" id="comp-requirements">
         <div class="emp-company-section-head"><h2>What Candidates Usually Need</h2>${sourceTag("Company provided")}</div>
         <p class="emp-company-section-desc">Typical requirements candidates should understand before applying.</p>
-        <p class="emp-req-experience-note"><strong>Experience:</strong> ${escapeHtml(company.averageRequirements.experience)}</p>
+        <p class="emp-req-experience-note"><strong>Experience:</strong> ${editableField(company.averageRequirements.experience, "requirementsExperience")}</p>
         <div class="emp-req-tier">
           <h3 class="emp-req-tier-heading">Required</h3>
-          <div class="emp-req-chip-row">${company.requirementTiers.required.map(r => `<span class="emp-req-chip emp-req-chip--required">${escapeHtml(r)}</span>`).join("")}</div>
+          <div class="emp-req-chip-row">${editableChipList(editMode ? editDraft.requirementTiers.required : company.requirementTiers.required, "requirementTiers.required", "emp-req-chip emp-req-chip--required")}</div>
         </div>
         <div class="emp-req-tier">
           <h3 class="emp-req-tier-heading">Preferred</h3>
-          <div class="emp-req-chip-row">${company.requirementTiers.preferred.map(r => `<span class="emp-req-chip emp-req-chip--preferred">${escapeHtml(r)}</span>`).join("")}</div>
+          <div class="emp-req-chip-row">${editableChipList(editMode ? editDraft.requirementTiers.preferred : company.requirementTiers.preferred, "requirementTiers.preferred", "emp-req-chip emp-req-chip--preferred")}</div>
         </div>
         <div class="emp-req-tier">
           <h3 class="emp-req-tier-heading">Bonus</h3>
-          <div class="emp-req-chip-row">${company.requirementTiers.bonus.map(r => `<span class="emp-req-chip emp-req-chip--bonus">${escapeHtml(r)}</span>`).join("")}</div>
+          <div class="emp-req-chip-row">${editableChipList(editMode ? editDraft.requirementTiers.bonus : company.requirementTiers.bonus, "requirementTiers.bonus", "emp-req-chip emp-req-chip--bonus")}</div>
         </div>
         <div class="emp-vera-insight-box">
           <div class="emp-callout-label">${icon("sparkles")} Vera Insight</div>
@@ -23073,11 +23121,11 @@ function renderEmployerCompany(root) {
         <div class="emp-salary-benefits-sub">
           <h3>Benefits</h3>
           <div class="emp-requirements-grid">
-            <div class="emp-stat-row"><span>Bonus / incentives</span><strong>${company.salaryBenefits.bonus}</strong></div>
-            <div class="emp-stat-row"><span>Medical benefits</span><strong>${company.salaryBenefits.medical}</strong></div>
-            <div class="emp-stat-row"><span>Flexible work</span><strong>${company.salaryBenefits.flexibleWork}</strong></div>
-            <div class="emp-stat-row"><span>Training</span><strong>${company.salaryBenefits.training}</strong></div>
-            <div class="emp-stat-row"><span>Leave benefits</span><strong>${company.salaryBenefits.leave}</strong></div>
+            <div class="emp-stat-row"><span>Bonus / incentives</span><strong>${editableField(company.salaryBenefits.bonus, "salaryBenefits.bonus")}</strong></div>
+            <div class="emp-stat-row"><span>Medical benefits</span><strong>${editableField(company.salaryBenefits.medical, "salaryBenefits.medical")}</strong></div>
+            <div class="emp-stat-row"><span>Flexible work</span><strong>${editableField(company.salaryBenefits.flexibleWork, "salaryBenefits.flexibleWork")}</strong></div>
+            <div class="emp-stat-row"><span>Training</span><strong>${editableField(company.salaryBenefits.training, "salaryBenefits.training")}</strong></div>
+            <div class="emp-stat-row"><span>Leave benefits</span><strong>${editableField(company.salaryBenefits.leave, "salaryBenefits.leave")}</strong></div>
           </div>
         </div>
       </div>
@@ -23086,12 +23134,12 @@ function renderEmployerCompany(root) {
         <div class="emp-company-section-head"><h2>Growth &amp; Development</h2>${sourceTag("Company provided")}</div>
         <p class="emp-company-section-desc">How people learn, move and progress inside the company.</p>
         <div class="emp-requirements-grid">
-          <div class="emp-stat-row"><span>Training quality</span><strong>${company.careerGrowth.trainingQuality}</strong></div>
-          <div class="emp-stat-row"><span>Promotion path</span><strong>${company.careerGrowth.promotionPath}</strong></div>
-          <div class="emp-stat-row"><span>Graduate program</span><strong>${company.careerGrowth.graduateProgram}</strong></div>
-          <div class="emp-stat-row"><span>Mentorship</span><strong>${company.careerGrowth.mentorship}</strong></div>
-          <div class="emp-stat-row"><span>Internal transfer</span><strong>${company.careerGrowth.internalTransfer}</strong></div>
-          <div class="emp-stat-row"><span>Learning opportunities</span><strong>${company.careerGrowth.learningOpportunities}</strong></div>
+          <div class="emp-stat-row"><span>Training quality</span><strong>${editableField(company.careerGrowth.trainingQuality, "careerGrowth.trainingQuality")}</strong></div>
+          <div class="emp-stat-row"><span>Promotion path</span><strong>${editableField(company.careerGrowth.promotionPath, "careerGrowth.promotionPath")}</strong></div>
+          <div class="emp-stat-row"><span>Graduate program</span><strong>${editableField(company.careerGrowth.graduateProgram, "careerGrowth.graduateProgram")}</strong></div>
+          <div class="emp-stat-row"><span>Mentorship</span><strong>${editableField(company.careerGrowth.mentorship, "careerGrowth.mentorship")}</strong></div>
+          <div class="emp-stat-row"><span>Internal transfer</span><strong>${editableField(company.careerGrowth.internalTransfer, "careerGrowth.internalTransfer")}</strong></div>
+          <div class="emp-stat-row"><span>Learning opportunities</span><strong>${editableField(company.careerGrowth.learningOpportunities, "careerGrowth.learningOpportunities")}</strong></div>
         </div>
 
         <div class="emp-career-path-sub">
@@ -23404,36 +23452,48 @@ function renderEmployerCompany(root) {
         <div class="emp-company-section-head"><h2>AI-Generated FAQ</h2>${sourceTag("Vera Insight")}</div>
         <p class="emp-company-section-desc">Vera answers the questions candidates ask most, generated from employee reviews, applications, and search activity.</p>
 
-        <div class="emp-faq-search">
-          ${icon("search")}
-          <input type="text" placeholder="Search questions..." value="${escapeHtml(faqSearchQuery)}" data-faq-search>
-          ${faqSearchQuery ? `<button type="button" class="emp-faq-search-clear" data-faq-search-clear aria-label="Clear search">${icon("x")}</button>` : ""}
-        </div>
-        <p class="emp-empty-hint">${filteredFaqs.length} of ${company.faqs.length} questions${faqSearchQuery ? ` match "${escapeHtml(faqSearchQuery)}"` : ""}</p>
+        <div class="field-value">
+          <div class="emp-faq-search">
+            ${icon("search")}
+            <input type="text" placeholder="Search questions..." value="${escapeHtml(faqSearchQuery)}" data-faq-search>
+            ${faqSearchQuery ? `<button type="button" class="emp-faq-search-clear" data-faq-search-clear aria-label="Clear search">${icon("x")}</button>` : ""}
+          </div>
+          <p class="emp-empty-hint">${filteredFaqs.length} of ${company.faqs.length} questions${faqSearchQuery ? ` match "${escapeHtml(faqSearchQuery)}"` : ""}</p>
 
-        <div class="emp-faq-list">
-          ${filteredFaqs.map(f => {
-            const expanded = expandedFaqId === f.id;
-            return `
-              <div class="emp-faq-item ${expanded ? "is-expanded" : ""}">
-                <button type="button" class="emp-faq-question" data-faq-toggle="${f.id}" aria-expanded="${expanded}">
-                  <span class="emp-faq-question-text">${escapeHtml(f.question)}</span>
-                  ${sourceTag(f.source)}
-                  <span class="emp-faq-chevron">${icon(expanded ? "chevron-up" : "chevron-down")}</span>
-                </button>
-                <div class="emp-faq-answer" ${expanded ? "" : "hidden"}>
-                  <div class="emp-callout-label">${icon("sparkles")} Answered by Vera</div>
-                  <p>${escapeHtml(f.answer)}</p>
+          <div class="emp-faq-list">
+            ${filteredFaqs.map(f => {
+              const expanded = expandedFaqId === f.id;
+              return `
+                <div class="emp-faq-item ${expanded ? "is-expanded" : ""}">
+                  <button type="button" class="emp-faq-question" data-faq-toggle="${f.id}" aria-expanded="${expanded}">
+                    <span class="emp-faq-question-text">${escapeHtml(f.question)}</span>
+                    ${sourceTag(f.source)}
+                    <span class="emp-faq-chevron">${icon(expanded ? "chevron-up" : "chevron-down")}</span>
+                  </button>
+                  <div class="emp-faq-answer" ${expanded ? "" : "hidden"}>
+                    <div class="emp-callout-label">${icon("sparkles")} Answered by Vera</div>
+                    <p>${escapeHtml(f.answer)}</p>
+                  </div>
                 </div>
+              `;
+            }).join("")}
+            ${filteredFaqs.length === 0 ? `
+              <div class="emp-faq-empty">
+                ${icon("search-x")}
+                <p>No questions match "${escapeHtml(faqSearchQuery)}".</p>
               </div>
-            `;
-          }).join("")}
-          ${filteredFaqs.length === 0 ? `
-            <div class="emp-faq-empty">
-              ${icon("search-x")}
-              <p>No questions match "${escapeHtml(faqSearchQuery)}".</p>
+            ` : ""}
+          </div>
+        </div>
+        <div class="field-input emp-faq-edit-list" data-faq-edit-list>
+          ${editMode ? editDraft.faqs.map((f, i) => `
+            <div class="emp-faq-edit-item">
+              <input type="text" class="emp-faq-edit-question" data-faq-edit-question="${i}" value="${escapeHtml(f.question)}" placeholder="Question">
+              <textarea class="emp-faq-edit-answer" data-faq-edit-answer="${i}" rows="2" placeholder="Answer">${escapeHtml(f.answer)}</textarea>
+              <button type="button" class="btn-icon-sm" data-faq-edit-remove="${i}" aria-label="Remove question">${icon("trash-2")}</button>
             </div>
-          ` : ""}
+          `).join("") : ""}
+          <button type="button" class="btn btn-ghost btn-sm" data-faq-edit-add>${icon("plus")} Add question</button>
         </div>
       </div>
 
@@ -23484,7 +23544,6 @@ function renderEmployerCompany(root) {
           }).join("")}
         </div>
       </div>
-        </div>
       </div>
     `;
     createIcons();
@@ -23499,20 +23558,120 @@ function renderEmployerCompany(root) {
   }
 
   function bind() {
-    qsa("[data-company-edit]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo("company-edit")));
-    qs("[data-company-menu]", root)?.addEventListener("click", event => {
-      event.stopPropagation();
-      const panel = qs("[data-company-menu-panel]", root);
-      panel.hidden = !panel.hidden;
+    // Inline edit-in-place (redesign Part 3): idempotent on entry - a
+    // second "Edit profile" trigger elsewhere on the page (comp-health's
+    // Vera insight card also has one) must not re-snapshot and silently
+    // discard whatever the user's already typed if edit mode is already on.
+    qsa("[data-company-edit]", root).forEach(btn => btn.addEventListener("click", () => {
+      if (editMode) return;
+      editDraft = makeInlineEditDraft(company);
+      editMode = true;
+      draw();
+    }));
+    qs("[data-company-edit-cancel]", root)?.addEventListener("click", () => {
+      editMode = false;
+      editDraft = null;
+      draw();
     });
-    document.addEventListener("click", () => { const p = qs("[data-company-menu-panel]", root); if (p) p.hidden = true; });
-    qsa("[data-company-share]", root).forEach(btn => btn.addEventListener("click", () => showToast("Public profile link copied.")));
+    qs("[data-company-edit-save]", root)?.addEventListener("click", () => {
+      Object.assign(company, {
+        signal: editDraft.signal, summary: editDraft.summary, industry: editDraft.industry, location: editDraft.location,
+        size: editDraft.size, founded: Number(editDraft.founded) || company.founded, website: editDraft.website, workMode: editDraft.workMode,
+        specialties: editDraft.specialties,
+        aboutParagraphs: editDraft.aboutParagraphsText.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean),
+      });
+      company.averageRequirements.experience = editDraft.requirementsExperience;
+      company.requirementTiers = editDraft.requirementTiers;
+      editDraft.salaryLevels.forEach((val, i) => {
+        const num = Number(val);
+        if (!Number.isNaN(num)) company.salaryComparison.levels[i].company = num;
+      });
+      Object.assign(company.salaryBenefits, editDraft.salaryBenefits);
+      Object.assign(company.careerGrowth, editDraft.careerGrowth);
+      company.faqs = editDraft.faqs.filter(f => f.question.trim() || f.answer.trim());
+      editMode = false;
+      editDraft = null;
+      draw();
+      showToast("Company profile updated.");
+    });
+
+    // Generic editable-field wiring: writes straight into editDraft via
+    // its dot-path on every keystroke, WITHOUT calling draw() - the same
+    // no-redraw-per-keystroke discipline the FAQ search input already
+    // relies on elsewhere on this page, and required here too or every
+    // character typed would flash the whole section.
+    if (editMode) {
+      qsa("[data-field-path]", root).forEach(el => {
+        el.addEventListener("input", () => {
+          const keys = el.dataset.fieldPath.split(".");
+          let obj = editDraft;
+          for (let i = 0; i < keys.length - 1; i++) obj = obj[keys[i]];
+          obj[keys[keys.length - 1]] = el.value;
+        });
+      });
+
+      qsa("[data-chip-field]", root).forEach(container => {
+        const path = container.dataset.chipField;
+        const keys = path.split(".");
+        const getList = () => { let obj = editDraft; for (const k of keys) obj = obj[k]; return obj; };
+        const input = qs("[data-chip-new]", container);
+        input?.addEventListener("keydown", event => {
+          if (event.key !== "Enter" && event.key !== ",") return;
+          event.preventDefault();
+          const val = input.value.trim().replace(/,$/, "");
+          const list = getList();
+          if (val && !list.includes(val)) {
+            list.push(val);
+            draw();
+            qs(`[data-chip-field="${path}"] [data-chip-new]`, root)?.focus();
+          } else { input.value = ""; }
+        });
+        qsa("[data-chip-remove]", container).forEach(btn => btn.addEventListener("click", () => {
+          getList().splice(Number(btn.dataset.chipRemove), 1);
+          draw();
+        }));
+      });
+
+      qsa("[data-faq-edit-question]", root).forEach(el => el.addEventListener("input", () => {
+        editDraft.faqs[Number(el.dataset.faqEditQuestion)].question = el.value;
+      }));
+      qsa("[data-faq-edit-answer]", root).forEach(el => el.addEventListener("input", () => {
+        editDraft.faqs[Number(el.dataset.faqEditAnswer)].answer = el.value;
+      }));
+      qsa("[data-faq-edit-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+        editDraft.faqs.splice(Number(btn.dataset.faqEditRemove), 1);
+        draw();
+      }));
+      qs("[data-faq-edit-add]", root)?.addEventListener("click", () => {
+        editDraft.faqs.push({ id: `faq-custom-${Date.now()}`, question: "", answer: "", source: "Company provided" });
+        draw();
+        const inputs = qsa("[data-faq-edit-question]", root);
+        inputs[inputs.length - 1]?.focus();
+      });
+    }
     qs("[data-company-nav]", root)?.addEventListener("click", event => {
       const link = event.target.closest("[data-jump]");
       if (!link) return;
       event.preventDefault();
+      const target = qs(`#${link.dataset.jump}`, root);
+      if (!target) return;
+      // Set the clicked tab active immediately (the underline slides right
+      // away) and ignore scrollspy updates until this programmatic scroll
+      // actually settles - this is the flash fix: without the guard, the
+      // IntersectionObserver fires on every section the smooth-scroll
+      // passes through, rapidly flipping the active tab mid-flight.
+      setActiveCompanyTab(link.dataset.jump);
+      isProgrammaticScroll = true;
+      clearTimeout(programmaticScrollTimer);
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      qs(`#${link.dataset.jump}`, root)?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+      const clearGuard = () => { isProgrammaticScroll = false; };
+      if ("onscrollend" in window) {
+        document.addEventListener("scrollend", clearGuard, { once: true });
+        programmaticScrollTimer = setTimeout(clearGuard, 1500);
+      } else {
+        programmaticScrollTimer = setTimeout(clearGuard, reducedMotion ? 50 : 900);
+      }
+      target.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
     });
     qs("[data-company-manage-roles]", root)?.addEventListener("click", () => employerNavigateTo("roles"));
     qsa("[data-company-view-role]", root).forEach(btn => btn.addEventListener("click", () => employerNavigateTo("role-builder", { id: btn.dataset.companyViewRole })));
@@ -23632,7 +23791,16 @@ function renderEmployerCompany(root) {
     if (!sentinel) return;
     if (!("IntersectionObserver" in window)) { reviewsLoadedCount += REVIEW_BATCH_SIZE; draw(); return; }
     reviewsObserver = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !reviewsLoadingMore) {
+      // Guard against isProgrammaticScroll (set by the tab bar's click
+      // handler - see initCompanyTabsBehavior()): a tab-triggered smooth
+      // scroll to any section past Reviews (FAQ, Health Score, Compare,
+      // Actions) passes through this sentinel on the way there. Without
+      // this guard, the resulting draw() wholesale-replaces root.innerHTML
+      // mid-scroll, which orphans scrollIntoView()'s target node and
+      // silently truncates the scroll - a real, pre-existing bug this
+      // redesign's tab navigation newly exposed, not a flash but the same
+      // "don't rebuild the DOM under an in-flight scroll" root cause.
+      if (entry.isIntersecting && !reviewsLoadingMore && !isProgrammaticScroll) {
         reviewsLoadingMore = true;
         setTimeout(() => {
           reviewsLoadingMore = false;
@@ -23661,35 +23829,66 @@ function renderEmployerCompany(root) {
     timelineObserver.observe(timeline);
   }
 
+  // Sticky horizontal underline tab bar (redesign - supersedes the earlier
+  // left-sidebar version). Root-caused the old flash bug before rebuilding:
+  // the scrollspy IntersectionObserver had no guard against its own
+  // programmatic scrollIntoView() calls, so during a tab click's smooth
+  // scroll it fired on every section crossing the margin band in turn,
+  // rapidly flipping the active tab before settling - not a re-render or
+  // a layout-shift issue. The three defenses below are all present from
+  // the start rather than patched in after the fact: (1) sections stay
+  // mounted, only the active class + underline position change, no DOM
+  // rebuild on tab click; (2) a single sliding .emp-company-tab-underline
+  // (transform+width) instead of per-tab border toggles, so nothing
+  // reflows; (3) an isProgrammaticScroll guard that ignores observer
+  // updates until the click-triggered smooth scroll actually settles.
+  let isProgrammaticScroll = false;
+  let programmaticScrollTimer = null;
+
+  function moveTabUnderline(link) {
+    const nav = qs("[data-company-nav]", root);
+    const underline = qs("[data-company-tab-underline]", root);
+    if (!nav || !underline || !link) return;
+    const navRect = nav.getBoundingClientRect();
+    const linkRect = link.getBoundingClientRect();
+    underline.style.transform = `translateX(${Math.round(linkRect.left - navRect.left + nav.scrollLeft)}px)`;
+    underline.style.width = `${Math.round(linkRect.width)}px`;
+  }
+
+  function setActiveCompanyTab(id) {
+    const nav = qs("[data-company-nav]", root);
+    if (!nav) return;
+    const links = qsa("[data-jump]", nav);
+    const active = links.find(l => l.dataset.jump === id);
+    links.forEach(l => { l.classList.toggle("active", l === active); l.setAttribute("aria-selected", String(l === active)); });
+    if (active) moveTabUnderline(active);
+  }
+
   // Every draw() replaces root.innerHTML, so the sentinel/section nodes any
   // prior observers were watching are gone - disconnect before re-observing
   // the fresh ones, or they'd silently pile up on every showAllRoles/
   // showAllReviews toggle.
   function initCompanyTabsBehavior() {
     if (tabsSectionObserver) tabsSectionObserver.disconnect();
-    if (!("IntersectionObserver" in window)) return;
 
     const nav = qs("[data-company-nav]", root);
     if (!nav) return;
     const links = qsa("[data-jump]", nav);
     const sections = links.map(l => qs(`#${l.dataset.jump}`, root)).filter(Boolean);
 
-    // The active item is a filled pill (CAREERGO_UI_SPEC.md §1.3/§6.1), not
-    // an underline - a position:sticky sidebar needs no separate "has it
-    // stuck yet" detection the way the old horizontal tab bar's underline
-    // animation did, so that machinery (sentinel + resize handler) is gone.
-    function setActive(id) {
-      links.forEach(l => l.classList.toggle("active", l.dataset.jump === id));
-    }
+    // Initial active tab is already set to Overview in the HTML string
+    // itself (class="active" on the first <a>), so there's no first-paint
+    // flicker waiting on JS to run - this just positions the underline to
+    // match what's already visually active, and keeps it in sync on resize.
+    moveTabUnderline(qs("[data-jump].active", nav));
+    window.addEventListener("resize", () => moveTabUnderline(qs("[data-jump].active", nav)));
 
-    if (sections.length) {
-      tabsSectionObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); });
-      }, { rootMargin: "-140px 0px -60% 0px", threshold: 0 });
-      sections.forEach(s => tabsSectionObserver.observe(s));
-    }
-
-    setActive(links[0]?.dataset.jump);
+    if (!("IntersectionObserver" in window) || !sections.length) return;
+    tabsSectionObserver = new IntersectionObserver(entries => {
+      if (isProgrammaticScroll) return;
+      entries.forEach(entry => { if (entry.isIntersecting) setActiveCompanyTab(entry.target.id); });
+    }, { rootMargin: "-140px 0px -60% 0px", threshold: 0 });
+    sections.forEach(s => tabsSectionObserver.observe(s));
   }
 
   draw();
@@ -23715,6 +23914,37 @@ function makeCompanyDraft(company) {
     careerGrowth: { ...company.careerGrowth },
     workCulture: { ...company.workCulture },
     lastSavedAt: null
+  };
+}
+
+// Snapshot for Company Profile's inline edit-in-place (redesign Part 3) -
+// a separate, wider field set than makeCompanyDraft() above (that one
+// backs the older standalone /company-edit page, still reachable from
+// Feed/Brand-Health/Growth-recommendation links elsewhere in the app and
+// intentionally left untouched). Only ever discarded (Cancel) or copied
+// back onto `company` in one shot (Save) - never partially applied.
+function makeInlineEditDraft(company) {
+  return {
+    signal: company.signal,
+    summary: company.summary,
+    aboutParagraphsText: company.aboutParagraphs.join("\n\n"),
+    industry: company.industry,
+    location: company.location,
+    size: company.size,
+    founded: company.founded,
+    website: company.website,
+    workMode: company.workMode,
+    specialties: [...(company.specialties || [])],
+    requirementsExperience: company.averageRequirements.experience,
+    requirementTiers: {
+      required: [...company.requirementTiers.required],
+      preferred: [...company.requirementTiers.preferred],
+      bonus: [...company.requirementTiers.bonus],
+    },
+    salaryLevels: company.salaryComparison.levels.map(l => l.company),
+    salaryBenefits: { ...company.salaryBenefits },
+    careerGrowth: { ...company.careerGrowth },
+    faqs: company.faqs.map(f => ({ ...f })),
   };
 }
 

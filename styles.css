@@ -14625,6 +14625,10 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-company-hero-left { display: flex; flex-direction: column; gap: 20px; min-width: 0; flex: 1 1 420px; }
 .emp-company-hero-identity { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .emp-company-hero-logo { width: 64px; height: 64px; border-radius: 18px; font-size: 26px; }
+.emp-company-hero-tagline {
+  display: flex; align-items: center; min-height: 36px; margin: 10px 0 0; font-size: 13px; color: var(--emp-muted, var(--soft));
+}
+.emp-company-hero-tagline .field-input { max-width: 420px; }
 .emp-company-hero-facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 28px; }
 .emp-company-hero-fact { display: flex; flex-direction: column; gap: 2px; }
 .emp-company-hero-fact span { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--emp-muted, var(--soft)); }
@@ -14666,56 +14670,48 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-company-hero-right { flex-basis: 100%; }
 }
 [data-tabs-sentinel] { height: 0; }
-/* Nav redesign (sizing/spacing/overflow only - order, tabs, and the
-   underline mechanism below are unchanged). 12 tabs at the previous
-   padding/gap/font overflowed the ~1240px content width by ~21px, forcing
-   a horizontal scrollbar even at a 1440px viewport - measured via
-   Playwright before touching anything, then re-measured after each change
-   below until the scrollbar was actually eliminated (not just estimated). */
-/* ---------- Company Profile: sidebar nav (CAREERGO_UI_SPEC.md §4/§11.2/§12) ----------
-   One nav, two presentations via media query - a >=1024 vertical sticky
-   sidebar (grouped, filled-pill active state) that collapses to a single
-   horizontal internally-scrolling chip row below that breakpoint. Same
-   markup, same JS scrollspy either way - "keep the same scrollspy" per
-   spec, not two separate systems. */
-.emp-company-body { display: block; margin-top: 32px; }
-.emp-company-sidenav {
-  display: flex; flex-direction: row; gap: 8px; margin-bottom: 20px;
+/* ---------- Company Profile: sticky underline tab bar (redesign,
+   supersedes the left-sidebar version) ----------
+   Single full-width column - the sidebar's 240px/1fr grid is gone, this
+   sits directly above .emp-company-content instead of beside it. Sticky
+   directly below the 64px top nav; one shared sliding underline element
+   (transform+width) instead of per-tab active-state chrome, both for the
+   cleaner visual and because per-tab border/background toggles were the
+   layout-shift half of the old flash bug. Horizontal internal scroll
+   only if the 12 tabs overflow - never page scroll. */
+.emp-company-tabbar-wrap {
+  /* .emp-app-main has zero horizontal padding of its own (it's a
+     width-capped, centered column, not a padded box) - so there's no
+     inherited padding to "break out of" for a full-bleed bar. Matching
+     the bar's background to the page background (both --emp-bg) makes
+     that moot: content scrolling under the bar's edges, if any exist,
+     is invisible against an identical color either way. */
+  position: sticky; top: 64px; z-index: 30; margin-bottom: 32px;
+  background: var(--emp-bg); border-bottom: 1px solid var(--emp-line);
+}
+.emp-company-tabbar {
+  position: relative; display: flex; align-items: center; gap: 24px; height: 48px;
   overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none;
 }
-.emp-company-sidenav::-webkit-scrollbar { display: none; }
-.emp-company-sidenav-group { display: contents; }
-.emp-company-sidenav-group-title { display: none; }
-.emp-company-sidenav a {
-  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px;
-  height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--emp-line);
-  color: var(--emp-muted); font-family: var(--emp-sans); font-size: 13px; font-weight: 500;
-  text-decoration: none; white-space: nowrap;
-  transition: background 150ms var(--emp-motion-ease), color 150ms var(--emp-motion-ease), border-color 150ms var(--emp-motion-ease);
+.emp-company-tabbar::-webkit-scrollbar { display: none; }
+.emp-company-tabbar a {
+  flex: 0 0 auto; display: inline-flex; align-items: center; padding: 12px 2px;
+  font-family: var(--emp-sans); font-size: 14px; font-weight: 500; color: var(--emp-muted);
+  text-decoration: none; white-space: nowrap; border: none; background: none;
+  transition: color 150ms var(--emp-motion-ease);
 }
-.emp-company-sidenav a svg { width: 14px; height: 14px; flex: none; }
-.emp-company-sidenav a:hover { color: var(--emp-ink); background: var(--emp-teal-soft); border-color: transparent; }
-.emp-company-sidenav a.active { color: var(--emp-cream-text); background: var(--emp-ink); border-color: var(--emp-ink); }
-.emp-company-sidenav a.active:hover { color: var(--emp-cream-text); background: var(--emp-ink); }
-
-@media (min-width: 1024px) {
-  .emp-company-body { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 32px; align-items: start; }
-  .emp-company-sidenav {
-    flex-direction: column; gap: 24px; margin-bottom: 0;
-    position: sticky; top: 96px; align-self: flex-start; max-height: calc(100vh - 116px); overflow-y: auto;
-  }
-  .emp-company-sidenav-group { display: flex; flex-direction: column; gap: 4px; }
-  .emp-company-sidenav-group-title {
-    display: block; margin: 0 0 2px; padding: 0 12px;
-    font-family: var(--emp-sans); font-size: 11px; font-weight: 500;
-    text-transform: uppercase; letter-spacing: 0.16em; color: var(--emp-muted);
-  }
-  .emp-company-sidenav a {
-    width: 100%; height: 40px; padding: 8px 12px; border-radius: 8px; border: none; justify-content: flex-start;
-  }
-  .emp-company-sidenav a svg { width: 16px; height: 16px; }
+.emp-company-tabbar a:hover { color: var(--emp-ink); }
+.emp-company-tabbar a:focus-visible { outline: 2px solid var(--emp-green); outline-offset: 2px; }
+.emp-company-tabbar a.active { color: var(--emp-green); }
+.emp-company-tab-underline {
+  position: absolute; left: 0; bottom: 0; height: 2px; background: var(--emp-green);
+  transform: translateX(0); width: 0; transition: transform 200ms var(--emp-motion-ease), width 200ms var(--emp-motion-ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  .emp-company-tab-underline { transition: none; }
 }
 .emp-company-content { min-width: 0; }
+.emp-company-section { scroll-margin-top: calc(64px + 48px + 16px); }
 /* Page-wide polish pass (spacing/typography/radius/shadow/hover only - no
    layout changes). --emp-title-lg/--emp-radius-card/--emp-shadow-card etc.
    are GLOBAL tokens shared with Roles/Pipeline/Feed/Settings, so this pass
@@ -14750,7 +14746,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-glance-icon { color: var(--emp-green, #07382f); }
 .emp-glance-icon svg { width: 20px; height: 20px; }
 .emp-glance-label { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--emp-muted, var(--soft)); }
-.emp-glance-value { font-size: 15px; font-weight: 700; color: var(--emp-ink, var(--text)); word-break: break-word; }
+.emp-glance-value, .emp-glance-value-wrap { font-size: 15px; font-weight: 700; color: var(--emp-ink, var(--text)); word-break: break-word; }
 .emp-glance-link { color: var(--emp-green, #07382f); text-decoration: none; }
 .emp-glance-link:hover { text-decoration: underline; }
 .emp-glance-list { display: flex; flex-direction: column; gap: 2px; }
@@ -14760,7 +14756,62 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 @media (max-width: 600px) {
   .emp-glance-grid { grid-template-columns: 1fr; }
 }
-.emp-company-description { margin: 0 0 14px; font-size: 13px; line-height: 1.6; color: var(--text); font-style: italic; }
+.emp-company-description { display: flex; flex-direction: column; gap: 10px; margin: 0 0 14px; }
+.emp-company-description p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--text); }
+
+/* ---------- Inline edit-in-place (redesign Part 3) ----------
+   .field-value and .field-input for one field are BOTH always in the
+   DOM; [data-mode] on the content wrapper decides which is visible via
+   plain display toggling, never a JS-driven DOM swap - this is what
+   makes entering/exiting edit mode reflow- and flash-free (the spec's
+   explicit requirement), same underlying technique as the tab bar's
+   sliding underline solving the same class of problem one section up. */
+[data-mode="view"] .field-input { display: none; }
+[data-mode="edit"] .field-value { display: none; }
+[data-mode="view"] .emp-editing-banner { display: none; }
+.emp-editing-banner {
+  display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border-radius: 999px;
+  background: var(--emp-teal-soft); color: var(--emp-green); font-family: var(--emp-sans); font-size: 13px; font-weight: 600;
+}
+.emp-editing-banner svg { width: 14px; height: 14px; }
+
+.field-input {
+  width: 100%; padding: 6px 10px; border: 1px solid var(--emp-line); border-radius: var(--emp-radius-md, 8px);
+  font-family: var(--emp-sans); font-size: 13px; font-weight: 500; color: var(--emp-ink); background: #fff;
+  transition: border-color 150ms var(--emp-motion-ease), box-shadow 150ms var(--emp-motion-ease);
+}
+.field-input:focus { outline: none; border-color: var(--emp-green); box-shadow: 0 0 0 2px var(--emp-teal-soft); }
+textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
+.emp-glance-value-wrap .field-input { height: 32px; font-size: 13px; }
+.emp-stat-row .field-input { height: 32px; font-size: 13px; max-width: 220px; }
+.emp-req-experience-note .field-input { display: inline-block; width: min(420px, 100%); height: 32px; margin-left: 6px; vertical-align: middle; }
+
+/* .field-value is a <span> in most contexts, which the unconditional
+   :is(span,small,li) reset above forces to muted gray - the exact same
+   class of collision documented throughout this file, just newly hit by
+   these specific selectors since they didn't exist before this pass. */
+.emp-app-shell.emp-app-shell :is(.emp-glance-value-wrap .field-value, .emp-stat-row .field-value, .emp-req-experience-note .field-value) {
+  color: var(--emp-ink, var(--text)) !important; font-weight: 700;
+}
+.emp-company-description-wrap { margin: 0 0 14px; }
+.emp-company-description-wrap .field-value { display: block; margin: 0; font-size: 13px; line-height: 1.6; color: var(--text); font-style: italic; }
+[data-mode="edit"] .emp-company-description-wrap .field-value { display: none; }
+.emp-company-description-wrap textarea.field-input { width: 100%; font-style: normal; }
+
+/* FAQ edit list (redesign Part 3) */
+.emp-faq-edit-list { display: flex; flex-direction: column; gap: 10px; }
+.emp-faq-edit-item {
+  display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: start;
+  padding: 12px; border: 1px solid var(--emp-line); border-radius: var(--emp-radius-md, 8px);
+}
+.emp-faq-edit-question, .emp-faq-edit-answer {
+  padding: 6px 10px; border: 1px solid var(--emp-line); border-radius: var(--emp-radius-md, 8px);
+  font-family: var(--emp-sans); font-size: 12px; color: var(--emp-ink); background: #fff;
+}
+.emp-faq-edit-answer { resize: vertical; line-height: 1.5; }
+@media (max-width: 720px) {
+  .emp-faq-edit-item { grid-template-columns: 1fr; }
+}
 .emp-company-role-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
 .emp-role-card {
   display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
@@ -14901,14 +14952,15 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 }
 .emp-salary-level:hover { box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
 .emp-salary-level-head {
-  display: flex; align-items: center; gap: 16px; width: 100%; padding: 0; border: none;
-  background: none; cursor: pointer; font: inherit; text-align: left;
+  display: flex; align-items: center; gap: 16px; width: 100%; padding: 0;
+  font: inherit; text-align: left;
 }
 .emp-salary-level-name { flex: 0 0 auto; min-width: 92px; font-size: 14px; font-weight: 800; }
 .emp-salary-level-figures { display: flex; align-items: center; gap: 24px; margin-left: auto; }
 .emp-salary-figure { display: flex; flex-direction: column; gap: 2px; }
 .emp-salary-figure small { font-size: 10px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
 .emp-salary-figure strong { font-size: 14px; font-weight: 800; }
+.emp-salary-figure--editable .field-input { width: 90px; height: 28px; padding: 2px 8px; font-size: 13px; font-weight: 800; }
 .emp-salary-diff {
   display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; padding: 4px 10px;
   border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap;
@@ -14917,7 +14969,10 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-salary-diff--positive { background: rgba(7, 56, 47, 0.12); }
 .emp-salary-diff--negative { background: rgba(239, 68, 68, 0.1); }
 .emp-salary-diff--neutral { background: rgba(217, 119, 6, 0.12); }
-.emp-salary-chevron { flex-shrink: 0; transition: transform 200ms ease; }
+.emp-salary-chevron {
+  flex-shrink: 0; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; color: inherit; transition: transform 200ms ease;
+}
 .emp-salary-chevron svg { width: 16px; height: 16px; }
 .emp-salary-level.is-expanded .emp-salary-chevron { transform: rotate(180deg); }
 .emp-salary-bars { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
