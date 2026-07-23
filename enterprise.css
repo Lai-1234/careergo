@@ -23419,10 +23419,15 @@ html body[data-page="discover"] .cg-org-browse-empty{padding:32px 0;text-align:c
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  background: #dff4f0;
-  color: #0b6d65;
+  /* Teal-green tile + white initial, consistent with the directory-page cards.
+     On discover/dashboard (no directory-final.css) this base rule is all there
+     is, so it must carry the teal treatment itself, not the old pale mint. */
+  background: linear-gradient(145deg, #087a68, #0b3444) !important;
+  color: #fffaf2 !important;
+  -webkit-text-fill-color: #fffaf2 !important;
   font-size: 18px;
   font-weight: 600;
+  box-shadow: 0 3px 6px rgba(7, 56, 47, 0.16);
 }
 
 .cg-org-detail-rating {
@@ -30884,4 +30889,231 @@ html body[data-page="settings"] .cg-set .btn-ghost {
   .cg-addpipe-match {
     display: none;
   }
+}
+
+/* ============================================================
+   "Write a review" in the org-detail preview modal must read as the SAME
+   secondary white-outline button in every context. On the directory pages
+   (companies / universities / discover-companies / discover-universities),
+   directory-final.css was filling it with the dark-green primary gradient, so
+   it looked like a second primary button and its label washed out; on
+   discover / dashboard it was already the correct white outline. This
+   high-specificity rule pins the white-outline treatment everywhere so
+   "View full profile" stays the one primary action.
+   ============================================================ */
+html body .cg-org-detail-modal .cg-org-detail-rating button[data-write-review] {
+  border: 1px solid rgba(15, 23, 42, 0.16) !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #1e293b !important;
+  -webkit-text-fill-color: #1e293b !important;
+  box-shadow: none !important;
+}
+
+html body .cg-org-detail-modal .cg-org-detail-rating button[data-write-review]:hover {
+  background: #f4f5f7 !important;
+  background-image: none !important;
+}
+
+html body .cg-org-detail-modal .cg-org-detail-rating button[data-write-review] svg {
+  color: #1e293b !important;
+  -webkit-text-fill-color: #1e293b !important;
+}
+
+/* ============================================================
+   University preview - richer, personalized middle section.
+   Universities previously showed only rating + score bars + pros/cons, which
+   read as much thinner than a company's Open-roles list. This section adds a
+   "why it fits you" line, graduate-outcome facts, and the user's own entry-
+   requirements match (reusing .cg-uni-requirements for the checklist rows).
+   ============================================================ */
+.cg-org-detail-uni {
+  display: grid;
+  gap: 14px;
+}
+
+.cg-org-detail-uni-fit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 11px 14px;
+  border: 1px solid rgba(11, 109, 101, 0.18);
+  border-radius: 12px;
+  background: rgba(11, 109, 101, 0.06);
+  color: #234b43;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.cg-org-detail-uni-fit b {
+  color: #0b6d65;
+  font-weight: 700;
+}
+
+.cg-org-detail-uni-fit .cg-vera-mark {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+.cg-org-detail-uni-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.cg-org-detail-uni-facts > div {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  background: #F8F7F4;
+}
+
+.cg-org-detail-uni-facts span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #7a8a83;
+}
+
+.cg-org-detail-uni-facts strong {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.1;
+  color: #123c34;
+}
+
+.cg-org-detail-uni-facts small {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.cg-org-detail-uni-elig {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.cg-org-detail-uni-elig-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cg-org-detail-uni-elig-head h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 15px;
+  color: #1E293B;
+}
+
+.cg-org-detail-uni-elig-head h3 span {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(11, 109, 101, 0.1);
+  color: #0b6d65;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cg-org-detail-uni-elig-head h3 svg {
+  width: 17px;
+  height: 17px;
+  color: #0b6d65;
+}
+
+.cg-org-detail-uni-signin {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.cg-org-detail-uni-signin svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.cg-org-detail-uni-signin-btn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #0b6d65;
+  font-family: "Inter", sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 620px) {
+  .cg-org-detail-uni-facts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* "Known for" fallback block for catalogue-only universities (no requirements
+   data to match against) - specialism chips + the summary line, so the preview
+   still carries substance. */
+.cg-org-detail-uni-known {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.cg-org-detail-uni-known h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 15px;
+  color: #1E293B;
+}
+
+.cg-org-detail-uni-known h3 svg {
+  width: 16px;
+  height: 16px;
+  color: #0b6d65;
+}
+
+.cg-org-detail-uni-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.cg-org-detail-uni-tags span {
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(11, 109, 101, 0.08);
+  color: #234b43;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cg-org-detail-uni-known p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #53635d;
 }

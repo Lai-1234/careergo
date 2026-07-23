@@ -6008,6 +6008,28 @@ function universityRequirementChecks(uni, profile) {
   return checks;
 }
 
+/* A personalized "why this fits you" line for a university, in Vera's voice.
+   Prefers a hand-written reason, then an alma-mater match against the user's
+   own school, then a target-field-aware fallback - so the preview always says
+   something about THIS user, not a generic blurb. */
+function universityFitLine(uni, profile) {
+  const canned = {
+    um: "Your alma mater - 312 alumni in product roles are active on CareerGo.",
+    taylors: "Industry-linked projects line up with your portfolio goal.",
+    monash: "An international curriculum that fits your 3-year plan.",
+    apu: "AI programme partners - closes your top skill gap."
+  };
+  if (canned[uni.id]) return canned[uni.id];
+  const school = String(profile?.background?.school || "").trim().toLowerCase();
+  const firstWord = school.split(/\s+/)[0];
+  if (firstWord && firstWord.length > 3 && uni.name.toLowerCase().includes(firstWord)) {
+    return "Your alma mater - tap its alumni network for warm intros.";
+  }
+  const target = (profile?.preferences?.roles || [])[0] || profile?.background?.targetCareerField;
+  if (target) return `${uni.signal} - a strong base for ${target} paths.`;
+  return uni.signal ? `${uni.signal}.` : "Matches your profile and goals.";
+}
+
 function universityRequirementsPanel(uni, profile) {
   const checks = universityRequirementChecks(uni, profile);
   if (!checks.length) return "";
@@ -8321,10 +8343,101 @@ function openOrgDetailModal(orgId) {
   const scoreRows = org.scores
     ? [["Culture", org.scores.culture], ["Growth", org.scores.growth], ["Pay", org.scores.pay], ["Balance", org.scores.balance]]
     : [];
-  const allOpenRoles = org.type !== "University" ? openRolesForOrg(org) : [];
+  const isUniversity = org.type === "University";
+  const allOpenRoles = !isUniversity ? openRolesForOrg(org) : [];
   const openRoles = allOpenRoles.slice(0, 3);
-  const loggedIn = Boolean(readState().session.loggedIn);
+  const modalState = readState();
+  const modalProfile = modalState.profile;
+  const loggedIn = Boolean(modalState.session.loggedIn);
   const veraMark = `<img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI">`;
+
+  // Universities used to show only rating + scores + pros/cons - noticeably
+  // thinner than the company card's Open-roles section. Give them a matching,
+  // and more personal, middle section: a "why it fits you" line, graduate
+  // outcome facts, and (the highlight) the user's own eligibility match.
+  const uniChecks = isUniversity ? universityRequirementChecks(org, modalProfile) : [];
+  const uniStatusIcon = { ok: "check-circle-2", gap: "alert-triangle", info: "info" };
+  const uniMet = uniChecks.filter(check => check.status === "ok").length;
+  const employPctMatch = String(org.salary || "").match(/(\d+)\s*%/);
+  const sizeHasNumber = org.size && /\d/.test(org.size);
+  const uniFacts = isUniversity ? [
+    employPctMatch ? ["Graduate employment", `${employPctMatch[1]}%`, "within 6 months"] : null,
+    org.requirements?.intakes ? ["Next intakes", org.requirements.intakes, ""] : null,
+    sizeHasNumber ? ["Community", org.size.replace(/\s*students?/i, "").trim(), /student/i.test(org.size) ? "students" : ""] : null
+  ].filter(Boolean) : [];
+  // "Why it fits you" is only truthful for a signed-in user. A guest has no
+  // profile, so show a neutral university highlight instead of a personalized
+  // (and, from leftover localStorage, potentially someone else's) claim.
+  const uniFitLabel = loggedIn ? "Why it fits you" : "Highlight";
+  const uniFitLine = !isUniversity ? "" : (loggedIn
+    ? universityFitLine(org, modalProfile)
+    : (org.signal ? `${org.signal}.` : (org.summary || "A place worth a closer look.")));
+  const uniSpecialisms = isUniversity ? (org.tags || []).filter(tag => tag !== "Verified").slice(0, 4) : [];
+  // Neutral, non-personalized requirement rows for the logged-out view.
+  const uniReqRows = (isUniversity && org.requirements) ? [
+    { label: `Minimum qualification: ${org.requirements.qualification}` },
+    { label: `CGPA ${Number(org.requirements.cgpa).toFixed(1)}+ or equivalent` },
+    { label: `English: ${org.requirements.english}` },
+    { label: `Required subjects: ${org.requirements.subjects.join(", ")}`, note: `Intakes: ${org.requirements.intakes}.` }
+  ] : [];
+  // Signed-in users see their OWN eligibility match; guests see the plain
+  // requirements + a sign-in prompt (never a match computed against whatever
+  // profile happens to be left in localStorage); universities with no
+  // requirements data fall back to a "Known for" block so nothing is bare.
+  const uniMiddle = !isUniversity ? "" : (org.requirements ? (loggedIn ? `
+    <div class="cg-org-detail-uni-elig">
+      <div class="cg-org-detail-uni-elig-head">
+        <h3>${icon("clipboard-list")} Your eligibility <span>${uniMet}/${uniChecks.length} matched</span></h3>
+        <button type="button" class="cg-org-detail-role-link" data-uni-requirements="${org.id}">Full checklist ${icon("arrow-right")}</button>
+      </div>
+      <div class="cg-uni-requirements">
+        <ul>
+          ${uniChecks.slice(0, 3).map(check => `
+            <li class="${check.status}">
+              ${icon(uniStatusIcon[check.status])}
+              <div><strong>${check.label}</strong><p>${check.note}</p></div>
+            </li>
+          `).join("")}
+        </ul>
+      </div>
+      ${uniChecks.length > 3 ? `<p class="cg-org-detail-roles-more">+${uniChecks.length - 3} more requirement${uniChecks.length - 3 === 1 ? "" : "s"} - open the full checklist.</p>` : ""}
+    </div>
+  ` : `
+    <div class="cg-org-detail-uni-elig">
+      <div class="cg-org-detail-uni-elig-head">
+        <h3>${icon("clipboard-list")} Entry requirements</h3>
+        <a class="cg-org-detail-role-link" href="${loginRedirectHref(`company-profile.html?org=${org.id}`)}">Sign in to match ${icon("arrow-right")}</a>
+      </div>
+      <div class="cg-uni-requirements">
+        <ul>
+          ${uniReqRows.slice(0, 3).map(row => `
+            <li class="info">
+              ${icon("info")}
+              <div><strong>${row.label}</strong>${row.note ? `<p>${row.note}</p>` : ""}</div>
+            </li>
+          `).join("")}
+        </ul>
+      </div>
+      <p class="cg-org-detail-uni-signin">${icon("lock")} <button type="button" class="cg-org-detail-uni-signin-btn" data-auth-prompt="check your eligibility for ${org.name}">Sign in</button> to see how you match these against your own profile.</p>
+    </div>
+  `) : ((uniSpecialisms.length || org.summary) ? `
+    <div class="cg-org-detail-uni-known">
+      <h3>${icon("sparkles")} Known for</h3>
+      ${uniSpecialisms.length ? `<div class="cg-org-detail-uni-tags">${uniSpecialisms.map(tag => `<span>${tag}</span>`).join("")}</div>` : ""}
+      ${org.summary ? `<p>${org.summary}</p>` : ""}
+    </div>
+  ` : ""));
+  const universitySection = isUniversity ? `
+    <div class="cg-org-detail-uni">
+      <p class="cg-org-detail-uni-fit">${veraMark} <b>${uniFitLabel}</b> - ${uniFitLine}</p>
+      ${uniFacts.length ? `
+        <div class="cg-org-detail-uni-facts">
+          ${uniFacts.map(([label, value, sub]) => `<div><span>${label}</span><strong>${value}</strong>${sub ? `<small>${sub}</small>` : ""}</div>`).join("")}
+        </div>
+      ` : ""}
+      ${uniMiddle}
+    </div>
+  ` : "";
   const askVeraLink = (topic, label) => loggedIn
     ? `<a class="btn btn-cyan" href="posts.html?topic=${encodeURIComponent(topic)}#messages">${veraMark} ${label}</a>`
     : `<button type="button" class="btn btn-cyan" data-auth-prompt="ask Vera about ${org.name}">${veraMark} ${label}</button>`;
@@ -8354,6 +8467,7 @@ function openOrgDetailModal(orgId) {
           : `<a class="btn btn-primary" href="${loginRedirectHref(`company-profile.html?org=${org.id}`)}">${icon("arrow-up-right")} View full profile</a>`}
         <button class="btn btn-ghost" type="button" data-write-review>${icon("pen-line")} Write a review</button>
       </div>
+      ${universitySection}
       ${openRoles.length ? `
         <div class="cg-org-detail-roles">
           <div class="cg-org-detail-roles-head">
@@ -8403,6 +8517,10 @@ function openOrgDetailModal(orgId) {
     backdrop.remove();
     openApplicationDetailsModal(btn.dataset.orgRoleDetails);
   }));
+  qs("[data-uni-requirements]", backdrop)?.addEventListener("click", () => {
+    // Drill down to the full eligibility checklist, keeping the preview behind.
+    openUniversityRequirementsModal(backdrop.querySelector("[data-uni-requirements]").dataset.uniRequirements);
+  });
   createIcons();
 }
 
