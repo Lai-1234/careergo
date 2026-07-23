@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700;800;900;1000&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="enterprise.css" />
+  <link rel="stylesheet" href="styles.css?v=202607222000" />
+  <link rel="stylesheet" href="enterprise.css?v=202607231900" />
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body data-page="login">
@@ -38,12 +38,21 @@
 
     <section class="login-form-column" aria-labelledby="login-title">
       <div class="login-form-heading">
-        <p class="login-eyebrow">Welcome back</p>
+        <p class="login-eyebrow">CareerGo</p>
         <h2 id="login-title">Welcome back.</h2>
         <p>Continue where you left off.</p>
       </div>
 
       <form class="login-form-card" action="dashboard.html">
+        <div class="login-role-toggle" role="tablist" aria-label="Choose account type">
+          <button type="button" class="login-role-tab is-active" data-login-role="candidate" role="tab" aria-selected="true">
+            <i data-lucide="compass" aria-hidden="true"></i> I'm looking for a job
+          </button>
+          <button type="button" class="login-role-tab" data-login-role="employer" role="tab" aria-selected="false">
+            <i data-lucide="building-2" aria-hidden="true"></i> I'm hiring
+          </button>
+        </div>
+
         <div class="login-social-stack">
           <button class="login-social-button" type="button" data-enter-demo>
             <span aria-hidden="true">G</span>
@@ -61,7 +70,7 @@
           <span>Email</span>
           <span class="login-input-shell">
             <i data-lucide="mail" aria-hidden="true"></i>
-            <input type="email" name="email" placeholder="you@email.com" autocomplete="email" />
+            <input type="email" name="email" placeholder="you@email.com" autocomplete="email" data-login-email />
           </span>
         </label>
 
@@ -93,7 +102,7 @@
       </p>
     </section>
   </main>
-  <script src="app.js"></script>
+  <script src="app.js?v=202607231900"></script>
   <script>
     if (window.lucide) window.lucide.createIcons();
   </script>

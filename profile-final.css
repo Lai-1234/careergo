@@ -1,4 +1,4 @@
-body[data-page="profile"] {
+body:is([data-page="profile"],[data-page="public-profile"]) {
   --profile-bg: #f7f2e8;
   --profile-ink: #07382f;
   --profile-muted: #5f716b;
@@ -11,7 +11,7 @@ body[data-page="profile"] {
   color: var(--profile-ink) !important;
 }
 
-body[data-page="profile"] .topbar {
+body:is([data-page="profile"],[data-page="public-profile"]) .topbar {
   position: sticky !important;
   top: 0 !important;
   z-index: 1000 !important;
@@ -21,7 +21,7 @@ body[data-page="profile"] .topbar {
   -webkit-backdrop-filter: blur(18px) !important;
 }
 
-body[data-page="profile"] .container.os-layout {
+body:is([data-page="profile"],[data-page="public-profile"]) .container.os-layout {
   width: min(100% - 76px, 1370px) !important;
   max-width: 1370px !important;
   margin: 0 auto !important;
@@ -29,7 +29,7 @@ body[data-page="profile"] .container.os-layout {
 }
 
 /* User profile redesign from CareerGo user page design system. */
-html body[data-page="profile"] {
+html body:is([data-page="profile"],[data-page="public-profile"]) {
   --up-bg: #f7f3ea;
   --up-ink: #1b2e28;
   --up-muted: #5b6a66;
@@ -49,17 +49,17 @@ html body[data-page="profile"] {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01" !important;
 }
 
-html body[data-page="profile"] .container.os-layout {
+html body:is([data-page="profile"],[data-page="public-profile"]) .container.os-layout {
   width: min(1200px, calc(100% - 48px)) !important;
   max-width: 1200px !important;
   padding: 0 !important;
 }
 
-html body[data-page="profile"] .os-main {
+html body:is([data-page="profile"],[data-page="public-profile"]) .os-main {
   padding: 56px 0 96px !important;
 }
 
-html body[data-page="profile"] :is(h1, h2, h3) {
+html body:is([data-page="profile"],[data-page="public-profile"]) :is(h1, h2, h3) {
   font-family: "Fraunces", Georgia, serif !important;
   color: var(--up-ink) !important;
   font-weight: 400 !important;
@@ -121,7 +121,7 @@ html body[data-page="profile"] :is(h1, h2, h3) {
 }
 
 .cg-up-camera,
-html body[data-page="profile"] .cg-up-camera {
+html body:is([data-page="profile"],[data-page="public-profile"]) .cg-up-camera {
   position: absolute;
   right: 24px;
   bottom: 24px;
@@ -156,6 +156,23 @@ html body[data-page="profile"] .cg-up-camera {
   line-height: 1.4;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+
+/* Demoted caption line under a promoted section headline - plain small
+   text (not the uppercase kicker treatment, which reads shouty at full
+   sentence length). */
+.cg-up-section-caption {
+  margin: 6px 0 0;
+  color: var(--up-muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* .cg-up-hire-card is itself a grid with its own 16px gap between direct
+   children, so the caption doesn't need its own top margin there too. */
+.cg-up-hire-card > .cg-up-section-caption {
+  margin-top: 0;
 }
 
 .cg-up-identity h1 {
@@ -222,8 +239,8 @@ html body[data-page="profile"] .cg-up-camera {
 }
 
 .cg-up-primary {
-  border: 1px solid var(--up-teal);
-  background: var(--up-teal);
+  border: 0;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%);
   color: #f8f4ea;
   box-shadow: var(--up-shadow-elegant);
 }
@@ -263,9 +280,17 @@ html body[data-page="profile"] .cg-up-camera {
   text-transform: uppercase;
 }
 
+.cg-up-stat-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  row-gap: 4px;
+  margin-top: 12px;
+}
+
 .cg-up-stats strong {
   display: block;
-  margin-top: 12px;
   font-family: "Fraunces", Georgia, serif;
   font-size: 30px;
   font-weight: 500;
@@ -273,12 +298,21 @@ html body[data-page="profile"] .cg-up-camera {
   letter-spacing: -0.02em;
 }
 
-.cg-up-stats small {
-  display: block;
-  margin-top: 8px;
-  color: var(--up-muted);
-  font-size: 12px;
-  line-height: 1.45;
+.cg-up-stat-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--up-mint);
+  color: var(--up-teal);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
 }
 
 .cg-up-layout {
@@ -320,6 +354,18 @@ html body[data-page="profile"] .cg-up-camera {
   line-height: 1.1;
 }
 
+/* Small caption line under the big serif headline - the section's old
+   descriptive sentence, demoted here since the kicker/headline roles were
+   swapped (kicker text is now the big h2, this used to be the h2). */
+.cg-up-section-caption {
+  margin: 6px 0 0;
+  color: var(--up-muted);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
 .cg-up-project-grid,
 .cg-up-education-grid {
   display: grid;
@@ -339,6 +385,7 @@ html body[data-page="profile"] .cg-up-camera {
 }
 
 .cg-up-project-card {
+  position: relative;
   overflow: hidden;
 }
 
@@ -412,7 +459,7 @@ html body[data-page="profile"] .cg-up-camera {
   line-height: 1.3;
 }
 
-html body[data-page="profile"] .cg-up-project-art h3 {
+html body:is([data-page="profile"],[data-page="public-profile"]) .cg-up-project-art h3 {
   color: #f8f4ea !important;
   -webkit-text-fill-color: #f8f4ea !important;
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
@@ -420,22 +467,22 @@ html body[data-page="profile"] .cg-up-project-art h3 {
   font-weight: 500 !important;
 }
 
-html body[data-page="profile"] .cg-up-gallery-card strong {
+html body:is([data-page="profile"],[data-page="public-profile"]) .cg-up-gallery-card strong {
   color: #f8f4ea !important;
   -webkit-text-fill-color: #f8f4ea !important;
 }
 
-html body[data-page="profile"] .cg-up-hire-card > div > strong {
+html body:is([data-page="profile"],[data-page="public-profile"]) .cg-up-hire-card > div > strong {
   color: #f8f4ea !important;
   -webkit-text-fill-color: #f8f4ea !important;
 }
 
-html body[data-page="profile"] .cg-up-hire-card > div > strong small {
+html body:is([data-page="profile"],[data-page="public-profile"]) .cg-up-hire-card > div > strong small {
   color: rgba(248, 244, 234, 0.82) !important;
   -webkit-text-fill-color: rgba(248, 244, 234, 0.82) !important;
 }
 
-html body[data-page="profile"] .cg-up-hire-card > div > p {
+html body:is([data-page="profile"],[data-page="public-profile"]) .cg-up-hire-card > div > p {
   color: rgba(248, 244, 234, 0.88) !important;
   -webkit-text-fill-color: rgba(248, 244, 234, 0.88) !important;
 }
@@ -533,6 +580,7 @@ html body[data-page="profile"] .cg-up-hire-card > div > p {
 
 .cg-up-role-card,
 .cg-up-edu-card {
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 16px;
@@ -552,8 +600,8 @@ html body[data-page="profile"] .cg-up-hire-card > div > p {
   font-weight: 600;
 }
 
-html body[data-page="profile"] .cg-up-role-card h3,
-html body[data-page="profile"] .cg-up-edu-card h3 {
+html body:is([data-page="profile"],[data-page="public-profile"]) .cg-up-role-card h3,
+html body:is([data-page="profile"],[data-page="public-profile"]) .cg-up-edu-card h3 {
   margin: 0;
   color: #1b2e28 !important;
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
@@ -691,6 +739,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
 }
 
 .cg-up-side-panel {
+  position: relative;
   padding: 20px;
 }
 
@@ -867,11 +916,11 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
 }
 
 @media (max-width: 760px) {
-  html body[data-page="profile"] .container.os-layout {
+  html body:is([data-page="profile"],[data-page="public-profile"]) .container.os-layout {
     width: min(100% - 28px, 1200px) !important;
   }
 
-  html body[data-page="profile"] .os-main {
+  html body:is([data-page="profile"],[data-page="public-profile"]) .os-main {
     padding-top: 32px !important;
   }
 
@@ -1484,7 +1533,7 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
 }
 
 @media (max-width: 760px) {
-  body[data-page="profile"] .container.os-layout {
+  body:is([data-page="profile"],[data-page="public-profile"]) .container.os-layout {
     width: min(100% - 28px, 1370px) !important;
   }
 
@@ -1645,5 +1694,554 @@ html body[data-page="profile"] .cg-up-edu-card h3 {
   .cg-add-proof-grid-3,
   .cg-add-proof-grid-2 {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   Per-item edit/delete controls (LinkedIn-style management pattern).
+   Reused identically across Portfolio proof, Experience, Education, and
+   Portfolio gallery - same icon-only 28px buttons, same hover reveal on
+   desktop, always visible on touch devices since there's no hover state
+   to reveal them there.
+   ============================================================ */
+.cg-up-item-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 150ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.cg-up-project-card:hover .cg-up-item-actions,
+.cg-up-role-card:hover .cg-up-item-actions,
+.cg-up-edu-card:hover .cg-up-item-actions,
+.cg-up-gallery-card:hover .cg-up-item-actions,
+.cg-up-item-actions:focus-within {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .cg-up-item-actions {
+    opacity: 1;
+  }
+}
+
+.cg-up-item-edit,
+.cg-up-item-delete {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  background: rgba(27, 46, 40, 0.72);
+  color: #f8f4ea;
+  backdrop-filter: blur(4px);
+  transition: background 150ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.cg-up-item-edit svg,
+.cg-up-item-delete svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cg-up-item-edit:hover {
+  background: var(--up-teal);
+}
+
+.cg-up-item-delete:hover {
+  background: #b3261e;
+}
+
+/* Cards without a dark art header (role/education) sit on a white
+   background, so the dark chrome icon buttons above are swapped for a
+   lighter chip that reads correctly on white. */
+.cg-up-role-card .cg-up-item-actions .cg-up-item-edit,
+.cg-up-role-card .cg-up-item-actions .cg-up-item-delete,
+.cg-up-edu-card .cg-up-item-actions .cg-up-item-edit,
+.cg-up-edu-card .cg-up-item-actions .cg-up-item-delete {
+  border-color: var(--up-line);
+  background: #ffffff;
+  color: var(--up-muted);
+  box-shadow: var(--up-shadow-soft);
+}
+
+.cg-up-role-card .cg-up-item-actions .cg-up-item-edit:hover,
+.cg-up-edu-card .cg-up-item-actions .cg-up-item-edit:hover {
+  background: var(--up-teal);
+  color: #f8f4ea;
+}
+
+.cg-up-role-card .cg-up-item-actions .cg-up-item-delete:hover,
+.cg-up-edu-card .cg-up-item-actions .cg-up-item-delete:hover {
+  background: #b3261e;
+  color: #f8f4ea;
+}
+
+/* "View all" - plain text link, matching the sitewide pill-to-text-link
+   pattern already used on Explore/Discover/Career Value. */
+.cg-up-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--up-teal);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cg-up-view-all svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cg-up-view-all:hover {
+  color: #173f47;
+}
+
+/* Small pencil affordance in each Skill signal panel, routing to the
+   bulk Edit Career Data editor since individual skill scores aren't
+   backed by per-skill state (see CLAUDE.md flag). */
+.cg-up-panel-edit-link {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--up-line);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--up-muted);
+  box-shadow: var(--up-shadow-soft);
+  transition: background 150ms cubic-bezier(0.2, 0.7, 0.2, 1), color 150ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.cg-up-panel-edit-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cg-up-panel-edit-link:hover {
+  background: var(--up-teal);
+  color: #f8f4ea;
+}
+
+/* Confirm-delete dialog - shared by every section. */
+.cg-confirm-modal {
+  width: min(420px, 100%);
+  display: grid;
+  gap: 16px;
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px;
+  border: 1px solid #b3261e;
+  border-radius: 8px;
+  background: #b3261e;
+  color: #fffaf2;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-danger:hover {
+  background: #922019;
+  border-color: #922019;
+}
+
+/* "View all" list modal - same edit/delete affordances, always visible
+   (no hover-to-reveal, since this is a compact list, not a card grid). */
+.cg-viewall-modal {
+  width: min(560px, 100%);
+  max-height: min(80vh, 640px);
+  display: grid;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+.cg-viewall-list {
+  display: grid;
+  gap: 10px;
+}
+
+.cg-viewall-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--up-line);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.cg-viewall-row > div:first-child {
+  min-width: 0;
+}
+
+.cg-viewall-row strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--up-ink);
+}
+
+.cg-viewall-row p {
+  margin: 2px 0 0;
+  color: var(--up-muted);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cg-viewall-actions {
+  position: static;
+  flex-shrink: 0;
+  opacity: 1;
+}
+
+.cg-viewall-actions .cg-up-item-edit,
+.cg-viewall-actions .cg-up-item-delete {
+  border-color: var(--up-line);
+  background: #f7f3ea;
+  color: var(--up-muted);
+  box-shadow: none;
+}
+
+.cg-viewall-actions .cg-up-item-edit:hover {
+  background: var(--up-teal);
+  color: #f8f4ea;
+}
+
+.cg-viewall-actions .cg-up-item-delete:hover {
+  background: #b3261e;
+  color: #f8f4ea;
+}
+
+/* ==========================================================================
+   Public profile (public-profile.html) - external / employer-facing variant
+   of the profile.html layout. Shares every .cg-up-* rule above; the classes
+   below are only the pieces that exist ONLY on the public view: the preview
+   context bar, the employer contact card, and the verification footer.
+   Light-on-dark text needs !important + -webkit-text-fill-color to survive
+   the sitewide :is(h1..h6,strong,b,label) / :is(p,li,small) colour resets.
+   ========================================================================== */
+
+html body[data-page="public-profile"] .cg-pp {
+  gap: 28px;
+}
+
+html body[data-page="public-profile"] .cg-pp .cg-up-hero {
+  margin-top: 28px;
+}
+
+/* --- preview context bar --------------------------------------------- */
+html body[data-page="public-profile"] .cg-pp-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 55%, #0b6d65 100%);
+  box-shadow: var(--up-shadow-elegant);
+}
+
+html body[data-page="public-profile"] .cg-pp-bar-copy {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  align-items: baseline;
+  min-width: 0;
+}
+
+html body[data-page="public-profile"] .cg-pp-bar-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(248, 244, 234, 0.16);
+  color: #f4fbf9 !important;
+  -webkit-text-fill-color: #f4fbf9 !important;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+html body[data-page="public-profile"] .cg-pp-bar-copy p {
+  margin: 0;
+  color: rgba(244, 251, 249, 0.86) !important;
+  -webkit-text-fill-color: rgba(244, 251, 249, 0.86) !important;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+html body[data-page="public-profile"] .cg-pp-bar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+html body[data-page="public-profile"] .cg-pp-visibility {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(248, 244, 234, 0.12);
+  color: #f4fbf9 !important;
+  -webkit-text-fill-color: #f4fbf9 !important;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+html body[data-page="public-profile"] .cg-pp-visibility.off {
+  background: rgba(226, 168, 96, 0.24);
+}
+
+html body[data-page="public-profile"] .cg-pp-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 13px;
+  border: 1px solid rgba(248, 244, 234, 0.3);
+  border-radius: 8px;
+  background: transparent;
+  color: #f4fbf9 !important;
+  -webkit-text-fill-color: #f4fbf9 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.16s ease;
+}
+
+html body[data-page="public-profile"] .cg-pp-bar-btn:hover {
+  background: rgba(248, 244, 234, 0.14);
+}
+
+html body[data-page="public-profile"] .cg-pp-bar svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* --- profile-not-live notice ------------------------------------------ */
+html body[data-page="public-profile"] .cg-pp-hidden-note {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 18px;
+  border: 1px solid rgba(200, 145, 60, 0.28);
+  border-radius: 14px;
+  background: rgba(232, 186, 116, 0.14);
+}
+
+html body[data-page="public-profile"] .cg-pp-hidden-note svg {
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: #8a5a1a;
+}
+
+html body[data-page="public-profile"] .cg-pp-hidden-note strong {
+  display: block;
+  color: #6d4712 !important;
+  -webkit-text-fill-color: #6d4712 !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+html body[data-page="public-profile"] .cg-pp-hidden-note p {
+  margin: 3px 0 0;
+  color: #7a5a2c !important;
+  -webkit-text-fill-color: #7a5a2c !important;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+html body[data-page="public-profile"] .cg-pp-hidden-note a {
+  color: #6d4712 !important;
+  -webkit-text-fill-color: #6d4712 !important;
+  text-decoration: underline;
+}
+
+/* --- empty section placeholder ---------------------------------------- */
+html body[data-page="public-profile"] .cg-pp-empty {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  margin: 0;
+  padding: 22px 24px;
+  border: 1px dashed var(--up-line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--up-muted) !important;
+  -webkit-text-fill-color: var(--up-muted) !important;
+  font-size: 14px;
+}
+
+html body[data-page="public-profile"] .cg-pp-empty svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* --- employer contact card -------------------------------------------- */
+html body[data-page="public-profile"] .cg-pp-contact {
+  display: grid;
+  gap: 10px;
+}
+
+html body[data-page="public-profile"] .cg-pp-contact-primary,
+html body[data-page="public-profile"] .cg-pp-contact-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 9px;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+}
+
+html body[data-page="public-profile"] .cg-pp-contact-primary {
+  margin-top: 4px;
+  border: 0;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%);
+  color: #f8f4ea !important;
+  -webkit-text-fill-color: #f8f4ea !important;
+  box-shadow: var(--up-shadow-elegant);
+}
+
+html body[data-page="public-profile"] .cg-pp-contact-secondary {
+  border: 1px solid var(--up-line);
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--up-ink) !important;
+  -webkit-text-fill-color: var(--up-ink) !important;
+}
+
+html body[data-page="public-profile"] .cg-pp-contact-facts {
+  display: grid;
+  gap: 9px;
+  margin: 6px 0 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--up-line);
+  list-style: none;
+}
+
+html body[data-page="public-profile"] .cg-pp-contact-facts li {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  color: var(--up-muted) !important;
+  -webkit-text-fill-color: var(--up-muted) !important;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+html body[data-page="public-profile"] .cg-pp-contact-facts svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--up-teal);
+}
+
+html body[data-page="public-profile"] .cg-pp-contact-link {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  min-height: 34px;
+  color: var(--up-teal) !important;
+  -webkit-text-fill-color: var(--up-teal) !important;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+html body[data-page="public-profile"] .cg-pp-contact-link svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+html body[data-page="public-profile"] .cg-pp-contact-link svg:last-child {
+  width: 13px;
+  height: 13px;
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+/* --- verification footer ---------------------------------------------- */
+html body[data-page="public-profile"] .cg-pp-foot {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  padding: 18px 22px;
+  border: 1px solid var(--up-line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+html body[data-page="public-profile"] .cg-pp-foot svg {
+  width: 17px;
+  height: 17px;
+  margin-top: 1px;
+  flex-shrink: 0;
+  color: var(--up-teal);
+}
+
+html body[data-page="public-profile"] .cg-pp-foot p {
+  margin: 0;
+  color: var(--up-muted) !important;
+  -webkit-text-fill-color: var(--up-muted) !important;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+@media (max-width: 760px) {
+  html body[data-page="public-profile"] .cg-pp-bar,
+  html body[data-page="public-profile"] .cg-pp-bar-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  html body[data-page="public-profile"] .cg-pp-bar-btn,
+  html body[data-page="public-profile"] .cg-pp-visibility {
+    justify-content: center;
   }
 }

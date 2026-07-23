@@ -2217,7 +2217,7 @@ img { max-width: 100%; display: block; }
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 80;
+  z-index: 1300;
   display: grid;
   place-items: center;
   padding: 20px;
@@ -2376,6 +2376,17 @@ img { max-width: 100%; display: block; }
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 3rem;
+}
+
+.footer-brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-logo-icon {
+  height: 44px;
+  width: auto;
 }
 
 .footer-brand h2 {
@@ -12408,9 +12419,7 @@ html body:is([data-page="home"], [data-page="about"], [data-page="community"], [
 
 /* Login redesign */
 body[data-page="login"] {
-  background:
-    radial-gradient(circle at 82% 20%, rgba(166, 203, 209, 0.18), transparent 30%),
-    linear-gradient(180deg, #f7f3ea 0%, #efe8d8 100%) !important;
+  background: #F7F3EA !important;
 }
 
 body[data-page="login"] .login-redesign {
@@ -12429,9 +12438,7 @@ body[data-page="login"] .login-story-card {
   padding: 16px;
   border: 1px solid #e4dfd3;
   border-radius: 18px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.82)),
-    radial-gradient(circle at 82% 18%, rgba(166, 203, 209, 0.16), transparent 36%);
+  background: #FFFFFF;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
@@ -12514,8 +12521,47 @@ body[data-page="login"] .login-form-card {
   padding: 16px;
   border: 1px solid #e4dfd3;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.88);
+  background: #FFFFFF;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+body[data-page="login"] .login-role-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 4px;
+  border: 1px solid #e4dfd3;
+  border-radius: 10px;
+  background: #F7F3EA;
+}
+
+body[data-page="login"] .login-role-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #5B6A66 !important;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+body[data-page="login"] .login-role-tab svg { width: 14px; height: 14px; }
+
+body[data-page="login"] .login-role-tab:hover { color: #1B2E28 !important; }
+
+body[data-page="login"] .login-role-tab.is-active {
+  background: #FFFFFF;
+  color: #1B2E28 !important;
+  box-shadow: 0 1px 3px rgba(27, 46, 40, .12);
+  font-weight: 600;
 }
 
 body[data-page="login"] .login-social-stack {

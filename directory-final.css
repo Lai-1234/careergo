@@ -1,4 +1,4 @@
-body:is([data-page="companies"], [data-page="universities"]):has(.cg-directory-browser) {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]):has(.cg-directory-browser) {
   --dir-bg: #f7f3ea;
   --dir-ink: #1b2e28;
   --dir-muted: #5b6a66;
@@ -11,372 +11,51 @@ body:is([data-page="companies"], [data-page="universities"]):has(.cg-directory-b
   color: var(--dir-ink) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
-  height: 72px !important;
-  min-height: 72px !important;
-  background: rgba(255, 255, 255, 0.88) !important;
-  border-bottom: 1px solid rgba(229, 231, 235, 0.72) !important;
-}
+/* Navbar for companies/universities is governed entirely by enterprise.css's
+   shared ":has(.public-site-nav)" navbar-parity block — do not add page-local
+   .topbar overrides here. This file previously carried ~6 duplicate .topbar
+   blocks (height/logo/nav-link/CTA), which is why this page's navbar used to
+   drift out of sync with index.html; removed as part of the navbar refactor. */
 
-/* Keep this last: directory pages load this file after enterprise.css, so this
-   final lock keeps their public navbar identical to index.html. */
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
-  height: 82px !important;
-  min-height: 82px !important;
-  background: #ffffff !important;
-  border-bottom: 1px solid #eef0ee !important;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .nav-inner {
-  width: min(1410px, calc(100% - 72px)) !important;
-  height: 82px !important;
-  min-height: 82px !important;
-  display: grid !important;
-  grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr) !important;
-  align-items: center !important;
-  gap: 32px !important;
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]):has(.cg-directory-browser) .container.os-layout,
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]):has(.cg-directory-browser) main > .container {
+  width: min(100% - 96px, 1240px) !important;
+  max-width: 1240px !important;
   margin: 0 auto !important;
   padding: 0 !important;
 }
 
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-logo {
-  width: 118px !important;
-  max-width: 118px !important;
-  height: auto !important;
-  max-height: 46px !important;
-  object-fit: contain !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-text {
-  display: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav {
-  gap: 34px !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a {
-  font-family: "Inter", system-ui, sans-serif !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  line-height: 1 !important;
-  letter-spacing: 0 !important;
-  color: #64748b !important;
-  -webkit-text-fill-color: #64748b !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions {
-  gap: 24px !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn {
-  height: 44px !important;
-  min-height: 44px !important;
-  font-family: "Inter", system-ui, sans-serif !important;
-  font-size: 16px !important;
-  line-height: 1 !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary {
-  min-width: 148px !important;
-  padding-inline: 28px !important;
-  background: #0f4c5c !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-/* Must stay last: directory pages load this stylesheet after enterprise.css. */
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
-  height: 82px !important;
-  min-height: 82px !important;
-  background: #ffffff !important;
-  border-bottom: 1px solid #eef0ee !important;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .nav-inner {
-  width: min(1410px, calc(100% - 72px)) !important;
-  height: 82px !important;
-  min-height: 82px !important;
-  display: grid !important;
-  grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr) !important;
-  align-items: center !important;
-  gap: 32px !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-logo {
-  width: 118px !important;
-  max-width: 118px !important;
-  height: auto !important;
-  max-height: 46px !important;
-  object-fit: contain !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-text {
-  display: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav {
-  gap: 34px !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a {
-  font-family: "Inter", system-ui, sans-serif !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  line-height: 1 !important;
-  letter-spacing: 0 !important;
-  color: #64748b !important;
-  -webkit-text-fill-color: #64748b !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions {
-  gap: 24px !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn {
-  height: 44px !important;
-  min-height: 44px !important;
-  font-family: "Inter", system-ui, sans-serif !important;
-  font-size: 16px !important;
-  line-height: 1 !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary {
-  min-width: 148px !important;
-  padding-inline: 28px !important;
-  background: #0f4c5c !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-/* Public navbar parity: companies/universities load this file after enterprise.css,
-   so keep their top navigation exactly aligned with index.html. */
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 1000 !important;
-  height: 82px !important;
-  min-height: 82px !important;
-  border-bottom: 1px solid #eef0ee !important;
-  background: #ffffff !important;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav)::before,
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav)::after {
-  content: none !important;
-  display: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .nav-inner {
-  width: min(1410px, calc(100% - 72px)) !important;
-  height: 82px !important;
-  min-height: 82px !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
-  display: grid !important;
-  grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr) !important;
-  align-items: center !important;
-  gap: 32px !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-brand {
-  justify-self: start !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 0 !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-logo {
-  display: block !important;
-  width: 118px !important;
-  max-width: 118px !important;
-  height: auto !important;
-  max-height: 46px !important;
-  object-fit: contain !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-text {
-  display: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav {
-  justify-self: center !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 34px !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a {
-  min-height: 0 !important;
-  height: auto !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: #64748b !important;
-  -webkit-text-fill-color: #64748b !important;
-  font-family: "Inter", system-ui, sans-serif !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  line-height: 1 !important;
-  letter-spacing: 0 !important;
-  text-decoration: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a:hover,
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a.active {
-  color: #0f4c5c !important;
-  -webkit-text-fill-color: #0f4c5c !important;
-  background: transparent !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions {
-  justify-self: end !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 24px !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-height: 44px !important;
-  height: 44px !important;
-  padding: 0 22px !important;
-  border-radius: 8px !important;
-  font-family: "Inter", system-ui, sans-serif !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  line-height: 1 !important;
-  letter-spacing: 0 !important;
-  text-decoration: none !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-ghost {
-  min-width: auto !important;
-  padding-inline: 0 !important;
-  border-color: transparent !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: #64748b !important;
-  -webkit-text-fill-color: #64748b !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary {
-  min-width: 148px !important;
-  padding-inline: 28px !important;
-  border: 1px solid #0f4c5c !important;
-  background: #0f4c5c !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  box-shadow: 0 3px 5px rgba(15, 76, 92, 0.14) !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary:hover {
-  border-color: #0b3e4c !important;
-  background: #0b3e4c !important;
-}
-
-@media (max-width: 900px) {
-  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
-    height: auto !important;
-    min-height: 72px !important;
-  }
-
-  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .nav-inner {
-    width: min(100% - 32px, 1410px) !important;
-    height: 72px !important;
-    min-height: 72px !important;
-    display: flex !important;
-    justify-content: space-between !important;
-  }
-
-  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav {
-    display: none !important;
-  }
-
-  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-logo {
-    width: 106px !important;
-  }
-
-  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions {
-    gap: 14px !important;
-  }
-
-  html body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary {
-    min-width: 126px !important;
-    padding-inline: 18px !important;
-  }
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .topbar {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 1000 !important;
-  height: 78px !important;
-  min-height: 78px !important;
-  border-bottom: 1px solid rgba(14, 44, 37, 0.1) !important;
-  background: rgba(248, 244, 235, 0.9) !important;
-  box-shadow: none !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]):has(.cg-directory-browser) .container.os-layout,
-body:is([data-page="companies"], [data-page="universities"]):has(.cg-directory-browser) main > .container {
-  width: min(100% - 76px, 1370px) !important;
-  max-width: 1370px !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-browser {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-browser {
   width: 100% !important;
-  padding: 48px 0 84px !important;
+  padding: 32px 0 56px !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-hero {
+/* Discover context carries a .cg-back-link above the hero (marketing
+   companies.html/universities.html don't) - tighten the top padding here
+   so the back link sits close to the navbar instead of floating in extra
+   space that was originally sized for a back-link-less hero. */
+body[data-page="discover"] .cg-directory-browser {
+  padding-top: 20px !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-hero {
   max-width: 980px !important;
-  margin: 0 0 26px !important;
+  margin: 0 0 18px !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-hero .cg-overline {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-hero .cg-overline {
   display: block !important;
   margin-bottom: 12px !important;
-  color: #8a7960 !important;
-  -webkit-text-fill-color: #8a7960 !important;
+  color: #5b6a66 !important;
+  -webkit-text-fill-color: #5b6a66 !important;
   font-family: var(--cg-shot-sans, Inter, sans-serif) !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.26em !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.16em !important;
   text-transform: uppercase !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-hero h1 {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-hero h1 {
   margin: 0 !important;
   color: var(--dir-ink) !important;
   -webkit-text-fill-color: var(--dir-ink) !important;
@@ -387,7 +66,7 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-hero 
   letter-spacing: -0.01em !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-hero p {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-hero p {
   max-width: 860px !important;
   margin: 14px 0 0 !important;
   color: #5b6a66 !important;
@@ -397,111 +76,127 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-hero 
   line-height: 1.55 !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-tabs {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-tabs {
   display: inline-grid !important;
-  grid-template-columns: repeat(2, minmax(210px, 1fr)) !important;
-  gap: 10px !important;
-  margin: 8px 0 24px !important;
-  padding: 6px !important;
+  width: auto !important;
+  grid-template-columns: repeat(2, minmax(160px, 1fr)) !important;
+  gap: 6px !important;
+  margin: 8px 0 16px !important;
+  padding: 5px !important;
   border: 1px solid var(--dir-line) !important;
   border-radius: 999px !important;
   background: rgba(255, 255, 255, 0.58) !important;
   box-shadow: 0 3px 6px rgba(31, 42, 34, 0.055) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-tabs button {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-tabs :is(button, a) {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 9px !important;
-  min-height: 48px !important;
-  padding: 0 22px !important;
+  gap: 8px !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
   border: 0 !important;
   border-radius: 999px !important;
   background: transparent !important;
   color: #41534d !important;
   -webkit-text-fill-color: #41534d !important;
-  font-size: 15px !important;
+  font-size: 13px !important;
   font-weight: 600 !important;
+  text-decoration: none !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-tabs button span {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-tabs :is(button, a) svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-tabs :is(button, a) span {
   color: #6f7b76 !important;
   -webkit-text-fill-color: #6f7b76 !important;
-  font-size: 12px !important;
+  font-size: 11px !important;
   font-weight: 500 !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-tabs button.active {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-tabs :is(button, a).active {
   color: #fffaf2 !important;
   -webkit-text-fill-color: #fffaf2 !important;
   background: linear-gradient(120deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
-  box-shadow: 0 12px 26px rgba(7, 56, 47, 0.18) !important;
+  box-shadow: 0 8px 18px rgba(7, 56, 47, 0.18) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-tabs button.active span {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-tabs :is(button, a).active span {
   color: rgba(255, 250, 242, 0.72) !important;
   -webkit-text-fill-color: rgba(255, 250, 242, 0.72) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-controls {
-  display: grid !important;
-  grid-template-columns: minmax(340px, 1fr) 190px !important;
-  gap: 14px !important;
-  align-items: center !important;
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-controls {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
   margin: 0 0 12px !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-search {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-controls-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-controls-primary {
+  gap: 12px !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-search {
   display: grid !important;
   grid-template-columns: 20px minmax(0, 1fr) !important;
   align-items: center !important;
   gap: 12px !important;
-  min-height: 58px !important;
-  padding: 0 18px !important;
+  flex: 1 1 320px !important;
+  min-width: 240px !important;
+  min-height: 48px !important;
+  padding: 0 16px !important;
   border: 1px solid var(--dir-line) !important;
   border-radius: 14px !important;
   background: rgba(255, 255, 255, 0.8) !important;
   box-shadow: 0 3px 6px rgba(31, 42, 34, 0.05) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-search input,
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-controls select {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-search input,
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-controls select {
   color: #213a34 !important;
   -webkit-text-fill-color: #213a34 !important;
   font-family: var(--cg-shot-sans, Inter, sans-serif) !important;
-  font-size: 15px !important;
+  font-size: 14px !important;
   font-weight: 500 !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-search input {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-search input {
   width: 100% !important;
   border: 0 !important;
   outline: 0 !important;
   background: transparent !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-controls select {
-  min-height: 58px !important;
-  padding: 0 18px !important;
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-controls select {
+  width: auto !important;
+  flex: 0 0 auto !important;
+  min-height: 48px !important;
+  padding: 0 16px !important;
   border: 1px solid var(--dir-line) !important;
   border-radius: 14px !important;
   background: rgba(255, 255, 255, 0.8) !important;
   box-shadow: 0 3px 6px rgba(31, 42, 34, 0.05) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-controls select[data-directory-filter] {
-  min-height: 48px !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-chips {
-  grid-column: 1 / -1 !important;
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-chips {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 10px !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-chips button {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-chips button {
   min-height: 40px !important;
   padding: 0 16px !important;
   border: 1px solid var(--dir-line) !important;
@@ -513,13 +208,13 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-chips
   font-weight: 600 !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-chips button.active {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-chips button.active {
   background: var(--dir-mint) !important;
   color: var(--dir-ink) !important;
   -webkit-text-fill-color: var(--dir-ink) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-count {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-count {
   margin: 14px 0 20px !important;
   color: #5d6f68 !important;
   -webkit-text-fill-color: #5d6f68 !important;
@@ -527,61 +222,61 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-count
   font-weight: 500 !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-count strong {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-count strong {
   color: var(--dir-ink) !important;
   -webkit-text-fill-color: var(--dir-ink) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-grid {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-grid {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 12px !important;
+  gap: 10px !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card {
   min-height: 0 !important;
   border: 1px solid var(--dir-line) !important;
   border-radius: 18px !important;
   background: var(--dir-card) !important;
-  box-shadow: 0 3px 8px rgba(31, 42, 34, 0.065) !important;
+  box-shadow: 0 3px 8px rgba(42, 34, 22, 0.06) !important;
   overflow: hidden !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-body {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card-body {
   display: grid !important;
-  gap: 12px !important;
+  gap: 10px !important;
   padding: 16px !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-head {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card-head {
   display: grid !important;
-  grid-template-columns: 64px minmax(0, 1fr) !important;
-  gap: 16px !important;
+  grid-template-columns: 44px minmax(0, 1fr) !important;
+  gap: 12px !important;
   align-items: center !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-logo {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-logo {
   display: grid !important;
   place-items: center !important;
-  width: 64px !important;
-  height: 64px !important;
-  border-radius: 20px !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 14px !important;
   background: linear-gradient(145deg, #087a68, #0b3444) !important;
   color: #fffaf2 !important;
   -webkit-text-fill-color: #fffaf2 !important;
   font-family: var(--cg-shot-serif, Georgia, serif) !important;
-  font-size: 27px !important;
+  font-size: 18px !important;
   font-weight: 600 !important;
   box-shadow: 0 3px 6px rgba(7, 56, 47, 0.16) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card.universities .cg-directory-logo {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card.universities .cg-directory-logo {
   background: linear-gradient(145deg, #dcefeb, #edf7f4) !important;
   color: var(--dir-ink) !important;
   -webkit-text-fill-color: var(--dir-ink) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-type {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-type {
   display: block !important;
   margin-bottom: 4px !important;
   color: #7a8a83 !important;
@@ -592,43 +287,43 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-type 
   text-transform: uppercase !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-head h2 {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card-head h2 {
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
   margin: 0 0 5px !important;
   color: var(--dir-ink) !important;
   -webkit-text-fill-color: var(--dir-ink) !important;
-  font-family: var(--cg-shot-serif, Georgia, serif) !important;
-  font-size: 22px !important;
-  font-weight: 600 !important;
-  line-height: 1.1 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-head h2 svg {
-  width: 18px !important;
-  height: 18px !important;
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card-head h2 svg {
+  width: 14px !important;
+  height: 14px !important;
   color: #0e756c !important;
   stroke: #0e756c !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-head p,
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-head small {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card-head p,
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card-head small {
   margin: 0 !important;
   color: #60706a !important;
   -webkit-text-fill-color: #60706a !important;
-  font-size: 14px !important;
+  font-size: 12px !important;
   font-weight: 500 !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-special,
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-signals {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-special,
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-signals {
   display: grid !important;
   gap: 10px !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-special > span,
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-signals > span {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-special > span,
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-signals > span {
   color: #7b8a84 !important;
   -webkit-text-fill-color: #7b8a84 !important;
   font-size: 11px !important;
@@ -637,72 +332,152 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-signa
   text-transform: uppercase !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-special div,
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-signals div {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-special div,
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-signals div {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 8px !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-special b,
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-signals b {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-special b,
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-signals b {
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  min-height: 34px !important;
-  padding: 0 12px !important;
+  min-height: 28px !important;
+  padding: 0 10px !important;
   border: 1px solid rgba(14, 44, 37, 0.08) !important;
   border-radius: 999px !important;
   background: #f4f1e7 !important;
   color: #40554e !important;
   -webkit-text-fill-color: #40554e !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   font-weight: 600 !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card-body > p {
-  min-height: 54px !important;
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-special b svg,
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-signals b svg {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+/* Color-coded signal tags: gives each tag TYPE a distinct, on-brand accent
+   instead of every tag reading identically, using only existing palette
+   tokens (Teal for trust/verification, Aqua for momentum/activity, the
+   site's documented warning gold for recognition/awards). Generic
+   descriptive tags (Stable, Large teams, industry names, etc.) keep the
+   original neutral beige. */
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-signals b.cg-tag-verified {
+  background: rgba(31, 85, 96, 0.12) !important;
+  border-color: rgba(31, 85, 96, 0.28) !important;
+  color: #1F5560 !important;
+  -webkit-text-fill-color: #1F5560 !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-signals b.cg-tag-choice {
+  background: rgba(224, 179, 74, 0.22) !important;
+  border-color: rgba(224, 179, 74, 0.45) !important;
+  color: #8a6420 !important;
+  -webkit-text-fill-color: #8a6420 !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-signals b.cg-tag-momentum {
+  background: rgba(166, 203, 209, 0.4) !important;
+  border-color: rgba(31, 85, 96, 0.2) !important;
+  color: #1B2E28 !important;
+  -webkit-text-fill-color: #1B2E28 !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card-body > p {
+  min-height: 0 !important;
   margin: 0 !important;
-  padding-top: 16px !important;
-  border-top: 1px solid rgba(14, 44, 37, 0.1) !important;
   color: #42564f !important;
   -webkit-text-fill-color: #42564f !important;
-  font-size: 15px !important;
+  font-size: 13px !important;
   font-weight: 500 !important;
-  line-height: 1.55 !important;
+  line-height: 1.5 !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card footer {
+/* Footer: thin divider, open-roles count on the left, icon-only secondary
+   actions (Reviews/Save) + one clearly-primary Ask Vera button on the
+   right — instead of three same-weight pills competing for attention. */
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card footer {
   display: flex !important;
   align-items: center !important;
+  justify-content: space-between !important;
   gap: 10px !important;
+  margin-top: 2px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid rgba(14, 44, 37, 0.1) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card footer :is(a, button) {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-footer-count {
+  color: #5b6a66 !important;
+  -webkit-text-fill-color: #5b6a66 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-footer-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-icon-btn {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 8px !important;
-  min-height: 42px !important;
-  padding: 0 16px !important;
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
   border: 1px solid rgba(13, 67, 58, 0.12) !important;
   border-radius: 999px !important;
   background: rgba(255, 255, 255, 0.78) !important;
-  color: #263f38 !important;
-  -webkit-text-fill-color: #263f38 !important;
-  font-size: 14px !important;
+  color: #5b6a66 !important;
+  -webkit-text-fill-color: #5b6a66 !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-icon-btn:hover {
+  color: #1B2E28 !important;
+  -webkit-text-fill-color: #1B2E28 !important;
+  border-color: rgba(31, 85, 96, 0.35) !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-icon-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card footer a.cg-directory-ask-vera {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-height: 32px !important;
+  padding: 0 14px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
+  color: #f8f7f4 !important;
+  -webkit-text-fill-color: #f8f7f4 !important;
+  font-size: 12px !important;
   font-weight: 600 !important;
   text-decoration: none !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-card footer a {
-  color: #fffaf2 !important;
-  -webkit-text-fill-color: #fffaf2 !important;
-  background: var(--dir-ink) !important;
-  border-color: var(--dir-ink) !important;
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card footer a.cg-directory-ask-vera:hover {
+  background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .cg-directory-empty {
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card footer a.cg-directory-ask-vera .cg-vera-mark {
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 999px !important;
+  object-fit: cover !important;
+}
+
+body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-empty {
   grid-column: 1 / -1 !important;
   padding: 42px !important;
   border: 1px dashed var(--dir-line) !important;
@@ -711,100 +486,40 @@ body:is([data-page="companies"], [data-page="universities"]) .cg-directory-empty
 }
 
 @media (max-width: 1100px) {
-  body:is([data-page="companies"], [data-page="universities"]) .cg-directory-grid {
+  body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
 @media (max-width: 760px) {
-  body:is([data-page="companies"], [data-page="universities"]):has(.cg-directory-browser) .container.os-layout,
-  body:is([data-page="companies"], [data-page="universities"]):has(.cg-directory-browser) main > .container {
-    width: min(100% - 28px, 1370px) !important;
+  body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]):has(.cg-directory-browser) .container.os-layout,
+  body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]):has(.cg-directory-browser) main > .container {
+    width: min(100% - 28px, 1240px) !important;
   }
 
-  body:is([data-page="companies"], [data-page="universities"]) .cg-directory-tabs,
-  body:is([data-page="companies"], [data-page="universities"]) .cg-directory-controls {
+  body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-tabs {
     grid-template-columns: 1fr !important;
     width: 100% !important;
   }
 
-  body:is([data-page="companies"], [data-page="universities"]) .cg-directory-grid {
+  body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-controls-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-search,
+  body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-controls select {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+  }
+
+  body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-grid {
     grid-template-columns: 1fr !important;
   }
 }
 
-body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) {
-  height: 82px !important;
-  min-height: 82px !important;
-  background: #ffffff !important;
-  border-bottom: 1px solid #eef0ee !important;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .nav-inner {
-  width: min(1410px, calc(100% - 72px)) !important;
-  height: 82px !important;
-  min-height: 82px !important;
-  display: grid !important;
-  grid-template-columns: minmax(170px, 1fr) auto minmax(170px, 1fr) !important;
-  align-items: center !important;
-  gap: 32px !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-logo {
-  width: 118px !important;
-  max-width: 118px !important;
-  height: auto !important;
-  max-height: 46px !important;
-  object-fit: contain !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .brand-text {
-  display: none !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav {
-  gap: 34px !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-nav a {
-  font-family: "Inter", system-ui, sans-serif !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  line-height: 1 !important;
-  letter-spacing: 0 !important;
-  color: #64748b !important;
-  -webkit-text-fill-color: #64748b !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions {
-  gap: 24px !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn {
-  height: 44px !important;
-  min-height: 44px !important;
-  font-family: "Inter", system-ui, sans-serif !important;
-  font-size: 16px !important;
-  line-height: 1 !important;
-}
-
-body:is([data-page="companies"], [data-page="universities"]) .topbar:has(.public-site-nav) .public-site-actions .btn-primary {
-  min-width: 148px !important;
-  padding-inline: 28px !important;
-  background: #0f4c5c !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
 /* Match public directory CTAs to the dashboard deep teal action color. */
-html body:is([data-page="companies"], [data-page="universities"])
+html body:is([data-page="companies"], [data-page="universities"], [data-page="discover"])
   :is(.public-site-actions .btn-primary, .btn-primary, .search-button, .company-review-link) {
   border-color: #0b6d65 !important;
   background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
@@ -813,7 +528,7 @@ html body:is([data-page="companies"], [data-page="universities"])
   box-shadow: 0 3px 6px rgba(7, 56, 47, 0.18) !important;
 }
 
-html body:is([data-page="companies"], [data-page="universities"])
+html body:is([data-page="companies"], [data-page="universities"], [data-page="discover"])
   :is(.public-site-actions .btn-primary, .btn-primary, .search-button, .company-review-link):hover {
   border-color: #0b6d65 !important;
   background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
@@ -822,14 +537,14 @@ html body:is([data-page="companies"], [data-page="universities"])
 }
 
 /* Keep directory pages aligned with the public teal action color. */
-html body:is([data-page="companies"], [data-page="universities"]) {
+html body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) {
   --cg-primary: #0b6d65 !important;
   --cg-primary-hover: #004a41 !important;
   --home-teal: #0b6d65 !important;
 }
 
-html body:is([data-page="companies"], [data-page="universities"])
-  :is(.topbar:has(.public-site-nav) .public-site-actions .btn-primary, .btn-primary, .search-button, .company-review-link, .filter-tab.active, .directory-tab.active) {
+html body:is([data-page="companies"], [data-page="universities"], [data-page="discover"])
+  :is(.btn-primary, .search-button, .company-review-link, .filter-tab.active, .directory-tab.active) {
   border-color: #0b6d65 !important;
   background: linear-gradient(135deg, #07382f 0%, #004a41 50%, #0b6d65 100%) !important;
   color: #f8f7f4 !important;
@@ -837,20 +552,14 @@ html body:is([data-page="companies"], [data-page="universities"])
   box-shadow: 0 18px 34px rgba(7, 56, 47, 0.18) !important;
 }
 
-html body:is([data-page="companies"], [data-page="universities"])
-  :is(.topbar:has(.public-site-nav) .public-site-actions .btn-primary, .btn-primary, .search-button, .company-review-link, .filter-tab.active, .directory-tab.active):hover {
+html body:is([data-page="companies"], [data-page="universities"], [data-page="discover"])
+  :is(.btn-primary, .search-button, .company-review-link, .filter-tab.active, .directory-tab.active):hover {
   border-color: #0b6d65 !important;
   background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
 
-html body:is([data-page="companies"], [data-page="universities"])
-  :is(.topbar:has(.public-site-nav) .public-site-nav a:hover, .topbar:has(.public-site-nav) .public-site-nav a.active) {
-  color: #0b6d65 !important;
-  -webkit-text-fill-color: #0b6d65 !important;
-}
-
-html body:is([data-page="companies"], [data-page="universities"]) .site-footer {
+html body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .site-footer {
   margin-top: 0 !important;
 }

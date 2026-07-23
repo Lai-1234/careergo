@@ -5,7 +5,7 @@ const DATA = {
       title: "Product Designer",
       company: "Maybank",
       location: "Kuala Lumpur",
-      salary: "RM 72k - 98k",
+      salary: "RM 6k - 8.2k / month",
       type: "Hybrid",
       level: "Junior",
       industry: "Banking",
@@ -25,7 +25,7 @@ const DATA = {
       title: "Data Analyst",
       company: "Grab",
       location: "Petaling Jaya",
-      salary: "RM 66k - 92k",
+      salary: "RM 5.5k - 7.7k / month",
       type: "Onsite",
       level: "Entry",
       industry: "Technology",
@@ -45,7 +45,7 @@ const DATA = {
       title: "Graduate UX Researcher",
       company: "CIMB",
       location: "Kuala Lumpur",
-      salary: "RM 54k - 70k",
+      salary: "RM 4.5k - 5.8k / month",
       type: "Hybrid",
       level: "Entry",
       industry: "Banking",
@@ -65,7 +65,7 @@ const DATA = {
       title: "AI Product Associate",
       company: "Petronas Digital",
       location: "Kuala Lumpur",
-      salary: "RM 82k - 116k",
+      salary: "RM 6.8k - 9.7k / month",
       type: "Hybrid",
       level: "Junior",
       industry: "Energy Tech",
@@ -85,7 +85,7 @@ const DATA = {
       title: "Campus Career Advisor",
       company: "Taylor's University",
       location: "Subang Jaya",
-      salary: "RM 60k - 82k",
+      salary: "RM 5k - 6.8k / month",
       type: "Onsite",
       level: "Junior",
       industry: "Education",
@@ -114,6 +114,7 @@ const DATA = {
       open: 18,
       signal: "Stable graduate pathway",
       salary: "RM 4.2k - 12k / month",
+      externalUrl: "https://www.maybank.com/en/careers.page",
       tags: ["Stable", "Graduate friendly", "Large teams"],
       summary: "Malaysia's largest financial group with strong graduate programs, structured teams, and broad digital transformation work.",
       scores: { culture: 4.2, growth: 4.3, pay: 4.1, balance: 4.0 },
@@ -132,6 +133,7 @@ const DATA = {
       open: 12,
       signal: "High-growth product exposure",
       salary: "RM 5.5k - 16k / month",
+      externalUrl: "https://grab.careers",
       tags: ["Fast paced", "Regional exposure", "Tech"],
       summary: "Regional technology company with strong product, data, and operations teams across Southeast Asia.",
       scores: { culture: 4.0, growth: 4.5, pay: 4.2, balance: 3.6 },
@@ -168,6 +170,7 @@ const DATA = {
       open: 7,
       signal: "Enterprise AI and data work",
       salary: "RM 5k - 15k / month",
+      externalUrl: "https://www.petronas.com/careers",
       tags: ["AI", "Enterprise", "Energy"],
       summary: "Digital arm focused on enterprise technology, data, AI, and transformation across the energy sector.",
       scores: { culture: 4.1, growth: 4.4, pay: 4.3, balance: 3.9 },
@@ -188,6 +191,7 @@ const DATA = {
       open: 24,
       signal: "Strong employer recognition",
       salary: "86% employed in 6 months",
+      externalUrl: "https://www.um.edu.my",
       tags: ["Research", "Strong alumni", "Public"],
       summary: "Top public university with strong research profile, employer recognition, and broad alumni network.",
       scores: { culture: 4.2, growth: 4.5, pay: 4.2, balance: 4.0 },
@@ -238,6 +242,7 @@ const DATA = {
       open: 11,
       signal: "International curriculum",
       salary: "82% employed in 6 months",
+      externalUrl: "https://www.monash.edu.my",
       tags: ["International", "Research", "Business"],
       summary: "International university campus with strong research links, global curriculum, and business/engineering pathways.",
       scores: { culture: 4.1, growth: 4.3, pay: 4.0, balance: 3.9 },
@@ -338,9 +343,9 @@ const DATA = {
     { id: "a3", type: "skipped", title: "Data Analyst at Grab", reason: "Below current SQL evidence threshold", status: "Needs skill proof" }
   ],
   candidates: [
-    { id: "c1", name: "Siti Nur", privacy: "Public profile", role: "Product Designer", stage: "Screen", fit: 92, location: "Kuala Lumpur", availability: "2 weeks", salary: "RM 5k - 7k", education: "BA Design, Taylor's", experience: "1 year internship", careerStage: "Fresh Graduate", portfolio: "Strong", skills: ["Figma", "Research", "Design Systems"], reason: "Portfolio shows banking onboarding work and strong research evidence." },
-    { id: "c2", name: "Daniel Lim", privacy: "Anonymized", role: "Data Analyst", stage: "Interview", fit: 88, location: "Petaling Jaya", availability: "Immediate", salary: "RM 4.8k - 6.5k", education: "BSc Statistics, UM", experience: "Graduate projects", careerStage: "Looking for first full-time job", portfolio: "Moderate", skills: ["SQL", "Python", "Dashboards"], reason: "Strong SQL dashboard proof and clear interest in marketplace analytics." },
-    { id: "c3", name: "Priya Nair", privacy: "Public profile", role: "Frontend Developer", stage: "Saved", fit: 84, location: "Remote / Selangor", availability: "1 month", salary: "RM 6k - 8k", education: "Diploma Software Engineering", experience: "2 years freelance", careerStage: "Career Switcher", portfolio: "Strong", skills: ["React", "TypeScript", "Testing"], reason: "Transferable freelance delivery evidence with strong component testing habits." }
+    { id: "c1", name: "Siti Nur", privacy: "Public profile", role: "Product Designer", stage: "Screen", fit: 92, location: "Kuala Lumpur", availability: "2 weeks", salary: "RM 5k - 7k / month", education: "BA Design, Taylor's", experience: "1 year internship", careerStage: "Fresh Graduate", portfolio: "Strong", skills: ["Figma", "Research", "Design Systems"], reason: "Portfolio shows banking onboarding work and strong research evidence." },
+    { id: "c2", name: "Daniel Lim", privacy: "Anonymized", role: "Data Analyst", stage: "Interview", fit: 88, location: "Petaling Jaya", availability: "Immediate", salary: "RM 4.8k - 6.5k / month", education: "BSc Statistics, UM", experience: "Graduate projects", careerStage: "Looking for first full-time job", portfolio: "Moderate", skills: ["SQL", "Python", "Dashboards"], reason: "Strong SQL dashboard proof and clear interest in marketplace analytics." },
+    { id: "c3", name: "Priya Nair", privacy: "Public profile", role: "Frontend Developer", stage: "Saved", fit: 84, location: "Remote / Selangor", availability: "1 month", salary: "RM 6k - 8k / month", education: "Diploma Software Engineering", experience: "2 years freelance", careerStage: "Career Switcher", portfolio: "Strong", skills: ["React", "TypeScript", "Testing"], reason: "Transferable freelance delivery evidence with strong component testing habits." }
   ],
   employerRoles: [
     { id: "er1", title: "Product Design Intern", applicants: 84, qualified: 21, status: "Active" },
@@ -502,6 +507,130 @@ function nowStamp() {
   return new Date().toISOString();
 }
 
+/* ---- Notifications model -------------------------------------------------
+   A notification is { id, type, title, body, icon, ts (ISO), read, href }.
+   `type` drives the icon + accent; `ts` drives relative time + recency
+   grouping; `read` drives the unread dot and bell badge count; `href` deep
+   links the row to the relevant surface. Legacy items ({id,title,body}) are
+   upgraded by normalizeNotification so old writers keep working. */
+const NOTIFICATION_TYPE_ICON = {
+  interview: "calendar-check",
+  recruiter: "message-square-text",
+  autopilot: "bot",
+  application: "briefcase-business",
+  worth: "trending-up",
+  network: "user-round-plus",
+  growth: "graduation-cap",
+  vera: "sparkles",
+  role: "sparkles",
+  system: "info"
+};
+
+function notificationIconFor(note) {
+  if (note && note.icon) return note.icon;
+  return NOTIFICATION_TYPE_ICON[note && note.type] || "bell";
+}
+
+function normalizeNotification(note) {
+  if (!note || typeof note !== "object") return null;
+  const type = note.type || "vera";
+  return {
+    id: note.id || `n-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    type,
+    title: note.title || "",
+    body: note.body || "",
+    icon: note.icon || NOTIFICATION_TYPE_ICON[type] || "bell",
+    ts: note.ts || nowStamp(),
+    read: Boolean(note.read),
+    href: note.href || ""
+  };
+}
+
+function normalizeNotifications(list) {
+  if (!Array.isArray(list)) return [];
+  return list.map(normalizeNotification).filter(Boolean);
+}
+
+/* Prepend a notification onto state (dedupes by id, newest first).
+   Unlike the old inline writers this does NOT cap the list at 5 - the
+   dropdown slices to 5 itself, but notifications.html needs the history. */
+function pushNotification(state, note) {
+  const next = normalizeNotification(note);
+  if (!next) return state;
+  const existing = normalizeNotifications(state.notifications).filter(item => item.id !== next.id);
+  state.notifications = [next, ...existing].slice(0, 60);
+  return state;
+}
+
+function unreadNotificationCount(state) {
+  return normalizeNotifications(state && state.notifications).filter(note => !note.read).length;
+}
+
+function markNotificationRead(id) {
+  const state = readState();
+  state.notifications = normalizeNotifications(state.notifications).map(note => note.id === id ? { ...note, read: true } : note);
+  writeState(syncCurrentUser(state));
+}
+
+function markAllNotificationsRead() {
+  const state = readState();
+  state.notifications = normalizeNotifications(state.notifications).map(note => ({ ...note, read: true }));
+  writeState(syncCurrentUser(state));
+}
+
+function dismissNotification(id) {
+  const state = readState();
+  state.notifications = normalizeNotifications(state.notifications).filter(note => note.id !== id);
+  writeState(syncCurrentUser(state));
+}
+
+/* Compact relative time: "just now", "12m", "5h", "2d", "3w", else a date. */
+function relativeTime(ts) {
+  const then = new Date(ts).getTime();
+  if (!then || Number.isNaN(then)) return "";
+  const diff = Date.now() - then;
+  if (diff < 0) return "now";
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "now";
+  if (mins < 60) return `${mins}m`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d`;
+  const weeks = Math.floor(days / 7);
+  if (weeks < 5) return `${weeks}w`;
+  return new Date(ts).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+/* Recency bucket for the All Notifications page: Today / This week / Earlier. */
+function notificationRecencyBucket(ts) {
+  const then = new Date(ts).getTime();
+  if (!then || Number.isNaN(then)) return "Earlier";
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  if (then >= startOfToday) return "Today";
+  if (then >= startOfToday - 6 * 86400000) return "This week";
+  return "Earlier";
+}
+
+/* Realistic seed feed - specific, timestamped events drawn from features that
+   actually exist in the product, replacing the old generic system messages. */
+function seedNotifications() {
+  const now = Date.now();
+  const at = ms => new Date(now - ms).toISOString();
+  const MIN = 60000, HOUR = 3600000, DAY = 86400000;
+  return [
+    { id: "n-interview", type: "interview", title: "Grab PM interview confirmed - Tue 10:00 AM", body: "Aisha (Recruiter) sent the calendar hold. Prep opens in Growth.", ts: at(12 * MIN), read: false, href: "grow.html#interview-coach" },
+    { id: "n-autopilot", type: "autopilot", title: "Autopilot found 8 new matches", body: "3 strong fits at Grab, Stripe and Setel while you slept.", ts: at(2 * HOUR), read: false, href: "autopilot.html#autopilot-matches" },
+    { id: "n-recruiter", type: "recruiter", title: "Notion recruiter replied", body: "\"Would love to move you to the case round - how's next week?\"", ts: at(5 * HOUR), read: false, href: "posts.html#messages" },
+    { id: "n-worth", type: "worth", title: "Career Value trending up this week", body: "Finishing SQL for PMs pushed you into the top 22% of your cohort.", ts: at(1 * DAY), read: true, href: "market.html" },
+    { id: "n-network", type: "network", title: "Priya at Stripe accepted your connection", body: "She's open to a 15-min intro this month.", ts: at(2 * DAY), read: true, href: "posts.html#messages" },
+    { id: "n-application", type: "application", title: "Stripe moved you to Round 2", body: "Your APAC Payments application advanced - case round next.", ts: at(3 * DAY), read: true, href: "autopilot.html#pipeline-board" },
+    { id: "n-growth", type: "growth", title: "You finished \"SQL for Product Managers\"", body: "+7% interview readiness and 40 more roles unlocked.", ts: at(4 * DAY), read: true, href: "grow.html#recommended-growth" },
+    { id: "n-vera", type: "vera", title: "Vera drafted your 7-day switcher roadmap", body: "Review the Product Analyst path when you have a minute.", ts: at(6 * DAY), read: true, href: "grow.html#growth-journey" }
+  ];
+}
+
 function createEmptyProfile(seed = {}) {
   const createdAt = nowStamp();
   return {
@@ -595,6 +724,13 @@ function createEmptyProfile(seed = {}) {
       allowEmployerDiscovery: false,
       allowCoachMemory: true
     },
+    notifications: {
+      weeklyDigest: true,
+      interviewReminders: true,
+      roadmapNudges: true,
+      employerActivity: true,
+      productUpdates: false
+    },
     intelligence: generateCareerIntelligence({ careerStage: "", goals: [], skills: { technical: [], projects: [] }, resume: { uploaded: false }, preferences: {} }),
     onboardingStatus: { started: false, completed: false, currentStep: 0 },
     createdAt,
@@ -641,7 +777,7 @@ function normalizeState(state) {
     activeVeraConversationId,
     chat: activeVeraConversation.messages,
     veraLastReadAt: Number(state.veraLastReadAt) || 0,
-    notifications: Array.isArray(state.notifications) ? state.notifications : [],
+    notifications: normalizeNotifications(state.notifications),
     savedJobs: Array.isArray(state.savedJobs) ? state.savedJobs : [],
     applications: Array.isArray(state.applications) ? state.applications : [],
     applicationRecords: normalizeApplicationRecords(state),
@@ -693,8 +829,61 @@ function normalizeState(state) {
     autopilotSavedRoles: Array.isArray(state.autopilotSavedRoles) ? state.autopilotSavedRoles : [],
     autopilotAppliedRoles: Array.isArray(state.autopilotAppliedRoles) ? state.autopilotAppliedRoles : [],
     autopilotDismissedRoles: Array.isArray(state.autopilotDismissedRoles) ? state.autopilotDismissedRoles : [],
-    posts: Array.isArray(state.posts) ? state.posts : DATA.communityPosts
+    posts: Array.isArray(state.posts) ? state.posts : DATA.communityPosts,
+    userRoles: normalizeUserRoles(state.userRoles),
+    educationEntries: normalizeEducationEntries(state.educationEntries)
   });
+}
+
+/* ---- Resume data model (structured experience + education) ---------------
+   The resume generator composes from EVERY source the user maintains:
+   profile.* (Edit Career Data + Profile form) AND the structured stores
+   state.userRoles / state.educationEntries / state.portfolioProjects that the
+   Profile page's Add-role / Add-education modals write to. These two
+   normalizers upgrade the older shapes in place (non-destructive - the legacy
+   `date` and `body` fields are kept) so existing saved profiles keep working:
+     userRoles:        date "Jun 2025 - Aug 2025" -> startDate/endDate,
+                       body paragraph -> bullets[], + location
+     educationEntries: years "2016 - 2020" -> graduationDate, + location   */
+function splitDateRange(raw) {
+  const parts = String(raw || "").split(/\s*[-–]\s*/).map(part => part.trim()).filter(Boolean);
+  if (!parts.length) return ["", ""];
+  if (parts.length === 1) return [parts[0], ""];
+  return [parts[0], /present|current|now/i.test(parts[1]) ? "Present" : parts[1]];
+}
+
+function bodyToBullets(body) {
+  return String(body || "")
+    .split(/(?<=[.!?])\s+|\n+/)
+    .map(line => line.trim().replace(/^[-•*]\s*/, ""))
+    .filter(Boolean)
+    .slice(0, 5);
+}
+
+function normalizeUserRoles(list) {
+  if (!Array.isArray(list)) return [];
+  return list.map(role => {
+    const [start, end] = splitDateRange(role.date);
+    return {
+      ...role,
+      org: role.org || "",
+      location: role.location || "",
+      startDate: role.startDate || start,
+      endDate: role.endDate || end,
+      bullets: Array.isArray(role.bullets) && role.bullets.length ? role.bullets : bodyToBullets(role.body),
+      chips: Array.isArray(role.chips) ? role.chips : []
+    };
+  });
+}
+
+function normalizeEducationEntries(list) {
+  if (!Array.isArray(list)) return [];
+  return list.map(entry => ({
+    ...entry,
+    location: entry.location || "",
+    graduationDate: entry.graduationDate || splitDateRange(entry.years)[1] || String(entry.years || "").trim(),
+    bullets: Array.isArray(entry.bullets) ? entry.bullets : []
+  }));
 }
 
 const TOUR_PAGE_KEYS = ["dashboard", "discover", "grow", "market", "autopilot", "posts"];
@@ -725,6 +914,7 @@ function normalizeProfile(profile) {
       resume: { ...base.resume, ...(profile.resume || {}) },
       coach: { ...base.coach, ...(profile.coach || {}) },
       privacy: { ...base.privacy, ...(profile.privacy || {}) },
+      notifications: { ...base.notifications, ...(profile.notifications || {}) },
       onboardingStatus: { ...base.onboardingStatus, ...(profile.onboardingStatus || {}) },
       intelligence: profile.intelligence || generateCareerIntelligence(profile)
     };
@@ -761,6 +951,16 @@ function createDemoProfile() {
   profile.careerStage = "Planning to switch career";
   profile.background = {
     ...profile.background,
+    // Kept in step with mockEducationEntries() - the Edit Career Data page
+    // reads these summary fields while the profile page reads the structured
+    // education store, and a blank summary made the demo persona look
+    // half-filled on the edit screen.
+    educationLevel: "Bachelor degree",
+    school: "Universiti Malaya",
+    courseMajor: "Business Administration",
+    expectedGraduationYear: "2020",
+    academicPerformance: "CGPA 3.42 - Dean's List 2019",
+    clubLeadership: "Business Analytics Club - events lead",
     currentRole: "Operations Executive",
     industry: "Marketplace Operations",
     yearsExperience: "3 years",
@@ -784,7 +984,10 @@ function createDemoProfile() {
     languages: ["English", "Bahasa Malaysia", "Mandarin"],
     workExperience: "3 years improving marketplace operations workflows, reporting weekly performance, and coordinating with product teams.",
     projects: ["Built a churn analysis dashboard for support tickets", "Mapped onboarding pain points for new sellers", "Created weekly operations scorecard"],
-    achievements: ["Reduced manual reporting time by 40%", "Supported a seller onboarding workflow used by 800+ accounts"],
+    // Job-tied metrics now live in the bullets of the role they belong to
+    // (see mockUserRoles) - this list is reserved for awards/recognitions
+    // that aren't attached to a specific job, per the resume spec.
+    achievements: [],
     portfolioLinks: "notion.site/mira-product-analytics",
     linkedin: "linkedin.com/in/miratan-demo",
     github: "github.com/miratan-demo"
@@ -814,8 +1017,11 @@ function createDemoProfile() {
     missionFrequency: "Weekly",
     confidenceToday: "Medium"
   };
+  // "Private" + employer discovery ON was contradictory, and it showed:
+  // public-profile.html read the discovery flag and said "Live to employers"
+  // while Settings said "Private". The demo persona is actively job hunting.
   profile.privacy = {
-    profileVisibility: "Private",
+    profileVisibility: "Visible to employers",
     allowEmployerDiscovery: true,
     allowCoachMemory: true
   };
@@ -823,6 +1029,64 @@ function createDemoProfile() {
   profile.intelligence = generateCareerIntelligence(profile);
   profile.updatedAt = nowStamp();
   return profile;
+}
+
+/* Structured career history for the demo persona (Mira Tan). MVP has no AI
+   API, so "Generate resume" is deterministic composition rather than model
+   output - which means the seeded data has to carry the substance the resume
+   shows: real company, location, start/end dates, and 3-5 quantified bullets
+   per role. Achievement metrics live INSIDE the role they belong to (rather
+   than a separate Achievements list), matching the reference layout. */
+function mockUserRoles() {
+  return [
+    {
+      id: "role-ops-exec", org: "ShopMatrix Sdn Bhd", initials: "SS",
+      title: "Operations Executive — Marketplace Operations",
+      location: "Petaling Jaya", startDate: "Jan 2023", endDate: "Present",
+      date: "Jan 2023 - Present",
+      chips: ["SQL", "Looker Studio", "Google Sheets"],
+      bullets: [
+        "Built a churn analysis dashboard from support ticket data, surfacing the top 3 drop-off causes for the ops team",
+        "Reduced manual weekly reporting time by 40% by automating data pulls with Google Sheets and Looker Studio",
+        "Mapped onboarding pain points for new sellers and proposed fixes now used across the 800+ seller base",
+        "Coordinated weekly syncs between operations and product teams to prioritize workflow improvements"
+      ]
+    },
+    {
+      id: "role-ops-assoc", org: "ShopMatrix Sdn Bhd", initials: "SS",
+      title: "Marketplace Operations Associate",
+      location: "Petaling Jaya", startDate: "Jun 2021", endDate: "Dec 2022",
+      date: "Jun 2021 - Dec 2022",
+      chips: ["Reporting", "Process mapping"],
+      bullets: [
+        "Created a weekly operations scorecard tracking fulfillment and seller response metrics",
+        "Supported a seller onboarding workflow that scaled to 800+ active accounts"
+      ]
+    },
+    {
+      id: "role-ops-intern", org: "ShopMatrix Sdn Bhd", initials: "SS",
+      title: "Customer Operations Intern",
+      location: "Petaling Jaya", startDate: "Jan 2021", endDate: "May 2021",
+      date: "Jan 2021 - May 2021",
+      chips: ["Customer support"],
+      bullets: [
+        "Handled first-line customer escalations and logged recurring issues for the operations team"
+      ]
+    }
+  ];
+}
+
+function mockEducationEntries() {
+  return [
+    {
+      id: "edu-um", icon: "graduation-cap",
+      title: "Universiti Malaya",
+      subtitle: "Bachelor of Business Administration",
+      location: "Kuala Lumpur",
+      years: "2016 - 2020", graduationDate: "Graduated 2020",
+      score: "", bullets: []
+    }
+  ];
 }
 
 function applyDemoAccount(state) {
@@ -844,26 +1108,59 @@ function applyDemoAccount(state) {
   ];
   state.session = { loggedIn: true, role: "candidate", currentUserId: profile.id, name: profile.personal.fullName, isDemo: true };
   state.profile = profile;
+  state.userRoles = mockUserRoles();
+  state.educationEntries = mockEducationEntries();
   state.onboarding = { ...state.onboarding, candidateDone: true, currentStep: 6, lastSavedAt: nowStamp() };
-  state.savedJobs = ["job-data-analyst", "job-ai-product", "job-product-designer"];
-  state.applications = ["job-data-analyst"];
+  // Populate every pipeline column so the Live pipeline board reads as a real
+  // funnel out of the box: 2 saved, 1 applied, 1 screening, 1 interviewing,
+  // 1 offer. savedJobs holds every tracked id (the app's invariant - see
+  // updateApplicationStage); applications holds everything applied+.
   state.applicationRecords = {
-    "job-data-analyst": createApplicationRecord("job-data-analyst", "interview", {
-      nextAction: "Practice one SQL case and prepare a short dashboard walkthrough before Friday.",
-      deadline: "Friday",
-      note: "Vera flagged SQL proof as the interview risk."
-    }),
     "job-ai-product": createApplicationRecord("job-ai-product", "saved", {
       nextAction: "Ask Vera whether this is a stretch role or a strategic long-term target.",
       deadline: "This week",
-      note: "High upside, but product strategy proof is still light."
+      note: "High upside, but product strategy proof is still light - decide before applying."
     }),
-    "job-product-designer": createApplicationRecord("job-product-designer", "screening", {
-      nextAction: "Tailor resume bullets around research, journey mapping, and stakeholder outcomes.",
-      deadline: "Tomorrow",
-      note: "Recruiter review simulated for the judge preview."
+    "job-ux-researcher": createApplicationRecord("job-ux-researcher", "saved", {
+      nextAction: "Skim two recent case studies and tailor one portfolio piece before you apply.",
+      deadline: "Fri",
+      note: "Strong archetype match (88%). Worth applying this week."
+    }),
+    "job-product-designer": createApplicationRecord("job-product-designer", "applied", {
+      appliedAt: "3 days ago",
+      updatedLabel: "3 days ago",
+      nextAction: "Send a short follow-up if there's no reply by the weekend.",
+      deadline: "Next 3 days",
+      note: "Application submitted. Employer hasn't opened it yet."
+    }),
+    "job-career-advisor": createApplicationRecord("job-career-advisor", "screening", {
+      appliedAt: "6 days ago",
+      updatedLabel: "2 days ago",
+      nextAction: "Prepare proof for your two strongest skills - recruiter screen is next.",
+      deadline: "Next 3 days",
+      note: "Recruiter is reviewing your application."
+    }),
+    "job-data-analyst": createApplicationRecord("job-data-analyst", "interview", {
+      appliedAt: "1 week ago",
+      updatedLabel: "2 days ago",
+      nextAction: "Practice one SQL case and prepare a short dashboard walkthrough before Friday.",
+      deadline: "Friday",
+      note: "Round 2 scheduled. Vera flagged SQL proof as the interview risk."
+    }),
+    // Autopilot-sourced role (resolved via autopilotMatchAsJob in getTrackedJobs),
+    // so the Offer column is populated end to end.
+    "ap-setel-apm": createApplicationRecord("ap-setel-apm", "offer", {
+      appliedAt: "3 weeks ago",
+      updatedLabel: "1 day ago",
+      nextAction: "Counter at RM 10,300 - 72% acceptance. Bring your Career Value data.",
+      deadline: "Mon",
+      note: "Offer is RM 1,400 below your Fair Pay range - room to negotiate."
     })
   };
+  state.savedJobs = Object.keys(state.applicationRecords);
+  state.applications = Object.entries(state.applicationRecords)
+    .filter(([, record]) => stageIndex(record.stage) >= stageIndex("applied"))
+    .map(([id]) => id);
   state.savedOrgs = ["grab", "maybank", "taylors"];
   state.missionProgress = {
     ...state.missionProgress,
@@ -876,10 +1173,7 @@ function applyDemoAccount(state) {
     state.missionStreak = { count: 12, lastDate: new Date().toISOString().slice(0, 10) };
   }
   state.guidedTour = { dashboard: { status: "new", step: 0, startedAt: "" } };
-  state.notifications = [
-    { id: "n-demo", title: "Demo mode", body: "This judge preview uses a realistic personalized profile. You can explore safely." },
-    { id: "n-vera", title: "Vera next step", body: "Ask for a 7-day switcher roadmap or review the Product Analyst path." }
-  ];
+  state.notifications = seedNotifications();
   return state;
 }
 
@@ -889,10 +1183,40 @@ function startDemoDashboard() {
   location.href = "dashboard.html";
 }
 
+/* Employer counterpart to applyDemoAccount() - opens a judge preview of the
+   Employer OS (candidate search, hiring pipeline, talent pool) rather than
+   the candidate workspace. Employer-app.html reads mostly from the static
+   DATA.candidates seed, so this just needs a session + a filled-in company
+   profile, not the rich application-record seeding the candidate path does. */
+function applyDemoEmployerAccount(state) {
+  seedMockEmployerProfile(state);
+  state.session = { loggedIn: true, role: "employer", currentUserId: "demo-employer", name: "Priya Menon", isDemo: true };
+  state.onboarding = { ...state.onboarding, employerDone: true, lastSavedAt: nowStamp() };
+  return state;
+}
+
 function wireStaticLoginForm() {
   const form = qs(".login-form-card");
   if (!form || form.dataset.wired) return;
   form.dataset.wired = "true";
+
+  const roleTabs = qsa("[data-login-role]", form);
+  const emailInput = qs("[data-login-email]", form);
+  let selectedLoginRole = normalizeAuthRole(getInitialAuthRole());
+
+  function applyLoginRole(role) {
+    selectedLoginRole = normalizeAuthRole(role);
+    persistAuthRole(selectedLoginRole);
+    roleTabs.forEach(tab => {
+      const active = tab.dataset.loginRole === selectedLoginRole;
+      tab.classList.toggle("is-active", active);
+      tab.setAttribute("aria-selected", String(active));
+    });
+    if (emailInput) emailInput.placeholder = selectedLoginRole === "employer" ? "you@company.com" : "you@email.com";
+  }
+  roleTabs.forEach(tab => tab.addEventListener("click", () => applyLoginRole(tab.dataset.loginRole)));
+  applyLoginRole(selectedLoginRole);
+
   form.addEventListener("submit", event => {
     event.preventDefault();
     const data = new FormData(form);
@@ -900,11 +1224,14 @@ function wireStaticLoginForm() {
     const password = String(data.get("password") || "");
     const next = readState();
     const redirectTarget = sanitizeRedirectPath(new URLSearchParams(location.search).get("redirect"));
+    const isEmployer = selectedLoginRole === "employer";
     const goToDestination = () => {
+      if (isEmployer) { location.href = redirectTarget || "employer-app.html"; return; }
       location.href = redirectTarget || (next.onboarding.candidateDone ? "dashboard.html" : "onboarding.html");
     };
     if (!email && !password) {
-      applyDemoAccount(next);
+      if (isEmployer) applyDemoEmployerAccount(next);
+      else applyDemoAccount(next);
       writeState(next);
       showToast("Demo workspace opened.");
       goToDestination();
@@ -923,7 +1250,7 @@ function wireStaticLoginForm() {
     if (user.profile) next.profile = normalizeProfile(user.profile);
     writeState(next);
     showToast("Welcome back.");
-    goToDestination();
+    location.href = redirectTarget || (user.role === "employer" ? "employer-app.html" : (next.onboarding.candidateDone ? "dashboard.html" : "onboarding.html"));
   });
 }
 
@@ -1082,6 +1409,250 @@ function applicationSummaryCounts(state = readState()) {
     acc[stage.key] = tracked.filter(item => item.record.stage === stage.key).length;
     return acc;
   }, {});
+}
+
+/* ---------------------------------------------------------------------------
+ * Live pipeline board (Pipeline page → Applications tab).
+ *
+ * The board is now driven entirely by the app's real application store
+ * (state.applicationRecords via getTrackedJobs), the SAME store the Dashboard,
+ * Discover, Saved and role.html pages write to. So a role applied to anywhere
+ * in the app appears here automatically, and moves made here show up there.
+ *
+ * The five funnel columns fold the seven APPLICATION_STAGES down to the stages
+ * a candidate actually thinks in: Saved (interested, not applied) → Applied
+ * (submitted, incl. recruiter screening) → Interviewing → Offer → Closed
+ * (rejected/archived, kept for the record). "Closed" only renders when it has
+ * cards.
+ *
+ * Employer integration is mocked in this MVP: normally the employer advances
+ * you when they review your application, so every active card also carries a
+ * manual "Move" control as the backup path the user asked for.
+ * ------------------------------------------------------------------------- */
+const PIPELINE_BOARD_COLUMNS = [
+  { key: "saved", label: "Saved", kind: "saved", stages: ["saved"], addStage: "saved" },
+  { key: "applied", label: "Applied", kind: "active", stages: ["applied", "screening"], addStage: "applied" },
+  { key: "interview", label: "Interviewing", kind: "active", stages: ["interview"], addStage: "interview" },
+  { key: "offer", label: "Offer", kind: "active", stages: ["offer"], addStage: "offer" },
+  { key: "closed", label: "Closed", kind: "closed", stages: ["rejected", "archived"], addStage: "archived" }
+];
+
+function pipelineBoardData(state = readState()) {
+  const tracked = getTrackedJobs(state);
+  return PIPELINE_BOARD_COLUMNS
+    .map(column => ({ ...column, items: tracked.filter(item => column.stages.includes(item.record.stage)) }))
+    // Closed is noise until there's something in it.
+    .filter(column => column.key !== "closed" || column.items.length);
+}
+
+/* Momentum for an applied+ card, derived from stage progress and recency -
+ * an honest "how alive is this application" read, NOT the role's match score
+ * (a great match you applied to 3 weeks ago with silence has low momentum). */
+function pipelineMomentum(record) {
+  const stale = /2 weeks|3 weeks|month/i.test(record.updatedLabel || "");
+  let score;
+  if (record.stage === "offer") score = 96;
+  else if (record.stage === "interview") score = stale ? 60 : 88;
+  else if (record.stage === "screening") score = stale ? 47 : 73;
+  else if (record.stage === "applied") score = stale ? 39 : 66;
+  else score = 52;
+  return { score, ...pipelineMomentumStatus(score) };
+}
+
+/* The concrete next step for an active card, phrased as an employer-review
+ * status + the manual fallback. */
+function pipelineActiveStatus(record) {
+  if (record.stage === "applied") return "Awaiting employer review";
+  if (record.stage === "screening") return "Recruiter screening in progress";
+  if (record.stage === "interview") return "Interview loop";
+  if (record.stage === "offer") return "Offer on the table";
+  if (record.stage === "rejected") return "Not moving forward";
+  return "Archived";
+}
+
+function untrackApplication(jobId) {
+  const state = readState();
+  const records = { ...(state.applicationRecords || {}) };
+  delete records[jobId];
+  state.applicationRecords = records;
+  state.savedJobs = (state.savedJobs || []).filter(id => id !== jobId);
+  state.applications = (state.applications || []).filter(id => id !== jobId);
+  writeState(syncCurrentUser(state));
+}
+
+// The stages a card can walk through, in funnel order. Rejected/archived sit
+// off this line and are only reachable via the "Move to" menu.
+const PIPELINE_FUNNEL = ["saved", "applied", "screening", "interview", "offer"];
+
+function pipelineJobHref(job) {
+  // The per-role detail page is role.html (findRoleById resolves DATA.jobs +
+  // RECOMMENDED_ROLES); Autopilot-only matches (ap-*) live on job-detail.html.
+  // NOT discover.html?job= - that param is only read by discover's dead
+  // legacy branch, so it just dumped the user at the top of Discover.
+  return String(job.id).startsWith("ap-")
+    ? `job-detail.html?role=${encodeURIComponent(job.id)}`
+    : `role.html?role=${encodeURIComponent(job.id)}`;
+}
+
+/* One pipeline card. Saved roles (interested, not applied) get a lighter,
+ * always-open card that leads with Apply - there's no application to track yet,
+ * so no momentum or stage stepper. Everything applied+ gets the collapsible
+ * card with momentum, an employer-review status, a stage stepper and the manual
+ * Move control. */
+function pipelineBoardCardMarkup(column, item) {
+  const { job, record } = item;
+  const esc = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const secondLine = [job.title, job.location].filter(Boolean).join(" &middot; ");
+  const jobHref = pipelineJobHref(job);
+
+  if (column.kind === "saved") {
+    return `
+      <section class="cg-pipeline-card cg-pipeline-card--saved" data-pipeline-card="${esc(job.id)}">
+        <div class="cg-pipeline-saved-head">
+          <span class="cg-pipeline-card-icon">${icon("building-2")}</span>
+          <span class="cg-pipeline-card-heading"><h4>${esc(job.company)}</h4><p>${secondLine}</p></span>
+          <span class="cg-pipeline-saved-tag">${icon("bookmark")} Saved</span>
+        </div>
+        ${record.note ? `<p class="cg-pipeline-saved-note">${esc(record.note)}</p>` : ""}
+        <div class="cg-pipeline-saved-meta">
+          <span>${icon("clock")} Apply by ${esc(record.deadline || "soon")}</span>
+          ${Number(job.match) ? `<span>${icon("target")} ${esc(job.match)}% match</span>` : ""}
+        </div>
+        <div class="cg-pipeline-card-actions">
+          <button type="button" class="cg-pipeline-btn cg-pipeline-btn--primary" data-pipeline-apply="${esc(job.id)}">${icon("send")} Apply now</button>
+          <a class="cg-pipeline-btn" href="${jobHref}">${icon("external-link")} View job</a>
+          <button type="button" class="cg-pipeline-btn cg-pipeline-btn--ghost" data-pipeline-remove="${esc(job.id)}">${icon("trash-2")} Remove</button>
+        </div>
+      </section>
+    `;
+  }
+
+  const momentum = pipelineMomentum(record);
+  const detailId = `cg-pipeline-card-${String(job.id).replace(/[^a-z0-9]+/gi, "-")}`;
+  const funnelIndex = PIPELINE_FUNNEL.indexOf(record.stage);
+  const nextStage = funnelIndex >= 0 && funnelIndex < PIPELINE_FUNNEL.length - 1 ? PIPELINE_FUNNEL[funnelIndex + 1] : "";
+  const stepper = PIPELINE_FUNNEL.map(stageKey => {
+    const done = stageIndex(record.stage) > stageIndex(stageKey) || (["rejected", "archived"].includes(record.stage) && stageKey !== "offer");
+    const current = record.stage === stageKey;
+    return `<span class="cg-pipeline-step${current ? " is-current" : done ? " is-done" : ""}" title="${esc(stageMeta(stageKey).label)}"><i></i><small>${esc(stageMeta(stageKey).label)}</small></span>`;
+  }).join("");
+  const moveOptions = APPLICATION_STAGES
+    .map(stage => `<option value="${stage.key}"${stage.key === record.stage ? " selected" : ""}>${esc(stage.label)}</option>`)
+    .join("");
+
+  return `
+    <section class="cg-pipeline-card" data-pipeline-card="${esc(job.id)}">
+      <button type="button" class="cg-pipeline-card-summary" data-pipeline-card-toggle aria-expanded="false" aria-controls="${detailId}">
+        <span class="cg-pipeline-card-icon">${icon("building-2")}</span>
+        <span class="cg-pipeline-card-heading"><h4>${esc(job.company)}</h4><p>${secondLine}</p></span>
+        <span class="cg-pipeline-card-score" title="Momentum reflects how recent your last activity is and how far you are through this employer's process.">
+          <i class="cg-pipeline-momentum-dot tone-${momentum.tone}"></i>
+          <small>Momentum - ${momentum.label}</small>
+          <b>${momentum.score}%</b>
+        </span>
+        <span class="cg-pipeline-card-next">Due ${esc(record.deadline || "soon")}</span>
+        <span class="cg-pipeline-card-chevron">${icon("chevron-down")}</span>
+      </button>
+      <div class="cg-pipeline-card-detail" id="${detailId}">
+        <div class="cg-pipeline-card-detail-inner">
+          <div class="cg-pipeline-stepper">${stepper}</div>
+          <span class="cg-pipeline-timeline">${icon("clock")} ${esc(pipelineActiveStatus(record))} &middot; updated ${esc(record.updatedLabel || "recently")}</span>
+          ${record.note ? `<p>${esc(record.note)}</p>` : ""}
+          ${record.nextAction ? `<blockquote>${icon("sparkles")} Next - ${esc(record.nextAction)}</blockquote>` : ""}
+          <div class="cg-pipeline-move">
+            ${nextStage ? `<button type="button" class="cg-pipeline-btn cg-pipeline-btn--primary" data-pipeline-advance="${esc(job.id)}" data-pipeline-advance-stage="${nextStage}">${icon("arrow-right")} Move to ${esc(stageMeta(nextStage).label)}</button>` : ""}
+            <label class="cg-pipeline-move-select">${icon("git-branch")}
+              <select data-pipeline-move="${esc(job.id)}" aria-label="Move ${esc(job.company)} to another stage">${moveOptions}</select>
+            </label>
+          </div>
+          <footer>
+            <a href="${jobHref}">${icon("external-link")} View job</a>
+            <a href="posts.html?topic=${encodeURIComponent((record.nextAction || `next steps for ${job.title} at ${job.company}`))}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera</a>
+          </footer>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+/* "Add to pipeline" picker - lists every role the user hasn't tracked yet,
+ * from both the job catalogue and Autopilot matches, and drops the chosen one
+ * straight into the column's stage. This replaces the "+" that used to just
+ * bounce to the top of Discover. */
+function openAddToPipelineModal(stageKey, onDone) {
+  const state = readState();
+  const tracked = new Set(Object.keys(state.applicationRecords || {}));
+  const catalogue = [...DATA.jobs, ...AUTOPILOT_MATCHES.map(autopilotMatchAsJob)];
+  const seen = new Set();
+  const candidates = catalogue.filter(job => {
+    if (tracked.has(job.id) || seen.has(job.id)) return false;
+    seen.add(job.id);
+    return true;
+  });
+  const stageLabel = stageMeta(stageKey).label;
+  const esc2 = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const rowMarkup = job => `
+    <button type="button" class="cg-addpipe-row" data-addpipe-job="${esc2(job.id)}">
+      <span class="cg-addpipe-logo">${icon("building-2")}</span>
+      <span class="cg-addpipe-copy">
+        <strong>${esc2(job.title)}</strong>
+        <small>${esc2(job.company)}${job.location ? ` &middot; ${esc2(job.location)}` : ""}${job.salary ? ` &middot; ${esc2(job.salary)}` : ""}</small>
+      </span>
+      ${Number(job.match) ? `<span class="cg-addpipe-match">${esc2(job.match)}%</span>` : ""}
+      <span class="cg-addpipe-add">${icon("plus")} Add</span>
+    </button>
+  `;
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-addpipe-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-addpipe-modal" role="dialog" aria-label="Add to ${esc2(stageLabel)}">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">${icon("plus")} Add to ${esc2(stageLabel)}</div>
+          <h2>Track a role in your pipeline</h2>
+          <p class="cg-h2-sub">Pick a role to drop straight into <strong>${esc2(stageLabel)}</strong>. You can move it anytime.</p>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      ${candidates.length ? `<label class="cg-addpipe-search">${icon("search")}<input type="text" data-addpipe-search placeholder="Search roles or companies..." aria-label="Search roles"></label>` : ""}
+      <div class="cg-addpipe-list" data-addpipe-list>
+        ${candidates.length
+          ? candidates.map(rowMarkup).join("")
+          : `<p class="cg-addpipe-empty">${icon("check-circle-2")} Every role in your catalogue is already in your pipeline. Discover more in <a href="discover.html">Discover</a>.</p>`}
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  const close = () => { backdrop.remove(); document.removeEventListener("keydown", onEsc); };
+  function onEsc(event) { if (event.key === "Escape") close(); }
+  document.addEventListener("keydown", onEsc);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", close));
+  backdrop.addEventListener("click", event => { if (event.target === backdrop) close(); });
+  const search = qs("[data-addpipe-search]", backdrop);
+  search?.addEventListener("input", () => {
+    const term = search.value.trim().toLowerCase();
+    qsa("[data-addpipe-job]", backdrop).forEach(row => {
+      row.style.display = !term || row.textContent.toLowerCase().includes(term) ? "" : "none";
+    });
+  });
+  qsa("[data-addpipe-job]", backdrop).forEach(row => row.addEventListener("click", () => {
+    const job = candidates.find(item => item.id === row.dataset.addpipeJob);
+    if (!job) return;
+    updateApplicationStage(job.id, stageKey);
+    close();
+    showToast(`Added ${job.title} at ${job.company} to ${stageLabel}.`);
+    onDone?.();
+  }));
+  search?.focus();
+  createIcons();
 }
 
 function checkboxValues(form, name) {
@@ -1301,137 +1872,11 @@ function bindMissionActions(taskLookup = {}) {
   });
 }
 
-function getDashboardTourState() {
-  const state = readState();
-  return state.guidedTour?.dashboard || { status: "new", step: 0 };
-}
-
-function saveDashboardTour(partial) {
-  const state = readState();
-  state.guidedTour = state.guidedTour || {};
-  state.guidedTour.dashboard = {
-    status: "new",
-    step: 0,
-    ...(state.guidedTour.dashboard || {}),
-    ...partial
-  };
-  writeState(syncCurrentUser(state));
-}
-
+/* Dashboard tour is now just the unified page-tour engine keyed "dashboard"
+   (see showTourStep/initPageTour below). Kept as a thin wrapper so the
+   existing call site in renderDashboard() doesn't need to change. */
 function initDashboardTour() {
-  const root = qs("[data-dashboard]");
-  if (!root) return;
-  const state = readState();
-  if (!state.session.loggedIn || !state.onboarding.candidateDone) return;
-  const tour = getDashboardTourState();
-  if (tour.status === "completed" || tour.status === "skipped") {
-    return;
-  }
-  window.setTimeout(() => showDashboardTourStep(tour.step || 0), 180);
-}
-
-function removeDashboardTour() {
-  qsa(".tour-highlight").forEach(item => item.classList.remove("tour-highlight"));
-  qsa("[data-tour-layer]").forEach(item => item.remove());
-  document.body.classList.remove("sidebar-open");
-  if (window.__careergoTourReposition) window.removeEventListener("resize", window.__careergoTourReposition);
-}
-
-function showDashboardTourStep(index) {
-  const stepIndex = Math.max(0, Math.min(DASHBOARD_TOUR_STEPS.length - 1, index));
-  const step = DASHBOARD_TOUR_STEPS[stepIndex];
-  const target = qs(step.target);
-  if (!target) return;
-  removeDashboardTour();
-  saveDashboardTour({ status: "active", step: stepIndex, startedAt: getDashboardTourState().startedAt || nowStamp() });
-  document.body.classList.toggle("sidebar-open", step.target.includes("sidebar") && window.innerWidth <= 1020);
-  target.classList.add("tour-highlight");
-  target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-
-  const backdrop = document.createElement("div");
-  backdrop.className = "tour-backdrop";
-  backdrop.dataset.tourLayer = "";
-  backdrop.setAttribute("aria-hidden", "true");
-
-  const card = document.createElement("aside");
-  card.className = "tour-card glass-card";
-  card.dataset.tourLayer = "";
-  card.setAttribute("role", "dialog");
-  card.setAttribute("aria-live", "polite");
-  card.innerHTML = `
-    <div class="tour-progress">
-      <span>Step ${stepIndex + 1} of ${DASHBOARD_TOUR_STEPS.length}</span>
-      <div class="tour-dots">${DASHBOARD_TOUR_STEPS.map((_, dotIndex) => `<i class="${dotIndex <= stepIndex ? "active" : ""}"></i>`).join("")}</div>
-    </div>
-    <h2>${step.title}</h2>
-    <p>${step.body}</p>
-    <div class="tour-mission">${icon("target")} ${step.mission}</div>
-    <div class="tour-actions">
-      <button class="btn btn-ghost" type="button" data-tour-skip>Skip</button>
-      <div>
-        <button class="btn btn-ghost" type="button" data-tour-back ${stepIndex === 0 ? "disabled" : ""}>Back</button>
-        <button class="btn btn-primary" type="button" data-tour-next>${icon(stepIndex === DASHBOARD_TOUR_STEPS.length - 1 ? "check" : "arrow-right")} ${stepIndex === DASHBOARD_TOUR_STEPS.length - 1 ? "Finish" : "Next"}</button>
-      </div>
-    </div>
-  `;
-  document.body.append(backdrop, card);
-  positionTourCard(card, target);
-  window.setTimeout(() => positionTourCard(card, target), 260);
-  window.__careergoTourReposition = () => positionTourCard(card, target);
-  window.addEventListener("resize", window.__careergoTourReposition);
-
-  qs("[data-tour-skip]", card).addEventListener("click", () => {
-    saveDashboardTour({ status: "skipped", step: stepIndex, skippedAt: nowStamp() });
-    removeDashboardTour();
-  });
-  qs("[data-tour-back]", card).addEventListener("click", () => showDashboardTourStep(stepIndex - 1));
-  qs("[data-tour-next]", card).addEventListener("click", () => {
-    if (stepIndex === DASHBOARD_TOUR_STEPS.length - 1) {
-      saveDashboardTour({ status: "completed", step: stepIndex, completedAt: nowStamp() });
-      removeDashboardTour();
-      showToast("Tour completed. Your first missions are ready.");
-      return;
-    }
-    showDashboardTourStep(stepIndex + 1);
-  });
-  createIcons();
-}
-
-function positionTourCard(card, target) {
-  if (window.innerWidth <= 760) {
-    card.style.left = "16px";
-    card.style.right = "16px";
-    card.style.top = "auto";
-    card.style.bottom = "88px";
-    return;
-  }
-  const rect = target.getBoundingClientRect();
-  const width = Math.min(390, window.innerWidth - 40);
-  const height = Math.min(card.offsetHeight || 310, window.innerHeight - 120);
-  card.style.width = `${width}px`;
-  card.style.right = "auto";
-  card.style.bottom = "auto";
-
-  const margin = 22;
-  const isWideTarget = rect.width > window.innerWidth * 0.56;
-  let left;
-  let top;
-
-  if (isWideTarget) {
-    left = window.innerWidth - width - margin;
-    const belowTarget = rect.bottom + margin;
-    top = belowTarget + height < window.innerHeight - margin
-      ? belowTarget
-      : Math.max(96, Math.min(window.innerHeight - height - margin, rect.top + margin));
-  } else {
-    const rightSide = rect.right + margin;
-    const leftSide = rect.left - width - margin;
-    left = rightSide + width < window.innerWidth - margin ? rightSide : Math.max(margin, leftSide);
-    top = Math.max(96, Math.min(window.innerHeight - height - margin, rect.top + rect.height / 2 - height / 2));
-  }
-
-  card.style.left = `${left}px`;
-  card.style.top = `${top}px`;
+  initPageTour("dashboard");
 }
 
 const TOUR_STEPS = {
@@ -1573,7 +2018,7 @@ const TOUR_STEPS = {
     {
       target: ".cg-feed-left",
       title: "Your feed sections",
-      body: "Move between what's new, people you follow, your network, communities, and what's trending in the Product Management world right now.",
+      body: "Move between what's new, your network, communities, and what's trending in the Product Management world right now.",
       mission: "Check what's trending today."
     },
     {
@@ -1590,6 +2035,28 @@ const TOUR_STEPS = {
     }
   ]
 };
+
+/* ============================================================
+   Guided tour v2 - one engine for every page (dashboard + the
+   TOUR_STEPS pages). A step highlights its target with a real
+   spotlight (a positioned dimmer that cuts a hole over the target
+   via a huge box-shadow, so it works regardless of DOM nesting -
+   the old z-index-on-a-nested-element approach couldn't lift the
+   target above a body-level backdrop) and anchors a Vera popover
+   beside it, auto-flipping so it never covers the target.
+   ============================================================ */
+const TOUR_PAGE_LABELS = {
+  dashboard: "Dashboard",
+  discover: "Discover",
+  grow: "Growth",
+  market: "Career Value",
+  autopilot: "Pipeline",
+  posts: "Feed"
+};
+
+function tourStepsFor(pageKey) {
+  return pageKey === "dashboard" ? DASHBOARD_TOUR_STEPS : (TOUR_STEPS[pageKey] || []);
+}
 
 function getTourState(pageKey) {
   const state = readState();
@@ -1608,67 +2075,228 @@ function saveTourState(pageKey, partial) {
   writeState(syncCurrentUser(state));
 }
 
+function markTourIntroSeen() {
+  const state = readState();
+  state.guidedTour = state.guidedTour || {};
+  if (!state.guidedTour.introSeen) {
+    state.guidedTour.introSeen = true;
+    writeState(syncCurrentUser(state));
+  }
+}
+
+function removeTourLauncher() {
+  qsa("[data-tour-launcher]").forEach(item => item.remove());
+}
+
 function removePageTour() {
   qsa(".tour-highlight").forEach(item => item.classList.remove("tour-highlight"));
   qsa("[data-tour-layer]").forEach(item => item.remove());
-  document.body.classList.remove("sidebar-open");
-  if (window.__careergoTourReposition) window.removeEventListener("resize", window.__careergoTourReposition);
+  document.body.classList.remove("cg-tour-active");
+  if (window.__cgTourTrack) {
+    window.removeEventListener("resize", window.__cgTourTrack);
+    window.removeEventListener("scroll", window.__cgTourTrack, true);
+    window.__cgTourTrack = null;
+  }
+}
+
+/* Place the spotlight over the target and anchor the popover to the first
+   side (right -> left -> below -> above) where it fully fits without
+   covering the target; falls back to a clamped centre position, and a
+   bottom sheet on narrow screens. Also positions the arrow toward the
+   target. Runs on every scroll/resize so it tracks the target live. */
+/* A full-width section can't have a tooltip beside OR fully below it in a
+   normal viewport, so for wide targets we spotlight only the section's top
+   band (capped height) - the card then sits cleanly below that band and
+   never covers it. Narrow/short targets use their real rect. */
+function tourAnchorRect(target) {
+  const rect = target.getBoundingClientRect();
+  const isWide = rect.width > window.innerWidth * 0.6;
+  const height = isWide ? Math.min(rect.height, 300) : rect.height;
+  return { left: rect.left, top: rect.top, width: rect.width, height, right: rect.left + rect.width, bottom: rect.top + height, isWide };
+}
+
+function positionTourLayers(pop, spot, arrow, target) {
+  const a = tourAnchorRect(target);
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  const pad = 8;
+  const sx = Math.max(4, a.left - pad);
+  const sy = Math.max(4, a.top - pad);
+  spot.style.left = `${sx}px`;
+  spot.style.top = `${sy}px`;
+  spot.style.width = `${Math.min(vw - 8, a.width + pad * 2)}px`;
+  spot.style.height = `${Math.min(vh - 8, a.height + pad * 2)}px`;
+
+  if (vw <= 760) {
+    pop.style.left = "16px";
+    pop.style.right = "16px";
+    pop.style.width = "auto";
+    pop.style.top = "auto";
+    pop.style.bottom = "20px";
+    arrow.style.display = "none";
+    return;
+  }
+
+  pop.style.right = "auto";
+  pop.style.bottom = "auto";
+  pop.style.width = "";
+  // Reset any height cap from a previous frame BEFORE measuring, so popW/popH
+  // are always the card's natural size and the fit checks stay consistent
+  // frame-to-frame (otherwise a capped height gets re-measured and the card
+  // oscillates back into overlapping the target).
+  pop.style.maxHeight = "";
+  pop.style.overflowY = "";
+  const popW = pop.offsetWidth;
+  const popH = pop.offsetHeight;
+  const gap = 18;
+  const edge = 16;
+  const clampTop = v => Math.max(edge, Math.min(vh - popH - edge, v));
+  const clampLeft = v => Math.max(edge, Math.min(vw - popW - edge, v));
+  const midY = a.top + a.height / 2 - popH / 2;
+  const midX = a.left + a.width / 2 - popW / 2;
+
+  const candidates = [
+    { side: "right", left: a.right + gap, top: clampTop(midY), ok: a.right + gap + popW <= vw - edge },
+    { side: "left", left: a.left - gap - popW, top: clampTop(midY), ok: a.left - gap - popW >= edge },
+    { side: "bottom", left: clampLeft(midX), top: a.bottom + gap, ok: a.bottom + gap + popH <= vh - edge },
+    { side: "top", left: clampLeft(midX), top: a.top - gap - popH, ok: a.top - gap - popH >= edge }
+  ];
+  let choice = candidates.find(c => c.ok);
+  if (choice) {
+    // A side fully fits - clear any height cap from an earlier constrained frame.
+    pop.style.maxHeight = "";
+    pop.style.overflowY = "";
+  } else {
+    // Nothing fits (e.g. a full-width section at the page bottom that can't
+    // scroll higher): place on the vertical side with the most room and cap
+    // the card height to that room so it still never covers the target.
+    const topSpace = a.top - gap - edge;
+    const bottomSpace = vh - a.bottom - gap - edge;
+    if (bottomSpace >= topSpace) {
+      const h = Math.max(180, Math.min(popH, bottomSpace));
+      choice = { side: "bottom", left: clampLeft(midX), top: a.bottom + gap };
+      pop.style.maxHeight = `${h}px`;
+    } else {
+      const h = Math.max(180, Math.min(popH, topSpace));
+      choice = { side: "top", left: clampLeft(midX), top: a.top - gap - h };
+      pop.style.maxHeight = `${h}px`;
+    }
+    pop.style.overflowY = "auto";
+  }
+  pop.style.left = `${choice.left}px`;
+  pop.style.top = `${choice.top}px`;
+
+  arrow.style.display = "block";
+  const popRect = pop.getBoundingClientRect();
+  const size = 14;
+  if (choice.side === "right" || choice.side === "left") {
+    let ay = a.top + a.height / 2 - popRect.top - size / 2;
+    ay = Math.max(16, Math.min(popRect.height - size - 16, ay));
+    arrow.style.top = `${ay}px`;
+    arrow.style.bottom = "auto";
+    arrow.style.left = choice.side === "right" ? `${-size / 2}px` : "auto";
+    arrow.style.right = choice.side === "left" ? `${-size / 2}px` : "auto";
+  } else {
+    let ax = a.left + a.width / 2 - popRect.left - size / 2;
+    ax = Math.max(16, Math.min(popRect.width - size - 16, ax));
+    arrow.style.left = `${ax}px`;
+    arrow.style.right = "auto";
+    arrow.style.top = choice.side === "bottom" ? `${-size / 2}px` : "auto";
+    arrow.style.bottom = choice.side === "top" ? `${-size / 2}px` : "auto";
+  }
 }
 
 function showTourStep(pageKey, index) {
-  const steps = TOUR_STEPS[pageKey];
-  if (!steps || !steps.length) return;
+  const steps = tourStepsFor(pageKey);
+  if (!steps.length) return;
   const stepIndex = Math.max(0, Math.min(steps.length - 1, index));
   const step = steps[stepIndex];
   const target = qs(step.target);
-  if (!target) return;
+  if (!target) {
+    // Target isn't on this page/state - advance past it rather than dead-stop.
+    if (stepIndex < steps.length - 1) { showTourStep(pageKey, stepIndex + 1); return; }
+    removePageTour();
+    return;
+  }
   removePageTour();
+  removeTourLauncher();
   saveTourState(pageKey, { status: "active", step: stepIndex, startedAt: getTourState(pageKey).startedAt || nowStamp() });
+  document.body.classList.add("cg-tour-active");
   target.classList.add("tour-highlight");
-  target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 
-  const backdrop = document.createElement("div");
-  backdrop.className = "tour-backdrop";
-  backdrop.dataset.tourLayer = "";
-  backdrop.setAttribute("aria-hidden", "true");
+  // Wide sections: scroll their top band near the top so the popover has
+  // room below it; smaller targets: centre them so a side placement fits.
+  const startRect = target.getBoundingClientRect();
+  if (startRect.width > vwFraction(0.6)) {
+    const absTop = startRect.top + window.scrollY;
+    window.scrollTo({ top: Math.max(0, absTop - 108), behavior: "smooth" });
+  } else {
+    target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+  }
 
-  const card = document.createElement("aside");
-  card.className = "tour-card glass-card";
-  card.dataset.tourLayer = "";
-  card.setAttribute("role", "dialog");
-  card.setAttribute("aria-live", "polite");
-  card.innerHTML = `
-    <div class="tour-progress">
-      <span>Step ${stepIndex + 1} of ${steps.length}</span>
-      <div class="tour-dots">${steps.map((_, dotIndex) => `<i class="${dotIndex <= stepIndex ? "active" : ""}"></i>`).join("")}</div>
-    </div>
+  const guard = document.createElement("div");
+  guard.className = "cg-tour-guard";
+  guard.dataset.tourLayer = "";
+  guard.setAttribute("aria-hidden", "true");
+
+  const spot = document.createElement("div");
+  spot.className = "cg-tour-spot";
+  spot.dataset.tourLayer = "";
+  spot.setAttribute("aria-hidden", "true");
+
+  const pop = document.createElement("aside");
+  pop.className = "cg-tour-pop";
+  pop.dataset.tourLayer = "";
+  pop.setAttribute("role", "dialog");
+  pop.setAttribute("aria-live", "polite");
+  pop.innerHTML = `
+    <span class="cg-tour-arrow" data-tour-arrow></span>
+    <header class="cg-tour-head">
+      <span class="cg-tour-avatar"><img src="assets/vera-ai-coach.png" alt="Vera"></span>
+      <div class="cg-tour-meta">
+        <span class="cg-tour-count">${TOUR_PAGE_LABELS[pageKey] || "Tour"} &middot; Step ${stepIndex + 1} of ${steps.length}</span>
+        <div class="cg-tour-dots">${steps.map((_, dotIndex) => `<i class="${dotIndex === stepIndex ? "active" : dotIndex < stepIndex ? "done" : ""}"></i>`).join("")}</div>
+      </div>
+    </header>
     <h2>${step.title}</h2>
     <p>${step.body}</p>
-    <div class="tour-mission">${icon("target")} ${step.mission}</div>
-    <div class="tour-actions">
-      <button class="btn btn-ghost" type="button" data-tour-skip>Skip</button>
-      <div>
-        <button class="btn btn-ghost" type="button" data-tour-back ${stepIndex === 0 ? "disabled" : ""}>Back</button>
-        <button class="btn btn-primary" type="button" data-tour-next>${icon(stepIndex === steps.length - 1 ? "check" : "arrow-right")} ${stepIndex === steps.length - 1 ? "Finish" : "Next"}</button>
+    <div class="cg-tour-try">
+      <span class="cg-tour-try-label">${icon("sparkles")} Try this</span>
+      <span class="cg-tour-try-text">${step.mission}</span>
+    </div>
+    <div class="cg-tour-nav">
+      <button class="cg-tour-skip" type="button" data-tour-skip>Skip tour</button>
+      <div class="cg-tour-nav-right">
+        <button class="cg-tour-btn ghost" type="button" data-tour-back ${stepIndex === 0 ? "disabled" : ""}>${icon("arrow-left")} Back</button>
+        <button class="cg-tour-btn primary" type="button" data-tour-next>${stepIndex === steps.length - 1 ? `${icon("check")} Done` : `Next ${icon("arrow-right")}`}</button>
       </div>
     </div>
   `;
-  document.body.append(backdrop, card);
-  positionTourCard(card, target);
-  window.setTimeout(() => positionTourCard(card, target), 260);
-  window.__careergoTourReposition = () => positionTourCard(card, target);
-  window.addEventListener("resize", window.__careergoTourReposition);
+  document.body.append(guard, spot, pop);
+  const arrow = qs("[data-tour-arrow]", pop);
 
-  qs("[data-tour-skip]", card).addEventListener("click", () => {
+  const track = () => positionTourLayers(pop, spot, arrow, target);
+  track();
+  window.setTimeout(track, 240);
+  window.setTimeout(track, 520);
+  window.setTimeout(track, 900);
+  window.__cgTourTrack = track;
+  window.addEventListener("resize", track);
+  window.addEventListener("scroll", track, true);
+
+  qs("[data-tour-skip]", pop).addEventListener("click", () => {
     saveTourState(pageKey, { status: "skipped", step: stepIndex, skippedAt: nowStamp() });
+    markTourIntroSeen();
     removePageTour();
   });
-  qs("[data-tour-back]", card).addEventListener("click", () => showTourStep(pageKey, stepIndex - 1));
-  qs("[data-tour-next]", card).addEventListener("click", () => {
+  qs("[data-tour-back]", pop).addEventListener("click", () => { if (stepIndex > 0) showTourStep(pageKey, stepIndex - 1); });
+  qs("[data-tour-next]", pop).addEventListener("click", () => {
     if (stepIndex === steps.length - 1) {
       saveTourState(pageKey, { status: "completed", step: stepIndex, completedAt: nowStamp() });
+      markTourIntroSeen();
       removePageTour();
-      showToast("Tour completed.");
+      showToast(`${TOUR_PAGE_LABELS[pageKey] || "Tour"} tour complete.`);
       return;
     }
     showTourStep(pageKey, stepIndex + 1);
@@ -1676,12 +2304,49 @@ function showTourStep(pageKey, index) {
   createIcons();
 }
 
+function vwFraction(f) { return window.innerWidth * f; }
+function vhFraction(f) { return window.innerHeight * f; }
+
+/* Lighter, non-blocking entry point for secondary pages: a dismissible
+   "Take the {page} tour" chip instead of auto-launching a full overlay. */
+function showTourLauncher(pageKey) {
+  if (qs("[data-tour-layer]")) return; // a tour is already open
+  removeTourLauncher();
+  const label = TOUR_PAGE_LABELS[pageKey] || "page";
+  const chip = document.createElement("div");
+  chip.className = "cg-tour-launch";
+  chip.dataset.tourLauncher = "";
+  chip.innerHTML = `
+    <button type="button" class="cg-tour-launch-main" data-tour-launch>
+      <span class="cg-tour-launch-avatar"><img src="assets/vera-ai-coach.png" alt=""></span>
+      <span><b>New here?</b> Take the ${label} tour</span>
+    </button>
+    <button type="button" class="cg-tour-launch-close" data-tour-launch-dismiss aria-label="Dismiss tour prompt">${icon("x")}</button>
+  `;
+  document.body.appendChild(chip);
+  createIcons();
+  qs("[data-tour-launch]", chip).addEventListener("click", () => {
+    removeTourLauncher();
+    showTourStep(pageKey, 0);
+  });
+  qs("[data-tour-launch-dismiss]", chip).addEventListener("click", () => {
+    saveTourState(pageKey, { status: "skipped", step: 0, skippedAt: nowStamp() });
+    removeTourLauncher();
+  });
+}
+
 function initPageTour(pageKey) {
   const state = readState();
   if (!state.session.loggedIn || !state.onboarding.candidateDone) return;
   const tour = getTourState(pageKey);
   if (tour.status === "completed" || tour.status === "skipped") return;
-  window.setTimeout(() => showTourStep(pageKey, tour.step || 0), 180);
+  if (pageKey === "dashboard") {
+    // The guided intro auto-runs once, on the landing page, for a new user.
+    window.setTimeout(() => showTourStep("dashboard", tour.step || 0), 200);
+  } else {
+    // Every other page politely offers its own tour instead of forcing it.
+    window.setTimeout(() => showTourLauncher(pageKey), 200);
+  }
 }
 
 function sanitizeRedirectPath(raw) {
@@ -1844,7 +2509,114 @@ function publicNav() {
     </nav>
     <div class="nav-actions public-site-actions">
       <a class="btn btn-ghost" href="login.html">Login</a>
-      <a class="btn btn-primary" href="register.html">Create Account</a>
+      <a class="btn btn-primary cg-nav-cta" href="register.html">Create Account ${icon("arrow-right")}</a>
+    </div>
+  `;
+}
+
+/* Section lists for the workspace nav's hover dropdown, keyed by nav item.
+   Dashboard and Feed (posts) are deliberately absent - Dashboard stays a
+   plain link, and Feed's 3-column layout (tab rail + scrolling list +
+   fixed sidebar) isn't shaped like "scroll past A to reach B", so it has
+   no jump-to-section list. Pipeline's list depends on which of its tabs
+   is active (see navSectionsFor below) - Follow-ups is intentionally
+   absent pending confirmation of its own section list. */
+const NAV_SECTION_MAP = {
+  discover: [
+    { id: "vera-top-pick", label: "Vera's Top Pick" },
+    { id: "open-roles", label: "Roles worth your week" },
+    { id: "market-pulse", label: "Market Pulse in Malaysia" },
+    { id: "curated-collections", label: "Curated Collections by Vera" },
+    { id: "featured-companies", label: "Featured Companies" },
+    { id: "featured-universities", label: "Featured Universities" },
+    { id: "recommended-programmes", label: "Recommended Programmes" },
+    { id: "discover-mentors", label: "Mentors You can reach out to" }
+  ],
+  grow: [
+    { id: "growth-journey", label: "Your growth journey" },
+    { id: "career-paths", label: "Career Paths" },
+    { id: "interview-coach", label: "Interview Coach · Powered by Vera" },
+    { id: "recommended-growth", label: "Recommended Growth" }
+  ],
+  market: [
+    { id: "worth-drivers", label: "Top value drivers" },
+    { id: "value-growth", label: "Value Growth" },
+    { id: "worth-scenarios", label: "Career Value Scenarios" },
+    { id: "salary-negotiation", label: "Salary negotiation" }
+  ],
+  autopilot: {
+    applications: [
+      { id: "pipeline-impact", label: "Today's highest impact" },
+      { id: "pipeline-board", label: "Live pipeline" }
+    ],
+    autopilot: [
+      { id: "autopilot-matches", label: "Autopilot found for you" },
+      { id: "autopilot-console", label: "Ruleset" }
+    ]
+  }
+};
+
+function navSectionsForKey(key) {
+  if (key === "autopilot") return NAV_SECTION_MAP.autopilot[pipelineActiveTab] || null;
+  return NAV_SECTION_MAP[key] || null;
+}
+
+/* Icon badge for a notification - Vera keeps her owl mark, every other type
+   uses its lucide icon from NOTIFICATION_TYPE_ICON. */
+function notificationBadgeMarkup(note) {
+  if (note.type === "vera") {
+    return `<span class="notification-icon type-vera"><img src="assets/vera-ai-coach.png" alt="Vera"></span>`;
+  }
+  return `<span class="notification-icon type-${note.type || "system"}">${icon(notificationIconFor(note))}</span>`;
+}
+
+/* One dropdown row - a flat row (no per-item card), unread dot on the left,
+   soft circular icon, title + relative time, body. Clicking navigates. */
+function notificationRowMarkup(note) {
+  const navAttr = note.href ? ` data-notification-nav="${note.href}"` : "";
+  return `
+    <div class="cg-nd-item${note.read ? "" : " is-unread"}" data-notification-id="${note.id}"${navAttr} role="button" tabindex="0" aria-label="${note.title}">
+      <span class="cg-nd-dot" aria-hidden="true"></span>
+      ${notificationBadgeMarkup(note)}
+      <span class="cg-nd-copy">
+        <span class="cg-nd-top"><strong>${note.title}</strong><time>${relativeTime(note.ts)}</time></span>
+        <small>${note.body}</small>
+      </span>
+    </div>
+  `;
+}
+
+/* Shared bell dropdown for both the candidate and employer workspace navs.
+   One continuous panel, thin row dividers, understated footer. */
+function notificationMenuMarkup(notifications) {
+  const unread = notifications.filter(note => !note.read).length;
+  return `
+    <div class="notification-menu-wrap">
+      <button class="btn btn-ghost notification-trigger" type="button" data-notification-toggle aria-haspopup="dialog" aria-expanded="false" aria-label="Open notifications">
+        ${icon("bell")} ${unread ? `<strong>${unread}</strong>` : ""}
+      </button>
+      <div class="notification-menu cg-nd-panel glass-card" data-notification-menu hidden role="dialog" aria-label="Notifications">
+        <div class="cg-nd-head">
+          <div>
+            <span class="cg-nd-kicker">Notifications</span>
+            <strong>${unread ? `${unread} new update${unread === 1 ? "" : "s"}` : "You're all caught up"}</strong>
+          </div>
+          ${unread ? `<button class="cg-nd-markall" type="button" data-mark-all-read>${icon("check")} Mark all read</button>` : ""}
+        </div>
+        <div class="cg-nd-list">
+          ${notifications.length ? notifications.slice(0, 5).map(notificationRowMarkup).join("") : `
+            <div class="cg-nd-empty">
+              ${icon("check-circle")}
+              <strong>No new updates</strong>
+              <small>CareerGo will surface interviews, matches, and Vera's moves here.</small>
+            </div>
+          `}
+        </div>
+        <div class="cg-nd-foot">
+          <small>Vera surfaces what actually matters.</small>
+          <a href="notifications.html">View all</a>
+        </div>
+      </div>
     </div>
   `;
 }
@@ -1875,7 +2647,22 @@ function workspaceTopNav() {
         <img class="cg-navbar-logo" src="assets/careergo-logo-script.png" alt="CareerGo">
       </a>
       <nav class="nav-links cg-workspace-tabs" aria-label="CareerGo workspace" data-tour-target="workspace-nav">
-        ${workspaceLinks.map(([key, label, href]) => `<a data-nav="${key}" class="${isWorkspaceTabActive(key) ? "active" : ""}" href="${href}">${label}</a>`).join("")}
+        ${workspaceLinks.map(([key, label, href]) => {
+          const activeClass = isWorkspaceTabActive(key) ? "active" : "";
+          const sections = navSectionsForKey(key);
+          if (!sections || !sections.length) {
+            return `<a data-nav="${key}" class="${activeClass}" href="${href}">${label}</a>`;
+          }
+          return `
+            <div class="cg-nav-item-wrap">
+              <a data-nav="${key}" class="${activeClass}" href="${href}">${label}</a>
+              <button type="button" class="cg-nav-dropdown-toggle" aria-label="${label} sections" aria-haspopup="true" aria-expanded="false">${icon("chevron-down")}</button>
+              <div class="cg-nav-dropdown" role="menu">
+                ${sections.map(section => `<a role="menuitem" data-nav-section-link href="${href}#${section.id}">${section.label}</a>`).join("")}
+              </div>
+            </div>
+          `;
+        }).join("")}
       </nav>
       <div class="cg-search-shell" data-search-shell>
         <form class="workspace-search cg-vera-search" role="search" data-workspace-search data-tour-target="workspace-search" style="grid-template-columns:24px minmax(0,1fr) !important">
@@ -1885,48 +2672,10 @@ function workspaceTopNav() {
         <div class="cg-search-panel" data-search-panel hidden></div>
       </div>
       <div class="nav-actions cg-user-actions">
-        <div class="account-menu-wrap">
-          <button type="button" class="btn btn-ghost cg-message-trigger" data-chat-menu-toggle aria-haspopup="menu" aria-expanded="false" aria-label="Open chat">
-            ${icon("message-circle")}
-          </button>
-          <div class="account-menu glass-card" data-chat-menu hidden role="menu">
-            <button role="menuitem" type="button" data-chat-menu-vera>${icon("bot")} Coach Vera</button>
-            <a role="menuitem" href="posts.html#messages">${icon("inbox")} Messages</a>
-          </div>
-        </div>
-        <div class="notification-menu-wrap">
-          <button class="btn btn-ghost notification-trigger" type="button" data-notification-toggle aria-haspopup="dialog" aria-expanded="false" aria-label="Open notifications">
-            ${icon("bell")} ${notifications.length ? `<strong>${notifications.length}</strong>` : ""}
-          </button>
-          <div class="notification-menu glass-card" data-notification-menu hidden role="dialog" aria-label="Notifications">
-            <div class="notification-menu-head">
-              <div>
-                <span class="section-kicker">Notifications</span>
-                <strong>${notifications.length ? `${notifications.length} active` : "All clear"}</strong>
-              </div>
-              ${notifications.length ? `<button class="notification-clear" type="button" data-clear-notifications>Clear all</button>` : ""}
-            </div>
-            <div class="notification-menu-list">
-              ${notifications.length ? notifications.slice(0, 5).map(note => `
-                <article class="notification-item">
-                  <span class="notification-icon">${icon(note.icon || "sparkles")}</span>
-                  <span class="notification-copy">
-                    <strong>${note.title}</strong>
-                    <small>${note.body}</small>
-                  </span>
-                  <button class="notification-dismiss" type="button" data-dismiss-notification="${note.id}" aria-label="Dismiss ${note.title}">${icon("x")}</button>
-                </article>
-              `).join("") : `
-                <div class="notification-empty">
-                  ${icon("check-circle")}
-                  <strong>No new updates</strong>
-                  <small>CareerGo will surface tasks, role changes, and Vera recommendations here.</small>
-                </div>
-              `}
-            </div>
-            <a class="notification-footer" href="autopilot.html">${icon("list-checks")} Open action center</a>
-          </div>
-        </div>
+        <a class="btn btn-ghost cg-message-trigger" href="posts.html#messages" aria-label="Messages">
+          ${icon("message-circle")}
+        </a>
+        ${notificationMenuMarkup(notifications)}
         <div class="account-menu-wrap">
           <button class="btn btn-primary account-menu-trigger cg-avatar-trigger" type="button" data-account-menu-toggle aria-haspopup="menu" aria-expanded="false">
             <span>${initials}</span>
@@ -1948,41 +2697,7 @@ function workspaceTopNav() {
       <input name="q" aria-label="Search workspace" placeholder="${isEmployer ? "Search candidates, roles, applicants" : "Search jobs, companies, universities"}">
     </form>
     <div class="nav-actions">
-      <div class="notification-menu-wrap">
-        <button class="btn btn-ghost notification-trigger" type="button" data-notification-toggle aria-haspopup="dialog" aria-expanded="false" aria-label="Open notifications">
-          ${icon("bell")} <strong>${notifications.length}</strong>
-        </button>
-        <div class="notification-menu glass-card" data-notification-menu hidden role="dialog" aria-label="Notifications">
-          <div class="notification-menu-head">
-            <div>
-              <span class="section-kicker">Notifications</span>
-              <strong>${notifications.length ? `${notifications.length} active` : "All clear"}</strong>
-            </div>
-            ${notifications.length ? `<button class="notification-clear" type="button" data-clear-notifications>Clear all</button>` : ""}
-          </div>
-          <div class="notification-menu-list">
-            ${notifications.length ? notifications.slice(0, 5).map(note => `
-              <article class="notification-item">
-                <span class="notification-icon">${icon(note.icon || "sparkles")}</span>
-                <span class="notification-copy">
-                  <strong>${note.title}</strong>
-                  <small>${note.body}</small>
-                </span>
-                <button class="notification-dismiss" type="button" data-dismiss-notification="${note.id}" aria-label="Dismiss ${note.title}">${icon("x")}</button>
-              </article>
-            `).join("") : `
-              <div class="notification-empty">
-                ${icon("check-circle")}
-                <strong>No new updates</strong>
-                <small>CareerGo will surface tasks, role changes, and Vera recommendations here.</small>
-              </div>
-            `}
-          </div>
-          <a class="notification-footer" href="${isEmployer ? "employer-app.html#pipeline" : "autopilot.html"}">
-            ${icon(isEmployer ? "kanban-square" : "list-checks")} Open action center
-          </a>
-        </div>
-      </div>
+      ${notificationMenuMarkup(notifications)}
       <div class="account-menu-wrap">
         <button class="btn btn-primary account-menu-trigger" type="button" data-account-menu-toggle aria-haspopup="menu" aria-expanded="false">
           <span class="account-avatar-icon">${icon(isEmployer ? "building-2" : "user-round")}</span><span>${getFirstName(state)}</span>
@@ -2757,12 +3472,22 @@ function renderNavigation() {
   setActiveNav();
   bindAccountMenu();
   bindNotificationMenu();
-  bindChatMenu();
-  updateVeraBubbleBadge();
+  bindWorkspaceNavDropdowns();
   const workspaceSearchForm = qs("[data-workspace-search]");
   if (workspaceSearchForm?.classList.contains("cg-vera-search")) {
     attachLiveSearch(workspaceSearchForm, query => renderSearchPanelContent(query, "workspace", readState()), () => renderSearchDefaultContent(readState()));
-  } else if (workspaceSearchForm) {
+  }
+  /* Both the plain workspace-search (employer/no-live-dropdown variant) and
+     the cg-vera-search "Ask Vera anything" variant need this SAME
+     navigate-on-submit handler - attachLiveSearch() only ever re-renders
+     the inline preview dropdown and calls preventDefault(), it never
+     navigates, so without this the nav search was a dead end whenever a
+     user pressed Enter instead of clicking a dropdown result. Destination
+     falls through to recommended-roles.html (not discover.html) for a
+     plain role/job query because that's the page that actually reads and
+     applies ?q= (verified) - discover.html's own search box does too, but
+     only for its OWN in-page form, not for a ?q= param on initial load. */
+  if (workspaceSearchForm) {
     workspaceSearchForm.addEventListener("submit", event => {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
@@ -2775,7 +3500,7 @@ function renderNavigation() {
         ? "discover-universities.html"
         : lower.includes("company") || lower.includes("culture") || lower.includes("review") || lower.includes("maybank") || lower.includes("grab") || lower.includes("cimb")
           ? "discover-companies.html"
-          : "discover.html";
+          : "recommended-roles.html";
       location.href = state.session.role === "employer" ? `${destination}?q=${encodeURIComponent(q)}#candidates` : `${destination}?q=${encodeURIComponent(q)}`;
     });
   }
@@ -2799,24 +3524,24 @@ function bindNotificationMenu() {
     menu.hidden ? open() : close();
   });
   menu.addEventListener("click", event => event.stopPropagation());
-  qsa("[data-dismiss-notification]", menu).forEach(button => {
-    button.addEventListener("click", event => {
-      event.preventDefault();
-      const id = button.dataset.dismissNotification;
-      const state = readState();
-      state.notifications = (state.notifications || []).filter(note => note.id !== id);
-      writeState(syncCurrentUser(state));
-      renderNavigation();
-      showToast("Notification dismissed.");
+  qsa("[data-notification-nav]", menu).forEach(item => {
+    const go = () => {
+      markNotificationRead(item.dataset.notificationId);
+      location.href = item.dataset.notificationNav;
+    };
+    item.addEventListener("click", go);
+    item.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        go();
+      }
     });
   });
-  qs("[data-clear-notifications]", menu)?.addEventListener("click", event => {
+  qs("[data-mark-all-read]", menu)?.addEventListener("click", event => {
     event.preventDefault();
-    const state = readState();
-    state.notifications = [];
-    writeState(syncCurrentUser(state));
+    markAllNotificationsRead();
     renderNavigation();
-    showToast("Notifications cleared.");
+    showToast("All notifications marked as read.");
   });
   document.addEventListener("click", close);
   document.addEventListener("keydown", event => {
@@ -2824,31 +3549,70 @@ function bindNotificationMenu() {
   });
 }
 
-function bindChatMenu() {
-  const toggle = qs("[data-chat-menu-toggle]");
-  const menu = qs("[data-chat-menu]");
-  if (!toggle || !menu) return;
-  const close = () => {
-    menu.hidden = true;
-    toggle.setAttribute("aria-expanded", "false");
+/* Workspace nav hover dropdowns (Discover/Growth/Career Value/Pipeline -
+   not Dashboard or Feed, see NAV_SECTION_MAP). Hover is handled purely in
+   CSS; this only wires the explicit tap-to-open toggle (mobile/touch, and
+   an alternative to hover on desktop) and same-page smooth-scroll vs.
+   cross-page navigation for the section links themselves. */
+function bindWorkspaceNavDropdowns() {
+  const wraps = qsa(".cg-nav-item-wrap");
+  if (!wraps.length) return;
+  const closeTimers = new WeakMap();
+  const cancelCloseTimer = wrap => {
+    const timer = closeTimers.get(wrap);
+    if (timer) {
+      clearTimeout(timer);
+      closeTimers.delete(wrap);
+    }
   };
-  const open = () => {
-    menu.hidden = false;
-    toggle.setAttribute("aria-expanded", "true");
-  };
-  toggle.addEventListener("click", event => {
-    event.preventDefault();
-    event.stopPropagation();
-    menu.hidden ? open() : close();
+  const closeAll = () => wraps.forEach(wrap => {
+    cancelCloseTimer(wrap);
+    wrap.classList.remove("is-open", "hover-open");
+    qs(".cg-nav-dropdown-toggle", wrap)?.setAttribute("aria-expanded", "false");
   });
-  menu.addEventListener("click", event => event.stopPropagation());
-  qs("[data-chat-menu-vera]", menu)?.addEventListener("click", () => {
-    close();
-    openVeraPanel();
+  wraps.forEach(wrap => {
+    const toggle = qs(".cg-nav-dropdown-toggle", wrap);
+    toggle?.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const wasOpen = wrap.classList.contains("is-open");
+      closeAll();
+      if (!wasOpen) {
+        wrap.classList.add("is-open");
+        toggle.setAttribute("aria-expanded", "true");
+      }
+    });
+    // Grace period so the dropdown doesn't snap shut while the pointer is
+    // crossing the visual gap between the nav pill and the panel below it.
+    wrap.addEventListener("mouseenter", () => {
+      cancelCloseTimer(wrap);
+      wrap.classList.add("hover-open");
+    });
+    wrap.addEventListener("mouseleave", () => {
+      cancelCloseTimer(wrap);
+      closeTimers.set(wrap, setTimeout(() => {
+        wrap.classList.remove("hover-open");
+        closeTimers.delete(wrap);
+      }, 220));
+    });
+    qsa("[data-nav-section-link]", wrap).forEach(link => {
+      link.addEventListener("click", event => {
+        const [hrefPage, hash] = link.getAttribute("href").split("#");
+        const currentPage = location.pathname.split("/").pop() || "";
+        if (!hash) return;
+        if (hrefPage === currentPage) {
+          event.preventDefault();
+          qs(`#${hash}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        closeAll();
+      });
+    });
   });
-  document.addEventListener("click", close);
+  document.addEventListener("click", closeAll);
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape") close();
+    if (event.key !== "Escape") return;
+    closeAll();
+    if (document.activeElement?.closest(".cg-nav-item-wrap")) document.activeElement.blur();
   });
 }
 
@@ -2867,6 +3631,23 @@ function qs(selector, root = document) {
 
 function qsa(selector, root = document) {
   return [...root.querySelectorAll(selector)];
+}
+
+/* Scrolls to the element matching the current #hash, if any - used after a
+   render() call so the workspace nav's hover-dropdown section links work
+   even though the target ids don't exist in the DOM until the page's own
+   JS has rendered (a plain browser #hash-on-load can't find them yet). */
+function scrollToHashSection(root) {
+  if (!location.hash) return;
+  window.setTimeout(() => {
+    let target;
+    try {
+      target = qs(location.hash, root || document);
+    } catch {
+      return;
+    }
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 60);
 }
 
 function icon(name) {
@@ -2889,7 +3670,7 @@ function ensureBrandFonts() {
 function renderSiteFooter() {
   const host = qs(".site-shell") || document.body;
   const page = document.body.dataset.page || "home";
-  const footerPages = new Set(["home", "explore", "companies", "universities", "community"]);
+  const footerPages = new Set(["home", "community"]);
   const existingFooter = qs(".site-footer");
 
   if (!footerPages.has(page)) {
@@ -2904,12 +3685,11 @@ function renderSiteFooter() {
     host.appendChild(footer);
   }
 
-  if (page === "home") {
-    footer.innerHTML = `
+  footer.innerHTML = `
       <div class="footer-wrap">
         <div class="footer-grid">
           <div class="footer-brand">
-            <h2>CareerGo</h2>
+            <div class="footer-brand-mark"><img class="footer-logo-icon" src="assets/careergo-logo-script.png" alt="CareerGo logo"></div>
             <p>The AI-guided career platform &mdash; find jobs, research companies and universities, and grow with Vera.</p>
           </div>
           <nav class="footer-column" aria-label="Product">
@@ -2940,46 +3720,6 @@ function renderSiteFooter() {
         </div>
       </div>
     `;
-    footer.querySelector(".footer-bottom").innerHTML = `<span>&copy; 2026 CareerGo &bull; Career OS</span>`;
-    return;
-  }
-
-  footer.innerHTML = `
-    <div class="footer-wrap">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <h2>CareerGo</h2>
-          <p>The AI-guided career platform - find jobs, research companies and universities, and grow with Vera.</p>
-        </div>
-        <nav class="footer-column" aria-label="Product">
-          <h3>Product</h3>
-          <a href="explore.html">Explore</a>
-          <a href="companies.html">Companies</a>
-          <a href="universities.html">Universities</a>
-          <a href="community.html">Community</a>
-          <a href="about.html">About</a>
-        </nav>
-        <nav class="footer-column" aria-label="For employers">
-          <h3>For Employers</h3>
-          <a href="employers.html">Employer entry</a>
-          <a href="register.html">Create employer account</a>
-          <a href="employer-app.html#candidates">Candidate search</a>
-          <a href="employer-app.html#pipeline">Hiring pipeline</a>
-        </nav>
-        <nav class="footer-column" aria-label="Company">
-          <h3>Company</h3>
-          <a href="#">About</a>
-          <a href="#">Careers</a>
-          <a href="#">Contact</a>
-          <a href="#">Privacy</a>
-        </nav>
-      </div>
-      <div class="footer-bottom">
-        <span>(c) 2026 CareerGo  - Career OS</span>
-      </div>
-    </div>
-  `;
-  footer.querySelector(".footer-brand p").innerHTML = `The AI-guided career platform &mdash; find jobs, research companies and universities, and grow with Vera.`;
   footer.querySelector(".footer-bottom").innerHTML = `<span>&copy; 2026 CareerGo &bull; Career OS</span>`;
 }
 
@@ -3453,6 +4193,57 @@ function renderFeatured() {
     `).join("");
     orgRoot.innerHTML = cards + cards;
   }
+}
+
+/* Public explore.html's "Featured Opportunities" - unified with the same
+   .cg-role-unit card used on Dashboard/Roles/Discover (numeral + MATCH
+   label, teal-green avatar) rather than its old bespoke circular match-ring
+   card. This is a guest-facing marketing page (no session yet), so actions
+   route to register.html instead of the logged-in save/compare/apply
+   handlers - same visual system, different, guest-appropriate CTAs.
+   Salaries are stored RAW here and run through convertSalaryToRM() lazily
+   inside the card markup function below, NOT at this const's own
+   initialization - convertSalaryToRM/USD_TO_RM are declared much later in
+   this file (near normalizeRole), and calling them here at top-level parse
+   time (rather than later, at render time inside a function body) would
+   throw "Cannot access 'USD_TO_RM' before initialization" the moment
+   app.js loads on ANY page, breaking the whole script. Shopee's Jakarta
+   listing keeps its own local currency (IDR) deliberately, same as
+   elsewhere in the app for non-Malaysian roles. */
+const EXPLORE_FEATURED_ROLES = [
+  { avatar: "S", company: "Stripe", title: "Applied AI Engineer", match: 94, location: "Singapore", mode: "Hybrid", salary: "$140k - 180k", posted: "Posted 2d ago" },
+  { avatar: "N", company: "Notion", title: "Senior Product Manager", match: 91, location: "Remote - APAC", mode: "Remote", salary: "$150k - 200k", posted: "Posted 5h ago" },
+  { avatar: "G", company: "Grab", title: "Data Scientist, Marketplace", match: 88, location: "Kuala Lumpur", mode: "On-site", salary: "RM 12k - 18k", posted: "Posted 1d ago" },
+  { avatar: "S", company: "Shopee", title: "UI/UX Designer, Growth", match: 85, location: "Jakarta", mode: "Hybrid", salary: "IDR 25M - 40M", posted: "Posted 3d ago" },
+  { avatar: "P", company: "Petronas", title: "Graduate Engineer, Digital", match: 82, location: "Kuala Lumpur", mode: "On-site", salary: "RM 4.5k - 6k", posted: "Posted 1w ago" },
+  { avatar: "L", company: "Linear", title: "Founding Design Engineer", match: 90, location: "Remote", mode: "Remote", salary: "$160k - 210k", posted: "Posted 6h ago" }
+];
+
+function exploreFeaturedRoleCardMarkup(role) {
+  return `
+    <article class="cg-role-unit">
+      <a class="cg-role-unit-open" href="register.html" aria-label="Preview ${role.title} at ${role.company}">
+        <div class="cg-role-unit-head">
+          <span class="cg-role-unit-avatar">${role.avatar}</span>
+          <div class="cg-role-unit-id"><small>${role.company}</small><h3>${role.title}</h3></div>
+          <span class="cg-role-unit-match"><strong>${role.match}</strong><small>Match</small></span>
+        </div>
+        <p class="cg-role-unit-meta">${icon("map-pin")} ${role.location} <i>&middot;</i> ${role.mode} <i>&middot;</i> ${convertSalaryToRM(role.salary)}</p>
+        <p class="cg-role-unit-why">${icon("clock")} ${role.posted}</p>
+      </a>
+      <div class="cg-role-unit-actions">
+        <a class="btn btn-primary cg-role-unit-view" href="register.html">Preview ${icon("arrow-up-right")}</a>
+        <a class="cg-role-unit-icon" href="register.html" aria-label="Save ${role.title} at ${role.company}" title="Save">${icon("bookmark")}</a>
+      </div>
+    </article>
+  `;
+}
+
+function renderExploreFeaturedOpportunities() {
+  const root = qs("[data-explore-featured-roles]");
+  if (!root) return;
+  root.innerHTML = EXPLORE_FEATURED_ROLES.map(exploreFeaturedRoleCardMarkup).join("");
+  createIcons();
 }
 
 function initFeaturedRolesCarousel() {
@@ -4077,8 +4868,7 @@ function renderCommunityPage() {
       <div class="section-head">
         <div>
           <div class="section-kicker">Community</div>
-          <h1 class="section-title">Career questions, role stories, and weekly prompts.</h1>
-          <p class="section-sub">Visitors can read public posts. Posting, saving, and personalized Vera follow-ups unlock inside the workspace.</p>
+          <h1 class="section-title">Why CareerGo?</h1>
         </div>
         <a class="btn btn-primary" href="register.html">${icon("user-plus")} Join CareerGo</a>
       </div>
@@ -4232,12 +5022,22 @@ function renderJobsPage() {
       ["8 companies", "Startups with strong work-life balance", "Async-first Malaysian teams. Median 34h weeks, no on-call PM culture, hybrid-friendly.", "Matches your working-style profile.", ""],
       ["17 roles", "Roles you could apply to today", "No upskilling required - your current skills already cover 85%+ of the job spec.", "Skill overlap >= 85%.", "small"]
     ];
-    const featuredCompanies = [
-      ["setel", "Setel", "Fintech - KL", "Hiring - Verified", "4 open roles", "AI-native squad; matches your saved roles."],
-      ["carsome", "Carsome", "Marketplace - KL", "Fast growing", "3 open roles", "3 alumni from your uni joined PM here."],
-      ["storehub", "StoreHub", "SaaS - KL", "Remote-first", "2 open roles", "Async culture; matches your working style."],
-      ["aerodyne", "Aerodyne", "AI - KL", "Top culture", "5 open roles", "AI-native org; roadmap-aligned."]
-    ];
+    const featuredCompanyWhy = {
+      setel: "AI-native squad; matches your saved roles.",
+      carsome: "3 alumni from your uni joined PM here.",
+      storehub: "Async culture; matches your working style.",
+      aerodyne: "AI-native org; roadmap-aligned."
+    };
+    const orgCatalog = buildOrgCatalog().catalog;
+    const featuredCompanies = Object.keys(featuredCompanyWhy)
+      .map(id => orgCatalog.find(company => company.id === id))
+      .filter(Boolean)
+      .map(org => ({
+        org,
+        verified: (org.tags || []).includes("Verified"),
+        tag: (org.tags || []).find(t => t !== "Verified") || "",
+        why: featuredCompanyWhy[org.id]
+      }));
     const universityWhy = {
       um: "Your alma mater - 312 PM alumni active.",
       taylors: "Industry-linked projects match your portfolio goal.",
@@ -4246,6 +5046,8 @@ function renderJobsPage() {
     };
     const universities = DATA.universities.map(uni => ({
       uni,
+      verified: (uni.tags || []).includes("Verified"),
+      tag: (uni.tags || []).find(t => t !== "Verified") || "",
       why: universityWhy[uni.id] || uni.signal
     }));
     const roleDirections = [
@@ -4254,9 +5056,9 @@ function renderJobsPage() {
       ["Founding PM (Seed startup)", "Fits your risk profile", "72% match", "RM 130k + equity / yr", "+12%", "You've saved 3 seed-stage KL startups this month."]
     ];
     const programs = [
-      ["Reforge - AI Product Management", "6-week online sprint", "Est. +18% market value", "Cost: USD 2,000 (~RM 9,400)", "6 weeks - part-time", "Closes your top skill gap: LLM product design."],
+      ["Reforge - AI Product Management", "6-week online sprint", "Est. +18% market value", "Cost: RM 9,400 (~USD 2,000)", "6 weeks - part-time", "Closes your top skill gap: LLM product design."],
       ["Asia School of Business - Exec Ed", "Product leadership - MIT-linked", "Est. +12% market value", "Cost: RM 12,000", "5 weekends", "Matches your 3-year plan toward Head of Product."],
-      ["Stanford Online - AI Product Certificate", "Self-paced certificate", "Asked for by 4 employers you follow", "Cost: USD 1,750 (~RM 8,200)", "8 weeks - self-paced", "Setel, Carsome, and 2 others list this as a plus."]
+      ["Stanford Online - AI Product Certificate", "Self-paced certificate", "Asked for by 4 employers you follow", "Cost: RM 8,200 (~USD 1,750)", "8 weeks - self-paced", "Setel, Carsome, and 2 others list this as a plus."]
     ];
     const mentors = [
       ["Aisyah R.", "4y journey", "Designer -> PM at Setel", "Started with a design background just like you.", "82% path overlap"],
@@ -4295,12 +5097,12 @@ function renderJobsPage() {
             <small>22 curated</small>
             <i>${icon("arrow-up-right")}</i>
           </button>
-          <button type="button" class="cg-question-card" data-discover-browse="paths">
+          <a class="cg-question-card" href="grow.html#career-paths">
             <span>${icon("rocket")}</span>
             <strong>Where could my career go next?</strong>
             <small>6 directions</small>
             <i>${icon("arrow-up-right")}</i>
-          </button>
+          </a>
           <a class="cg-question-card" href="#market-pulse">
             <span>${icon("trending-up")}</span>
             <strong>Which industries are growing in Malaysia?</strong>
@@ -4329,7 +5131,7 @@ function renderJobsPage() {
               <div class="cg-pill-row"><span class="dark">${icon("sparkles")} Vera found this</span><span>${icon("flame")} ${topPick.match}% roadmap match</span><small>Posted ${topPick.posted} - 34 applicants</small></div>
               <h3>${topPick.title}</h3>
               <p class="cg-role-line">${icon("building-2")} ${topPick.company} - ${icon("map-pin")} ${topPick.location} - ${topPick.type}</p>
-              <p class="cg-salary"><span>Estimated annual salary (Malaysia)</span> ${topPick.salary} <small>/ year</small></p>
+              <p class="cg-salary"><span>Estimated monthly salary (Malaysia)</span> ${topPick.salary}</p>
               <div class="cg-why-card">
                 <span>${icon("sparkles")} Why Vera recommends this</span>
                 <p>${icon("check-circle-2")} You completed SQL for PM this month.</p>
@@ -4351,6 +5153,16 @@ function renderJobsPage() {
               <div class="mini"><span>Company hiring trend</span><strong>+18%</strong><small>PM headcount, 6 mo</small></div>
             </aside>
           </article>
+        </section>
+
+        <section class="cg-discover-section" id="open-roles">
+          <div class="cg-discover-section-head">
+            <div><h2>Roles worth your week</h2><p class="cg-h2-sub">Open roles Vera ranked highest for you right now - open any card for full details.</p></div>
+            <a class="cg-discover-link-btn" href="recommended-roles.html">Browse all roles ${icon("arrow-right")}</a>
+          </div>
+          <div class="cg-role-rail" data-role-rail>
+            ${allNormalizedRoles().sort((a, b) => b.match - a.match).slice(0, 6).map(role => roleCardMarkup(role, { chips: false })).join("")}
+          </div>
         </section>
 
         <section class="cg-discover-section" id="market-pulse">
@@ -4387,7 +5199,7 @@ function renderJobsPage() {
           </div>
         </section>
 
-        <section class="cg-discover-section">
+        <section class="cg-discover-section" id="curated-collections">
           <h2>Curated Collections by Vera.</h2>
           <p class="cg-h2-sub">Hand-built groups of companies and roles that fit your next step, not generic tags.</p>
           <div class="cg-collection-grid">
@@ -4397,33 +5209,33 @@ function renderJobsPage() {
           </div>
         </section>
 
-        <section class="cg-discover-section" data-tour-target="discover-orgs">
+        <section class="cg-discover-section" id="featured-companies" data-tour-target="discover-orgs">
           <div class="cg-discover-section-head">
             <div><h2>Featured Companies</h2><p class="cg-h2-sub">Employers Vera is watching for you - tap a card for ratings and reviews.</p></div>
             <a class="cg-discover-link-btn" href="discover-companies.html">More Companies ${icon("arrow-right")}</a>
           </div>
           <div class="cg-featured-org-grid">
-            ${featuredCompanies.map(([id, name, sub, tag, roles, why]) => `
-              <article class="cg-featured-org-card" data-org-detail="${id}" tabindex="0" aria-label="Open ${name} reviews and details">
-                <header><span>${name.charAt(0)}</span><div><h3>${name}</h3><p>${sub}</p></div></header>
-                <b>${tag}</b><strong>${roles}</strong>
+            ${featuredCompanies.map(({ org, verified, tag, why }) => `
+              <article class="cg-featured-org-card" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} reviews and details">
+                <header><span>${org.name.charAt(0)}</span><div><h3>${org.name}${verified ? ` ${icon("badge-check")}` : ""}</h3><p>${org.industry} - ${org.location}</p></div></header>
+                <div class="cg-featured-org-tags">${tag ? `<b>${tag}</b>` : ""}<strong>${org.open} open role${org.open === 1 ? "" : "s"}</strong></div>
                 <footer>${icon("sparkles")} ${why}</footer>
-                <button type="button" class="btn btn-primary btn-wide" data-org-cta="${id}">View company ${icon("arrow-right")}</button>
+                <button type="button" class="btn btn-primary btn-wide" data-org-cta="${org.id}">View company ${icon("arrow-right")}</button>
               </article>
             `).join("")}
           </div>
         </section>
 
-        <section class="cg-discover-section">
+        <section class="cg-discover-section" id="featured-universities">
           <div class="cg-discover-section-head">
             <div><h2>Featured Universities</h2><p class="cg-h2-sub">Institutions that fit your path - open Entry requirements on each card to check your eligibility.</p></div>
             <a class="cg-discover-link-btn" href="discover-universities.html">More Universities ${icon("arrow-right")}</a>
           </div>
           <div class="cg-featured-org-grid">
-            ${universities.map(({ uni, why }) => `
+            ${universities.map(({ uni, verified, tag, why }) => `
               <article class="cg-featured-org-card university" data-org-detail="${uni.id}" tabindex="0" aria-label="Open ${uni.name} reviews and details">
-                <header><span>${icon("graduation-cap")}</span><div><h3>${uni.name}</h3><p>${icon("map-pin")} ${uni.location}</p></div></header>
-                <b>${uni.salary}</b>
+                <header><span>${icon("graduation-cap")}</span><div><h3>${uni.name}${verified ? ` ${icon("badge-check")}` : ""}</h3><p>${icon("map-pin")} ${uni.location}</p></div></header>
+                <div class="cg-featured-org-tags">${tag ? `<b>${tag}</b>` : ""}<strong>${uni.salary}</strong></div>
                 <footer>${icon("sparkles")} ${why}</footer>
                 ${universityRequirementsPanel(uni, state.profile)}
                 <button type="button" class="btn btn-primary btn-wide" data-org-cta="${uni.id}">View university ${icon("arrow-right")}</button>
@@ -4432,25 +5244,8 @@ function renderJobsPage() {
           </div>
         </section>
 
-        <section class="cg-discover-section">
-          <div class="cg-discover-section-head">
-            <div><h2>Career Paths</h2><p class="cg-h2-sub">Directions your profile could realistically take next, with salary and demand for each.</p></div>
-            <button type="button" class="cg-discover-link-btn" data-discover-browse="paths">Explore all career paths ${icon("arrow-right")}</button>
-          </div>
-          <div class="cg-direction-grid">
-            ${roleDirections.map(([title, sub, match, salary, demand, why]) => `
-              <article class="cg-direction-card">
-                <span>${match}</span>
-                <h3>${title}</h3>
-                <p>${sub}</p>
-                <dl><dt>Estimated salary</dt><dd>${salary}<small>MY - median</small></dd><dt>Market demand</dt><dd>${demand}<small>last 30 days</small></dd></dl>
-                <footer>${icon("sparkles")} Why - ${why}</footer>
-              </article>
-            `).join("")}
-          </div>
-        </section>
 
-        <section class="cg-discover-section">
+        <section class="cg-discover-section" id="recommended-programmes">
           <div class="cg-discover-section-head">
             <div><h2>Recommended Programmes</h2><p class="cg-h2-sub">Courses and certificates ranked by the career return Vera expects for you.</p></div>
             <button type="button" class="cg-discover-link-btn" data-discover-browse="programs">Explore all programmes ${icon("arrow-right")}</button>
@@ -4466,7 +5261,7 @@ function renderJobsPage() {
           </div>
         </section>
 
-        <section class="cg-discover-section" data-tour-target="discover-mentors">
+        <section class="cg-discover-section" id="discover-mentors" data-tour-target="discover-mentors">
           <div class="cg-discover-section-head">
             <div><h2>Mentors You can reach out to</h2><p class="cg-h2-sub">People a few steps ahead of you on a similar route, ranked by path overlap.</p></div>
             <button type="button" class="cg-discover-link-btn" data-discover-browse="mentors">Browse all mentors ${icon("arrow-right")}</button>
@@ -4505,7 +5300,8 @@ function renderJobsPage() {
       button.addEventListener("click", triggerOrgDetail);
       button.addEventListener("keydown", triggerOrgDetail);
     });
-    qs("[data-toppick-explore]", root)?.addEventListener("click", () => openApplicationDetailsModal(topPick.id));
+    qs("[data-toppick-explore]", root)?.addEventListener("click", () => goToRole(topPick.id));
+    bindRoleCardActions(root);
     qs("[data-toppick-save]", root)?.addEventListener("click", event => {
       const next = readState();
       const nowSaved = !next.savedJobs.includes(topPick.id);
@@ -4569,7 +5365,13 @@ function renderJobsPage() {
       });
     });
     attachLiveSearch(qs("[data-discover-search-form]", root), query => renderSearchPanelContent(query, "workspace", state), () => renderSearchDefaultContent(state));
+    qs("[data-discover-search-form]", root)?.addEventListener("submit", event => {
+      event.preventDefault();
+      const query = (qs("[data-discover-search-input]", root)?.value || "").trim();
+      location.href = query ? `recommended-roles.html?q=${encodeURIComponent(query)}` : "recommended-roles.html";
+    });
     initPageTour("discover");
+    scrollToHashSection(root);
     return;
   }
   if (state.session.loggedIn && document.body.dataset.page === "workspace-jobs") {
@@ -4613,7 +5415,7 @@ function renderJobsPage() {
             ${icon("search")}
             <input name="topic" aria-label="Ask Vera about Discover" placeholder="Try 'PM roles in KL paying above RM10k' or 'remote design-led startups hiring in Malaysia'">
             <button type="button">${icon("sliders-horizontal")} Filters</button>
-            <button type="submit">${icon("sparkles")} Ask Vera</button>
+            <button type="submit"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera</button>
           </form>
         </header>
 
@@ -4644,7 +5446,7 @@ function renderJobsPage() {
               <div class="cg-pill-row"><span class="dark">${icon("sparkles")} Vera found this</span><span>${icon("flame")} 91% roadmap match</span><small>Posted 2 days ago  - 34 applicants</small></div>
               <h3>Senior Product Manager, AI Platform</h3>
               <p class="cg-role-line">${icon("building-2")} Setel (PETRONAS Digital)  - ${icon("map-pin")} Kuala Lumpur  - Hybrid</p>
-              <p class="cg-salary"><span>Estimated annual salary (Malaysia)</span> RM 140,000 - RM 168,000 <small>/ year</small></p>
+              <p class="cg-salary"><span>Estimated monthly salary (Malaysia)</span> RM 11.7k - 14k <small>/ month</small></p>
               <div class="cg-why-card">
                 <span>${icon("sparkles")} Why Vera recommends this</span>
                 <p>${icon("check-circle-2")} You completed SQL for PM this month.</p>
@@ -4790,7 +5592,7 @@ function renderJobsPage() {
                 </div>
                 <label class="range-field"><span>Minimum match <strong data-threshold-label>70%</strong></span><input data-job-threshold type="range" min="60" max="95" value="70"></label>
                 <label class="check-field custom-checkbox"><input data-job-compare-mode type="checkbox"> Compare roles</label>
-                <a class="btn btn-cyan btn-wide" href="posts.html?topic=job search#messages">${icon("sparkles")} Ask Vera</a>
+                <a class="btn btn-cyan btn-wide" href="posts.html?topic=job search#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera</a>
               </div>
             </aside>
             <div class="jobs-main">
@@ -4919,7 +5721,7 @@ function renderJobsPage() {
       <div class="tracker-panel">
         <div class="section-head compact-section-head">
           <div><div class="section-kicker">Application tracker</div><h2 class="section-title mini">Know exactly where every role stands.</h2></div>
-          <a class="btn btn-cyan" href="posts.html?topic=application follow up#messages">${icon("sparkles")} Ask Vera</a>
+          <a class="btn btn-cyan" href="posts.html?topic=application follow up#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera</a>
         </div>
         <div class="pipeline-strip">
           ${APPLICATION_STAGES.slice(0, 6).map(stage => `<button class="pipeline-stage" type="button" data-filter-stage="${stage.key}"><span>${stage.label}</span><strong>${counts[stage.key] || 0}</strong></button>`).join("")}
@@ -5218,15 +6020,13 @@ function renderJobsPage() {
       const form = new FormData(event.currentTarget);
       const topic = String(form.get("topic") || "Role inquiry");
       const next = readState();
-      next.notifications = [
-        {
-          id: `n-contact-${active.id}-${Date.now()}`,
-          title: "Job inquiry prepared",
-          body: `${topic} question for ${active.title} at ${active.company} was added to your follow-up queue.`,
-          icon: "messages-square"
-        },
-        ...(next.notifications || [])
-      ].slice(0, 5);
+      pushNotification(next, {
+        id: `n-contact-${active.id}-${Date.now()}`,
+        type: "recruiter",
+        title: "Job inquiry prepared",
+        body: `${topic} question for ${active.title} at ${active.company} was added to your follow-up queue.`,
+        href: "posts.html#messages"
+      });
       writeState(syncCurrentUser(next));
       contactOpen = false;
       showToast("Inquiry prepared for follow-up.");
@@ -5280,11 +6080,11 @@ function orgInitials(name) {
 
 function buildOrgCatalog() {
   const extraCompanies = [
-    { id: "shell", name: "Shell", industry: "Energy", location: "Kuala Lumpur", rating: 4.4, reviews: 612, open: 10, signal: "Structured graduate rotations", tags: ["Verified", "Graduates' Choice", "Hiring at scale"], summary: "Global energy employer with commercial rotations, digital product work, and established graduate pathways.", salary: "RM 5k - 14k / month", size: "10,000+ employees", type: "Company", highlights: ["Global rotations build broad commercial experience.", "Structured graduate pathway reduces early-career risk."], watchouts: ["Large-company pace can feel slow for fast movers."] },
-    { id: "setel", name: "Setel", industry: "Fintech", location: "Kuala Lumpur", rating: 4.3, reviews: 288, open: 4, signal: "AI-native product squad", tags: ["Verified", "Fast responders", "Product"], summary: "Fintech product team close to PETRONAS Digital, useful for PMs who want payments and mobility products.", salary: "RM 9k - 14k / month", size: "250+ employees", type: "Company", highlights: ["Fintech and mobility products give real ownership.", "Close proximity to PETRONAS Digital widens your network."], watchouts: ["Small team means limited backup during crunch."] },
-    { id: "carsome", name: "Carsome", industry: "Marketplace", location: "Kuala Lumpur", rating: 4.2, reviews: 356, open: 3, signal: "Regional marketplace scale", tags: ["Fast growing", "Hybrid", "Product"], summary: "Regional marketplace company with operations, analytics, product growth, and customer platform roles.", salary: "RM 10k - 15k / month", size: "1,000+ employees", type: "Company", highlights: ["Marketplace patterns will stretch your product skills.", "Alumni network here is real leverage."], watchouts: ["Ops-heavy problem space - comfort with logistics matters."] },
-    { id: "storehub", name: "StoreHub", industry: "SaaS", location: "Kuala Lumpur", rating: 4.2, reviews: 204, open: 2, signal: "Remote-first craft culture", tags: ["Remote-first", "SaaS", "Async"], summary: "Craft-led SaaS company with strong SMB product problems and close user feedback loops.", salary: "RM 8k - 12k / month", size: "300+ employees", type: "Company", highlights: ["Remote-first culture rewards clear async writing.", "Small teams mean fast, visible impact."], watchouts: ["Less structure than a bigger company - you set your own rhythm."] },
-    { id: "aerodyne", name: "Aerodyne", industry: "AI", location: "Kuala Lumpur", rating: 4.1, reviews: 172, open: 5, signal: "Drone and AI platform work", tags: ["AI", "Global HQ", "Product"], summary: "Malaysia-born AI and drone company with global operations, data-heavy products, and technical PM paths.", salary: "RM 11k - 16k / month", size: "800+ employees", type: "Company", highlights: ["Drone and AI platform work is genuinely technical.", "Global footprint gives cross-market exposure."], watchouts: ["Domain knowledge in aviation and data takes time to build."] },
+    { id: "shell", name: "Shell", industry: "Energy", location: "Kuala Lumpur", rating: 4.4, reviews: 612, open: 10, signal: "Structured graduate rotations", externalUrl: "https://www.shell.com.my/careers.html", tags: ["Verified", "Graduates' Choice", "Hiring at scale"], summary: "Global energy employer with commercial rotations, digital product work, and established graduate pathways.", salary: "RM 5k - 14k / month", size: "10,000+ employees", type: "Company", highlights: ["Global rotations build broad commercial experience.", "Structured graduate pathway reduces early-career risk."], watchouts: ["Large-company pace can feel slow for fast movers."] },
+    { id: "setel", name: "Setel", industry: "Fintech", location: "Kuala Lumpur", rating: 4.3, reviews: 288, open: 4, signal: "AI-native product squad", externalUrl: "https://www.setel.com/careers", tags: ["Verified", "Fast responders", "Product"], summary: "Fintech product team close to PETRONAS Digital, useful for PMs who want payments and mobility products.", salary: "RM 9k - 14k / month", size: "250+ employees", type: "Company", highlights: ["Fintech and mobility products give real ownership.", "Close proximity to PETRONAS Digital widens your network."], watchouts: ["Small team means limited backup during crunch."] },
+    { id: "carsome", name: "Carsome", industry: "Marketplace", location: "Kuala Lumpur", rating: 4.2, reviews: 356, open: 3, signal: "Regional marketplace scale", externalUrl: "https://careers.carsome.com", tags: ["Fast growing", "Hybrid", "Product"], summary: "Regional marketplace company with operations, analytics, product growth, and customer platform roles.", salary: "RM 10k - 15k / month", size: "1,000+ employees", type: "Company", highlights: ["Marketplace patterns will stretch your product skills.", "Alumni network here is real leverage."], watchouts: ["Ops-heavy problem space - comfort with logistics matters."] },
+    { id: "storehub", name: "StoreHub", industry: "SaaS", location: "Kuala Lumpur", rating: 4.2, reviews: 204, open: 2, signal: "Remote-first craft culture", externalUrl: "https://www.storehub.com/careers/", tags: ["Remote-first", "SaaS", "Async"], summary: "Craft-led SaaS company with strong SMB product problems and close user feedback loops.", salary: "RM 8k - 12k / month", size: "300+ employees", type: "Company", highlights: ["Remote-first culture rewards clear async writing.", "Small teams mean fast, visible impact."], watchouts: ["Less structure than a bigger company - you set your own rhythm."] },
+    { id: "aerodyne", name: "Aerodyne", industry: "AI", location: "Kuala Lumpur", rating: 4.1, reviews: 172, open: 5, signal: "Drone and AI platform work", externalUrl: "https://aerodyne.group/careers/", tags: ["AI", "Global HQ", "Product"], summary: "Malaysia-born AI and drone company with global operations, data-heavy products, and technical PM paths.", salary: "RM 11k - 16k / month", size: "800+ employees", type: "Company", highlights: ["Drone and AI platform work is genuinely technical.", "Global footprint gives cross-market exposure."], watchouts: ["Domain knowledge in aviation and data takes time to build."] },
     { id: "public-bank", name: "Public Bank", industry: "Banking", location: "Kuala Lumpur", rating: 4.2, reviews: 534, open: 11, signal: "Conservative, stable career track", tags: ["Stable", "Graduate friendly", "Banking"], summary: "One of Malaysia's largest banking groups, known for prudent management, steady promotion cycles, and strong retail banking presence.", salary: "RM 3.8k - 10k / month", size: "18,000+ employees", type: "Company" },
     { id: "rhb", name: "RHB Bank", industry: "Banking", location: "Kuala Lumpur", rating: 4.0, reviews: 412, open: 8, signal: "Digital banking transformation roles", tags: ["Banking", "Digital", "ASEAN"], summary: "Regional banking group investing heavily in digital transformation, analytics, and customer experience roles.", salary: "RM 4k - 11k / month", size: "10,000+ employees", type: "Company" },
     { id: "hong-leong-bank", name: "Hong Leong Bank", industry: "Banking", location: "Kuala Lumpur", rating: 4.1, reviews: 389, open: 7, signal: "Tech-forward banking culture", tags: ["Banking", "Digital", "Fintech"], summary: "Malaysian banking group recognised for its digital banking app and fintech partnerships, with growing product and data teams.", salary: "RM 4.2k - 11.5k / month", size: "8,000+ employees", type: "Company" },
@@ -5301,7 +6101,7 @@ function buildOrgCatalog() {
     { id: "tnb", name: "Tenaga Nasional (TNB)", industry: "Utilities", location: "Kuala Lumpur", rating: 4.1, reviews: 543, open: 13, signal: "Energy transition and grid digitalisation", tags: ["Utilities", "Energy transition", "Stable"], summary: "Malaysia's national electricity utility, expanding into renewable energy and grid digitalisation with new data and engineering roles.", salary: "RM 4.5k - 12k / month", size: "30,000+ employees", type: "Company" }
   ];
   const extraUniversities = [
-    { id: "sunway", name: "Sunway University", industry: "Private University", location: "Selangor", rating: 4.4, reviews: 438, open: 18, signal: "Fintech partnerships", tags: ["91% employment", "Industry links", "Business"], summary: "Private university with strong employer links, business programmes, and a growing tech ecosystem.", salary: "91% employed in 6 months", size: "18,000 students", type: "University" },
+    { id: "sunway", name: "Sunway University", industry: "Private University", location: "Selangor", rating: 4.4, reviews: 438, open: 18, signal: "Fintech partnerships", externalUrl: "https://university.sunway.edu.my", tags: ["91% employment", "Industry links", "Business"], summary: "Private university with strong employer links, business programmes, and a growing tech ecosystem.", salary: "91% employed in 6 months", size: "18,000 students", type: "University" },
     { id: "asb", name: "Asia School of Business", industry: "Business School", location: "Kuala Lumpur", rating: 4.5, reviews: 196, open: 9, signal: "MIT-linked executive education", tags: ["MIT-linked", "Exec Ed", "Leadership"], summary: "Business school focused on leadership, analytics, and regional management programmes.", salary: "88% employed in 6 months", size: "1,200 learners", type: "University" },
     { id: "iim-bangalore", name: "IIM Bangalore", industry: "Business School", location: "Online", rating: 4.6, reviews: 524, open: 7, signal: "Product leadership alumni", tags: ["Online", "Leadership", "Product"], summary: "Executive programmes and alumni networks useful for product, strategy, and leadership transitions.", salary: "Global alumni network", size: "Executive cohorts", type: "University" },
     { id: "ukm", name: "Universiti Kebangsaan Malaysia (UKM)", industry: "Public University", location: "Bangi", rating: 4.3, reviews: 412, open: 20, signal: "Strong research output", tags: ["Public", "Research", "STEM"], summary: "Public research university with strong programmes in science, engineering, and Islamic studies, and a large national alumni base.", salary: "84% employed in 6 months", size: "27,000 students", type: "University" },
@@ -5424,7 +6224,7 @@ function renderSearchPanelContent(query, scope, state) {
   const q = query.trim();
   if (!q) return "";
   const results = scope === "workspace" ? searchWorkspaceCatalog(q, state) : searchPublicCatalog(q);
-  const jobHref = job => scope === "workspace" ? `discover.html?job=${encodeURIComponent(job.id)}` : `explore.html#featured-opportunities`;
+  const jobHref = job => scope === "workspace" ? `role.html?role=${encodeURIComponent(job.id)}` : `explore.html#featured-opportunities`;
   const companyHref = org => scope === "workspace" ? `discover-companies.html?q=${encodeURIComponent(org.name)}` : `companies.html?q=${encodeURIComponent(org.name)}`;
   const universityHref = org => scope === "workspace" ? `discover-universities.html?q=${encodeURIComponent(org.name)}` : `universities.html?q=${encodeURIComponent(org.name)}`;
   const groups = [];
@@ -5448,10 +6248,11 @@ function renderSearchPanelContent(query, scope, state) {
     });
   }
   if (results.jobs.length) {
-    groups.push({
-      title: "Jobs",
-      items: results.jobs.map(job => ({ href: jobHref(job), title: job.title, meta: `${job.company} - ${job.location} - ${job.salary}`, icon: "briefcase" }))
-    });
+    const jobItems = results.jobs.map(job => ({ href: jobHref(job), title: job.title, meta: `${job.company} - ${job.location} - ${job.salary}`, icon: "briefcase" }));
+    if (scope === "workspace") {
+      jobItems.push({ href: `recommended-roles.html?q=${encodeURIComponent(q)}`, title: `View all roles matching "${q}"`, meta: "See full results on the Roles page", icon: "arrow-right" });
+    }
+    groups.push({ title: "Jobs", items: jobItems });
   }
   if (results.universities.length) {
     groups.push({
@@ -5663,7 +6464,7 @@ function discoverPathCard([title, sub, match, salary, demand, why]) {
         <p class="cg-org-browse-signal">${icon("sparkles")} ${why}</p>
       </div>
       <div class="cg-org-browse-actions">
-        <a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(`Tell me more about the ${title} path`)}#messages">${icon("sparkles")} Ask Vera</a>
+        <a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(`Tell me more about the ${title} path`)}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera</a>
       </div>
     </article>
   `;
@@ -5680,7 +6481,7 @@ function discoverProgramCard([name, sub, tag, cost, duration, why]) {
         <p class="cg-org-browse-signal">${icon("sparkles")} ${why}</p>
       </div>
       <div class="cg-org-browse-actions">
-        <a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(`Tell me more about ${name}`)}#messages">${icon("sparkles")} Ask Vera</a>
+        <a class="btn btn-ghost" href="posts.html?topic=${encodeURIComponent(`Tell me more about ${name}`)}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera</a>
       </div>
     </article>
   `;
@@ -5917,178 +6718,6 @@ function openOrgBrowserModal(kind) {
   createIcons();
 }
 
-function renderDiscoverOrgDirectory() {
-  const root = qs("[data-discover-org-directory]");
-  if (!root) return;
-  const isCompanies = root.dataset.discoverOrgDirectory !== "universities";
-  if (!requireAccount(root, isCompanies ? "browse every company Vera is tracking" : "browse every university Vera is tracking")) return;
-  const state = readState();
-  const { catalog } = buildOrgCatalog();
-  const items = catalog.filter(org => org.category === (isCompanies ? "companies" : "universities"));
-  root.innerHTML = `
-    <section class="cg-discover cg-discover-v2 cg-discover-org-directory">
-      <header class="cg-discover-hero">
-        <a class="cg-back-link" href="discover.html">${icon("arrow-left")} Discover</a>
-        <span class="cg-overline">Browse career places</span>
-        <h1>${isCompanies ? "All companies" : "All universities"}.</h1>
-        <p>${isCompanies ? "Every employer Vera is tracking for your Product Management search in Malaysia." : "Every institution Vera is tracking for your career path in Malaysia."}</p>
-      </header>
-      <nav class="cg-org-tabs" aria-label="Directory category">
-        <a href="discover-companies.html" class="${isCompanies ? "active" : ""}">${icon("building-2")} Companies</a>
-        <a href="discover-universities.html" class="${isCompanies ? "" : "active"}">${icon("graduation-cap")} Universities</a>
-      </nav>
-      <section class="cg-discover-section">
-        <div class="cg-org-filters" aria-label="${isCompanies ? "Company" : "University"} filters">
-          <form class="cg-org-search-field" data-org-directory-search-form>
-            ${icon("search")}
-            <input name="q" data-org-directory-search placeholder="Search ${isCompanies ? "companies" : "universities"} by name, industry, or location...">
-          </form>
-          <select data-org-directory-sort aria-label="Sort">
-            <option value="top">Top rated</option>
-            <option value="open">Most ${isCompanies ? "openings" : "programmes"}</option>
-            <option value="reviews">Most signals</option>
-          </select>
-          <select data-org-directory-filter="industry" aria-label="Filter ${isCompanies ? "sector" : "institution type"}"><option value="">${isCompanies ? "All sectors" : "All institution types"}</option></select>
-          <select data-org-directory-filter="location" aria-label="Filter location"><option value="">All locations</option></select>
-          <select data-org-directory-filter="rating" aria-label="Filter rating">
-            <option value="">Any rating</option><option value="4.5">4.5+</option><option value="4.3">4.3+</option><option value="4.1">4.1+</option>
-          </select>
-          <select data-org-directory-filter="tag" aria-label="Filter signal"><option value="">All signals</option></select>
-        </div>
-        <div class="cg-org-chips">
-          <button type="button" data-org-chip="Verified">${icon("badge-check")} Verified only</button>
-          <button type="button" data-org-chip="Graduates">${icon("award")} Graduates' Choice</button>
-          <button type="button" data-org-chip="Fast">${icon("zap")} Fast responders</button>
-        </div>
-        <p class="cg-org-count"><strong data-org-directory-count>0</strong> shown &middot; ${isCompanies ? "Companies" : "Universities"} &middot; sorted by <span data-org-directory-sort-label>top rated</span></p>
-        <div class="cg-featured-org-grid" data-org-directory-grid></div>
-      </section>
-    </section>
-  `;
-  const grid = qs("[data-org-directory-grid]", root);
-  const countNode = qs("[data-org-directory-count]", root);
-  const sortLabelNode = qs("[data-org-directory-sort-label]", root);
-  const searchInput = qs("[data-org-directory-search]", root);
-  const sortSelect = qs("[data-org-directory-sort]", root);
-  const filterControls = qsa("[data-org-directory-filter]", root);
-  const chipButtons = qsa("[data-org-chip]", root);
-  const sortLabels = { top: "top rated", open: isCompanies ? "most openings" : "most programmes", reviews: "most signals" };
-  if (searchInput) searchInput.value = new URLSearchParams(location.search).get("q") || "";
-
-  function syncFilterOptions() {
-    const industrySelect = qs('[data-org-directory-filter="industry"]', root);
-    const locationSelect = qs('[data-org-directory-filter="location"]', root);
-    const tagSelect = qs('[data-org-directory-filter="tag"]', root);
-    const fill = (select, placeholder, values) => {
-      const previous = select.value;
-      select.innerHTML = `<option value="">${placeholder}</option>${values.map(value => `<option value="${value}">${value}</option>`).join("")}`;
-      if (values.includes(previous)) select.value = previous;
-    };
-    fill(industrySelect, isCompanies ? "All sectors" : "All institution types", [...new Set(items.map(org => org.industry))].sort());
-    fill(locationSelect, "All locations", [...new Set(items.map(org => org.location))].sort());
-    fill(tagSelect, "All signals", [...new Set(items.flatMap(org => org.tags || []))].sort());
-  }
-
-  function currentItems() {
-    const query = (searchInput?.value || "").trim().toLowerCase();
-    const selected = Object.fromEntries(filterControls.map(control => [control.dataset.orgDirectoryFilter, control.value]));
-    const activeChip = qs("[data-org-chip].active", root)?.dataset.orgChip || "";
-    let filtered = items.filter(org => {
-      const hay = [org.name, org.industry, org.location, org.signal, org.summary, ...(org.tags || [])].join(" ").toLowerCase();
-      if (query && !hay.includes(query)) return false;
-      if (selected.industry && org.industry !== selected.industry) return false;
-      if (selected.location && org.location !== selected.location) return false;
-      if (selected.rating && Number(org.rating) < Number(selected.rating)) return false;
-      if (selected.tag && !(org.tags || []).includes(selected.tag)) return false;
-      if (activeChip && !hay.includes(activeChip.toLowerCase())) return false;
-      return true;
-    });
-    const sort = sortSelect?.value || "top";
-    filtered = filtered.sort((a, b) => {
-      if (sort === "open") return Number(b.open || 0) - Number(a.open || 0);
-      if (sort === "reviews") return Number(b.reviews || 0) - Number(a.reviews || 0);
-      return Number(b.rating || 0) - Number(a.rating || 0);
-    });
-    return filtered;
-  }
-
-  function renderGrid() {
-    const filtered = currentItems();
-    countNode.textContent = String(filtered.length);
-    if (sortLabelNode) sortLabelNode.textContent = sortLabels[sortSelect?.value || "top"];
-    grid.innerHTML = filtered.map(org => isCompanies ? `
-      <article class="cg-featured-org-card" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} reviews and details">
-        <header><span>${org.name.charAt(0)}</span><div><h3>${org.name}</h3><p>${org.industry} - ${org.location}</p></div></header>
-        <p class="cg-featured-org-meta">${icon("star")} ${Number(org.rating).toFixed(1)} &middot; ${org.reviews} reviews &middot; ${org.following}</p>
-        <p class="cg-featured-org-meta">${icon("trending-up")} ${orgHiringPct(org)}% hiring</p>
-        <p class="cg-featured-org-summary">${org.summary}</p>
-        ${org.scores ? `<p class="cg-featured-org-scores">Culture ${org.scores.culture.toFixed(1)} &middot; Growth ${org.scores.growth.toFixed(1)} &middot; Pay ${org.scores.pay.toFixed(1)} &middot; Balance ${org.scores.balance.toFixed(1)}</p>` : ""}
-        <div class="cg-featured-org-tags">${(org.tags || []).slice(0, 3).map(tag => `<b>${tag}</b>`).join("")}<b>${icon("zap")} ${orgGrowingTag(org)}</b><b>${org.open} open role${org.open === 1 ? "" : "s"}</b></div>
-        <footer>
-          <p>${icon("sparkles")} ${org.signal}</p>
-          ${org.watchouts?.length ? `<p class="cg-featured-org-watch">${icon("alert-triangle")} <b>Watch:</b> ${org.watchouts[0]}</p>` : ""}
-        </footer>
-        <button type="button" class="btn btn-primary btn-wide" data-org-cta="${org.id}">View company ${icon("arrow-right")}</button>
-      </article>
-    ` : `
-      <article class="cg-featured-org-card university" data-org-detail="${org.id}" tabindex="0" aria-label="Open ${org.name} details">
-        <header><span>${icon("graduation-cap")}</span><div><h3>${org.name}</h3><p>${icon("map-pin")} ${org.location}</p></div></header>
-        <p class="cg-featured-org-meta">${icon("star")} ${Number(org.rating).toFixed(1)} &middot; ${org.reviews} reviews &middot; ${org.following}</p>
-        <p class="cg-featured-org-meta">${icon("trending-up")} ${orgHiringPct(org)}% hiring</p>
-        <p class="cg-featured-org-summary">${org.summary}</p>
-        ${org.scores ? `<p class="cg-featured-org-scores">Culture ${org.scores.culture.toFixed(1)} &middot; Growth ${org.scores.growth.toFixed(1)} &middot; Pay ${org.scores.pay.toFixed(1)} &middot; Balance ${org.scores.balance.toFixed(1)}</p>` : ""}
-        <div class="cg-featured-org-tags">${(org.tags || []).slice(0, 3).map(tag => `<b>${tag}</b>`).join("")}<b>${org.salary}</b></div>
-        <footer>
-          <p>${icon("sparkles")} ${org.signal}</p>
-          ${org.watchouts?.length ? `<p class="cg-featured-org-watch">${icon("alert-triangle")} <b>Watch:</b> ${org.watchouts[0]}</p>` : ""}
-        </footer>
-        ${universityRequirementsPanel(org, state.profile)}
-        <button type="button" class="btn btn-primary btn-wide" data-org-cta="${org.id}">View university ${icon("arrow-right")}</button>
-      </article>
-    `).join("") || `<p class="cg-org-browse-empty">No matches yet. Try clearing a filter or searching a broader term.</p>`;
-    qsa("[data-org-detail]", grid).forEach(card => {
-      card.addEventListener("click", () => openOrgDetailModal(card.dataset.orgDetail));
-      card.addEventListener("keydown", event => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          openOrgDetailModal(card.dataset.orgDetail);
-        }
-      });
-    });
-    qsa("[data-org-cta]", grid).forEach(button => {
-      const triggerOrgDetail = event => {
-        event.stopPropagation();
-        if (event.type === "keydown") {
-          if (event.key !== "Enter" && event.key !== " ") return;
-          event.preventDefault();
-        }
-        openOrgDetailModal(button.dataset.orgCta);
-      };
-      button.addEventListener("click", triggerOrgDetail);
-      button.addEventListener("keydown", triggerOrgDetail);
-    });
-    qsa("[data-uni-requirements]", grid).forEach(button => button.addEventListener("click", event => {
-      event.stopPropagation();
-      openUniversityRequirementsModal(button.dataset.uniRequirements);
-    }));
-    createIcons();
-  }
-
-  qs("[data-org-directory-search-form]", root)?.addEventListener("submit", event => event.preventDefault());
-  searchInput?.addEventListener("input", renderGrid);
-  sortSelect?.addEventListener("input", renderGrid);
-  filterControls.forEach(control => control.addEventListener("input", renderGrid));
-  chipButtons.forEach(button => button.addEventListener("click", () => {
-    const wasActive = button.classList.contains("active");
-    chipButtons.forEach(item => item.classList.remove("active"));
-    if (!wasActive) button.classList.add("active");
-    renderGrid();
-  }));
-  syncFilterOptions();
-  renderGrid();
-  createIcons();
-}
-
 function renderMarketPulsePage() {
   const root = qs("[data-market-pulse-page]");
   if (!root) return;
@@ -6208,9 +6837,18 @@ function renderMarketPulsePage() {
   createIcons();
 }
 
+function directoryTagVariant(tag) {
+  if (/verified/i.test(tag)) return "verified";
+  if (/choice/i.test(tag)) return "choice";
+  if (/hiring at scale|actively hiring|fast responders?/i.test(tag)) return "momentum";
+  return "";
+}
+
 function renderDirectoryPage(kind) {
   const root = qs("[data-directory-page]");
   if (!root) return;
+  const isDiscoverContext = document.body.dataset.page === "discover";
+  if (isDiscoverContext && !requireAccount(root, kind === "universities" ? "browse every university Vera is tracking" : "browse every company Vera is tracking")) return;
   const state = readState();
   const loggedIn = Boolean(state.session.loggedIn);
   if (loggedIn && state.session.role === "employer") {
@@ -6229,34 +6867,50 @@ function renderDirectoryPage(kind) {
   }
 
   const { catalog } = buildOrgCatalog();
-  let activeKind = (location.hash || "").replace("#", "") || (kind === "universities" ? "universities" : "companies");
+  let activeKind = isDiscoverContext
+    ? (kind === "universities" ? "universities" : "companies")
+    : (location.hash || "").replace("#", "") || (kind === "universities" ? "universities" : "companies");
   if (!["companies", "universities"].includes(activeKind)) activeKind = "companies";
-  const title = "Career places worth knowing.";
-  const copy = "Browse verified companies and universities in one place. Use categories and filters to compare employer signals, graduate outcomes, locations, programmes, and career fit.";
+  const title = isDiscoverContext
+    ? (activeKind === "universities" ? "All universities." : "All companies.")
+    : "Career places worth knowing.";
+  const copy = isDiscoverContext
+    ? (activeKind === "universities" ? "Every institution Vera is tracking for your career path in Malaysia." : "Every employer Vera is tracking for your Product Management search in Malaysia.")
+    : "Browse verified companies and universities in one place. Use categories and filters to compare employer signals, graduate outcomes, locations, programmes, and career fit.";
   const pageMarkup = `
     <section class="cg-directory-browser cg-directory-unified" data-cg-directory-browser>
       <header class="cg-directory-hero">
+        ${isDiscoverContext ? `<a class="cg-back-link" href="discover.html">${icon("arrow-left")} Discover</a>` : ""}
         <span class="cg-overline">Browse career places</span>
         <h1>${title}</h1>
         <p>${copy}</p>
       </header>
       <nav class="cg-directory-tabs" aria-label="Directory category">
-        <button type="button" data-directory-kind="companies">${icon("building-2")} Companies</button>
-        <button type="button" data-directory-kind="universities">${icon("graduation-cap")} Universities</button>
+        ${isDiscoverContext ? `
+          <a href="discover-companies.html" class="${activeKind === "companies" ? "active" : ""}">${icon("building-2")} Companies</a>
+          <a href="discover-universities.html" class="${activeKind === "universities" ? "active" : ""}">${icon("graduation-cap")} Universities</a>
+        ` : `
+          <button type="button" data-directory-kind="companies">${icon("building-2")} Companies</button>
+          <button type="button" data-directory-kind="universities">${icon("graduation-cap")} Universities</button>
+        `}
       </nav>
       <section class="cg-directory-controls" aria-label="Directory filters">
-        <label class="cg-directory-search">${icon("search")}<input data-directory-search placeholder="Search companies, universities, programmes, locations..."></label>
-        <select data-directory-sort aria-label="Sort directory">
-          <option value="top">Top rated</option>
-          <option value="open">Most openings / programmes</option>
-          <option value="reviews">Most signals</option>
-        </select>
-        <select data-directory-filter="industry" aria-label="Filter sector"><option value="">All sectors</option></select>
-        <select data-directory-filter="location" aria-label="Filter location"><option value="">All locations</option></select>
-        <select data-directory-filter="rating" aria-label="Filter rating">
-          <option value="">Any rating</option><option value="4.5">4.5+</option><option value="4.3">4.3+</option><option value="4.1">4.1+</option>
-        </select>
-        <select data-directory-filter="programme" aria-label="Filter signal"><option value="">All signals</option></select>
+        <div class="cg-directory-controls-row cg-directory-controls-primary">
+          <label class="cg-directory-search">${icon("search")}<input data-directory-search placeholder="Search companies, universities, programmes, locations..."></label>
+          <select data-directory-sort aria-label="Sort directory">
+            <option value="top">Top rated</option>
+            <option value="open">Most openings / programmes</option>
+            <option value="reviews">Most signals</option>
+          </select>
+        </div>
+        <div class="cg-directory-controls-row cg-directory-controls-filters">
+          <select data-directory-filter="industry" aria-label="Filter sector"><option value="">All sectors</option></select>
+          <select data-directory-filter="location" aria-label="Filter location"><option value="">All locations</option></select>
+          <select data-directory-filter="rating" aria-label="Filter rating">
+            <option value="">Any rating</option><option value="4.5">4.5+</option><option value="4.3">4.3+</option><option value="4.1">4.1+</option>
+          </select>
+          <select data-directory-filter="programme" aria-label="Filter signal"><option value="">All signals</option></select>
+        </div>
         <div class="cg-directory-chips">
           <button type="button" data-chip-filter="Verified">${icon("badge-check")} Verified only</button>
           <button type="button" data-chip-filter="Graduates">${icon("award")} Graduates' Choice</button>
@@ -6278,7 +6932,7 @@ function renderDirectoryPage(kind) {
   const sortSelect = qs("[data-directory-sort]", root);
   const filterControls = qsa("[data-directory-filter]", root);
   const chipButtons = qsa("[data-chip-filter]", root);
-  const kindButtons = qsa("[data-directory-kind]", root);
+  const kindButtons = qsa("button[data-directory-kind]", root);
   const countNode = qs("[data-directory-count]", root);
   const modeNode = qs("[data-directory-mode]", root);
   const grid = qs("[data-directory-grid]", root);
@@ -6360,17 +7014,22 @@ function renderDirectoryPage(kind) {
             <section class="cg-directory-signals">
               <span>Signals</span>
               <div>
-                ${(org.tags || []).slice(0, 4).map(tag => `<b>${tag}</b>`).join("")}
-                <b>${org.type === "University" ? org.salary : `${org.open} open roles`}</b>
+                ${(org.tags || []).slice(0, 4).map(tag => {
+                  const variant = directoryTagVariant(tag);
+                  return `<b${variant ? ` class="cg-tag-${variant}"` : ""}>${tag}</b>`;
+                }).join("")}
               </div>
             </section>
             <p>${org.summary}</p>
             <footer>
-              <button type="button" data-directory-detail="${org.id}">${icon("message-square-text")} Reviews</button>
-              <button type="button" data-directory-save="${org.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save"}</button>
-              ${readState().session.loggedIn
-                ? `<a href="posts.html?topic=${encodeURIComponent(`${org.name} ${org.type.toLowerCase()} research`)}#messages">${icon("sparkles")} Ask Vera</a>`
-                : `<a href="#" data-auth-prompt="ask Vera about ${org.name}">${icon("sparkles")} Ask Vera</a>`}
+              <span class="cg-directory-footer-count">${org.type === "University" ? org.salary : `${org.open} open role${org.open === 1 ? "" : "s"}`}</span>
+              <div class="cg-directory-footer-actions">
+                <button type="button" class="cg-directory-icon-btn" data-directory-detail="${org.id}" aria-label="Reviews" title="Reviews">${icon("message-square-text")}</button>
+                <button type="button" class="cg-directory-icon-btn" data-directory-save="${org.id}" aria-label="${isSaved ? "Saved" : "Save"}" title="${isSaved ? "Saved" : "Save"}">${icon(isSaved ? "bookmark-check" : "bookmark")}</button>
+                ${readState().session.loggedIn
+                  ? `<a class="cg-directory-ask-vera" href="posts.html?topic=${encodeURIComponent(`${org.name} ${org.type.toLowerCase()} research`)}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera</a>`
+                  : `<a class="cg-directory-ask-vera" href="#" data-auth-prompt="ask Vera about ${org.name}"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera</a>`}
+              </div>
             </footer>
           </div>
         </article>
@@ -6521,6 +7180,24 @@ function worthTimelineSvg(points, width = 1200, height = 360) {
   </svg>`;
 }
 
+/* Small no-axis sparkline for the Value Growth momentum block - conveys the
+   trend/shape only, deliberately without printing any RM figures (career
+   value doesn't move in exact ringgit day to day). */
+function momentumSparkline(values, width = 240, height = 60) {
+  const min = Math.min(...values), max = Math.max(...values), range = (max - min) || 1;
+  const stepX = width / (values.length - 1);
+  const pts = values.map((v, i) => ({ x: i * stepX, y: height - 7 - ((v - min) / range) * (height - 14) }));
+  const line = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+  const area = `M${pts.map(p => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" L")} L${width} ${height} L0 ${height} Z`;
+  const last = pts[pts.length - 1];
+  return `<svg class="cg-momentum-spark-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="Career Value trending gently upward over the last month">
+    <defs><linearGradient id="momSpark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0b6d65" stop-opacity=".22"/><stop offset="100%" stop-color="#0b6d65" stop-opacity="0"/></linearGradient></defs>
+    <path d="${area}" fill="url(#momSpark)"/>
+    <polyline points="${line}" fill="none" stroke="#0b6d65" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="4.5" fill="#0b6d65" stroke="#fffaf2" stroke-width="2.5"/>
+  </svg>`;
+}
+
 const OPEN_ROLE_POOL = {
   Banking: ["Product Analyst", "Data Analyst", "Digital Banking Associate", "Risk Analyst"],
   Technology: ["Product Manager", "Data Analyst", "Software Engineer", "Growth Associate"],
@@ -6549,14 +7226,18 @@ function openOrgDetailModal(orgId) {
   const { catalog } = buildOrgCatalog();
   const org = catalog.find(item => item.id === orgId) || [...DATA.companies, ...DATA.universities].find(item => item.id === orgId);
   if (!org) return;
-  const reviews = [...(readState().reviews || []), ...DATA.reviews]
-    .filter((review, index, all) => all.findIndex(item => item.id === review.id) === index)
-    .filter(review => review.targetId === org.id);
   const scoreRows = org.scores
     ? [["Culture", org.scores.culture], ["Growth", org.scores.growth], ["Pay", org.scores.pay], ["Balance", org.scores.balance]]
     : [];
-  const openRoles = org.type !== "University" ? openRolesForOrg(org) : [];
+  const allOpenRoles = org.type !== "University" ? openRolesForOrg(org) : [];
+  const openRoles = allOpenRoles.slice(0, 3);
   const loggedIn = Boolean(readState().session.loggedIn);
+  const veraMark = `<img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI">`;
+  const askVeraLink = (topic, label) => loggedIn
+    ? `<a class="btn btn-cyan" href="posts.html?topic=${encodeURIComponent(topic)}#messages">${veraMark} ${label}</a>`
+    : `<button type="button" class="btn btn-cyan" data-auth-prompt="ask Vera about ${org.name}">${veraMark} ${label}</button>`;
+  const rolesSectionHref = `company-profile.html?org=${org.id}#open-roles`;
+  const viewRoleLink = () => `<a class="cg-org-detail-role-link" href="${loggedIn ? rolesSectionHref : loginRedirectHref(rolesSectionHref)}">View role ${icon("arrow-right")}</a>`;
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop";
   backdrop.innerHTML = `
@@ -6570,7 +7251,7 @@ function openOrgDetailModal(orgId) {
             <p class="muted small">${org.location}${org.size ? ` - ${org.size}` : ""}</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost" data-close>${icon("x")}</button>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
       </div>
       <div class="cg-org-detail-rating">
         <strong>${Number(org.rating).toFixed(1)}</strong>
@@ -6579,25 +7260,26 @@ function openOrgDetailModal(orgId) {
         ${loggedIn
           ? `<a class="btn btn-primary" href="company-profile.html?org=${org.id}">${icon("arrow-up-right")} View full profile</a>`
           : `<a class="btn btn-primary" href="${loginRedirectHref(`company-profile.html?org=${org.id}`)}">${icon("arrow-up-right")} View full profile</a>`}
-        <button class="btn btn-primary" type="button" data-write-review>${icon("pen-line")} Write a review</button>
+        <button class="btn btn-ghost" type="button" data-write-review>${icon("pen-line")} Write a review</button>
       </div>
       ${openRoles.length ? `
         <div class="cg-org-detail-roles">
-          <h3>${icon("briefcase")} Open roles <span>(${org.open})</span></h3>
+          <div class="cg-org-detail-roles-head">
+            <h3>${icon("briefcase")} Open roles <span>(${org.open})</span></h3>
+            ${askVeraLink(`open roles at ${org.name}`, "Ask Vera")}
+          </div>
           ${openRoles.map(role => role.real ? `
             <article>
               <div><h4>${role.job.title}</h4><p>${role.job.location} - ${role.job.salary}</p></div>
-              <button type="button" class="btn btn-primary" data-org-role-details="${role.job.id}">${icon("arrow-up-right")} View role</button>
+              <button type="button" class="cg-org-detail-role-link" data-org-role-details="${role.job.id}">View role ${icon("arrow-right")}</button>
             </article>
           ` : `
             <article>
               <div><h4>${role.title}</h4><p>${org.location} - ${org.salary}</p></div>
-              ${loggedIn
-                ? `<a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent(`Tell me more about the ${role.title} role at ${org.name}`)}#messages">${icon("sparkles")} Ask Vera</a>`
-                : `<button type="button" class="btn btn-primary" data-auth-prompt="ask Vera about the ${role.title} role at ${org.name}">${icon("sparkles")} Ask Vera</button>`}
+              ${viewRoleLink()}
             </article>
           `).join("")}
-          ${org.open > openRoles.length ? `<p class="cg-org-detail-roles-more">+${org.open - openRoles.length} more roles - ask Vera for the full list.</p>` : ""}
+          ${org.open > openRoles.length ? `<p class="cg-org-detail-roles-more">+${org.open - openRoles.length} more roles - view the full profile for the complete list.</p>` : ""}
         </div>
       ` : ""}
       ${scoreRows.length ? `
@@ -6607,20 +7289,10 @@ function openOrgDetailModal(orgId) {
       ` : ""}
       ${(org.highlights?.length || org.watchouts?.length) ? `
         <div class="cg-org-detail-proscons">
-          ${org.highlights?.length ? `<section><h3>${icon("thumbs-up")} What people like</h3><ul>${org.highlights.map(item => `<li>${item}</li>`).join("")}</ul></section>` : ""}
-          ${org.watchouts?.length ? `<section class="cons"><h3>${icon("thumbs-down")} Watch out for</h3><ul>${org.watchouts.map(item => `<li>${item}</li>`).join("")}</ul></section>` : ""}
+          ${org.highlights?.length ? `<section><h3>${icon("thumbs-up")} What people like</h3><ul>${org.highlights.slice(0, 1).map(item => `<li>${item}</li>`).join("")}</ul>${org.highlights.length > 1 ? `<p class="cg-org-detail-more">+${org.highlights.length - 1} more in full profile</p>` : ""}</section>` : ""}
+          ${org.watchouts?.length ? `<section class="cons"><h3>${icon("thumbs-down")} Watch out for</h3><ul>${org.watchouts.slice(0, 1).map(item => `<li>${item}</li>`).join("")}</ul>${org.watchouts.length > 1 ? `<p class="cg-org-detail-more">+${org.watchouts.length - 1} more in full profile</p>` : ""}</section>` : ""}
         </div>
       ` : ""}
-      <div class="cg-org-detail-reviews">
-        <h3>Reviews <span>(${reviews.length})</span></h3>
-        ${reviews.length ? reviews.map(review => `
-          <article>
-            <header>${reviewStars(review.rating)}<strong>${review.title}</strong></header>
-            <p>${review.body}</p>
-            <small>${review.author} - ${review.date}</small>
-          </article>
-        `).join("") : `<p class="muted">No reviews yet. Be the first to share your experience.</p>`}
-      </div>
     </div>
   `;
   document.body.appendChild(backdrop);
@@ -6874,6 +7546,12 @@ function renderCompanyProfile() {
           <div class="cg-cp-glance-row"><span>Work mode</span><strong>${workMode}</strong></div>
           <div class="cg-cp-glance-row"><span>Hiring</span><strong>${icon("trending-up")} ${hiringPct}%</strong></div>
           <div class="cg-cp-glance-row"><span>Rating</span><strong>${Number(org.rating).toFixed(1)} / 5</strong></div>
+          ${org.externalUrl ? `
+            <div class="cg-cp-glance-row">
+              <span>${isCompany ? "Careers page" : "Admissions page"}</span>
+              <strong><a class="cg-cp-external-link" href="${org.externalUrl}" target="_blank" rel="noopener">Visit ${icon("external-link")}</a></strong>
+            </div>
+          ` : ""}
         </aside>
       </div>
 
@@ -6911,7 +7589,7 @@ function renderCompanyProfile() {
               </div>
               <div class="cg-cp-role-actions">
                 <button type="button" class="btn btn-ghost" data-cp-role-save="${job ? job.id : `${org.id}-${index}`}">${icon("bookmark")} Save</button>
-                ${job ? `<button type="button" class="btn btn-primary" data-cp-role-apply="${job.id}">${icon("send")} Apply ${icon("arrow-right")}</button>` : `<a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent(`the ${role.title} role at ${org.name}`)}#messages">${icon("sparkles")} Ask Vera ${icon("arrow-right")}</a>`}
+                ${job ? `<button type="button" class="btn btn-primary" data-cp-role-apply="${job.id}">${icon("send")} Apply ${icon("arrow-right")}</button>` : `<a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent(`the ${role.title} role at ${org.name}`)}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera ${icon("arrow-right")}</a>`}
               </div>
             </article>
           `;
@@ -7062,6 +7740,9 @@ function renderCompanyProfile() {
     </section>
   `;
   createIcons();
+  if (location.hash === "#open-roles") {
+    window.setTimeout(() => qs(location.hash, root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+  }
   wireVeraWidget(root);
   qs("[data-cp-save]", root)?.addEventListener("click", () => {
     const next = readState();
@@ -7192,10 +7873,7 @@ function openMissionModal(task) {
     const next = readState();
     next.missionProgress = { ...next.missionProgress, [mission.id]: 100 };
     recordMissionStreak(next);
-    next.notifications = [
-      { id: `n-${mission.id}`, title: "Mission completed", body: "CareerGo updated your mission progress." },
-      ...next.notifications.filter(item => item.id !== `n-${mission.id}`)
-    ].slice(0, 5);
+    pushNotification(next, { id: `n-${mission.id}`, type: "growth", title: "Mission completed", body: `${mission.title || "Your mission"} is done - CareerGo updated your progress.`, href: "dashboard.html" });
     writeState(syncCurrentUser(next));
     backdrop.remove();
     showToast("Mission marked complete.");
@@ -7246,7 +7924,7 @@ function renderDashboard() {
   const offerCount = counts.offer || 0;
   const kpis = [
     ["Profile strength", `${profileCompletion}%`, profileCompletion, "3 items to complete", "user-round"],
-    ["Career worth", "RM142k", 62, "+RM8.4k this quarter", "wallet"],
+    ["Career worth", "RM 8.3–9.8k", 62, "Monthly range · trending up", "wallet"],
     ["Roadmap", `${Math.round(intel.readinessScore || 44)}%`, intel.readinessScore || 44, "Week 7 / 16 - on track", "target"],
     ["Applications", `${activeApps} active`, Math.min(100, activeApps * 16), `${interviewCount} interviewing - ${offerCount} offer stage`, "briefcase-business"]
   ];
@@ -7459,28 +8137,8 @@ function renderDashboard() {
           </div>
           <a href="recommended-roles.html">See More ${icon("chevron-right")}</a>
         </div>
-        <div class="cg-role-grid">
-          ${topJobs.map(job => {
-            const isApplied = state.applications.includes(job.id);
-            const isSaved = state.savedJobs.includes(job.id);
-            return `
-            <article class="cg-role-card">
-              <div class="cg-job-head">
-                <span class="cg-company-mark">${job.company.charAt(0)}</span>
-                <div><small>${job.company}</small><h3>${job.title}</h3></div>
-                <span class="cg-match" style="--match-score: ${job.match}"><strong>${job.match}</strong><small>Match</small></span>
-              </div>
-              <p class="cg-role-meta">${icon("badge-dollar-sign")} ${job.salary} ${icon("map-pin")} ${job.location} <span>${job.type}</span></p>
-              <ul>
-                ${job.why.slice(0, 3).map(reason => `<li>${reason}</li>`).join("")}
-              </ul>
-              <div class="cg-action-row">
-                <button type="button" class="btn btn-primary" data-quick-apply="${job.id}">${icon(isApplied ? "check" : "send")} ${isApplied ? "Applied" : "Quick apply"}</button>
-                <button type="button" class="btn btn-ghost" data-quick-save="${job.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save"}</button>
-              </div>
-            </article>
-          `;
-          }).join("")}
+        <div class="cg-role-grid cg-role-unit-grid">
+          ${topJobs.map(job => roleCardMarkup(normalizeRole(job))).join("")}
         </div>
       </section>
 
@@ -7521,41 +8179,667 @@ function renderDashboard() {
     dashboardFocusSnoozed = false;
     renderDashboard();
   });
-  qsa("[data-quick-apply]", root).forEach(btn => btn.addEventListener("click", () => {
-    const jobId = btn.dataset.quickApply;
-    const job = DATA.jobs.find(item => item.id === jobId);
-    if (readState().applications.includes(jobId)) return;
-    updateApplicationStage(jobId, "applied");
-    showToast(job ? `Applied to ${job.title} at ${job.company}.` : "Application added to your tracker.");
-    renderDashboard();
-  }));
-  qsa("[data-quick-save]", root).forEach(btn => btn.addEventListener("click", () => {
-    const jobId = btn.dataset.quickSave;
-    const next = readState();
-    const nowSaved = next.savedJobs.includes(jobId);
-    next.savedJobs = nowSaved ? next.savedJobs.filter(id => id !== jobId) : [...next.savedJobs, jobId];
-    if (!next.applicationRecords) next.applicationRecords = {};
-    if (next.savedJobs.includes(jobId)) next.applicationRecords[jobId] = next.applicationRecords[jobId] || createApplicationRecord(jobId, "saved");
-    else if (!next.applications.includes(jobId)) delete next.applicationRecords[jobId];
-    writeState(next);
-    showToast(nowSaved ? "Role removed from saved jobs." : "Role saved to your dashboard.");
-    renderDashboard();
-  }));
+  bindRoleCardActions(root);
   wireVeraWidget(root);
   initDashboardTour();
 }
 
 const RECOMMENDED_ROLES = [
-  { id: "rr-linear", company: "Linear", title: "Product Manager, Growth", match: 94, location: "San Francisco", mode: "Remote", salary: "$180k - 210k", insight: "Matches your PM roadmap - Design-adjacent - Series C", warmIntro: false },
-  { id: "rr-notion", company: "Notion", title: "Associate PM", match: 88, location: "New York", mode: "Hybrid", salary: "$150k - 175k", insight: "Warm intro available - APM-friendly team", warmIntro: true },
-  { id: "rr-perplexity", company: "Perplexity", title: "PM, AI Products", match: 82, location: "Remote", mode: "Remote", salary: "$170k - 200k", insight: "Your LLM eval posts align - Fast-moving team", warmIntro: false },
-  { id: "rr-setel", company: "Setel", title: "Senior PM, Payments", match: 91, location: "Kuala Lumpur", mode: "Hybrid", salary: "RM 14k - 18k", insight: "AI-native squad - Matches saved roles", warmIntro: false },
-  { id: "rr-carsome", company: "Carsome", title: "Product Manager, Marketplace", match: 87, location: "Kuala Lumpur", mode: "On-site", salary: "RM 12k - 16k", insight: "3 alumni from your uni in PM", warmIntro: false },
-  { id: "rr-storehub", company: "StoreHub", title: "PM, Merchant Growth", match: 85, location: "Remote (MY)", mode: "Remote", salary: "RM 11k - 15k", insight: "Async culture matches your style", warmIntro: false },
-  { id: "rr-figma", company: "Figma", title: "Product Manager, Platform", match: 80, location: "Remote", mode: "Remote", salary: "$160k - 190k", insight: "Design-tool fluency valued - Warm intro via Priya", warmIntro: true },
-  { id: "rr-grab", company: "Grab", title: "Senior PM, Fintech", match: 78, location: "Kuala Lumpur", mode: "Hybrid", salary: "RM 13k - 17k", insight: "Fintech domain match - Saved company", warmIntro: false },
-  { id: "rr-stripe", company: "Stripe", title: "PM, APAC Payments", match: 90, location: "Remote (SEA)", mode: "Remote", salary: "$175k - 205k", insight: "Already in your pipeline - Round 2 booked", warmIntro: true }
+  { id: "rr-linear", company: "Linear", title: "Product Manager, Growth", match: 94, location: "San Francisco", mode: "Remote", salary: "RM 71k - 83k / month", insight: "Matches your PM roadmap - Design-adjacent - Series C", warmIntro: false },
+  { id: "rr-notion", company: "Notion", title: "Associate PM", match: 88, location: "New York", mode: "Hybrid", salary: "RM 59k - 68k / month", insight: "Warm intro available - APM-friendly team", warmIntro: true },
+  { id: "rr-perplexity", company: "Perplexity", title: "PM, AI Products", match: 82, location: "Remote", mode: "Remote", salary: "RM 67k - 78k / month", insight: "Your LLM eval posts align - Fast-moving team", warmIntro: false },
+  { id: "rr-setel", company: "Setel", title: "Senior PM, Payments", match: 91, location: "Kuala Lumpur", mode: "Hybrid", salary: "RM 14k - 18k / month", insight: "AI-native squad - Matches saved roles", warmIntro: false },
+  { id: "rr-carsome", company: "Carsome", title: "Product Manager, Marketplace", match: 87, location: "Kuala Lumpur", mode: "On-site", salary: "RM 12k - 16k / month", insight: "3 alumni from your uni in PM", warmIntro: false },
+  { id: "rr-storehub", company: "StoreHub", title: "PM, Merchant Growth", match: 85, location: "Remote (MY)", mode: "Remote", salary: "RM 11k - 15k / month", insight: "Async culture matches your style", warmIntro: false },
+  { id: "rr-figma", company: "Figma", title: "Product Manager, Platform", match: 80, location: "Remote", mode: "Remote", salary: "RM 63k - 74k / month", insight: "Design-tool fluency valued - Warm intro via Priya", warmIntro: true },
+  { id: "rr-grab", company: "Grab", title: "Senior PM, Fintech", match: 78, location: "Kuala Lumpur", mode: "Hybrid", salary: "RM 13k - 17k / month", insight: "Fintech domain match - Saved company", warmIntro: false },
+  { id: "rr-stripe", company: "Stripe", title: "PM, APAC Payments", match: 90, location: "Remote (SEA)", mode: "Remote", salary: "RM 68k - 80k / month", insight: "Already in your pipeline - Round 2 booked", warmIntro: true }
 ];
+
+/* ---- Roles/Jobs unified model (Workstream B) -----------------------------
+   DATA.jobs (rich: description/skills/why/caution) and RECOMMENDED_ROLES
+   (match/mode/warmIntro/insight) have different shapes. normalizeRole maps
+   either into one shape so a single card/detail/compare renderer serves both. */
+/* Currency policy (Part 3): CareerGo is a Malaysia-first product and every
+   salary target the user sets in onboarding is in RM, so ALL compensation is
+   displayed in RM for one consistent yardstick. Any legacy mock figure written
+   in USD ("$180k - 210k") is converted here at ~4.7 MYR/USD, keeping the same
+   annual "k" magnitude, rather than showing mixed currencies across the app. */
+const USD_TO_RM = 4.7;
+function convertSalaryToRM(salary) {
+  const s = String(salary || "").trim();
+  if (!s || !s.includes("$")) return s;
+  const conv = n => Math.round((Number(n) * USD_TO_RM) / 10) * 10;
+  const range = s.match(/\$\s?(\d+(?:\.\d+)?)k\s*[-–]\s*(\d+(?:\.\d+)?)k/i);
+  if (range) return `RM ${conv(range[1])}k - ${conv(range[2])}k`;
+  const single = s.match(/\$\s?(\d+(?:\.\d+)?)k/i);
+  if (single) return `RM ${conv(single[1])}k`;
+  return s.replace(/US\$|\$/g, "RM ");
+}
+
+function normalizeRole(role) {
+  if (!role) return null;
+  const why = Array.isArray(role.why) && role.why.length
+    ? role.why
+    : (role.insight ? String(role.insight).split(/\s+-\s+|,\s*/).map(s => s.trim()).filter(Boolean) : []);
+  const mode = role.mode || role.type || "On-site";
+  return {
+    id: role.id,
+    title: role.title,
+    company: role.company,
+    location: role.location || "",
+    mode,
+    salary: convertSalaryToRM(role.salary || "Undisclosed"),
+    match: Number(role.match) || 0,
+    posted: role.posted || "Recently",
+    industry: role.industry || "",
+    level: role.level || "",
+    skills: Array.isArray(role.skills) ? role.skills : [],
+    why,
+    caution: role.caution || "",
+    warmIntro: Boolean(role.warmIntro),
+    description: role.description || `${role.title} at ${role.company}${role.location ? ` in ${role.location}` : ""}.${why[0] ? ` ${why[0]}` : ""}`
+  };
+}
+
+/* Classify a role by title keyword so the generated job-posting content
+   (responsibilities/requirements/benefits) reads specific to the kind of
+   work, not generic filler - falls back to "pm" since most seed roles are
+   product-management-flavored. */
+function roleContentCategory(title) {
+  const t = String(title || "").toLowerCase();
+  if (t.includes("designer")) return "design";
+  if (t.includes("analyst")) return "analyst";
+  if (t.includes("research")) return "research";
+  if (t.includes("advisor") || t.includes("coach")) return "advisory";
+  return "pm";
+}
+
+const ROLE_CONTENT_TEMPLATES = {
+  design: {
+    intro: "shape how people experience the product day to day",
+    responsibilities: [
+      "Design end-to-end user flows and high-fidelity interfaces for core product surfaces",
+      "Partner closely with product managers and engineers to scope and ship features",
+      "Run usability tests and iterate on designs based on qualitative and quantitative feedback",
+      "Maintain and evolve the shared design system, keeping patterns consistent across surfaces",
+      "Present design rationale to stakeholders and incorporate cross-functional feedback"
+    ],
+    niceToHave: ["Motion or prototyping in Framer", "Experience designing for a regulated industry", "A public portfolio with shipped case studies"]
+  },
+  analyst: {
+    intro: "turn raw data into decisions the business can act on",
+    responsibilities: [
+      "Build and maintain dashboards tracking key product and business metrics",
+      "Partner with product and operations teams to answer ad-hoc data questions",
+      "Design and analyze experiments (A/B tests) to guide product decisions",
+      "Translate data into clear, actionable recommendations for non-technical stakeholders",
+      "Improve data pipelines and reporting infrastructure over time"
+    ],
+    niceToHave: ["Experience with a BI tool such as Looker or Tableau", "Familiarity with experimentation/causal inference", "Comfort presenting findings to leadership"]
+  },
+  research: {
+    intro: "make sure customer voice shapes every major product decision",
+    responsibilities: [
+      "Plan and conduct qualitative research - interviews, usability studies, diary studies",
+      "Design and field quantitative surveys, then synthesize findings into clear insights",
+      "Partner with design and product teams to translate research into product decisions",
+      "Maintain a repository of research findings, personas, and journey maps",
+      "Present research readouts to stakeholders across the organization"
+    ],
+    niceToHave: ["Experience with survey tooling such as Qualtrics", "Comfort moderating sessions in Bahasa Malaysia and English", "A background in psychology, HCI, or a related field"]
+  },
+  advisory: {
+    intro: "help students turn potential into a real career outcome",
+    responsibilities: [
+      "Coach students one-on-one on career planning, resumes, and interview preparation",
+      "Coordinate employer partnerships and campus recruitment programs",
+      "Run workshops on career readiness, portfolio building, and job search strategy",
+      "Track graduate outcomes and report on program effectiveness",
+      "Partner with faculty to embed employability into the curriculum"
+    ],
+    niceToHave: ["A career coaching certification", "Experience with employer/alumni outreach", "Familiarity with graduate labour market trends in Malaysia"]
+  },
+  pm: {
+    intro: "own outcomes for a product area end to end",
+    responsibilities: [
+      "Own the roadmap and prioritization for your product area, balancing user needs and business goals",
+      "Partner with design, engineering, and data to ship features end-to-end",
+      "Define success metrics and monitor product performance after launch",
+      "Run discovery with users and translate insights into clear requirements",
+      "Communicate progress, trade-offs, and outcomes to stakeholders and leadership"
+    ],
+    niceToHave: ["Experience shipping a 0-to-1 product", "A technical background (CS degree or equivalent)", "Comfort working directly with engineering on scoping"]
+  }
+};
+
+/* Generate a plausible, complete job posting (about copy, responsibilities,
+   requirements split into must-have/nice-to-have, and benefits) from a
+   normalized role's existing fields. Real postings aren't wired up yet, so
+   this keeps every role - across both DATA.jobs and RECOMMENDED_ROLES - from
+   reading like a bare summary card, per the category templates above. */
+function generateJobPosting(role) {
+  const category = roleContentCategory(role.title);
+  const template = ROLE_CONTENT_TEMPLATES[category];
+  const yearsByMatch = role.match >= 90 ? "5-8" : role.match >= 82 ? "3-5" : role.match >= 75 ? "2-4" : "0-2";
+  const industryClause = role.industry ? ` in ${role.industry.toLowerCase()}` : "";
+  const locationClause = role.location ? ` out of ${role.location}` : "";
+
+  const about = [
+    `${role.company} is hiring a ${role.title}${locationClause}${role.mode ? ` (${role.mode})` : ""} to ${template.intro}. ${role.description}`,
+    `You'll join a team that ships fast and expects ownership - this is a role for someone who wants real scope${industryClause}, not just a seat on a roadmap someone else wrote. ${role.why[0] || "Vera flagged this as a strong fit against your current profile."}`
+  ];
+
+  const mustHave = [
+    `${yearsByMatch} years of relevant experience`,
+    ...role.skills.slice(0, 4)
+  ];
+
+  const benefits = [
+    "Health & wellness coverage",
+    "Annual learning & development budget",
+    "Generous paid time off",
+    role.mode === "Remote" ? "Fully remote-first culture, async-friendly" : role.mode === "Hybrid" ? "Hybrid schedule with flexible in-office days" : "Modern office space, team lunches",
+    role.warmIntro ? "Fast-tracked interview process via your CareerGo network" : (role.industry === "Banking" ? "Structured professional development programs" : "Competitive equity / ESOP participation")
+  ];
+
+  return { about, responsibilities: template.responsibilities, mustHave, niceToHave: template.niceToHave, benefits };
+}
+
+/* Every role Vera knows about, merged from both catalogs and deduped by id. */
+function allNormalizedRoles() {
+  const seen = new Set();
+  const out = [];
+  [...DATA.jobs, ...RECOMMENDED_ROLES].forEach(role => {
+    if (!role || seen.has(role.id)) return;
+    seen.add(role.id);
+    out.push(normalizeRole(role));
+  });
+  return out;
+}
+
+function findRoleById(id) {
+  const raw = DATA.jobs.find(job => job.id === id) || RECOMMENDED_ROLES.find(role => role.id === id);
+  return raw ? normalizeRole(raw) : null;
+}
+
+/* Resolve a role's employer to an org in the directory catalog (for the
+   "View company" cross-link), tolerating partial name matches like "Grab". */
+function findOrgByName(name) {
+  if (!name) return null;
+  const target = String(name).toLowerCase().trim();
+  const { catalog } = buildOrgCatalog();
+  return catalog.find(org => org.name.toLowerCase() === target)
+    || catalog.find(org => org.name.toLowerCase().includes(target) || target.includes(org.name.toLowerCase()))
+    || null;
+}
+
+const MAX_COMPARE_ROLES = 3;
+
+function comparedRoleIds() {
+  const state = readState();
+  return Array.isArray(state.comparedJobs) ? state.comparedJobs : [];
+}
+
+/* Toggle a role into the compare tray (cap MAX_COMPARE_ROLES). Returns the
+   new membership state so callers can update their button label. */
+function toggleRoleCompare(id) {
+  const state = readState();
+  const list = Array.isArray(state.comparedJobs) ? state.comparedJobs : [];
+  if (list.includes(id)) {
+    state.comparedJobs = list.filter(item => item !== id);
+    writeState(state);
+    return false;
+  }
+  if (list.length >= MAX_COMPARE_ROLES) {
+    showToast(`You can compare up to ${MAX_COMPARE_ROLES} roles at once.`);
+    return false;
+  }
+  state.comparedJobs = [...list, id];
+  writeState(state);
+  return true;
+}
+
+function toggleRoleSaved(id) {
+  const state = readState();
+  const saved = Array.isArray(state.savedJobs) ? state.savedJobs : [];
+  const nowSaved = !saved.includes(id);
+  state.savedJobs = nowSaved ? [...saved, id] : saved.filter(item => item !== id);
+  if (!state.applicationRecords) state.applicationRecords = {};
+  if (nowSaved) state.applicationRecords[id] = state.applicationRecords[id] || createApplicationRecord(id, "saved");
+  else if (!(state.applications || []).includes(id)) delete state.applicationRecords[id];
+  writeState(syncCurrentUser(state));
+  return nowSaved;
+}
+
+/* The floating compare tray, mounted once and refreshed on demand. Appears
+   whenever 1+ roles are staged for comparison, on any workspace page. */
+function renderCompareTray() {
+  const existing = qs("[data-compare-tray]");
+  const ids = comparedRoleIds();
+  if (!ids.length || !readState().session.loggedIn) {
+    if (existing) existing.remove();
+    return;
+  }
+  const roles = ids.map(findRoleById).filter(Boolean);
+  const tray = existing || document.createElement("div");
+  tray.className = "cg-compare-tray";
+  tray.setAttribute("data-compare-tray", "");
+  tray.innerHTML = `
+    <div class="cg-compare-tray-inner">
+      <div class="cg-compare-tray-chips">
+        <span class="cg-compare-tray-label">${icon("git-compare")} Compare</span>
+        ${roles.map(role => `<span class="cg-compare-chip">${role.title}<button type="button" data-compare-remove="${role.id}" aria-label="Remove ${role.title}">${icon("x")}</button></span>`).join("")}
+      </div>
+      <div class="cg-compare-tray-actions">
+        <button type="button" class="btn btn-ghost" data-compare-clear>Clear</button>
+        <button type="button" class="btn btn-primary" data-compare-open ${roles.length < 2 ? "disabled" : ""}>Compare ${roles.length} role${roles.length === 1 ? "" : "s"} ${icon("arrow-right")}</button>
+      </div>
+    </div>
+  `;
+  if (!existing) document.body.appendChild(tray);
+  createIcons(tray);
+  qsa("[data-compare-remove]", tray).forEach(btn => btn.addEventListener("click", () => {
+    toggleRoleCompare(btn.dataset.compareRemove);
+    renderCompareTray();
+  }));
+  qs("[data-compare-clear]", tray)?.addEventListener("click", () => {
+    const state = readState();
+    state.comparedJobs = [];
+    writeState(state);
+    renderCompareTray();
+  });
+  qs("[data-compare-open]", tray)?.addEventListener("click", () => openRoleCompareModal());
+}
+
+function openRoleCompareModal() {
+  const roles = comparedRoleIds().map(findRoleById).filter(Boolean);
+  if (roles.length < 2) {
+    showToast("Add at least two roles to compare.");
+    return;
+  }
+  const rows = [
+    ["Match", role => `<strong class="cg-compare-match">${role.match}%</strong>`],
+    ["Salary", role => role.salary],
+    ["Work mode", role => role.mode],
+    ["Location", role => role.location || "-"],
+    ["Warm intro", role => role.warmIntro ? `${icon("check")} Available` : "-"],
+    ["Why Vera matched", role => role.why.length ? `<ul>${role.why.slice(0, 3).map(w => `<li>${w}</li>`).join("")}</ul>` : "-"],
+    ["Key skills", role => role.skills.length ? role.skills.slice(0, 5).map(s => `<span class="cg-compare-skill">${s}</span>`).join("") : "-"]
+  ];
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-compare-modal" role="dialog" aria-label="Compare roles">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Side by side</div>
+          <h2>Compare ${roles.length} roles</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="cg-compare-scroll">
+        <table class="cg-compare-table">
+          <thead>
+            <tr>
+              <th></th>
+              ${roles.map(role => `<th><span class="cg-compare-co">${role.company}</span><span class="cg-compare-role">${role.title}</span></th>`).join("")}
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(([label, render]) => `<tr><th scope="row">${label}</th>${roles.map(role => `<td>${render(role)}</td>`).join("")}</tr>`).join("")}
+            <tr>
+              <th scope="row"></th>
+              ${roles.map(role => `<td><button type="button" class="btn btn-primary btn-sm" data-compare-view="${role.id}">View role</button></td>`).join("")}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => { if (event.target === backdrop) backdrop.remove(); });
+  qsa("[data-compare-view]", backdrop).forEach(btn => btn.addEventListener("click", () => {
+    backdrop.remove();
+    goToRole(btn.dataset.compareView);
+  }));
+  createIcons(backdrop);
+}
+
+/* Navigate to the shared role detail page. Used wherever a "View role" action
+   is triggered from JS rather than a plain <a> link. */
+function goToRole(roleId) {
+  if (!roleId) return;
+  location.href = `role.html?role=${encodeURIComponent(roleId)}`;
+}
+
+/* Where the role-detail "back" control should return to. Returns
+   { href, label, useHistory }.
+
+   The RELIABLE mechanism is window.history.back() (the click handler), because
+   it works whether the app is served over http(s) OR opened straight off disk
+   as file:// - and this app is routinely opened as file://, where
+   `document.referrer` is ALWAYS empty. (An earlier referrer-only version of
+   this looked correct over localhost but silently fell back to "All roles" for
+   every file:// user.) role.html adds no pushState/replaceState of its own, so
+   the previous history entry is always the page you came from, and back()
+   restores its scroll position too.
+
+   document.referrer is used only as a bonus to NAME the button ("Discover",
+   "Pipeline", …) when it happens to be available (http). Under file:// it's
+   empty so the label is a generic "Back" - still correct, just unnamed.
+
+   The hard "All roles" href fallback is used only when there's genuinely no
+   session history to pop (a direct link / fresh tab), per the spec. */
+function roleDetailBackTarget() {
+  const fallback = { href: "recommended-roles.html", label: "All roles", useHistory: false };
+  const canGoBack = typeof window !== "undefined" && !!window.history && window.history.length > 1;
+  const LABELS = {
+    "autopilot.html": "Pipeline",
+    "discover.html": "Discover",
+    "recommended-roles.html": "All roles",
+    "dashboard.html": "Dashboard",
+    "saved.html": "Saved",
+    "grow.html": "Growth",
+    "market.html": "Career Value",
+    "posts.html": "Feed",
+    "vera.html": "Vera",
+    "discover-companies.html": "Companies",
+    "discover-universities.html": "Universities",
+    "company-profile.html": "Company",
+    "job-detail.html": "Pipeline",
+    "profile.html": "Profile",
+    "public-profile.html": "Profile"
+  };
+  // Try to name the origin from the referrer (only populated over http(s)).
+  let named = null;
+  const ref = document.referrer;
+  if (ref) {
+    try {
+      const url = new URL(ref);
+      const page = (url.pathname.split("/").pop() || "").toLowerCase();
+      if (url.origin === location.origin && page !== "role.html" && LABELS[page]) {
+        named = { href: url.pathname + url.search, label: LABELS[page] };
+      }
+    } catch (error) { /* malformed referrer - ignore, fall through */ }
+  }
+  if (canGoBack) {
+    return { href: (named && named.href) || fallback.href, label: (named && named.label) || "Back", useHistory: true };
+  }
+  // No history to pop (direct link / fresh tab / refresh into a new session).
+  return named ? { ...named, useHistory: false } : fallback;
+}
+
+/* THE unified role card - one component reused on Dashboard, the Roles browse
+   page, Discover, and (compact variant) the role detail page's "Similar
+   roles" rail. Dark-green company avatar, number + MATCH label top-right,
+   a "why this matches" sparkle line, optional tag chips, and a dark "View
+   role" button flanked by compare + save icon buttons. `role` is a
+   normalized role. Pass `{ compact: true }` for a condensed card (avatar +
+   title + meta + a plain "View role" link, no why-line/chips/action-icons) -
+   used where several cards need to sit in a tight row, like recommendations. */
+function roleCardMarkup(role, opts = {}) {
+  const showChips = opts.chips !== false;
+  const compact = Boolean(opts.compact);
+  const href = `role.html?role=${encodeURIComponent(role.id)}`;
+
+  if (compact) {
+    return `
+      <a class="cg-role-unit cg-role-unit-compact" href="${href}" aria-label="View ${role.title} at ${role.company}">
+        <div class="cg-role-unit-head">
+          <span class="cg-role-unit-avatar">${role.company.charAt(0)}</span>
+          <div class="cg-role-unit-id"><small>${role.company}</small><h3>${role.title}</h3></div>
+          <span class="cg-role-unit-match"><strong>${role.match}</strong><small>Match</small></span>
+        </div>
+        <p class="cg-role-unit-meta">${icon("map-pin")} ${role.location || "Flexible"} <i>&middot;</i> ${role.mode}</p>
+        <span class="cg-role-unit-compact-cta">View role ${icon("arrow-right")}</span>
+      </a>
+    `;
+  }
+
+  const state = readState();
+  const isSaved = (state.savedJobs || []).includes(role.id);
+  const isApplied = (state.applications || []).includes(role.id);
+  const inCompare = comparedRoleIds().includes(role.id);
+  const chips = showChips ? `
+    <div class="cg-role-unit-tags">
+      ${isApplied ? `<span class="cg-role-unit-tag applied">${icon("check")} Applied</span>` : ""}
+      ${role.warmIntro ? `<span class="cg-role-unit-tag warm">${icon("sparkles")} Warm intro</span>` : ""}
+      ${role.skills.slice(0, 3).map(skill => `<span class="cg-role-unit-tag">${skill}</span>`).join("")}
+    </div>` : "";
+  return `
+    <article class="cg-role-unit" data-role-id="${role.id}">
+      <a class="cg-role-unit-open" href="${href}" aria-label="View ${role.title} at ${role.company}">
+        <div class="cg-role-unit-head">
+          <span class="cg-role-unit-avatar">${role.company.charAt(0)}</span>
+          <div class="cg-role-unit-id"><small>${role.company}</small><h3>${role.title}</h3></div>
+          <span class="cg-role-unit-match"><strong>${role.match}</strong><small>Match</small></span>
+        </div>
+        <p class="cg-role-unit-meta">${icon("map-pin")} ${role.location || "Flexible"} <i>&middot;</i> ${role.mode} <i>&middot;</i> ${role.salary}</p>
+        <p class="cg-role-unit-why">${icon("sparkles")} ${role.why[0] || role.description}</p>
+        ${(showChips && (isApplied || role.warmIntro || role.skills.length)) ? chips : ""}
+      </a>
+      <div class="cg-role-unit-actions">
+        <a class="btn btn-primary cg-role-unit-view" href="${href}">View role ${icon("chevron-right")}</a>
+        <button type="button" class="cg-role-unit-icon${inCompare ? " active" : ""}" data-role-compare="${role.id}" aria-label="Compare role" title="Compare">${icon("git-compare")}</button>
+        <button type="button" class="cg-role-unit-icon${isSaved ? " active" : ""}" data-role-save="${role.id}" aria-label="${isSaved ? "Saved" : "Save role"}" title="${isSaved ? "Saved" : "Save"}">${icon(isSaved ? "bookmark-check" : "bookmark")}</button>
+      </div>
+    </article>
+  `;
+}
+
+/* Wire the compare + save icon buttons on any container of unified role cards.
+   `onChange` lets the host refresh its own grid after a toggle. */
+function bindRoleCardActions(root, onChange) {
+  qsa("[data-role-save]", root).forEach(btn => btn.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const nowSaved = toggleRoleSaved(btn.dataset.roleSave);
+    btn.classList.toggle("active", nowSaved);
+    btn.innerHTML = icon(nowSaved ? "bookmark-check" : "bookmark");
+    btn.setAttribute("aria-label", nowSaved ? "Saved" : "Save role");
+    btn.setAttribute("title", nowSaved ? "Saved" : "Save");
+    createIcons();
+    showToast(nowSaved ? "Role saved." : "Removed from saved.");
+    renderNavigation();
+    if (onChange) onChange();
+  }));
+  qsa("[data-role-compare]", root).forEach(btn => btn.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const inCompare = toggleRoleCompare(btn.dataset.roleCompare);
+    btn.classList.toggle("active", inCompare);
+    renderCompareTray();
+    if (onChange) onChange();
+  }));
+}
+
+/* Full role detail PAGE (role.html?role=<id>) - the destination for every
+   "View role" / "View details" action. Full description, requirements, salary
+   in RM, company info, why Vera matched, and functional apply/save/compare. */
+function renderRoleDetailPage() {
+  const root = qs("[data-role-detail-page]");
+  if (!root) return;
+  if (!requireAccount(root, "view this role")) return;
+  const roleId = new URLSearchParams(location.search).get("role");
+  const role = roleId ? findRoleById(roleId) : null;
+  const back = roleDetailBackTarget();
+  const backLinkMarkup = `<a class="cg-role-page-back" href="${back.href}"${back.useHistory ? " data-role-back" : ""}>${icon("arrow-left")} ${back.label}</a>`;
+  const wireRoleBack = () => qs("[data-role-back]", root)?.addEventListener("click", event => {
+    // Prefer real history so the origin page's scroll position is restored;
+    // the href is the fallback when there's no in-page history to pop.
+    if (window.history.length > 1) {
+      event.preventDefault();
+      window.history.back();
+    }
+  });
+  if (!role) {
+    root.innerHTML = `
+      <section class="cg-role-page">
+        ${backLinkMarkup}
+        <div class="cg-role-page-empty">
+          ${icon("search-x")}
+          <h1>Role not found</h1>
+          <p>This role may have been filled or is no longer tracked by Vera.</p>
+          <a class="btn btn-primary" href="recommended-roles.html">Browse all roles ${icon("arrow-right")}</a>
+        </div>
+        ${veraWidgetMarkup()}
+      </section>
+    `;
+    createIcons();
+    wireVeraWidget(root);
+    wireRoleBack();
+    return;
+  }
+  const state = readState();
+  const loggedIn = Boolean(state.session.loggedIn);
+  const isSaved = (state.savedJobs || []).includes(role.id);
+  const isApplied = (state.applications || []).includes(role.id);
+  const inCompare = comparedRoleIds().includes(role.id);
+  const org = findOrgByName(role.company);
+  const ownedSkills = [
+    ...((state.profile?.skills?.technical) || []),
+    ...((state.profile?.skills?.tools) || [])
+  ];
+  const skillRows = role.skills.map(skill => ({ skill, have: skillIsCovered(skill, ownedSkills) }));
+  const veraMark = `<img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI">`;
+  const similar = allNormalizedRoles().filter(other => other.id !== role.id).sort((a, b) => b.match - a.match).slice(0, 3);
+  const posting = generateJobPosting(role);
+
+  root.innerHTML = `
+    <section class="cg-role-page">
+      ${backLinkMarkup}
+      <header class="cg-role-page-hero">
+        <span class="cg-role-page-avatar">${role.company.charAt(0)}</span>
+        <div class="cg-role-page-hero-copy">
+          <div class="section-kicker">${role.company}${role.industry ? ` &middot; ${role.industry}` : ""}</div>
+          <h1>${role.title}</h1>
+          <p class="cg-role-page-meta">${icon("map-pin")} ${role.location || "Flexible"} <i>&middot;</i> ${role.mode} <i>&middot;</i> ${role.posted}</p>
+        </div>
+        <span class="cg-role-page-match"><strong>${role.match}</strong><small>Match</small></span>
+      </header>
+
+      <div class="cg-role-page-grid">
+        <div class="cg-role-page-main">
+          ${role.why.length ? `
+            <div class="cg-role-detail-why">
+              <h3>${veraMark} Why Vera matched this</h3>
+              <ul>${role.why.slice(0, 4).map(reason => `<li>${icon("check-circle-2")} ${reason}</li>`).join("")}</ul>
+            </div>
+          ` : ""}
+          <div class="cg-role-detail-section">
+            <h3>${icon("file-text")} About the role</h3>
+            ${posting.about.map(paragraph => `<p>${paragraph}</p>`).join("")}
+          </div>
+
+          <div class="cg-role-detail-section">
+            <h3>${icon("list-checks")} What you'll do</h3>
+            <ul class="cg-role-detail-list">
+              ${posting.responsibilities.map(item => `<li>${icon("chevron-right")} ${item}</li>`).join("")}
+            </ul>
+          </div>
+
+          ${skillRows.length ? `
+            <div class="cg-role-detail-section">
+              <h3>${icon("target")} Requirements &amp; skills</h3>
+              <div class="cg-role-detail-skills">
+                ${skillRows.map(row => `<span class="cg-role-skill${row.have ? " have" : ""}">${icon(row.have ? "check" : "circle")} ${row.skill}</span>`).join("")}
+              </div>
+              <p class="muted small">${skillRows.filter(r => r.have).length}/${skillRows.length} matched to your profile.</p>
+              <div class="cg-role-detail-req-split">
+                <div><span>Must-have</span><ul>${posting.mustHave.map(item => `<li>${item}</li>`).join("")}</ul></div>
+                <div><span>Nice-to-have</span><ul>${posting.niceToHave.map(item => `<li>${item}</li>`).join("")}</ul></div>
+              </div>
+            </div>
+          ` : ""}
+
+          <div class="cg-role-detail-section">
+            <h3>${icon("gift")} Benefits &amp; perks</h3>
+            <div class="cg-role-detail-benefits">
+              ${posting.benefits.map(item => `<span class="cg-role-benefit-chip">${icon("check")} ${item}</span>`).join("")}
+            </div>
+          </div>
+
+          ${role.caution ? `<div class="cg-role-detail-caution">${icon("triangle-alert")} ${role.caution}</div>` : ""}
+
+          <div class="cg-role-detail-section">
+            <h3>${icon("building-2")} About ${role.company}</h3>
+            <p>${org ? org.summary : `${role.company} is one of the employers Vera actively tracks roles for${role.industry ? ` in ${role.industry.toLowerCase()}` : ""}${role.location ? `, based in ${role.location}` : ""}.`}</p>
+            ${org ? `<a class="cg-role-detail-company-link" href="company-profile.html?org=${org.id}">View full company profile ${icon("arrow-right")}</a>` : ""}
+          </div>
+
+          ${similar.length ? `
+            <div class="cg-role-detail-similar">
+              <h3>Similar roles</h3>
+              <div class="cg-role-detail-similar-grid">
+                ${similar.map(other => roleCardMarkup(other, { compact: true })).join("")}
+              </div>
+            </div>
+          ` : ""}
+        </div>
+
+        <aside class="cg-role-page-side">
+          <div class="cg-role-page-card">
+            <div class="cg-role-detail-stats">
+              <div><span>Vera match</span><strong>${role.match}%</strong></div>
+              <div><span>Salary</span><strong>${role.salary}</strong></div>
+              <div><span>Work mode</span><strong>${role.mode}</strong></div>
+              ${role.warmIntro ? `<div class="warm"><span>Warm intro</span><strong>${icon("sparkles")} Available</strong></div>` : ""}
+            </div>
+            <div class="cg-role-page-actions">
+              <button type="button" class="btn btn-primary" data-role-apply="${role.id}">${icon(isApplied ? "check" : "send")} ${isApplied ? "Applied" : "Quick apply"}</button>
+              <button type="button" class="btn btn-ghost" data-role-save="${role.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save role"}</button>
+              <button type="button" class="btn btn-ghost" data-role-compare="${role.id}">${icon("git-compare")} ${inCompare ? "In compare" : "Compare"}</button>
+              <a class="btn btn-ghost" href="${loggedIn ? `posts.html?topic=${encodeURIComponent(`Tell me more about ${role.title} at ${role.company}`)}#messages` : "login.html"}">${veraMark} Ask Vera</a>
+            </div>
+          </div>
+          ${org ? `
+            <div class="cg-role-page-card cg-role-detail-company">
+              <div>
+                <span class="cg-directory-logo small">${org.name.charAt(0)}</span>
+                <div><h4>${org.name}</h4><p>${org.industry} &middot; ${org.location} &middot; ${Number(org.rating).toFixed(1)} ★</p></div>
+              </div>
+              <a class="btn btn-ghost btn-sm" href="company-profile.html?org=${org.id}">View company ${icon("arrow-right")}</a>
+            </div>
+          ` : ""}
+        </aside>
+      </div>
+      ${veraWidgetMarkup()}
+    </section>
+  `;
+  createIcons();
+  wireVeraWidget(root);
+
+  qs("[data-role-apply]", root)?.addEventListener("click", () => {
+    if ((readState().applications || []).includes(role.id)) return;
+    updateApplicationStage(role.id, "applied");
+    showToast(`Applied to ${role.title} at ${role.company}.`);
+    renderRoleDetailPage();
+    renderNavigation();
+  });
+  qs("[data-role-save]", root)?.addEventListener("click", () => {
+    const nowSaved = toggleRoleSaved(role.id);
+    showToast(nowSaved ? `Saved ${role.title}.` : "Removed from saved.");
+    renderRoleDetailPage();
+    renderNavigation();
+  });
+  qs("[data-role-compare]", root)?.addEventListener("click", () => {
+    toggleRoleCompare(role.id);
+    renderCompareTray();
+    renderRoleDetailPage();
+  });
+  wireRoleBack();
+}
+
+/* Re-render whichever role-bearing page is currently mounted, so save/apply
+   from the modal reflects immediately without a full reload. */
+function refreshRoleSurfaces() {
+  const page = document.body.dataset.page;
+  if (page === "dashboard") renderDashboard();
+  else if (document.querySelector("[data-recommended-roles]")) renderRecommendedRoles();
+  renderNavigation();
+}
 
 function renderUserProfile() {
   const root = qs("[data-user-profile]");
@@ -7648,88 +8932,254 @@ function renderUserProfile() {
 
 let recommendedRolesFilter = "all";
 
+let notificationsFilterTab = "all";
+let notificationsVisibleCount = 15;
+
+function renderNotificationsPage() {
+  const root = qs("[data-notifications-page]");
+  if (!root) return;
+  if (!requireAccount(root, "see your notifications")) return;
+  const state = readState();
+  const all = normalizeNotifications(state.notifications);
+  const unreadCount = all.filter(note => !note.read).length;
+  const tabs = [["all", `All ${all.length}`], ["unread", `Unread ${unreadCount}`]];
+  const filtered = notificationsFilterTab === "unread" ? all.filter(note => !note.read) : all;
+  const visible = filtered.slice(0, notificationsVisibleCount);
+  const hasMore = filtered.length > visible.length;
+
+  const buckets = [["Today", []], ["This week", []], ["Earlier", []]];
+  const bucketIndex = { "Today": 0, "This week": 1, "Earlier": 2 };
+  visible.forEach(note => buckets[bucketIndex[notificationRecencyBucket(note.ts)]][1].push(note));
+
+  const groupsHtml = buckets.filter(([, items]) => items.length).map(([label, items]) => `
+    <section class="cg-notif-group">
+      <h2 class="cg-notif-group-title">${label}</h2>
+      <div class="cg-notif-list">
+        ${items.map(note => {
+          const navAttr = note.href ? ` data-notification-nav="${note.href}"` : "";
+          return `
+          <article class="cg-notif-row${note.read ? "" : " is-unread"}" data-notification-id="${note.id}"${navAttr} role="button" tabindex="0" aria-label="${note.title}">
+            ${notificationBadgeMarkup(note)}
+            <div class="cg-notif-body">
+              <div class="cg-notif-row-top"><h3>${note.title}</h3><time>${relativeTime(note.ts)}</time></div>
+              <p>${note.body}</p>
+            </div>
+            <div class="cg-notif-row-actions">
+              ${note.read ? "" : `<button type="button" class="cg-notif-icon-btn" data-notif-read="${note.id}" aria-label="Mark as read" title="Mark as read">${icon("check")}</button>`}
+              <button type="button" class="cg-notif-icon-btn" data-notif-dismiss="${note.id}" aria-label="Dismiss" title="Dismiss">${icon("x")}</button>
+            </div>
+            ${note.read ? "" : `<i class="cg-notif-dot" aria-hidden="true"></i>`}
+          </article>
+        `;
+        }).join("")}
+      </div>
+    </section>
+  `).join("");
+
+  root.innerHTML = `
+    <section class="cg-notif-page">
+      <a class="cg-notif-back" href="dashboard.html">${icon("arrow-left")} Back to Today</a>
+      <header class="cg-notif-hero">
+        <div>
+          <span class="cg-section-kicker">Activity</span>
+          <h1>Notifications</h1>
+          <p>Everything Vera surfaced for you - interviews, matches, recruiter replies, and career-value moves.</p>
+        </div>
+        ${unreadCount ? `<button type="button" class="btn btn-ghost" data-notif-mark-all>${icon("check-check")} Mark all read</button>` : ""}
+      </header>
+      <div class="cg-notif-tabs">
+        ${tabs.map(([key, label]) => `<button type="button" class="pill${notificationsFilterTab === key ? " active" : ""}" data-notif-tab="${key}">${label}</button>`).join("")}
+      </div>
+      ${visible.length ? groupsHtml : `
+        <div class="cg-notif-empty">
+          ${icon("bell-off")}
+          <strong>${notificationsFilterTab === "unread" ? "No unread notifications" : "Nothing here yet"}</strong>
+          <small>${notificationsFilterTab === "unread" ? "You're all caught up." : "CareerGo will surface interviews, matches, and Vera's moves here."}</small>
+        </div>
+      `}
+      ${hasMore ? `<div class="cg-notif-more"><button type="button" class="btn btn-ghost" data-notif-load-more>${icon("chevron-down")} Load older</button></div>` : ""}
+    </section>
+  `;
+  createIcons();
+
+  qsa("[data-notif-tab]", root).forEach(btn => btn.addEventListener("click", () => {
+    notificationsFilterTab = btn.dataset.notifTab;
+    notificationsVisibleCount = 15;
+    renderNotificationsPage();
+  }));
+  qs("[data-notif-mark-all]", root)?.addEventListener("click", () => {
+    markAllNotificationsRead();
+    renderNavigation();
+    renderNotificationsPage();
+    showToast("All notifications marked as read.");
+  });
+  qs("[data-notif-load-more]", root)?.addEventListener("click", () => {
+    notificationsVisibleCount += 15;
+    renderNotificationsPage();
+  });
+  qsa("[data-notif-read]", root).forEach(btn => btn.addEventListener("click", event => {
+    event.stopPropagation();
+    markNotificationRead(btn.dataset.notifRead);
+    renderNavigation();
+    renderNotificationsPage();
+  }));
+  qsa("[data-notif-dismiss]", root).forEach(btn => btn.addEventListener("click", event => {
+    event.stopPropagation();
+    dismissNotification(btn.dataset.notifDismiss);
+    renderNavigation();
+    renderNotificationsPage();
+    showToast("Notification dismissed.");
+  }));
+  qsa("[data-notification-nav]", root).forEach(item => {
+    const go = () => {
+      markNotificationRead(item.dataset.notificationId);
+      location.href = item.dataset.notificationNav;
+    };
+    item.addEventListener("click", go);
+    item.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        go();
+      }
+    });
+  });
+}
+
+let rolesDirState = { q: "", mode: "", minMatch: 0, sort: "match", initialized: false };
+
 function renderRecommendedRoles() {
   const root = qs("[data-recommended-roles]");
   if (!root) return;
-  if (!requireAccount(root, "see roles picked by Vera")) return;
+  if (!requireAccount(root, "browse roles picked by Vera")) return;
   if (needsOnboarding(root)) return;
-  const state = readState();
-  const filters = [
-    ["all", "All 42"],
-    ["top", "Top match (>90)"],
+
+  if (!rolesDirState.initialized) {
+    const qParam = new URLSearchParams(location.search).get("q");
+    if (qParam) rolesDirState.q = qParam;
+    rolesDirState.initialized = true;
+  }
+
+  const allRoles = allNormalizedRoles();
+  const pillFilters = [
+    ["all", "All"],
+    ["top", "Top match"],
     ["warm", "Warm intros"],
     ["remote", "Remote"],
     ["hybrid", "Hybrid"],
     ["saved", "Saved"]
   ];
-  const filtered = RECOMMENDED_ROLES.filter(role => {
-    if (recommendedRolesFilter === "top") return role.match > 90;
-    if (recommendedRolesFilter === "warm") return role.warmIntro;
-    if (recommendedRolesFilter === "remote") return role.mode === "Remote";
-    if (recommendedRolesFilter === "hybrid") return role.mode === "Hybrid";
-    if (recommendedRolesFilter === "saved") return state.savedJobs.includes(role.id);
-    return true;
-  });
+
+  function applyFilters() {
+    const state = readState();
+    const q = rolesDirState.q.trim().toLowerCase();
+    let list = allRoles.filter(role => {
+      if (q) {
+        const hay = `${role.title} ${role.company} ${role.location} ${role.industry} ${role.skills.join(" ")}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      if (rolesDirState.mode && role.mode !== rolesDirState.mode) return false;
+      if (rolesDirState.minMatch && role.match < rolesDirState.minMatch) return false;
+      if (recommendedRolesFilter === "top" && role.match < 90) return false;
+      if (recommendedRolesFilter === "warm" && !role.warmIntro) return false;
+      if (recommendedRolesFilter === "remote" && role.mode !== "Remote") return false;
+      if (recommendedRolesFilter === "hybrid" && role.mode !== "Hybrid") return false;
+      if (recommendedRolesFilter === "saved" && !(state.savedJobs || []).includes(role.id)) return false;
+      return true;
+    });
+    if (rolesDirState.sort === "match") list = list.sort((a, b) => b.match - a.match);
+    else if (rolesDirState.sort === "title") list = list.sort((a, b) => a.title.localeCompare(b.title));
+    else if (rolesDirState.sort === "company") list = list.sort((a, b) => a.company.localeCompare(b.company));
+    return list;
+  }
+
+  function gridMarkup(list) {
+    if (!list.length) return `<p class="cg-rp-empty">No roles match your search yet - try clearing a filter.</p>`;
+    return list.map(role => roleCardMarkup(role)).join("");
+  }
+
   root.innerHTML = `
     <section class="cg-rp">
-      <a class="cg-rp-back" href="dashboard.html">${icon("arrow-left")} Back</a>
+      <a class="cg-rp-back" href="discover.html">${icon("arrow-left")} Discover</a>
       <header class="cg-rp-hero">
         <div>
-          <span class="cg-section-kicker">For you</span>
-          <h1>Roles picked by <em>Vera.</em></h1>
-          <p>42 roles curated for your Product Management journey - ranked by fit, warm intros, and trajectory. Vera refreshes this list every morning.</p>
+          <span class="cg-section-kicker">All roles</span>
+          <h1>Every role Vera is <em>tracking for you.</em></h1>
+          <p>Search and filter the full set of open roles matched to your Product Management journey - ranked by fit, warm intros, and trajectory.</p>
         </div>
         <span class="pill cg-rp-ai-pill">${icon("bot")} Ranked by AI match</span>
       </header>
 
+      <div class="cg-rp-toolbar">
+        <label class="cg-rp-search">${icon("search")}<input data-rp-search placeholder="Search by title, company, location, or skill..." value="${rolesDirState.q.replace(/"/g, "&quot;")}"></label>
+        <select data-rp-mode aria-label="Work mode">
+          <option value="">All work modes</option>
+          <option value="Remote"${rolesDirState.mode === "Remote" ? " selected" : ""}>Remote</option>
+          <option value="Hybrid"${rolesDirState.mode === "Hybrid" ? " selected" : ""}>Hybrid</option>
+          <option value="On-site"${rolesDirState.mode === "On-site" ? " selected" : ""}>On-site</option>
+          <option value="Onsite"${rolesDirState.mode === "Onsite" ? " selected" : ""}>Onsite</option>
+        </select>
+        <select data-rp-match aria-label="Minimum match">
+          <option value="0">Any match</option>
+          <option value="80"${rolesDirState.minMatch === 80 ? " selected" : ""}>80%+ match</option>
+          <option value="85"${rolesDirState.minMatch === 85 ? " selected" : ""}>85%+ match</option>
+          <option value="90"${rolesDirState.minMatch === 90 ? " selected" : ""}>90%+ match</option>
+        </select>
+        <select data-rp-sort aria-label="Sort roles">
+          <option value="match"${rolesDirState.sort === "match" ? " selected" : ""}>Sort: Top match</option>
+          <option value="title"${rolesDirState.sort === "title" ? " selected" : ""}>Sort: Title A-Z</option>
+          <option value="company"${rolesDirState.sort === "company" ? " selected" : ""}>Sort: Company A-Z</option>
+        </select>
+      </div>
+
       <div class="cg-rp-filters">
         <div class="cg-rp-filter-pills">
-          ${filters.map(([key, label]) => `<button type="button" class="pill${recommendedRolesFilter === key ? " active" : ""}" data-rp-filter="${key}">${label}</button>`).join("")}
+          ${pillFilters.map(([key, label]) => `<button type="button" class="pill${recommendedRolesFilter === key ? " active" : ""}" data-rp-filter="${key}">${label}</button>`).join("")}
         </div>
-        <button type="button" class="btn btn-ghost" data-rp-more-filters>${icon("sliders-horizontal")} More filters</button>
+        <p class="cg-rp-count"><strong data-rp-count>0</strong> role<span data-rp-count-plural></span> shown</p>
       </div>
-      <p class="cg-rp-count">Showing ${filtered.length} of 42</p>
 
-      <div class="cg-rp-grid">
-        ${filtered.length ? filtered.map(role => {
-          const isSaved = state.savedJobs.includes(role.id);
-          return `
-          <article class="cg-rp-card">
-            <div class="cg-rp-card-head">
-              <span class="cg-rp-mono">${role.company.charAt(0)}</span>
-              <div class="cg-rp-card-id"><small>${role.company}</small><h3>${role.title}</h3></div>
-              <span class="cg-rp-match"><strong>${role.match}</strong><small>Match</small></span>
-            </div>
-            <p class="cg-rp-meta">${icon("map-pin")} ${role.location} &middot; ${role.mode} &middot; ${role.salary}</p>
-            <p class="cg-rp-insight">${icon("sparkles")} ${role.insight}</p>
-            <div class="cg-rp-actions">
-              <a class="btn btn-primary" href="discover.html">View role ${icon("chevron-right")}</a>
-              <button type="button" class="btn btn-ghost" data-rp-save="${role.id}">${icon(isSaved ? "bookmark-check" : "bookmark")} ${isSaved ? "Saved" : "Save"}</button>
-            </div>
-          </article>
-        `;
-        }).join("") : `<p class="cg-rp-empty">No roles match this filter yet.</p>`}
-      </div>
+      <div class="cg-rp-grid" data-rp-grid></div>
       ${veraWidgetMarkup()}
     </section>
   `;
+
+  const grid = qs("[data-rp-grid]", root);
+  const countNode = qs("[data-rp-count]", root);
+  const pluralNode = qs("[data-rp-count-plural]", root);
+
+  function refreshGrid() {
+    const list = applyFilters();
+    grid.innerHTML = gridMarkup(list);
+    if (countNode) countNode.textContent = String(list.length);
+    if (pluralNode) pluralNode.textContent = list.length === 1 ? "" : "s";
+    createIcons();
+    bindGridActions();
+  }
+
+  function bindGridActions() {
+    bindRoleCardActions(grid, () => {
+      // Re-filter only when the "Saved" quick-filter is active, so a card that
+      // was just unsaved leaves the view; otherwise inline update is enough.
+      if (recommendedRolesFilter === "saved") refreshGrid();
+    });
+  }
+
+  qs("[data-rp-search]", root)?.addEventListener("input", event => {
+    rolesDirState.q = event.target.value;
+    refreshGrid();
+  });
+  qs("[data-rp-mode]", root)?.addEventListener("change", event => { rolesDirState.mode = event.target.value; refreshGrid(); });
+  qs("[data-rp-match]", root)?.addEventListener("change", event => { rolesDirState.minMatch = Number(event.target.value) || 0; refreshGrid(); });
+  qs("[data-rp-sort]", root)?.addEventListener("change", event => { rolesDirState.sort = event.target.value; refreshGrid(); });
+  qsa("[data-rp-filter]", root).forEach(btn => btn.addEventListener("click", () => {
+    recommendedRolesFilter = recommendedRolesFilter === btn.dataset.rpFilter ? "all" : btn.dataset.rpFilter;
+    qsa("[data-rp-filter]", root).forEach(b => b.classList.toggle("active", b.dataset.rpFilter === recommendedRolesFilter));
+    refreshGrid();
+  }));
+
+  refreshGrid();
   createIcons();
   wireVeraWidget(root);
-  qsa("[data-rp-filter]", root).forEach(btn => btn.addEventListener("click", () => {
-    recommendedRolesFilter = btn.dataset.rpFilter;
-    renderRecommendedRoles();
-  }));
-  qs("[data-rp-more-filters]", root)?.addEventListener("click", () => showToast("More filters are coming soon."));
-  qsa("[data-rp-save]", root).forEach(btn => btn.addEventListener("click", () => {
-    const roleId = btn.dataset.rpSave;
-    const role = RECOMMENDED_ROLES.find(item => item.id === roleId);
-    const next = readState();
-    const nowSaved = next.savedJobs.includes(roleId);
-    next.savedJobs = nowSaved ? next.savedJobs.filter(id => id !== roleId) : [...next.savedJobs, roleId];
-    writeState(syncCurrentUser(next));
-    showToast(nowSaved ? "Role removed from saved jobs." : `Saved ${role?.title || "role"} at ${role?.company || "this company"}.`);
-    renderRecommendedRoles();
-  }));
 }
 
 function normalizeSkillToken(value) {
@@ -7871,13 +9321,6 @@ function appendVeraMessage(state, from, text) {
   return state;
 }
 
-function hasUnreadVeraMessage(state) {
-  const latest = [...state.veraConversations].sort((a, b) => b.updatedAt - a.updatedAt)[0];
-  if (!latest || !latest.messages.length) return false;
-  const lastMsg = latest.messages[latest.messages.length - 1];
-  return lastMsg.from === "vera" && latest.updatedAt > (state.veraLastReadAt || 0);
-}
-
 function veraHistoryItemHtml(conv, activeId) {
   return `
     <button type="button" class="cg-vera-history-item ${conv.id === activeId ? "active" : ""}" data-vera-history-item="${conv.id}">
@@ -7947,21 +9390,6 @@ function veraPanelEls() {
   };
 }
 
-function updateVeraBubbleBadge() {
-  const state = readState();
-  const trigger = qs(".cg-message-trigger");
-  if (!trigger) return;
-  let dot = qs(".cg-message-trigger-dot", trigger);
-  const unread = hasUnreadVeraMessage(state);
-  if (unread && !dot) {
-    dot = document.createElement("span");
-    dot.className = "cg-message-trigger-dot";
-    trigger.appendChild(dot);
-  } else if (!unread && dot) {
-    dot.remove();
-  }
-}
-
 function refreshVeraPanel() {
   const els = veraPanelEls();
   if (!els) return;
@@ -7974,7 +9402,6 @@ function refreshVeraPanel() {
   els.messagesPane.innerHTML = veraMessagesHtml(isDraft ? [] : active.messages, getFirstName(state));
   createIcons();
   els.messagesPane.scrollTop = els.messagesPane.scrollHeight;
-  updateVeraBubbleBadge();
 }
 
 function sendVeraChatMessage(text) {
@@ -8168,7 +9595,6 @@ function wireVeraWidget(root) {
     quick.hidden = true;
     sendMessage(text);
   });
-  updateVeraBubbleBadge();
 }
 
 function renderVera() {
@@ -8265,16 +9691,75 @@ function persistAuthRole(role) {
   }
 }
 
-const ONBOARD_WIZARD_STEPS = 4;
+const ONBOARD_WIZARD_STEPS = 5;
+
+/* Shared onboarding preview (Part 1) - one component rendered on both the
+   talent flow (Living Portfolio) and the employer flow (Company Card). It
+   re-renders live as the form is filled. */
+function onboardPreviewCard(mode, data) {
+  const esc = value => String(value ?? "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  if (mode === "employer") {
+    const metaLine = [data.industry, data.size ? `${data.size} employees` : ""].filter(Boolean).join(" · ");
+    return `
+      <aside class="cg-onboard-preview">
+        <div class="cg-onboard-preview-head">
+          <span class="cg-onboard-preview-kicker">Company card · Preview</span>
+          <h3>${esc(data.company) || "Your company"}</h3>
+          <p>${esc(data.pitch) || "Add a short pitch and Vera shows it here."}</p>
+          <small>${esc(metaLine) || "Industry · Company size"}</small>
+        </div>
+        <div class="cg-onboard-preview-body">
+          <section>
+            <span class="cg-onboard-preview-label">Hiring for</span>
+            ${(data.roles && data.roles.length)
+              ? `<div class="cg-onboard-preview-chips">${data.roles.map(role => `<span class="cg-onboard-preview-chip">${esc(role)}</span>`).join("")}</div>`
+              : `<p class="cg-onboard-preview-empty">Pick the roles you're hiring for and they appear here.</p>`}
+          </section>
+          ${data.roleFocus ? `<section><span class="cg-onboard-preview-label">Your focus</span><p>${esc(data.roleFocus)}</p></section>` : ""}
+        </div>
+        <div class="cg-onboard-preview-verify">${icon("check")} Verified by CareerGo as you complete it</div>
+      </aside>
+    `;
+  }
+  const contactLine = [data.email, data.location, data.status].filter(Boolean).join(" · ");
+  return `
+    <aside class="cg-onboard-preview">
+      <div class="cg-onboard-preview-head">
+        <span class="cg-onboard-preview-kicker">Living portfolio · Preview</span>
+        <h3>${esc(data.name) || "Your name"}</h3>
+        <p>${esc(data.headline) || "Add a headline that sums you up."}</p>
+        <small>${esc(contactLine) || "email · location · status"}</small>
+      </div>
+      <div class="cg-onboard-preview-body">
+        ${data.education ? `<section><span class="cg-onboard-preview-label">Education</span><p>${esc(data.education)}</p></section>` : ""}
+        ${(data.skills && data.skills.length) ? `<section><span class="cg-onboard-preview-label">Top skills</span><div class="cg-onboard-preview-chips">${data.skills.map(skill => `<span class="cg-onboard-preview-chip">${esc(skill)}</span>`).join("")}</div></section>` : ""}
+        ${data.highlight ? `<section><span class="cg-onboard-preview-label">${esc(data.highlightLabel) || "Projects & proof"}</span><p>${esc(data.highlight)}</p></section>` : ""}
+        ${(!data.education && !(data.skills && data.skills.length) && !data.highlight) ? `<section><p class="cg-onboard-preview-empty">Vera drafts your summary, skills and experience here as you fill the form.</p></section>` : ""}
+      </div>
+      <div class="cg-onboard-preview-verify">${icon("check")} Verified by CareerGo as you complete it</div>
+    </aside>
+  `;
+}
+
+const ONBOARD_SKILL_OPTIONS = ["Python", "SQL", "JavaScript", "Data analysis", "Excel", "Communication", "Project management", "Design", "Marketing", "Leadership", "Research", "Product"];
+const ONBOARD_WORKTYPE_OPTIONS = ["Full-time", "Internship", "Contract", "Remote", "Graduate programme"];
+const ONBOARD_STATUS_OPTIONS = ["Student", "Fresh graduate", "Working professional", "Career switcher"];
+const ONBOARD_ELIGIBILITY_OPTIONS = ["Malaysian citizen", "Permanent resident", "Work visa holder", "Student visa", "Requires sponsorship"];
+const ONBOARD_LEVEL_OPTIONS = ["SPM / O-Level", "Foundation", "Diploma", "Bachelor's degree", "Master's degree", "PhD", "Professional certificate"];
+const ONBOARD_AVAILABILITY_OPTIONS = ["Immediately", "Within 1 month", "1-3 months", "3+ months", "Just exploring"];
 
 function onboardWizardChrome(stepIndex, topRightHtml) {
   return `
     <header class="cg-onboard-topbar">
       <a class="cg-onboard-brand" href="index.html" aria-label="CareerGo home"><img src="assets/careergo-logo-script.png" alt="CareerGo"></a>
-      <div class="cg-onboard-progress" role="progressbar" aria-valuenow="${stepIndex + 1}" aria-valuemin="1" aria-valuemax="${ONBOARD_WIZARD_STEPS}">
-        ${Array.from({ length: ONBOARD_WIZARD_STEPS }, (_, i) => `<i class="${i <= stepIndex ? "done" : ""}"></i>`).join("")}
+      <div class="cg-onboard-progress-group">
+        <div class="cg-onboard-progress" role="progressbar" aria-valuenow="${stepIndex + 1}" aria-valuemin="1" aria-valuemax="${ONBOARD_WIZARD_STEPS}">
+          ${Array.from({ length: ONBOARD_WIZARD_STEPS }, (_, i) => `<i class="${i <= stepIndex ? "done" : ""}"></i>`).join("")}
+        </div>
+        <span class="cg-onboard-progress-label">Step ${stepIndex + 1} of ${ONBOARD_WIZARD_STEPS}</span>
       </div>
-      <div class="cg-onboard-topbar-right"><span>Step ${stepIndex + 1} of ${ONBOARD_WIZARD_STEPS}</span>${topRightHtml}</div>
+      <div class="cg-onboard-topbar-right">${topRightHtml}</div>
     </header>
   `;
 }
@@ -8425,6 +9910,58 @@ function renderLegacyLoginAuth(root, mode) {
   createIcons();
 }
 
+/* Demo/hackathon build: seed a brand-new signup with a realistic, fully
+   filled profile (name, headline, education, skills, goals, preferences)
+   rather than leaving it blank, so a judge/user can click straight through
+   onboarding without typing anything first, while still being able to
+   change any of it. Uses the SAME "Mira Tan" persona as the judge-preview
+   dashboard (createDemoProfile()/applyDemoAccount()) - Operations Executive
+   switching into Product Analyst roles - so a real signup and the seeded
+   demo dashboard never show two different people. This only fills profile
+   fields (name/education/skills/goals); it never touches applications,
+   mission streak or roadmap progress, so it can't imply prior product
+   usage the way the logged-in Dashboard's "Week N of your transition"
+   framing does. */
+function seedMockCandidateProfile(profile) {
+  profile.personal.fullName = "Mira Tan";
+  profile.personal.headline = "Operations executive moving into product analytics roles";
+  profile.personal.cityState = "Petaling Jaya, Selangor";
+  profile.personal.roleType = "Career Switcher";
+  profile.personal.workEligibility = "Malaysian citizen";
+  profile.careerStage = ONBOARD_ROLE_STAGE_MAP["Career Switcher"] || profile.careerStage;
+  profile.background.school = "Universiti Malaya";
+  profile.background.courseMajor = "Business Administration";
+  profile.background.educationLevel = "Bachelor's degree";
+  profile.background.projectExperience = "3 years as an Operations Executive in marketplace operations - built a churn analysis dashboard for support tickets and a weekly ops scorecard using SQL and Looker Studio.";
+  profile.skills.technical = ["SQL", "Excel", "Data analysis"];
+  profile.skills.languages = ["English", "Malay", "Mandarin"];
+  profile.goals = ["Find a job", "Explore career directions", "Grow my skills"];
+  profile.preferences.industries = ["Data", "Product", "Business"];
+  profile.preferences.roles = ["Product Analyst"];
+  profile.preferences.minimumSalary = "RM 5,500 / month";
+  profile.preferences.employmentTypes = ["Full-time", "Contract"];
+  profile.preferences.availability = "3+ months";
+  profile.privacy = { ...(profile.privacy || {}), consentAccepted: true, allowEmployerDiscovery: true };
+  return profile;
+}
+
+/* Same idea for a fresh employer signup - company branding + hiring roles
+   pre-filled so the employer onboarding wizard is also click-through-able. */
+function seedMockEmployerProfile(state) {
+  state.employerProfile = {
+    ...(state.employerProfile || {}),
+    roleDescription: "Hiring Manager",
+    purposes: ["Create and publish roles", "Discover candidates"],
+    company: "Nimbus Labs",
+    companySize: "51-200",
+    industry: "Technology",
+    pitch: "Nimbus Labs builds developer tools that help engineering teams ship faster - trusted by 400+ startups across Southeast Asia.",
+    hiringRoles: ["Software Engineer", "Product Manager"],
+    updatedAt: nowStamp()
+  };
+  return state;
+}
+
 function renderCreateAccountWizard(root) {
   let wizardStep = 0;
   let selectedRole = normalizeAuthRole(getInitialAuthRole());
@@ -8449,8 +9986,8 @@ function renderCreateAccountWizard(root) {
             <span class="cg-onboard-role-radio"></span>
             <b>Candidate account</b>
             <h3>I'm looking for opportunities</h3>
-            <p>Explore careers, grow your skills and find opportunities that fit you.</p>
-            <ul><li>${icon("check")} Personalised roadmap</li><li>${icon("check")} Curated opportunities</li><li>${icon("check")} AI-guided growth</li></ul>
+            <p>From student to senior professional, discover opportunities and grow the skills that fit you.</p>
+            <ul><li>${icon("check")} Personalised roadmap — from school to senior roles</li><li>${icon("check")} Curated opportunities, at every career stage</li><li>${icon("check")} AI-guided growth, tailored to you</li></ul>
           </label>
           <label class="cg-onboard-role-card ${isEmployer ? "selected" : ""}">
             <input type="radio" name="wizardRole" value="employer" ${isEmployer ? "checked" : ""}>
@@ -8481,22 +10018,23 @@ function renderCreateAccountWizard(root) {
           <div class="cg-onboard-divider"><span>OR</span></div>
           <label class="cg-onboard-field">
             <span>${isEmployer ? "Work email" : "Email"}</span>
-            <input name="email" type="email" required autocomplete="email" placeholder="${isEmployer ? "you@company.com" : "you@email.com"}">
+            <input name="email" type="email" required autocomplete="email" placeholder="${isEmployer ? "you@company.com" : "you@email.com"}" value="${isEmployer ? "hiring@nimbuslabs.com" : "mira.tan@email.com"}">
           </label>
           <label class="cg-onboard-field">
             <span>Password</span>
             <span class="cg-onboard-field-shell">
-              <input id="wizard-password" name="password" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters">
+              <input id="wizard-password" name="password" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters" value="Career2026!">
               <button type="button" class="cg-onboard-eye" data-toggle-password="wizard-password" aria-label="Show password">${icon("eye")}</button>
             </span>
           </label>
           <label class="cg-onboard-field">
             <span>Confirm password</span>
-            <input name="confirmPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="Re-enter your password">
+            <input name="confirmPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="Re-enter your password" value="Career2026!">
           </label>
           <button class="cg-onboard-btn-primary cg-onboard-btn-block" type="submit">Create account ${icon("arrow-right")}</button>
         </form>
         <p class="cg-onboard-terms">By creating an account, you agree to CareerGo's <a href="about.html">Terms</a> and <a href="about.html">Privacy Policy</a>.</p>
+        <p class="cg-onboard-terms">Demo build - re-testing signup? <button type="button" class="cg-onboard-link" data-clear-demo-data>Clear local demo data</button> to reuse the same email.</p>
         <footer class="cg-onboard-footer">
           <button class="cg-onboard-link" type="button" data-wizard-back>${icon("arrow-left")} Back</button>
           <a href="${loginHref}">Already have an account? Log in</a>
@@ -8520,6 +10058,11 @@ function renderCreateAccountWizard(root) {
 
     qs("[data-wizard-back]", root)?.addEventListener("click", () => {
       wizardStep = 0;
+      renderStep();
+    });
+    qs("[data-clear-demo-data]", root)?.addEventListener("click", () => {
+      localStorage.removeItem(STORE_KEY);
+      showToast("Local demo data cleared - you can reuse the same email.");
       renderStep();
     });
     qsa("[data-enter-demo]", root).forEach(btn => btn.addEventListener("click", startDemoDashboard));
@@ -8549,11 +10092,19 @@ function renderCreateAccountWizard(root) {
       profile.personal.roleType = roleType;
       profile.onboardingStatus.started = true;
       profile.updatedAt = nowStamp();
+      if (authRole !== "employer") {
+        seedMockCandidateProfile(profile);
+        // Structured career history so "Generate resume" has real experience +
+        // education to compose from straight after signup (MVP has no AI/API).
+        next.userRoles = mockUserRoles();
+        next.educationEntries = mockEducationEntries();
+      }
       next.auth.users.push({ id: profile.id, email, password, fullName: profile.personal.fullName, role: authRole, profile, createdAt: profile.createdAt });
       next.session = { loggedIn: true, role: authRole, currentUserId: profile.id, name: profile.personal.fullName };
       next.profile = profile;
       next.onboarding = { ...next.onboarding, candidateDone: false, employerDone: false, currentStep: 0, lastSavedAt: nowStamp() };
-      next.notifications = [{ id: "n-welcome", title: "Welcome to CareerGo", body: "A little more context helps Vera personalize your workspace." }];
+      if (authRole === "employer") seedMockEmployerProfile(next);
+      next.notifications = normalizeNotifications([{ id: "n-welcome", type: "vera", title: "Welcome to CareerGo", body: "A little more context helps Vera personalize your workspace.", href: "dashboard.html" }]);
       writeState(next);
       showToast("Account created.");
       location.href = authRole === "employer" ? "employer-onboarding.html" : "onboarding.html";
@@ -8673,11 +10224,216 @@ function renderCandidateOnboarding() {
       return;
     }
 
+    // Step 1 (NEW): capture real profile substance with a live Living Portfolio preview.
+    if (wizardStep === 1) {
+      const esc = value => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const optionsFor = (list, current) => list.map(opt => `<option value="${esc(opt)}"${opt === current ? " selected" : ""}>${esc(opt)}</option>`).join("");
+      const statusDefault = ONBOARD_STATUS_OPTIONS.find(opt => opt.toLowerCase() === String(profile.personal.roleType || "").toLowerCase())
+        || (profile.personal.roleType === "Fresh Graduate" ? "Fresh graduate" : profile.personal.roleType === "Working Professional" ? "Working professional" : profile.personal.roleType === "Career Switcher" ? "Career switcher" : "Student");
+      const savedSkills = (profile.skills.technical || []).filter(skill => ONBOARD_SKILL_OPTIONS.includes(skill)).slice(0, 5);
+      const savedWorkTypes = (profile.preferences.employmentTypes || []).filter(type => ONBOARD_WORKTYPE_OPTIONS.includes(type));
+
+      root.innerHTML = `
+        ${onboardWizardChrome(3, `<a href="dashboard.html">Save & exit</a>`)}
+        <section class="cg-onboard-shell cg-onboard-shell-split cg-onboard-profile-shell">
+          <div class="cg-onboard-main" data-onboard-form>
+            <div class="cg-onboard-eyebrow">Your profile</div>
+            <h1>Let's build your living portfolio.</h1>
+            <p class="cg-onboard-sub">Fill what you can now - Vera drafts the rest, and nothing here is final.</p>
+
+            <div class="cg-onboard-resume">
+              <label class="cg-onboard-dropzone" data-resume-drop tabindex="0">
+                <input type="file" accept=".pdf,.doc,.docx" hidden data-resume-input>
+                <span>${icon("upload")}</span>
+                <b>Upload your resume</b>
+                <small data-resume-name>PDF or Word, up to 5MB - Vera reads it to pre-fill your profile.</small>
+              </label>
+              <div class="cg-onboard-or"><span>OR</span></div>
+              <button type="button" class="cg-onboard-build" data-build-vera>${icon("sparkles")} Build my profile with Vera - no upload needed</button>
+            </div>
+
+            <div class="cg-onboard-question">
+              <header><span>${icon("user-round")} About you</span></header>
+              <div class="cg-onboard-grid2">
+                <label class="cg-onboard-field"><span>Full name</span><input data-f="name" value="${esc(profile.personal.fullName)}" placeholder="Your name"></label>
+                <label class="cg-onboard-field"><span>Current status</span><select data-f="status">${optionsFor(ONBOARD_STATUS_OPTIONS, statusDefault)}</select></label>
+              </div>
+              <label class="cg-onboard-field"><span>Headline <i>(one line that sums you up)</i></span><input data-f="headline" value="${esc(profile.personal.headline || "")}" placeholder="e.g. Operations executive moving into product analytics roles"></label>
+              <div class="cg-onboard-grid2">
+                <label class="cg-onboard-field"><span>Location</span><input data-f="location" value="${esc(profile.personal.cityState)}" placeholder="Kuala Lumpur"></label>
+                <label class="cg-onboard-field"><span>Work eligibility</span><select data-f="eligibility">${optionsFor(ONBOARD_ELIGIBILITY_OPTIONS, profile.personal.workEligibility || "Malaysian citizen")}</select></label>
+              </div>
+              <label class="cg-onboard-field"><span>Languages</span><input data-f="languages" value="${esc((profile.skills.languages || []).join(", "))}" placeholder="English, Malay, Mandarin"></label>
+            </div>
+
+            <div class="cg-onboard-question">
+              <header><span>${icon("graduation-cap")} Education</span></header>
+              <label class="cg-onboard-field"><span>Institution</span><input data-f="institution" value="${esc(profile.background.school)}" placeholder="University of Malaya"></label>
+              <div class="cg-onboard-grid2">
+                <label class="cg-onboard-field"><span>Field of study</span><input data-f="field" value="${esc(profile.background.courseMajor)}" placeholder="Computer Science"></label>
+                <label class="cg-onboard-field"><span>Level</span><select data-f="level">${optionsFor(ONBOARD_LEVEL_OPTIONS, profile.background.educationLevel || "Bachelor's degree")}</select></label>
+              </div>
+            </div>
+
+            <div class="cg-onboard-question">
+              <header><span>${icon("sparkles")} Top skills</span><small>Tap up to 5</small></header>
+              ${onboardChipGroup("skills", ONBOARD_SKILL_OPTIONS, savedSkills, true)}
+            </div>
+
+            <div class="cg-onboard-question">
+              <header><span>${icon("folder-open")} Projects, coursework or certifications</span><small>Optional - great if you have no formal work yet</small></header>
+              <textarea class="cg-onboard-textarea" data-f="highlight" rows="3" placeholder="e.g. Built a sales dashboard in Python for a class project; Google Data Analytics certificate">${esc(profile.background.projectExperience || "")}</textarea>
+            </div>
+
+            <div class="cg-onboard-question">
+              <header><span>${icon("briefcase-business")} Role &amp; preferences</span></header>
+              <div class="cg-onboard-grid2">
+                <label class="cg-onboard-field"><span>Preferred role</span><input data-f="role" value="${esc(profile.preferences.roles[0] || "")}" placeholder="Data Analyst"></label>
+                <label class="cg-onboard-field"><span>Expected salary (RM/month)</span><input data-f="salary" value="${esc(profile.preferences.minimumSalary)}" placeholder="3,800 - 5,000"></label>
+              </div>
+              <p class="cg-onboard-subquestion">Work type</p>
+              ${onboardChipGroup("worktype", ONBOARD_WORKTYPE_OPTIONS, savedWorkTypes, true)}
+              <label class="cg-onboard-field"><span>Availability to start</span><select data-f="availability">${optionsFor(ONBOARD_AVAILABILITY_OPTIONS, profile.preferences.availability || "Immediately")}</select></label>
+            </div>
+
+            <label class="cg-onboard-consent"><input type="checkbox" data-consent ${profile.privacy && profile.privacy.consentAccepted ? "checked" : ""}><span>I agree to the Terms and Privacy Policy, and consent to CareerGo using my details to match me with employers.</span></label>
+
+            <footer class="cg-onboard-footer">
+              <button class="cg-onboard-link" type="button" data-wizard-back>${icon("arrow-left")} Back</button>
+              <button class="cg-onboard-btn-primary" type="button" data-wizard-continue>Continue ${icon("arrow-right")}</button>
+            </footer>
+          </div>
+          <div class="cg-onboard-preview-col" data-preview-col></div>
+        </section>
+      `;
+      createIcons();
+
+      const formRoot = qs("[data-onboard-form]", root);
+      const previewCol = qs("[data-preview-col]", root);
+
+      function selectedChips(name) {
+        return qsa(`[data-chip-group="${name}"] .selected`, formRoot).map(chip => chip.dataset.chipValue);
+      }
+      function fieldVal(key) {
+        return String(qs(`[data-f="${key}"]`, formRoot)?.value || "").trim();
+      }
+      function collectData() {
+        const eduBits = [fieldVal("field"), fieldVal("institution"), fieldVal("level")].filter(Boolean);
+        return {
+          name: fieldVal("name"),
+          headline: fieldVal("headline"),
+          email: profile.personal.email,
+          location: fieldVal("location"),
+          status: fieldVal("status"),
+          education: eduBits.join(" · "),
+          skills: selectedChips("skills"),
+          highlight: fieldVal("highlight"),
+          highlightLabel: "Projects & proof"
+        };
+      }
+      function renderPreview() {
+        previewCol.innerHTML = onboardPreviewCard("talent", collectData());
+        createIcons();
+      }
+      renderPreview();
+
+      qsa("[data-chip-group]", formRoot).forEach(group => {
+        const multi = group.dataset.multi === "1";
+        qsa("[data-chip-value]", group).forEach(chip => chip.addEventListener("click", () => {
+          if (multi) {
+            const isSkills = group.dataset.chipGroup === "skills";
+            if (isSkills && !chip.classList.contains("selected") && qsa(".selected", group).length >= 5) {
+              showToast("Pick your top 5 skills.");
+              return;
+            }
+            chip.classList.toggle("selected");
+          } else {
+            qsa("[data-chip-value]", group).forEach(item => item.classList.toggle("selected", item === chip));
+          }
+          renderPreview();
+        }));
+      });
+      formRoot.addEventListener("input", renderPreview);
+      formRoot.addEventListener("change", renderPreview);
+
+      // Resume upload -> simulated parse pre-fill.
+      function prefillFromResume(fileName) {
+        const setIfEmpty = (key, value) => {
+          const el = qs(`[data-f="${key}"]`, formRoot);
+          if (el && !el.value.trim()) el.value = value;
+        };
+        setIfEmpty("name", profile.personal.fullName || "Mira Tan");
+        setIfEmpty("headline", "Operations executive moving into product analytics roles");
+        setIfEmpty("location", "Petaling Jaya, Selangor");
+        setIfEmpty("institution", "Universiti Malaya");
+        setIfEmpty("field", "Business Administration");
+        setIfEmpty("languages", "English, Malay, Mandarin");
+        setIfEmpty("role", "Product Analyst");
+        setIfEmpty("salary", "5,500");
+        setIfEmpty("highlight", "3 years as an Operations Executive in marketplace operations - built a churn analysis dashboard for support tickets and a weekly ops scorecard using SQL and Looker Studio.");
+        ["SQL", "Excel", "Data analysis"].forEach(skill => {
+          const chip = qs(`[data-chip-group="skills"] [data-chip-value="${skill}"]`, formRoot);
+          if (chip) chip.classList.add("selected");
+        });
+        const nameNote = qs("[data-resume-name]", formRoot);
+        if (nameNote) nameNote.textContent = `${fileName} - Vera pre-filled your profile below.`;
+        renderPreview();
+        showToast("Vera read your resume and pre-filled your profile.");
+      }
+      qs("[data-resume-input]", formRoot)?.addEventListener("change", event => {
+        const file = event.target.files && event.target.files[0];
+        prefillFromResume(file ? file.name : "resume.pdf");
+      });
+      qs("[data-build-vera]", formRoot)?.addEventListener("click", () => prefillFromResume("Vera draft"));
+
+      qs("[data-wizard-back]", root)?.addEventListener("click", () => { wizardStep = 0; renderStep(); });
+      qs("[data-wizard-continue]", root)?.addEventListener("click", () => {
+        if (!qs("[data-consent]", formRoot)?.checked) {
+          showToast("Please accept the Terms and consent to continue.");
+          return;
+        }
+        const data = collectData();
+        const next = readState();
+        next.profile.personal.fullName = data.name || next.profile.personal.fullName;
+        next.profile.personal.headline = data.headline;
+        next.profile.personal.cityState = data.location;
+        next.profile.personal.roleType = data.status || next.profile.personal.roleType;
+        next.profile.personal.workEligibility = fieldVal("eligibility");
+        next.profile.background.school = fieldVal("institution");
+        next.profile.background.courseMajor = fieldVal("field");
+        next.profile.background.educationLevel = fieldVal("level");
+        next.profile.background.projectExperience = data.highlight;
+        next.profile.skills.technical = data.skills;
+        next.profile.skills.languages = fieldVal("languages").split(",").map(s => s.trim()).filter(Boolean);
+        next.profile.preferences.roles = fieldVal("role") ? [fieldVal("role")] : next.profile.preferences.roles;
+        next.profile.preferences.minimumSalary = fieldVal("salary") ? `RM ${fieldVal("salary")} / month` : next.profile.preferences.minimumSalary;
+        next.profile.preferences.employmentTypes = selectedChips("worktype");
+        next.profile.preferences.availability = fieldVal("availability");
+        next.profile.privacy = { ...(next.profile.privacy || {}), consentAccepted: true, allowEmployerDiscovery: true };
+        next.profile.intelligence = generateCareerIntelligence(next.profile);
+        next.profile.updatedAt = nowStamp();
+        next.onboarding.lastSavedAt = nowStamp();
+        syncCurrentUser(next);
+        writeState(next);
+        wizardStep = 2;
+        renderStep();
+      });
+      return;
+    }
+
+    const filledChecks = [
+      ["Career interests", (profile.goals || []).length > 0 || (profile.preferences.industries || []).length > 0],
+      ["Headline & bio", Boolean(profile.personal.headline)],
+      ["Skills", (profile.skills.technical || []).length > 0],
+      ["Education", Boolean(profile.background.school)],
+      ["Role & salary", Boolean(profile.preferences.roles[0]) || Boolean(profile.preferences.minimumSalary)],
+      ["Consent & preferences", Boolean(profile.privacy && profile.privacy.consentAccepted)]
+    ];
+    const doneCount = 1 + filledChecks.filter(([, done]) => done).length;
+    const totalCount = 7;
     const purposeCount = Math.max(1, selectedPurposes.length);
-    const doneCount = 2;
-    const totalCount = 6;
     root.innerHTML = `
-      ${onboardWizardChrome(3, `<a href="dashboard.html">Save & exit</a>`)}
+      ${onboardWizardChrome(4, `<a href="dashboard.html">Save & exit</a>`)}
       <section class="cg-onboard-shell cg-onboard-shell-wide">
         <div class="cg-onboard-finish-grid">
           <article class="cg-onboard-meet-card">
@@ -8702,11 +10458,9 @@ function renderCandidateOnboarding() {
               ${progressBar(Math.round((doneCount / totalCount) * 100))}
               <div class="cg-onboard-checklist">
                 <div class="done"><span>${icon("check-circle-2")}</span>Basic information</div>
-                <div class="done"><span>${icon("check-circle-2")}</span>Career interests</div>
-                <div><span>Add headline & bio</span><a href="edit-career-data.html">Add</a></div>
-                <div><span>Upload resume or CV</span><a href="edit-career-data.html">Add</a></div>
-                <div><span>Add skills</span><a href="edit-career-data.html">Add</a></div>
-                <div><span>Add education</span><a href="edit-career-data.html">Add</a></div>
+                ${filledChecks.map(([label, done]) => done
+                  ? `<div class="done"><span>${icon("check-circle-2")}</span>${label}</div>`
+                  : `<div><span>${label}</span><a href="edit-career-data.html">Add</a></div>`).join("")}
               </div>
             </article>
             <footer class="cg-onboard-footer">
@@ -8724,10 +10478,10 @@ function renderCandidateOnboarding() {
       next.profile.onboardingStatus.completed = true;
       next.profile.updatedAt = nowStamp();
       next.onboarding.candidateDone = true;
-      next.notifications = [
-        { id: "n-profile", title: "Profile generated", body: `${next.profile.intelligence.readinessLevel} readiness with ${next.profile.intelligence.confidence.toLowerCase()} confidence.` },
-        { id: "n-next", title: "Next action", body: next.profile.intelligence.immediateActions[0] }
-      ];
+      next.notifications = normalizeNotifications([
+        { id: "n-profile", type: "vera", title: "Your Career Intelligence Profile is ready", body: `${next.profile.intelligence.readinessLevel} readiness with ${next.profile.intelligence.confidence.toLowerCase()} confidence.`, href: "grow.html" },
+        { id: "n-next", type: "growth", title: "Vera's first suggested move", body: next.profile.intelligence.immediateActions[0], href: "grow.html#recommended-growth" }
+      ]);
       syncCurrentUser(next);
       writeState(next);
       showToast("Career Intelligence Profile generated.");
@@ -8746,6 +10500,7 @@ const ONBOARD_EMPLOYER_ROLE_OPTIONS = ["Hiring Manager", "Recruiter / Talent Acq
 const ONBOARD_EMPLOYER_PURPOSE_OPTIONS = ["Create and publish roles", "Review applications", "Manage interviews", "Discover candidates", "Build talent pools", "Strengthen employer presence", "Connect with universities"];
 const ONBOARD_EMPLOYER_SIZE_OPTIONS = ["1-10", "11-50", "51-200", "201-1000", "1000+"];
 const ONBOARD_EMPLOYER_INDUSTRY_OPTIONS = ["Technology", "Finance", "Consulting", "Healthcare", "Energy", "Retail", "Public sector", "Media"];
+const ONBOARD_EMPLOYER_HIRING_ROLES = ["Software Engineer", "Data Analyst", "Product Manager", "Designer", "Sales", "Marketing", "Operations", "Finance", "HR / People", "Customer Success", "Intern / Graduate"];
 
 function renderEmployerOnboarding() {
   const root = qs("[data-employer-onboarding]");
@@ -8826,8 +10581,114 @@ function renderEmployerOnboarding() {
       return;
     }
 
+    // Step 1 (NEW): company branding + hiring roles with a live Company Card preview.
+    if (wizardStep === 1) {
+      const esc = value => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const savedRoles = (employerProfile.hiringRoles || []).filter(role => ONBOARD_EMPLOYER_HIRING_ROLES.includes(role));
+
+      root.innerHTML = `
+        ${onboardWizardChrome(3, `<a href="employer-app.html">Save & exit</a>`)}
+        <section class="cg-onboard-shell cg-onboard-shell-split cg-onboard-profile-shell">
+          <div class="cg-onboard-main" data-onboard-form>
+            <div class="cg-onboard-eyebrow">Company profile</div>
+            <h1>Give candidates a reason to say yes.</h1>
+            <p class="cg-onboard-sub">A logo and a short pitch help Vera present your roles well. Edit anytime.</p>
+
+            <div class="cg-onboard-question">
+              <header><span>${icon("image")} Company branding</span></header>
+              <div class="cg-onboard-logo-row">
+                <span class="cg-onboard-logo-tile" data-logo-tile>${(employerProfile.company || "C").charAt(0).toUpperCase()}</span>
+                <div>
+                  <label class="cg-onboard-logo-upload" data-logo-drop tabindex="0">
+                    <input type="file" accept="image/*" hidden data-logo-input>
+                    ${icon("upload")} Upload logo
+                  </label>
+                  <small data-logo-name>PNG or SVG - shown on your roles and company card.</small>
+                </div>
+              </div>
+              <label class="cg-onboard-field"><span>Company name</span><input data-f="company" value="${esc(employerProfile.company || "")}" placeholder="e.g. CareerGo"></label>
+              <label class="cg-onboard-field"><span>Company pitch <i>(2-3 sentences)</i></span><textarea class="cg-onboard-textarea" data-f="pitch" rows="3" placeholder="What you do, who you serve, and why people love working with you.">${esc(employerProfile.pitch || "")}</textarea></label>
+            </div>
+
+            <div class="cg-onboard-question">
+              <header><span>${icon("briefcase-business")} What roles are you hiring for?</span><small>Select any</small></header>
+              ${onboardChipGroup("hiringroles", ONBOARD_EMPLOYER_HIRING_ROLES, savedRoles, true)}
+            </div>
+
+            <footer class="cg-onboard-footer">
+              <button class="cg-onboard-link" type="button" data-wizard-back>${icon("arrow-left")} Back</button>
+              <button class="cg-onboard-btn-primary" type="button" data-wizard-continue>Continue ${icon("arrow-right")}</button>
+            </footer>
+          </div>
+          <div class="cg-onboard-preview-col" data-preview-col></div>
+        </section>
+      `;
+      createIcons();
+
+      const formRoot = qs("[data-onboard-form]", root);
+      const previewCol = qs("[data-preview-col]", root);
+      const fieldVal = key => String(qs(`[data-f="${key}"]`, formRoot)?.value || "").trim();
+      const selectedRoles = () => qsa('[data-chip-group="hiringroles"] .selected', formRoot).map(chip => chip.dataset.chipValue);
+
+      function collectData() {
+        return {
+          company: fieldVal("company"),
+          pitch: fieldVal("pitch"),
+          industry: employerProfile.industry,
+          size: employerProfile.companySize,
+          roles: selectedRoles(),
+          roleFocus: employerProfile.roleDescription
+        };
+      }
+      function renderPreview() {
+        previewCol.innerHTML = onboardPreviewCard("employer", collectData());
+        const tile = qs("[data-logo-tile]", formRoot);
+        if (tile) tile.textContent = (fieldVal("company") || "C").charAt(0).toUpperCase();
+        createIcons();
+      }
+      renderPreview();
+
+      qsa("[data-chip-group]", formRoot).forEach(group => {
+        qsa("[data-chip-value]", group).forEach(chip => chip.addEventListener("click", () => {
+          chip.classList.toggle("selected");
+          renderPreview();
+        }));
+      });
+      formRoot.addEventListener("input", renderPreview);
+      qs("[data-logo-input]", formRoot)?.addEventListener("change", event => {
+        const file = event.target.files && event.target.files[0];
+        const nameNote = qs("[data-logo-name]", formRoot);
+        if (nameNote) nameNote.textContent = `${file ? file.name : "logo"} - looks great on your company card.`;
+        showToast("Logo added to your company card.");
+      });
+
+      qs("[data-wizard-back]", root)?.addEventListener("click", () => { wizardStep = 0; renderStep(); });
+      qs("[data-wizard-continue]", root)?.addEventListener("click", () => {
+        const next = readState();
+        next.employerProfile = {
+          ...(next.employerProfile || {}),
+          company: fieldVal("company") || (next.employerProfile || {}).company || "",
+          pitch: fieldVal("pitch"),
+          hiringRoles: selectedRoles(),
+          updatedAt: nowStamp()
+        };
+        writeState(next);
+        wizardStep = 2;
+        renderStep();
+      });
+      return;
+    }
+
+    const employerChecks = [
+      ["Hiring context", Boolean(employerProfile.roleDescription) || (employerProfile.purposes || []).length > 0],
+      ["Company details", Boolean(employerProfile.company) && Boolean(employerProfile.companySize)],
+      ["Company pitch", Boolean(employerProfile.pitch)],
+      ["Hiring roles", (employerProfile.hiringRoles || []).length > 0]
+    ];
+    const empDone = 1 + employerChecks.filter(([, done]) => done).length;
+    const empTotal = 6;
     root.innerHTML = `
-      ${onboardWizardChrome(3, `<a href="employer-app.html">Save & exit</a>`)}
+      ${onboardWizardChrome(4, `<a href="employer-app.html">Save & exit</a>`)}
       <section class="cg-onboard-shell cg-onboard-shell-wide">
         <div class="cg-onboard-finish-grid">
           <article class="cg-onboard-meet-card">
@@ -8841,20 +10702,20 @@ function renderEmployerOnboarding() {
               <span class="cg-onboard-vera-kicker">${icon("sparkles")} Prepared for you</span>
               <h3>Vera will help you start with:</h3>
               <div class="cg-onboard-prepared-list">
-                <div><span>${icon("plus")}</span>Set up your first role</div>
+                <div><span>${icon("plus")}</span>${(employerProfile.hiringRoles || []).length ? `${employerProfile.hiringRoles.length} role${employerProfile.hiringRoles.length === 1 ? "" : "s"} ready to publish` : "Set up your first role"}</div>
                 <div><span>${icon("users-round")}</span>Understand candidate activity</div>
-                <div><span>${icon("route")}</span>Find people for create and publish roles</div>
+                <div><span>${icon("route")}</span>Matched candidates for your open roles</div>
               </div>
             </article>
             <article class="cg-onboard-completion-card">
-              <div class="cg-onboard-completion-head"><span>Profile completion</span><b>2/5 done</b></div>
-              <h3>40% complete</h3>
-              ${progressBar(40)}
+              <div class="cg-onboard-completion-head"><span>Profile completion</span><b>${empDone}/${empTotal} done</b></div>
+              <h3>${Math.round((empDone / empTotal) * 100)}% complete</h3>
+              ${progressBar(Math.round((empDone / empTotal) * 100))}
               <div class="cg-onboard-checklist">
                 <div class="done"><span>${icon("check-circle-2")}</span>Basic information</div>
-                <div class="done"><span>${icon("check-circle-2")}</span>Hiring context</div>
-                <div><span>Add company profile</span><a href="employer-app.html">Add</a></div>
-                <div><span>Create first role</span><a href="employer-app.html">Add</a></div>
+                ${employerChecks.map(([label, done]) => done
+                  ? `<div class="done"><span>${icon("check-circle-2")}</span>${label}</div>`
+                  : `<div><span>${label}</span><a href="employer-app.html">Add</a></div>`).join("")}
                 <div><span>Invite team member</span><a href="employer-app.html">Add</a></div>
               </div>
             </article>
@@ -8996,6 +10857,107 @@ function growMoveCompletionBonus(state) {
   return bonus;
 }
 
+function parsePathMetricValue(value) {
+  const match = String(value || "").match(/-?\d+(\.\d+)?/);
+  return match ? parseFloat(match[0]) : 0;
+}
+
+const CAREER_PATH_SORTS = {
+  match: { label: "Highest match", sortIndex: 2 },
+  salary: { label: "Highest salary", sortIndex: 3 },
+  demand: { label: "Highest demand", sortIndex: 4 }
+};
+
+function sortCareerPaths(paths, sortKey) {
+  const sortIndex = (CAREER_PATH_SORTS[sortKey] || CAREER_PATH_SORTS.match).sortIndex;
+  return [...paths].sort((a, b) => parsePathMetricValue(b[sortIndex]) - parsePathMetricValue(a[sortIndex]));
+}
+
+function careerPathCardMarkup(path, opts = {}) {
+  const [title, sub, match, salary, demand, why] = path;
+  const safeTitle = escapeHtml(title);
+  const askVeraHref = `posts.html?topic=${encodeURIComponent(`Tell me more about the ${title} path`)}#messages`;
+  const askVeraControl = opts.iconOnlyVera
+    ? `<a class="cg-vera-ask-btn icon-only" href="${askVeraHref}" aria-label="Ask Vera about ${safeTitle}" title="Ask Vera about this path"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt=""></a>`
+    : `<a class="cg-vera-ask-btn" href="${askVeraHref}" aria-label="Ask Vera about ${safeTitle}" title="Ask Vera about this path"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="">Ask Vera</a>`;
+  return `
+    <article class="cg-direction-card" data-path-card data-path-title="${safeTitle}">
+      <span>${match}</span>
+      <h3>${title}</h3>
+      <p>${sub}</p>
+      <div class="cg-direction-stats">
+        <div><dt>Estimated salary</dt><dd><span>${salary}</span><small>MY - median</small></dd></div>
+        <div><dt>Market demand</dt><dd><span>${icon("triangle")}${demand}</span><small>last 30 days</small></dd></div>
+      </div>
+      <p class="cg-direction-why">${icon("sparkles")} Why - ${why}</p>
+      <footer class="cg-direction-card-actions">
+        ${opts.showViewDetails ? `<a class="cg-plain-link" href="#" data-view-path="${safeTitle}">View details ${icon("arrow-right")}</a>` : ""}
+        ${askVeraControl}
+      </footer>
+    </article>
+  `;
+}
+
+function openCareerPathsModal(paths, opts = {}) {
+  let sortKey = "match";
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-path-modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Career Paths</div>
+          <h2>All career paths for you</h2>
+          <p class="cg-h2-sub">Directions your profile could realistically take next, with salary and demand for each.</p>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <label class="cg-path-sort">
+        <span>Sort by</span>
+        <select data-path-sort>
+          ${Object.entries(CAREER_PATH_SORTS).map(([key, { label }]) => `<option value="${key}">${label}</option>`).join("")}
+        </select>
+        ${icon("chevron-down")}
+      </label>
+      <div class="cg-direction-grid cg-path-modal-grid" data-path-modal-grid></div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+
+  function renderGrid() {
+    const grid = qs("[data-path-modal-grid]", backdrop);
+    grid.innerHTML = sortCareerPaths(paths, sortKey).map(path => careerPathCardMarkup(path, { iconOnlyVera: true })).join("");
+    createIcons();
+    if (opts.focusTitle) {
+      const focusCard = qs(`[data-path-card][data-path-title="${CSS.escape(opts.focusTitle)}"]`, grid);
+      if (focusCard) {
+        focusCard.classList.add("is-focused");
+        focusCard.scrollIntoView({ block: "center" });
+      }
+    }
+  }
+  renderGrid();
+
+  qs("[data-path-sort]", backdrop)?.addEventListener("change", event => {
+    sortKey = event.target.value;
+    renderGrid();
+  });
+
+  function close() {
+    backdrop.remove();
+    document.removeEventListener("keydown", onEsc);
+  }
+  function onEsc(event) {
+    if (event.key === "Escape") close();
+  }
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", close));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) close();
+  });
+  document.addEventListener("keydown", onEsc);
+  createIcons();
+}
+
 function renderGrow() {
   const root = qs("[data-grow]");
   if (!root) return;
@@ -9008,11 +10970,19 @@ function renderGrow() {
   const growMovesCompleted = Array.isArray(state.growMovesCompleted) ? state.growMovesCompleted : [];
   const sqlDone = growMovesCompleted.includes("move-sql");
   const essayDone = growMovesCompleted.includes("move-essay");
+  // Estimated pay has to agree with the single source-of-truth model on the
+  // Career Value page: a RANGE (RM 8,300-9,800/mo, same as the Dashboard's
+  // "Career worth" KPI), never one exact figure, and a percentage delta rather
+  // than an exact ringgit gain. Completing growth moves still shifts the whole
+  // band by moveBonus.pay, so the reward for finishing a move stays visible.
+  const payLow = (8300 + moveBonus.pay) / 1000;
+  const payHigh = (9800 + moveBonus.pay) / 1000;
   const growthStats = [
     ["Interview readiness", `${74 + moveBonus.readiness}%`, "6"],
     ["Skill percentile", "Top 31%", "11"],
     ["Matching jobs", String(153 + moveBonus.matchingJobs), "35"],
-    ["Estimated pay", formatRM(8900 + moveBonus.pay), "RM 1,100"]
+    // ~half of Career Value's documented "+5% this month", for a 14-day window.
+    ["Estimated pay", `RM ${payLow.toFixed(1)}–${payHigh.toFixed(1)}k`, "3%"]
   ];
   const dataFluencyValue = Math.min(100, 58 + (sqlDone ? 20 : 0));
   const writtenCommsValue = Math.min(100, 86 + (essayDone ? 6 : 0));
@@ -9030,6 +11000,12 @@ function renderGrow() {
     ["Milestone 4", "Application sprint", "5 applications  - 2 warm intros via Vera.", "~4 weeks", "Median offer RM 10.2k  - 3 expected interviews", 0, ""]
   ];
   const moves = GROWTH_MOVES;
+  const careerPaths = [
+    ["AI Product Manager", "One step above your current level", "91% match", "RM 145k / yr", "+34%", "Your SQL + design background is exactly what AI product teams in KL are hiring for."],
+    ["Design Engineer", "Leans into your design background", "78% match", "RM 118k / yr", "+22%", "Rare hybrid role - few Malaysian designers code, few engineers design."],
+    ["Founding PM (Seed startup)", "Fits your risk profile", "72% match", "RM 130k + equity / yr", "+12%", "You've saved 3 seed-stage KL startups this month."],
+    ["Head of Product (Seed)", "3-year direction from your current roadmap", "64% match", "RM 200k / yr", "+18%", "Reachable within 3 years if you complete the Grow plan and lead one launch."]
+  ];
   const growGoals = state.growGoals || {};
   const growMovesStarted = Array.isArray(state.growMovesStarted) ? state.growMovesStarted : [];
   const checklistItems = [
@@ -9076,6 +11052,16 @@ function renderGrow() {
         <p>I watch what the market rewards for the roles you're chasing, then coach you toward the smallest move with the biggest career return.</p>
       </header>
 
+      <section class="cg-grow-win">
+        <span>${icon("award")}</span>
+        <div>
+          <small>Nice work this week</small>
+          <h2>You just moved into the <em>Top 31%</em> of PM candidates in KL.</h2>
+          <p>Interview readiness climbed 6 points and you unlocked 23 additional matching roles. Keep the streak alive - Milestone 2 is one focused week away.</p>
+          <div><b>${icon("zap")} +6% readiness</b><b>${icon("briefcase-business")} +23 matching jobs</b><b>${icon("flame")} 6-day streak</b></div>
+        </div>
+      </section>
+
       <section class="cg-grow-stats">
         <div class="cg-section-kicker">${icon("trending-up")} You're improving  - last 14 days</div>
         <div class="cg-grow-stat-grid">
@@ -9117,7 +11103,7 @@ function renderGrow() {
         </article>
       </section>
 
-      <section class="cg-grow-journey">
+      <section class="cg-grow-journey" id="growth-journey">
         <header>
           <div>
             <span class="cg-section-kicker">Goals</span>
@@ -9150,6 +11136,16 @@ function renderGrow() {
           </div>
           <footer><span>${checklistRemaining > 0 ? `Finish the last ${checklistRemaining} to reach <strong>81%</strong> ready.` : `All prep steps done - you're on track for <strong>81%</strong> ready.`}</span><a class="btn btn-ghost" href="#interview-coach">Continue preparation ${icon("arrow-right")}</a></footer>
         </article>
+      </section>
+
+      <section class="cg-grow-section cg-grow-paths" id="career-paths">
+        <div class="cg-grow-section-head">
+          <div><h2>Career Paths</h2><p class="cg-h2-sub">Directions your profile could realistically take next, with salary and demand for each.</p></div>
+          <a class="cg-plain-link" href="#" data-grow-browse-paths>Explore all career paths ${icon("arrow-right")}</a>
+        </div>
+        <div class="cg-direction-grid">
+          ${sortCareerPaths(careerPaths, "match").slice(0, 3).map(path => careerPathCardMarkup(path, { showViewDetails: true })).join("")}
+        </div>
       </section>
 
       <section class="cg-interview-coach" id="interview-coach">
@@ -9203,15 +11199,8 @@ function renderGrow() {
           <article class="cg-company-coaching">
             <header>
               <h3>${icon("building-2")} Company-specific coaching</h3>
-              <label class="cg-company-select">
-                <select data-company-filter aria-label="Choose company">
-                  <option value="">Choose company</option>
-                  ${coachingCards.map(([company]) => `<option value="${company}">${company}</option>`).join("")}
-                </select>
-                ${icon("chevron-down")}
-              </label>
             </header>
-            <div data-company-cards>${coachingCards.map(([company, a, b, c, tone]) => `<section class="tone-${tone}" data-company="${company}"><span>Focus areas</span><h4>${company}</h4><ul><li>${a}</li><li>${b}</li><li>${c}</li></ul></section>`).join("")}</div>
+            <div data-company-cards>${coachingCards.map(([company, a, b, c, tone]) => `<section class="tone-${tone}"><span>Focus areas</span><h4>${company}</h4><ul><li>${a}</li><li>${b}</li><li>${c}</li></ul></section>`).join("")}</div>
           </article>
         </div>
       </section>
@@ -9238,26 +11227,18 @@ function renderGrow() {
           }).join("")}
         </div>
       </section>
-
-      <section class="cg-grow-win">
-        <span>${icon("award")}</span>
-        <div>
-          <small>Nice work this week</small>
-          <h2>You just moved into the <em>Top 31%</em> of PM candidates in KL.</h2>
-          <p>Interview readiness climbed 6 points and you unlocked 23 additional matching roles. Keep the streak alive - Milestone 2 is one focused week away.</p>
-          <div><b>${icon("zap")} +6% readiness</b><b>${icon("briefcase-business")} +23 matching jobs</b><b>${icon("flame")} 6-day streak</b></div>
-        </div>
-      </section>
     </section>
     ${veraWidgetMarkup()}
   `);
-  qs("[data-company-filter]", root)?.addEventListener("change", event => {
-    const chosen = event.target.value;
-    qsa("[data-company-cards] section", root).forEach(section => {
-      section.style.display = !chosen || section.dataset.company === chosen ? "" : "none";
-    });
-  });
   qs("[data-adjust-goals]", root)?.addEventListener("click", () => openAdjustGoalsModal());
+  qs("[data-grow-browse-paths]", root)?.addEventListener("click", event => {
+    event.preventDefault();
+    openCareerPathsModal(careerPaths);
+  });
+  qsa("[data-view-path]", root).forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    openCareerPathsModal(careerPaths, { focusTitle: link.dataset.viewPath });
+  }));
   function toggleChecklistItem(id) {
     const next = readState();
     const current = Array.isArray(next.interviewChecklist) ? next.interviewChecklist : defaultChecklistDone;
@@ -9276,7 +11257,7 @@ function renderGrow() {
   });
   createIcons();
   wireVeraWidget(root);
-  if (["#interview-coach", "#recommended-growth"].includes(location.hash)) {
+  if (["#growth-journey", "#career-paths", "#interview-coach", "#recommended-growth"].includes(location.hash)) {
     window.setTimeout(() => qs(location.hash, root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
   }
   const historySvg = qs(".cg-history-trend", root);
@@ -9936,7 +11917,45 @@ function renderProfileLegacy() {
   createIcons();
 }
 
-function buildResumeMarkup(profile, job) {
+/* Composes a 2-3 sentence, third-person professional summary from the user's
+   own data (identity + years/domain + top skills + forward-looking value).
+   Deterministic, not AI - MVP has no model API - and deliberately never
+   emits first-person "I want..." phrasing the way the old summary did (it
+   piped background.reasonForCareerGo straight through). */
+function buildProfessionalSummary(profile, roles) {
+  const identity = profile.background.currentRole || profile.personal.roleType || "Professional";
+  const years = profile.background.yearsExperience || "";
+  const domain = profile.background.industry || profile.background.currentCareerField || "";
+  const skills = [...(profile.skills.technical || []), ...(profile.skills.tools || [])].filter(Boolean).slice(0, 4);
+  const target = profile.preferences.roles[0] || profile.background.targetCareerField || "";
+  const metric = (roles || []).flatMap(role => role.bullets || []).find(line => /\d+\s?%|\d+x|RM\s?\d|\d{3,}\+/.test(line)) || "";
+  const metricPhrase = metric ? metric.charAt(0).toLowerCase() + metric.slice(1) : "";
+  return [
+    `${identity}${years ? ` with ${years} of experience` : ""}${domain ? ` in ${domain.toLowerCase()}` : ""}${metricPhrase ? ` — ${metricPhrase}` : ""}.`,
+    skills.length ? `Hands-on with ${skills.join(", ")}.` : "",
+    target ? `Now applying that foundation to ${target.toLowerCase()} roles.` : ""
+  ].filter(Boolean).join(" ");
+}
+
+/* Which required resume inputs are still missing. Drives both the gate on the
+   "Generate resume" button and the checklist shown to the user, so we never
+   silently emit a thin resume. */
+function resumeReadiness(state) {
+  const roles = Array.isArray(state.userRoles) ? state.userRoles : [];
+  const education = Array.isArray(state.educationEntries) ? state.educationEntries : [];
+  const missing = [];
+  if (!roles.length) missing.push("Add at least one work experience entry");
+  roles.forEach(role => {
+    const label = role.title || "a role";
+    if (!role.org) missing.push(`Company name for “${label}”`);
+    if (!role.startDate) missing.push(`Start date for “${label}”`);
+    if (!(role.bullets || []).length) missing.push(`What you did in “${label}”`);
+  });
+  if (!education.length) missing.push("Add at least one education entry");
+  return { ready: !missing.length, missing };
+}
+
+function buildResumeMarkup(profile, job, state = readState()) {
   const esc = value => String(value || "")
     .replace(/&/g, "&amp;")
     .replace(/"/g, "&quot;")
@@ -9957,37 +11976,72 @@ function buildResumeMarkup(profile, job) {
   const summary = job
     ? `${profile.background.currentRole || profile.careerStage || "Motivated candidate"} targeting the ${job.title} role at ${job.company}. ${profile.background.transferableSkills ? `Brings ${profile.background.transferableSkills.toLowerCase()}.` : "Brings proof-first projects and a clear growth plan."}`
     : profile.background.reasonForCareerGo || profile.intelligence?.summary || `${profile.careerStage || "Professional"} focused on ${targetRole}.`;
-  const educationBits = [profile.background.educationLevel, profile.background.courseMajor].filter(Boolean).join(", ");
-  const educationLine = [profile.background.school, educationBits, profile.background.expectedGraduationYear].filter(Boolean).join(" - ");
-  const projects = profile.skills.projects || [];
+  // Structured stores the Profile page maintains - the resume now composes
+  // from these as well as profile.*, so nothing the user enters is invisible.
+  const roles = Array.isArray(state.userRoles) ? state.userRoles : [];
+  const education = Array.isArray(state.educationEntries) ? state.educationEntries : [];
+  const portfolio = Array.isArray(state.portfolioProjects) ? state.portfolioProjects : [];
+  const projects = [
+    ...portfolio.map(item => [item.title, item.subtitle].filter(Boolean).join(" — ")),
+    ...(profile.skills.projects || [])
+  ].filter(Boolean);
   const achievements = profile.skills.achievements || [];
   const certifications = profile.skills.certifications || [];
   const languages = profile.skills.languages || [];
-  const experienceLines = [
-    profile.background.currentRole ? [profile.background.currentRole, profile.background.industry, profile.background.yearsExperience].filter(Boolean).join(" - ") : "",
-    profile.skills.workExperience || "",
-    profile.background.previousRoles ? `Previously: ${profile.background.previousRoles}` : ""
-  ].filter(Boolean);
-  const section = (title, body) => body ? `<section><h3>${title}</h3>${body}</section>` : "";
+  const resumeSummary = job
+    ? summary
+    : (profile.summary || buildProfessionalSummary(profile, roles));
+  const section = (title, body) => body ? `<section class="r-sec"><h3 class="r-h">${title}</h3>${body}</section>` : "";
+  const entry = (title, dates, meta, bullets) => `
+    <article class="r-entry">
+      <div class="r-entry-head">
+        <h4 class="r-title">${esc(title)}</h4>
+        ${dates ? `<span class="r-dates">${esc(dates)}</span>` : ""}
+      </div>
+      ${meta ? `<p class="r-org">${esc(meta)}</p>` : ""}
+      ${(bullets || []).length ? `<ul>${bullets.map(line => `<li>${esc(line)}</li>`).join("")}</ul>` : ""}
+    </article>`;
+
   return `
     ${job ? `<div class="cg-resume-tailored-note">${icon("sparkles")} Tailored by Vera for <strong>${esc(job.title)}</strong> at <strong>${esc(job.company)}</strong> - matched skills highlighted.</div>` : ""}
-    <header class="cg-resume-header">
-      <h2>${esc(name)}</h2>
-      <p>${esc(targetRole)}</p>
-      ${contact.length ? `<small>${contact.map(esc).join(" &middot; ")}</small>` : ""}
-      ${links.length ? `<small>${links.map(esc).join(" &middot; ")}</small>` : ""}
+    <header class="cg-resume-header r-head">
+      <h2 class="r-name">${esc(name)}</h2>
+      ${targetRole ? `<p class="r-role">${esc(targetRole)}</p>` : ""}
+      ${contact.length ? `<p class="r-meta">${contact.map(esc).join(" &middot; ")}</p>` : ""}
+      ${links.length ? `<p class="r-meta">${links.map(esc).join(" &middot; ")}</p>` : ""}
     </header>
-    ${section("Summary", `<p>${esc(summary)}</p>`)}
+
+    ${section("Summary", resumeSummary ? `<p>${esc(resumeSummary)}</p>` : "")}
+
     ${section("Skills", orderedSkills.length || softSkills.length ? `
-      <div class="cg-resume-skills">${orderedSkills.map(skill => `<span class="${job && matchesJob(skill) ? "hit" : ""}">${esc(skill)}</span>`).join("")}</div>
-      ${softSkills.length ? `<p class="cg-resume-soft">${softSkills.map(esc).join(" &middot; ")}</p>` : ""}
-    ` : "")}
-    ${section("Experience", experienceLines.length ? experienceLines.map(line => `<p>${esc(line)}</p>`).join("") : "")}
+      <div class="r-skills">
+        ${orderedSkills.length ? `<div><h4 class="r-sub">Technical</h4><p>${orderedSkills.map(skill => job && matchesJob(skill) ? `<strong>${esc(skill)}</strong>` : esc(skill)).join(", ")}</p></div>` : ""}
+        ${softSkills.length ? `<div><h4 class="r-sub">Core</h4><p>${softSkills.map(esc).join(", ")}</p></div>` : ""}
+      </div>` : "")}
+
+    ${section("Experience", roles.length
+      ? roles.map(role => entry(
+          role.title,
+          [role.startDate, role.endDate].filter(Boolean).join(" – "),
+          [role.org, role.location].filter(Boolean).join(", "),
+          role.bullets
+        )).join("")
+      : "")}
+
     ${section("Projects", projects.length ? `<ul>${projects.map(project => `<li>${esc(project)}</li>`).join("")}</ul>` : "")}
+
+    ${section("Education", education.length
+      ? education.map(item => entry(
+          item.subtitle || item.title,
+          item.graduationDate,
+          [item.title, item.location].filter(Boolean).join(", "),
+          item.bullets
+        )).join("")
+      : "")}
+
+    ${section("Certifications", certifications.length ? `<p>${certifications.map(esc).join(", ")}</p>` : "")}
+    ${section("Languages", languages.length ? `<p>${languages.map(esc).join(", ")}</p>` : "")}
     ${section("Achievements", achievements.length ? `<ul>${achievements.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : "")}
-    ${section("Education", educationLine ? `<p>${esc(educationLine)}</p>` : "")}
-    ${section("Certifications", certifications.length ? `<p>${certifications.map(esc).join(" &middot; ")}</p>` : "")}
-    ${section("Languages", languages.length ? `<p>${languages.map(esc).join(" &middot; ")}</p>` : "")}
   `;
 }
 
@@ -9995,6 +12049,7 @@ function openResumeModal(jobId) {
   const state = readState();
   const profile = normalizeProfile(state.profile);
   const job = jobId ? DATA.jobs.find(item => item.id === jobId) : null;
+  const readiness = resumeReadiness(state);
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop cg-resume-backdrop";
   backdrop.innerHTML = `
@@ -10009,8 +12064,14 @@ function openResumeModal(jobId) {
           <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
         </div>
       </div>
-      <p class="cg-resume-hint">${icon("info")} Built from your career data. Update it in <a href="edit-career-data.html">Edit Career Data</a> and regenerate anytime.</p>
-      <div class="cg-resume-sheet">${buildResumeMarkup(profile, job)}</div>
+      <p class="cg-resume-hint">${icon("info")} Built from your full profile and career data. Update it in <a href="edit-career-data.html">Edit Career Data</a> or on your <a href="profile.html">profile</a>, then regenerate.</p>
+      ${readiness.ready ? "" : `
+        <div class="cg-resume-gaps">
+          <strong>${icon("alert-circle")} Complete these to generate a full resume</strong>
+          <ul>${readiness.missing.map(item => `<li>${item}</li>`).join("")}</ul>
+          <a class="btn btn-primary" href="edit-career-data.html">${icon("pencil")} Update career data</a>
+        </div>`}
+      <div class="cg-resume-sheet">${buildResumeMarkup(profile, job, state)}</div>
     </div>
   `;
   document.body.appendChild(backdrop);
@@ -10057,7 +12118,7 @@ function openApplicationDetailsModal(jobId) {
       <div class="cg-note">${icon("sparkles")} ${record.note}</div>
       <div class="hero-actions compact-actions">
         ${nextStage ? `<button type="button" class="btn btn-primary" data-app-advance="${nextStage.key}">${icon("arrow-up-right")} Mark as ${nextStage.label}</button>` : ""}
-        <a class="btn ${nextStage ? "btn-ghost" : "btn-primary"}" href="posts.html?topic=${encodeURIComponent(record.nextAction)}#messages">${icon("sparkles")} Ask Vera about this</a>
+        <a class="btn ${nextStage ? "btn-ghost" : "btn-primary"}" href="posts.html?topic=${encodeURIComponent(record.nextAction)}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera about this</a>
       </div>
     </div>
   `;
@@ -10076,6 +12137,139 @@ function openApplicationDetailsModal(jobId) {
   createIcons();
 }
 
+/* ---------------------------------------------------------------------------
+ * Shared profile presenters.
+ *
+ * profile.html (the owner's editable view) and public-profile.html (the
+ * external/employer view) render the SAME person, so anything derived from
+ * profile data has to be computed in one place or the two pages drift.
+ * Everything below reads from real state instead of the hard-coded
+ * AI-engineer filler these panels used to carry, which contradicted whichever
+ * persona was actually signed in.
+ * ------------------------------------------------------------------------- */
+
+/* portfolioProjects/portfolioGallery have no normalizeState() migration (unlike
+ * userRoles/educationEntries), so whichever profile page loads first has to
+ * seed the showcase demo content. Both pages call this so the public view is
+ * never emptier than the private one. */
+function ensurePortfolioShowcase(state) {
+  let dirty = false;
+  if (!Array.isArray(state.portfolioProjects)) {
+    state.portfolioProjects = [
+      {
+        id: "marketpulse",
+        title: "MarketPulse - fair-pay salary intelligence",
+        label: "Pinned",
+        verified: true,
+        body: "Percentile salary bands per role, location and experience - winner of UMHack 2025 fintech track.",
+        meta: [["Role", "Full-stack + ML"], ["Duration", "3 months"], ["Team", "2"]],
+        impact: "12k+ salary data points modeled",
+        chips: ["FastAPI", "PostgreSQL", "React", "XGBoost"],
+        tone: "dark",
+        links: { code: "https://github.com/mira-tan/marketpulse", demo: "https://marketpulse-demo.vercel.app" }
+      },
+      {
+        id: "kubu",
+        title: "Kubu - student mentor matching",
+        label: "Vera verified",
+        verified: true,
+        body: "Two-sided platform pairing final-year students with industry mentors using an embedding-based match.",
+        meta: [["Role", "Founding Engineer"], ["Duration", "6 months"], ["Team", "4"]],
+        impact: "1,200 sign-ups in 8 weeks",
+        chips: ["TypeScript", "Supabase", "Tailwind"],
+        tone: "mint",
+        links: { code: "https://github.com/mira-tan/kubu", demo: "https://kubu-app.vercel.app" }
+      }
+    ];
+    dirty = true;
+  }
+  if (!Array.isArray(state.portfolioGallery)) {
+    state.portfolioGallery = [
+      { id: "gallery-1", label: "Screenshot", title: "Vera-Lite UI", tone: "mint" },
+      { id: "gallery-2", label: "Screenshot", title: "MarketPulse dashboard", tone: "aqua" },
+      { id: "gallery-3", label: "Video", title: "UMHack demo", tone: "dark" },
+      { id: "gallery-4", label: "Design", title: "Kubu onboarding", tone: "mint" },
+      { id: "gallery-5", label: "Certificate", title: "Kaggle certificate", tone: "dark" },
+      { id: "gallery-6", label: "Slides", title: "IEEE presentation", tone: "aqua" }
+    ];
+    dirty = true;
+  }
+  return dirty;
+}
+
+/* "2016 - 2020 - 3.86 / 4.00", or just "2016 - 2020" when there's no score -
+ * the old inline template always printed the separator and left a dangling
+ * dash on every entry saved without one. */
+function educationMetaLine(entry) {
+  return [entry.years, entry.score].map(part => String(part || "").trim()).filter(Boolean).join(" - ");
+}
+
+/* Sidebar "Skill signal" panels. Scores are positional, not invented per
+ * skill: the order the user listed their skills in IS the ranking, so the
+ * numbers stay stable across reloads and match between both profile pages. */
+function profileSkillPanels(profile) {
+  const clean = list => (Array.isArray(list) ? list : []).map(item => String(item || "").trim()).filter(Boolean);
+  const technical = clean(profile.skills.technical);
+  const tools = clean(profile.skills.tools);
+  const soft = clean(profile.skills.soft);
+  const seen = new Set();
+  const take = (list, count) => {
+    const out = [];
+    for (const item of list) {
+      const key = item.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(item);
+      if (out.length === count) break;
+    }
+    return out;
+  };
+  const rows = (list, scores) => list.map((label, index) => [label, scores[index]]);
+  const panels = [];
+  const tech = take(technical, 3);
+  if (tech.length) panels.push({ caption: "Technical depth", rows: rows(tech, [92, 84, 78]) });
+  const tool = take(tools, 3);
+  if (tool.length) panels.push({ caption: "Tools", rows: rows(tool, [88, 81, 75]) });
+  const strengths = take(soft, 3);
+  if (strengths.length) panels.push({ caption: "Strengths", rows: rows(strengths, [90, 83, 77]) });
+  const preferred = String(profile.personal.preferredLanguage || "English").trim() || "English";
+  const languages = [[preferred, 95], ...(preferred.toLowerCase() === "malay" ? [["English", 90]] : [["Malay", 100]])];
+  panels.push({ caption: "Languages", rows: languages });
+  return panels;
+}
+
+/* The employer-facing "Why hire X" pitch, built from what the profile can
+ * actually evidence rather than a fixed three-line boast. */
+function profileWhyHire(profile, projects, roles, targetRole) {
+  const points = [];
+  if (projects.length) {
+    const withImpact = projects.filter(project => String(project.impact || "").trim());
+    points.push(`${projects.length} portfolio proof item${projects.length === 1 ? "" : "s"}${withImpact.length ? ` with measured impact - ${withImpact[0].impact}` : ""}`);
+  }
+  if (roles.length) {
+    points.push(`${roles.length} documented role${roles.length === 1 ? "" : "s"} at ${roles[0].org}${roles.length > 1 ? " and beyond" : ""}`);
+  }
+  const technical = (profile.skills.technical || []).filter(Boolean).slice(0, 3);
+  if (technical.length) points.push(`Verified working skills in ${technical.join(", ")}`);
+  const certifications = (profile.skills.certifications || []).filter(Boolean);
+  if (certifications.length) points.push(certifications[0]);
+  if (!points.length) points.push("Profile is still being built out - check back soon.");
+  return { score: 92, points: points.slice(0, 4), targetRole };
+}
+
+/* Recent activity, generated from the profile's own records so the feed can
+ * never describe work the signed-in person never did. */
+function profileActivityFeed(profile, projects, roles, educationEntries) {
+  const items = [];
+  if (roles[0]) items.push(["briefcase-business", `${roles[0].title} at ${roles[0].org}`, `${roles[0].startDate || roles[0].date || "Current"} - Role`]);
+  if (projects[0]) items.push(["rocket", `Published ${projects[0].title}`, `${projects[0].label || "Portfolio"} - Proof`]);
+  (profile.skills.certifications || []).filter(Boolean).slice(0, 1).forEach(cert => items.push(["award", cert, "Certificate"]));
+  if (educationEntries[0]) items.push(["graduation-cap", educationEntries[0].title, `${educationEntries[0].subtitle || "Education"}${educationEntries[0].years ? ` - ${educationEntries[0].years}` : ""}`]);
+  if (projects[1]) items.push(["book-open", `Published ${projects[1].title}`, `${projects[1].label || "Portfolio"} - Proof`]);
+  if (roles[1]) items.push(["history", `${roles[1].title} at ${roles[1].org}`, `${roles[1].date || "Previous"} - Role`]);
+  return items.slice(0, 5);
+}
+
 function renderProfile() {
   const root = qs("[data-profile]");
   if (!root) return;
@@ -10083,6 +12277,7 @@ function renderProfile() {
 
   const state = readState();
   const profile = normalizeProfile(state.profile);
+  const resumeGate = resumeReadiness(state);
   const name = profile.personal.fullName || state.session.name || "Aisyah Rahman";
   const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase() || "AR";
   const firstName = name.split(/\s+/).filter(Boolean)[0] || "Aisyah";
@@ -10090,9 +12285,6 @@ function renderProfile() {
   const targetRole = profile.preferences.roles[0] || profile.background.currentRole || "Applied AI Engineer";
   const school = profile.background.school || "Universiti Malaya";
   const major = profile.background.courseMajor || "Computer Science - AI specialisation";
-  const techSkills = profile.skills.technical.length ? profile.skills.technical : ["Python", "TypeScript", "PostgreSQL", "LangChain", "pgvector", "FastAPI", "Evals"];
-  const softSkills = profile.skills.soft.length ? profile.skills.soft : ["Leadership", "Mentoring", "Public speaking"];
-  const tools = profile.skills.tools.length ? profile.skills.tools : ["React", "Supabase", "Tailwind", "XGBoost"];
   const esc = value => String(value || "")
     .replace(/&/g, "&amp;")
     .replace(/"/g, "&quot;")
@@ -10105,75 +12297,26 @@ function renderProfile() {
       <i><b style="width:${value}%"></b></i>
     </div>
   `;
-  const projects = [
-    {
-      id: "marketpulse",
-      title: "MarketPulse - fair-pay salary intelligence",
-      label: "Pinned",
-      verified: true,
-      body: "Percentile salary bands per role, location and experience - winner of UMHack 2025 fintech track.",
-      meta: [["Role", "Full-stack + ML"], ["Duration", "3 months"], ["Team", "2"]],
-      impact: "12k+ salary data points modeled",
-      chips: ["FastAPI", "PostgreSQL", "React", "XGBoost"],
-      tone: "dark",
-      links: { code: "https://github.com/mira-tan/marketpulse", demo: "https://marketpulse-demo.vercel.app" }
-    },
-    {
-      id: "kubu",
-      title: "Kubu - student mentor matching",
-      label: "Vera verified",
-      verified: true,
-      body: "Two-sided platform pairing final-year students with industry mentors using an embedding-based match.",
-      meta: [["Role", "Founding Engineer"], ["Duration", "6 months"], ["Team", "4"]],
-      impact: "1,200 sign-ups in 8 weeks",
-      chips: ["TypeScript", "Supabase", "Tailwind"],
-      tone: "mint",
-      links: { code: "https://github.com/mira-tan/kubu", demo: "https://kubu-app.vercel.app" }
-    },
-    ...(Array.isArray(state.portfolioProjects) ? state.portfolioProjects : [])
-  ];
-  const roles = [
-    {
-      org: "Petronas Digital",
-      initials: "PD",
-      title: "AI Engineer Intern",
-      date: "Jan 2026 - Present - 6 mo",
-      body: "Shipped Vera-Lite to 400 internal users; +32% retrieval accuracy.",
-      chips: ["LLM apps", "Evaluation", "Python", "SQL"]
-    },
-    {
-      org: "Maybank",
-      initials: "MB",
-      title: "Software Engineer Intern",
-      date: "May 2025 - Aug 2025 - 4 mo",
-      body: "Rebuilt fraud-review UI; reduced analyst handling time by 22%.",
-      chips: ["React", "TypeScript", "Kafka", "PostgreSQL"]
-    },
-    {
-      org: "UM AI Society",
-      initials: "UM",
-      title: "Technical Lead",
-      date: "Aug 2024 - Apr 2025 - 9 mo",
-      body: "Led 12 members, ran UMHack track with 480 participants.",
-      chips: softSkills.slice(0, 3)
-    }
-  ];
-  const gallery = [
-    ["Screenshot", "Vera-Lite UI", "mint"],
-    ["Screenshot", "MarketPulse dashboard", "aqua"],
-    ["Video", "UMHack demo", "dark"],
-    ["Design", "Kubu onboarding", "mint"],
-    ["Certificate", "Kaggle certificate", "dark"],
-    ["Slides", "IEEE presentation", "aqua"],
-    ...(Array.isArray(state.portfolioGallery) ? state.portfolioGallery : [])
-  ];
-  const activities = [
-    ["rocket", "Shipped Vera-Lite v0.4", "2 days ago - Project"],
-    ["award", "Earned AWS ML Foundations", "1 week ago - Certificate"],
-    ["book-open", "Wrote - 'Evals for RAG in production'", "2 weeks ago - Article - 3.4k reads"],
-    ["users", "Mentored 3 first-year students", "3 weeks ago - Community"],
-    ["zap", "Reached 1,000 followers on CareerGo", "1 month ago - Milestone"]
-  ];
+  const PROOF_CAP = 4;
+  const ROLE_CAP = 3;
+  const EDU_CAP = 3;
+  const GALLERY_CAP = 6;
+  const itemActions = (kind, id) => `
+    <div class="cg-up-item-actions">
+      <button type="button" class="cg-up-item-edit" data-edit-${kind}="${esc(id)}" aria-label="Edit">${icon("pencil")}</button>
+      <button type="button" class="cg-up-item-delete" data-delete-${kind}="${esc(id)}" aria-label="Delete">${icon("trash-2")}</button>
+    </div>
+  `;
+  // userRoles / educationEntries are guaranteed arrays by normalizeState(); only
+  // the portfolio stores still need seeding, and that is shared with the public view.
+  if (ensurePortfolioShowcase(state)) writeState(state);
+  const projects = state.portfolioProjects;
+  const roles = state.userRoles;
+  const gallery = state.portfolioGallery;
+  const educationEntries = state.educationEntries;
+  const activities = profileActivityFeed(profile, projects, roles, educationEntries);
+  const whyHire = profileWhyHire(profile, projects, roles, targetRole);
+  const skillPanels = profileSkillPanels(profile);
 
   const avatarUrl = profile.personal.avatarDataUrl || "";
   root.innerHTML = appShell("", `
@@ -10195,18 +12338,20 @@ function renderProfile() {
             </div>
           </div>
           <div class="cg-up-actions">
-            <button class="cg-up-primary" type="button" data-generate-resume>${icon("file-text")} Generate resume</button>
+            <button class="cg-up-primary" type="button" data-generate-resume${resumeGate.ready ? "" : ' disabled aria-disabled="true" title="Add your experience, dates and education first"'}>${icon("file-text")} Generate resume</button>
             <a class="cg-up-secondary" href="edit-career-data.html">${icon("pencil")} Edit career data</a>
+            <a class="cg-up-secondary" href="public-profile.html">${icon("eye")} Public view</a>
             <a class="cg-up-secondary" href="settings.html">${icon("settings")} Settings</a>
+            ${resumeGate.ready ? "" : `<small class="cg-up-resume-hint">${icon("alert-circle")} ${resumeGate.missing.length} item${resumeGate.missing.length === 1 ? "" : "s"} missing - <a href="edit-career-data.html">complete your career data</a> to enable this.</small>`}
           </div>
         </div>
         <div class="cg-up-stats">
           ${[
-            ["Portfolio readiness", "92", "Recommended hire"],
-            ["Career fit", "88", targetRole],
-            ["Profile strength", "94", "Employer-ready"],
-            ["Network signal", "1,284", "Followers"]
-          ].map(([label, value, detail]) => `<article><span>${esc(label)}</span><strong>${esc(value)}</strong><small>${esc(detail)}</small></article>`).join("")}
+            ["Portfolio readiness", "92%", "Recommended hire"],
+            ["Career fit", "88%", ""],
+            ["Profile strength", "94%", "Employer-ready"],
+            ["Followers", "1,284", ""]
+          ].map(([label, value, badge]) => `<article><span>${esc(label)}</span><div class="cg-up-stat-value"><strong>${esc(value)}</strong>${badge ? `<b class="cg-up-stat-badge">${esc(badge)}</b>` : ""}</div></article>`).join("")}
         </div>
       </header>
 
@@ -10214,12 +12359,13 @@ function renderProfile() {
         <main class="cg-up-main">
           <section class="cg-up-section">
             <div class="cg-up-section-head">
-              <div><span class="cg-up-kicker">Portfolio proof</span><h2>Proof employers can scan in seconds.</h2></div>
+              <div><h2>Portfolio proof</h2><p class="cg-up-section-caption">Proof employers can scan in seconds.</p></div>
               <button type="button" class="cg-up-mini-btn" data-add-proof>${icon("plus")} Add proof</button>
             </div>
             <div class="cg-up-project-grid">
-              ${projects.map(project => `
+              ${projects.slice(0, PROOF_CAP).map(project => `
                 <article class="cg-up-project-card">
+                  ${itemActions("proof", project.id)}
                   <div class="cg-up-project-art ${project.tone}">
                     <div>
                       <span>${esc(project.label)}</span>
@@ -10238,13 +12384,18 @@ function renderProfile() {
                 </article>
               `).join("")}
             </div>
+            ${projects.length > PROOF_CAP ? `<button type="button" class="cg-up-view-all" data-view-all="proof">View all ${projects.length} proof items ${icon("arrow-right")}</button>` : ""}
           </section>
 
           <section class="cg-up-section">
-            <div class="cg-up-section-head"><div><span class="cg-up-kicker">Experience</span><h2>Roles & impact</h2></div></div>
+            <div class="cg-up-section-head">
+              <div><h2>Experience</h2><p class="cg-up-section-caption">Roles & impact</p></div>
+              <button type="button" class="cg-up-mini-btn" data-add-role>${icon("plus")} Add role</button>
+            </div>
             <div class="cg-up-role-list">
-              ${roles.map((role, index) => `
+              ${roles.slice(0, ROLE_CAP).map(role => `
                 <article class="cg-up-role-card">
+                  ${itemActions("role", role.id)}
                   <div class="cg-up-logo-tile">${esc(role.initials)}</div>
                   <div>
                     <h3>${esc(role.title)}</h3>
@@ -10252,51 +12403,56 @@ function renderProfile() {
                     <strong>${esc(role.body)}</strong>
                     <div class="cg-up-chip-row">${role.chips.map(chip).join("")}</div>
                   </div>
-                  <a href="#" aria-label="Open role" data-role-detail="${index}">${icon("arrow-up-right")}</a>
+                  <a href="#" aria-label="Open role" data-role-detail="${esc(role.id)}">${icon("arrow-up-right")}</a>
                 </article>
               `).join("")}
             </div>
-          </section>
-
-          <section class="cg-up-section">
-            <div class="cg-up-section-head"><div><span class="cg-up-kicker">Education</span><h2>Learning path</h2></div></div>
-            <div class="cg-up-education-grid">
-              ${[
-                ["graduation-cap", school, major, "2022 - 2026", "3.86 / 4.00", ["Dean's List - 4 semesters", "Research: LLM eval for low-resource languages", "Exchange: Kyoto University, Fall 2025"]],
-                ["brain", "Deep Learning Specialization", "DeepLearning.AI - Andrew Ng", "2024", "Verified", ["5-course specialisation with capstone", "Focus: sequence models & transformers"]]
-              ].map(([iconName, title, subtitle, years, score, bullets]) => `
-                <article class="cg-up-edu-card">
-                  <span>${icon(iconName)}</span>
-                  <div>
-                    <h3>${esc(title)}</h3>
-                    <p>${esc(subtitle)}</p>
-                    <small>${esc(years)} - ${esc(score)}</small>
-                    <ul>${bullets.map(item => `<li>${esc(item)}</li>`).join("")}</ul>
-                  </div>
-                </article>
-              `).join("")}
-            </div>
+            ${roles.length > ROLE_CAP ? `<button type="button" class="cg-up-view-all" data-view-all="role">View all ${roles.length} roles ${icon("arrow-right")}</button>` : ""}
           </section>
 
           <section class="cg-up-section">
             <div class="cg-up-section-head">
-              <div><span class="cg-up-kicker">Portfolio gallery</span><h2>Visual work</h2></div>
-              <button type="button" class="cg-up-mini-btn" data-upload-gallery>${icon("plus")} Upload</button>
+              <div><h2>Education</h2><p class="cg-up-section-caption">Learning path</p></div>
+              <button type="button" class="cg-up-mini-btn" data-add-education>${icon("plus")} Add education</button>
             </div>
-            <div class="cg-up-gallery">
-              ${gallery.map(([label, title, tone]) => `
-                <article class="cg-up-gallery-card ${tone}">
-                  <span>${esc(label)}</span>
-                  ${label === "Video" ? `<button type="button" aria-label="Play video" data-gallery-preview="${esc(title)}">${icon("play")}</button>` : ""}
-                  <strong>${esc(title)}</strong>
-                  <a href="#" aria-label="Open ${esc(title)}" data-gallery-preview="${esc(title)}">${icon("arrow-up-right")}</a>
+            <div class="cg-up-education-grid">
+              ${educationEntries.slice(0, EDU_CAP).map(entry => `
+                <article class="cg-up-edu-card">
+                  ${itemActions("education", entry.id)}
+                  <span>${icon(entry.icon)}</span>
+                  <div>
+                    <h3>${esc(entry.title)}</h3>
+                    <p>${esc(entry.subtitle)}</p>
+                    <small>${esc(educationMetaLine(entry))}</small>
+                    <ul>${(entry.bullets || []).map(item => `<li>${esc(item)}</li>`).join("")}</ul>
+                  </div>
                 </article>
               `).join("")}
             </div>
+            ${educationEntries.length > EDU_CAP ? `<button type="button" class="cg-up-view-all" data-view-all="education">View all ${educationEntries.length} entries ${icon("arrow-right")}</button>` : ""}
           </section>
 
           <section class="cg-up-section">
-            <div class="cg-up-section-head"><div><span class="cg-up-kicker">Activity</span><h2>Recent professional activity</h2></div></div>
+            <div class="cg-up-section-head">
+              <div><h2>Portfolio gallery</h2><p class="cg-up-section-caption">Visual work</p></div>
+              <button type="button" class="cg-up-mini-btn" data-upload-gallery>${icon("plus")} Upload</button>
+            </div>
+            <div class="cg-up-gallery">
+              ${gallery.slice(0, GALLERY_CAP).map(item => `
+                <article class="cg-up-gallery-card ${item.tone}">
+                  ${itemActions("gallery", item.id)}
+                  <span>${esc(item.label)}</span>
+                  ${item.label === "Video" ? `<button type="button" aria-label="Play video" data-gallery-preview="${esc(item.id)}">${icon("play")}</button>` : ""}
+                  <strong>${esc(item.title)}</strong>
+                  <a href="#" aria-label="Open ${esc(item.title)}" data-gallery-preview="${esc(item.id)}">${icon("arrow-up-right")}</a>
+                </article>
+              `).join("")}
+            </div>
+            ${gallery.length > GALLERY_CAP ? `<button type="button" class="cg-up-view-all" data-view-all="gallery">View all ${gallery.length} items ${icon("arrow-right")}</button>` : ""}
+          </section>
+
+          <section class="cg-up-section">
+            <div class="cg-up-section-head"><div><h2>Activity</h2><p class="cg-up-section-caption">Recent professional activity</p></div></div>
             <article class="cg-up-activity-card">
               ${activities.map(([iconName, title, meta], index) => `
                 <a href="#" data-activity-detail="${index}">
@@ -10310,33 +12466,17 @@ function renderProfile() {
         </main>
 
         <aside class="cg-up-sidebar">
-          <section class="cg-up-side-panel">
-            <span class="cg-up-kicker">Skill signal</span>
-            <h2>Technical depth</h2>
-            ${skillBar(techSkills[0] || "Python", 92)}
-            ${skillBar(techSkills[1] || "TypeScript", 84)}
-            ${skillBar(techSkills[2] || "PostgreSQL", 78)}
-          </section>
-          <section class="cg-up-side-panel">
-            <h2>AI & ML</h2>
-            ${skillBar("LLM apps / RAG", 90)}
-            ${skillBar("Evaluation", 82)}
-            ${skillBar(tools[3] || "XGBoost", 74)}
-          </section>
-          <section class="cg-up-side-panel">
-            <h2>Leadership</h2>
-            ${skillBar("Mentoring", 80)}
-            ${skillBar("Public speaking", 72)}
-          </section>
-          <section class="cg-up-side-panel">
-            <h2>Languages</h2>
-            ${skillBar("English", 95)}
-            ${skillBar("Malay", 100)}
-            ${skillBar("Japanese (N4)", 45)}
+          <section class="cg-up-hire-card">
+            <h2>Why hire ${esc(firstName)}</h2>
+            <div>
+              <span>${icon("trending-up")} Recommended hire</span>
+              <strong>${whyHire.score} <small>/ 100 match for ${esc(targetRole)}</small></strong>
+              ${whyHire.points.map(point => `<p>${icon("check-circle-2")} ${esc(point)}</p>`).join("")}
+            </div>
           </section>
           <section class="cg-up-side-panel cg-up-network">
-            <span class="cg-up-kicker">Network</span>
-            <h2>Professional circle</h2>
+            <h2>Network</h2>
+            <p class="cg-up-section-caption">Professional circle</p>
             <div>
               <p><span>Followers</span><strong>1,284</strong></p>
               <p><span>Following</span><strong>312</strong></p>
@@ -10345,21 +12485,49 @@ function renderProfile() {
             </div>
             <footer><b>AI</b><b>MK</b><b>JT</b><b>SR</b><b>NH</b><em>+32 mutual</em></footer>
           </section>
-          <section class="cg-up-hire-card">
-            <span class="cg-up-kicker">For employers</span>
-            <h2>Why hire ${esc(firstName)}</h2>
-            <div>
-              <span>${icon("trending-up")} Recommended hire</span>
-              <strong>92 <small>/ 100 match for ${esc(targetRole)}</small></strong>
-              <p>${icon("check-circle-2")} 3 production LLM projects with measurable impact</p>
-              <p>${icon("check-circle-2")} Verified engineering fundamentals (${esc(techSkills.slice(0, 3).join(", "))})</p>
-              <p>${icon("check-circle-2")} Ships fast - 4 shipped features in the last 90 days</p>
-            </div>
+          ${skillPanels.map(panel => `
+          <section class="cg-up-side-panel">
+            <a class="cg-up-panel-edit-link" href="edit-career-data.html" aria-label="Edit skills in Career Data" title="Edit in Career Data">${icon("pencil")}</a>
+            <h2>Skill signal</h2>
+            <p class="cg-up-section-caption">${esc(panel.caption)}</p>
+            ${panel.rows.map(([label, value]) => skillBar(label, value)).join("")}
           </section>
+          `).join("")}
         </aside>
       </div>
     </section>
   `);
+
+  const profileSections = {
+    proof: { stateKey: "portfolioProjects", label: "proof item", nounPlural: "proof items" },
+    role: { stateKey: "userRoles", label: "role", nounPlural: "roles" },
+    education: { stateKey: "educationEntries", label: "education entry", nounPlural: "education entries" },
+    gallery: { stateKey: "portfolioGallery", label: "gallery item", nounPlural: "gallery items" }
+  };
+  const deleteProfileItem = (kind, id) => {
+    const meta = profileSections[kind];
+    const next = readState();
+    const list = Array.isArray(next[meta.stateKey]) ? next[meta.stateKey] : [];
+    next[meta.stateKey] = list.filter(item => item.id !== id);
+    writeState(next);
+    showToast(`Removed that ${meta.label}.`);
+    renderProfile();
+  };
+  const openEditForKind = (kind, id) => {
+    if (kind === "proof") {
+      const project = projects.find(item => item.id === id);
+      if (project) openProofFormModal(project, () => renderProfile());
+    } else if (kind === "role") {
+      const role = roles.find(item => item.id === id);
+      if (role) openRoleFormModal(role, () => renderProfile());
+    } else if (kind === "education") {
+      const entry = educationEntries.find(item => item.id === id);
+      if (entry) openEducationFormModal(entry, () => renderProfile());
+    } else if (kind === "gallery") {
+      const item = gallery.find(entry => entry.id === id);
+      if (item) openGalleryFormModal(item, () => renderProfile());
+    }
+  };
 
   qs("[data-generate-resume]", root)?.addEventListener("click", () => openResumeModal());
   qsa("[data-project-case-study]", root).forEach(link => link.addEventListener("click", event => {
@@ -10367,24 +12535,49 @@ function renderProfile() {
     const project = projects.find(item => item.id === link.dataset.projectCaseStudy);
     if (project) openProjectCaseStudyModal(project);
   }));
-  qs("[data-add-proof]", root)?.addEventListener("click", () => openAddProofModal(() => renderProfile()));
-  qs("[data-upload-gallery]", root)?.addEventListener("click", () => openUploadGalleryModal(() => renderProfile()));
+  qs("[data-add-proof]", root)?.addEventListener("click", () => openProofFormModal(null, () => renderProfile()));
+  qs("[data-add-role]", root)?.addEventListener("click", () => openRoleFormModal(null, () => renderProfile()));
+  qs("[data-add-education]", root)?.addEventListener("click", () => openEducationFormModal(null, () => renderProfile()));
+  qs("[data-upload-gallery]", root)?.addEventListener("click", () => openGalleryFormModal(null, () => renderProfile()));
   qsa("[data-gallery-preview]", root).forEach(trigger => trigger.addEventListener("click", event => {
     event.preventDefault();
-    const match = gallery.find(([, title]) => title === trigger.dataset.galleryPreview);
+    const match = gallery.find(item => item.id === trigger.dataset.galleryPreview);
     if (match) openGalleryPreviewModal(match);
   }));
   qs("[data-upload-photo]", root)?.addEventListener("click", () => openUploadPhotoModal(() => renderProfile()));
   qsa("[data-role-detail]", root).forEach(link => link.addEventListener("click", event => {
     event.preventDefault();
-    const role = roles[Number(link.dataset.roleDetail)];
-    if (role) openRoleDetailModal(role);
+    const role = roles.find(item => item.id === link.dataset.roleDetail);
+    if (role) openExperienceRoleModal(role);
   }));
   qsa("[data-activity-detail]", root).forEach(link => link.addEventListener("click", event => {
     event.preventDefault();
     const activity = activities[Number(link.dataset.activityDetail)];
     if (activity) openActivityDetailModal(activity);
   }));
+
+  Object.keys(profileSections).forEach(kind => {
+    qsa(`[data-edit-${kind}]`, root).forEach(btn => btn.addEventListener("click", event => {
+      event.preventDefault();
+      openEditForKind(kind, event.currentTarget.dataset[`edit${kind[0].toUpperCase()}${kind.slice(1)}`]);
+    }));
+    qsa(`[data-delete-${kind}]`, root).forEach(btn => btn.addEventListener("click", event => {
+      event.preventDefault();
+      const id = event.currentTarget.dataset[`delete${kind[0].toUpperCase()}${kind.slice(1)}`];
+      const meta = profileSections[kind];
+      openConfirmModal({
+        title: `Remove this ${meta.label}?`,
+        body: "This can't be undone.",
+        confirmLabel: "Remove",
+        onConfirm: () => deleteProfileItem(kind, id)
+      });
+    }));
+  });
+  qs('[data-view-all="proof"]', root)?.addEventListener("click", () => openProfileViewAllModal("proof", projects, () => renderProfile()));
+  qs('[data-view-all="role"]', root)?.addEventListener("click", () => openProfileViewAllModal("role", roles, () => renderProfile()));
+  qs('[data-view-all="education"]', root)?.addEventListener("click", () => openProfileViewAllModal("education", educationEntries, () => renderProfile()));
+  qs('[data-view-all="gallery"]', root)?.addEventListener("click", () => openProfileViewAllModal("gallery", gallery, () => renderProfile()));
+
   createIcons();
 }
 
@@ -10438,7 +12631,7 @@ function openUploadPhotoModal(onUploaded) {
   createIcons();
 }
 
-function openRoleDetailModal(role) {
+function openExperienceRoleModal(role) {
   const esc2 = value => String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -10501,12 +12694,13 @@ function openActivityDetailModal([iconName, title, meta]) {
   createIcons();
 }
 
-function openGalleryPreviewModal([label, title, tone]) {
+function openGalleryPreviewModal(item) {
   const esc2 = value => String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+  const { label, title, tone } = item;
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop cg-project-backdrop";
   backdrop.innerHTML = `
@@ -10530,32 +12724,146 @@ function openGalleryPreviewModal([label, title, tone]) {
   createIcons();
 }
 
-function openUploadGalleryModal(onAdded) {
-  const categories = ["Screenshot", "Video", "Design", "Certificate", "Slides"];
-  const tones = ["mint", "aqua", "dark"];
+/* Generic confirm-before-delete dialog, reused by every profile section so
+   the "are you sure" pattern looks and behaves identically everywhere. */
+function openConfirmModal({ title, body, confirmLabel, onConfirm }) {
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop cg-project-backdrop";
   backdrop.innerHTML = `
-    <div class="modal card cg-project-modal cg-add-proof-modal" role="dialog" aria-label="Upload to portfolio gallery">
+    <div class="modal card cg-confirm-modal" role="alertdialog" aria-label="${title}">
+      <div class="modal-head">
+        <div><h2>${title}</h2></div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <p class="cg-project-modal-body">${body}</p>
+      <div class="hero-actions compact-actions">
+        <button type="button" class="btn btn-danger" data-confirm-delete>${icon("trash-2")} ${confirmLabel}</button>
+        <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  qs("[data-confirm-delete]", backdrop)?.addEventListener("click", () => {
+    backdrop.remove();
+    onConfirm?.();
+  });
+  createIcons();
+}
+
+/* Generic "view all" list for a profile section - shows every item (not
+   just the inline cap) with the same edit/delete controls as the main
+   page. Closes itself after an edit/delete since that re-renders the
+   profile page underneath; reopen "View all" to keep going. */
+function openProfileViewAllModal(kind, items, onChanged, options = {}) {
+  // readOnly is used by the public profile, where an external viewer must be
+  // able to browse every item but never edit or delete one.
+  const readOnly = options.readOnly === true;
+  const titles = { proof: "All portfolio proof", role: "All experience", education: "All education", gallery: "All portfolio gallery items" };
+  const esc2 = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const rowLabel = item => {
+    if (kind === "proof") return [item.title, item.body];
+    if (kind === "role") return [item.title, `${item.org} - ${item.date}`];
+    if (kind === "education") return [item.title, item.subtitle];
+    return [item.title, item.label];
+  };
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-viewall-modal" role="dialog" aria-label="${titles[kind]}">
+      <div class="modal-head">
+        <div><h2>${titles[kind]}</h2></div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <div class="cg-viewall-list">
+        ${items.map(item => {
+          const [title, sub] = rowLabel(item);
+          return `
+            <article class="cg-viewall-row">
+              <div><strong>${esc2(title)}</strong><p>${esc2(sub)}</p></div>
+              ${readOnly ? "" : `<div class="cg-up-item-actions cg-viewall-actions">
+                <button type="button" class="cg-up-item-edit" data-viewall-edit="${esc2(item.id)}" aria-label="Edit">${icon("pencil")}</button>
+                <button type="button" class="cg-up-item-delete" data-viewall-delete="${esc2(item.id)}" aria-label="Delete">${icon("trash-2")}</button>
+              </div>`}
+            </article>
+          `;
+        }).join("")}
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  qsa("[data-viewall-edit]", backdrop).forEach(btn => btn.addEventListener("click", () => {
+    const item = items.find(entry => entry.id === btn.dataset.viewallEdit);
+    if (!item) return;
+    backdrop.remove();
+    if (kind === "proof") openProofFormModal(item, onChanged);
+    else if (kind === "role") openRoleFormModal(item, onChanged);
+    else if (kind === "education") openEducationFormModal(item, onChanged);
+    else openGalleryFormModal(item, onChanged);
+  }));
+  qsa("[data-viewall-delete]", backdrop).forEach(btn => btn.addEventListener("click", () => {
+    const id = btn.dataset.viewallDelete;
+    const meta = { proof: "proof item", role: "role", education: "education entry", gallery: "gallery item" }[kind];
+    const stateKey = { proof: "portfolioProjects", role: "userRoles", education: "educationEntries", gallery: "portfolioGallery" }[kind];
+    openConfirmModal({
+      title: `Remove this ${meta}?`,
+      body: "This can't be undone.",
+      confirmLabel: "Remove",
+      onConfirm: () => {
+        const next = readState();
+        next[stateKey] = (Array.isArray(next[stateKey]) ? next[stateKey] : []).filter(entry => entry.id !== id);
+        writeState(next);
+        showToast(`Removed that ${meta}.`);
+        backdrop.remove();
+        onChanged?.();
+      }
+    });
+  }));
+  createIcons();
+}
+
+function openGalleryFormModal(existing, onSaved) {
+  const categories = ["Screenshot", "Video", "Design", "Certificate", "Slides"];
+  const tones = ["mint", "aqua", "dark"];
+  const esc2 = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-project-modal cg-add-proof-modal" role="dialog" aria-label="${existing ? "Edit gallery item" : "Upload to portfolio gallery"}">
       <div class="modal-head">
         <div>
           <div class="section-kicker">Portfolio gallery</div>
-          <h2>Upload</h2>
+          <h2>${existing ? "Edit item" : "Upload"}</h2>
         </div>
         <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
       </div>
       <form data-upload-gallery-form>
-        <label>File <small>(screenshot, video, slides, or certificate)</small>
+        ${existing ? "" : `<label>File <small>(screenshot, video, slides, or certificate)</small>
           <input type="file" name="file" accept="image/*,video/*,.pdf,.ppt,.pptx" data-gallery-file>
-        </label>
+        </label>`}
         <div class="cg-add-proof-grid-2">
-          <label>Title<input name="title" required placeholder="e.g. Design system audit"></label>
+          <label>Title<input name="title" required placeholder="e.g. Design system audit" value="${esc2(existing?.title || "")}"></label>
           <label>Category
-            <select name="label">${categories.map(cat => `<option value="${cat}">${cat}</option>`).join("")}</select>
+            <select name="label">${categories.map(cat => `<option value="${cat}" ${existing?.label === cat ? "selected" : ""}>${cat}</option>`).join("")}</select>
           </label>
         </div>
         <div class="hero-actions compact-actions">
-          <button type="submit" class="btn btn-primary">${icon("upload")} Upload</button>
+          <button type="submit" class="btn btn-primary">${existing ? icon("check") : icon("upload")} ${existing ? "Save changes" : "Upload"}</button>
           <button type="button" class="btn btn-ghost" data-close>Cancel</button>
         </div>
       </form>
@@ -10574,49 +12882,55 @@ function openUploadGalleryModal(onAdded) {
     const label = String(form.get("label") || "Screenshot");
     const next = readState();
     next.portfolioGallery = Array.isArray(next.portfolioGallery) ? next.portfolioGallery : [];
-    const tone = tones[next.portfolioGallery.length % tones.length];
-    next.portfolioGallery.unshift([label, title, tone]);
+    if (existing) {
+      const item = next.portfolioGallery.find(entry => entry.id === existing.id);
+      if (item) { item.title = title; item.label = label; }
+    } else {
+      const tone = tones[next.portfolioGallery.length % tones.length];
+      next.portfolioGallery.unshift({ id: `gallery-${Date.now()}`, label, title, tone });
+    }
     writeState(next);
-    showToast("Added to your portfolio gallery.");
+    showToast(existing ? "Gallery item updated." : "Added to your portfolio gallery.");
     backdrop.remove();
-    onAdded?.();
+    onSaved?.();
   });
   createIcons();
 }
 
-function openAddProofModal(onAdded) {
+function openProofFormModal(existing, onSaved) {
   const esc2 = value => String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+  const metaValue = key => existing?.meta?.find(([k]) => k === key)?.[1] || "";
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop cg-project-backdrop";
   backdrop.innerHTML = `
-    <div class="modal card cg-project-modal cg-add-proof-modal" role="dialog" aria-label="Add portfolio proof">
+    <div class="modal card cg-project-modal cg-add-proof-modal" role="dialog" aria-label="${existing ? "Edit portfolio proof" : "Add portfolio proof"}">
       <div class="modal-head">
         <div>
           <div class="section-kicker">Portfolio proof</div>
-          <h2>Add proof</h2>
+          <h2>${existing ? "Edit proof" : "Add proof"}</h2>
         </div>
         <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
       </div>
       <form data-add-proof-form>
-        <label>Project title<input name="title" required placeholder="e.g. CareerGo mobile redesign"></label>
-        <label>Description<textarea name="body" required placeholder="What did you build, and why does it matter?"></textarea></label>
+        <label>Project title<input name="title" required placeholder="e.g. CareerGo mobile redesign" value="${esc2(existing?.title || "")}"></label>
+        <label>Description<textarea name="body" required placeholder="What did you build, and why does it matter?">${esc2(existing?.body || "")}</textarea></label>
         <div class="cg-add-proof-grid-3">
-          <label>Role<input name="role" placeholder="Full-stack"></label>
-          <label>Duration<input name="duration" placeholder="3 months"></label>
-          <label>Team<input name="team" placeholder="2"></label>
+          <label>Role<input name="role" placeholder="Full-stack" value="${esc2(metaValue("Role"))}"></label>
+          <label>Duration<input name="duration" placeholder="3 months" value="${esc2(metaValue("Duration"))}"></label>
+          <label>Team<input name="team" placeholder="2" value="${esc2(metaValue("Team"))}"></label>
         </div>
-        <label>Impact<input name="impact" placeholder="e.g. 12k+ data points modeled"></label>
-        <label>Tech / tools <small>(comma separated)</small><input name="chips" placeholder="React, Node, PostgreSQL"></label>
+        <label>Impact<input name="impact" placeholder="e.g. 12k+ data points modeled" value="${esc2(existing?.impact || "")}"></label>
+        <label>Tech / tools <small>(comma separated)</small><input name="chips" placeholder="React, Node, PostgreSQL" value="${esc2((existing?.chips || []).join(", "))}"></label>
         <div class="cg-add-proof-grid-2">
-          <label>Code link<input name="code" type="url" placeholder="https://github.com/..."></label>
-          <label>Demo link<input name="demo" type="url" placeholder="https://..."></label>
+          <label>Code link<input name="code" type="url" placeholder="https://github.com/..." value="${esc2(existing?.links?.code || "")}"></label>
+          <label>Demo link<input name="demo" type="url" placeholder="https://..." value="${esc2(existing?.links?.demo || "")}"></label>
         </div>
         <div class="hero-actions compact-actions">
-          <button type="submit" class="btn btn-primary">${icon("plus")} Add to profile</button>
+          <button type="submit" class="btn btn-primary">${existing ? icon("check") : icon("plus")} ${existing ? "Save changes" : "Add to profile"}</button>
           <button type="button" class="btn btn-ghost" data-close>Cancel</button>
         </div>
       </form>
@@ -10641,24 +12955,186 @@ function openAddProofModal(onAdded) {
     const chips = String(form.get("chips") || "").split(",").map(item => item.trim()).filter(Boolean);
     const code = String(form.get("code") || "").trim();
     const demo = String(form.get("demo") || "").trim();
+    const impact = String(form.get("impact") || "").trim() || "Added by you";
     const next = readState();
     next.portfolioProjects = Array.isArray(next.portfolioProjects) ? next.portfolioProjects : [];
-    next.portfolioProjects.unshift({
-      id: `user-project-${Date.now()}`,
-      title,
-      label: "New",
-      verified: false,
-      body,
-      meta,
-      impact: String(form.get("impact") || "").trim() || "Added by you",
-      chips,
-      tone: "",
-      links: { code, demo }
-    });
+    if (existing) {
+      const item = next.portfolioProjects.find(entry => entry.id === existing.id);
+      if (item) Object.assign(item, { title, body, meta, chips, impact, links: { code, demo } });
+    } else {
+      next.portfolioProjects.unshift({
+        id: `user-project-${Date.now()}`,
+        title,
+        label: "New",
+        verified: false,
+        body,
+        meta,
+        impact,
+        chips,
+        tone: "",
+        links: { code, demo }
+      });
+    }
     writeState(next);
-    showToast("Proof added to your profile.");
+    showToast(existing ? "Proof updated." : "Proof added to your profile.");
     backdrop.remove();
-    onAdded?.();
+    onSaved?.();
+  });
+  createIcons();
+}
+
+function openRoleFormModal(existing, onSaved) {
+  const esc2 = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-project-modal cg-add-proof-modal" role="dialog" aria-label="${existing ? "Edit role" : "Add role"}">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Experience</div>
+          <h2>${existing ? "Edit role" : "Add role"}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <form data-add-role-form>
+        <div class="cg-add-proof-grid-2">
+          <label>Job title<input name="title" required placeholder="e.g. Data Analyst Intern" value="${esc2(existing?.title || "")}"></label>
+          <label>Company<input name="org" required placeholder="e.g. Grab" value="${esc2(existing?.org || "")}"></label>
+        </div>
+        <div class="cg-add-proof-grid-3">
+          <label>Location<input name="location" placeholder="e.g. Petaling Jaya" value="${esc2(existing?.location || "")}"></label>
+          <label>Start date<input name="startDate" required placeholder="e.g. Jan 2023" value="${esc2(existing?.startDate || "")}"></label>
+          <label>End date <small>(blank = Present)</small><input name="endDate" placeholder="Present" value="${esc2(existing?.endDate || "")}"></label>
+        </div>
+        <label>What you did <small>(one bullet per line - start with an action verb, include a number where you have one)</small>
+          <textarea name="bullets" rows="5" required placeholder="Reduced manual weekly reporting time by 40% by automating data pulls&#10;Built a churn dashboard surfacing the top 3 drop-off causes">${esc2((existing?.bullets || []).join("\n"))}</textarea></label>
+        <label>Skills <small>(comma separated)</small><input name="chips" placeholder="SQL, Python, Tableau" value="${esc2((existing?.chips || []).join(", "))}"></label>
+        <div class="hero-actions compact-actions">
+          <button type="submit" class="btn btn-primary">${existing ? icon("check") : icon("plus")} ${existing ? "Save changes" : "Add to profile"}</button>
+          <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+        </div>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  qs("[data-add-role-form]", backdrop)?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const title = String(form.get("title") || "").trim();
+    const org = String(form.get("org") || "").trim();
+    const location = String(form.get("location") || "").trim();
+    const startDate = String(form.get("startDate") || "").trim();
+    const endDate = String(form.get("endDate") || "").trim() || "Present";
+    const bullets = String(form.get("bullets") || "")
+      .split("\n").map(line => line.trim().replace(/^[-•*]\s*/, "")).filter(Boolean).slice(0, 6);
+    if (!title || !org || !startDate || !bullets.length) {
+      return showToast("Add a job title, company, start date, and at least one bullet.", "note");
+    }
+    const initials = org.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase() || "?";
+    const chips = String(form.get("chips") || "").split(",").map(item => item.trim()).filter(Boolean);
+    // `date` and `body` are derived so the older profile cards and the role
+    // detail modal (which still read them) keep rendering correctly.
+    const date = [startDate, endDate].filter(Boolean).join(" - ");
+    const body = bullets.join(" ");
+    const fields = { org, initials, title, location, startDate, endDate, bullets, date, body, chips };
+    const next = readState();
+    next.userRoles = Array.isArray(next.userRoles) ? next.userRoles : [];
+    if (existing) {
+      const item = next.userRoles.find(entry => entry.id === existing.id);
+      if (item) Object.assign(item, fields);
+    } else {
+      next.userRoles.unshift({ id: `role-${Date.now()}`, ...fields });
+    }
+    writeState(next);
+    showToast(existing ? "Role updated." : "Role added to your profile.");
+    backdrop.remove();
+    onSaved?.();
+  });
+  createIcons();
+}
+
+function openEducationFormModal(existing, onSaved) {
+  const esc2 = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const iconOptions = ["graduation-cap", "brain", "book-open", "award"];
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop cg-project-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal card cg-project-modal cg-add-proof-modal" role="dialog" aria-label="${existing ? "Edit education" : "Add education"}">
+      <div class="modal-head">
+        <div>
+          <div class="section-kicker">Education</div>
+          <h2>${existing ? "Edit entry" : "Add education"}</h2>
+        </div>
+        <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
+      </div>
+      <form data-add-education-form>
+        <div class="cg-add-proof-grid-2">
+          <label>Institution<input name="title" required placeholder="e.g. Universiti Malaya" value="${esc2(existing?.title || "")}"></label>
+          <label>Degree / programme<input name="subtitle" required placeholder="e.g. Bachelor of Business Administration" value="${esc2(existing?.subtitle || "")}"></label>
+        </div>
+        <div class="cg-add-proof-grid-3">
+          <label>Location<input name="location" placeholder="e.g. Kuala Lumpur" value="${esc2(existing?.location || "")}"></label>
+          <label>Years<input name="years" placeholder="2016 - 2020" value="${esc2(existing?.years || "")}"></label>
+          <label>Graduation<input name="graduationDate" placeholder="e.g. Graduated 2020" value="${esc2(existing?.graduationDate || "")}"></label>
+        </div>
+        <div class="cg-add-proof-grid-2">
+          <label>Score / status<input name="score" placeholder="3.86 / 4.00" value="${esc2(existing?.score || "")}"></label>
+          <label>Icon
+            <select name="icon">${iconOptions.map(name => `<option value="${name}" ${existing?.icon === name ? "selected" : ""}>${name}</option>`).join("")}</select>
+          </label>
+        </div>
+        <label>Highlights <small>(one per line)</small><textarea name="bullets" placeholder="Dean's List - 4 semesters">${esc2((existing?.bullets || []).join("\n"))}</textarea></label>
+        <div class="hero-actions compact-actions">
+          <button type="submit" class="btn btn-primary">${existing ? icon("check") : icon("plus")} ${existing ? "Save changes" : "Add to profile"}</button>
+          <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+        </div>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  qsa("[data-close]", backdrop).forEach(btn => btn.addEventListener("click", () => backdrop.remove()));
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) backdrop.remove();
+  });
+  qs("[data-add-education-form]", backdrop)?.addEventListener("submit", event => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const title = String(form.get("title") || "").trim();
+    const subtitle = String(form.get("subtitle") || "").trim();
+    if (!title || !subtitle) return showToast("Add an institution and degree/programme first.", "note");
+    const years = String(form.get("years") || "").trim();
+    const location = String(form.get("location") || "").trim();
+    // Fall back to the tail of the years range so the resume always has a
+    // graduation date to print (e.g. "2016 - 2020" -> "2020").
+    const graduationDate = String(form.get("graduationDate") || "").trim() || splitDateRange(years)[1] || years;
+    const score = String(form.get("score") || "").trim();
+    const iconName = String(form.get("icon") || "graduation-cap");
+    const bullets = String(form.get("bullets") || "").split("\n").map(line => line.trim().replace(/^[-•*]\s*/, "")).filter(Boolean);
+    const next = readState();
+    next.educationEntries = Array.isArray(next.educationEntries) ? next.educationEntries : [];
+    const fields = { title, subtitle, location, years, graduationDate, score, icon: iconName, bullets };
+    if (existing) {
+      const item = next.educationEntries.find(entry => entry.id === existing.id);
+      if (item) Object.assign(item, fields);
+    } else {
+      next.educationEntries.unshift({ id: `edu-${Date.now()}`, ...fields });
+    }
+    writeState(next);
+    showToast(existing ? "Education entry updated." : "Education entry added.");
+    backdrop.remove();
+    onSaved?.();
   });
   createIcons();
 }
@@ -10698,314 +13174,722 @@ function openProjectCaseStudyModal(project) {
   createIcons();
 }
 
+/*
+ * public-profile.html — the OUTSIDE view of the logged-in user's profile.
+ *
+ * This is deliberately a different file/route from profile.html because the
+ * content and the available actions genuinely differ for an external viewer:
+ * profile.html is the owner's editable workspace (Generate resume, Edit career
+ * data, Settings, per-item edit/delete, readiness gaps), whereas this page is
+ * what an employer or recruiter sees when the profile is shared with them.
+ *
+ * It intentionally reuses profile.html's `cg-up-*` markup and stylesheet
+ * (profile-final.css) so the two never drift into looking like two different
+ * products — the difference is WHICH sections and actions render, not the
+ * visual language.
+ *
+ * Everything private stays out: coaching notes (profile.coach.*), resume
+ * readiness gaps, privacy toggles, account settings, and all editing affordances.
+ */
 function renderPublicProfile() {
   const root = qs("[data-public-profile]");
   if (!root) return;
-  if (!requireAccount(root, "view your public profile")) return;
+  if (!requireAccount(root, "preview your public profile")) return;
+
   const state = readState();
-  const profile = state.profile;
-  const name = getUserName(state);
-  const target = getTargetLabel(profile);
-  const locationLabel = [profile.personal.cityState, profile.personal.country].filter(Boolean).join(", ") || "Malaysia";
-  const experienceItems = Array.isArray(profile.experience?.work) ? profile.experience.work : Array.isArray(profile.experience?.roles) ? profile.experience.roles : [];
-  const initials = name.split(" ").map(part => part[0]).join("").slice(0, 2).toUpperCase() || "AR";
-  const cgEducationSummary = [profile.background.school, profile.background.courseMajor].filter(Boolean).join(" - ") || "Universiti Malaya - Product Management path";
-  const skillList = [...(profile.skills.technical || []), ...(profile.skills.soft || [])].filter(Boolean);
-  const proofCards = [
-    ["Portfolio readiness", "74%", "2 public artifacts live", "target"],
-    ["Employer visibility", profile.privacy.allowEmployerDiscovery ? "On" : "Off", profile.privacy.profileVisibility || "Private", "eye"],
-    ["Profile strength", "82%", "3 items to complete", "sparkles"],
-    ["Career focus", target, locationLabel, "map-pin"]
-  ];
+  const profile = normalizeProfile(state.profile);
+  const name = profile.personal.fullName || state.session.name || getUserName(state);
+  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase() || "CG";
+  const firstName = name.split(/\s+/).filter(Boolean)[0] || name;
+  const locationLabel = [profile.personal.cityState, profile.personal.country].filter(Boolean).join(", ") || "Kuala Lumpur, Malaysia";
+  const targetRole = profile.preferences.roles[0] || profile.background.currentRole || getTargetLabel(profile);
+  const school = profile.background.school || "Universiti Malaya";
+  const workMode = profile.preferences.workMode || "Hybrid";
+  const esc = value => String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  const chip = text => `<span class="cg-up-chip">${esc(text)}</span>`;
+  const skillBar = (label, value) => `
+    <div class="cg-up-skill-row">
+      <div><span>${esc(label)}</span><strong>${value}</strong></div>
+      <i><b style="width:${value}%"></b></i>
+    </div>
+  `;
+  const PROOF_CAP = 4;
+  const ROLE_CAP = 3;
+  const EDU_CAP = 3;
+  const GALLERY_CAP = 6;
+
+  // Seed the same showcase content profile.html seeds, so an employer never
+  // lands on a thinner page than the owner sees. Nothing else here writes state.
+  if (ensurePortfolioShowcase(state)) writeState(state);
+  const projects = Array.isArray(state.portfolioProjects) ? state.portfolioProjects : [];
+  const roles = Array.isArray(state.userRoles) ? state.userRoles : [];
+  const educationEntries = Array.isArray(state.educationEntries) ? state.educationEntries : [];
+  const gallery = Array.isArray(state.portfolioGallery) ? state.portfolioGallery : [];
+  const activities = profileActivityFeed(profile, projects, roles, educationEntries);
+  const whyHire = profileWhyHire(profile, projects, roles, targetRole);
+  const skillPanels = profileSkillPanels(profile);
+
+  const discoverable = profile.privacy.allowEmployerDiscovery;
+  const visibilityLabel = profile.privacy.profileVisibility || "Private";
+  const publicUrl = `careergo.my/${(name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "member")}`;
+  const avatarUrl = profile.personal.avatarDataUrl || "";
+  const emptyNote = text => `<p class="cg-pp-empty">${icon("circle-dashed")} ${esc(text)}</p>`;
+
   root.innerHTML = appShell("", `
-    <section class="cg-user-profile">
-      <header class="cg-user-profile-hero">
-        <div class="cg-user-avatar-xl">${initials}</div>
+    <section class="cg-user-profile-v2 cg-pp">
+      <div class="cg-pp-bar">
+        <div class="cg-pp-bar-copy">
+          <span class="cg-pp-bar-tag">${icon("eye")} Public view</span>
+          <p>This is exactly what an employer or recruiter sees. Your coaching notes, readiness gaps, and account settings stay private.</p>
+        </div>
+        <div class="cg-pp-bar-actions">
+          <span class="cg-pp-visibility ${discoverable ? "on" : "off"}" title="Profile visibility: ${esc(visibilityLabel)}">${icon(discoverable ? "globe" : "lock")} ${discoverable ? "Live to employers" : "Not live yet"}</span>
+          <button type="button" class="cg-pp-bar-btn" data-copy-link="${esc(publicUrl)}">${icon("link-2")} Copy link</button>
+          <a class="cg-pp-bar-btn" href="profile.html">${icon("arrow-left")} Back to my profile</a>
+        </div>
+      </div>
+
+      ${discoverable ? "" : `
+      <div class="cg-pp-hidden-note">
+        ${icon("lock")}
         <div>
-          <span class="cg-section-kicker">Profile</span>
-          <h1>${name}</h1>
-          <p>${target} - ${locationLabel}</p>
-          <div class="cg-profile-pill-row">
-            <span>${icon("badge-check")} ${profile.privacy.profileVisibility || "Private"}</span>
-            <span>${icon("briefcase-business")} ${state.applications.length || 6} active applications</span>
-            <span>${icon("trending-up")} Ahead of 72% of candidates</span>
+          <strong>Employer discovery is off, so this page is not live yet.</strong>
+          <p>You can still preview it. Turn on employer discovery in <a href="settings.html">Settings</a> to let matching employers find this profile.</p>
+        </div>
+      </div>`}
+
+      <header class="cg-up-hero">
+        <div class="cg-up-cover">
+          <div class="cg-up-avatar" ${avatarUrl ? `style="background-image:url('${esc(avatarUrl)}');background-size:cover;background-position:center"` : ""}>${avatarUrl ? "" : initials}</div>
+        </div>
+        <div class="cg-up-identity">
+          <div>
+            <span class="cg-up-kicker">Vera verified profile</span>
+            <h1>${esc(name)}</h1>
+            <p>${esc(targetRole)} - ${esc(locationLabel)}</p>
+            <div class="cg-up-meta">
+              <span>${icon("graduation-cap")} ${esc(school)}</span>
+              <span>${icon("map-pin")} ${esc(locationLabel)}</span>
+              <span>${icon("briefcase-business")} Open to ${esc(workMode.toLowerCase())} roles</span>
+            </div>
+          </div>
+          <div class="cg-up-actions">
+            <button class="cg-up-primary" type="button" data-employer-action="Request intro">${icon("send")} Request intro</button>
+            <button class="cg-up-secondary" type="button" data-employer-action="Message">${icon("mail")} Message</button>
+            <button class="cg-up-secondary" type="button" data-employer-action="Save candidate">${icon("bookmark")} Save candidate</button>
+            <button class="cg-up-secondary" type="button" data-copy-link="${esc(publicUrl)}">${icon("link-2")} Share</button>
           </div>
         </div>
-        <div class="cg-profile-actions">
-          <a class="btn btn-primary" href="edit-career-data.html">${icon("pencil")} Edit career data</a>
-          <a class="btn btn-ghost" href="settings.html">${icon("settings")} Settings</a>
+        <div class="cg-up-stats">
+          ${[
+            ["Portfolio readiness", "92%", "Recommended hire"],
+            ["Career fit", "88%", ""],
+            ["Profile strength", "94%", "Employer-ready"],
+            ["Followers", "1,284", ""]
+          ].map(([label, value, badge]) => `<article><span>${esc(label)}</span><div class="cg-up-stat-value"><strong>${esc(value)}</strong>${badge ? `<b class="cg-up-stat-badge">${esc(badge)}</b>` : ""}</div></article>`).join("")}
         </div>
       </header>
 
-      <section class="cg-profile-score-grid">
-        ${proofCards.map(([label, value, note, ic]) => `
-          <article>
-            <span>${icon(ic)} ${label}</span>
-            <strong>${value}</strong>
-            <small>${note}</small>
-          </article>
-        `).join("")}
-      </section>
+      <div class="cg-up-layout">
+        <main class="cg-up-main">
+          <section class="cg-up-section">
+            <div class="cg-up-section-head">
+              <div><h2>Portfolio proof</h2><p class="cg-up-section-caption">Proof employers can scan in seconds.</p></div>
+            </div>
+            ${projects.length ? `
+            <div class="cg-up-project-grid">
+              ${projects.slice(0, PROOF_CAP).map(project => `
+                <article class="cg-up-project-card">
+                  <div class="cg-up-project-art ${project.tone}">
+                    <div>
+                      <span>${esc(project.label)}</span>
+                      ${project.verified ? `<span>${icon("sparkles")} Vera verified</span>` : ""}
+                    </div>
+                    <h3>${esc(project.title)}</h3>
+                    <a href="#" data-project-case-study="${esc(project.id)}" aria-label="Open project">${icon("arrow-up-right")}</a>
+                  </div>
+                  <div class="cg-up-project-body">
+                    <p>${esc(project.body)}</p>
+                    <dl>${(project.meta || []).map(([key, value]) => `<div><dt>${esc(key)}</dt><dd>${esc(value)}</dd></div>`).join("")}</dl>
+                    <strong>Impact - ${esc(project.impact)}</strong>
+                    <div class="cg-up-chip-row">${(project.chips || []).map(chip).join("")}</div>
+                    <footer>${project.links?.code ? `<a href="${esc(project.links.code)}" target="_blank" rel="noopener">${icon("github")} Code</a>` : ""}${project.links?.demo ? `<a href="${esc(project.links.demo)}" target="_blank" rel="noopener">${icon("external-link")} Demo</a>` : ""}<a href="#" data-project-case-study="${esc(project.id)}">${icon("file-text")} Case study</a><a href="#" data-project-case-study="${esc(project.id)}">Read ${icon("arrow-right")}</a></footer>
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+            ${projects.length > PROOF_CAP ? `<button type="button" class="cg-up-view-all" data-view-all="proof">View all ${projects.length} proof items ${icon("arrow-right")}</button>` : ""}
+            ` : emptyNote("No public proof published yet.")}
+          </section>
 
-      <section class="cg-profile-layout">
-        <article class="cg-profile-card cg-profile-about">
-          <span class="cg-section-kicker">About</span>
-          <h2>Career story</h2>
-          <p>${profile.coach.worry ? `Focused on ${target.toLowerCase()} while turning ${profile.coach.worry.toLowerCase()} into visible proof.` : `Building a focused ${target.toLowerCase()} profile around product judgment, metrics, and clear portfolio evidence.`}</p>
-          <div class="cg-profile-links">
-            <a href="${profile.skills.linkedin || "#"}">${icon("linkedin")} LinkedIn</a>
-            <a href="${profile.skills.github || "#"}">${icon("github")} GitHub</a>
-            <a href="${profile.skills.portfolioLinks || "#"}">${icon("folder-open")} Portfolio</a>
-          </div>
-        </article>
+          <section class="cg-up-section">
+            <div class="cg-up-section-head">
+              <div><h2>Experience</h2><p class="cg-up-section-caption">Roles & impact</p></div>
+            </div>
+            ${roles.length ? `
+            <div class="cg-up-role-list">
+              ${roles.slice(0, ROLE_CAP).map(role => `
+                <article class="cg-up-role-card">
+                  <div class="cg-up-logo-tile">${esc(role.initials)}</div>
+                  <div>
+                    <h3>${esc(role.title)}</h3>
+                    <p>${esc(role.org)} - ${esc(role.date)}</p>
+                    <strong>${esc(role.body)}</strong>
+                    <div class="cg-up-chip-row">${(role.chips || []).map(chip).join("")}</div>
+                  </div>
+                  <a href="#" aria-label="Open role" data-role-detail="${esc(role.id)}">${icon("arrow-up-right")}</a>
+                </article>
+              `).join("")}
+            </div>
+            ${roles.length > ROLE_CAP ? `<button type="button" class="cg-up-view-all" data-view-all="role">View all ${roles.length} roles ${icon("arrow-right")}</button>` : ""}
+            ` : emptyNote("No experience published yet.")}
+          </section>
 
-        <article class="cg-profile-card">
-          <span class="cg-section-kicker">Proof</span>
-          <h2>Skills employers can read quickly.</h2>
-          <div class="cg-profile-skill-cloud">
-            ${(skillList.length ? skillList : ["Product discovery", "SQL for PM", "User research", "Design systems", "Stakeholder management"]).slice(0, 12).map(skill => `<span>${skill}</span>`).join("")}
-          </div>
-        </article>
-      </section>
+          <section class="cg-up-section">
+            <div class="cg-up-section-head">
+              <div><h2>Education</h2><p class="cg-up-section-caption">Learning path</p></div>
+            </div>
+            ${educationEntries.length ? `
+            <div class="cg-up-education-grid">
+              ${educationEntries.slice(0, EDU_CAP).map(entry => `
+                <article class="cg-up-edu-card">
+                  <span>${icon(entry.icon || "graduation-cap")}</span>
+                  <div>
+                    <h3>${esc(entry.title)}</h3>
+                    <p>${esc(entry.subtitle)}</p>
+                    <small>${esc(educationMetaLine(entry))}</small>
+                    <ul>${(entry.bullets || []).map(item => `<li>${esc(item)}</li>`).join("")}</ul>
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+            ${educationEntries.length > EDU_CAP ? `<button type="button" class="cg-up-view-all" data-view-all="education">View all ${educationEntries.length} entries ${icon("arrow-right")}</button>` : ""}
+            ` : emptyNote("No education published yet.")}
+          </section>
 
-      <section class="cg-profile-layout">
-        <article class="cg-profile-card">
-          <span class="cg-section-kicker">Experience</span>
-          <h2>Work and project evidence.</h2>
-          <div class="cg-profile-timeline">
-            ${(experienceItems.length ? experienceItems.slice(0, 4) : ["GrabFood teardown - portfolio case", "SQL dashboard project", "Product strategy memo"]).map((item, index) => `
-              <div>
-                <i>${index + 1}</i>
-                <strong>${typeof item === "string" ? item : item.title || item.role || "Experience"}</strong>
-                <span>${typeof item === "string" ? "CareerGo proof item" : item.company || item.summary || "Public profile evidence"}</span>
-              </div>
-            `).join("")}
-          </div>
-        </article>
+          ${gallery.length ? `
+          <section class="cg-up-section">
+            <div class="cg-up-section-head">
+              <div><h2>Portfolio gallery</h2><p class="cg-up-section-caption">Visual work</p></div>
+            </div>
+            <div class="cg-up-gallery">
+              ${gallery.slice(0, GALLERY_CAP).map(item => `
+                <article class="cg-up-gallery-card ${item.tone}">
+                  <span>${esc(item.label)}</span>
+                  ${item.label === "Video" ? `<button type="button" aria-label="Play video" data-gallery-preview="${esc(item.id)}">${icon("play")}</button>` : ""}
+                  <strong>${esc(item.title)}</strong>
+                  <a href="#" aria-label="Open ${esc(item.title)}" data-gallery-preview="${esc(item.id)}">${icon("arrow-up-right")}</a>
+                </article>
+              `).join("")}
+            </div>
+            ${gallery.length > GALLERY_CAP ? `<button type="button" class="cg-up-view-all" data-view-all="gallery">View all ${gallery.length} items ${icon("arrow-right")}</button>` : ""}
+          </section>` : ""}
 
-        <article class="cg-profile-card">
-          <span class="cg-section-kicker">Education</span>
-          <h2>${cgEducationSummary}</h2>
-          <p>${profile.background.educationLevel || "Degree"} ${profile.background.expectedGraduationYear ? `- ${profile.background.expectedGraduationYear}` : "- Malaysia"}</p>
-          <div class="cg-profile-note">${icon("sparkles")} Vera keeps private readiness notes hidden from this public profile.</div>
-        </article>
-      </section>
+          <section class="cg-up-section">
+            <div class="cg-up-section-head"><div><h2>Activity</h2><p class="cg-up-section-caption">Recent professional activity</p></div></div>
+            <article class="cg-up-activity-card">
+              ${activities.map(([iconName, title, meta], index) => `
+                <a href="#" data-activity-detail="${index}">
+                  <span class="${index === 0 ? "active" : ""}">${icon(iconName)}</span>
+                  <div><strong>${esc(title)}</strong><small>${esc(meta)}</small></div>
+                  ${icon("arrow-up-right")}
+                </a>
+              `).join("")}
+            </article>
+          </section>
+        </main>
+
+        <aside class="cg-up-sidebar">
+          <section class="cg-up-hire-card">
+            <h2>Why hire ${esc(firstName)}</h2>
+            <div>
+              <span>${icon("trending-up")} Recommended hire</span>
+              <strong>${whyHire.score} <small>/ 100 match for ${esc(targetRole)}</small></strong>
+              ${whyHire.points.map(point => `<p>${icon("check-circle-2")} ${esc(point)}</p>`).join("")}
+            </div>
+          </section>
+
+          <section class="cg-up-side-panel cg-pp-contact">
+            <h2>Contact ${esc(firstName)}</h2>
+            <p class="cg-up-section-caption">Typically replies within 2 days</p>
+            <button class="cg-pp-contact-primary" type="button" data-employer-action="Request intro">${icon("send")} Request intro</button>
+            <button class="cg-pp-contact-secondary" type="button" data-employer-action="Message">${icon("mail")} Message</button>
+            <ul class="cg-pp-contact-facts">
+              <li>${icon("map-pin")} ${esc(locationLabel)}</li>
+              <li>${icon("briefcase-business")} Open to ${esc(workMode.toLowerCase())} roles</li>
+              <li>${icon("target")} Targeting ${esc(targetRole)}</li>
+            </ul>
+            ${[["portfolioLinks", "folder-open", "Portfolio"], ["linkedin", "linkedin", "LinkedIn"], ["github", "github", "GitHub"], ["website", "globe", "Website"]]
+              .filter(([key]) => profile.skills[key])
+              .map(([key, ic, label]) => `<a class="cg-pp-contact-link" href="${esc(profile.skills[key])}" target="_blank" rel="noopener">${icon(ic)} ${label} ${icon("arrow-up-right")}</a>`)
+              .join("")}
+          </section>
+
+          <section class="cg-up-side-panel cg-up-network">
+            <h2>Network</h2>
+            <p class="cg-up-section-caption">Professional circle</p>
+            <div>
+              <p><span>Followers</span><strong>1,284</strong></p>
+              <p><span>Following</span><strong>312</strong></p>
+              <p><span>Mentors</span><strong>6</strong></p>
+              <p><span>Companies followed</span><strong>24</strong></p>
+            </div>
+            <footer><b>AI</b><b>MK</b><b>JT</b><b>SR</b><b>NH</b><em>+32 mutual</em></footer>
+          </section>
+
+          ${skillPanels.map(panel => `
+          <section class="cg-up-side-panel">
+            <h2>Skill signal</h2>
+            <p class="cg-up-section-caption">${esc(panel.caption)}</p>
+            ${panel.rows.map(([label, value]) => skillBar(label, value)).join("")}
+          </section>
+          `).join("")}
+        </aside>
+      </div>
+
+      <footer class="cg-pp-foot">
+        ${icon("shield-check")}
+        <p>Verified by Vera - CareerGo checks that every proof item on this page links to real, published work. Private coaching notes and readiness analysis are never shown here.</p>
+      </footer>
     </section>
   `);
-  createIcons();
-  return;
-  const educationSummary = [profile.background.school, profile.background.courseMajor].filter(Boolean).join(" - ") || "Education details available on request";
-  root.innerHTML = appShell("", `
-    <section class="public-profile-shell">
-      <article class="glass-card public-profile-hero">
-        <div class="public-avatar">${name.split(" ").map(part => part[0]).join("").slice(0, 2).toUpperCase()}</div>
-        <div>
-          <div class="eyebrow"><span class="spark">*</span> Public Profile Preview</div>
-          <h1 class="section-title">${name}</h1>
-          <p class="section-sub">${target}  - ${locationLabel}</p>
-          <p class="muted">CareerGo public profiles help employers and collaborators understand your headline, evidence, portfolio, skills, and visibility preferences without exposing private Career Intelligence notes.</p>
-          <div class="hero-actions compact-actions">
-            <button class="btn btn-primary" type="button">${icon("user-plus")} Connect</button>
-            <button class="btn btn-ghost" type="button">${icon("send")} Contact</button>
-            <a class="btn btn-cyan" href="edit-career-data.html">${icon("brain-circuit")} Edit career data</a>
-          </div>
-        </div>
-      </article>
-      <section class="content-grid">
-        <article class="glass-card">
-          <div class="section-kicker">About</div>
-          <p class="muted">${profile.coach.worry ? `Currently focused on ${target.toLowerCase()} while working through: ${profile.coach.worry}` : `Exploring ${target} opportunities with a CareerGo profile built around skills, goals, and evidence.`}</p>
-        </article>
-        <article class="glass-card">
-          <div class="section-kicker">Visibility</div>
-          <div class="insight-row"><span>Profile status</span><strong>${profile.privacy.profileVisibility}</strong></div>
-          <div class="insight-row"><span>Employer discovery</span><strong>${profile.privacy.allowEmployerDiscovery ? "Allowed" : "Off"}</strong></div>
-        </article>
-      </section>
-      <section class="content-grid">
-        <article class="glass-card">
-          <div class="section-head compact-section-head"><div><div class="section-kicker">Experience</div><h2 class="section-title mini">Work and project evidence.</h2></div></div>
-          <div class="list-stack">${experienceItems.length ? experienceItems.slice(0, 3).map(item => `<div class="list-card quiet"><h3>${typeof item === "string" ? item : item.title || item.role || "Experience"}</h3><p class="muted small">${typeof item === "string" ? "Added from CareerGo profile" : item.company || item.summary || "Public summary"}</p></div>`).join("") : `<div class="list-card quiet"><h3>Portfolio evidence</h3><p class="muted small">Add experience in Career Intelligence to make this profile stronger.</p></div>`}</div>
-        </article>
-        <article class="glass-card">
-          <div class="section-kicker">Education</div>
-          <h3>${educationSummary}</h3>
-          <p class="muted">${profile.background.educationLevel || "Education level"} ${profile.background.expectedGraduationYear ? ` - ${profile.background.expectedGraduationYear}` : ""}</p>
-        </article>
-      </section>
-      <section class="glass-card">
-        <div class="section-head compact-section-head"><div><div class="section-kicker">Skills and portfolio</div><h2 class="section-title mini">Public proof signals.</h2></div><a class="btn btn-ghost" href="settings.html">${icon("shield")} Privacy</a></div>
-        ${pills([...profile.skills.technical, ...profile.skills.soft].slice(0, 12), "cyan")}
-        <div class="grid-3 public-proof-grid">
-          ${[
-            ["Portfolio", profile.skills.portfolioLinks || "Add portfolio link"],
-            ["LinkedIn", profile.skills.linkedin || "Add LinkedIn"],
-            ["GitHub", profile.skills.github || "Add GitHub"]
-          ].map(([label, value]) => `<div class="score-tile"><span>${label}</span><strong>${value}</strong></div>`).join("")}
-        </div>
-      </section>
-      <section class="content-grid">
-        <article class="glass-card"><div class="section-kicker">Achievements</div><p class="muted">${profile.skills.achievements?.length ? profile.skills.achievements.join(", ") : "Add achievements from Career Intelligence to show public proof."}</p></article>
-        <article class="glass-card"><div class="section-kicker">Public posts</div>${DATA.communityPosts.slice(0, 2).map(post => `<div class="review-card"><strong>${post.title}</strong><p class="muted small">${post.body}</p></div>`).join("")}</article>
-      </section>
-    </section>
-  `, { title: "Public Profile", subtitle: "This is the profile others can view. Private readiness analysis stays in Career Intelligence." });
+
+  // External-viewer actions are demonstrative in this MVP: there is no employer
+  // account signed in here, so say so plainly rather than faking a flow.
+  qsa("[data-employer-action]", root).forEach(btn => btn.addEventListener("click", () => {
+    showToast(`"${btn.dataset.employerAction}" is what an employer sees here - it is inactive in your own preview.`, "info");
+  }));
+  qsa("[data-copy-link]", root).forEach(btn => btn.addEventListener("click", () => {
+    const url = btn.dataset.copyLink;
+    navigator.clipboard?.writeText(`https://${url}`).then(
+      () => showToast("Public profile link copied."),
+      () => showToast(`Your public link is ${url}`, "info")
+    );
+  }));
+  qsa("[data-project-case-study]", root).forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    const project = projects.find(item => item.id === link.dataset.projectCaseStudy);
+    if (project) openProjectCaseStudyModal(project);
+  }));
+  qsa("[data-gallery-preview]", root).forEach(trigger => trigger.addEventListener("click", event => {
+    event.preventDefault();
+    const match = gallery.find(item => item.id === trigger.dataset.galleryPreview);
+    if (match) openGalleryPreviewModal(match);
+  }));
+  qsa("[data-role-detail]", root).forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    const role = roles.find(item => item.id === link.dataset.roleDetail);
+    if (role) openExperienceRoleModal(role);
+  }));
+  qsa("[data-activity-detail]", root).forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    const activity = activities[Number(link.dataset.activityDetail)];
+    if (activity) openActivityDetailModal(activity);
+  }));
+  qs('[data-view-all="proof"]', root)?.addEventListener("click", () => openProfileViewAllModal("proof", projects, null, { readOnly: true }));
+  qs('[data-view-all="role"]', root)?.addEventListener("click", () => openProfileViewAllModal("role", roles, null, { readOnly: true }));
+  qs('[data-view-all="education"]', root)?.addEventListener("click", () => openProfileViewAllModal("education", educationEntries, null, { readOnly: true }));
+  qs('[data-view-all="gallery"]', root)?.addEventListener("click", () => openProfileViewAllModal("gallery", gallery, null, { readOnly: true }));
+
   createIcons();
 }
+
+/* What each profile-visibility option actually means, in plain words. Shown
+ * live under the select so the choice isn't three unexplained labels — and so
+ * the page can state the one rule that ties visibility to employer discovery. */
+const SETTINGS_VISIBILITY = {
+  "Private": {
+    icon: "lock",
+    body: "Only you can see your profile. Employers cannot find you in search, and employer discovery stays off."
+  },
+  "Visible to employers": {
+    icon: "globe",
+    body: "Employers hiring for your target roles can find your public profile and contact you."
+  },
+  "Visible for advisory opportunities": {
+    icon: "users",
+    body: "Mentors and advisory requests can reach you. Hiring teams cannot see your profile."
+  }
+};
 
 function renderSettings() {
   const root = qs("[data-settings]");
   if (!root) return;
   if (!requireAccount(root, "manage account and privacy settings")) return;
   const state = readState();
-  const profile = state.profile;
-  const cgSettingsTiles = [
-    ["Account", getUserName(state), state.session.email || profile.personal.email || "careergo member", "user-round"],
-    ["Privacy", profile.privacy.profileVisibility || "Private", profile.privacy.allowEmployerDiscovery ? "Employer discovery on" : "Employer discovery off", "shield"],
-    ["Vera memory", profile.privacy.allowCoachMemory ? "Enabled" : "Paused", "Used for coaching context", "sparkles"],
-    ["Notifications", "Digest + reminders", "Interview and roadmap nudges", "bell"]
+  const profile = normalizeProfile(state.profile);
+  const esc = value => String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const name = getUserName(state);
+  const email = state.session.email || profile.personal.email || "";
+  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase() || "CG";
+  const visibility = profile.privacy.profileVisibility || "Private";
+  const isPrivate = visibility === "Private";
+  const notifications = profile.notifications;
+
+  const option = (value, current) => `<option value="${esc(value)}" ${value === current ? "selected" : ""}>${esc(value)}</option>`;
+  const toggle = (fieldName, title, body, checked, extra = "") => `
+    <label class="cg-set-toggle${extra ? " is-locked" : ""}">
+      <span><strong>${esc(title)}</strong><small>${esc(body)}</small>${extra ? `<b class="cg-set-locked-note">${icon("lock")} ${esc(extra)}</b>` : ""}</span>
+      <input name="${esc(fieldName)}" type="checkbox" ${checked ? "checked" : ""} ${extra ? "disabled" : ""}>
+      <i class="cg-set-switch" aria-hidden="true"></i>
+    </label>
+  `;
+  const sections = [
+    { id: "visibility", icon: "shield", kicker: "Privacy", title: "Profile visibility" },
+    { id: "notifications", icon: "bell", kicker: "Alerts", title: "Notifications" },
+    { id: "vera", icon: "sparkles", kicker: "Vera", title: "Coach preferences" },
+    { id: "account", icon: "user-round", kicker: "Account", title: "Account and data" }
   ];
+  const cardHead = section => `
+    <header>
+      <span>${icon(section.icon)}</span>
+      <div><small>${section.kicker}</small><h2>${section.title}</h2></div>
+    </header>
+  `;
+
   root.innerHTML = appShell("", `
-    <section class="cg-settings-page">
-      <header class="cg-settings-hero">
+    <section class="cg-set">
+      <header class="cg-set-hero">
         <div>
-          <span class="cg-section-kicker">Settings</span>
-          <h1>Account, privacy, and Vera preferences.</h1>
-          <p>Control how CareerGo uses your profile, what employers can discover, and how Vera supports your next move.</p>
+          <span class="cg-section-kicker">${icon("settings")} Settings</span>
+          <h1>Account, privacy, and Vera.</h1>
+          <p>Control what employers can see, what CareerGo sends you, and how Vera coaches.</p>
         </div>
-        <a class="btn btn-primary" href="public-profile.html">${icon("user-round")} View profile</a>
+        <a class="btn btn-ghost" href="profile.html">${icon("user-round")} View profile</a>
       </header>
 
-      <section class="cg-settings-tile-grid">
-        ${cgSettingsTiles.map(([label, value, note, ic]) => `
-          <article>
-            <span>${icon(ic)}</span>
-            <small>${label}</small>
-            <strong>${value}</strong>
-            <p>${note}</p>
-          </article>
-        `).join("")}
-      </section>
+      <form class="cg-set-form" id="settings-form" data-settings-form>
+        <aside class="cg-set-rail">
+          <div class="cg-set-identity">
+            <div class="cg-set-avatar">${esc(initials)}</div>
+            <div class="cg-set-identity-copy">
+              <strong>${esc(name)}</strong>
+              <small>${esc(email || "No email on file")}</small>
+            </div>
+            <ul>
+              <li>${icon("map-pin")} ${esc(profile.personal.cityState || "Location not set")}</li>
+              <li>${icon("briefcase-business")} ${esc(getTargetLabel(profile))}</li>
+            </ul>
+            <a href="edit-career-data.html">${icon("pencil")} Edit career data</a>
+          </div>
 
-      <section class="cg-settings-layout">
-        <form class="cg-settings-card" data-settings-form>
-          <header><span class="cg-section-kicker">Privacy</span><h2>Profile visibility</h2></header>
-          <label>Profile visibility
-            <select name="profileVisibility">
-              <option ${profile.privacy.profileVisibility === "Private" ? "selected" : ""}>Private</option>
-              <option ${profile.privacy.profileVisibility === "Visible to employers" ? "selected" : ""}>Visible to employers</option>
-              <option ${profile.privacy.profileVisibility === "Visible for advisory opportunities" ? "selected" : ""}>Visible for advisory opportunities</option>
-            </select>
-          </label>
-          <label class="cg-toggle-row"><span><strong>Allow employer discovery</strong><small>Let matching employers find your public proof.</small></span><input name="allowEmployerDiscovery" type="checkbox" ${profile.privacy.allowEmployerDiscovery ? "checked" : ""}></label>
-          <label class="cg-toggle-row"><span><strong>Allow Vera memory</strong><small>Use your recent actions to personalize coaching.</small></span><input name="allowCoachMemory" type="checkbox" ${profile.privacy.allowCoachMemory ? "checked" : ""}></label>
-          <button class="btn btn-primary" type="submit">${icon("save")} Save privacy</button>
-        </form>
+          <nav class="cg-set-nav" aria-label="Settings sections">
+            ${sections.map(section => `
+              <a href="#set-${section.id}" data-set-nav="${section.id}">
+                <i>${icon(section.icon)}</i><span>${section.title}</span>
+              </a>
+            `).join("")}
+          </nav>
+        </aside>
 
-        <form class="cg-settings-card" data-coach-settings-form>
-          <header><span class="cg-section-kicker">Vera</span><h2>Coach preferences</h2></header>
-          <label>Support style
-            <textarea name="supportStyle">${profile.coach.supportStyle || ""}</textarea>
-          </label>
-          <label>Explanation style
-            <select name="explanationStyle">
-              <option ${profile.coach.explanationStyle === "Detailed explanations" ? "selected" : ""}>Detailed explanations</option>
-              <option ${profile.coach.explanationStyle === "Simple guidance" ? "selected" : ""}>Simple guidance</option>
-              <option ${profile.coach.explanationStyle === "Direct missions" ? "selected" : ""}>Direct missions</option>
-            </select>
-          </label>
-          <label>Mission frequency
-            <select name="missionFrequency">
-              <option ${profile.coach.missionFrequency === "Weekly" ? "selected" : ""}>Weekly</option>
-              <option ${profile.coach.missionFrequency === "Twice a week" ? "selected" : ""}>Twice a week</option>
-              <option ${profile.coach.missionFrequency === "Monthly" ? "selected" : ""}>Monthly</option>
-            </select>
-          </label>
-          <button class="btn btn-ghost" type="submit">${icon("sparkles")} Save Vera preferences</button>
-        </form>
-      </section>
+        <div class="cg-set-stack">
+          <section class="cg-set-card" id="set-visibility" data-set-section="visibility">
+            ${cardHead(sections[0])}
+            <label class="cg-set-field">Who can see your profile
+              <select name="profileVisibility" data-visibility-select>
+                ${Object.keys(SETTINGS_VISIBILITY).map(value => option(value, visibility)).join("")}
+              </select>
+            </label>
+            <p class="cg-set-explain" data-visibility-explain>
+              ${icon(SETTINGS_VISIBILITY[visibility]?.icon || "lock")}
+              <span>${esc(SETTINGS_VISIBILITY[visibility]?.body || SETTINGS_VISIBILITY.Private.body)}</span>
+            </p>
+            <div class="cg-set-toggle-group" data-discovery-group>
+              ${toggle("allowEmployerDiscovery", "Allow employer discovery", "Let matching employers find your public proof.", profile.privacy.allowEmployerDiscovery && !isPrivate, isPrivate ? "Unavailable while your profile is Private" : "")}
+            </div>
+            <a class="cg-set-inline-link" href="public-profile.html">${icon("eye")} See exactly what an employer sees ${icon("arrow-right")}</a>
+          </section>
 
-      <section class="cg-settings-card cg-settings-wide">
-        <header><span class="cg-section-kicker">Account</span><h2>Connected profile data</h2></header>
-        <div class="cg-settings-data-row">
-          <span>${icon("mail")} ${state.session.email || profile.personal.email || "No email added"}</span>
-          <span>${icon("map-pin")} ${profile.personal.cityState || "Kuala Lumpur"}</span>
-          <span>${icon("briefcase")} ${getTargetLabel(profile)}</span>
-          <a href="edit-career-data.html">${icon("arrow-up-right")} Edit career data</a>
+          <section class="cg-set-card" id="set-notifications" data-set-section="notifications">
+            ${cardHead(sections[1])}
+            <div class="cg-set-toggle-group">
+              ${toggle("weeklyDigest", "Weekly digest", "One Monday summary of your progress and new matches.", notifications.weeklyDigest)}
+              ${toggle("interviewReminders", "Interview reminders", "Nudges before scheduled interviews and mock sessions.", notifications.interviewReminders)}
+              ${toggle("roadmapNudges", "Roadmap nudges", "Reminders when a growth move or milestone is due.", notifications.roadmapNudges)}
+              ${toggle("employerActivity", "Employer activity", "When an employer views your profile or moves your application.", notifications.employerActivity)}
+              ${toggle("productUpdates", "Product updates", "Occasional news about new CareerGo features.", notifications.productUpdates)}
+            </div>
+            <p class="cg-set-note">${icon("info")} These control the bell in your top bar. <a href="notifications.html">Open notifications</a></p>
+          </section>
+
+          <section class="cg-set-card" id="set-vera" data-set-section="vera">
+            ${cardHead(sections[2])}
+            <div class="cg-set-grid">
+              <label class="cg-set-field">Explanation style
+                <select name="explanationStyle">
+                  ${["Detailed explanations", "Simple guidance", "Direct missions"].map(value => option(value, profile.coach.explanationStyle || "Simple guidance")).join("")}
+                </select>
+              </label>
+              <label class="cg-set-field">Mission frequency
+                <select name="missionFrequency">
+                  ${["Weekly", "Twice a week", "Monthly"].map(value => option(value, profile.coach.missionFrequency || "Weekly")).join("")}
+                </select>
+              </label>
+              <label class="cg-set-field cg-set-wide">How Vera should support you
+                <textarea name="supportStyle" rows="2" placeholder="Structured steps, honest trade-offs, confidence support...">${esc(profile.coach.supportStyle)}</textarea>
+              </label>
+            </div>
+            <div class="cg-set-toggle-group">
+              ${toggle("allowCoachMemory", "Allow Vera memory", "Use your recent actions to personalize coaching.", profile.privacy.allowCoachMemory)}
+            </div>
+          </section>
+
+          <section class="cg-set-card" id="set-account" data-set-section="account">
+            ${cardHead(sections[3])}
+            <div class="cg-set-rows">
+              <div class="cg-set-row">
+                <div><strong>Password</strong><small>Changed from the security section of your career data.</small></div>
+                <a class="cg-set-row-btn" href="edit-career-data.html#sec-security">${icon("shield-check")} Change password</a>
+              </div>
+              <div class="cg-set-row">
+                <div><strong>Sign out</strong><small>End this session on this device.</small></div>
+                <button class="cg-set-row-btn" type="button" data-logout>${icon("log-out")} Sign out</button>
+              </div>
+              <div class="cg-set-row cg-set-row-danger">
+                <div><strong>Clear local demo data</strong><small>Wipes this browser's saved CareerGo state so you can sign up again with the same email.</small></div>
+                <button class="cg-set-row-btn danger" type="button" data-clear-local-data>${icon("trash-2")} Clear data</button>
+              </div>
+            </div>
+          </section>
+
+          <footer class="cg-set-savebar" data-savebar>
+            <span data-save-status>${icon("shield-check")} Saved settings apply across CareerGo immediately.</span>
+            <div>
+              <a class="btn btn-ghost" href="dashboard.html">Cancel</a>
+              <button class="btn btn-primary" type="submit">${icon("save")} Save settings</button>
+            </div>
+          </footer>
         </div>
-      </section>
+      </form>
     </section>
   `);
-  qs("[data-settings-form]")?.addEventListener("submit", event => {
+
+  const form = qs("[data-settings-form]", root);
+
+  // Visibility drives employer discovery: "Private" makes discovery meaningless,
+  // so the toggle is switched off and locked rather than left contradicting it.
+  const visibilitySelect = qs("[data-visibility-select]", root);
+  // Remembered across a Private round-trip: switching to Private and back must
+  // not silently discard the user's discovery preference.
+  let discoveryMemory = profile.privacy.allowEmployerDiscovery;
+  let discoveryLocked = isPrivate;
+  const syncVisibility = () => {
+    const chosen = visibilitySelect?.value || "Private";
+    const meta = SETTINGS_VISIBILITY[chosen] || SETTINGS_VISIBILITY.Private;
+    const explain = qs("[data-visibility-explain]", root);
+    if (explain) {
+      explain.innerHTML = `${icon(meta.icon)}<span>${esc(meta.body)}</span>`;
+    }
+    const group = qs("[data-discovery-group]", root);
+    const input = qs('input[name="allowEmployerDiscovery"]', root);
+    const locked = chosen === "Private";
+    if (input) {
+      if (locked && !discoveryLocked) discoveryMemory = input.checked;
+      if (!locked && discoveryLocked) input.checked = discoveryMemory;
+      if (locked) input.checked = false;
+      input.disabled = locked;
+    }
+    discoveryLocked = locked;
+    qs(".cg-set-toggle", group)?.classList.toggle("is-locked", locked);
+    const note = qs(".cg-set-locked-note", group);
+    if (locked && !note) {
+      const holder = qs(".cg-set-toggle span", group);
+      const tag = document.createElement("b");
+      tag.className = "cg-set-locked-note";
+      tag.innerHTML = `${icon("lock")} Unavailable while your profile is Private`;
+      holder?.appendChild(tag);
+    } else if (!locked && note) {
+      note.remove();
+    }
+    createIcons();
+  };
+  visibilitySelect?.addEventListener("change", syncVisibility);
+
+  const status = qs("[data-save-status]", root);
+  const savebar = qs("[data-savebar]", root);
+  const markDirty = () => {
+    if (savebar?.dataset.dirty === "true") return;
+    if (savebar) savebar.dataset.dirty = "true";
+    if (status) status.innerHTML = `${icon("circle-dot")} Unsaved changes.`;
+    createIcons();
+  };
+  form?.addEventListener("input", markDirty);
+  form?.addEventListener("change", markDirty);
+
+  const navLinks = qsa("[data-set-nav]", root);
+  let navLockUntil = 0;
+  navLinks.forEach(link => link.addEventListener("click", event => {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const target = qs(`#set-${link.dataset.setNav}`, root);
+    if (!target) return;
+    navLinks.forEach(other => other.classList.toggle("active", other === link));
+    navLockUntil = Date.now() + 900;
+    window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 110, behavior: "smooth" });
+  }));
+  const cards = qsa("[data-set-section]", root);
+  if (cards.length && "IntersectionObserver" in window) {
+    const spy = new IntersectionObserver(entries => {
+      // Ignore the observer while a nav click's smooth scroll is still running.
+      // Without this the sections passing through the band overwrite the clicked
+      // link, and a bottom section on a short page can never reach the band at
+      // all - so clicking the last item always left the previous one highlighted.
+      if (Date.now() < navLockUntil) return;
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.dataset.setSection;
+        navLinks.forEach(link => link.classList.toggle("active", link.dataset.setNav === id));
+      });
+    }, { rootMargin: "-120px 0px -65% 0px", threshold: 0 });
+    cards.forEach(card => spy.observe(card));
+  }
+
+  // One form, one save — privacy, notifications and Vera used to be two
+  // separate cards with two separate submit buttons.
+  form?.addEventListener("submit", event => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
     const next = readState();
-    next.profile.privacy.profileVisibility = String(form.get("profileVisibility") || "Private");
-    next.profile.privacy.allowEmployerDiscovery = Boolean(form.get("allowEmployerDiscovery"));
-    next.profile.privacy.allowCoachMemory = Boolean(form.get("allowCoachMemory"));
+    const chosenVisibility = String(data.get("profileVisibility") || "Private");
+    next.profile.privacy.profileVisibility = chosenVisibility;
+    next.profile.privacy.allowEmployerDiscovery = chosenVisibility !== "Private" && Boolean(data.get("allowEmployerDiscovery"));
+    next.profile.privacy.allowCoachMemory = Boolean(data.get("allowCoachMemory"));
+    next.profile.notifications = {
+      weeklyDigest: Boolean(data.get("weeklyDigest")),
+      interviewReminders: Boolean(data.get("interviewReminders")),
+      roadmapNudges: Boolean(data.get("roadmapNudges")),
+      employerActivity: Boolean(data.get("employerActivity")),
+      productUpdates: Boolean(data.get("productUpdates"))
+    };
+    next.profile.coach.supportStyle = String(data.get("supportStyle") || "");
+    next.profile.coach.explanationStyle = String(data.get("explanationStyle") || next.profile.coach.explanationStyle);
+    next.profile.coach.missionFrequency = String(data.get("missionFrequency") || next.profile.coach.missionFrequency);
+    next.profile.updatedAt = nowStamp();
     syncCurrentUser(next);
     writeState(next);
-    showToast("Privacy settings saved.");
+    showToast("Settings saved.");
     renderSettings();
   });
-  qs("[data-coach-settings-form]")?.addEventListener("submit", event => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const next = readState();
-    next.profile.coach.supportStyle = String(form.get("supportStyle") || "");
-    next.profile.coach.explanationStyle = String(form.get("explanationStyle") || next.profile.coach.explanationStyle);
-    next.profile.coach.missionFrequency = String(form.get("missionFrequency") || next.profile.coach.missionFrequency);
-    syncCurrentUser(next);
-    writeState(next);
-    showToast("Vera preferences saved.");
-    renderSettings();
+
+  qs("[data-clear-local-data]", root)?.addEventListener("click", () => {
+    openConfirmModal({
+      title: "Clear local demo data?",
+      body: "This wipes this browser's saved CareerGo state - profile, roles, applications and settings - and signs you out. It cannot be undone.",
+      confirmLabel: "Clear data",
+      onConfirm: () => {
+        localStorage.removeItem(STORE_KEY);
+        showToast("Local demo data cleared.");
+        setTimeout(() => { location.href = "index.html"; }, 600);
+      }
+    });
   });
+
+  // Wired locally rather than via bindGlobalActions(), which also registers a
+  // document-level click listener and would double-bind it on every re-render.
+  qs("[data-logout]", root)?.addEventListener("click", () => {
+    const next = readState();
+    next.session = { loggedIn: false, role: "guest", currentUserId: null, name: "" };
+    writeState(next);
+    location.href = "index.html";
+  });
+
   createIcons();
-  return;
-  root.innerHTML = appShell("", `
-    <section class="glass-card dashboard-hero compact-dashboard-hero">
-      <div><div class="eyebrow"><span class="spark">*</span> Settings</div><h1 class="section-title">Account, privacy, and Vera preferences.</h1><p class="section-sub">Control how CareerGo uses your profile, what employers can discover, and how Vera supports you.</p></div>
-    </section>
-    <section class="settings-grid">
-      <form class="glass-card form-grid profile-card" data-settings-form>
-        <h2 class="section-title mini">Privacy</h2>
-        <label>Profile visibility <select name="profileVisibility"><option ${profile.privacy.profileVisibility === "Private" ? "selected" : ""}>Private</option><option ${profile.privacy.profileVisibility === "Visible to employers" ? "selected" : ""}>Visible to employers</option><option ${profile.privacy.profileVisibility === "Visible for advisory opportunities" ? "selected" : ""}>Visible for advisory opportunities</option></select></label>
-        <label class="check-field custom-checkbox"><input name="allowEmployerDiscovery" type="checkbox" ${profile.privacy.allowEmployerDiscovery ? "checked" : ""}> Allow employer discovery</label>
-        <label class="check-field custom-checkbox"><input name="allowCoachMemory" type="checkbox" ${profile.privacy.allowCoachMemory ? "checked" : ""}> Allow Vera to remember coaching context</label>
-        <button class="btn btn-primary" type="submit">${icon("save")} Save settings</button>
-      </form>
-      <form class="glass-card form-grid profile-card" data-coach-settings-form>
-        <h2 class="section-title mini">AI Coach Preferences</h2>
-        <label>Support style <textarea name="supportStyle">${profile.coach.supportStyle}</textarea></label>
-        <label>Explanation style <select name="explanationStyle"><option ${profile.coach.explanationStyle === "Detailed explanations" ? "selected" : ""}>Detailed explanations</option><option ${profile.coach.explanationStyle === "Simple guidance" ? "selected" : ""}>Simple guidance</option></select></label>
-        <label>Mission frequency <select name="missionFrequency"><option ${profile.coach.missionFrequency === "Weekly" ? "selected" : ""}>Weekly</option><option ${profile.coach.missionFrequency === "Twice a week" ? "selected" : ""}>Twice a week</option><option ${profile.coach.missionFrequency === "Monthly" ? "selected" : ""}>Monthly</option></select></label>
-        <button class="btn btn-cyan" type="submit">${icon("sparkles")} Save Vera preferences</button>
-      </form>
-    </section>
-  `, { title: "Settings", subtitle: "Account and privacy controls live here, separate from your public profile and Career Intelligence." });
-  qs("[data-settings-form]")?.addEventListener("submit", event => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const next = readState();
-    next.profile.privacy.profileVisibility = String(form.get("profileVisibility") || "Private");
-    next.profile.privacy.allowEmployerDiscovery = Boolean(form.get("allowEmployerDiscovery"));
-    next.profile.privacy.allowCoachMemory = Boolean(form.get("allowCoachMemory"));
-    syncCurrentUser(next);
-    writeState(next);
-    showToast("Privacy settings saved.");
+}
+
+/* Comma-separated list fields on the Edit Career Data page render as a tag
+ * editor instead of a tall empty textarea. The visible chips are cosmetic —
+ * the value the form actually submits lives in the hidden input, so the
+ * existing submit handler keeps reading `form.get(name)` unchanged. */
+function tagFieldMarkup(name, label, values, hint) {
+  const escAttr = value => String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const list = (Array.isArray(values) ? values : String(values || "").split(","))
+    .map(item => String(item || "").trim())
+    .filter(Boolean);
+  return `
+    <div class="cg-edit-wide cg-tagfield-wrap" data-tagfield>
+      <span class="cg-tagfield-label">${escAttr(label)}</span>
+      <div class="cg-tagfield" role="group" aria-label="${escAttr(label)}">
+        ${list.map(item => `<span class="cg-tag">${escAttr(item)}<button type="button" data-tag-remove aria-label="Remove ${escAttr(item)}">${icon("x")}</button></span>`).join("")}
+        <input type="text" class="cg-tagfield-input" data-tag-input placeholder="${list.length ? "Add another" : "Type and press Enter"}" aria-label="Add to ${escAttr(label)}">
+      </div>
+      <input type="hidden" name="${escAttr(name)}" value="${escAttr(list.join(", "))}" data-tag-value>
+      ${hint ? `<small>${escAttr(hint)}</small>` : ""}
+    </div>
+  `;
+}
+
+/* Turns the static markup above into a working editor. Called after render. */
+function wireTagFields(root) {
+  qsa("[data-tagfield]", root).forEach(field => {
+    const box = qs(".cg-tagfield", field);
+    const input = qs("[data-tag-input]", field);
+    const hidden = qs("[data-tag-value]", field);
+    if (!box || !input || !hidden) return;
+    const sync = () => {
+      const values = qsa(".cg-tag", box).map(tag => tag.dataset.value || tag.textContent.trim()).filter(Boolean);
+      hidden.value = values.join(", ");
+      input.placeholder = values.length ? "Add another" : "Type and press Enter";
+      hidden.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+    qsa(".cg-tag", box).forEach(tag => {
+      tag.dataset.value = tag.textContent.trim();
+    });
+    const addValue = raw => {
+      const parts = String(raw || "").split(",").map(part => part.trim()).filter(Boolean);
+      const existing = new Set(qsa(".cg-tag", box).map(tag => (tag.dataset.value || "").toLowerCase()));
+      parts.forEach(part => {
+        if (existing.has(part.toLowerCase())) return;
+        existing.add(part.toLowerCase());
+        const tag = document.createElement("span");
+        tag.className = "cg-tag";
+        tag.dataset.value = part;
+        tag.textContent = part;
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.setAttribute("data-tag-remove", "");
+        remove.setAttribute("aria-label", `Remove ${part}`);
+        remove.innerHTML = icon("x");
+        tag.appendChild(remove);
+        box.insertBefore(tag, input);
+      });
+      input.value = "";
+      sync();
+      createIcons();
+    };
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === ",") {
+        event.preventDefault();
+        addValue(input.value);
+      } else if (event.key === "Backspace" && !input.value) {
+        const tags = qsa(".cg-tag", box);
+        if (tags.length) {
+          tags[tags.length - 1].remove();
+          sync();
+        }
+      }
+    });
+    input.addEventListener("blur", () => addValue(input.value));
+    box.addEventListener("click", event => {
+      const remove = event.target.closest("[data-tag-remove]");
+      if (remove) {
+        remove.closest(".cg-tag")?.remove();
+        sync();
+        return;
+      }
+      if (event.target === box) input.focus();
+    });
   });
-  qs("[data-coach-settings-form]")?.addEventListener("submit", event => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const next = readState();
-    next.profile.coach.supportStyle = String(form.get("supportStyle") || "");
-    next.profile.coach.explanationStyle = String(form.get("explanationStyle") || next.profile.coach.explanationStyle);
-    next.profile.coach.missionFrequency = String(form.get("missionFrequency") || next.profile.coach.missionFrequency);
-    syncCurrentUser(next);
-    writeState(next);
-    showToast("Vera preferences saved.");
-  });
-  createIcons();
 }
 
 function renderEditCareerData() {
@@ -11028,59 +13912,200 @@ function renderEditCareerData() {
     ...(profile.skills.tools || [])
   ].filter(Boolean).length;
 
+  // Per-section completeness. Drives the rail's progress numbers AND the
+  // headline percentage, so the "82%" is no longer a hard-coded fiction.
+  const filled = value => (Array.isArray(value) ? value.filter(Boolean).length > 0 : String(value || "").trim().length > 0);
+  const sections = [
+    { id: "account", icon: "user-round", kicker: "Account", title: "Basic details", values: [profile.personal.fullName, profile.personal.email, profile.personal.phone, profile.personal.cityState, profile.personal.country, profile.personal.preferredLanguage] },
+    { id: "education", icon: "graduation-cap", kicker: "Education", title: "School and background", values: [profile.background.educationLevel, profile.background.school, profile.background.courseMajor, profile.background.expectedGraduationYear, profile.background.academicPerformance, profile.background.clubLeadership] },
+    { id: "career", icon: "briefcase-business", kicker: "Career", title: "Current path and target", values: [profile.personal.roleType, profile.careerStage, profile.background.currentRole, profile.background.industry, profile.background.yearsExperience, profile.background.currentSalaryRange, profile.goals, profile.background.reasonForCareerGo] },
+    { id: "skills", icon: "sparkles", kicker: "Skills", title: "Proof Vera can use", values: [profile.skills.technical, profile.skills.soft, profile.skills.tools, profile.skills.certifications, profile.skills.projects, profile.skills.achievements] },
+    { id: "portfolio", icon: "link", kicker: "Portfolio", title: "Public proof links", values: [profile.skills.portfolioLinks, profile.skills.linkedin, profile.skills.github, profile.skills.website] },
+    { id: "preferences", icon: "sliders-horizontal", kicker: "Preferences", title: "Job preferences", values: [profile.preferences.roles, profile.preferences.industries, profile.preferences.locations, profile.preferences.workMode, profile.preferences.minimumSalary, profile.preferences.relocate, profile.preferences.companySize, profile.preferences.workCulture] },
+    { id: "coaching", icon: "bot", kicker: "Vera context", title: "Coaching signal", values: [profile.coach.worry, profile.coach.supportStyle, profile.coach.growthPreference, profile.coach.confidenceToday] },
+    { id: "security", icon: "shield-check", kicker: "Security", title: "Password and login", values: null }
+  ].map(section => {
+    const total = section.values ? section.values.length : 0;
+    const done = section.values ? section.values.filter(filled).length : 0;
+    return { ...section, total, done, complete: total > 0 && done === total };
+  });
+  const scored = sections.filter(section => section.total > 0);
+  const strength = Math.round((scored.reduce((sum, section) => sum + section.done, 0) / scored.reduce((sum, section) => sum + section.total, 0)) * 100) || 0;
+  const incomplete = scored.filter(section => !section.complete);
+
+  const cardHead = section => `
+    <header>
+      <span>${icon(section.icon)}</span>
+      <div><small>${section.kicker}</small><h2>${section.title}</h2></div>
+      ${section.total ? `<b class="cg-edit-card-count ${section.complete ? "done" : ""}">${section.complete ? `${icon("check")} Complete` : `${section.done}/${section.total}`}</b>` : ""}
+    </header>
+  `;
+  const byId = id => sections.find(section => section.id === id);
+
   root.innerHTML = appShell("", `
     <section class="cg-edit-career">
       <header class="cg-edit-hero">
         <div>
           <span class="cg-section-kicker">${icon("pencil")} Edit career data</span>
           <h1>Keep your CareerGo profile accurate.</h1>
-          <p>Update the account, education, skills, goals, and work preferences Vera uses across Today, Discover, Grow, Worth, Pipeline, and Feed.</p>
+          <p>Everything Vera uses across Today, Discover, Growth, Career Value, Pipeline, and Feed.</p>
+        </div>
+        <div class="cg-edit-hero-side">
           <div class="cg-edit-hero-meta">
             <span>${icon("briefcase-business")} ${targetLabel}</span>
-            <span>${icon("sparkles")} ${skillCount || 8} profile signals</span>
+            <span>${icon("sparkles")} ${skillCount || 0} skills</span>
             <span>${icon("map-pin")} ${htmlValue(profile.personal.cityState || "Kuala Lumpur")}</span>
           </div>
-        </div>
-        <div class="cg-edit-hero-actions">
-          <a class="btn btn-ghost" href="public-profile.html">${icon("user-round")} View profile</a>
-          <button class="btn btn-primary" type="submit" form="career-data-form">${icon("save")} Save changes</button>
+          <a class="btn btn-ghost" href="profile.html">${icon("user-round")} View profile</a>
         </div>
       </header>
 
       <form class="cg-edit-form" id="career-data-form" data-career-data-form>
-        <aside class="cg-edit-summary">
-          <span class="cg-section-kicker">Profile strength</span>
-          <strong>82%</strong>
-          <p>Complete the fields Vera uses to explain role fit, salary range, and roadmap priority.</p>
-          <div class="cg-edit-meter"><span style="width:82%"></span></div>
-          <ul>
-            <li>${icon("check-circle")} Account identity</li>
-            <li>${icon("check-circle")} Education and role target</li>
-            <li>${icon("circle")} Portfolio proof</li>
-          </ul>
+        <aside class="cg-edit-rail">
+          <div class="cg-edit-strength">
+            <div class="cg-edit-strength-top">
+              <div>
+                <small>Profile strength</small>
+                <strong>${strength}%</strong>
+              </div>
+              <span class="cg-edit-strength-chip ${strength >= 85 ? "good" : strength >= 60 ? "ok" : "low"}">${strength >= 85 ? "Employer-ready" : strength >= 60 ? "Almost there" : "Needs detail"}</span>
+            </div>
+            <div class="cg-edit-meter"><span style="width:${strength}%"></span></div>
+            <p>${incomplete.length ? `${incomplete.length} section${incomplete.length === 1 ? "" : "s"} still have blank fields.` : "Every field Vera reads is filled in."}</p>
+          </div>
+
+          <nav class="cg-edit-nav" aria-label="Career data sections">
+            ${sections.map(section => `
+              <a href="#sec-${section.id}" data-edit-nav="${section.id}">
+                <i>${icon(section.icon)}</i>
+                <span>${section.title}</span>
+                ${section.total ? `<b class="${section.complete ? "done" : ""}">${section.complete ? icon("check") : `${section.done}/${section.total}`}</b>` : ""}
+              </a>
+            `).join("")}
+          </nav>
+
+          ${(() => {
+            // Experience and education live in the structured stores edited from
+            // the Profile page, so surface what the resume is still missing here
+            // and link to where it is actually editable.
+            const readiness = resumeReadiness(state);
+            return readiness.ready ? "" : `
+            <div class="cg-edit-gaps">
+              <strong>${icon("alert-circle")} Resume needs</strong>
+              <ul>${readiness.missing.map(item => `<li>${htmlValue(item)}</li>`).join("")}</ul>
+              <a href="profile.html">${icon("plus")} Add experience &amp; education</a>
+            </div>`;
+          })()}
         </aside>
 
         <div class="cg-edit-stack">
-          <section class="cg-edit-card">
-            <header>
-              <span>${icon("user-round")}</span>
-              <div><small>Account</small><h2>Basic details</h2></div>
-            </header>
+          <section class="cg-edit-card" id="sec-account" data-edit-section="account">
+            ${cardHead(byId("account"))}
             <div class="cg-edit-grid">
               <label>Full name<input name="fullName" value="${htmlValue(profile.personal.fullName || getUserName(state))}" autocomplete="name"></label>
               <label>Email<input name="email" type="email" value="${htmlValue(profile.personal.email || state.session.email || "")}" autocomplete="email"></label>
-              <label>Phone<input name="phone" value="${htmlValue(profile.personal.phone || "")}" autocomplete="tel"></label>
+              <label>Phone<input name="phone" value="${htmlValue(profile.personal.phone || "")}" autocomplete="tel" placeholder="+60 12-345 6789"></label>
               <label>City / state<input name="cityState" value="${htmlValue(profile.personal.cityState || "")}" placeholder="Kuala Lumpur"></label>
               <label>Country<input name="country" value="${htmlValue(profile.personal.country || "Malaysia")}"></label>
               <label>Preferred language<input name="preferredLanguage" value="${htmlValue(profile.personal.preferredLanguage || "English")}"></label>
             </div>
           </section>
 
-          <section class="cg-edit-card">
-            <header>
-              <span>${icon("shield-check")}</span>
-              <div><small>Security</small><h2>Password and login</h2></div>
-            </header>
+          <section class="cg-edit-card" id="sec-education" data-edit-section="education">
+            ${cardHead(byId("education"))}
+            <div class="cg-edit-grid">
+              <label>Education level
+                <select name="educationLevel">
+                  ${["", "High school", "Diploma", "Bachelor degree", "Master degree", "PhD", "Bootcamp / certificate"].map(value => option(value, profile.background.educationLevel || "")).join("")}
+                </select>
+              </label>
+              <label>School / university<input name="school" value="${htmlValue(profile.background.school || "")}" placeholder="Universiti Malaya"></label>
+              <label>Course / major<input name="courseMajor" value="${htmlValue(profile.background.courseMajor || "")}" placeholder="Business Administration"></label>
+              <label>Graduation year<input name="expectedGraduationYear" value="${htmlValue(profile.background.expectedGraduationYear || "")}" placeholder="2027"></label>
+              <label>Academic performance<input name="academicPerformance" value="${htmlValue(profile.background.academicPerformance || "")}" placeholder="CGPA, awards, dean list"></label>
+              <label>Club / leadership<input name="clubLeadership" value="${htmlValue(profile.background.clubLeadership || "")}" placeholder="Product club, student council"></label>
+            </div>
+            <p class="cg-edit-note">${icon("info")} Full degree entries with dates live on your <a href="profile.html">profile</a> - this is the summary Vera reads.</p>
+          </section>
+
+          <section class="cg-edit-card" id="sec-career" data-edit-section="career">
+            ${cardHead(byId("career"))}
+            <div class="cg-edit-grid">
+              <label>Role type
+                <select name="roleType">
+                  ${["", ...ROLE_TYPES].map(value => option(value, profile.personal.roleType || "")).join("")}
+                </select>
+              </label>
+              <label>Career stage
+                <select name="careerStage">
+                  ${["", ...CAREER_STAGES].map(value => option(value, profile.careerStage || "")).join("")}
+                </select>
+              </label>
+              <label>Current role<input name="currentRole" value="${htmlValue(profile.background.currentRole || "")}" placeholder="Operations Executive"></label>
+              <label>Industry<input name="industry" value="${htmlValue(profile.background.industry || "")}" placeholder="Fintech, AI, education"></label>
+              <label>Years of experience<input name="yearsExperience" value="${htmlValue(profile.background.yearsExperience || "")}" placeholder="3"></label>
+              <label>Current salary<input name="currentSalaryRange" value="${htmlValue(profile.background.currentSalaryRange || "")}" placeholder="RM 4,500 - RM 5,500 / month"></label>
+              ${tagFieldMarkup("goals", "Career goals", profile.goals, "What you want CareerGo to help you do.")}
+              <label class="cg-edit-wide">Why you are using CareerGo<textarea name="reasonForCareerGo" rows="2" placeholder="One line is enough.">${htmlValue(profile.background.reasonForCareerGo || "")}</textarea></label>
+            </div>
+          </section>
+
+          <section class="cg-edit-card" id="sec-skills" data-edit-section="skills">
+            ${cardHead(byId("skills"))}
+            <div class="cg-edit-grid">
+              ${tagFieldMarkup("technical", "Technical skills", profile.skills.technical, "SQL, Figma, product analytics.")}
+              ${tagFieldMarkup("soft", "Soft skills", profile.skills.soft, "")}
+              ${tagFieldMarkup("tools", "Tools", profile.skills.tools, "")}
+              ${tagFieldMarkup("certifications", "Certifications", profile.skills.certifications, "")}
+              ${tagFieldMarkup("projects", "Projects", profile.skills.projects, "")}
+              ${tagFieldMarkup("achievements", "Achievements", profile.skills.achievements, "Awards and recognition not tied to one job.")}
+            </div>
+          </section>
+
+          <section class="cg-edit-card" id="sec-portfolio" data-edit-section="portfolio">
+            ${cardHead(byId("portfolio"))}
+            <div class="cg-edit-grid">
+              <label>Portfolio<input name="portfolioLinks" value="${htmlValue(profile.skills.portfolioLinks || "")}" placeholder="https://"></label>
+              <label>LinkedIn<input name="linkedin" value="${htmlValue(profile.skills.linkedin || "")}" placeholder="linkedin.com/in/..."></label>
+              <label>GitHub<input name="github" value="${htmlValue(profile.skills.github || "")}" placeholder="github.com/..."></label>
+              <label>Website<input name="website" value="${htmlValue(profile.skills.website || "")}" placeholder="https://"></label>
+            </div>
+          </section>
+
+          <section class="cg-edit-card" id="sec-preferences" data-edit-section="preferences">
+            ${cardHead(byId("preferences"))}
+            <div class="cg-edit-grid">
+              ${tagFieldMarkup("roles", "Target roles", profile.preferences.roles, "")}
+              ${tagFieldMarkup("industries", "Industries", profile.preferences.industries, "")}
+              ${tagFieldMarkup("locations", "Locations", profile.preferences.locations, "")}
+              <label>Work mode
+                <select name="workMode">${["Remote", "Hybrid", "Onsite", "Flexible"].map(value => option(value, profile.preferences.workMode || "Hybrid")).join("")}</select>
+              </label>
+              <label>Minimum salary<input name="minimumSalary" value="${htmlValue(profile.preferences.minimumSalary || "")}" placeholder="RM 5,500 / month"></label>
+              <label>Open to relocating
+                <select name="relocate">${["Yes", "Maybe", "No"].map(value => option(value, profile.preferences.relocate || "Maybe")).join("")}</select>
+              </label>
+              <label>Company size<input name="companySize" value="${htmlValue(profile.preferences.companySize || "")}" placeholder="Startup, scaleup, enterprise"></label>
+              <label class="cg-edit-wide">Work culture<input name="workCulture" value="${htmlValue(profile.preferences.workCulture || "")}" placeholder="Async, craft-led, fast-moving"></label>
+            </div>
+          </section>
+
+          <section class="cg-edit-card" id="sec-coaching" data-edit-section="coaching">
+            ${cardHead(byId("coaching"))}
+            <div class="cg-edit-grid">
+              <label class="cg-edit-wide">What worries you right now<textarea name="worry" rows="2">${htmlValue(profile.coach.worry || "")}</textarea></label>
+              <label class="cg-edit-wide">How Vera should support you<textarea name="supportStyle" rows="2">${htmlValue(profile.coach.supportStyle || "")}</textarea></label>
+              <label>Growth preference
+                <select name="growthPreference">${["Fast growth", "Stable growth", "Balanced"].map(value => option(value, profile.coach.growthPreference || "Stable growth")).join("")}</select>
+              </label>
+              <label>Confidence today
+                <select name="confidenceToday">${["Low", "Medium", "High"].map(value => option(value, profile.coach.confidenceToday || "Medium")).join("")}</select>
+              </label>
+            </div>
+          </section>
+
+          <section class="cg-edit-card cg-edit-card-quiet" id="sec-security" data-edit-section="security">
+            ${cardHead(byId("security"))}
             <div class="cg-edit-grid">
               <label class="cg-edit-wide">Current password
                 <span class="cg-onboard-field-shell">
@@ -11101,122 +14126,16 @@ function renderEditCareerData() {
                 </span>
               </label>
               <div class="cg-edit-wide cg-edit-password-action">
-                <p>${icon("info")} Use at least 8 characters. You will need your current password to confirm the change.</p>
+                <p>${icon("info")} Your password is changed on its own - the Save button below does not touch it.</p>
                 <button type="button" class="btn btn-ghost" data-update-password>${icon("shield-check")} Update password</button>
               </div>
             </div>
           </section>
 
-          <section class="cg-edit-card">
-            <header>
-              <span>${icon("graduation-cap")}</span>
-              <div><small>Education</small><h2>School and background</h2></div>
-            </header>
-            <div class="cg-edit-grid">
-              <label>Education level
-                <select name="educationLevel">
-                  ${["", "High school", "Diploma", "Bachelor degree", "Master degree", "PhD", "Bootcamp / certificate"].map(value => option(value, profile.background.educationLevel || "")).join("")}
-                </select>
-              </label>
-              <label>School / university<input name="school" value="${htmlValue(profile.background.school || "")}" placeholder="University of Malaya"></label>
-              <label>Course / major<input name="courseMajor" value="${htmlValue(profile.background.courseMajor || "")}" placeholder="Product Design, Computer Science"></label>
-              <label>Expected graduation year<input name="expectedGraduationYear" value="${htmlValue(profile.background.expectedGraduationYear || "")}" placeholder="2027"></label>
-              <label>Academic performance<input name="academicPerformance" value="${htmlValue(profile.background.academicPerformance || "")}" placeholder="CGPA, awards, dean list"></label>
-              <label>Club / leadership<input name="clubLeadership" value="${htmlValue(profile.background.clubLeadership || "")}" placeholder="Product club, student council"></label>
-            </div>
-          </section>
-
-          <section class="cg-edit-card">
-            <header>
-              <span>${icon("briefcase-business")}</span>
-              <div><small>Career</small><h2>Current path and target</h2></div>
-            </header>
-            <div class="cg-edit-grid">
-              <label>Role type
-                <select name="roleType">
-                  ${["", ...ROLE_TYPES].map(value => option(value, profile.personal.roleType || "")).join("")}
-                </select>
-              </label>
-              <label>Career stage
-                <select name="careerStage">
-                  ${["", ...CAREER_STAGES].map(value => option(value, profile.careerStage || "")).join("")}
-                </select>
-              </label>
-              <label>Current role<input name="currentRole" value="${htmlValue(profile.background.currentRole || "")}" placeholder="Product Designer"></label>
-              <label>Industry<input name="industry" value="${htmlValue(profile.background.industry || "")}" placeholder="Fintech, AI, education"></label>
-              <label>Years of experience<input name="yearsExperience" value="${htmlValue(profile.background.yearsExperience || "")}" placeholder="2"></label>
-              <label>Current salary range<input name="currentSalaryRange" value="${htmlValue(profile.background.currentSalaryRange || "")}" placeholder="RM 7k - 9k"></label>
-              <label class="cg-edit-wide">Career goals<textarea name="goals" placeholder="Find a PM role, prepare for interviews">${listValue(profile.goals)}</textarea><small>Separate with commas.</small></label>
-              <label class="cg-edit-wide">Reason for using CareerGo<textarea name="reasonForCareerGo">${htmlValue(profile.background.reasonForCareerGo || "")}</textarea></label>
-            </div>
-          </section>
-
-          <section class="cg-edit-card">
-            <header>
-              <span>${icon("sparkles")}</span>
-              <div><small>Skills</small><h2>Proof Vera can use</h2></div>
-            </header>
-            <div class="cg-edit-grid">
-              <label class="cg-edit-wide">Technical skills<textarea name="technical">${listValue(profile.skills.technical)}</textarea><small>Examples: SQL, Figma, product analytics.</small></label>
-              <label class="cg-edit-wide">Soft skills<textarea name="soft">${listValue(profile.skills.soft)}</textarea></label>
-              <label class="cg-edit-wide">Tools<textarea name="tools">${listValue(profile.skills.tools)}</textarea></label>
-              <label class="cg-edit-wide">Certifications<textarea name="certifications">${listValue(profile.skills.certifications)}</textarea></label>
-              <label class="cg-edit-wide">Projects<textarea name="projects">${listValue(profile.skills.projects)}</textarea></label>
-              <label class="cg-edit-wide">Achievements<textarea name="achievements">${listValue(profile.skills.achievements)}</textarea></label>
-            </div>
-          </section>
-
-          <section class="cg-edit-card">
-            <header>
-              <span>${icon("link")}</span>
-              <div><small>Portfolio</small><h2>Public proof links</h2></div>
-            </header>
-            <div class="cg-edit-grid">
-              <label>Portfolio<input name="portfolioLinks" value="${htmlValue(profile.skills.portfolioLinks || "")}" placeholder="https://"></label>
-              <label>LinkedIn<input name="linkedin" value="${htmlValue(profile.skills.linkedin || "")}" placeholder="https://linkedin.com/in/..."></label>
-              <label>GitHub<input name="github" value="${htmlValue(profile.skills.github || "")}" placeholder="https://github.com/..."></label>
-              <label>Website<input name="website" value="${htmlValue(profile.skills.website || "")}" placeholder="https://"></label>
-            </div>
-          </section>
-
-          <section class="cg-edit-card">
-            <header>
-              <span>${icon("sliders-horizontal")}</span>
-              <div><small>Preferences</small><h2>What should CareerGo optimize for?</h2></div>
-            </header>
-            <div class="cg-edit-grid">
-              <label class="cg-edit-wide">Target roles<textarea name="roles">${listValue(profile.preferences.roles)}</textarea></label>
-              <label class="cg-edit-wide">Industries<textarea name="industries">${listValue(profile.preferences.industries)}</textarea></label>
-              <label class="cg-edit-wide">Locations<textarea name="locations">${listValue(profile.preferences.locations)}</textarea></label>
-              <label>Work mode
-                <select name="workMode">${["Remote", "Hybrid", "Onsite", "Flexible"].map(value => option(value, profile.preferences.workMode || "Hybrid")).join("")}</select>
-              </label>
-              <label>Minimum salary<input name="minimumSalary" value="${htmlValue(profile.preferences.minimumSalary || "")}" placeholder="RM 8,000"></label>
-              <label>Relocate
-                <select name="relocate">${["Yes", "Maybe", "No"].map(value => option(value, profile.preferences.relocate || "Maybe")).join("")}</select>
-              </label>
-              <label>Company size<input name="companySize" value="${htmlValue(profile.preferences.companySize || "")}" placeholder="Startup, scaleup, enterprise"></label>
-              <label>Work culture<input name="workCulture" value="${htmlValue(profile.preferences.workCulture || "")}" placeholder="Async, craft-led, fast-moving"></label>
-            </div>
-          </section>
-
-          <section class="cg-edit-card">
-            <header>
-              <span>${icon("bot")}</span>
-              <div><small>Vera context</small><h2>Coaching signal</h2></div>
-            </header>
-            <div class="cg-edit-grid">
-              <label class="cg-edit-wide">Current worry<textarea name="worry">${htmlValue(profile.coach.worry || "")}</textarea></label>
-              <label class="cg-edit-wide">Support style<textarea name="supportStyle">${htmlValue(profile.coach.supportStyle || "")}</textarea></label>
-              <label>Growth preference<input name="growthPreference" value="${htmlValue(profile.coach.growthPreference || "Stable growth")}"></label>
-              <label>Confidence today<input name="confidenceToday" value="${htmlValue(profile.coach.confidenceToday || "Medium")}"></label>
-            </div>
-          </section>
-
-          <footer class="cg-edit-savebar">
-            <span>${icon("shield-check")} Saved data updates your account and Vera recommendations.</span>
+          <footer class="cg-edit-savebar" data-savebar>
+            <span data-save-status>${icon("shield-check")} Saved data updates your account and Vera recommendations.</span>
             <div>
-              <a class="btn btn-ghost" href="settings.html">Cancel</a>
+              <a class="btn btn-ghost" href="profile.html">Cancel</a>
               <button class="btn btn-primary" type="submit">${icon("save")} Save career data</button>
             </div>
           </footer>
@@ -11225,25 +14144,67 @@ function renderEditCareerData() {
     </section>
   `);
 
-  qs("[data-career-data-form]")?.addEventListener("submit", event => {
+  const form = qs("[data-career-data-form]", root);
+  wireTagFields(root);
+
+  // Unsaved-changes indicator: the page is long enough that the save bar
+  // needs to say whether there is anything to save.
+  const status = qs("[data-save-status]", root);
+  const savebar = qs("[data-savebar]", root);
+  const markDirty = () => {
+    if (savebar?.dataset.dirty === "true") return;
+    if (savebar) savebar.dataset.dirty = "true";
+    if (status) status.innerHTML = `${icon("circle-dot")} Unsaved changes.`;
+    createIcons();
+  };
+  form?.addEventListener("input", markDirty);
+  form?.addEventListener("change", markDirty);
+
+  // Section nav: smooth anchor scroll that clears the sticky topbar, plus a
+  // scroll-spy so the rail always shows where you are.
+  const navLinks = qsa("[data-edit-nav]", root);
+  let navLockUntil = 0;
+  navLinks.forEach(link => link.addEventListener("click", event => {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const splitList = name => String(form.get(name) || "")
+    const target = qs(`#sec-${link.dataset.editNav}`, root);
+    if (!target) return;
+    // See the settings page: the spy alone can't highlight a bottom section.
+    navLinks.forEach(other => other.classList.toggle("active", other === link));
+    navLockUntil = Date.now() + 900;
+    window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 110, behavior: "smooth" });
+  }));
+  const cards = qsa("[data-edit-section]", root);
+  if (cards.length && "IntersectionObserver" in window) {
+    const spy = new IntersectionObserver(entries => {
+      if (Date.now() < navLockUntil) return;
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.dataset.editSection;
+        navLinks.forEach(link => link.classList.toggle("active", link.dataset.editNav === id));
+      });
+    }, { rootMargin: "-120px 0px -65% 0px", threshold: 0 });
+    cards.forEach(card => spy.observe(card));
+  }
+
+  form?.addEventListener("submit", event => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const splitList = name => String(data.get(name) || "")
       .split(",")
       .map(item => item.trim())
       .filter(Boolean);
     const next = readState();
     const nextProfile = next.profile;
-    nextProfile.personal.fullName = String(form.get("fullName") || "").trim();
-    nextProfile.personal.email = String(form.get("email") || "").trim();
-    nextProfile.personal.phone = String(form.get("phone") || "").trim();
-    nextProfile.personal.cityState = String(form.get("cityState") || "").trim();
-    nextProfile.personal.country = String(form.get("country") || "Malaysia").trim();
-    nextProfile.personal.preferredLanguage = String(form.get("preferredLanguage") || "English").trim();
-    nextProfile.personal.roleType = String(form.get("roleType") || "").trim();
-    nextProfile.careerStage = String(form.get("careerStage") || "").trim();
+    nextProfile.personal.fullName = String(data.get("fullName") || "").trim();
+    nextProfile.personal.email = String(data.get("email") || "").trim();
+    nextProfile.personal.phone = String(data.get("phone") || "").trim();
+    nextProfile.personal.cityState = String(data.get("cityState") || "").trim();
+    nextProfile.personal.country = String(data.get("country") || "Malaysia").trim();
+    nextProfile.personal.preferredLanguage = String(data.get("preferredLanguage") || "English").trim();
+    nextProfile.personal.roleType = String(data.get("roleType") || "").trim();
+    nextProfile.careerStage = String(data.get("careerStage") || "").trim();
     ["educationLevel", "school", "courseMajor", "expectedGraduationYear", "academicPerformance", "clubLeadership", "currentRole", "industry", "yearsExperience", "currentSalaryRange", "reasonForCareerGo"].forEach(key => {
-      nextProfile.background[key] = String(form.get(key) || "").trim();
+      nextProfile.background[key] = String(data.get(key) || "").trim();
     });
     nextProfile.goals = splitList("goals");
     nextProfile.skills.technical = splitList("technical");
@@ -11253,20 +14214,20 @@ function renderEditCareerData() {
     nextProfile.skills.projects = splitList("projects");
     nextProfile.skills.achievements = splitList("achievements");
     ["portfolioLinks", "linkedin", "github", "website"].forEach(key => {
-      nextProfile.skills[key] = String(form.get(key) || "").trim();
+      nextProfile.skills[key] = String(data.get(key) || "").trim();
     });
     nextProfile.preferences.roles = splitList("roles");
     nextProfile.preferences.industries = splitList("industries");
     nextProfile.preferences.locations = splitList("locations");
-    nextProfile.preferences.workMode = String(form.get("workMode") || "Hybrid");
-    nextProfile.preferences.minimumSalary = String(form.get("minimumSalary") || "").trim();
-    nextProfile.preferences.relocate = String(form.get("relocate") || "Maybe");
-    nextProfile.preferences.companySize = String(form.get("companySize") || "").trim();
-    nextProfile.preferences.workCulture = String(form.get("workCulture") || "").trim();
-    nextProfile.coach.worry = String(form.get("worry") || "").trim();
-    nextProfile.coach.supportStyle = String(form.get("supportStyle") || "").trim();
-    nextProfile.coach.growthPreference = String(form.get("growthPreference") || "Stable growth").trim();
-    nextProfile.coach.confidenceToday = String(form.get("confidenceToday") || "Medium").trim();
+    nextProfile.preferences.workMode = String(data.get("workMode") || "Hybrid");
+    nextProfile.preferences.minimumSalary = String(data.get("minimumSalary") || "").trim();
+    nextProfile.preferences.relocate = String(data.get("relocate") || "Maybe");
+    nextProfile.preferences.companySize = String(data.get("companySize") || "").trim();
+    nextProfile.preferences.workCulture = String(data.get("workCulture") || "").trim();
+    nextProfile.coach.worry = String(data.get("worry") || "").trim();
+    nextProfile.coach.supportStyle = String(data.get("supportStyle") || "").trim();
+    nextProfile.coach.growthPreference = String(data.get("growthPreference") || "Stable growth").trim();
+    nextProfile.coach.confidenceToday = String(data.get("confidenceToday") || "Medium").trim();
     nextProfile.intelligence = generateCareerIntelligence(nextProfile);
     nextProfile.updatedAt = nowStamp();
     syncCurrentUser(next);
@@ -11275,7 +14236,7 @@ function renderEditCareerData() {
     renderEditCareerData();
   });
 
-  qs("[data-update-password]")?.addEventListener("click", () => {
+  qs("[data-update-password]", root)?.addEventListener("click", () => {
     const currentInput = qs("#security-current-password");
     const newInput = qs("#security-new-password");
     const confirmInput = qs("#security-confirm-password");
@@ -11323,7 +14284,7 @@ function renderSavedItems() {
       <div><div class="eyebrow"><span class="spark">*</span> Saved Items</div><h1 class="section-title">Your saved jobs, research, and posts.</h1><p class="section-sub">Keep career decisions organized without crowding the main dashboard.</p></div>
     </section>
     <section class="saved-items-stack">
-      <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved jobs</div><h2 class="section-title mini">${savedJobs.length} roles</h2></div><a class="btn btn-ghost" href="discover.html">${icon("briefcase")} Jobs</a></div><div class="list-stack">${savedJobs.map(job => `<a class="list-card quiet" href="discover.html?job=${job.id}"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div></a>`).join("") || `<p class="muted">No saved jobs yet.</p>`}</div></article>
+      <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved jobs</div><h2 class="section-title mini">${savedJobs.length} roles</h2></div><a class="btn btn-ghost" href="discover.html">${icon("briefcase")} Jobs</a></div><div class="list-stack">${savedJobs.map(job => `<a class="list-card quiet" href="role.html?role=${job.id}"><div class="list-card-top"><div><h3>${job.title}</h3><div class="muted small">${job.company} - ${job.salary}</div></div><span class="score">${job.match}%</span></div></a>`).join("") || `<p class="muted">No saved jobs yet.</p>`}</div></article>
       <article class="glass-card"><div class="section-head compact-section-head"><div><div class="section-kicker">Saved research</div><h2 class="section-title mini">${savedOrgs.length} organizations</h2></div><a class="btn btn-ghost" href="discover-companies.html">${icon("search")} Research</a></div><div class="list-stack">${savedOrgs.map(org => `<a class="list-card quiet" href="${org.type === "University" ? "discover-universities.html" : "discover-companies.html"}?org=${org.id}"><div class="list-card-top"><div><h3>${org.name}</h3><div class="muted small">${org.signal}</div></div>${rating(org.rating)}</div></a>`).join("") || `<p class="muted">No saved companies or universities yet.</p>`}</div></article>
     </section>
     <section class="glass-card"><div class="section-kicker">Saved posts</div><div class="grid-3">${DATA.communityPosts.slice(0, 3).map(post => `<article class="tool-card"><h3>${post.title}</h3><p>${post.body}</p><span class="pill gold">${post.reactions} reactions</span></article>`).join("")}</div></section>
@@ -11362,12 +14323,15 @@ function renderMarket() {
         </div>
       `;
     };
-    const memory = [
-      ["Last month", "RM 8,450", "Before you started the SQL sprint"],
-      ["Last week", "RM 8,780", "Resume rewrite lifted recruiter reply rate"],
-      ["Yesterday", "RM 8,900", "Two Grab recruiters viewed your profile"],
-      ["Today", "RM 8,950", "Portfolio milestone shipped this morning"]
+    // Value Growth is now a momentum story, not four near-identical RM figures.
+    // Qualitative events only (no $ per event); the trend shape is the sparkline.
+    const momentumEvents = [
+      ["Today", "Portfolio milestone shipped this morning", true],
+      ["Yesterday", "Two Grab recruiters viewed your profile", false],
+      ["Last week", "Resume rewrite lifted your recruiter reply rate", false],
+      ["Last month", "Started the SQL sprint in Growth", false]
     ];
+    const momentumSpark = [8450, 8600, 8780, 8900]; // last month -> today, shape only
     const scenarios = [
       ["compass", "Stay on current path", "No new skills, no move", 50, "RM 8,900", "muted"],
       ["target", "Complete Vera's roadmap", "Ship SQL + Analytics in 6 mo.", 58, "RM 10,200", "teal"],
@@ -11381,12 +14345,15 @@ function renderMarket() {
       ["Vs. peers w/ your skills", "on par", "Skills match archetype cleanly", ""],
       ["Fair pay confidence", "High", "234 verified data points", ""]
     ];
+    // Re-baselined to land on the ~RM 10.2-10.5k 6-month roadmap target used
+    // everywhere else on this page (was ending at 12.1k / +36%, which read as
+    // an exaggerated hockey-stick and contradicted the stated target).
     const worthTimelinePoints = [
       { xPct: 0, value: 8900, display: "RM 8.9k", label: "Today", body: "where you are" },
-      { xPct: 24, value: 9700, display: "RM 9.7k", label: "Week 3", body: "Complete SQL sprint" },
-      { xPct: 47, value: 10300, display: "RM 10.3k", label: "Week 6", body: "Publish portfolio case" },
-      { xPct: 70, value: 11200, display: "RM 11.2k", label: "Month 3", body: "First PM interview cycle" },
-      { xPct: 98, value: 12100, display: "RM 12.1k", label: "Month 6", body: "Fintech switch ready" }
+      { xPct: 24, value: 9200, display: "RM 9.2k", label: "Week 3", body: "Complete SQL sprint" },
+      { xPct: 47, value: 9600, display: "RM 9.6k", label: "Week 6", body: "Publish portfolio case" },
+      { xPct: 70, value: 10000, display: "RM 10.0k", label: "Month 3", body: "First PM interview cycle" },
+      { xPct: 98, value: 10400, display: "RM 10.4k", label: "Month 6", body: "Roadmap complete" }
     ];
     root.innerHTML = appShell("market", `
       <section class="cg-worth">
@@ -11410,7 +14377,7 @@ function renderMarket() {
           <div class="cg-worth-range">
             <div><span>RM 5k</span><span>Product Manager - Malaysia - monthly base</span><span>RM 18k</span></div>
             <i><em></em><b></b><strong></strong></i>
-            <div><span>You today - RM 8,950</span><span>Vera's 6-month target - RM 10,200</span></div>
+            <div><span>You today - RM 8,900</span><span>Vera's 6-month target - RM 10,200</span></div>
           </div>
         </section>
 
@@ -11432,7 +14399,7 @@ function renderMarket() {
           </div>
         </section>
 
-        <section class="cg-worth-section" data-tour-target="worth-drivers">
+        <section class="cg-worth-section" id="worth-drivers" data-tour-target="worth-drivers">
           <div class="cg-worth-section-head"><div><h2>Top value drivers</h2><p>Ranked by expected monthly pay lift, weighted by how likely you are to complete it.</p></div><a href="posts.html?topic=${encodeURIComponent("how my top value drivers are ranked")}#messages">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-driver-grid">
             ${valueDrivers.map(([ic, title, body, pct, effort, breakdown]) => `
@@ -11448,15 +14415,23 @@ function renderMarket() {
           </div>
         </section>
 
-        <section class="cg-worth-memory">
+        <section class="cg-worth-momentum" id="value-growth">
           <div class="cg-worth-section-head"><div><h2>Value Growth</h2><p>Small changes compound. Here's the story your Career Value has been telling.</p></div><a href="posts.html?topic=${encodeURIComponent("my Career Value growth story")}#messages">Explain how ${icon("arrow-right")}</a></div>
-          <div class="cg-worth-memory-grid">
-            ${memory.map(([label, value, body], index) => `<article class="${index === memory.length - 1 ? "active" : ""}"><span>${icon("history")} ${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}
+          <div class="cg-momentum-top">
+            <div class="cg-momentum-figure">
+              <span class="cg-momentum-trend">${icon("trending-up")} Trending up</span>
+              <strong>+5%<small>this month</small></strong>
+              <small>≈ +13% since October</small>
+            </div>
+            <div class="cg-momentum-spark">${momentumSparkline(momentumSpark)}</div>
           </div>
+          <ul class="cg-momentum-events">
+            ${momentumEvents.map(([when, text, recent]) => `<li class="${recent ? "is-recent" : ""}"><span class="cg-momentum-dot"></span><div><b>${when}</b>${text}</div></li>`).join("")}
+          </ul>
           <p class="cg-worth-note">${icon("activity")} Vera keeps a running record of every skill you finish, every project you ship, and every recruiter reply. Momentum is the strongest signal in your prediction - you've had 11 positive events in the last 30 days.</p>
         </section>
 
-        <section class="cg-worth-section">
+        <section class="cg-worth-section" id="worth-scenarios">
           <div class="cg-worth-section-head"><div><h2>Career Value Scenarios</h2><p>How different moves - staying, switching, or upskilling - change your value over time.</p></div><a href="posts.html?topic=${encodeURIComponent("these Career Value scenarios")}#messages">Explain how ${icon("arrow-right")}</a></div>
           <div class="cg-worth-scenarios">
             ${scenarios.map(([ic, title, body, width, value, tone]) => `
@@ -11474,15 +14449,19 @@ function renderMarket() {
           <article>
             <span class="cg-section-kicker">${icon("scale")} Salary negotiation - Grab Malaysia</span>
             <h2>Vera thinks you can ask for <em>RM 10,300.</em></h2>
-            <div class="cg-worth-offer-grid">
-              ${[["Expected offer", "RM 9,200"], ["Fair market value", "RM 10,100"], ["Suggested ask", "RM 10,300"]].map(([label, value], index) => `<div class="${index === 2 ? "active" : ""}"><span>${label}</span><strong>${value}</strong></div>`).join("")}
+            <p class="cg-neg-sub">Your defensible ask sits just above fair market value - backed by your skill scarcity and pipeline leverage.</p>
+            <div class="cg-neg-slider">
+              <div class="cg-neg-track">
+                <i class="cg-neg-fill" style="width:61%"></i>
+                <span class="cg-neg-fair" style="left:55%"><em></em><small>Fair &middot; RM 10,100</small></span>
+                <span class="cg-neg-handle" style="left:61%"><b>Ask RM 10,300</b></span>
+              </div>
+              <div class="cg-neg-scale"><span>Lowball<b>RM 8,400</b></span><span>Ambitious<b>RM 11,500</b></span></div>
             </div>
-            <div class="cg-worth-confidence">
-              <div class="cg-worth-confidence-head"><span>Confidence</span><strong>72%</strong></div>
-              ${worthDriverPie([["Verified market data", 30], ["Skill match to role", 26], ["Pipeline leverage", 16]])}
+            <div class="cg-neg-meta">
+              <span class="cg-neg-conf">${icon("shield-check")} <b>72%</b> confidence this holds</span>
+              <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("generating negotiation points for my next offer")}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Generate negotiation points</a>
             </div>
-            <div class="cg-worth-slider"><i><em></em><b></b></i><div><span>Lowball - RM 8,400</span><span>Fair - RM 10,100</span><span>Ambitious - RM 11,500</span></div></div>
-            <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("generating negotiation points for my next offer")}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Generate negotiation points</a>
           </article>
           <div class="cg-grow-coach">
             <div class="cg-grow-coach-head"><span><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Coach Vera</span><b>online</b></div>
@@ -11536,8 +14515,8 @@ function renderMarket() {
         worthChartSvg.outerHTML = worthTimelineSvg(worthTimelinePoints, measuredWidth, measuredHeight);
       }
     }
-    if (location.hash === "#salary-negotiation") {
-      window.setTimeout(() => qs("#salary-negotiation", root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+    if (["#worth-drivers", "#value-growth", "#worth-scenarios", "#salary-negotiation"].includes(location.hash)) {
+      window.setTimeout(() => qs(location.hash, root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
     }
     initPageTour("market");
     return;
@@ -11767,9 +14746,11 @@ function autopilotAssessJob(job, state) {
   const reasons = [];
   const threshold = Number(rules.threshold) || 0;
   if (threshold && job.match < threshold) reasons.push(`Match ${job.match}% is below your ${threshold}% rule.`);
+  // Job salaries are now stored as monthly (matching the app-wide RM/month
+  // convention), so compare directly against the user's monthly min-salary
+  // rule - no annualization.
   const minSalary = Number(rules.salary) || 0;
-  const annualMin = minSalary && minSalary < 20000 ? minSalary * 12 : minSalary;
-  if (annualMin && autopilotSalaryMax(job) < annualMin) reasons.push(`Salary tops out below RM ${annualMin.toLocaleString()} / year.`);
+  if (minSalary && autopilotSalaryMax(job) < minSalary) reasons.push(`Salary tops out below RM ${minSalary.toLocaleString()} / month.`);
   if (rules.location && !`${job.location} ${job.type}`.toLowerCase().includes(rules.location.trim().toLowerCase())) {
     reasons.push(`Outside your location rule "${rules.location}".`);
   }
@@ -11854,13 +14835,16 @@ function runAutopilot() {
 }
 
 let pipelineActiveTab = "applications";
+// Remembers which Live pipeline column is open across re-renders (moving a card
+// re-renders the page, and losing the user's place would be jarring).
+let pipelineActiveStageIndex = 0;
 
 const AUTOPILOT_MATCHES = [
-  { id: "ap-grab-product-analyst", org: "grab", title: "Product Analyst", company: "Grab", match: 86, mode: "Queue for review", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 5,500 - RM 7,500", found: "Found 2 hours ago", why: "Matches your salary floor, product analytics interest and hybrid preference.", watch: "Requires SQL case study." },
-  { id: "ap-setel-apm", org: "setel", title: "Associate Product Manager", company: "Setel", match: 91, mode: "Save automatically", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 8,000 - RM 11,000", found: "Found 4 hours ago", why: "Fintech match + hybrid + saved company. Above match threshold.", watch: "" },
-  { id: "ap-carsome-pm-growth", org: "carsome", title: "Product Manager, Growth", company: "Carsome", match: 82, mode: "Queue for review", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 11,000 - RM 15,000", found: "Found Yesterday", why: "Strong marketplace fit; alumni signal.", watch: "Company size preference uncertain (2,000+)." },
-  { id: "ap-aerodyne-ai-pm", org: "aerodyne", title: "AI Product Manager", company: "Aerodyne", match: 90, mode: "Recommend only", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 15,000 - RM 20,000", found: "Found Yesterday", why: "AI product exposure closes your top skill gap.", watch: "" },
-  { id: "ap-storehub-senior-pm", org: "storehub", title: "Senior Product Manager (Remote)", company: "StoreHub", match: 89, mode: "Queue for review", location: "Remote", workMode: "MY - Remote", salary: "RM 13,000 - RM 17,000", found: "Found 2 days ago", why: "Remote-first + async matches your working style.", watch: "" }
+  { id: "ap-grab-product-analyst", org: "grab", title: "Product Analyst", company: "Grab", match: 86, mode: "Queue for review", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 5,500 - RM 7,500 / month", found: "Found 2 hours ago", why: "Matches your salary floor, product analytics interest and hybrid preference.", watch: "Requires SQL case study." },
+  { id: "ap-setel-apm", org: "setel", title: "Associate Product Manager", company: "Setel", match: 91, mode: "Save automatically", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 8,000 - RM 11,000 / month", found: "Found 4 hours ago", why: "Fintech match + hybrid + saved company. Above match threshold.", watch: "" },
+  { id: "ap-carsome-pm-growth", org: "carsome", title: "Product Manager, Growth", company: "Carsome", match: 82, mode: "Queue for review", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 11,000 - RM 15,000 / month", found: "Found Yesterday", why: "Strong marketplace fit; alumni signal.", watch: "Company size preference uncertain (2,000+)." },
+  { id: "ap-aerodyne-ai-pm", org: "aerodyne", title: "AI Product Manager", company: "Aerodyne", match: 90, mode: "Recommend only", location: "Kuala Lumpur", workMode: "Hybrid", salary: "RM 15,000 - RM 20,000 / month", found: "Found Yesterday", why: "AI product exposure closes your top skill gap.", watch: "" },
+  { id: "ap-storehub-senior-pm", org: "storehub", title: "Senior Product Manager (Remote)", company: "StoreHub", match: 89, mode: "Queue for review", location: "Remote", workMode: "MY - Remote", salary: "RM 13,000 - RM 17,000 / month", found: "Found 2 days ago", why: "Remote-first + async matches your working style.", watch: "" }
 ];
 
 function apRoleActionState(state, roleId) {
@@ -11912,8 +14896,15 @@ function dismissApRole(role) {
 }
 
 function autopilotMatchSalaryMax(role) {
-  const numbers = (String(role.salary || "").match(/[\d,]+/g) || []).map(n => Number(n.replace(/,/g, "")));
-  return numbers.length ? Math.max(...numbers) : 0;
+  // Robust to BOTH "k" format ("RM 6.8k - 9.7k / month" -> 9700) and comma
+  // format ("RM 5,500 - RM 7,500 / month" -> 7500), all monthly. The old
+  // [\d,]+ parse ignored the "k" (so "RM 14k" compared as 14 < 5000 and was
+  // wrongly flagged) and split "5,500" into 5 and 500.
+  const s = String(role.salary || "");
+  const numbers = (s.match(/\d[\d,]*(?:\.\d+)?/g) || []).map(n => Number(n.replace(/,/g, "")));
+  if (!numbers.length) return 0;
+  const max = Math.max(...numbers);
+  return /k/i.test(s) ? max * 1000 : max;
 }
 
 function autopilotWeeklyAutoApplyCount(state) {
@@ -11988,10 +14979,7 @@ function runAutoApply(state) {
     const now = nowStamp();
     state.autopilotAutoApplyLog = [{ id: `apauto-${Date.now()}-${role.id}`, roleId: role.id, at: now }, ...(Array.isArray(state.autopilotAutoApplyLog) ? state.autopilotAutoApplyLog : [])];
     state.autopilotLog = pushAutopilotLog(state, { time: "Just now", status: "Applied", tone: "teal", title: `${role.title} at ${role.company}`, body: `Auto-applied at ${role.match}% match, within your rules and weekly cap.`, autoApplyLogId: state.autopilotAutoApplyLog[0].id });
-    state.notifications = [
-      { id: `n-autoapply-${Date.now()}-${role.id}`, icon: "bot", title: "Vera auto-applied for you", body: `${role.title} at ${role.company} - ${role.match}% match. Review it in Autopilot's Activity log.` },
-      ...(Array.isArray(state.notifications) ? state.notifications : [])
-    ];
+    pushNotification(state, { id: `n-autoapply-${Date.now()}-${role.id}`, type: "autopilot", title: "Vera auto-applied for you", body: `${role.title} at ${role.company} - ${role.match}% match. Review it in Autopilot's Activity log.`, href: "autopilot.html#autopilot-console" });
     applied.push(role);
   });
   return { state, applied };
@@ -12041,24 +15029,14 @@ function renderAutopilot() {
       ["Prep for Stripe Round 2", "Tue 2:30 PM. Your product-sense score is 68 - Vera has 3 targeted drills.", "+21% pass rate", "45 min", "Start drill", "High"],
       ["Ask Priya for a Notion referral", "Referrals get 4.2x more responses at Notion. Priya opened your last DM.", "Unlocks 1 warm intro", "3 min", "Compose ask", "Medium"]
     ].sort((a, b) => urgencyRank[a[5]] - urgencyRank[b[5]]);
-    const pipelineColumns = [
-      ["Saved", "3", [
-        ["Setel", "PM - Loyalty - Kuala Lumpur", 74, "Strong archetype match", "Your resume matches 88% - apply before Fri.", "Apply this week", "2 days ago"],
-        ["Carsome", "Senior PM - KL - hybrid", 61, "Competitive posting", "", "Tailor resume", "5 days ago"]
-      ]],
-      ["Applied", "5", [
-        ["Grab Malaysia", "PM - Payments - KL", 92, "Recruiter engaged", "Recruiter viewed your profile yesterday.", "Reply today", "3 days ago"],
-        ["Shopee MY", "PM - Growth - KL", 58, "Applied 4d ago", "Shopee usually replies within 7 days.", "Wait 3 more days", "4 days ago"],
-        ["BigPay", "Product Lead - KL - hybrid", 38, "No activity in 12d", "Silent past their typical 10-day window.", "Archive or nudge", "2 weeks ago"]
-      ]],
-      ["Interviewing", "3", [
-        ["Stripe", "PM - APAC - Remote MY", 88, "Round 2 - Tue 2:30", "Most candidates fail on Round 2 case.", "Prep product sense", "1 week ago"],
-        ["Airtable", "PM - Platform - Remote", 71, "Take-home due Fri", "Take-home weighting is 60% of decision.", "Submit by EOD", "2 weeks ago"]
-      ]],
-      ["Offer", "1", [
-        ["Aerodyne", "Senior PM - Cyberjaya", 95, "RM 1,400 below Fair Pay", "Counter with RM 10,300 - 72% acceptance.", "Negotiate on Mon", "3 weeks ago"]
-      ]]
-    ];
+    const pipelineBoard = pipelineBoardData(state);
+    const pipelineTrackedTotal = pipelineBoard.reduce((sum, column) => sum + column.items.length, 0);
+    const pipelineActiveTotal = pipelineBoard
+      .filter(column => column.kind === "active")
+      .reduce((sum, column) => sum + column.items.length, 0);
+    const pipelineInterviewTotal = (pipelineBoard.find(column => column.key === "interview")?.items.length) || 0;
+    const pipelineOfferTotal = (pipelineBoard.find(column => column.key === "offer")?.items.length) || 0;
+    if (pipelineActiveStageIndex >= pipelineBoard.length) pipelineActiveStageIndex = 0;
     const memory = [
       ["Last month", "1 conversation", "0 interviews - 0 offers"],
       ["3 weeks ago", "4 conversations", "1 recruiter reply"],
@@ -12130,7 +15108,9 @@ function renderAutopilot() {
       ? `Your ${apRestrictiveFilters} rule${apRestrictiveFilters.includes(" and ") ? "s" : ""} may be filtering out roles that are otherwise a strong fit. Loosening it slightly could surface more matches this week.`
       : `Your ${(apRules.strictness || "Balanced").toLowerCase()} match rules and ${apRules.threshold || 75}% threshold currently return ${apMatches.length} role${apMatches.length === 1 ? "" : "s"}. Widening the threshold a little could surface more.`;
     const autopilotHashTargets = ["#autopilot-console", "#autopilot-matches", "#autopilot-activity-log"];
+    const pipelineApplicationsHashTargets = ["#pipeline-impact", "#pipeline-board"];
     if (autopilotHashTargets.includes(location.hash)) pipelineActiveTab = "autopilot";
+    else if (pipelineApplicationsHashTargets.includes(location.hash)) pipelineActiveTab = "applications";
     root.innerHTML = appShell("autopilot", `
       <section class="cg-pipeline">
         <div class="cg-pipeline-tabs" data-pipeline-tabs>
@@ -12142,9 +15122,18 @@ function renderAutopilot() {
         <div class="cg-pipeline-view${pipelineActiveTab === "applications" ? " active" : ""}" data-pipeline-panel-view="applications">
         <header class="cg-pipeline-hero">
           <h1>Your <em>Application Pipeline.</em></h1>
-          <p>Vera is tracking 12 relationships, 3 recruiters who opened your profile this week, and 2 offers within striking distance. Predicted first offer: <strong>28 Nov - 64% confidence.</strong></p>
-          <a class="btn btn-primary" href="discover.html">${icon("plus")} Add application</a>
+          <p>Vera is tracking ${pipelineTrackedTotal} role${pipelineTrackedTotal === 1 ? "" : "s"} across your funnel${pipelineOfferTotal ? `, with ${pipelineOfferTotal} offer${pipelineOfferTotal === 1 ? "" : "s"} on the table` : ""}. Predicted first offer: <strong>28 Nov - 64% confidence.</strong></p>
+          <button type="button" class="btn btn-primary" data-pipeline-add="saved">${icon("plus")} Add application</button>
         </header>
+
+        <section class="cg-pipeline-kpis">
+          ${[
+            ["Active applications", String(pipelineActiveTotal), `${pipelineTrackedTotal} tracked in total`, "file-text"],
+            ["Interviewing", String(pipelineInterviewTotal), pipelineInterviewTotal ? "Keep the momentum up" : "Land your first loop", "video"],
+            ["Offers", String(pipelineOfferTotal), pipelineOfferTotal ? "Compare before you accept" : "None yet - stay consistent", "trophy"],
+            ["If you apply to 5 more matches", "3 offers", "Vera can queue them", "zap"]
+          ].map(([label, value, body, ic], index) => `<article class="${index === 3 ? "dark" : ""}"><span>${label}${icon(ic)}</span><strong>${value}</strong><p>${body}</p>${index === 3 ? `<button type="button" class="cg-pipeline-kpi-link" data-pipeline-add="saved">Add a role ${icon("arrow-right")}</button>` : ""}</article>`).join("")}
+        </section>
 
         <section class="cg-pipeline-one-move">
           <header><span>${icon("flame")} The one move today</span><small>Beats the next-best action by 2.3x</small></header>
@@ -12164,7 +15153,7 @@ function renderAutopilot() {
           </div>
         </section>
 
-        <section class="cg-pipeline-impact">
+        <section class="cg-pipeline-impact" id="pipeline-impact">
           <header class="cg-pipeline-impact-toggle-row" data-pipeline-impact-toggle role="button" tabindex="0" aria-expanded="false" aria-controls="cg-pipeline-impact-list">
             <div class="cg-pipeline-impact-heading">
               <span class="cg-pipeline-impact-icon"><img src="assets/vera-ai-coach.png" alt="Vera AI"></span>
@@ -12188,13 +15177,36 @@ function renderAutopilot() {
           </div>
         </section>
 
-        <section class="cg-pipeline-kpis">
-          ${[
-            ["Active applications", "12", "+3 this week", "file-text"],
-            ["Expected interviews", "5", "Next 3 weeks", "video"],
-            ["Expected offers", "2", "Confidence 64%", "trophy"],
-            ["If you apply to 5 more matches", "3 offers", "Vera can queue them", "zap"]
-          ].map(([label, value, body, ic], index) => `<article class="${index === 3 ? "dark" : ""}"><span>${label}${icon(ic)}</span><strong>${value}</strong><p>${body}</p>${index === 3 ? `<a href="discover.html">Queue matches ${icon("arrow-right")}</a>` : ""}</article>`).join("")}
+        <div class="cg-pipeline-board-head" id="pipeline-board">
+          <h2>Live pipeline</h2>
+          <span>${icon("info")} Employers move you as they review - or update any card yourself.</span>
+        </div>
+        <section class="cg-pipeline-board-section">
+          <div class="cg-pipeline-board">
+            <nav class="cg-pipeline-stage-nav">
+              ${pipelineBoard.map((column, index) => `
+                <div class="cg-pipeline-stage-row">
+                  <button type="button" class="cg-pipeline-stage-btn${index === pipelineActiveStageIndex ? " active" : ""}" data-pipeline-stage="${index}">
+                    <span>${column.label}</span><b>${column.items.length}</b>
+                  </button>
+                  <button type="button" class="cg-pipeline-stage-add" data-pipeline-add="${column.addStage}" aria-label="Add role to ${column.label}">${icon("plus")}</button>
+                </div>
+              `).join("")}
+            </nav>
+            <div class="cg-pipeline-stage-panel">
+              ${pipelineBoard.map((column, index) => `
+                <article class="cg-pipeline-column${index === pipelineActiveStageIndex ? " active" : ""}" data-pipeline-panel="${index}">
+                  ${column.items.length
+                    ? column.items.map(item => pipelineBoardCardMarkup(column, item)).join("")
+                    : `<div class="cg-pipeline-empty">
+                        <span>${icon(column.kind === "saved" ? "bookmark" : "inbox")}</span>
+                        <p>${column.kind === "saved" ? "No saved roles yet. Bookmark roles you're interested in from Discover." : `Nothing in ${column.label.toLowerCase()} yet.`}</p>
+                        <button type="button" class="cg-pipeline-empty-add" data-pipeline-add="${column.addStage}">${icon("plus")} Add a role</button>
+                      </div>`}
+                </article>
+              `).join("")}
+            </div>
+          </div>
         </section>
 
         <section class="cg-pipeline-memory">
@@ -12203,72 +15215,6 @@ function renderAutopilot() {
           <p>Momentum is the strongest signal in your forecast. Here's how it's been building.</p>
           <div>${memory.map(([label, value, body], index) => `<article class="${index === memory.length - 1 ? "active" : ""}"><span>${label}</span><strong>${value}</strong><p>${body}</p></article>`).join("")}</div>
           <footer>Vera - your offer probability is up <strong>+12%</strong> this week, mostly because your resume quality score jumped and Grab's recruiter engaged. If you keep this pace, expect <strong>2 offers by 28 Nov</strong> (64% confidence, widens as more evidence comes in).</footer>
-        </section>
-
-        <div class="cg-pipeline-board-head">
-          <h2>Live pipeline</h2>
-          <span>Auto-scored by Vera - updated 3 min ago</span>
-        </div>
-        <section class="cg-pipeline-board-section">
-          <div class="cg-pipeline-board">
-            <nav class="cg-pipeline-stage-nav">
-              ${pipelineColumns.map(([stage, count], index) => `
-                <div class="cg-pipeline-stage-row">
-                  <button type="button" class="cg-pipeline-stage-btn${index === 0 ? " active" : ""}" data-pipeline-stage="${index}">
-                    <span>${stage}</span><b>${count}</b>
-                  </button>
-                  <a class="cg-pipeline-stage-add" href="discover.html" aria-label="Add ${stage} application">+</a>
-                </div>
-              `).join("")}
-            </nav>
-            <div class="cg-pipeline-stage-panel">
-              ${pipelineColumns.map(([stage, count, cards], index) => `
-                <article class="cg-pipeline-column${index === 0 ? " active" : ""}" data-pipeline-panel="${index}">
-                  ${cards.map(([name, role, score, note, vera, next, timeline], cardIndex) => {
-                    const detailId = `cg-pipeline-card-${stage.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${cardIndex}`;
-                    const momentum = pipelineMomentumStatus(score);
-                    return `
-                    <section class="cg-pipeline-card">
-                      <button type="button" class="cg-pipeline-card-summary" data-pipeline-card-toggle aria-expanded="false" aria-controls="${detailId}">
-                        <span class="cg-pipeline-card-icon">${icon("building-2")}</span>
-                        <span class="cg-pipeline-card-heading"><h4>${name}</h4><p>${role}</p></span>
-                        <span class="cg-pipeline-card-score" title="Momentum reflects recruiter response time, days since last contact, and role competitiveness.">
-                          <i class="cg-pipeline-momentum-dot tone-${momentum.tone}"></i>
-                          <small>Momentum - ${momentum.label}</small>
-                          <b>${score}%</b>
-                        </span>
-                        <span class="cg-pipeline-card-next">Next - ${next}</span>
-                        <span class="cg-pipeline-card-chevron">${icon("chevron-down")}</span>
-                      </button>
-                      <div class="cg-pipeline-card-detail" id="${detailId}">
-                        <div class="cg-pipeline-card-detail-inner">
-                          <span class="cg-pipeline-timeline">${icon("clock")} ${timeline}</span>
-                          <i><em style="width:${score}%"></em></i>
-                          <p>${note}</p>
-                          ${vera ? `<blockquote>${icon("sparkles")} ${vera}</blockquote>` : ""}
-                          <footer><span>Next - ${next}</span><a href="posts.html?topic=${encodeURIComponent(`${next} for ${name}`)}#messages">Do it ${icon("chevron-right")}</a></footer>
-                        </div>
-                      </div>
-                    </section>
-                  `;
-                  }).join("")}
-                </article>
-              `).join("")}
-            </div>
-          </div>
-        </section>
-
-        <section class="cg-pipeline-review">
-          <article>
-            <span class="cg-section-kicker">${icon("chart-no-axes-column-increasing")} Week in review</span>
-            <h2>Your job search is <em>accelerating.</em></h2>
-            <p>Offer probability rose <strong>+12%</strong> this week. Vera credits your improved resume and faster recruiter replies.</p>
-            <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("planning next week's job search")}#messages">${icon("sparkles")} Plan next week with Vera</a>
-          </article>
-          <div>
-            ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "+12%", "up", "teal"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening", null, "amber"]].map(([label, value, ic, tone]) => `<section><span>${label}</span><strong class="${tone ? `tone-${tone}` : ""}">${ic ? icon("arrow-up") : ""}${value}</strong></section>`).join("")}
-          </div>
-          <footer>${icon("info")} Recommended focus next week - <strong>Practice SQL interviews.</strong> Vera has a 4-day plan queued in Grow. <a href="grow.html">Open plan ${icon("arrow-right")}</a></footer>
         </section>
 
         <section class="cg-pipeline-ripple">
@@ -12281,6 +15227,19 @@ function renderAutopilot() {
             <article class="active"><span>Pipeline</span><p>+21% pass rate at Stripe Round 2 - unlocks Setel + BigPay.</p></article>
             <article><span>Today</span><p>Interview readiness moves from 68 -> 79 by Friday.</p></article>
           </div>
+        </section>
+
+        <section class="cg-pipeline-review">
+          <article>
+            <span class="cg-section-kicker">${icon("chart-no-axes-column-increasing")} Week in review</span>
+            <h2>Your job search is <em>accelerating.</em></h2>
+            <p>Offer probability rose <strong>+12%</strong> this week. Vera credits your improved resume and faster recruiter replies.</p>
+            <a class="btn btn-primary" href="posts.html?topic=${encodeURIComponent("planning next week's job search")}#messages"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Plan next week with Vera</a>
+          </article>
+          <div>
+            ${[["Applications sent", "6"], ["Recruiters replied", "3"], ["Interviews booked", "2"], ["Offer probability", "+12%", "up", "teal"], ["Biggest win", "Resume quality"], ["Biggest blocker", "SQL screening", null, "amber"]].map(([label, value, ic, tone]) => `<section><span>${label}</span><strong class="${tone ? `tone-${tone}` : ""}">${ic ? icon("arrow-up") : ""}${value}</strong></section>`).join("")}
+          </div>
+          <footer>${icon("info")} Recommended focus next week - <strong>Practice SQL interviews.</strong> Vera has a 4-day plan queued in Grow. <a href="grow.html">Open plan ${icon("arrow-right")}</a></footer>
         </section>
         </div>
 
@@ -12533,7 +15492,7 @@ function renderAutopilot() {
       ${veraWidgetMarkup()}
     `);
     createIcons();
-    if (autopilotHashTargets.includes(location.hash)) {
+    if (autopilotHashTargets.includes(location.hash) || pipelineApplicationsHashTargets.includes(location.hash)) {
       window.setTimeout(() => qs(location.hash, root)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
     }
     wireVeraWidget(root);
@@ -12541,6 +15500,7 @@ function renderAutopilot() {
       pipelineActiveTab = btn.dataset.pipelineView;
       qsa("[data-pipeline-view]", root).forEach(b => b.classList.toggle("active", b === btn));
       qsa("[data-pipeline-panel-view]", root).forEach(panel => panel.classList.toggle("active", panel.dataset.pipelinePanelView === pipelineActiveTab));
+      renderNavigation();
     }));
     qsa("[data-select-group]", root).forEach(group => {
       const key = group.dataset.selectGroup;
@@ -12636,6 +15596,7 @@ function renderAutopilot() {
     });
     qsa("[data-pipeline-stage]", root).forEach(btn => btn.addEventListener("click", () => {
       const index = btn.getAttribute("data-pipeline-stage");
+      pipelineActiveStageIndex = Number(index) || 0;
       qsa("[data-pipeline-stage]", root).forEach(b => b.classList.toggle("active", b === btn));
       qsa("[data-pipeline-panel]", root).forEach(panel => panel.classList.toggle("active", panel.getAttribute("data-pipeline-panel") === index));
     }));
@@ -12643,6 +15604,41 @@ function renderAutopilot() {
       const card = btn.closest(".cg-pipeline-card");
       const open = card.classList.toggle("is-open");
       btn.setAttribute("aria-expanded", String(open));
+    }));
+    // Live pipeline: the "+" buttons, Apply, Advance, Move-to, and Remove all
+    // write to the same applicationRecords store the rest of the app reads.
+    qsa("[data-pipeline-add]", root).forEach(btn => btn.addEventListener("click", () => {
+      openAddToPipelineModal(btn.dataset.pipelineAdd, () => renderAutopilot());
+    }));
+    qsa("[data-pipeline-apply]", root).forEach(btn => btn.addEventListener("click", () => {
+      updateApplicationStage(btn.dataset.pipelineApply, "applied");
+      pipelineActiveStageIndex = PIPELINE_BOARD_COLUMNS.findIndex(column => column.key === "applied");
+      showToast("Application recorded - moved to Applied.");
+      renderAutopilot();
+    }));
+    qsa("[data-pipeline-advance]", root).forEach(btn => btn.addEventListener("click", () => {
+      const stageKey = btn.dataset.pipelineAdvanceStage;
+      updateApplicationStage(btn.dataset.pipelineAdvance, stageKey);
+      showToast(`Moved to ${stageMeta(stageKey).label}.`);
+      renderAutopilot();
+    }));
+    qsa("[data-pipeline-move]", root).forEach(select => select.addEventListener("change", () => {
+      updateApplicationStage(select.dataset.pipelineMove, select.value);
+      showToast(`Moved to ${stageMeta(select.value).label}.`);
+      renderAutopilot();
+    }));
+    qsa("[data-pipeline-remove]", root).forEach(btn => btn.addEventListener("click", () => {
+      const jobId = btn.dataset.pipelineRemove;
+      openConfirmModal({
+        title: "Remove this role?",
+        body: "It will be taken out of your pipeline. You can add it again anytime.",
+        confirmLabel: "Remove",
+        onConfirm: () => {
+          untrackApplication(jobId);
+          showToast("Removed from your pipeline.");
+          renderAutopilot();
+        }
+      });
     }));
     qsa("[data-pipeline-impact-toggle]", root).forEach(header => {
       const toggleImpact = () => {
@@ -12762,7 +15758,7 @@ function renderAutopilot() {
             </form>
             <div class="plan-outcome"><strong>Next action</strong><span>${activeItem.record.nextAction}</span></div>
             <div class="plan-command-row">
-              <button class="btn btn-cyan" type="button" data-app-vera="${activeItem.job.id}">${icon("sparkles")} Ask Vera</button>
+              <button class="btn btn-cyan" type="button" data-app-vera="${activeItem.job.id}"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera</button>
               <a class="btn btn-ghost" href="discover.html?job=${activeItem.job.id}#tracker">${icon("external-link")} Open job</a>
               <button class="btn btn-ghost" type="button" data-app-stage="archived" data-app-id="${activeItem.job.id}">${icon("archive")} Archive</button>
               <button class="btn btn-ghost" type="button" data-back-app-list>${icon("arrow-up")} Back to list</button>
@@ -13095,7 +16091,6 @@ function renderPosts() {
       const hay = `${post.author} ${post.title} ${post.body}`.toLowerCase();
       return trend ? trend.keywords.some(keyword => hay.includes(keyword)) : true;
     }
-    if (activeTab === "following") return ["Nadia, UX Intern", "Priya Menon", "Jason, Data Analyst"].includes(post.author);
     if (activeTab === "milestones") return post.category === "milestone" || /learned|progress|project|portfolio/i.test(post.title);
     if (activeTab === "discussions") return post.category === "discussion";
     if (activeTab === "hiring") return post.category === "hiring" || /job|role|apply|interview/i.test(`${post.title} ${post.body}`);
@@ -13297,7 +16292,7 @@ function renderPosts() {
         </div>
         <div class="cg-feed-actions">
           <button type="button" data-feed-save-org="${org.id}" class="${isSaved ? "active" : ""}">${icon("bookmark")} ${isSaved ? "Saved" : "Save"}</button>
-          <button type="button" data-feed-org-chat="${org.id}">${icon("sparkles")} Ask Vera</button>
+          <button type="button" data-feed-org-chat="${org.id}"><img class="cg-vera-mark" src="assets/vera-ai-coach.png" alt="Vera AI"> Ask Vera</button>
         </div>
       </article>
     `;
@@ -13331,9 +16326,7 @@ function renderPosts() {
     ? "Companies people are watching."
     : activeTab === "universities"
       ? "Universities shaping career paths."
-      : activeTab === "saved"
-        ? "Everything you saved for later."
-        : "Learn from people building careers like yours.";
+      : "Everything you saved for later.";
   const directoryContent = activeTab === "companies"
     ? DATA.companies.map(orgCard).join("")
     : activeTab === "universities"
@@ -13360,7 +16353,6 @@ function renderPosts() {
       <aside class="cg-feed-left" aria-label="Feed sections">
         ${[
           ["for-you", "For you", "sparkles"],
-          ["following", "Following", "users-round"],
           ["network", "Network", "users-round"],
           ["communities", "Communities", "hash"],
           ["trend-pm-transitions", "Trending", "flame"]
@@ -13374,9 +16366,8 @@ function renderPosts() {
         </article>
       </aside>
       <main class="cg-feed-main">
-        <header class="cg-feed-hero">
-          <span class="cg-overline">${isDirectoryTab ? activeTab : "Feed"}</span>
-          <h1>${feedTitle}</h1>
+        <header class="cg-feed-hero ${isDirectoryTab ? "" : "cg-feed-hero-compact"}">
+          ${isDirectoryTab ? `<span class="cg-overline">${activeTab}</span><h1>${feedTitle}</h1>` : `<h1>Feed</h1>`}
         </header>
 
         ${isDirectoryTab ? "" : `<form class="cg-feed-composer" data-post-form>
@@ -13902,12 +16893,14 @@ function init() {
   renderCommunityPage();
   renderJobsPage();
   renderDirectoryPage(document.body.dataset.directory || "");
-  renderDiscoverOrgDirectory();
   renderMarketPulsePage();
   renderCompanyProfile();
   renderUserProfile();
   renderDashboard();
   renderRecommendedRoles();
+  renderRoleDetailPage();
+  renderNotificationsPage();
+  renderCompareTray();
   renderVera();
   renderAuth();
   renderCandidateOnboarding();
@@ -13927,6 +16920,7 @@ function init() {
   renderEmployers();
   renderComparison();
   renderSiteFooter();
+  renderExploreFeaturedOpportunities();
   initFeaturedRolesCarousel();
   initResearchMarquee();
   initHomeMetricCountUp();

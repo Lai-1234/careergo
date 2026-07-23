@@ -17,11 +17,9 @@ html body[data-page="posts"]:not(#_) .topbar {
   z-index: 1000 !important;
   height: 64px !important;
   min-height: 64px !important;
-  border-bottom: 1px solid rgba(14, 44, 37, 0.1) !important;
-  background: rgba(248, 244, 235, 0.9) !important;
-  box-shadow: none !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
+  border-bottom: 1px solid #E4DFD3 !important;
+  background: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(20, 32, 26, 0.08) !important;
 }
 
 html body[data-page="posts"]:not(#_):has(.cg-feed-shell) .container.os-layout,

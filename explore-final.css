@@ -1,23 +1,39 @@
 /* explore.html - public Explore/Jobs page, layered after enterprise.css */
 
+/* Brand-green accent tokens for this page. The app's generic "teal" tokens
+   (--home-v2-primary #0b6d65, #1f5560, #47bbb7, #a6cbd1) read as blue-teal
+   at this page's scale/saturation. Per explicit request, every accent here
+   instead reuses the same dark, desaturated green already proven on
+   Create Account / Ask Vera (#07382f) and the dashboard's active-tab pill
+   (#1f332c) - never the brighter teal family. */
+html body[data-page="explore"] {
+  --explore-green: #173b35;
+  --explore-green-dark: #07382f;
+  --explore-green-mid: #0d2c26;
+  --explore-green-tile: #1f332c;
+  --explore-green-soft-bg: rgba(23, 59, 53, 0.10);
+  --explore-green-soft-border: rgba(23, 59, 53, 0.26);
+}
+
 html body[data-page="explore"] .explore-page {
   background: var(--home-v2-background, #f7f3ea);
 }
 
-html body[data-page="explore"] .eyebrow.explore-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
+/* Hero eyebrow pill: override the shared .home-badge's bright cyan dot
+   (#47bbb7, used on the homepage hero) with this page's green. */
+html body[data-page="explore"] .explore-hero .home-badge span {
+  background: var(--explore-green) !important;
+  border-color: var(--explore-green-soft-border) !important;
 }
 
-html body[data-page="explore"] .explore-eyebrow span {
-  opacity: 0.55;
+/* Vera's owl mark replaces the generic sparkle icon in the hero search
+   bar (design system: Vera is always the owl, sparkles are decorative-only
+   elsewhere). Sized to fill the same slot the sparkle svg occupied. */
+html body[data-page="explore"] .explore-search > .explore-search-icon {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 999px !important;
+  object-fit: cover !important;
 }
 
 /* Hero */
@@ -36,6 +52,7 @@ html body[data-page="explore"] .explore-hero h1 {
   max-width: 720px;
   margin: 18px 0 0;
   font-size: clamp(36px, 3.6vw, 44px) !important;
+  color: #1b2e28 !important;
 }
 
 html body[data-page="explore"] .explore-hero p {
@@ -56,7 +73,7 @@ html body[data-page="explore"] .explore-trending-row {
 /* Section rhythm */
 
 html body[data-page="explore"] .explore-section {
-  padding-block: 40px;
+  padding-block: 20px;
 }
 
 html body[data-page="explore"] .explore-section-head {
@@ -73,14 +90,53 @@ html body[data-page="explore"] .explore-section-head > div:first-child {
 
 html body[data-page="explore"] .explore-section-head h2 {
   margin: 8px 0 0;
+  font-family: "Fraunces", ui-serif, Georgia, serif !important;
+  font-size: clamp(26px, 3vw, 34px) !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
+  color: #1b2e28 !important;
 }
 
 html body[data-page="explore"] .explore-section-head p {
-  margin: 10px 0 0;
+  margin: 10px 0 0 !important;
+  color: var(--home-v2-muted-foreground, #64748b) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
 }
 
 html body[data-page="explore"] .explore-section-head .btn {
   flex-shrink: 0;
+}
+
+/* "See more" links now match the plain text-link pattern used sitewide
+   (Discover's cg-discover-link-btn / Career Value's cg-worth-section-head a)
+   instead of a pill/ghost button. */
+html body[data-page="explore"] .explore-section-head .btn.btn-ghost {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--explore-green) !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+html body[data-page="explore"] .explore-section-head .btn.btn-ghost:hover {
+  color: var(--explore-green-dark) !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+html body[data-page="explore"] .explore-section-head .btn.btn-ghost svg {
+  width: 15px;
+  height: 15px;
 }
 
 /* Shared card chrome */
@@ -93,8 +149,22 @@ html body[data-page="explore"] :is(.explore-opportunity-card, .explore-trending-
   border: 1px solid var(--home-v2-border, #e4dfd3);
   border-radius: 18px;
   padding: 16px;
-  box-shadow: var(--home-v2-shadow-soft);
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.7, 0.2, 1), border-color 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+html body[data-page="explore"] :is(.explore-opportunity-card, .explore-trending-card, .explore-company-card, .explore-program-card, .explore-collection-card):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -24px rgba(27, 46, 40, 0.35);
+  border-color: var(--explore-green-soft-border);
+}
+
+html body[data-page="explore"] :is(.explore-opportunity-card, .explore-trending-card, .explore-company-card, .explore-program-card, .explore-collection-card) h3 {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: normal !important;
+  color: #1b2e28 !important;
 }
 
 html body[data-page="explore"] .explore-avatar {
@@ -103,11 +173,13 @@ html body[data-page="explore"] .explore-avatar {
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 999px;
-  background: var(--home-v2-surface, #f2f3f5);
-  color: var(--home-v2-primary, #0b6d65);
+  border-radius: 14px;
+  background: linear-gradient(145deg, var(--explore-green-tile), var(--explore-green-dark));
+  color: #fffaf2 !important;
+  font-family: "Fraunces", Georgia, serif;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
+  box-shadow: 0 3px 6px rgba(7, 56, 47, 0.16);
 }
 
 html body[data-page="explore"] .explore-card-top {
@@ -121,79 +193,120 @@ html body[data-page="explore"] .explore-card-top {
 html body[data-page="explore"] .explore-opportunity-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 18px;
 }
 
-html body[data-page="explore"] .explore-match-pill {
-  padding: 4px 12px;
+/* Match indicator: unified with dashboard.html's .cg-match ring (same
+   conic-gradient recipe, keyed off the same --match-score custom property)
+   rather than a flat pill, per the navbar/design-unification pass. */
+html body[data-page="explore"] .explore-match-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  width: 86px;
+  height: 86px;
+  flex: 0 0 auto;
+  border: 0;
   border-radius: 999px;
-  background: rgba(77, 182, 172, 0.16);
-  color: var(--home-v2-primary, #0b6d65);
-  font-size: 12px;
+  background:
+    radial-gradient(circle, #fffaf2 0 57%, transparent 61%),
+    conic-gradient(var(--explore-green) calc(var(--match-score, 88) * 1%), var(--explore-green-soft-bg) 0);
+  box-shadow: 0 1px 3px rgba(7, 56, 47, 0.10);
+}
+
+html body[data-page="explore"] .explore-match-ring strong {
+  margin: 0;
+  color: #173b35 !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+html body[data-page="explore"] .explore-match-ring small {
+  margin-top: 2px;
+  color: #53635d !important;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+html body[data-page="explore"] .explore-opportunity-card .explore-avatar {
+  width: 56px;
+  height: 56px;
+  font-size: 19px;
+}
+
+/* Job header row: monogram + company/title + match ring, mirroring
+   dashboard.html's "Vera's Recommended Roles" .cg-job-head layout. */
+html body[data-page="explore"] .explore-job-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+html body[data-page="explore"] .explore-job-head > div {
+  flex: 1;
+  min-width: 0;
+}
+
+html body[data-page="explore"] .explore-job-head small {
+  display: block;
+  color: var(--home-v2-muted-foreground, #5b6a66) !important;
+  font-size: 13px;
   font-weight: 500;
 }
 
-html body[data-page="explore"] .explore-company-name {
-  margin: 14px 0 2px;
-  font-size: 13px !important;
-  color: var(--home-v2-muted-foreground, #64748b) !important;
+html body[data-page="explore"] .explore-job-head h3 {
+  margin: 2px 0 0;
 }
 
-html body[data-page="explore"] .explore-opportunity-card h3 {
-  margin: 0 0 12px;
-  font-size: 20px !important;
+/* "Why this role" reasons list, mirroring .cg-role-card's bullet list. */
+html body[data-page="explore"] .explore-role-reasons {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
 }
 
-html body[data-page="explore"] .explore-meta {
+html body[data-page="explore"] .explore-role-reasons li {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  font-size: 13px !important;
-  color: var(--home-v2-muted-foreground, #64748b) !important;
-}
-
-html body[data-page="explore"] .explore-meta span {
-  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  color: var(--home-v2-muted-foreground, #64748b) !important;
+  font-size: 13px;
 }
 
-html body[data-page="explore"] .explore-meta svg {
+html body[data-page="explore"] .explore-role-reasons li svg {
   width: 13px;
   height: 13px;
+  flex-shrink: 0;
+  color: var(--explore-green);
 }
 
-html body[data-page="explore"] .explore-card-bottom {
+/* Action row: primary Preview + ghost Save, mirroring .cg-action-row. */
+html body[data-page="explore"] .explore-action-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
+  gap: 8px;
+  padding-top: 14px;
   border-top: 1px solid var(--home-v2-border, #e5e7eb);
 }
 
-html body[data-page="explore"] .explore-card-bottom strong {
-  display: block;
-  font-size: 16px;
-  color: var(--home-v2-foreground, #1e293b);
-}
-
-html body[data-page="explore"] .explore-card-bottom small {
-  font-size: 12px;
-  color: var(--home-v2-muted-foreground, #64748b);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-html body[data-page="explore"] .explore-card-cta {
-  padding: 8px 16px !important;
-  min-height: auto !important;
+html body[data-page="explore"] .explore-action-row .btn {
+  flex: 1;
+  min-height: 36px !important;
+  padding: 0 14px !important;
   font-size: 13px !important;
   gap: 6px !important;
 }
 
-html body[data-page="explore"] .explore-card-cta svg {
+html body[data-page="explore"] .explore-action-row .btn svg {
   width: 14px;
   height: 14px;
 }
@@ -218,16 +331,21 @@ html body[data-page="explore"] .explore-trending-tag {
   align-items: center;
   gap: 6px;
   margin-bottom: 14px;
-  color: var(--home-v2-primary, #0b6d65);
-  font-size: 12px;
+  padding: 3px 10px 3px 8px;
+  border: 1px solid var(--explore-green-soft-border);
+  border-radius: 999px;
+  background: var(--explore-green-soft-bg);
+  color: var(--explore-green) !important;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 html body[data-page="explore"] .explore-trending-tag svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
+  color: var(--explore-green);
 }
 
 html body[data-page="explore"] .explore-trending-card h3 {
@@ -260,7 +378,7 @@ html body[data-page="explore"] .explore-trending-card dd {
 }
 
 html body[data-page="explore"] .explore-growth {
-  color: var(--home-v2-primary, #0b6d65) !important;
+  color: var(--explore-green) !important;
 }
 
 /* Company grid */
@@ -301,10 +419,12 @@ html body[data-page="explore"] .explore-open-pill {
   gap: 6px;
   margin-top: 8px;
   padding: 4px 12px;
+  border: 1px solid var(--explore-green-soft-border);
   border-radius: 999px;
-  background: var(--home-v2-surface, #f2f3f5);
-  color: var(--home-v2-foreground, #1e293b);
+  background: var(--explore-green-soft-bg);
+  color: var(--explore-green) !important;
   font-size: 12px;
+  font-weight: 500;
 }
 
 html body[data-page="explore"] .explore-open-pill svg {
@@ -323,14 +443,15 @@ html body[data-page="explore"] .explore-program-grid {
 html body[data-page="explore"] .explore-program-card .explore-card-top svg {
   width: 22px;
   height: 22px;
-  color: var(--home-v2-primary, #0b6d65);
+  color: var(--explore-green);
 }
 
 html body[data-page="explore"] .explore-badge {
   padding: 4px 10px;
+  border: 1px solid rgba(224, 179, 74, 0.45);
   border-radius: 999px;
-  background: var(--home-v2-surface, #f2f3f5);
-  color: var(--home-v2-foreground, #1e293b);
+  background: rgba(224, 179, 74, 0.22);
+  color: #8a6420 !important;
   font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
@@ -351,7 +472,7 @@ html body[data-page="explore"] .explore-program-card a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--home-v2-primary, #0b6d65) !important;
+  color: var(--explore-green) !important;
   font-size: 13px;
   font-weight: 500;
 }
@@ -384,7 +505,7 @@ html body[data-page="explore"] .explore-collection-tag {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: var(--home-v2-muted-foreground, #64748b);
+  color: var(--home-v2-muted-foreground, #64748b) !important;
 }
 
 html body[data-page="explore"] .explore-collection-tag svg {
@@ -411,9 +532,9 @@ html body[data-page="explore"] .explore-cta-section {
 html body[data-page="explore"] .explore-page .explore-cta-panel {
   margin-inline: auto;
   color: #ffffff !important;
-  background: linear-gradient(120deg, #07382f 0%, #004a41 45%, #0b6d65 100%) !important;
+  background: linear-gradient(120deg, var(--explore-green-dark) 0%, var(--explore-green-mid) 55%, var(--explore-green-tile) 100%) !important;
   border-color: transparent !important;
-  box-shadow: 0 5px 13px rgba(15, 89, 105, 0.18) !important;
+  box-shadow: 0 5px 13px rgba(7, 56, 47, 0.22) !important;
 }
 
 html body[data-page="explore"] .explore-page .explore-cta-panel h2,
@@ -423,7 +544,7 @@ html body[data-page="explore"] .explore-page .explore-cta-panel a {
 }
 
 html body[data-page="explore"] .explore-page .explore-cta-panel a {
-  color: #0b6d65 !important;
+  color: var(--explore-green-dark) !important;
   background: #ffffff !important;
   border-color: #ffffff !important;
   box-shadow: none !important;

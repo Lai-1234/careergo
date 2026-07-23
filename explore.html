@@ -7,9 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700;800;900;1000&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="enterprise.css" />
-  <link rel="stylesheet" href="explore-final.css" />
+  <link rel="stylesheet" href="styles.css?v=202607222000" />
+  <link rel="stylesheet" href="enterprise.css?v=202607231900" />
+  <link rel="stylesheet" href="explore-final.css?v=202607212000" />
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body data-page="explore">
@@ -22,11 +22,11 @@
     <main class="explore-page">
       <section class="explore-hero">
         <div class="home-container explore-hero-inner">
-          <div class="eyebrow explore-eyebrow"><span>&mdash;</span> Explore</div>
+          <div class="home-badge"><span></span> Explore</div>
           <h1>Discover your next move.</h1>
           <p>Jobs, career paths, salaries and market signals &mdash; curated by CareerGo's AI, updated in real time.</p>
           <form class="home-search explore-search" action="explore.html" method="get" aria-label="Search careers">
-            <i data-lucide="sparkles"></i>
+            <img class="explore-search-icon" src="assets/vera-ai-coach.png" alt="Vera AI" />
             <input type="search" name="q" placeholder="Search AI Engineer..." aria-label="Search AI Engineer" />
             <button class="btn" type="submit"><i data-lucide="search"></i> Search</button>
           </form>
@@ -45,56 +45,12 @@
         <div class="home-container">
           <div class="explore-section-head">
             <div>
-              <div class="eyebrow explore-eyebrow"><span>&mdash;</span> Featured Opportunities</div>
-              <h2>Curated roles, matched to real careers.</h2>
+              <h2>Featured Opportunities</h2>
               <p>Hand-picked openings from companies actively hiring this week.</p>
             </div>
             <a class="btn btn-ghost" href="register.html">Browse all jobs <i data-lucide="arrow-right"></i></a>
           </div>
-          <div class="explore-opportunity-grid">
-            <article class="card explore-opportunity-card">
-              <div class="explore-card-top"><span class="explore-avatar">S</span><span class="explore-match-pill">94% match</span></div>
-              <p class="explore-company-name">Stripe</p>
-              <h3>Applied AI Engineer</h3>
-              <div class="explore-meta"><span><i data-lucide="map-pin"></i> Singapore</span><span><i data-lucide="briefcase"></i> Full-time</span><span><i data-lucide="clock"></i> 2d</span></div>
-              <div class="explore-card-bottom"><div><strong>$140k - $180k</strong><small>Hybrid</small></div><a class="btn btn-primary explore-card-cta" href="register.html">Preview <i data-lucide="arrow-up-right"></i></a></div>
-            </article>
-            <article class="card explore-opportunity-card">
-              <div class="explore-card-top"><span class="explore-avatar">N</span><span class="explore-match-pill">91% match</span></div>
-              <p class="explore-company-name">Notion</p>
-              <h3>Senior Product Manager</h3>
-              <div class="explore-meta"><span><i data-lucide="map-pin"></i> Remote &mdash; APAC</span><span><i data-lucide="briefcase"></i> Full-time</span><span><i data-lucide="clock"></i> 5h</span></div>
-              <div class="explore-card-bottom"><div><strong>$150k - $200k</strong><small>Remote</small></div><a class="btn btn-primary explore-card-cta" href="register.html">Preview <i data-lucide="arrow-up-right"></i></a></div>
-            </article>
-            <article class="card explore-opportunity-card">
-              <div class="explore-card-top"><span class="explore-avatar">G</span><span class="explore-match-pill">88% match</span></div>
-              <p class="explore-company-name">Grab</p>
-              <h3>Data Scientist, Marketplace</h3>
-              <div class="explore-meta"><span><i data-lucide="map-pin"></i> Kuala Lumpur</span><span><i data-lucide="briefcase"></i> Full-time</span><span><i data-lucide="clock"></i> 1d</span></div>
-              <div class="explore-card-bottom"><div><strong>RM 12k - 18k</strong><small>On-site</small></div><a class="btn btn-primary explore-card-cta" href="register.html">Preview <i data-lucide="arrow-up-right"></i></a></div>
-            </article>
-            <article class="card explore-opportunity-card">
-              <div class="explore-card-top"><span class="explore-avatar">S</span><span class="explore-match-pill">85% match</span></div>
-              <p class="explore-company-name">Shopee</p>
-              <h3>UI/UX Designer, Growth</h3>
-              <div class="explore-meta"><span><i data-lucide="map-pin"></i> Jakarta</span><span><i data-lucide="briefcase"></i> Full-time</span><span><i data-lucide="clock"></i> 3d</span></div>
-              <div class="explore-card-bottom"><div><strong>IDR 25M - 40M</strong><small>Hybrid</small></div><a class="btn btn-primary explore-card-cta" href="register.html">Preview <i data-lucide="arrow-up-right"></i></a></div>
-            </article>
-            <article class="card explore-opportunity-card">
-              <div class="explore-card-top"><span class="explore-avatar">P</span><span class="explore-match-pill">82% match</span></div>
-              <p class="explore-company-name">Petronas</p>
-              <h3>Graduate Engineer, Digital</h3>
-              <div class="explore-meta"><span><i data-lucide="map-pin"></i> Kuala Lumpur</span><span><i data-lucide="briefcase"></i> Graduate</span><span><i data-lucide="clock"></i> 1w</span></div>
-              <div class="explore-card-bottom"><div><strong>RM 4.5k - 6k</strong><small>On-site</small></div><a class="btn btn-primary explore-card-cta" href="register.html">Preview <i data-lucide="arrow-up-right"></i></a></div>
-            </article>
-            <article class="card explore-opportunity-card">
-              <div class="explore-card-top"><span class="explore-avatar">L</span><span class="explore-match-pill">90% match</span></div>
-              <p class="explore-company-name">Linear</p>
-              <h3>Founding Design Engineer</h3>
-              <div class="explore-meta"><span><i data-lucide="map-pin"></i> Remote</span><span><i data-lucide="briefcase"></i> Full-time</span><span><i data-lucide="clock"></i> 6h</span></div>
-              <div class="explore-card-bottom"><div><strong>$160k - $210k</strong><small>Remote</small></div><a class="btn btn-primary explore-card-cta" href="register.html">Preview <i data-lucide="arrow-up-right"></i></a></div>
-            </article>
-          </div>
+          <div class="cg-role-unit-grid" data-explore-featured-roles></div>
           <p class="explore-note">To apply, create a free CareerGo account.</p>
         </div>
       </section>
@@ -103,8 +59,7 @@
         <div class="home-container">
           <div class="explore-section-head">
             <div>
-              <div class="eyebrow explore-eyebrow"><span>&mdash;</span> Trending Careers</div>
-              <h2>What the market is moving toward.</h2>
+              <h2>Trending Careers</h2>
               <p>Live signals from thousands of openings and salary reports.</p>
             </div>
             <a class="btn btn-ghost" href="register.html">Explore more <i data-lucide="arrow-right"></i></a>
@@ -113,22 +68,22 @@
             <article class="card explore-trending-card">
               <div class="explore-trending-tag"><i data-lucide="trending-up"></i> Trending</div>
               <h3>Applied AI Engineer</h3>
-              <dl><div><dt>Avg salary</dt><dd>$150k avg</dd></div><div><dt>Demand</dt><dd>Very High</dd></div><div><dt>Growth</dt><dd class="explore-growth">+42%</dd></div></dl>
+              <dl><div><dt>Avg salary</dt><dd>RM 710k avg</dd></div><div><dt>Demand</dt><dd>Very High</dd></div><div><dt>Growth</dt><dd class="explore-growth">+42%</dd></div></dl>
             </article>
             <article class="card explore-trending-card">
               <div class="explore-trending-tag"><i data-lucide="trending-up"></i> Trending</div>
               <h3>Product Manager</h3>
-              <dl><div><dt>Avg salary</dt><dd>$135k avg</dd></div><div><dt>Demand</dt><dd>High</dd></div><div><dt>Growth</dt><dd class="explore-growth">+18%</dd></div></dl>
+              <dl><div><dt>Avg salary</dt><dd>RM 630k avg</dd></div><div><dt>Demand</dt><dd>High</dd></div><div><dt>Growth</dt><dd class="explore-growth">+18%</dd></div></dl>
             </article>
             <article class="card explore-trending-card">
               <div class="explore-trending-tag"><i data-lucide="trending-up"></i> Trending</div>
               <h3>Data Scientist</h3>
-              <dl><div><dt>Avg salary</dt><dd>$128k avg</dd></div><div><dt>Demand</dt><dd>High</dd></div><div><dt>Growth</dt><dd class="explore-growth">+22%</dd></div></dl>
+              <dl><div><dt>Avg salary</dt><dd>RM 600k avg</dd></div><div><dt>Demand</dt><dd>High</dd></div><div><dt>Growth</dt><dd class="explore-growth">+22%</dd></div></dl>
             </article>
             <article class="card explore-trending-card">
               <div class="explore-trending-tag"><i data-lucide="trending-up"></i> Trending</div>
               <h3>UX Researcher</h3>
-              <dl><div><dt>Avg salary</dt><dd>$110k avg</dd></div><div><dt>Demand</dt><dd>Growing</dd></div><div><dt>Growth</dt><dd class="explore-growth">+27%</dd></div></dl>
+              <dl><div><dt>Avg salary</dt><dd>RM 520k avg</dd></div><div><dt>Demand</dt><dd>Growing</dd></div><div><dt>Growth</dt><dd class="explore-growth">+27%</dd></div></dl>
             </article>
           </div>
         </div>
@@ -137,7 +92,7 @@
       <section class="explore-section">
         <div class="home-container">
           <div class="explore-section-head">
-            <div><div class="eyebrow explore-eyebrow"><span>&mdash;</span> Featured Companies</div><h2>Teams hiring on CareerGo.</h2></div>
+            <div><h2>Featured Companies</h2><p>Teams hiring on CareerGo.</p></div>
             <a class="btn btn-ghost" href="companies.html">View all companies <i data-lucide="arrow-right"></i></a>
           </div>
           <div class="explore-company-grid">
@@ -154,7 +109,7 @@
       <section class="explore-section">
         <div class="home-container">
           <div class="explore-section-head">
-            <div><div class="eyebrow explore-eyebrow"><span>&mdash;</span> Graduate Opportunities</div><h2>Programmes that launch careers.</h2></div>
+            <div><h2>Graduate Opportunities</h2><p>Programmes that launch careers.</p></div>
             <a class="btn btn-ghost" href="register.html">View all opportunities <i data-lucide="arrow-right"></i></a>
           </div>
           <div class="explore-program-grid">
@@ -189,7 +144,7 @@
       <section class="explore-section">
         <div class="home-container">
           <div class="explore-section-head explore-section-head-simple">
-            <div><div class="eyebrow explore-eyebrow"><span>&mdash;</span> Career Collections</div><h2>Curated lists, updated weekly.</h2></div>
+            <div><h2>Career Collections</h2><p>Curated lists, updated weekly.</p></div>
           </div>
           <div class="explore-collection-grid">
             <a class="card explore-collection-card" href="register.html"><div class="explore-card-top"><span class="explore-collection-tag"><i data-lucide="bookmark"></i> Collection</span><i data-lucide="arrow-up-right"></i></div><h3>Highest paying graduate jobs</h3><p>The grad roles paying the most in 2026.</p></a>
@@ -213,6 +168,6 @@
       </section>
     </main>
   </div>
-  <script src="app.js"></script>
+  <script src="app.js?v=202607231900"></script>
 </body>
 </html>
