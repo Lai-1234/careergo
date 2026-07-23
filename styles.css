@@ -13396,6 +13396,12 @@ body[data-page="login"] .login-create-account {
     var(--emp-bg);
 }
 .emp-app-shell p { max-width: 72ch; }
+/* No visible scrollbars anywhere in the Employer OS (refine pass) - every
+   internal scroll region (.emp-app-main, Feed's rails/center, Messages'
+   panes, popovers/modals) keeps scrolling via wheel/touch/keyboard, it
+   just never draws a track/thumb. */
+.emp-app-shell * { scrollbar-width: none; }
+.emp-app-shell *::-webkit-scrollbar { display: none; width: 0; height: 0; }
 /* !important + doubled .emp-app-shell.emp-app-shell below: styles.css carries a
    long-standing global, unscoped !important cascade on .card/.btn/.pill/heading
    colors (from earlier light/dark theme patches), some of which reach elevated
@@ -13566,7 +13572,7 @@ body[data-page="login"] .login-create-account {
 
 /* ---------- Top navigation (replaces the old left sidebar) ---------- */
 .emp-app-header {
-  position: sticky; top: 0; z-index: 60; flex: 0 0 auto;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 60; flex: 0 0 auto;
   height: 64px;
   border-bottom: 1px solid rgba(227, 220, 200, 0.7);
   background: rgba(248, 244, 234, 0.82);
@@ -13574,8 +13580,33 @@ body[data-page="login"] .login-create-account {
   -webkit-backdrop-filter: blur(20px);
 }
 /* Keeps native scroll-into-view (tab focus, in-page jumps) from landing a
-   target under the 64px sticky header. */
+   target under the 64px fixed header. */
 html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
+/* Employer App-Shell (refine pass): the app itself never scrolls at the
+   page level - only [data-employer-app] (the bare shell div unique to
+   employer-app.html, unlike the shared data-page="employers" bucket also
+   used by the marketing/onboarding pages) gets this treatment, so those
+   two untouched pages keep normal page scroll. */
+body:has([data-employer-app]) { margin: 0; }
+/* Scoped to >=1024px only, matching every other app-shell rule
+   (.emp-app-main, .emp-feed-layout, .emp-dm-layout all fall back to
+   natural flow below 1024px) - without this guard, html/body had
+   overflow:hidden with NO breakpoint exception while .emp-app-main's own
+   fallback correctly reverted to height:auto/overflow:visible below
+   1024px, leaving mobile/narrow viewports with no scroll container at
+   all: content taller than the viewport became permanently unreachable
+   instead of falling back to normal page scroll. */
+@media (min-width: 1024px) {
+  html:has([data-employer-app]) { height: 100%; overflow: hidden; }
+  body:has([data-employer-app]) { height: 100%; overflow: hidden; }
+  /* Per-page opt-out (spec §1): Talent Pipeline is the only view that scrolls
+     like a normal document. It's detected by the .emp-pipeline-region element
+     it (and only it) renders, so html/body regain natural height + scroll
+     while every other employer view keeps the locked 100vh app-shell above.
+     Higher specificity than the locked rules, so it wins regardless of order. */
+  html:has([data-employer-app] .emp-pipeline-region) { height: auto; overflow: visible; }
+  body:has([data-employer-app] .emp-pipeline-region) { height: auto; overflow: visible; }
+}
 .emp-app-header-inner {
   width: min(var(--emp-container-max), calc(100% - 48px));
   max-width: var(--emp-container-max);
@@ -13690,15 +13721,36 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-account-menu svg { width: 15px; height: 15px; color: var(--emp-muted); }
 
 /* ---------- Page shell ---------- */
+/* App-Shell (refine pass): .emp-app-main is the single scroll region for
+   every view under the fixed 64px header - height is exact so there is
+   never a second, page-level scrollbar. Views that manage their own
+   internal scroll split (Feed's .emp-feed-layout, Messages' .emp-dm-
+   layout) opt out via :has() so they don't get a second, competing
+   scroller stacked on top of their own. */
 .emp-app-main {
   flex: 1 1 auto; min-width: 0;
   width: min(var(--emp-container-max, 1240px), calc(100% - 48px));
   max-width: var(--emp-container-max, 1240px);
   margin-inline: auto;
-  padding: 40px 0 56px;
+  margin-top: 64px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  padding: 20px 0 56px;
   box-sizing: border-box;
 }
-@media (max-width: 900px) { .emp-app-main { padding: 28px 0 40px; } }
+.emp-app-main:has(.emp-feed-layout),
+.emp-app-main:has(.emp-dm-layout) { overflow: hidden; }
+/* Talent Pipeline (spec §1): flows to its natural height and scrolls with the
+   whole document instead of being its own capped scroll region. min-height
+   keeps short filtered results from leaving a gap under the header. */
+.emp-app-main:has(.emp-pipeline-region) { height: auto; min-height: calc(100vh - 64px); overflow: visible; }
+@media (max-width: 900px) { .emp-app-main { padding: 20px 0 40px; } }
+@media (max-width: 1023px) {
+  .emp-app-main { height: auto; overflow: visible; }
+  .emp-app-main:has(.emp-feed-layout),
+  .emp-app-main:has(.emp-dm-layout),
+  .emp-app-main:has(.emp-pipeline-region) { overflow: visible; }
+}
 .emp-app-sidebar, .emp-app-sidebar-overlay, .emp-app-body { display: none; } /* legacy sidebar fully retired */
 .emp-page-container {
   /* centering/padding now lives on .emp-app-main itself so every view inherits it automatically */
@@ -13738,7 +13790,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    otherwise win over a plain .emp-page-hero__* rule (this exact
    collision broke the Vera dashboard card's contrast once already). */
 .emp-page-hero {
-  padding-top: 40px;
+  padding-top: 0;
 }
 .emp-app-shell.emp-app-shell .emp-page-hero__title {
   margin: 0 !important; font-family: var(--emp-serif) !important; font-weight: 400 !important; font-size: 36px !important;
@@ -13748,7 +13800,7 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   .emp-app-shell.emp-app-shell .emp-page-hero__title { font-size: 44px !important; }
 }
 .emp-app-shell.emp-app-shell .emp-page-hero__sub {
-  margin: 12px 0 0 !important; font-family: var(--emp-sans) !important; font-size: 14px !important; font-weight: 400 !important;
+  margin: 4px 0 0 !important; font-family: var(--emp-sans) !important; font-size: 14px !important; font-weight: 400 !important;
   line-height: 1.5 !important; color: var(--emp-muted) !important; max-width: 36rem;
 }
 /* Hero holds text only - no reserved height, no margin of its own. The
@@ -13796,8 +13848,22 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
    counter-rule above (.emp-app-shell.emp-app-shell :is(h1,h2,h3) / :is(p,div))
    which otherwise wins here and forces dark ink onto this card's dark teal
    fill, an unreadable dark-on-dark regression. */
-.emp-app-shell.emp-app-shell .emp-dash-hero :is(h2, p, span, a, svg, strong) { color: var(--emp-cream-text) !important; }
+.emp-app-shell.emp-app-shell .emp-dash-hero :is(h2, p, span, a, svg, strong, div) { color: var(--emp-cream-text) !important; }
+/* Fix 1: the eyebrow is a <div>, so it was caught by the global
+   :is(p,div){color:--emp-ink !important} counter-cascade and rendered dark
+   on the dark teal card. The buttons need explicit !important too: primary =
+   ivory fill + forest text so it pops; ghost = readable ivory text. */
+.emp-app-shell.emp-app-shell .emp-dash-hero-label { color: var(--emp-cream-text) !important; opacity: 0.85; }
+.emp-app-shell.emp-app-shell .emp-dash-hero .btn-primary { color: var(--emp-green) !important; background: var(--emp-cream-text) !important; border-color: var(--emp-cream-text) !important; }
+.emp-app-shell.emp-app-shell .emp-dash-hero .btn-primary:hover:not(:disabled) { background: rgba(247, 243, 234, 0.9) !important; }
+.emp-app-shell.emp-app-shell .emp-dash-hero .btn-ghost { color: var(--emp-cream-text) !important; opacity: 0.85; border-color: rgba(247, 243, 234, 0.35) !important; }
+.emp-app-shell.emp-app-shell .emp-dash-hero .btn-ghost:hover:not(:disabled) { opacity: 1; background: rgba(247, 243, 234, 0.12) !important; }
 .emp-dash-hero-label { display: flex; align-items: center; gap: 8px; font-family: var(--emp-sans); font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; }
+/* Vera owl mark (replaces the old sparkle glyph on every Vera/AI label).
+   Full-colour brand owl on light surfaces; forced to ivory on the dark hero
+   so it stays legible on the dark teal. */
+.emp-vera-mark { display: inline-block; vertical-align: -0.15em; object-fit: contain; flex-shrink: 0; }
+.emp-app-shell.emp-app-shell .emp-dash-hero-label .emp-vera-mark { filter: brightness(0) invert(1); opacity: 0.9; }
 .emp-dash-hero h2 { margin: 10px 0 0; font-size: clamp(22px, 2.4vw, 30px); line-height: 1.25; max-width: 46ch; }
 .emp-dash-hero-support { margin: 12px 0 0; font-family: var(--emp-sans); font-size: 14px; line-height: 1.6; opacity: 0.88; max-width: 56ch; }
 .emp-dash-hero-actions { display: flex; gap: 10px; }
@@ -13990,6 +14056,12 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   padding: 6px; border-radius: 12px; border: 1px solid var(--line); background: #fff;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14); display: grid;
 }
+/* [hidden] and .emp-actions-menu are both single-selector specificity, so
+   without this the class's own `display: grid` (author stylesheet, later
+   in source order) was beating the UA stylesheet's `[hidden]{display:none}`
+   - the closed Saved/People-Organizations-Posts menu rendered as a visible
+   empty-looking box instead of actually hiding. */
+.emp-actions-menu[hidden] { display: none; }
 .emp-actions-menu button {
   display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; text-align: left; padding: 8px 10px; border: none; background: none;
   border-radius: 8px; font-size: 13px; color: var(--text); cursor: pointer; font-family: inherit;
@@ -14199,6 +14271,10 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   color: var(--muted); font-size: var(--emp-body-sm); font-weight: 600; cursor: pointer;
 }
 .emp-subtab.active { border-color: rgba(37, 99, 235, 0.4); color: var(--blue); background: rgba(37, 99, 235, 0.06); }
+/* Fix 5: inactive filter tabs (Roles: All/Open/Draft/…) were rendering in
+   the leaked candidate-palette green - force to ink. The active tab keeps
+   its forest-filled pill (defined lower in this file). */
+.emp-app-shell.emp-app-shell .emp-subtab:not(.active) { color: var(--emp-ink, #1b2e28) !important; }
 .emp-subpanel { display: none; }
 .emp-subpanel.active { display: block; }
 .emp-talent-filters { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 12px; padding: 16px; margin-bottom: 16px; }
@@ -14251,11 +14327,19 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-today-priority-head button { display: flex; align-items: center; gap: 4px; border: 0; background: none; color: var(--emp-green, var(--text)); font-size: 12px; font-weight: 700; cursor: pointer; text-transform: none; letter-spacing: normal; }
 .emp-today-priority-head button svg { width: 12px; height: 12px; }
 .emp-today-priority-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 2px; }
-.emp-today-priority-list button {
-  display: block; width: 100%; text-align: left; border: 0; background: none; padding: 6px; border-radius: 8px;
-  font-size: 14px; color: var(--emp-ink, var(--text)); cursor: pointer;
+/* Priority rows (spec §Part 3.2): icon + text + a real due indicator +
+   a trailing chevron so it visibly affords "clickable" - not plain text. */
+.emp-priority-row {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: 0; background: none;
+  padding: 7px 6px; border-radius: 8px; cursor: pointer;
 }
-.emp-today-priority-list button:hover { background: rgba(7, 56, 47, 0.05); }
+.emp-priority-row:hover, .emp-priority-row:focus-visible { background: rgba(7, 56, 47, 0.05); }
+.emp-priority-row:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 1px; }
+.emp-priority-row-icon { flex-shrink: 0; display: inline-flex; color: var(--emp-green, #1f5560); }
+.emp-priority-row-icon svg { width: 15px; height: 15px; }
+.emp-priority-row-text { flex: 1; min-width: 0; font-size: 13px; color: var(--emp-ink, var(--text)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.emp-priority-row-due { flex-shrink: 0; font-size: 11px; font-weight: 600; color: var(--emp-muted, var(--muted)); }
+.emp-priority-row > svg:last-child { flex-shrink: 0; width: 14px; height: 14px; color: var(--emp-muted, var(--muted)); }
 .emp-kpi-clickable { cursor: pointer; text-align: left; font: inherit; color: inherit; }
 .emp-kpi-clickable:hover { border-color: var(--emp-green); }
 .emp-pipeline-section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
@@ -14273,70 +14357,364 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-pipeline-summary-item strong { font-size: 18px; font-weight: 700; color: var(--emp-ink, var(--text)); }
 .emp-pipeline-summary-item span { font-size: 13px; color: var(--emp-muted, var(--muted)); }
 .emp-inline-clear { border: 0; background: none; padding: 0; color: var(--emp-green, var(--blue)); font-weight: 600; cursor: pointer; text-decoration: underline; }
-/* flex-wrap here (not just in the responsive block below) is a deliberate
-   safety net: 200px x 6 + 8px x 5 gaps is tuned to fit exactly inside the
-   page's 1240px container, so a few sub-pixels of rounding at odd browser
-   zoom levels could push it over. Wrapping instead of scrolling means that
-   edge case degrades to "one column drops to the next line," never a
-   horizontal scrollbar. */
-.emp-pipeline-board { display: flex; flex-wrap: wrap; gap: 8px; align-items: start; }
-/* 200px, not the spec's ~232px target: the page's shared content container
-   caps at --emp-container-max (1240px), and 6 columns + 5 gaps only fits
-   that width at 200px each - going wider would force horizontal scroll
-   back in, which is the one thing this layout exists to avoid. */
-.emp-pipeline-col { flex: 0 0 200px; width: 200px; min-width: 0; }
-.emp-pipeline-col h3 {
-  position: sticky; top: 0; z-index: 2; background: var(--emp-bg, #f8f4eb);
-  display: flex; align-items: center; gap: 6px; margin: 0 0 8px; padding: 4px 0;
-  font-size: 18px; font-weight: 600;
-}
-.emp-pipeline-col-body { display: grid; gap: 6px; min-height: 40px; border-radius: 12px; transition: background 150ms; }
-.emp-pipeline-col-body.emp-drop-target { background: rgba(7, 56, 47, 0.06); outline: 2px dashed var(--emp-teal, var(--line)); outline-offset: 4px; }
 
-.emp-cand-card {
-  padding: 10px 12px; min-height: 130px; display: grid; gap: 6px; cursor: pointer; position: relative;
-  border: 1px solid transparent; transition: box-shadow 150ms, transform 150ms, opacity 150ms, border-color 150ms;
+/* ============================================================
+   Talent Pipeline refinement (spec §1–§7): board-only scroll region,
+   toolbar, calendar header zone, stat pills, stage drawers, schedule modal.
+   All scoped to .emp- ; introduces only the §3 calendar palette as new color.
+   ============================================================ */
+/* Talent Pipeline flows as one normal document (spec §1) - no fixed-height
+   region, no nested scroll containers. Everything (toolbar, priority, stats,
+   board) stacks top to bottom and the page grows as tall as it needs. */
+.emp-pipeline-region { display: block; }
+.emp-pipeline-fixed { display: block; }
+/* Bottom padding clears the fixed Vera owl FAB's footprint (68px + 24px) so
+   the last row of cards never ends underneath it when scrolled to the end. */
+.emp-pipeline-scroll { display: block; padding: 4px 2px 100px; }
+
+/* §2 Toolbar: role select + search (icon inside) + right-aligned Ask Vera,
+   all sharing one 36px height. */
+.emp-pipeline-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.emp-toolbar-select {
+  height: 36px; padding: 0 30px 0 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px;
+  background: #fff; font-size: 13px; font-family: inherit; color: var(--emp-ink, var(--text)); cursor: pointer; min-width: 180px;
 }
-/* z-index: the hover transform below creates a new stacking context for the
-   card; without a z-index here that context sits at "auto" (~0), which traps
-   the menu's z-index:20 underneath the column header's z-index:2 and blocks
-   clicks on it. 3 is enough to clear the header (2) while hovered/focused. */
-.emp-cand-card:hover, .emp-cand-card:focus-within { box-shadow: var(--emp-shadow-card-hover, 0 12px 28px rgba(15,23,42,0.12)); transform: translateY(-1px); z-index: 3; }
+.emp-toolbar-search {
+  position: relative; display: flex; align-items: center; gap: 8px; flex: 1 1 240px; max-width: 380px;
+  height: 36px; padding: 0 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; background: #fff;
+}
+.emp-toolbar-search svg { width: 15px; height: 15px; color: var(--emp-muted, var(--muted)); flex-shrink: 0; }
+.emp-toolbar-search input { flex: 1; min-width: 0; border: 0; background: none; outline: 0; font-size: 13px; font-family: inherit; color: var(--emp-ink, var(--text)); }
+.emp-toolbar-spacer { flex: 1 1 0; min-width: 0; }
+.emp-pipeline-toolbar .emp-vera-accent-btn { height: 36px; flex-shrink: 0; }
+/* Ask Vera contrast fix (spec §Part 3.5): the shared .emp-vera-accent-btn
+   is a low-contrast ghost outline everywhere else it's used, which is fine
+   on a white card but failed AA sitting directly on the cream toolbar. This
+   modifier is scoped to just this toolbar instance - it doesn't change the
+   button's appearance anywhere else it's already used (Roles, Feed, etc). */
+.emp-vera-accent-btn--filled { background: rgba(111, 95, 196, 0.12) !important; border-color: rgba(111, 95, 196, 0.35) !important; }
+.emp-vera-accent-btn--filled:hover { background: rgba(111, 95, 196, 0.2) !important; }
+
+/* §3 Header zone: priority + stat filters stacked on the left (this is
+   also where the old dead space lived, since Priority alone was much
+   shorter than the calendar beside it), calendar on the right. */
+.emp-pipeline-headzone { display: grid; grid-template-columns: minmax(320px, 0.62fr) minmax(360px, 1fr); gap: 16px; margin-bottom: 16px; align-items: start; }
+.emp-pipeline-headzone-left { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.emp-pipeline-headzone .emp-today-priority { margin-bottom: 0; padding: 12px 14px; }
+.emp-today-priority-list { max-height: none; }
+/* Stat rows: same 5 counters, now functional filters instead of inert
+   duplicate copy of the column counts (spec §Part 3.3) - stacked here to
+   fill the gap beside the taller calendar instead of sitting in their own
+   separate full-width row below it. */
+.emp-pipeline-stat-filters { display: flex; flex-direction: column; gap: 2px; padding: 4px; border: 1px solid var(--emp-line, var(--line)); border-radius: var(--emp-radius-card, 14px); background: #fff; }
+.emp-stat-filter-row {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; background: none;
+  padding: 7px 8px; border-radius: 8px; cursor: pointer;
+}
+.emp-stat-filter-row:hover { background: rgba(7, 56, 47, 0.05); }
+.emp-stat-filter-row.active { background: var(--emp-teal-soft, #c8dddf); }
+.emp-stat-filter-row:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 1px; }
+.emp-stat-filter-icon { flex-shrink: 0; display: inline-flex; }
+.emp-stat-filter-icon svg { width: 15px; height: 15px; }
+.emp-stat-filter-row strong { flex-shrink: 0; font-size: 14px; font-weight: 700; color: var(--emp-ink, var(--text)); }
+.emp-stat-filter-row span { font-size: 12px; color: var(--emp-muted, var(--muted)); }
+@media (max-width: 1023px) { .emp-pipeline-headzone { grid-template-columns: 1fr; } }
+
+/* §3a/3b Schedule mini-calendar. */
+.emp-cal-card { padding: 12px 14px; }
+.emp-cal-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.emp-cal-title { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--emp-muted, var(--muted)); }
+.emp-cal-title svg { width: 14px; height: 14px; }
+.emp-cal-nav { display: flex; align-items: center; gap: 4px; }
+.emp-cal-month { font-size: 13px; font-weight: 700; min-width: 108px; text-align: center; }
+.emp-cal-arrow { display: grid; place-items: center; width: 24px; height: 24px; border: 0; background: none; border-radius: 6px; cursor: pointer; color: var(--emp-muted, var(--muted)); }
+.emp-cal-arrow:hover { background: rgba(7, 56, 47, 0.06); color: var(--emp-ink, var(--text)); }
+.emp-cal-arrow svg { width: 15px; height: 15px; }
+.emp-cal-today-link { border: 0; background: none; padding: 0 4px; font-size: 12px; font-weight: 600; color: var(--emp-green, var(--text)); cursor: pointer; }
+.emp-cal-weekdays, .emp-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+.emp-cal-weekdays { margin-bottom: 2px; }
+.emp-cal-weekdays span { text-align: center; font-size: 10px; font-weight: 700; color: var(--emp-muted, var(--muted)); padding: 2px 0; }
+.emp-cal-grid { gap: 1px; }
+.emp-cal-cell {
+  position: relative; min-height: 34px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  gap: 2px; padding: 3px 0 4px; border-radius: 6px;
+}
+.emp-cal-cell--has { cursor: pointer; }
+.emp-cal-cell--has:hover { background: rgba(7, 56, 47, 0.06); }
+.emp-cal-cell--other { opacity: 0.32; }
+.emp-cal-cell--today { box-shadow: inset 0 0 0 1.5px var(--emp-green, #1f5560); }
+.emp-cal-num { font-size: 11px; font-weight: 500; color: var(--emp-ink, var(--text)); line-height: 1; }
+.emp-cal-squares { display: flex; align-items: center; gap: 2px; min-height: 6px; }
+.emp-cal-sq { display: inline-block; width: 6px; height: 6px; border-radius: 2px; flex-shrink: 0; }
+.emp-cal-sq--past { background: transparent !important; border: 1px solid; opacity: 0.6; }
+.emp-cal-more { font-size: 8px; font-weight: 700; color: var(--emp-muted, var(--muted)); }
+.emp-cal-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--emp-line, var(--line)); }
+.emp-cal-legend-item { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--emp-muted, var(--muted)); }
+
+/* §3c Day activity popover (portal, never clipped). */
+.emp-cal-popover {
+  position: fixed; z-index: 300; width: min(360px, calc(100vw - 24px)); max-height: min(420px, calc(100vh - 24px)); overflow-y: auto;
+  padding: 14px; border-radius: var(--emp-radius-lg, 10px); background: #fff; box-shadow: 0 18px 40px -16px rgba(27, 46, 40, 0.28);
+}
+.emp-cal-pop-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.emp-cal-pop-head strong { font-size: 13px; }
+.emp-cal-pop-close { display: grid; place-items: center; width: 24px; height: 24px; border: 0; background: none; cursor: pointer; color: var(--emp-muted, var(--muted)); }
+.emp-cal-pop-section { margin-bottom: 10px; }
+.emp-cal-pop-section .emp-tags-label { display: block; margin-bottom: 6px; }
+.emp-cal-pop-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; }
+.emp-cal-pop-item .emp-cal-sq { margin-top: 4px; }
+.emp-cal-pop-item-body { min-width: 0; }
+.emp-cal-pop-item-body strong { display: block; font-size: 13px; }
+.emp-cal-pop-item-body span { display: block; font-size: 12px; color: var(--emp-muted, var(--muted)); }
+.emp-cal-pop-link { margin-top: 3px; border: 0; background: none; padding: 0; display: inline-flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 600; color: var(--emp-green, var(--text)); cursor: pointer; }
+.emp-cal-pop-link svg { width: 13px; height: 13px; }
+
+/* §4 Stat counters live inside .emp-pipeline-stat-filters now (headzone
+   left column, stacked beside the priority card) - see that block above;
+   they're functional filters, not a separate inert row anymore. */
+
+/* §6 Stage-action drawer. */
+.emp-stage-drawer-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.emp-stage-drawer-title { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.emp-stage-drawer-title strong { font-size: 15px; }
+.emp-stage-vera { padding: 12px; margin-bottom: 14px; border-radius: 12px; background: rgba(111, 95, 196, 0.06); }
+.emp-stage-vera p { margin: 6px 0 0; font-size: 13px; line-height: 1.5; color: var(--emp-ink, var(--text)); }
+.emp-stage-why { margin-top: 6px; }
+.emp-stage-why summary { font-size: 12px; font-weight: 600; color: var(--emp-ai, #6f5fc4); cursor: pointer; }
+.emp-stage-why p { margin: 6px 0 0; font-size: 12px; color: var(--emp-muted, var(--muted)); }
+.emp-stage-score { display: grid; gap: 5px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; }
+.emp-stage-score .emp-match-row { display: grid; grid-template-columns: 64px 1fr 26px; align-items: center; gap: 8px; font-size: 11px; }
+.emp-stage-score .emp-match-row i { display: block; height: 4px; border-radius: 999px; background: rgba(7, 56, 47, 0.1); overflow: hidden; font-style: normal; }
+.emp-stage-score .emp-match-row em { display: block; height: 100%; background: var(--emp-green, #1f5560); border-radius: 999px; font-style: normal; }
+.emp-stage-score .emp-match-row strong { text-align: right; }
+.emp-stage-resume-link { display: inline-flex; align-items: center; gap: 6px; margin: 4px 0 12px; border: 0; background: none; padding: 0; font-size: 13px; font-weight: 600; color: var(--emp-green, var(--text)); cursor: pointer; }
+.emp-stage-resume-link svg { width: 14px; height: 14px; }
+.emp-stage-decision { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.emp-stage-field { display: grid; gap: 6px; margin-bottom: 12px; font-size: 13px; font-weight: 600; color: var(--emp-muted, var(--muted)); }
+.emp-stage-field select, .emp-stage-field input, .emp-stage-field textarea {
+  width: 100%; padding: 9px 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-size: 13px; font-family: inherit; color: var(--emp-ink, var(--text)); background: #fff;
+}
+.emp-stage-questions { margin: 6px 0 12px; padding-left: 18px; display: grid; gap: 6px; font-size: 13px; line-height: 1.45; }
+.emp-stage-rating { display: flex; gap: 6px; margin: 6px 0 12px; }
+.emp-stage-rating-opt { position: relative; }
+.emp-stage-rating-opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.emp-stage-rating-opt span { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.emp-stage-rating-opt input:checked + span { background: var(--emp-green, #1f5560); border-color: var(--emp-green, #1f5560); color: #fff; }
+.emp-compare-grid { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(130px, 1fr); gap: 8px; margin: 6px 0 12px; overflow-x: auto; }
+.emp-compare-col { padding: 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; display: grid; gap: 6px; }
+.emp-compare-col--focus { border-color: var(--emp-green, #1f5560); background: rgba(7, 56, 47, 0.03); }
+.emp-compare-col-head { display: flex; align-items: center; gap: 6px; }
+.emp-compare-col-head strong { font-size: 13px; }
+.emp-compare-metric { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; font-size: 11px; color: var(--emp-muted, var(--muted)); }
+.emp-compare-metric strong { font-size: 12px; color: var(--emp-ink, var(--text)); text-align: right; }
+.emp-onboard-progress { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; margin: 10px 0 12px; font-size: 12px; color: var(--emp-muted, var(--muted)); }
+.emp-onboard-progress i { display: block; height: 6px; border-radius: 999px; background: rgba(7, 56, 47, 0.1); overflow: hidden; font-style: normal; }
+.emp-onboard-progress em { display: block; height: 100%; background: var(--emp-ai, #6f5fc4); border-radius: 999px; font-style: normal; }
+.emp-onboard-progress strong { color: var(--emp-ink, var(--text)); }
+.emp-onboard-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; }
+.emp-onboard-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.emp-onboard-owner { font-size: 11px; font-weight: 600; color: var(--emp-muted, var(--muted)); flex-shrink: 0; }
+
+/* §7 Schedule modal. */
+.emp-schedule-card { width: min(460px, calc(100vw - 32px)); }
+.emp-schedule-form { margin-top: 12px; }
+.emp-schedule-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.emp-schedule-card .emp-stage-field { margin-bottom: 12px; }
+/* ============================================================
+   Candidate Pipeline board rebuild (bug fixes + redesign).
+   Root causes fixed here:
+   - #1 cards overflowing into the next column: .emp-pipeline-col-body was
+     `display:grid` with no `grid-template-columns`, so its implicit auto
+     column took its width from the widest child's min-content instead of
+     the 300px track (the same "grid blowout" bug found twice already
+     elsewhere in this file). minmax(0,1fr) + overflow:hidden on the column
+     itself now make the column a hard clip boundary, per spec.
+   - #2 board wrapping to a second row: `flex-wrap:wrap` replaced with a
+     single-row `overflow-x:auto` rail; six 300px columns + gaps simply
+     scroll horizontally instead of wrapping.
+   - #3 "columns collapse to empty stubs on scroll": NOT a data-loss bug -
+     verified via DOM audit (identical card counts/HTML at every scroll and
+     resize position tested). It was a rendering artifact of #1 + #2:
+     every column header was `position:sticky;top:0` against the same
+     scroll container, and because Hired wrapped onto its own row (~345px
+     lower), scrolling past that offset made Hired's sticky header pin
+     itself over the same screen position New's header used to occupy,
+     while New/Shortlisted's actual cards had simply scrolled out of view
+     above - looking like the columns emptied out when nothing was ever
+     removed. Fixing #1 and #2 removes the two preconditions (wrap +
+     mismatched sticky offsets) that produced it; it cannot recur once
+     every column starts at the same Y and cards can't bleed into a
+     neighbour. */
+/* All 6 stages fit one screen width (spec §3): a plain equal-column grid, no
+   horizontal scroll at any width. minmax(0, 1fr) lets every track shrink below
+   its content's min-content width - paired with min-width:0 on the columns and
+   cards below (and the card's own overflow:hidden), the board can never force
+   a horizontal scrollbar; narrow screens just squeeze the columns. */
+.emp-pipeline-board {
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; width: 100%;
+  align-items: start;
+}
+/* Narrow-screen squeeze (spec §4): tighten gaps + card padding below 1280px;
+   the 6 columns stay in one row and simply get narrower - never wrap, never
+   scroll sideways. */
+@media (max-width: 1279px) {
+  .emp-pipeline-board { gap: 8px; }
+  .emp-cand-card { padding: 8px 10px; }
+  .emp-pipeline-col-name { font-size: 12px; }
+}
+/* Column: a real tinted surface (2-4% of forest over cream) and a grid child
+   that shrinks with the board (min-width:0). overflow is visible (spec §8) -
+   the column no longer clips; cards can't bleed into a neighbour because each
+   card fills its own 1fr track and clips its own content (card overflow:hidden
+   + min-width:0), and text truncates rather than forcing the column wider. */
+.emp-pipeline-col {
+  min-width: 0; position: relative; overflow: visible;
+  display: flex; flex-direction: column;
+  background: rgba(7, 56, 47, 0.03); border: 1px solid var(--emp-line, var(--line)); border-radius: 12px;
+  padding: 0 10px 10px;
+}
+/* Stage accent bar - hue progresses New -> Hired (PIPELINE_STAGE_ACCENT),
+   set inline per column via --emp-stage-accent so order reads without
+   reading the label. */
+.emp-pipeline-col::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--emp-stage-accent); z-index: 1; }
+/* Header scrolls with the page (spec §7) - not sticky. Single row; the name
+   and the "longest: Nd" metric truncate rather than clip at the column edge
+   or push the column wider. */
+.emp-pipeline-col-head {
+  flex: 0 0 auto;
+  display: flex; align-items: baseline; gap: 6px; flex-wrap: nowrap;
+  margin: 3px -10px 8px; padding: 8px 10px 8px;
+  background: #f2efe4; border-bottom: 1px solid var(--emp-line, var(--line));
+}
+.emp-pipeline-col-name { min-width: 0; font-family: var(--emp-sans); font-size: 13px; font-weight: 600; color: var(--emp-ink, var(--text)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.emp-pipeline-col-head .pill { flex-shrink: 0; }
+/* Quiet secondary metric (spec: "earns its space") - real data only, see
+   daysInCurrentStage(); simply omitted when there's nothing to show. */
+.emp-pipeline-col-metric { flex-shrink: 1; min-width: 0; margin-left: auto; font-size: 11px; font-weight: 500; color: var(--emp-muted, var(--muted)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* No internal scroll (spec §1/§8): the column body renders every visible card
+   in full and grows the column (and the page). The 5-card cap + "Show all N"
+   toggle keep it from ever getting unbounded. */
+.emp-pipeline-col-body {
+  display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto; min-height: 40px; min-width: 0;
+}
+/* "Show all N" / "Show less" (spec §6): expands the column in place. */
+.emp-pipeline-col-showall {
+  display: inline-flex; align-items: center; gap: 3px; align-self: flex-start;
+  margin-top: 8px; padding: 4px 2px; border: 0; background: none; cursor: pointer;
+  font-family: var(--emp-sans); font-size: 12px; font-weight: 600; color: var(--emp-green, #1f5560);
+}
+.emp-pipeline-col-showall:hover { text-decoration: underline; }
+.emp-pipeline-col-showall svg { width: 13px; height: 13px; }
+/* Empty state (bug #6) - every column shows real copy, never a blank box. */
+.emp-pipeline-empty { padding: 22px 6px 8px; text-align: center; }
+.emp-pipeline-empty p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--emp-muted, var(--muted)); }
+.emp-pipeline-empty-sub { margin-top: 4px !important; font-size: 11px !important; }
+/* Drop placeholder: a gap, not a coloured column flash (spec). Rendered
+   hidden at the end of every column and moved to the pointer's row via
+   dragover, not created/destroyed on every event. */
+.emp-cand-drop-placeholder { height: 128px; border-radius: 10px; border: 2px dashed rgba(31, 85, 96, 0.4); background: rgba(31, 85, 96, 0.06); flex-shrink: 0; }
+
+/* Card: rebuilt around the next action (bug #4 fix baked in - every card
+   is a fixed height regardless of badges, via the reserved badge-slot row
+   below, so uneven content can never break the column's row rhythm; there
+   is no cross-column row alignment to break in the first place since each
+   column is its own independent vertical stack). */
+/* Content-driven height (no fixed 128px): collapsed cards are only as tall as
+   their content, and hovering/expanding a card grows it downward by exactly
+   the action row's height (see .emp-cand-actions) - no wasted space, no
+   overlap. overflow:hidden still clips horizontally so a card can never widen
+   its grid column. */
+.emp-cand-card {
+  position: relative; flex-shrink: 0; min-width: 0; padding: 10px 12px; border-radius: 10px;
+  background: #fff; border: 1px solid var(--emp-line, var(--line)); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex; flex-direction: column; gap: 4px; cursor: pointer; overflow: hidden;
+  transition: box-shadow 150ms var(--emp-motion-ease, ease), border-color 150ms var(--emp-motion-ease, ease), transform 150ms var(--emp-motion-ease, ease);
+}
+.emp-cand-card:hover, .emp-cand-card:focus-within { box-shadow: 0 10px 24px -10px rgba(15, 23, 42, 0.22); border-color: rgba(7, 56, 47, 0.22); }
 .emp-cand-card:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 2px; }
-.emp-cand-card.emp-cand-card-expanded { border-color: var(--emp-line, var(--line)); }
 .emp-cand-card.emp-cand-card-dragging { opacity: 0.4; }
 .emp-cand-card.emp-cand-card-moved { animation: empCandCardMoved 900ms ease-out; }
+.emp-cand-card.emp-cand-card-highlight { animation: empCandCardHighlight 1.8s ease-out; }
 @keyframes empCandCardMoved {
   0% { box-shadow: 0 0 0 3px rgba(7, 56, 47, 0.35); }
-  100% { box-shadow: var(--emp-shadow-card, 0 1px 2px rgba(15,23,42,0.05)); }
+  100% { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
 }
-.emp-cand-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.emp-cand-identity { min-width: 0; }
-.emp-cand-name { display: block; font-size: 18px; font-weight: 600; line-height: 1.25; }
-.emp-cand-position { margin: 1px 0 0; font-size: 15px; font-weight: 400; color: var(--emp-muted, var(--muted)); }
-.emp-cand-location { margin: 2px 0 0; font-size: 11px; color: var(--emp-muted, var(--muted)); }
-.emp-cand-match { position: relative; flex-shrink: 0; }
+@keyframes empCandCardHighlight {
+  0%, 35% { box-shadow: 0 0 0 3px rgba(31, 85, 96, 0.45); border-color: var(--emp-green, #1f5560); }
+  100% { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .emp-cand-card { transition: none; }
+  .emp-cand-card.emp-cand-card-moved, .emp-cand-card.emp-cand-card-highlight { animation: none; box-shadow: 0 0 0 3px rgba(31, 85, 96, 0.35); }
+}
+/* Row 1: avatar + name + match% (right-aligned via identity flex:1). */
+.emp-cand-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.emp-cand-avatar {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 999px; background: var(--emp-bg-deep, #efe8d8);
+  color: var(--emp-green, #1f5560); font-size: 11px; font-weight: 700; font-family: var(--emp-sans);
+}
+.emp-cand-avatar.sm { width: 22px; height: 22px; font-size: 10px; }
+.emp-cand-identity { min-width: 0; flex: 1; }
+.emp-cand-name { display: block; font-size: 14px; font-weight: 500; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Match% colour scale (spec: >=90 strong, 75-89 medium, <75 quiet) - a
+   dedicated scale for this card only; unrelated to the shared .pill
+   green/gold tones used elsewhere, so this threshold can't shift anything
+   else. `title` attribute carries the explanatory tooltip. */
 .emp-cand-match-badge {
-  display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 12px; font-weight: 500;
-  color: var(--emp-muted, var(--muted)); background: rgba(15, 23, 42, 0.05);
+  flex-shrink: 0; display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; cursor: help;
 }
-.emp-cand-match-badge.green { color: #0f6b4f; background: rgba(15, 107, 79, 0.1); }
-.emp-cand-match-badge.gold { color: #92650c; background: rgba(217, 119, 6, 0.12); }
-.emp-cand-match-popover {
-  position: absolute; top: calc(100% + 6px); right: 0; z-index: 20; width: 150px;
-  padding: 10px 12px; border-radius: 10px; background: #fff; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
-  border: 1px solid var(--emp-line, var(--line));
+.emp-cand-match-badge--strong { color: #0f6b4f; background: rgba(15, 107, 79, 0.14); }
+.emp-cand-match-badge--medium { color: #92650c; background: rgba(217, 119, 6, 0.14); }
+.emp-cand-match-badge--quiet { color: var(--emp-muted, var(--muted)); background: rgba(15, 23, 42, 0.05); }
+.emp-cand-match-badge:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 1px; }
+/* Row 2: role, muted, single line. */
+.emp-cand-position { margin: 0; font-size: 13px; font-weight: 400; color: var(--emp-muted, var(--muted)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Row 3: next action + when, muted single line (spec: --muted-foreground). */
+.emp-cand-next-action { margin: 0; font-size: 12px; font-weight: 500; color: var(--emp-muted, var(--muted)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Row 4: status badges - only rendered when the card actually has badges, so
+   badge-less cards sit tight with no reserved dead space. These are status
+   info (not actions): they hold a fixed position directly below the next-
+   action line and never move when the action row expands below them. */
+.emp-cand-badge-slot { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.emp-cand-mini-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 6px; border-radius: 999px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.emp-cand-mini-badge--vera { background: rgba(111, 95, 196, 0.12); color: var(--emp-ai, #6f5fc4); }
+.emp-cand-mini-badge--referral { background: rgba(59, 130, 246, 0.12); color: #2563eb; }
+.emp-cand-mini-badge--feedback { background: rgba(234, 179, 8, 0.16); color: #92650c; }
+.emp-cand-mini-badge img { width: 11px; height: 11px; flex-shrink: 0; }
+.emp-vera-why-btn { flex-shrink: 0; border: 0; background: none; padding: 0; display: grid; place-items: center; cursor: pointer; color: var(--emp-ai, #6f5fc4); }
+.emp-vera-why-btn svg { width: 14px; height: 14px; }
+/* Action row (Move to / Message / Profile): collapsed to zero height by
+   default so it adds no layout and can never overlap the status badges above
+   it. It expands IN FLOW - not as an overlay - on hover (hover-capable
+   devices), on :focus-within (keyboard), and on .is-expanded (touch tap-
+   toggle, set in JS), pushing the card taller by exactly its own height while
+   the badges stay put. Move to fills the row; the two icon buttons are 32x32. */
+.emp-cand-actions {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 6px;
+  max-height: 0; opacity: 0; margin-top: 0; overflow: hidden;
+  transition: max-height 200ms var(--emp-motion-ease, ease), opacity 150ms var(--emp-motion-ease, ease), margin-top 200ms var(--emp-motion-ease, ease);
 }
+@media (hover: hover) {
+  .emp-cand-card:hover .emp-cand-actions { max-height: 44px; opacity: 1; margin-top: 10px; }
+}
+.emp-cand-card:focus-within .emp-cand-actions,
+.emp-cand-card.is-expanded .emp-cand-actions { max-height: 44px; opacity: 1; margin-top: 10px; }
+@media (prefers-reduced-motion: reduce) { .emp-cand-actions { transition: none; } }
+.emp-cand-action-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  height: 32px; padding: 0 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px;
+  background: transparent; color: var(--emp-ink, var(--text)); font-family: var(--emp-sans); font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.emp-cand-action-btn--move { justify-content: space-between; }
+.emp-cand-action-btn:not(.emp-cand-action-btn--move) { width: 32px; padding: 0; }
+.emp-cand-action-btn:hover { background: var(--emp-teal-soft, #c8dddf); border-color: var(--emp-teal-soft, #c8dddf); }
+.emp-cand-action-btn:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 1px; }
+.emp-cand-action-btn svg { width: 14px; height: 14px; }
+
 .emp-match-row { display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; color: var(--emp-muted, var(--muted)); }
 .emp-match-row strong { color: var(--emp-ink, var(--text)); }
-
-.emp-cand-vera-badge {
-  display: flex; align-items: center; gap: 4px; position: relative;
-  font-size: 12px; font-weight: 500; color: var(--emp-ai, #6f5fc4);
-}
-.emp-cand-vera-badge svg { width: 12px; height: 12px; }
-.emp-vera-why-btn { border: 0; background: none; padding: 0; display: grid; place-items: center; cursor: pointer; color: var(--emp-ai, #6f5fc4); }
-.emp-vera-why-btn svg { width: 13px; height: 13px; }
 /* Content only - position/box (fixed, width, shadow, border, z-index) comes
    from .emp-floating-overlay, applied by openFloatingOverlay(). */
 .emp-vera-why-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
@@ -14360,30 +14738,15 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
 .emp-cand-skill-row .pill-row { display: flex; flex-wrap: wrap; gap: 4px; }
 .emp-cand-skill-row .pill { font-size: 10px; padding: 2px 8px; }
 
-.emp-cand-insight {
-  margin: 0; font-size: 12px; line-height: 1.4; color: var(--emp-muted, var(--muted));
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
-.emp-cand-next-action { display: flex; align-items: center; gap: 6px; padding-top: 6px; border-top: 1px solid var(--emp-line, var(--line)); font-size: 12px; color: var(--emp-ink, var(--text)); }
-.emp-cand-next-action svg { width: 13px; height: 13px; color: var(--emp-muted, var(--muted)); flex-shrink: 0; }
-.emp-cand-notes-preview { margin: 0; display: flex; align-items: flex-start; gap: 6px; font-size: 11px; line-height: 1.4; color: var(--emp-muted, var(--muted)); }
-.emp-cand-notes-preview svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 1px; }
 
 .emp-cand-actions { display: flex; align-items: center; gap: 8px; position: relative; }
-/* Standardized primary card action: same height/radius/padding/font for
-   every label this button ever shows (Review, Schedule Interview, Open
-   Interview, Compare & Decide, Follow Up, View Onboarding) - it's one
-   component (data-candidate-primary) with a different label per stage, not
-   a different button per label. Hover/active/disabled states are inherited
-   from the shared .btn/.btn-primary rules, not redefined here. */
-.emp-cand-actions .emp-primary-card-action {
-  flex: 1; height: 48px; min-height: 48px; border-radius: 16px;
-  font-size: 14px; font-weight: 600; padding: 0 16px;
-  display: flex; align-items: center; justify-content: center;
-}
+/* Standard-sized (spec §5b): the primary card action is one component
+   (data-candidate-primary) with a per-stage label, sized to the app's
+   standard small button (~36px) instead of the old oversized 48px block.
+   The kebab matches its height as a square. */
+.emp-cand-actions .emp-primary-card-action { flex: 1; justify-content: center; }
 .emp-cand-actions .emp-menu-toggle {
-  width: 48px; height: 48px; min-height: 48px; border-radius: 16px; padding: 0; flex-shrink: 0;
-  display: grid; place-items: center;
+  width: 36px; min-height: 32px; padding: 0; flex-shrink: 0; display: grid; place-items: center;
 }
 .emp-ai-question-list { margin: 12px 0; padding-left: 20px; display: grid; gap: 8px; font-size: 14px; line-height: 1.5; }
 
@@ -14451,6 +14814,10 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
   box-shadow: -12px 0 32px rgba(15, 23, 42, 0.16); overflow-y: auto; padding: 22px;
 }
 .emp-drawer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.emp-drawer-head-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+/* Visually-hidden but screen-reader-visible - used for the pipeline's
+   aria-live stage-move announcer (spec: "announce via aria-live"). */
+.emp-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 .emp-drawer-head h2 { margin: 0; font-size: var(--emp-title-lg); }
 .emp-drawer-score { padding: 12px 14px; margin-bottom: 14px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; background: rgba(7, 56, 47, 0.03); }
 .emp-drawer-score-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: var(--emp-muted, var(--muted)); text-transform: uppercase; letter-spacing: 0.03em; }
@@ -14686,7 +15053,11 @@ html:has(body[data-page="employers"]) { scroll-padding-top: 64px; }
      the bar's background to the page background (both --emp-bg) makes
      that moot: content scrolling under the bar's edges, if any exist,
      is invisible against an identical color either way. */
-  position: sticky; top: 64px; z-index: 30; margin-bottom: 32px;
+  /* top: 0, not 64px - same stale-offset bug as .emp-feed-filters above:
+     .emp-app-main is now its own fixed-height scroll box starting right
+     below the fixed header, so top:64px opened a blank gap above this
+     bar once stuck instead of sitting flush at the top. */
+  position: sticky; top: 0; z-index: 30; margin-bottom: 32px;
   background: var(--emp-bg); border-bottom: 1px solid var(--emp-line);
 }
 .emp-company-tabbar {
@@ -15617,10 +15988,31 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
    (see the max-width:1023px block). */
 .emp-feed-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
 .emp-feed-layout > * { min-width: 0; }
-.emp-feed-nav { display: grid; gap: 16px; min-width: 0; align-content: start; }
+/* grid-template-columns: minmax(0,1fr) (not the implicit default `auto`)
+   is load-bearing: an `auto`/unspecified single column takes its MINIMUM
+   from the widest child's min-content, so a child that can't shrink (the
+   Vera widget's button row, a long trending label) forced the track to
+   ~263px inside this 240px rail. The rail's overflow:hidden then clipped
+   that 23px of overhang in a straight vertical line, slicing the right
+   edge and rounded corners off every card so they read as non-rectangular
+   boxes. minmax(0,...) pins the track minimum to 0; min-width:0 on the
+   children lets their own content reflow/ellipsis instead of overflowing. */
+.emp-feed-nav { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; align-content: start; }
+.emp-feed-nav > * { min-width: 0; }
 @media (min-width: 1024px) {
   .emp-feed-layout { overflow: hidden; }
-  .emp-feed-nav, .emp-feed-rail, .emp-feed-main { height: 100%; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; padding-right: 2px; }
+  .emp-feed-main { height: 100%; overflow-y: auto; overflow-x: hidden; }
+  /* Rails fit one screen with no scrollbar at >=900px viewport height -
+     the Vera card compaction below is what makes that possible. */
+  .emp-feed-nav, .emp-feed-rail { height: 100%; overflow: hidden; }
+}
+@media (min-width: 1024px) and (max-height: 899px) {
+  /* Fallback only below ~900px viewport height: let rails scroll
+     internally rather than clip content, but keep the scrollbar hidden. */
+  .emp-feed-nav, .emp-feed-rail {
+    overflow-y: auto; overflow-x: hidden; scrollbar-width: none; padding-right: 2px;
+  }
+  .emp-feed-nav::-webkit-scrollbar, .emp-feed-rail::-webkit-scrollbar { display: none; }
 }
 .emp-feed-nav-list { display: grid; gap: 2px; }
 .emp-feed-nav-item {
@@ -15630,6 +16022,12 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .emp-feed-nav-item svg { width: 16px; height: 16px; }
 .emp-feed-nav-item:hover { background: rgba(37, 99, 235, 0.05); }
 .emp-feed-nav-item.active { background: rgba(37, 99, 235, 0.08); color: var(--blue); }
+/* Saved (moved up from its own shortcut-row block to sit as a third pill
+   alongside For You/Following): same pill, plus a count badge and
+   dropdown chevron pushed to the far right. */
+.emp-feed-nav-item--saved { width: 100%; }
+.emp-feed-nav-item--saved > span:not(.emp-feed-shortcut-count) { flex: 1; }
+.emp-feed-nav-item--saved > svg:last-child { flex-shrink: 0; width: 14px; height: 14px; color: var(--emp-muted); }
 .emp-feed-context-card { padding: 16px; }
 .emp-feed-context-card p { margin: 6px 0 12px; font-size: 12px; line-height: 1.5; color: var(--muted); }
 .emp-feed-main { min-width: 0; }
@@ -15743,7 +16141,13 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
    Company Profile tab nav. */
 .emp-feed-filters {
   display: flex; gap: 8px; margin-bottom: 16px; padding: 4px 2px; overflow-x: auto;
-  position: sticky; top: 64px; z-index: 5; background: var(--emp-bg, #f8f4eb);
+  /* top: 0, not 64px - that stale value dated from when the page (not
+     .emp-feed-main) was the scrolling ancestor, so 64px cleared the old
+     sticky header. Now .emp-feed-main is its own scroll box starting
+     right below the fixed header, so top:64px opened a blank gap above
+     the chips once stuck, instead of sitting flush at the container's
+     own top edge. */
+  position: sticky; top: 0; z-index: 5; background: var(--emp-bg, #f8f4eb);
   scrollbar-width: none; -ms-overflow-style: none;
 }
 .emp-feed-filters::-webkit-scrollbar { display: none; }
@@ -15783,6 +16187,20 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .emp-feed-action-btn:hover { background: rgba(37, 99, 235, 0.05); color: var(--blue); }
 .emp-feed-action-btn.active { color: var(--blue); }
 .emp-feed-action-btn svg { width: 14px; height: 14px; }
+/* Fix 3: the Feed nav items and post-action labels/counts were rendering in
+   the bright candidate-palette green (#2FAE7A) that leaks in via the
+   unscoped `.card :is(p,span,…)` rule. Force them to ink; the active nav
+   state becomes a teal-soft highlight with ink text (not green text). Real
+   teal buttons/links (.btn-primary, Post) are untouched. */
+.emp-app-shell.emp-app-shell .emp-feed-nav-item,
+.emp-app-shell.emp-app-shell .emp-feed-action-btn,
+.emp-app-shell.emp-app-shell .emp-feed-action-btn svg,
+.emp-app-shell.emp-app-shell .emp-feed-action-btn.active,
+.emp-app-shell.emp-app-shell .emp-feed-action-btn.active svg { color: var(--emp-ink, #1b2e28) !important; }
+.emp-app-shell.emp-app-shell .emp-feed-nav-item.active { background: var(--emp-teal-soft, #c8dddf) !important; color: var(--emp-ink, #1b2e28) !important; }
+.emp-app-shell.emp-app-shell .emp-feed-action-btn:hover { color: var(--emp-green, #1f5560) !important; }
+.emp-app-shell.emp-app-shell .emp-feed-action-btn.active[data-feed-like] svg,
+.emp-app-shell.emp-app-shell .emp-feed-action-btn.active[data-feed-save] svg { fill: currentColor; }
 .emp-feed-comments { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); display: grid; gap: 12px; }
 .emp-feed-comment { display: flex; gap: 8px; }
 .emp-feed-comment-body { flex: 1; font-size: 13px; }
@@ -15807,13 +16225,18 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .emp-network-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .emp-network-row-info { flex: 1; }
 .emp-network-row-info strong { font-size: 13px; }
-.emp-feed-rail { display: grid; gap: 16px; align-content: start; }
+.emp-feed-rail { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-content: start; }
 .emp-feed-rail > * { min-width: 0; }
 .emp-feed-rail-card { padding: 16px 18px; }
 .emp-feed-rail-card h3 { margin: 0 0 10px; font-size: 13px; font-weight: 700; }
 .emp-feed-rail-card h3.emp-tags-label { font-size: var(--emp-label); font-weight: 500; letter-spacing: 0.16em; margin: 0 0 10px; }
-.emp-feed-trending-list { display: grid; gap: 2px; }
-.emp-feed-trending-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: none; background: none; border-radius: 8px; text-align: left; cursor: pointer; }
+/* minmax(0,1fr) + min-width:0: same grid-blowout guard as .emp-feed-nav
+   above - without it the widest trending label ("University-to-industry
+   skills gap") set the column's min-content minimum, so the buttons
+   rendered ~23px wider than the list and the strong's ellipsis (already
+   set below) never engaged. */
+.emp-feed-trending-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; }
+.emp-feed-trending-item { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 6px 8px; border: none; background: none; border-radius: 8px; text-align: left; cursor: pointer; }
 .emp-feed-trending-item:hover { background: rgba(31, 85, 96, 0.06); }
 .emp-feed-trending-item svg { flex-shrink: 0; width: 14px; height: 14px; color: var(--emp-green, #1F5560); }
 .emp-feed-trending-item > span { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
@@ -15847,11 +16270,11 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .btn-icon-sm:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 2px; }
 .btn-icon-sm svg { width: 15px; height: 15px; }
 
-.emp-vera-rec-widget { padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.emp-vera-rec-widget { padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .emp-vera-rec-widget-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .emp-vera-rec-nav { display: flex; align-items: center; gap: 8px; }
 .emp-vera-rec-count { font-size: 12px; font-weight: 700; color: var(--soft); min-width: 26px; text-align: center; }
-.emp-vera-rec-widget-body { display: flex; flex-direction: column; gap: 12px; min-width: 0; transition: opacity 200ms ease; }
+.emp-vera-rec-widget-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; transition: opacity 200ms ease; }
 .emp-vera-rec-candidate-head { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
 .emp-vera-rec-candidate-id { flex: 1; min-width: 0; }
 .emp-vera-rec-candidate-id strong { display: block; font-size: 15px; overflow-wrap: break-word; }
@@ -16083,32 +16506,52 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .emp-rec-compact-id strong { display: block; font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
 .emp-rec-compact-role { margin: 2px 0 0; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .emp-rec-compact-match {
-  display: block; margin: 10px 0 0; font-family: var(--emp-sans); font-size: 11px; font-weight: 700;
+  display: block; margin: 8px 0 0; font-family: var(--emp-sans); font-size: 11px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.08em; color: var(--emp-green);
 }
-.emp-rec-compact-divider { margin: 12px 0; border-top: 1px solid var(--emp-line, var(--line)); }
+.emp-rec-compact-divider { margin: 8px 0; border-top: 1px solid var(--emp-line, var(--line)); }
 .emp-rec-compact-actions { display: flex; align-items: center; gap: 8px; }
 .emp-rec-compact-actions .btn-primary { flex: 1; justify-content: center; min-width: 0; }
-.emp-rec-details { position: relative; flex-shrink: 0; }
-.emp-rec-details summary {
+/* Details trigger (refine pass): a plain button now, not a native
+   <details>/<summary> - the old inline disclosure got clipped by the
+   rail's overflow:hidden (see .emp-feed-nav/.emp-feed-rail above), so
+   its content moved to .emp-rec-popover, a fixed-position portal
+   rendered at the document body level where clipping can't reach it. */
+.emp-rec-details-trigger {
   display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 12px; border: 1px solid var(--emp-line, var(--line));
   border-radius: var(--emp-radius-md, 8px); background: #fff; font-size: 12px; font-weight: 600; color: var(--emp-ink, var(--text));
-  cursor: pointer; list-style: none; white-space: nowrap; transition: border-color 150ms var(--emp-motion-ease);
+  cursor: pointer; white-space: nowrap; transition: border-color 150ms var(--emp-motion-ease); flex-shrink: 0;
 }
-.emp-rec-details summary::-webkit-details-marker { display: none; }
-.emp-rec-details summary svg { width: 13px; height: 13px; transition: transform 150ms var(--emp-motion-ease); }
-.emp-rec-details[open] summary svg { transform: rotate(180deg); }
-.emp-rec-details summary:hover { border-color: var(--emp-green); }
-.emp-rec-details-body {
-  position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; width: max-content; min-width: 220px;
-  padding: 12px; border-radius: var(--emp-radius-lg, 10px); background: #fff; box-shadow: 0 18px 40px -16px rgba(27, 46, 40, 0.28);
-  display: flex; flex-direction: column; gap: 8px;
+.emp-rec-details-trigger svg { width: 13px; height: 13px; transition: transform 150ms var(--emp-motion-ease); }
+.emp-rec-details-trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+.emp-rec-details-trigger:hover { border-color: var(--emp-green); }
+
+.emp-rec-popover {
+  position: fixed; z-index: 300; width: 300px; max-width: calc(100vw - 24px);
+  padding: 16px; border-radius: var(--emp-radius-lg, 10px); background: #fff;
+  box-shadow: 0 18px 40px -16px rgba(27, 46, 40, 0.28); display: flex; flex-direction: column; gap: 10px;
 }
-.emp-rec-details-body strong { display: block; margin-top: 2px; font-size: 13px; }
+.emp-rec-popover-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.emp-rec-popover-head-id strong { display: block; font-size: 14px; font-weight: 500; }
+.emp-rec-popover-head-id p { margin: 2px 0 0; font-size: 12px; color: var(--emp-muted, var(--soft)); }
+.emp-rec-popover-close {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px;
+  border: none; background: none; padding: 0; color: var(--emp-muted); cursor: pointer;
+}
+.emp-rec-popover-close:hover { color: var(--emp-ink); }
+.emp-rec-popover-row { display: flex; flex-direction: column; gap: 2px; }
+.emp-rec-popover-row > span { font-size: 11px; color: var(--emp-muted, var(--soft)); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+.emp-rec-popover-row strong { font-size: 13px; font-weight: 500; color: var(--emp-ink, var(--text)); }
+.emp-rec-popover-meta-row { display: flex; gap: 16px; }
+.emp-rec-popover-link {
+  font-size: 13px; font-weight: 600; color: var(--emp-green); text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+  background: none; border: none; padding: 0; cursor: pointer;
+}
+.emp-rec-popover-link:hover { text-decoration: underline; }
 
 /* Carousel dots + boxless arrows (redesign 2.5) - replaces the old
    "Recommendation N of M" text + boxed prev/next in the card header. */
-.emp-rec-dots-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--emp-line, var(--line)); }
+.emp-rec-dots-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--emp-line, var(--line)); }
 .emp-rec-arrow {
   display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border: none; background: none;
   padding: 0; color: var(--emp-muted); cursor: pointer; transition: color 150ms var(--emp-motion-ease);
@@ -16198,22 +16641,27 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
    redesign Part A). Global - lives in the persistent app shell, not the
    Feed page - so every employer route gets the same brief shortcut. */
 .emp-hiring-copilot { position: fixed; right: 24px; bottom: 24px; z-index: 90; }
+/* Item 9 (global): match the candidate Vera FAB exactly - a 68px white
+   circle (cream #fffaf2) with the owl filling a 10px pad, same soft shadow.
+   The employer bubble was previously smaller (56px) with a shrunken owl. */
 .emp-copilot-fab {
-  position: relative; display: inline-flex; align-items: center; justify-content: center;
-  width: 56px; height: 56px; border: 1px solid var(--emp-line); border-radius: 999px; cursor: pointer;
-  background: #fff; color: var(--emp-ink);
-  box-shadow: 0 10px 24px -8px rgba(27, 46, 40, 0.28); transition: transform 200ms var(--emp-motion-ease), box-shadow 200ms var(--emp-motion-ease);
+  position: relative; display: grid; place-items: center;
+  width: 68px; height: 68px; padding: 10px; border: 0; border-radius: 999px; cursor: pointer;
+  background: #fffaf2; color: var(--emp-ink);
+  box-shadow: 0 4px 9px rgba(7, 56, 47, 0.24); transition: transform 150ms var(--emp-motion-ease), box-shadow 150ms var(--emp-motion-ease);
 }
-.emp-copilot-fab:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -8px rgba(27, 46, 40, 0.32); }
+.emp-copilot-fab:hover { transform: scale(1.06); box-shadow: 0 28px 56px rgba(7, 56, 47, 0.3); }
 .emp-copilot-fab:focus-visible { outline: 2px solid var(--emp-green); outline-offset: 3px; }
 /* Vera is her owl mark here, never the generic sparkles "AI insight" cue
    used elsewhere in this file (CAREERGO_UI_SPEC.md §9). */
 .emp-copilot-vera-mark { width: 20px; height: 20px; display: block; object-fit: contain; }
-.emp-copilot-fab .emp-copilot-vera-mark { width: 28px; height: 28px; }
+.emp-copilot-fab .emp-copilot-vera-mark { width: 100%; height: 100%; }
+/* Unread-insight dot: kept (employer-only signal) but sat cleanly on the
+   larger bubble with the app's badge token, ringed against the cream. */
 .emp-copilot-badge {
-  position: absolute; top: -4px; right: -4px; display: inline-flex; align-items: center; justify-content: center;
-  min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; border: 2px solid #fff;
-  background: var(--emp-destructive); color: #fff; font-size: 11px; font-weight: 800;
+  position: absolute; top: 3px; right: 3px; display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; border: 2px solid #fffaf2;
+  background: var(--emp-destructive); color: #fff; font-size: 10px; font-weight: 800;
 }
 .emp-copilot-panel {
   position: absolute; right: 0; bottom: 68px; width: min(360px, calc(100vw - 32px)); max-height: min(70vh, calc(100vh - 140px));
@@ -16285,81 +16733,137 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
    sizeFeedRegion()). Reuses .card's shared radius/shadow throughout via
    the .emp-app-shell.emp-app-shell .card rule already established
    elsewhere in this file, so no separate card treatment needed here. */
-.emp-dm-layout { display: grid; grid-template-columns: 360px 1fr; gap: 20px; min-height: 480px; align-items: stretch; }
+/* Open two-column layout (no white card wrappers) matching the candidate
+   Inbox: columns sit on the page with a single divider between them. */
+.emp-dm-layout { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 0; min-height: 480px; align-items: stretch; }
 .emp-dm-layout > * { min-width: 0; }
 @media (min-width: 1024px) {
   .emp-dm-layout { overflow: hidden; }
 }
 
-.emp-dm-conversations { display: flex; flex-direction: column; min-height: 0; min-width: 0; padding: 20px; background: #fff; border: 1px solid var(--emp-line, var(--line)); border-radius: 20px; overflow-y: auto; }
-.emp-dm-conversations-title { margin: 0 0 16px; font-family: var(--emp-serif); font-size: 22px; font-weight: 400; }
+.emp-dm-conversations { display: flex; flex-direction: column; min-height: 0; min-width: 0; padding: 0 20px 0 0; background: transparent; border: 0; border-right: 1px solid var(--emp-line, var(--line)); border-radius: 0; overflow-y: auto; }
+/* Item 1: small-caps "MESSAGES" eyebrow above the serif Inbox heading, to
+   match the candidate Inbox reference. */
+.emp-dm-eyebrow { display: block; margin-bottom: 4px; font-family: var(--emp-sans); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--emp-muted, var(--soft)); }
+.emp-dm-conversations-title { margin: 0 0 16px; font-family: var(--emp-serif); font-size: 26px; font-weight: 400; color: var(--emp-ink, var(--text)); }
 .emp-dm-search-field { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; margin-bottom: 12px; min-width: 0; transition: border-color 180ms ease, box-shadow 180ms ease; }
 .emp-dm-search-field:focus-within { border-color: var(--emp-green, #07382f); box-shadow: 0 0 0 3px rgba(7, 56, 47, 0.12); }
 .emp-dm-search-field svg { flex-shrink: 0; width: 15px; height: 15px; color: var(--emp-muted, var(--soft)); }
 .emp-dm-search-field input { flex: 1; min-width: 0; border: none; outline: none; font: inherit; font-size: 13px; background: none; color: var(--emp-ink, var(--text)); }
 .emp-dm-filter-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+/* Plain outline pills matching the candidate Inbox filter row exactly
+   (26px tall, 0 10px pad, 11px/500). No inline count badge - counts were
+   removed so the pill reads as a clean filter, not a pill-in-pill switch.
+   Active = solid filled dark (the employer namespace's own green-nav). */
 .emp-dm-filter-chip {
-  display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line));
-  background: #fff; font-size: 12px; font-weight: 600; color: var(--emp-muted, var(--soft)); cursor: pointer; transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+  display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line));
+  background: transparent; font-size: 11px; font-weight: 500; color: var(--emp-muted, var(--soft)); cursor: pointer; transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
 }
-.emp-dm-filter-chip span { padding: 0 5px; border-radius: 999px; background: rgba(7, 56, 47, 0.08); font-size: 10px; font-weight: 800; }
-.emp-dm-filter-chip:hover { background: rgba(7, 56, 47, 0.05); }
-.emp-dm-filter-chip.active { background: var(--emp-green, #07382f); border-color: var(--emp-green, #07382f); color: #fff; }
-.emp-dm-filter-chip.active span { background: rgba(255, 255, 255, 0.22); color: #fff; }
+.emp-dm-filter-chip:hover { border-color: rgba(7, 56, 47, 0.28); color: var(--emp-ink, var(--text)); }
+.emp-dm-filter-chip.active { background: var(--emp-green-nav, var(--emp-green, #07382f)); border-color: var(--emp-green-nav, var(--emp-green, #07382f)); color: var(--emp-cream-text, #fff); }
 .emp-dm-convo-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin: -4px; padding: 4px; }
 .emp-dm-convo-row {
   position: relative; display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 10px; border: 1px solid transparent; border-radius: 14px;
   background: none; text-align: left; cursor: pointer; transition: background 180ms ease, border-color 180ms ease;
 }
 .emp-dm-convo-row:hover { background: rgba(7, 56, 47, 0.04); }
-.emp-dm-convo-row.active { background: rgba(7, 56, 47, 0.06); border-color: rgba(7, 56, 47, 0.14); }
-.emp-dm-convo-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-.emp-dm-convo-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-.emp-dm-convo-top strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--emp-ink, var(--text)); }
-.emp-dm-convo-time { flex-shrink: 0; font-size: 11px; color: var(--emp-muted, var(--soft)); }
-.emp-dm-convo-role { font-size: 11px; font-weight: 600; color: var(--emp-green, #07382f); }
-.emp-dm-convo-preview { font-size: 12px; line-height: 1.4; color: var(--emp-muted, var(--soft)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Selected-state tint: ~9% of the primary green (--emp-green #1f5560) over
+   the list background, full row width, matching the candidate Inbox's
+   pale mint selected row. */
+.emp-dm-convo-row.active { background: rgba(31, 85, 96, 0.09); border-color: rgba(31, 85, 96, 0.14); }
+.emp-dm-convo-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.emp-dm-convo-top { display: flex; align-items: center; gap: 5px; }
+.emp-dm-convo-top strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 500; color: var(--emp-ink, var(--text)); }
+.emp-dm-convo-time { flex-shrink: 0; margin-left: auto; font-size: 11px; color: var(--emp-muted, var(--soft)); }
+/* Item 3: pin moved inline next to the name (was a left icon column). */
+.emp-dm-pin-inline { flex-shrink: 0; display: inline-flex; color: var(--emp-muted, var(--soft)); }
+.emp-dm-pin-inline svg { display: block; width: 12px; height: 12px; }
+/* Middle meta line: <role applied for> - Applied <time>. Muted plain text,
+   matching the candidate Inbox row's context line (job title + org). */
+.emp-dm-convo-context { font-size: 12px; line-height: 1.35; color: var(--emp-muted, var(--soft)); font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Line 3: a colored stage pill + the message preview on one row (matching the
+   candidate Inbox's badge-plus-preview line). The pill never shrinks or wraps;
+   the preview truncates to protect it, even with long stage names next to a
+   long preview string. */
+.emp-dm-convo-line3 { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.emp-dm-stage-pill {
+  flex-shrink: 0; display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px;
+  font-family: var(--emp-sans); font-size: 10px; font-weight: 600; line-height: 1.5; white-space: nowrap;
+  color: var(--emp-stage-accent, var(--emp-green, #1f5560));
+  background: color-mix(in srgb, var(--emp-stage-accent, #1f5560) 14%, transparent);
+}
+.emp-dm-convo-preview { flex: 1; min-width: 0; font-size: 12px; line-height: 1.4; color: var(--emp-muted, var(--soft)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .emp-dm-convo-row.unread .emp-dm-convo-preview { color: var(--emp-ink, var(--text)); font-weight: 600; }
-.emp-dm-pin-dot { flex-shrink: 0; display: inline-flex; align-self: flex-start; margin-top: 12px; color: var(--emp-muted, var(--soft)); }
-.emp-dm-pin-dot svg { display: block; width: 11px; height: 11px; }
+/* List footer: an employer-appropriate link to the Roles page (mirrors the
+   candidate Inbox's "looking for more?" footer, with employer copy). */
+.emp-dm-list-foot { flex-shrink: 0; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--emp-line, var(--line)); }
+.emp-dm-list-foot button { padding: 0; border: 0; background: none; font: inherit; font-size: 12px; color: var(--emp-green, #1f5560); font-weight: 500; cursor: pointer; text-align: left; }
+.emp-dm-list-foot button:hover { text-decoration: underline; }
 .emp-dm-unread-badge {
   flex-shrink: 0; align-self: center; display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px;
   padding: 0 5px; border-radius: 999px; background: var(--emp-green, #07382f); color: #fff; font-size: 10px; font-weight: 800;
 }
+/* Avatar initials render as plain bold text - no circle, no background fill,
+   no color chip - matching the candidate Inbox's plain-initials treatment.
+   Kept in a small fixed-width column so every row's name/text left-edges stay
+   aligned regardless of the initials' width. */
+.emp-dm-convo-initials {
+  flex-shrink: 0; align-self: flex-start; width: 30px; padding-top: 1px;
+  font-family: var(--emp-sans); font-size: 13px; font-weight: 700; line-height: 1.3;
+  color: var(--emp-ink, var(--text)); text-align: left; background: none;
+}
 
-.emp-dm-thread { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: #fff; border: 1px solid var(--emp-line, var(--line)); border-radius: 20px; overflow: hidden; }
-.emp-dm-thread-head { flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--emp-line, var(--line)); }
-.emp-dm-thread-head-info { flex: 1; min-width: 0; }
-.emp-dm-thread-head-name { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.emp-dm-thread-head-info strong { display: block; font-size: 15px; }
+.emp-dm-thread { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: transparent; border: 0; border-radius: 0; overflow: hidden; padding-left: 28px; }
+/* Header matches the candidate reference: no avatar, name (left) + subline,
+   status pill + a single ••• overflow menu top-right. A faint hairline (the
+   subtle cream --emp-line, not a dark rule) separates it from the message
+   list - matching the candidate Inbox's very light divider. */
+.emp-dm-thread-head { flex-shrink: 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 4px 0 14px; border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-dm-thread-head-info { min-width: 0; }
+.emp-dm-thread-head-name { display: block; font-family: var(--emp-serif); font-size: 16px; font-weight: 400; color: var(--emp-ink, var(--text)); }
+.emp-dm-subline { margin: 3px 0 0; }
 .emp-dm-thread-head-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-.emp-dm-files-wrap { position: relative; }
-/* Folded intelligence strip (redesign Part 3): one/two compact lines
-   replacing the old separate Intelligence column entirely. */
-.emp-dm-intel-strip { flex-shrink: 0; padding: 10px 20px; background: var(--emp-bg-deep, #efe8d8); border-bottom: 1px solid var(--emp-line, var(--line)); }
-.emp-dm-intel-strip p { margin: 0; font-size: 12px; line-height: 1.5; }
-.emp-dm-intel-strip p:first-child strong { color: var(--emp-green); }
-.emp-dm-intel-strip p + p { margin-top: 2px; }
+.emp-dm-thread-head-actions .emp-dm-status-pill { margin-right: 2px; }
+/* Overflow (•••) menu: reuses the shared floating-overlay/menu-item styling
+   already used by the Talent Pipeline candidate kebab. The "Shared files"
+   sub-view gets a scroll cap so a long file list stays inside the popover. */
+.emp-dm-thread-menu [role="menuitem"] { display: flex; align-items: center; gap: 10px; }
+.emp-dm-thread-menu [role="menuitem"] svg { width: 15px; height: 15px; flex-shrink: 0; }
+.emp-dm-menu-files { max-height: 320px; overflow-y: auto; }
+/* Item 4: soft mint status pill (matches the candidate reference's
+   "Warm - N replies" pill), not a saturated teal chip. */
 .emp-dm-status-pill {
-  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; background: var(--emp-teal-soft);
-  color: var(--emp-green); font-family: var(--emp-sans); font-size: 11px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; background: #dcefeb;
+  color: #41615a; font-family: var(--emp-sans); font-size: 11px; font-weight: 500;
 }
 .emp-dm-status-pill:not(.warm) { background: var(--emp-line); color: var(--emp-muted); }
 .emp-dm-status-pill svg { width: 11px; height: 11px; }
-.emp-dm-thread-body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+/* flex:0 1 auto (not 1) so the body is only as tall as its content when the
+   conversation is short - the messages, Vera card and composer cluster
+   together near the top and the empty space falls below the composer instead
+   of the body stretching to push the composer to the very bottom. When a
+   conversation is long enough to overflow, the body still shrinks (flex-shrink
+   1) and scrolls, keeping the composer in view. */
+.emp-dm-thread-body { flex: 0 1 auto; min-height: 0; overflow-y: auto; padding: 16px 4px; display: flex; flex-direction: column; gap: 12px; }
 .emp-dm-bubble-row { display: flex; }
 .emp-dm-bubble-row.outgoing { justify-content: flex-end; }
 .emp-dm-bubble-row.incoming { justify-content: flex-start; }
-.emp-dm-bubble { max-width: 72%; padding: 10px 14px; border-radius: 16px; }
-.emp-dm-bubble-row.outgoing .emp-dm-bubble { background: var(--emp-green, #07382f); border-bottom-right-radius: 4px; }
-.emp-dm-bubble-row.incoming .emp-dm-bubble { background: rgba(7, 56, 47, 0.06); border-bottom-left-radius: 4px; }
-.emp-dm-bubble p { margin: 0; font-size: 13px; line-height: 1.55; }
+/* Bubbles match the candidate reference: incoming = white with a subtle
+   border; outgoing = dark forest green. */
+.emp-dm-bubble { max-width: 70%; padding: 10px 14px; border-radius: 12px; }
+.emp-dm-bubble-row.outgoing .emp-dm-bubble { background: #063f35; }
+.emp-dm-bubble-row.incoming .emp-dm-bubble { background: rgba(255, 255, 255, 0.82); border: 1px solid rgba(7, 56, 47, 0.10); }
+.emp-dm-bubble p { margin: 0; font-size: 13px; line-height: 1.45; }
 .emp-dm-bubble-row.outgoing .emp-dm-bubble p { color: #fff; }
 .emp-dm-bubble-row.incoming .emp-dm-bubble p { color: var(--emp-ink, var(--text)); }
 .emp-dm-bubble-meta { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; font-size: 10px; }
 .emp-dm-bubble-row.outgoing .emp-dm-bubble-meta { color: rgba(255, 255, 255, 0.72); }
 .emp-dm-bubble-row.incoming .emp-dm-bubble-meta { color: var(--emp-muted, var(--soft)); }
 .emp-dm-bubble-meta svg { width: 12px; height: 12px; vertical-align: -2px; }
+/* Delivery status: label + icon (e.g. "✓✓ Read" / "✓ Sent") on the
+   employer's own sent bubbles, matching the candidate Inbox's labelled
+   receipt. Only the real `read` boolean drives it - no invented state. */
+.emp-dm-receipt { display: inline-flex; align-items: center; gap: 3px; }
 
 /* Three dots with a staggered opacity pulse - a fixed, gentle loop (not a
    flashy/attention-grabbing motion) that self-removes when the simulated
@@ -16371,23 +16875,35 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 @keyframes dmTypingPulse { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .emp-dm-typing span { animation: none; opacity: 0.7; } }
 
-.emp-dm-composer { flex-shrink: 0; padding: 14px 20px 18px; border-top: 1px solid var(--emp-line, var(--line)); }
-.emp-dm-composer-input-row { display: flex; align-items: flex-end; gap: 8px; }
+.emp-dm-composer { flex-shrink: 0; padding: 14px 0 4px; border-top: 0; }
+/* The input row is one rounded pill (subtle border, white fill) holding just
+   the text field + Send, matching the candidate Inbox composer one-to-one -
+   the attach and mic icons were removed for parity (document upload still
+   lives in the ••• menu's Shared files sub-view). Send is a rounded teal pill. */
+.emp-dm-composer-input-row { display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 14px; background: #fff; }
 .emp-dm-composer-input-row textarea {
-  flex: 1; min-width: 0; max-height: 120px; padding: 10px 12px; border: 1px solid var(--emp-line, var(--line)); border-radius: 14px;
-  font: inherit; font-size: 13px; line-height: 1.5; resize: vertical; color: var(--emp-ink, var(--text));
+  flex: 1; min-width: 0; max-height: 120px; padding: 5px 0; border: 0; border-radius: 0; background: transparent;
+  font: inherit; font-size: 13px; line-height: 1.5; resize: none; color: var(--emp-ink, var(--text));
 }
-.emp-dm-composer-quick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.emp-dm-composer-input-row textarea::placeholder { color: var(--emp-muted, var(--soft)); }
+.emp-dm-composer-input-row .btn-primary { border-radius: 999px; }
 .btn-icon-sm.active { background: var(--emp-teal-soft); color: var(--emp-green); border-color: var(--emp-teal-soft); }
 
-/* VERA SUGGESTS (redesign Part 3): always-visible inline suggestion sat
-   between the message list and the composer, replacing the old toggled
-   type/tone picker panel. The chip row folds the former Intelligence
-   tab's separate "AI-suggested replies" list into the same component. */
-.emp-dm-vera-suggests { flex-shrink: 0; padding: 12px 20px 0; }
-.emp-dm-vera-suggests-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-.emp-dm-vera-suggests-box { padding: 12px 14px; border-radius: 14px; background: rgba(111, 95, 196, 0.06); border: 1px solid rgba(111, 95, 196, 0.16); }
-.emp-dm-vera-suggests-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+/* VERA SUGGESTS: always-visible inline draft that flows right after the last
+   message inside the scrolling thread body (so it sits with the conversation,
+   not pinned low above the composer) - just the owl, a quoted suggestion, and
+   Use draft / Rewrite, matching the candidate Inbox's Vera card. margin-top
+   adds a touch of separation beyond the body's own message gap. */
+.emp-dm-vera-suggests { flex-shrink: 0; margin-top: 4px; }
+/* Soft mint reading card, flat (no shadow), matching the candidate Vera
+   Suggests card's exact values: 12px radius, 14%-alpha border, the same
+   135deg mint→ivory gradient. The suggestion text is wrapped in quotation
+   marks (§6) so it reads as a quotable draft. */
+.emp-dm-vera-suggests-box { padding: 12px 14px; border-radius: 12px; background: linear-gradient(135deg, rgba(220, 239, 235, 0.85), rgba(247, 242, 232, 0.5)); border: 1px solid rgba(18, 59, 52, 0.14); box-shadow: none; }
+/* Just the Vera owl + label - no dismiss control, matching the candidate
+   Inbox's Vera card one-to-one (the card is always present once a thread is
+   open; switching conversations is the only way it re-renders). */
+.emp-dm-vera-suggests-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .emp-dm-vera-suggests-head .emp-copilot-vera-mark { width: 14px; height: 14px; }
 .emp-dm-vera-suggests-box p { margin: 0 0 10px; font-size: 12px; line-height: 1.55; color: var(--emp-ink, var(--text)); }
 .emp-dm-vera-suggests-actions { display: flex; gap: 8px; }
@@ -16395,22 +16911,9 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .emp-dm-empty-thread { align-items: center; justify-content: center; }
 .emp-dm-empty-thread .emp-empty-state { border: none; box-shadow: none; padding: 0; }
 
-/* Suggestion-type chips (reused for the Vera Suggests chip row - redesign
-   Part 3 folds the old separate Intelligence-tab "AI-suggested replies"
-   list into this same component, now with a persistent active state
-   since picking one changes what's shown below, not a one-shot action). */
-.emp-dm-suggest-chip {
-  padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(111, 95, 196, 0.22); background: rgba(111, 95, 196, 0.05);
-  color: var(--emp-ai, #6f5fc4); font-size: 11px; font-weight: 600; cursor: pointer; transition: background 180ms ease;
-}
-.emp-dm-suggest-chip:hover { background: rgba(111, 95, 196, 0.12); }
-.emp-dm-suggest-chip.active { background: var(--emp-ai, #6f5fc4); border-color: var(--emp-ai, #6f5fc4); color: #fff; }
-
-/* Files popover (redesign Part 3): the old permanent "Files" tab folded
-   into a small popover off the thread-header paperclip icon instead of
-   a persistent third column - same content (renderFilesTab), different
-   presentation. */
-.emp-dm-files-popover { top: 100%; right: 0; left: auto; margin-top: 6px; width: 280px; max-height: 360px; overflow-y: auto; }
+/* Shared-files list (renderFilesTab): the same file rows, now rendered as
+   the "Shared files" sub-view inside the ••• overflow menu instead of a
+   separate header popover. */
 .emp-dm-files-list { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
 .emp-dm-file-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--emp-line, var(--line)); }
 .emp-dm-file-row:last-child { border-bottom: none; }
@@ -16423,20 +16926,25 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .emp-dm-file-info strong { display: block; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--emp-ink, var(--text)); }
 .emp-dm-upload-btn { width: 100%; justify-content: center; }
 
-.emp-app-shell.emp-app-shell :is(.emp-dm-convo-top strong, .emp-dm-convo-info strong, .emp-dm-thread-head-info strong, .emp-dm-file-info strong) { color: var(--emp-ink, var(--text)) !important; }
-.emp-app-shell.emp-app-shell :is(.emp-dm-convo-time, .emp-dm-convo-preview, .emp-dm-file-row .emp-cand-meta, .emp-dm-intel-strip p:last-child) { color: var(--emp-muted, var(--soft)) !important; }
-.emp-app-shell.emp-app-shell .emp-dm-convo-role { color: var(--emp-green, #07382f) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-dm-convo-top strong, .emp-dm-convo-info strong, .emp-dm-thread-head-info strong, .emp-dm-file-info strong, .emp-dm-convo-initials) { color: var(--emp-ink, var(--text)) !important; }
+.emp-app-shell.emp-app-shell :is(.emp-dm-convo-time, .emp-dm-convo-preview, .emp-dm-convo-context, .emp-dm-file-row .emp-cand-meta, .emp-dm-subline) { color: var(--emp-muted, var(--soft)) !important; }
+.emp-app-shell.emp-app-shell .emp-dm-list-foot button { color: var(--emp-green, #1f5560) !important; }
+/* Stage pill keeps its per-stage accent (the six-stage board scale, set inline
+   via --emp-stage-accent) - the doubled-prefix override is needed to beat the
+   unconditional span→muted reset in the app-shell base rules. */
+.emp-app-shell.emp-app-shell .emp-dm-stage-pill { color: var(--emp-stage-accent, var(--emp-green, #1f5560)) !important; }
 .emp-app-shell.emp-app-shell .emp-dm-bubble-row.incoming .emp-dm-bubble p { color: var(--emp-ink, var(--text)) !important; }
 .emp-app-shell.emp-app-shell .emp-dm-bubble-row.outgoing .emp-dm-bubble p { color: #fff !important; }
 .emp-app-shell.emp-app-shell .emp-dm-vera-suggests-box p { color: var(--emp-ink, var(--text)) !important; }
-.emp-app-shell.emp-app-shell .emp-dm-intel-strip p:first-child { color: var(--emp-ink, var(--text)) !important; }
 
 /* Below 1024px the fixed-shell scroll model (sizeDmRegion()) is cleared
    in JS - fall back to natural stacked scroll, same pattern as Feed. */
 @media (max-width: 1023px) {
   .emp-dm-layout { grid-template-columns: 1fr; height: auto !important; overflow: visible; }
-  .emp-dm-conversations { max-height: 320px; overflow-y: auto; }
-  .emp-dm-thread { min-height: 480px; }
+  /* Stacked: swap the vertical divider for a horizontal one and drop the
+     thread's left padding. */
+  .emp-dm-conversations { max-height: 320px; overflow-y: auto; padding: 0 0 16px; border-right: 0; border-bottom: 1px solid var(--emp-line, var(--line)); }
+  .emp-dm-thread { min-height: 480px; padding-left: 0; padding-top: 12px; }
   .emp-dm-thread-head { flex-wrap: wrap; }
   .emp-dm-thread-head-info { flex-basis: 100%; order: 1; }
   .emp-dm-thread-head-actions { order: 2; }
@@ -16517,25 +17025,12 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
   .emp-feed-nav-item { flex-shrink: 0; }
 }
 
-/* ---------- Talent Pipeline redesign — Phase 6 (responsive) ----------
-   Desktop (default): all 6 stage columns (200px each) fit without horizontal
-   scroll once the shared page container reaches its 1240px cap (viewport
-   >= ~1288px). Tablet (<=1300px): wrapped into a 2-up grid instead of
-   scrolling. Mobile (<=640px): single stacked column per stage - functions as
-   a list, so the Board/List toggle (whose List view is a wide data table) is
-   hidden. */
-@media (max-width: 1300px) {
-  .emp-pipeline-board { flex-wrap: wrap; overflow-x: visible; padding-bottom: 0; }
-  .emp-pipeline-col { flex: 1 1 calc(50% - 4px); width: calc(50% - 4px); }
-}
-@media (max-width: 640px) {
-  .emp-pipeline-header-actions { width: 100%; }
-  .emp-pipeline-header-actions select,
-  .emp-pipeline-header-actions input[type="text"] { flex: 1 1 auto; min-width: 0; width: auto; }
-  .emp-pipeline-view-toggle { display: none; }
-  .emp-pipeline-board { flex-direction: column; }
-  .emp-pipeline-col { width: 100%; flex: 1 1 auto; }
-}
+/* ---------- Talent Pipeline board (responsive) ----------
+   The board is a 6-column grid at every width (spec §3/§4): all six stages
+   stay on one row and simply get narrower on small screens - never wrapping,
+   never scrolling sideways, never collapsing to a single stacked column. The
+   squeeze (gap/padding) lives with the board grid rule above; there is no
+   longer a horizontal-scroll rail or a stage stepper. */
 
 /* ============================================================
    Roles page redesign + shared modal system (Employer OS)
@@ -16561,7 +17056,11 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .emp-app-shell.emp-app-shell .emp-actions-menu button:hover { background: rgba(7, 56, 47, 0.06) !important; }
 .emp-app-shell.emp-app-shell .emp-momentum-next { color: var(--emp-green) !important; }
 .emp-app-shell.emp-app-shell .emp-preview-device-toggle button.active,
-.emp-app-shell.emp-app-shell .emp-pipeline-view-toggle button.active { background: rgba(7, 56, 47, 0.08) !important; color: var(--emp-green) !important; }
+/* Unmistakable selected segment (spec: filled pill on deep green, white
+   label) - the old 8%-opacity tint read as barely-there. Matches the same
+   solid-fill pattern .emp-subtab.active already uses elsewhere. */
+.emp-app-shell.emp-app-shell .emp-pipeline-view-toggle button.active { background: var(--emp-green-nav) !important; color: var(--emp-cream-text) !important; }
+.emp-pipeline-view-toggle button:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 2px; }
 .emp-app-shell.emp-app-shell .emp-vera-starters button:hover { border-color: var(--emp-teal) !important; background: rgba(106, 165, 157, 0.08) !important; }
 .emp-app-shell.emp-app-shell .emp-job-preview-salary,
 .emp-app-shell.emp-app-shell .emp-form-section-head h2 svg { color: var(--emp-green) !important; }
