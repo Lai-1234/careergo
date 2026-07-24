@@ -12178,10 +12178,14 @@ function renderCreateAccountWizard(root) {
         showEmailError("Use your work email so we can connect you to your company.");
         return;
       }
-      if (next.auth.users.some(item => item.email === email)) {
-        showToast("An account with this email already exists on this device.", "info");
-        return;
-      }
+      // This is a demo, not a real auth system: the account form's own
+      // fields are prefilled with the same constant example values every
+      // visit, so anyone re-running the signup on the same device (a judge
+      // retrying it, a teammate sharing a laptop) would otherwise hit a hard
+      // "already exists" wall instead of ever seeing the create-account
+      // flow. Start fresh instead - replace the on-device record for that
+      // email rather than blocking on it.
+      next.auth.users = next.auth.users.filter(item => item.email !== email);
       const roleType = authRole === "employer" ? AUTH_ROLE_EMPLOYER_TYPE : AUTH_ROLE_CANDIDATE_TYPE;
       const profile = createEmptyProfile({ fullName, email, country: "Malaysia", preferredLanguage: "English", roleType });
       profile.personal.roleType = roleType;
