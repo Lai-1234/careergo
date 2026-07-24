@@ -1,0 +1,721 @@
+/* =========================================================================
+   Employer Vera widget - the bottom-right chatbox + expandable conversation
+   space, matching the candidate's cg-vera-widget pixel-for-pixel.
+   -------------------------------------------------------------------------
+   This is a full COPY of the candidate's .cg-vera-* rules from
+   enterprise.css, not a reference to them - employer-app.html does not load
+   enterprise.css at all (only styles.css), so widening those rules' scope
+   to include [data-page="employers"], which was the first approach tried,
+   silently did nothing: the rules were correct, but the stylesheet
+   containing them was never fetched on this page. Confirmed via a live
+   background-color probe (candidate popover: dark green gradient; employer
+   popover before this file: transparent) before concluding a copy was
+   necessary rather than continuing to chase the "wrong stylesheet" theory.
+
+   Selectors here are the bare class names, no [data-page=...] guard: this
+   file only ever loads on employer-app.html, so its mere presence on the
+   page is the scope. Two literal substitutions from the original:
+     var(--cg-shot-serif) -> "Fraunces", Georgia, "Times New Roman", serif
+     var(--cg-shot-green) -> #07382f
+   Both custom properties are declared only inside enterprise.css and would
+   resolve to nothing here.
+
+   Kept exactly in sync with the candidate copy is the goal; if the
+   candidate's popover/chat-panel styling changes in enterprise.css, mirror
+   the change here too.
+   ========================================================================= */
+
+.cg-vera-widget {
+  position: fixed !important;
+  right: 44px !important;
+  bottom: 32px !important;
+  z-index: 116 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 14px !important;
+}
+
+.cg-vera-trigger {
+  display: grid !important;
+  place-items: center !important;
+  width: 68px !important;
+  height: 68px !important;
+  padding: 10px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #fffaf2 !important;
+  box-shadow: 0 4px 9px rgba(7, 56, 47, 0.24) !important;
+  cursor: pointer !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.cg-vera-trigger:hover {
+  transform: scale(1.06) !important;
+  box-shadow: 0 28px 56px rgba(7, 56, 47, 0.3) !important;
+}
+
+.cg-vera-trigger-logo {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+.cg-vera-popover {
+  width: min(400px, calc(100vw - 48px)) !important;
+  max-height: calc(100vh - 170px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  padding: 28px !important;
+  border-radius: 26px !important;
+  background:
+    radial-gradient(circle at 95% 10%, rgba(101, 181, 172, 0.18), transparent 220px),
+    linear-gradient(135deg, #07382f 0%, #052f29 100%) !important;
+  box-shadow: 0 5px 12px rgba(7, 56, 47, 0.32) !important;
+  animation: cgVeraPopIn 0.18s ease !important;
+}
+
+.cg-vera-popover[hidden] {
+  display: none !important;
+}
+
+.cg-vera-pop-head {
+  display: flex !important;
+  flex-shrink: 0 !important;
+  align-items: center !important;
+  gap: 10px !important;
+  color: rgba(255, 250, 242, 0.72) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-pop-head span {
+  color: #fffaf2 !important;
+  font-size: 13px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-pop-online {
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  color: #d9f0eb !important;
+  background: rgba(101, 181, 172, 0.22) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  text-transform: lowercase !important;
+}
+
+.cg-vera-pop-close {
+  margin-left: auto !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: rgba(255, 250, 242, 0.72) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  cursor: pointer !important;
+}
+
+.cg-vera-pop-close:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+
+.cg-vera-pop-body {
+  display: grid !important;
+  gap: 14px !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.cg-vera-pop-body::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+}
+
+.cg-vera-pop-expand {
+  display: grid !important;
+  place-items: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  margin-left: auto !important;
+  border-radius: 999px !important;
+  color: rgba(255, 250, 242, 0.72) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  cursor: pointer !important;
+}
+
+.cg-vera-pop-expand:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+
+.cg-vera-pop-expand svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-pop-bubble {
+  padding: 16px 18px !important;
+  border-radius: 18px !important;
+  color: rgba(255, 250, 242, 0.92) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.55 !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-pop-question {
+  justify-self: end !important;
+  max-width: 88% !important;
+  padding: 12px 18px !important;
+  border-radius: 18px !important;
+  color: #243a34 !important;
+  background: #fbf6ec !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.cg-vera-pop-move {
+  display: grid !important;
+  gap: 12px !important;
+  padding: 18px !important;
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-pop-move span {
+  color: rgba(255, 250, 242, 0.62) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-pop-move h4 {
+  margin: 0 !important;
+  color: #fffaf2 !important;
+  font-family: "Fraunces", ui-serif, Georgia, serif !important;
+  font-size: 19px !important;
+  font-weight: 500 !important;
+}
+
+.cg-vera-pop-stats {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.cg-vera-pop-stats div {
+  display: grid !important;
+  gap: 4px !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-pop-stats span {
+  color: rgba(255, 250, 242, 0.6) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-pop-stats strong {
+  color: #fffaf2 !important;
+  font-family: "Fraunces", ui-serif, Georgia, serif !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+}
+
+.cg-vera-pop-thread {
+  display: grid !important;
+  gap: 14px !important;
+}
+
+.cg-vera-pop-thread:empty {
+  display: none !important;
+}
+
+.cg-vera-pop-composer {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 40px !important;
+  gap: 10px !important;
+  align-items: center !important;
+  min-height: 52px !important;
+  padding: 6px 8px 6px 18px !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.11) !important;
+  flex-shrink: 0 !important;
+}
+
+.cg-vera-pop-composer input {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #fffaf2 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+.cg-vera-pop-composer button {
+  display: grid !important;
+  place-items: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #07382f !important;
+  background: #fffaf2 !important;
+  cursor: pointer !important;
+}
+
+.cg-vera-pop-quick {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  padding-top: 12px !important;
+  margin-top: 2px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.cg-vera-pop-quick[hidden] {
+  display: none !important;
+}
+
+.cg-vera-pop-quick-chip {
+  padding: 7px 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 999px !important;
+  color: #fffaf2 !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
+  cursor: pointer !important;
+  transition: background 150ms ease, border-color 150ms ease !important;
+}
+
+.cg-vera-pop-quick-chip:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+}
+
+@keyframes cgVeraPopIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 900px) {
+  .cg-vera-widget {
+    right: 18px !important;
+    bottom: 22px !important;
+  }
+
+  .cg-vera-trigger {
+    width: 56px !important;
+    height: 56px !important;
+  }
+}
+
+/* ===== Full conversation space (slide-over) ===== */
+.cg-vera-chat-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cg-vera-chat-panel[hidden] {
+  display: none;
+}
+
+.cg-vera-chat-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 17, 15, 0.6);
+  backdrop-filter: blur(2px);
+}
+
+.cg-vera-chat-sheet {
+  position: relative;
+  display: grid;
+  grid-template-columns: 260px minmax(420px, 560px);
+  width: min(100%, 820px);
+  height: 100%;
+  background: #f7f3ea;
+  box-shadow: -20px 0 60px rgba(7, 30, 26, 0.25);
+  animation: cgVeraChatSlideIn 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes cgVeraChatSlideIn {
+  from { transform: translateX(24px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.cg-vera-chat-history {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 20px 14px;
+  border-right: 0;
+  background:
+    radial-gradient(circle at 95% 10%, rgba(101, 181, 172, 0.18), transparent 220px),
+    linear-gradient(135deg, #07382f 0%, #052f29 100%);
+}
+
+.cg-vera-chat-history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-chat-history-head span {
+  color: rgba(255, 250, 242, 0.6) !important;
+  -webkit-text-fill-color: rgba(255, 250, 242, 0.6) !important;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.cg-vera-chat-history-head button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fffaf2;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.cg-vera-chat-history-head button:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.cg-vera-chat-history-head button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cg-vera-chat-history-list {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.24) transparent;
+}
+
+.cg-vera-history-item {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cg-vera-history-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.cg-vera-history-item.active {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-chat-panel .cg-vera-history-item strong {
+  color: #fffaf2 !important;
+  -webkit-text-fill-color: #fffaf2 !important;
+  font-size: 12px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-chat-panel .cg-vera-history-item small {
+  color: rgba(255, 250, 242, 0.55) !important;
+  -webkit-text-fill-color: rgba(255, 250, 242, 0.55) !important;
+  font-size: 11px;
+}
+
+.cg-vera-chat-main {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 0;
+  padding: 20px 24px;
+}
+
+.cg-vera-chat-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(18, 59, 52, 0.1);
+}
+
+/* .cg-vera-chat-title stands in for the candidate panel's <h2> - a plain
+   inline element on purpose, so the employer shell's global
+   :is(h1,h2,h3){font-weight:650!important} reset (styles.css, scoped to
+   .emp-app-shell) has nothing to grab onto and this can look exactly like
+   the candidate's header without a specificity fight.
+
+   The size/weight below is NOT what .cg-vera-chat-head h2's own rule in
+   enterprise.css declares (that rule says 18px/500, and is never !important)
+   - on real candidate pages a much broader, page-scoped rule
+   (:is([data-page="dashboard"], [data-page="discover"], ...) heading sizing,
+   clamp(28px,3vw,36px) !important + font-weight:400 !important) always wins
+   over it, so "Coach Vera" actually renders at 36px/400 in the browser, not
+   18px/500. Confirmed via CDP CSS.getMatchedStylesForNode against the live
+   candidate panel rather than trusting the component's own source rule -
+   matching THAT resolved value, not the shadowed one, is what makes this
+   look identical. */
+.emp-app-shell.emp-app-shell .cg-vera-chat-title {
+  display: block;
+  margin: 0;
+  color: #1b2e28 !important;
+  font-family: "Fraunces", ui-serif, Georgia, serif !important;
+  font-size: clamp(28px, 3vw, 36px) !important;
+  font-weight: 400 !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-chat-head p {
+  margin: 2px 0 0;
+  color: #7c8981 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-chat-badge {
+  flex-shrink: 0;
+  padding: 4px 10px !important;
+  color: #41615a !important;
+  border-radius: 999px !important;
+  background: #dcefeb !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  white-space: nowrap;
+}
+
+.cg-vera-chat-close {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(18, 59, 52, 0.06);
+  color: #123c34;
+}
+
+.cg-vera-chat-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cg-vera-chat-panel .cg-chat-thread {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 16px 4px;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(18, 59, 52, 0.28) transparent;
+}
+
+.cg-vera-chat-panel .cg-chat-thread::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cg-vera-chat-panel .cg-chat-thread::-webkit-scrollbar-thumb {
+  background: rgba(18, 59, 52, 0.24);
+  border-radius: 999px;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-chat-panel .cg-chat-thread > p {
+  width: fit-content;
+  max-width: 85%;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.cg-vera-chat-panel .cg-chat-thread .incoming {
+  justify-self: start;
+  color: #263a34 !important;
+  -webkit-text-fill-color: #263a34 !important;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(18, 59, 52, 0.1);
+}
+
+.cg-vera-chat-panel .cg-chat-thread .outgoing {
+  justify-self: end;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #063f35;
+}
+
+.cg-vera-chat-panel .cg-vera-quick-prompts {
+  justify-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 2px;
+}
+
+.cg-vera-chat-panel .cg-vera-quick-chip {
+  min-height: 28px;
+  padding: 0 12px;
+  color: #0b6d65;
+  background: rgba(220, 239, 235, 0.55);
+  border: 1px solid rgba(11, 109, 101, 0.28);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.cg-vera-chat-panel .cg-vera-quick-chip:hover {
+  color: #fffaf2;
+  background: #0b6d65;
+  border-color: #0b6d65;
+}
+
+.cg-vera-chat-panel .cg-message-composer {
+  min-height: 46px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 7px 7px 7px 16px;
+  border: 1px solid rgba(18, 59, 52, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.cg-vera-chat-panel .cg-message-composer input {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #263a34;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.cg-vera-chat-panel .cg-message-composer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 14px;
+  color: #fffaf2;
+  background: #063f35;
+  border: 0;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cg-vera-chat-panel .cg-message-composer button svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+  .cg-vera-chat-sheet {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    width: 100%;
+  }
+
+  .cg-vera-chat-history {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    max-height: 160px;
+  }
+}
+
+/* =========================================================================
+   Dark-glass theme touch-ups for content reused from the old Daily Hiring
+   Brief panel (the reminder list + quick-action grid), whose own CSS in
+   styles.css assumes a white background - retinted to match the
+   translucent-white-on-dark-green look already used above by
+   .cg-vera-pop-move, so they read as part of the same surface.
+   ========================================================================= */
+.cg-vera-popover .emp-copilot-reminder {
+  border-bottom-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-popover .emp-copilot-reminder p {
+  color: rgba(255, 250, 242, 0.86) !important;
+}
+
+.cg-vera-popover .emp-copilot-reminder-icon {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #d9f0eb !important;
+}
+
+.cg-vera-popover .emp-copilot-reminder .btn.btn-ghost.btn-sm {
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #fffaf2 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.cg-vera-popover .emp-copilot-reminder .btn.btn-ghost.btn-sm:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+
+.cg-vera-popover .emp-copilot-quick-actions {
+  border-top-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.cg-vera-popover .emp-tags-label {
+  color: rgba(255, 250, 242, 0.6) !important;
+}
+
+.cg-vera-popover .emp-copilot-quick-btn {
+  border-color: rgba(255, 255, 255, 0.13) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.cg-vera-popover .emp-copilot-quick-btn:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+}
+
+.cg-vera-popover .emp-copilot-quick-btn svg {
+  color: #d9f0eb !important;
+}
+
+.emp-app-shell.emp-app-shell .cg-vera-popover .emp-copilot-quick-btn span {
+  color: #fffaf2 !important;
+}

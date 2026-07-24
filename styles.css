@@ -13729,23 +13729,53 @@ body:has([data-employer-app]) { margin: 0; }
   background: #fff; border: 1px solid var(--emp-line); border-radius: 16px;
   box-shadow: var(--emp-shadow-card-hover); padding: 8px; z-index: 50; max-height: 320px; overflow-y: auto;
 }
-.emp-search-group + .emp-search-group { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--emp-line); }
-.emp-search-group-label { display: block; padding: 4px 8px; font-size: var(--emp-label); font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--emp-muted); }
-.emp-search-result {
-  display: flex; flex-direction: column; width: 100%; text-align: left;
-  padding: 8px; border: 0; background: none; border-radius: 8px; cursor: pointer;
+/* Employer search dropdown - brought to parity with the candidate workspace
+   search (.cg-search-* in enterprise.css): same tinted full-width group band,
+   same 30px icon badge + title/meta row, same match-count footer. The values
+   mirror those rules exactly so the two panels read as one component; only the
+   colour tokens differ (--emp-* vs the candidate's literals, which resolve to
+   the same forest/cream palette). */
+.emp-search-group + .emp-search-group { margin-top: 6px; }
+.emp-search-group-label {
+  display: block; margin: 0 -8px 6px; padding: 8px 12px 6px;
+  color: var(--emp-green); font: 700 11px/1.35 var(--emp-sans);
+  letter-spacing: 0.14em; text-transform: uppercase; text-align: left;
+  background: var(--emp-bg); border-bottom: 1px solid var(--emp-line);
 }
-.emp-search-result:hover, .emp-search-result.highlighted { background: rgba(7, 56, 47, 0.06); }
-.emp-search-result span { font-size: 12px; color: var(--emp-muted); }
-.emp-search-result[data-emp-search-recent] { flex-direction: row; align-items: center; gap: 8px; }
-.emp-search-result[data-emp-search-recent] svg { width: 13px; height: 13px; color: var(--emp-muted); flex-shrink: 0; }
-.emp-search-result[data-emp-search-recent] span { color: var(--emp-ink, var(--text)); font-size: 13px; }
-.emp-search-recent-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; }
-.emp-search-recent-head .emp-search-group-label { padding: 0; }
+.emp-search-recent-head { display: flex; align-items: center; justify-content: space-between; }
 .emp-search-recent-head button {
-  background: none; border: 0; padding: 0; font-size: 11px; font-weight: 700; color: var(--emp-muted); cursor: pointer;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--emp-green); font: 600 11px/1.35 var(--emp-sans);
+  letter-spacing: 0; text-transform: none;
 }
-.emp-search-recent-head button:hover { color: var(--emp-green, #07382f); }
+.emp-search-recent-head button:hover { text-decoration: underline; }
+.emp-search-result {
+  display: flex; align-items: flex-start; gap: 12px; width: 100%; text-align: left;
+  padding: 9px 8px; border: 0; background: none; border-radius: 8px; cursor: pointer;
+  color: var(--emp-ink);
+  transition: background-color 150ms var(--emp-motion-ease);
+}
+.emp-search-result:hover, .emp-search-result.highlighted { background: var(--emp-teal-soft); }
+.emp-search-result-icon {
+  display: flex; flex: 0 0 30px; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 8px;
+  color: var(--emp-green); background: var(--emp-bg-deep);
+}
+.emp-search-result-icon svg { width: 16px; height: 16px; }
+.emp-search-result-body { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+.emp-search-result-body strong {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--emp-ink); font: 500 14px/1.3 var(--emp-sans);
+}
+.emp-search-result-body span {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--emp-muted); font: 400 12px/1.4 var(--emp-sans);
+}
+.emp-search-footer {
+  position: sticky; bottom: -8px; margin: 6px -8px -8px; padding: 8px 12px;
+  border-top: 1px solid var(--emp-line); background: #fff;
+  color: var(--emp-muted); font: 500 11px/1.4 var(--emp-sans); text-align: center;
+}
 .emp-icon-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 34px; height: 34px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.5);
@@ -13959,7 +13989,7 @@ body:has([data-employer-app]) { margin: 0; }
 .emp-dash-impact-compare-item { display: flex; flex-direction: column; gap: 2px; }
 .emp-dash-impact-compare-item span { font-family: var(--emp-sans); font-size: 11px; color: var(--emp-muted); text-transform: uppercase; letter-spacing: 0.04em; }
 .emp-dash-impact-compare-item strong { font-family: var(--emp-serif); font-size: 16px; font-weight: 600; color: var(--emp-ink); }
-.emp-dash-impact-compare-item.is-projected strong { color: var(--emp-green); }
+.emp-app-shell.emp-app-shell .emp-dash-impact-compare-item.is-projected strong { color: var(--emp-green) !important; }
 
 /* ---------- KPI cards ---------- */
 .emp-kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
@@ -14819,7 +14849,7 @@ body:has([data-employer-app]) { margin: 0; }
 .emp-stage-rating-opt { position: relative; }
 .emp-stage-rating-opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
 .emp-stage-rating-opt span { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--emp-line, var(--line)); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-.emp-stage-rating-opt input:checked + span { background: var(--emp-green, #1f5560); border-color: var(--emp-green, #1f5560); color: #fff; }
+.emp-app-shell.emp-app-shell .emp-stage-rating-opt input:checked + span { background: var(--emp-green, #1f5560); border-color: var(--emp-green, #1f5560); color: #fff !important; }
 .emp-compare-grid { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(130px, 1fr); gap: 8px; margin: 6px 0 12px; overflow-x: auto; }
 .emp-compare-col { padding: 10px; border: 1px solid var(--emp-line, var(--line)); border-radius: 12px; display: grid; gap: 6px; }
 .emp-compare-col--focus { border-color: var(--emp-green, #1f5560); background: rgba(7, 56, 47, 0.03); }
@@ -15329,7 +15359,7 @@ a.emp-drawer-contact-item:hover { color: var(--emp-green, #07382f); }
   border: 1px solid var(--line);
 }
 .emp-vera-recommendation p { margin: 4px 0; font-size: 13px; line-height: 1.45; }
-.emp-vera-recommendation small { color: #047857; font-weight: 700; }
+.emp-app-shell.emp-app-shell .emp-vera-recommendation small { color: #047857 !important; font-weight: 700; }
 .emp-vera-answer-actions {
   display: flex;
   gap: 8px;
@@ -15338,8 +15368,12 @@ a.emp-drawer-contact-item:hover { color: var(--emp-green, #07382f); }
 }
 .emp-company-logo {
   display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; flex-shrink: 0;
-  border-radius: 14px; background: rgba(37, 99, 235, 0.1); color: var(--blue); font-weight: 700; font-size: 22px;
+  border-radius: 14px; background: var(--emp-green, #1f5560); font-weight: 700; font-size: 22px;
 }
+/* Bare span loses to the sitewide .emp-app-shell.emp-app-shell :is(span,...)
+   reset (styles.css ~13490), which forces the muted-gray text color with
+   !important on every span - needs the same specificity+importance beat. */
+.emp-app-shell.emp-app-shell .emp-company-logo { color: var(--emp-cream-text, #f7f3ea) !important; }
 .emp-company-name-row { display: flex; align-items: center; gap: 8px; }
 .emp-company-name-row h2 { margin: 0; font-size: var(--emp-title-lg); }
 
@@ -16286,7 +16320,7 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .emp-company-subsection:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .emp-kpi-trend { display: block; margin-top: 2px; font-size: 10px; color: var(--soft); }
 .emp-gap-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
-.emp-gap-list li { display: flex; gap: 6px; font-size: 13px; color: #b45309; }
+.emp-app-shell.emp-app-shell .emp-gap-list li { display: flex; gap: 6px; font-size: 13px; color: #b45309 !important; }
 /* Vera Insight - premium AI synthesis card (Insights section, Company
    Profile page). A soft violet-tinted gradient card distinct from the
    plain .emp-company-subsection blocks around it, using the same
@@ -17688,3 +17722,385 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
   .emp-stage-editor-fields { grid-template-columns: 1fr 1fr; }
 }
 
+
+/* =========================================================================
+   Employer top bar - parity with the candidate workspace bar
+   -------------------------------------------------------------------------
+   The two bars had drifted: same 64px height and same 1240px container, but
+   a different type scale, different spacing, a wider brand block, a different
+   accent, and the search box parked inside the actions cluster instead of
+   owning a column. Side by side the employer bar read as a different product.
+
+   Every value below is the RESOLVED value of the candidate bar, measured in
+   the browser - not what any single stylesheet says. That distinction
+   matters: ensureWorkspaceNavbarStyles() in app.js still ships an older
+   78px / 16px-700 recipe that is fully overridden by the later "navbar parity
+   pass", so reading that function gives you the wrong numbers. Measure the
+   live bar before changing anything here.
+
+   Note employer-app.html loads ONLY styles.css (no enterprise.css), which is
+   why this block lives here. It is appended at the end of the file so it wins
+   on order over the base .emp-app-* rules around line 13673 and over their
+   1080px / 900px media queries - hence the responsive rules restated at the
+   bottom of this block.
+
+   Deliberate difference kept: the "Employer" chip beside the logo. It is the
+   only cue telling you which workspace you are in, so it stays - shrunk so
+   the brand block lands ~162px against the candidate's 154px, keeping the
+   nav's starting x within ~10px instead of the ~74px it was pushed before.
+   ========================================================================= */
+html body .emp-app-header {
+  border-bottom: 1px solid #e4dfd3;
+}
+
+/* 4 columns - brand | nav | search | actions - matching the candidate's
+   `auto minmax(360px, 1fr) minmax(250px, 0.55fr) auto`. The search field is a
+   direct grid child now (renderEmployerShell), no longer nested in actions. */
+html body .emp-app-header .emp-app-header-inner {
+  grid-template-columns: auto minmax(360px, 1fr) minmax(250px, 0.55fr) auto;
+  gap: 32px;
+}
+
+/* Brand: the candidate paints its logo at 88x34 inside a 154px box (width:154
+   + max-height:42 + object-fit:contain clamps it down). Sizing the box to
+   88x34 here reproduces that painted size exactly, then the chip follows. */
+html body .emp-app-header .emp-app-brand {
+  gap: 8px;
+  min-width: 154px;
+  height: 42px;
+}
+
+html body .emp-app-header .emp-app-logo {
+  width: 88px;
+  max-width: 88px;
+  height: auto;
+  max-height: 34px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+html body .emp-app-header .emp-app-badge {
+  height: 18px;
+  padding: 0 7px;
+  border: 1px solid rgba(31, 51, 44, 0.16);
+  border-radius: 9999px;
+  background: rgba(31, 51, 44, 0.07);
+  color: #1f332c;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+html body .emp-app-header .emp-app-nav {
+  justify-self: start;
+  gap: 8px;
+  min-width: 0;
+}
+
+html body .emp-app-header .emp-nav-item {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 9999px;
+  color: #5b6a66;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+html body .emp-app-header .emp-nav-item:hover,
+html body .emp-app-header .emp-nav-item.active {
+  color: #f8f4ea;
+  background: #1f332c;
+  box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4);
+}
+
+/* Search owns column 3 and right-aligns into it, exactly like .cg-vera-search. */
+html body .emp-app-header .emp-app-search-field {
+  justify-self: end;
+  width: min(290px, 100%);
+  max-width: 290px;
+  height: 32px;
+  padding: 0 8px 0 12px;
+  gap: 8px;
+  border: 1px solid rgba(227, 220, 200, 0.9);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: none;
+}
+
+html body .emp-app-header .emp-app-search-field svg {
+  width: 16px;
+  height: 16px;
+  color: #6a7a9a;
+}
+
+html body .emp-app-header .emp-app-search-field input {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #5f7573;
+  -webkit-text-fill-color: #5f7573;
+}
+
+html body .emp-app-header .emp-app-search-field input::placeholder {
+  color: #5f7573;
+  -webkit-text-fill-color: #5f7573;
+  opacity: 0.82;
+}
+
+html body .emp-app-header .emp-app-header-actions {
+  justify-self: end;
+  gap: 12px;
+}
+
+/* Inbox + bell. Two things fight these rules, which is why the selector is
+   this heavy:
+     1. .notification-trigger is the SHARED bell (notificationMenuMarkup), so
+        it arrives carrying .btn.btn-ghost, and
+        ".emp-app-shell.emp-app-shell .btn { ... !important }" (the global
+        button reset) would win on both specificity and !important.
+     2. ".emp-app-shell.emp-app-shell .emp-app-header .notification-trigger"
+        further up this file (0,4,0) pins it to the old 34x34 look.
+   The doubled .emp-app-shell prefix takes this to (0,4,3), clearing both. */
+html body .emp-app-shell.emp-app-shell .emp-app-header :is(.emp-icon-btn, .notification-trigger) {
+  position: relative !important;
+  width: 36px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid rgba(227, 220, 200, 0.86) !important;
+  border-radius: 9999px !important;
+  background: rgba(255, 255, 255, 0.66) !important;
+  color: #1f332c !important;
+  -webkit-text-fill-color: #1f332c !important;
+  box-shadow: 0 1px 2px rgba(31, 51, 44, 0.04), 0 2px 8px -2px rgba(31, 51, 44, 0.08) !important;
+}
+
+html body .emp-app-shell.emp-app-shell .emp-app-header :is(.emp-icon-btn, .notification-trigger):hover {
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+html body .emp-app-shell.emp-app-shell .emp-app-header :is(.emp-icon-btn, .notification-trigger) svg {
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 !important;
+  color: #1f332c !important;
+  stroke: #1f332c !important;
+}
+
+html body .emp-app-shell.emp-app-shell .emp-app-header .notification-trigger strong {
+  position: absolute !important;
+  top: -5px !important;
+  right: -5px !important;
+  width: 18px !important;
+  height: 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 9999px !important;
+  background: #4db6ac !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+html body .emp-app-shell.emp-app-shell .emp-app-header .emp-avatar-trigger {
+  width: 36px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  background: #1f332c !important;
+  box-shadow: 0 4px 14px -4px rgba(31, 51, 44, 0.4) !important;
+}
+
+html body .emp-app-shell.emp-app-shell .emp-app-header .emp-avatar-trigger,
+html body .emp-app-shell.emp-app-shell .emp-app-header .emp-avatar-trigger span {
+  color: #f8f4ea !important;
+  -webkit-text-fill-color: #f8f4ea !important;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+/* Responsive - restated because the base .emp-app-* media queries earlier in
+   this file are lower-specificity and would otherwise lose to the rules above.
+   Breakpoint is the candidate's 1180px, not the old 1080px. */
+@media (max-width: 1180px) {
+  html body .emp-app-header .emp-app-header-inner {
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+  }
+
+  html body .emp-app-header .emp-app-search-field {
+    display: none;
+  }
+
+  html body .emp-app-header .emp-nav-item {
+    padding: 0 12px;
+  }
+
+  html body .emp-app-header .emp-app-nav {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  html body .emp-app-header .emp-app-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Below 900 the nav becomes the fixed drop-down panel opened by the burger
+   (base rule at the 900px breakpoint), so the in-flow children are
+   brand | burger | actions. */
+@media (max-width: 900px) {
+  html body .emp-app-header .emp-app-header-inner {
+    width: min(100% - 24px, var(--emp-container-max));
+    grid-template-columns: auto auto 1fr;
+    gap: 12px;
+  }
+
+  html body .emp-app-header .emp-app-nav {
+    justify-self: stretch;
+    gap: 2px;
+    overflow: visible;
+  }
+
+  html body .emp-app-header .emp-nav-item {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+
+/* Employer global-search no-match state. Two lines (headline + hint) instead
+   of the candidate's single row, because employer search spans more result
+   types worth suggesting; the container padding/typography still track
+   .cg-search-empty so it sits in the same panel consistently. */
+html body .emp-search-results .emp-search-empty {
+  display: grid;
+  gap: 4px;
+  padding: 14px 10px;
+  text-align: left;
+}
+
+html body .emp-search-results .emp-search-empty strong {
+  color: var(--emp-ink);
+  font-family: var(--emp-sans);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+html body .emp-search-results .emp-search-empty span {
+  color: var(--emp-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* =========================================================================
+   Employer Feed - visual parity with the candidate feed (posts.html)
+   -------------------------------------------------------------------------
+   The palette already matches (both were migrated to cream/forest), so this
+   block only aligns the structural chrome that still read as "a different
+   product": a white-card left nav, mint circular avatars, a mint post tag, a
+   borderless forest action row, and it retires the last blue accents that
+   predated the employer palette migration. Every employer widget and function
+   (Vera Hiring Recs, posting-as, content filters, Brand Health, Your Reach) is
+   untouched - only how it looks. Values mirror .cg-feed-* in feed-final.css.
+
+   The doubled .emp-app-shell.emp-app-shell prefix is needed on the nav-item
+   and action-btn colour rules to outrank the existing "Fix 3" block, which
+   pins both to ink with !important. */
+
+/* ---- Left nav: white card + "Feed" overline (mirrors .cg-feed-left) ---- */
+html body .emp-feed-nav-card {
+  padding: 16px;
+  border: 1px solid #e4dfd3;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+html body .emp-feed-nav-heading {
+  display: block;
+  margin: 0 0 8px;
+  padding: 0 4px;
+  color: #5b6a66;
+  font: 700 10px/1.2 var(--emp-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+html body .emp-feed-nav-card .emp-feed-nav-list { gap: 2px; }
+
+/* Nav item: idle muted, active = mint fill + ink (was a blue-grey highlight) */
+html body .emp-app-shell.emp-app-shell .emp-feed-nav-item {
+  border-radius: 8px;
+  font-weight: 500;
+  color: #5b6a66 !important;
+}
+html body .emp-app-shell.emp-app-shell .emp-feed-nav-item svg { color: #5b6a66 !important; }
+html body .emp-app-shell.emp-app-shell .emp-feed-nav-item:hover { background: rgba(31, 51, 44, 0.05); }
+html body .emp-app-shell.emp-app-shell .emp-feed-nav-item.active {
+  background: #c8dddf !important;
+  color: #1b2e28 !important;
+}
+html body .emp-app-shell.emp-app-shell .emp-feed-nav-item.active svg { color: #1f5560 !important; }
+
+/* ---- Post avatar: mint circle (was a blue rounded square) ---- */
+html body .emp-app-shell .emp-feed-avatar {
+  border-radius: 999px !important;
+  background: #c8dddf !important;
+  color: #1b2e28 !important;
+}
+
+/* ---- Category eyebrow -> mint pill, echoing the candidate post tag ---- */
+html body .emp-app-shell .emp-feed-category {
+  background: #c8dddf !important;
+  color: #1f5560 !important;
+}
+
+/* ---- "Why Vera showed this" line: mint tint instead of blue ---- */
+html body .emp-app-shell .emp-feed-vera-line {
+  background: rgba(200, 221, 223, 0.4) !important;
+}
+
+/* ---- Action row: borderless + roomier + forest hover (mirrors .cg-feed-actions) ---- */
+html body .emp-app-shell .emp-feed-post-actions {
+  gap: 20px !important;
+  margin-top: 16px !important;
+  padding-top: 0 !important;
+  border-top: 0 !important;
+}
+html body .emp-app-shell.emp-app-shell .emp-feed-action-btn {
+  padding: 0 !important;
+  gap: 6px !important;
+  font-weight: 500 !important;
+  color: #5b6a66 !important;
+}
+html body .emp-app-shell.emp-app-shell .emp-feed-action-btn svg { color: #5b6a66 !important; }
+html body .emp-app-shell.emp-app-shell .emp-feed-action-btn:hover,
+html body .emp-app-shell.emp-app-shell .emp-feed-action-btn:hover svg,
+html body .emp-app-shell.emp-app-shell .emp-feed-action-btn.active,
+html body .emp-app-shell.emp-app-shell .emp-feed-action-btn.active svg {
+  background: transparent !important;
+  color: #1f5560 !important;
+}
+
+/* ---- Retire remaining blue accents in the composer ---- */
+html body .emp-app-shell .emp-feed-clear-trend { color: #1f5560 !important; }
+html body .emp-app-shell .emp-feed-type-chip.active {
+  border-color: #1f5560 !important;
+  background: rgba(31, 85, 96, 0.08) !important;
+  color: #1f5560 !important;
+}

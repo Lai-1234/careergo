@@ -1593,6 +1593,11 @@ function normalizeNotification(note) {
   const type = note.type || "vera";
   return {
     id: note.id || `n-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    // Which workspace this notification belongs to. `state.notifications` is a
+    // single shared list, so without this an employer inherited the candidate's
+    // items ("Grab PM interview confirmed"). Legacy notifications have no
+    // audience and are all candidate-authored, so they default to "candidate".
+    audience: note.audience === "employer" ? "employer" : "candidate",
     type,
     title: note.title || "",
     body: note.body || "",
@@ -1614,13 +1619,29 @@ function normalizeNotifications(list) {
 function pushNotification(state, note) {
   const next = normalizeNotification(note);
   if (!next) return state;
+  // Stamp the audience from the session unless the caller was explicit, so a
+  // notification raised while acting as an employer lands in the employer feed.
+  if (!note.audience) next.audience = notificationAudience(state);
   const existing = normalizeNotifications(state.notifications).filter(item => item.id !== next.id);
   state.notifications = [next, ...existing].slice(0, 60);
   return state;
 }
 
+/* Which notification audience the current session should see. */
+function notificationAudience(state) {
+  return (state && state.session && state.session.role === "employer") ? "employer" : "candidate";
+}
+
+/* THE read accessor - every surface that displays notifications (topbar
+   dropdown, badge count, notifications.html, employer header) must go through
+   this so the two workspaces never show each other's items. */
+function notificationsForRole(state) {
+  const audience = notificationAudience(state);
+  return normalizeNotifications(state && state.notifications).filter(note => note.audience === audience);
+}
+
 function unreadNotificationCount(state) {
-  return normalizeNotifications(state && state.notifications).filter(note => !note.read).length;
+  return notificationsForRole(state).filter(note => !note.read).length;
 }
 
 function markNotificationRead(id) {
@@ -1631,7 +1652,11 @@ function markNotificationRead(id) {
 
 function markAllNotificationsRead() {
   const state = readState();
-  state.notifications = normalizeNotifications(state.notifications).map(note => ({ ...note, read: true }));
+  // Only clear the workspace you're actually looking at - marking all read as
+  // an employer must not silently clear the candidate's unread items.
+  const audience = notificationAudience(state);
+  state.notifications = normalizeNotifications(state.notifications)
+    .map(note => note.audience === audience ? { ...note, read: true } : note);
   writeState(syncCurrentUser(state));
 }
 
@@ -1685,7 +1710,24 @@ function seedNotifications() {
     { id: "n-application", type: "application", title: "Stripe moved you to Round 2", body: "Your APAC Payments application advanced - case round next.", ts: at(3 * DAY), read: true, href: "autopilot.html#pipeline-board" },
     { id: "n-growth", type: "growth", title: "You finished \"SQL for Product Managers\"", body: "+7% interview readiness and 40 more roles unlocked.", ts: at(4 * DAY), read: true, href: "grow.html#recommended-growth" },
     { id: "n-vera", type: "vera", title: "Vera drafted your 7-day switcher roadmap", body: "Review the Product Analyst path when you have a minute.", ts: at(6 * DAY), read: true, href: "grow.html#growth-journey" }
-  ];
+  ].map(note => ({ ...note, audience: "candidate" }));
+}
+
+/* Employer-workspace notifications. The Employer OS previously had no seeds of
+   its own, so a fresh employer saw an empty bell while a browser that had used
+   the candidate demo showed CANDIDATE items. Hrefs point at employer-app views. */
+function seedEmployerNotifications() {
+  const now = Date.now();
+  const at = ms => new Date(now - ms).toISOString();
+  const MIN = 60000, HOUR = 3600000, DAY = 86400000;
+  return [
+    { id: "en-applicants", type: "application", title: "12 new applicants for Product Design Intern", body: "3 clear your 85% match bar - review before the Friday shortlist.", ts: at(18 * MIN), read: false, href: "employer-app.html#pipeline" },
+    { id: "en-interview", type: "interview", title: "Siti Nur confirmed Thursday, 2:00 PM", body: "Final round for Product Design Intern with your design lead.", ts: at(3 * HOUR), read: false, href: "employer-app.html#pipeline" },
+    { id: "en-vera", type: "vera", title: "Vera shortlisted 5 candidates for you", body: "Ranked on portfolio evidence and stated salary fit.", ts: at(6 * HOUR), read: false, href: "employer-app.html#pipeline" },
+    { id: "en-role", type: "role", title: "Junior Data Analyst posting closes in 3 days", body: "126 applicants so far - extend the window or start screening.", ts: at(1 * DAY), read: true, href: "employer-app.html#roles" },
+    { id: "en-profile", type: "network", title: "Your company profile drew 240 views this week", body: "Up 18% - graduates are reading your hiring process.", ts: at(2 * DAY), read: true, href: "employer-app.html#company" },
+    { id: "en-offer", type: "application", title: "Daniel Lim accepted your offer", body: "Start date confirmed for next month - onboarding is next.", ts: at(4 * DAY), read: true, href: "employer-app.html#pipeline" }
+  ].map(note => ({ ...note, audience: "employer" }));
 }
 
 function createEmptyProfile(seed = {}) {
@@ -1818,12 +1860,38 @@ function normalizeVeraConversations(state) {
   return { conversations, activeId };
 }
 
+// Employer side of the same pattern - a fully separate conversation list, not
+// a shared one filtered by role. Candidate and employer Vera conversations
+// have different reply engines and different quick-prompt sources
+// (getEmployerVeraContext() vs a candidate profile), so merging them the way
+// notifications were merged (one list + an audience field) would mean every
+// reader has to know which engine applies to which entry - a fully separate
+// state key, like COMMUNITY_STORIES vs DATA.communityPosts, is the simpler,
+// safer split here. No legacy shape to migrate (this is a new feature), so
+// unlike normalizeVeraConversations there is no state.chat-style fallback.
+function normalizeEmployerVeraConversations(state) {
+  let conversations = Array.isArray(state.employerVeraConversations)
+    ? state.employerVeraConversations.filter(c => c && typeof c === "object" && Array.isArray(c.messages))
+    : [];
+  if (!conversations.length) {
+    const now = Date.now();
+    conversations = [{ id: "econv-default", title: "New chat", createdAt: now, updatedAt: now, messages: [] }];
+  } else {
+    const withMessages = conversations.filter(c => c.messages.length > 0);
+    if (withMessages.length) conversations = withMessages;
+  }
+  let activeId = state.employerActiveVeraConversationId;
+  if (!activeId || !conversations.some(c => c.id === activeId)) activeId = conversations[0].id;
+  return { conversations, activeId };
+}
+
 function normalizeState(state) {
   const profile = normalizeProfile(state.profile || createEmptyProfile());
   const session = { loggedIn: false, role: "guest", currentUserId: null, name: "", isDemo: false, ...(state.session || {}) };
   if (session.loggedIn && !session.name) session.name = profile.personal.fullName;
   const { conversations: veraConversations, activeId: activeVeraConversationId } = normalizeVeraConversations(state);
   const activeVeraConversation = veraConversations.find(c => c.id === activeVeraConversationId);
+  const { conversations: employerVeraConversations, activeId: employerActiveVeraConversationId } = normalizeEmployerVeraConversations(state);
   return ensureGuidedTour({
     ...state,
     auth: state.auth || { users: [] },
@@ -1833,6 +1901,8 @@ function normalizeState(state) {
     veraConversations,
     activeVeraConversationId,
     chat: activeVeraConversation.messages,
+    employerVeraConversations,
+    employerActiveVeraConversationId,
     veraLastReadAt: Number(state.veraLastReadAt) || 0,
     notifications: normalizeNotifications(state.notifications),
     savedJobs: Array.isArray(state.savedJobs) ? state.savedJobs : [],
@@ -2235,8 +2305,8 @@ function applyDemoAccount(state) {
 }
 
 function startDemoDashboard(role = "candidate") {
-  const next = applyDemoAccount(readState());
-  next.session = { ...next.session, role };
+  const state = readState();
+  const next = role === "employer" ? applyDemoEmployerAccount(state) : applyDemoAccount(state);
   writeState(next);
   location.href = role === "employer" ? "employer-app.html" : "dashboard.html";
 }
@@ -2250,6 +2320,11 @@ function applyDemoEmployerAccount(state) {
   seedMockEmployerProfile(state);
   state.session = { loggedIn: true, role: "employer", currentUserId: "demo-employer", name: "Priya Menon", isDemo: true };
   state.onboarding = { ...state.onboarding, employerDone: true, lastSavedAt: nowStamp() };
+  // Seed the employer's own notifications, keeping any candidate ones already
+  // in this browser (the list is shared; the two audiences coexist and are
+  // filtered apart on read by notificationsForRole()).
+  const keptCandidate = normalizeNotifications(state.notifications).filter(note => note.audience !== "employer");
+  state.notifications = [...seedEmployerNotifications(), ...keptCandidate];
   return state;
 }
 
@@ -3111,10 +3186,10 @@ const TOUR_STEPS = {
       mission: "Share one milestone or question."
     },
     {
-      target: ".cg-feed-tabs",
-      title: "Filter by type",
-      body: "Narrow the feed to milestones, discussions, or hiring signals depending on what you're looking for today.",
-      mission: "Filter to Hiring to see who's recruiting."
+      target: ".cg-feed-left a[href='#saved']",
+      title: "Your library",
+      body: "Anything you save or like is kept here - posts, roles, companies and universities - and you can narrow each one down by category.",
+      mission: "Open Saved and try a category."
     }
   ]
 };
@@ -3444,9 +3519,17 @@ function loginRedirectHref(target) {
   return safeTarget ? `login.html?redirect=${encodeURIComponent(safeTarget)}` : "login.html";
 }
 
-function requireAccount(root, purpose = "open this workspace") {
+function requireAccount(root, purpose = "open this workspace", demoRole = "candidate") {
   const state = readState();
   if (state.session.loggedIn) return true;
+  // Preserve where the user was headed through both auth paths: login.html
+  // already reads its own ?redirect= (wireStaticLoginForm), and register.html
+  // (renderCreateAccountWizard) stashes ?redirect= into sessionStorage itself
+  // and finishOnboarding() reads it back - this just has to pass the target
+  // through, not duplicate that plumbing.
+  const currentTarget = sanitizeRedirectPath(location.pathname.split(/[\\/]/).pop() + location.search + location.hash);
+  const loginHref = currentTarget ? loginRedirectHref(currentTarget) : "login.html";
+  const registerHref = currentTarget ? `register.html?redirect=${encodeURIComponent(currentTarget)}` : "register.html";
   root.innerHTML = `
     <div class="locked-state-wrap">
       <div class="locked-state glass-card">
@@ -3454,9 +3537,9 @@ function requireAccount(root, purpose = "open this workspace") {
         <h1 class="section-title">Create your account to ${purpose}.</h1>
         <p class="section-sub">CareerGo personalizes your roadmap, Vera's coaching style, job matching, and dashboard from your own career situation.</p>
         <div class="hero-actions">
-          <button class="btn btn-primary" type="button" data-enter-demo>${icon("monitor-play")} Enter demo dashboard</button>
-          <a class="btn btn-primary" href="register.html">${icon("user-plus")} Create account</a>
-          <a class="btn btn-ghost" href="login.html">${icon("log-in")} Log in</a>
+          <button class="btn btn-primary" type="button" data-enter-demo data-enter-demo-role="${demoRole}">${icon("monitor-play")} Enter demo dashboard</button>
+          <a class="btn btn-primary" href="${registerHref}">${icon("user-plus")} Create account</a>
+          <a class="btn btn-ghost" href="${loginHref}">${icon("log-in")} Log in</a>
         </div>
       </div>
       <div class="locked-panel glass-card">
@@ -3500,7 +3583,7 @@ function roleLabel(role) {
 
 function requireRole(root, allowedRole = "candidate", purpose = "open this workspace") {
   const state = readState();
-  if (!requireAccount(root, purpose)) return false;
+  if (!requireAccount(root, purpose, allowedRole)) return false;
   if (state.session.role === allowedRole) return true;
   root.innerHTML = `
     <div class="locked-state-wrap">
@@ -3544,7 +3627,13 @@ function bindGlobalActions() {
     writeState(next);
     location.href = "index.html";
   }));
-  qsa("[data-enter-demo]").forEach(btn => btn.addEventListener("click", startDemoDashboard));
+  // Not an arrow-wrapped no-op: passing startDemoDashboard directly as the
+  // listener means addEventListener's Event argument becomes its `role`
+  // param, which is always truthy and never "employer" - so the button on
+  // an employer-only locked screen (requireRole) silently dropped the user
+  // into the candidate dashboard instead. Read the role requireAccount
+  // stamped on the button instead of trusting the call signature.
+  qsa("[data-enter-demo]").forEach(btn => btn.addEventListener("click", () => startDemoDashboard(btn.dataset.enterDemoRole || "candidate")));
   document.addEventListener("click", event => {
     const link = event.target.closest("a[href*='posts.html?topic=']");
     if (!link) return;
@@ -3557,6 +3646,14 @@ function bindGlobalActions() {
   });
 }
 
+// renderNavigation() (which calls this) re-runs often - mark-all-read, every
+// role save/apply, notification/nav interactions - each time against a fresh
+// [data-account-menu-toggle]/[data-account-menu] pair. The two document
+// listeners below used to get re-added with no guard on every call, piling up
+// permanently (document is never torn down). Bind them once; let them read
+// the current close() via this module-level ref, same fix as wireVeraWidget.
+let currentAccountMenuClose = null;
+let accountMenuDocListenersBound = false;
 function bindAccountMenu() {
   const toggle = qs("[data-account-menu-toggle]");
   const menu = qs("[data-account-menu]");
@@ -3574,10 +3671,14 @@ function bindAccountMenu() {
     menu.hidden ? open() : close();
   });
   menu.addEventListener("click", event => event.stopPropagation());
-  document.addEventListener("click", close);
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") close();
-  });
+  currentAccountMenuClose = close;
+  if (!accountMenuDocListenersBound) {
+    accountMenuDocListenersBound = true;
+    document.addEventListener("click", () => currentAccountMenuClose?.());
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") currentAccountMenuClose?.();
+    });
+  }
 }
 
 function publicNav() {
@@ -3707,7 +3808,7 @@ function notificationMenuMarkup(notifications) {
 function workspaceTopNav() {
   const state = readState();
   const isEmployer = state.session.role === "employer";
-  const notifications = Array.isArray(state.notifications) ? state.notifications : [];
+  const notifications = notificationsForRole(state);
   const page = document.body.dataset.page || "";
   if (!isEmployer) {
     const workspaceLinks = [
@@ -3773,22 +3874,52 @@ function workspaceTopNav() {
       </div>
     `;
   }
+  // Employer nav links for SHARED pages (notifications.html etc.). The Employer
+  // OS renders its own sidebar/nav inside employer-app.html, so without this an
+  // employer landing on a shared page got a topbar with no navigation at all -
+  // stranded, with the only way back being the browser button.
+  // EMPLOYER_NAV_GROUPS is declared later in the file but this runs at render
+  // time, so it is initialized by then.
+  // Only employers reach this point (the candidate branch returns above), so
+  // this is the employer bar for SHARED pages: notifications.html, role.html,
+  // and anything else outside employer-app.html.
+  //
+  // It MUST use the same class names as the candidate branch above -
+  // .cg-top-brand / .cg-navbar-logo / .cg-vera-search / .cg-user-actions -
+  // because the navbar parity CSS is keyed entirely to those. This block used
+  // to render .brand / .brand-logo / .workspace-search / .nav-actions, which
+  // silently opted out of every parity rule: employers on shared pages got a
+  // taller bar with an oversized logo, larger nav type, a full-width search
+  // field and no message button - visibly a different product from both the
+  // candidate workspace and employer-app.html. Renaming these classes is what
+  // fixes it; do not reintroduce the old names.
   return `
-    <a class="brand" href="${isEmployer ? "employer-app.html" : "dashboard.html"}"><img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>${isEmployer ? "Employer OS" : "Workspace"}</span></span></a>
-    <form class="workspace-search" role="search" data-workspace-search data-tour-target="workspace-search">
-      ${icon("search")}
-      <input name="q" aria-label="Search workspace" placeholder="${isEmployer ? "Search candidates, roles, applicants" : "Search jobs, companies, universities"}">
-    </form>
-    <div class="nav-actions">
+    <a class="brand cg-top-brand is-employer" href="employer-app.html" aria-label="CareerGo employer workspace">
+      <img class="cg-navbar-logo" src="assets/careergo-logo-script.png" alt="CareerGo">
+      <span class="cg-nav-role-chip">Employer</span>
+    </a>
+    <nav class="nav-links cg-workspace-tabs" aria-label="Employer workspace">
+      ${EMPLOYER_NAV_GROUPS[0].items.map(([key, label]) => `<a href="employer-app.html#${key}">${label}</a>`).join("")}
+    </nav>
+    <div class="cg-search-shell">
+      <form class="workspace-search cg-vera-search" role="search" data-workspace-search data-tour-target="workspace-search" style="grid-template-columns:24px minmax(0,1fr) !important">
+        ${icon("search")}
+        <input name="q" aria-label="Search your hiring workspace" placeholder="Search candidates, roles, applicants..." autocomplete="off">
+      </form>
+    </div>
+    <div class="nav-actions cg-user-actions">
+      <a class="btn btn-ghost cg-message-trigger" href="employer-app.html#messages" aria-label="Inbox">
+        ${icon("message-circle")}
+      </a>
       ${notificationMenuMarkup(notifications)}
       <div class="account-menu-wrap">
-        <button class="btn btn-primary account-menu-trigger" type="button" data-account-menu-toggle aria-haspopup="menu" aria-expanded="false">
-          <span class="account-avatar-icon">${icon(isEmployer ? "building-2" : "user-round")}</span><span>${getFirstName(state)}</span>
+        <button class="btn btn-primary account-menu-trigger cg-avatar-trigger" type="button" data-account-menu-toggle aria-haspopup="menu" aria-expanded="false" aria-label="${getFirstName(state)} account menu" title="${getFirstName(state)}">
+          <span>${String(getFirstName(state) || "A").slice(0, 2).toUpperCase()}</span>
         </button>
         <div class="account-menu glass-card" data-account-menu hidden role="menu">
-          <a role="menuitem" href="${isEmployer ? "employer-app.html#company" : "profile.html"}">${icon(isEmployer ? "building-2" : "user-round")} ${isEmployer ? "Company Profile" : "Profile"}</a>
-          <a role="menuitem" href="${isEmployer ? "employer-app.html#settings" : "settings.html"}">${icon("settings")} Settings</a>
-          ${isEmployer ? `<a role="menuitem" href="employer-app.html#pipeline">${icon("bookmark")} Talent Pool</a>` : `<a role="menuitem" href="posts.html#saved">${icon("bookmark")} Saved Items</a>`}
+          <a role="menuitem" href="employer-app.html#company">${icon("building-2")} Company Profile</a>
+          <a role="menuitem" href="employer-app.html#settings">${icon("settings")} Settings</a>
+          <a role="menuitem" href="employer-app.html#pipeline">${icon("bookmark")} Talent Pool</a>
           <button role="menuitem" type="button" data-logout>${icon("log-out")} Logout</button>
         </div>
       </div>
@@ -4589,6 +4720,9 @@ function renderNavigation() {
   }
 }
 
+// Same accumulation hazard and fix as bindAccountMenu just above.
+let currentNotificationMenuClose = null;
+let notificationMenuDocListenersBound = false;
 function bindNotificationMenu() {
   const toggle = qs("[data-notification-toggle]");
   const menu = qs("[data-notification-menu]");
@@ -4626,10 +4760,14 @@ function bindNotificationMenu() {
     renderNavigation();
     showToast("All notifications marked as read.");
   });
-  document.addEventListener("click", close);
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") close();
-  });
+  currentNotificationMenuClose = close;
+  if (!notificationMenuDocListenersBound) {
+    notificationMenuDocListenersBound = true;
+    document.addEventListener("click", () => currentNotificationMenuClose?.());
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") currentNotificationMenuClose?.();
+    });
+  }
 }
 
 /* Workspace nav hover dropdowns (Discover/Growth/Career Value/Pipeline -
@@ -4637,6 +4775,10 @@ function bindNotificationMenu() {
    CSS; this only wires the explicit tap-to-open toggle (mobile/touch, and
    an alternative to hover on desktop) and same-page smooth-scroll vs.
    cross-page navigation for the section links themselves. */
+// Same accumulation hazard and fix as bindAccountMenu/bindNotificationMenu
+// above - renderNavigation() calls all three together on every re-render.
+let currentWorkspaceNavCloseAll = null;
+let workspaceNavDocListenersBound = false;
 function bindWorkspaceNavDropdowns() {
   const wraps = qsa(".cg-nav-item-wrap");
   if (!wraps.length) return;
@@ -4691,12 +4833,16 @@ function bindWorkspaceNavDropdowns() {
       });
     });
   });
-  document.addEventListener("click", closeAll);
-  document.addEventListener("keydown", event => {
-    if (event.key !== "Escape") return;
-    closeAll();
-    if (document.activeElement?.closest(".cg-nav-item-wrap")) document.activeElement.blur();
-  });
+  currentWorkspaceNavCloseAll = closeAll;
+  if (!workspaceNavDocListenersBound) {
+    workspaceNavDocListenersBound = true;
+    document.addEventListener("click", () => currentWorkspaceNavCloseAll?.());
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      currentWorkspaceNavCloseAll?.();
+      if (document.activeElement?.closest(".cg-nav-item-wrap")) document.activeElement.blur();
+    });
+  }
 }
 
 function syncCurrentUser(state) {
@@ -5328,22 +5474,30 @@ function initWorkspaceRailScrollSync() {
   sync();
 }
 
+// Candidate Feed uses the same locked app-shell scroll model as the employer
+// feed (renderEmployerFeed / sizeFeedRegion): at the full 3-column layout the
+// shell fills the viewport below the top bar and does NOT itself scroll - only
+// the center column scrolls, and both rails stay pinned to the viewport
+// (scrolling internally only if taller than the shell). This replaces the old
+// JS "fake sticky" translateY, which left a tall rail's bottom permanently
+// below the fold because you had to scroll the whole document to reach it.
+//
+// Locked only at >=1181px, where the 3-column grid actually exists; below that
+// the aside reflows in-flow (see the max-width:1180px block in feed-final.css)
+// so there is no clipping to fix - the height is cleared and natural page
+// scroll takes over. The height must be set inline because the shell's top
+// depends on the top bar + page chrome, which CSS alone cannot resolve.
 function syncFeedSidebarSticky() {
   const shell = qs(".cg-feed-shell");
   if (!shell) return;
-  const topOffset = 106;
-  const shellRect = shell.getBoundingClientRect();
-  const shellStyle = getComputedStyle(shell);
-  const paddingTop = parseFloat(shellStyle.paddingTop) || 0;
-  const paddingBottom = parseFloat(shellStyle.paddingBottom) || 0;
-  const contentTop = shellRect.top + paddingTop;
-  const contentHeight = shellRect.height - paddingTop - paddingBottom;
-  qsa(".cg-feed-left, .cg-feed-aside", shell).forEach(el => {
-    const elHeight = el.getBoundingClientRect().height;
-    const maxTranslate = Math.max(0, contentHeight - elHeight);
-    const translate = Math.min(Math.max(topOffset - contentTop, 0), maxTranslate);
-    el.style.transform = translate > 0.5 ? `translateY(${translate}px)` : "";
-  });
+  // Clear the old fake-sticky transforms if any survived from a prior render.
+  qsa(".cg-feed-left, .cg-feed-aside", shell).forEach(el => { el.style.transform = ""; });
+  if (window.innerWidth < 1181) { shell.style.height = ""; return; }
+  // Clear any prior inline height before measuring: a stale shorter height
+  // would let the locked body sit higher and skew the top we read back.
+  shell.style.height = "";
+  const top = Math.round(shell.getBoundingClientRect().top);
+  shell.style.height = `calc(100vh - ${top}px)`;
 }
 
 function initFeedSidebarStickySync() {
@@ -5360,6 +5514,10 @@ function initFeedSidebarStickySync() {
   }
   window.addEventListener("scroll", requestSync, { passive: true });
   window.addEventListener("resize", requestSync);
+  // Web fonts load after first paint and reflow the top bar/chrome by a few px,
+  // which shifts the feed shell's top; re-measure once they're ready so the
+  // locked shell fills the viewport exactly instead of leaving a bottom gap.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(requestSync);
   requestSync();
 }
 
@@ -6068,9 +6226,61 @@ function renderAboutPage() {
   createIcons();
 }
 
+/* ---------------------------------------------------------------------------
+ * COMMUNITY_STORIES - the public community page's OWN content.
+ *
+ * Deliberately SEPARATE from DATA.communityPosts. That array is the in-app Feed
+ * (also read by search, saved posts and the employer feed), so editing it to
+ * suit this marketing page had side effects - e.g. adding a headline here would
+ * add one to the Feed, which renders `title` conditionally. This page is a
+ * curated shopfront: fixed 2x3 order, every card with a green headline, a body,
+ * and a photo. Edit it freely without touching the Feed.
+ *
+ * `image` is a path under assets/community/. Use .jpg (or .webp) - .gitignore
+ * ignores *.png except a few named logos, so a .png here would work locally but
+ * never get committed. A card whose image is missing still renders (text-only).
+ * ------------------------------------------------------------------------- */
+const COMMUNITY_STORIES = [
+  {
+    id: "cs-priya", author: "Priya Menon", title: "Write teardowns, not more frameworks",
+    body: "The best PM interview prep is not more frameworks — it's writing three teardowns of products you love. Interviewers can feel the difference between a memorized answer and a real point of view.",
+    reactions: 214, image: "assets/community/priya-menon.jpg", imageAlt: "Priya Menon working on product teardowns at her desk"
+  },
+  {
+    id: "cs-rohan", author: "Rohan S.", title: "Explain constraints, not screens",
+    body: "I stopped describing my portfolio as screens and started explaining constraints, tradeoffs and what changed after testing. That shift changed the interview.",
+    reactions: 98, image: "assets/community/rohan-s.jpg", imageAlt: "Rohan reviewing his design portfolio at a laptop"
+  },
+  {
+    id: "cs-mira", author: "Mira", title: "What the strongest junior data portfolios do",
+    body: "We reviewed 140 junior data applications this quarter. The strongest portfolios did one thing consistently: they explained the business decision behind the dashboard.",
+    reactions: 176, image: "assets/community/mira.jpg", imageAlt: "Mira writing notes beside her laptop"
+  },
+  {
+    id: "cs-nadia", author: "Nadia, UX Intern", title: "How I explained a messy university project in interviews",
+    body: "I reframed it around constraints, decisions, and what changed after testing.",
+    reactions: 42, image: "assets/community/nadia.jpg", imageAlt: "Nadia smiling at her desk after landing her first internship"
+  },
+  {
+    id: "cs-jason", author: "Jason, Data Analyst", title: "SQL portfolio tip",
+    body: "One clear dashboard with a business question is stronger than five disconnected notebooks.",
+    reactions: 36, image: "assets/community/jason.jpg", imageAlt: "Jason studying SQL beside a learning checklist"
+  },
+  {
+    id: "cs-ai-talent", author: "AI Talent Malaysia", title: "Weekly career prompt",
+    body: "Before applying, write the one sentence evidence you would use to prove fit for the role.",
+    reactions: 88, image: "assets/community/ai-talent-malaysia.jpg", imageAlt: "AI Talent Malaysia member reflecting on the weekly career prompt"
+  }
+];
+
 function renderCommunityPage() {
   const root = qs("[data-community]");
   if (!root) return;
+  const esc = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
   root.innerHTML = `
     <section class="container section">
       <div class="section-head">
@@ -6080,8 +6290,22 @@ function renderCommunityPage() {
         </div>
         <a class="btn btn-primary" href="register.html">${icon("user-plus")} Join CareerGo</a>
       </div>
-      <div class="grid-3">
-        ${DATA.communityPosts.map(post => `<article class="card"><div class="muted small">${post.author}</div><h3>${post.title}</h3><p>${post.body}</p><span class="pill gold">${post.reactions} reactions</span></article>`).join("")}
+      <div class="grid-3 cg-community-grid">
+        ${COMMUNITY_STORIES.map(story => `
+          <article class="card cg-community-card">
+            ${story.image ? `
+              <div class="cg-community-media">
+                <img src="${esc(story.image)}" alt="${esc(story.imageAlt || story.author)}" loading="lazy" onerror="this.closest('.cg-community-media').remove()">
+              </div>
+            ` : ""}
+            <div class="cg-community-body">
+              <div class="muted small">${esc(story.author)}</div>
+              <h3>${esc(story.title)}</h3>
+              <p>${esc(story.body)}</p>
+              <span class="pill gold">${esc(story.reactions)} reactions</span>
+            </div>
+          </article>
+        `).join("")}
       </div>
     </section>
   `;
@@ -8821,6 +9045,23 @@ function renderCompanyProfile() {
     workLife: workMode === "Remote" ? "Flexible, async-friendly." : "Balanced with sprint peaks."
   };
   const similar = similarOrgsFor(org, catalog);
+  // Employer-provided fields (the same maybank object the Employer Company
+  // Profile reads). Present richly on the demo employer company; other orgs
+  // fall back to derived/mock values so every profile still renders fully.
+  const aboutParas = Array.isArray(org.aboutParagraphs) && org.aboutParagraphs.length ? org.aboutParagraphs : [org.summary].filter(Boolean);
+  const specialties = Array.isArray(org.specialties) ? org.specialties.slice(0, 6) : [];
+  const officeList = Array.isArray(org.officeLocations) && org.officeLocations.length ? org.officeLocations : offices;
+  const followersLabel = org.followers ? Number(org.followers).toLocaleString("en-US") : null;
+  const responseLabel = org.avgResponseDays
+    ? `${org.avgResponseDays} day${org.avgResponseDays === 1 ? "" : "s"}`
+    : (org.hiringProcess && org.hiringProcess.avgResponseTime) || null;
+  const orgScores = org.scores && typeof org.scores === "object" ? org.scores : null;
+  const req = org.averageRequirements && typeof org.averageRequirements === "object" ? org.averageRequirements : null;
+  const reqTiers = org.requirementTiers && typeof org.requirementTiers === "object" ? org.requirementTiers : null;
+  const sben = org.salaryBenefits && typeof org.salaryBenefits === "object" ? org.salaryBenefits : null;
+  const cgrowth = org.careerGrowth && typeof org.careerGrowth === "object" ? org.careerGrowth : null;
+  const wculture = org.workCulture && typeof org.workCulture === "object" ? org.workCulture : null;
+  const hproc = org.hiringProcess && typeof org.hiringProcess === "object" ? org.hiringProcess : null;
   const requirementChecks = isCompany ? [] : universityRequirementChecks(org, state.profile);
   const requirementsMet = requirementChecks.filter(check => check.status === "ok").length;
   const requirementStatusIcon = { ok: "check-circle-2", gap: "alert-triangle", info: "info" };
@@ -8859,7 +9100,13 @@ function renderCompanyProfile() {
       <div class="cg-cp-row">
         <article class="cg-cp-card cg-cp-overview">
           <h2>Overview</h2>
-          <p>${org.summary}</p>
+          ${aboutParas.map(para => `<p>${para}</p>`).join("")}
+          ${specialties.length ? `
+            <div class="cg-cp-specialties">
+              <span class="cg-cp-label">Specialties</span>
+              <div class="cg-cp-chip-row">${specialties.map(s => `<span class="cg-cp-chip">${s}</span>`).join("")}</div>
+            </div>
+          ` : ""}
           <div class="cg-cp-overview-grid">
             <div><span class="cg-cp-label">What they do</span><p>${org.summary}</p></div>
             <div><span class="cg-cp-label">Who they hire</span><p>${commonRolesList.length ? `${commonRolesList.join(", ")} roles.` : "Product, growth, and operations roles."}</p></div>
@@ -8868,16 +9115,22 @@ function renderCompanyProfile() {
         <aside class="cg-cp-card cg-cp-glance">
           <span class="cg-section-kicker">At a glance</span>
           <div class="cg-cp-glance-row"><span>Open roles</span><strong>${org.open}</strong></div>
+          ${isCompany && org.industry ? `<div class="cg-cp-glance-row"><span>Industry</span><strong>${org.industry}</strong></div>` : ""}
           <div class="cg-cp-glance-row"><span>Size</span><strong>${org.size}</strong></div>
+          ${org.founded ? `<div class="cg-cp-glance-row"><span>Founded</span><strong>${org.founded}</strong></div>` : ""}
+          <div class="cg-cp-glance-row"><span>${isCompany ? "Headquarters" : "Location"}</span><strong>${org.location}</strong></div>
           <div class="cg-cp-glance-row"><span>Work mode</span><strong>${workMode}</strong></div>
           <div class="cg-cp-glance-row"><span>Hiring</span><strong>${icon("trending-up")} ${hiringPct}%</strong></div>
+          ${responseLabel ? `<div class="cg-cp-glance-row"><span>Avg. response</span><strong>${responseLabel}</strong></div>` : ""}
           <div class="cg-cp-glance-row"><span>Rating</span><strong>${Number(org.rating).toFixed(1)} / 5</strong></div>
-          ${org.externalUrl ? `
+          ${followersLabel ? `<div class="cg-cp-glance-row"><span>Followers</span><strong>${followersLabel}${org.followersTrend ? ` <em class="cg-cp-glance-trend">${org.followersTrend}</em>` : ""}</strong></div>` : ""}
+          ${org.website ? `<div class="cg-cp-glance-row"><span>Website</span><strong><a class="cg-cp-external-link" href="${org.externalUrl || `https://${org.website}`}" target="_blank" rel="noopener">${org.website} ${icon("external-link")}</a></strong></div>` : (org.externalUrl ? `
             <div class="cg-cp-glance-row">
               <span>${isCompany ? "Careers page" : "Admissions page"}</span>
               <strong><a class="cg-cp-external-link" href="${org.externalUrl}" target="_blank" rel="noopener">Visit ${icon("external-link")}</a></strong>
             </div>
-          ` : ""}
+          ` : "")}
+          ${officeList.length > 1 ? `<div class="cg-cp-glance-offices"><span>Office locations</span><div class="cg-cp-office-chips">${officeList.map(o => `<span class="cg-cp-office-chip">${icon("map-pin")} ${o}</span>`).join("")}</div></div>` : ""}
         </aside>
       </div>
 
@@ -8928,23 +9181,48 @@ function renderCompanyProfile() {
         <article class="cg-cp-card">
           <span class="cg-section-kicker">Requirements</span>
           <h2>What they look for</h2>
-          <div class="cg-cp-kv"><span>Education</span><strong>Bachelor's or equivalent experience.</strong></div>
-          <div class="cg-cp-kv"><span>Experience</span><strong>2+ years typical for PM.</strong></div>
-          <div class="cg-cp-kv"><span>Portfolio</span><strong>Optional for PM.</strong></div>
-          <div class="cg-cp-kv"><span>Language</span><strong>English.</strong></div>
-          <div class="cg-cp-kv"><span>Skills</span><strong>${skills}</strong></div>
-          <div class="cg-cp-kv"><span>Tools</span><strong>${tools}</strong></div>
+          ${req ? `
+            <div class="cg-cp-kv"><span>Education</span><strong>${req.education}</strong></div>
+            ${req.cgpa ? `<div class="cg-cp-kv"><span>CGPA</span><strong>${req.cgpa}</strong></div>` : ""}
+            <div class="cg-cp-kv"><span>Experience</span><strong>${req.experience}</strong></div>
+            <div class="cg-cp-kv"><span>Language</span><strong>${req.englishRequirement || "English"}</strong></div>
+            <div class="cg-cp-kv"><span>Portfolio</span><strong>${req.portfolio || "Not required for most roles"}</strong></div>
+            ${Array.isArray(req.commonSkills) ? `<div class="cg-cp-kv"><span>Core skills</span><strong>${req.commonSkills.join(", ")}</strong></div>` : ""}
+            ${Array.isArray(req.techSkills) ? `<div class="cg-cp-kv"><span>Technical</span><strong>${req.techSkills.join(", ")}</strong></div>` : ""}
+          ` : `
+            <div class="cg-cp-kv"><span>Education</span><strong>Bachelor's or equivalent experience.</strong></div>
+            <div class="cg-cp-kv"><span>Experience</span><strong>Varies by role.</strong></div>
+            <div class="cg-cp-kv"><span>Language</span><strong>English.</strong></div>
+            <div class="cg-cp-kv"><span>Skills</span><strong>${skills}</strong></div>
+            <div class="cg-cp-kv"><span>Tools</span><strong>${tools}</strong></div>
+          `}
+          ${reqTiers ? `
+            <div class="cg-cp-req-tiers">
+              ${reqTiers.required && reqTiers.required.length ? `<div><span class="cg-cp-label">Required</span><div class="cg-cp-chip-row">${reqTiers.required.map(t => `<span class="cg-cp-chip cg-cp-chip-req">${t}</span>`).join("")}</div></div>` : ""}
+              ${reqTiers.preferred && reqTiers.preferred.length ? `<div><span class="cg-cp-label">Preferred</span><div class="cg-cp-chip-row">${reqTiers.preferred.map(t => `<span class="cg-cp-chip">${t}</span>`).join("")}</div></div>` : ""}
+              ${reqTiers.bonus && reqTiers.bonus.length ? `<div><span class="cg-cp-label">Bonus</span><div class="cg-cp-chip-row">${reqTiers.bonus.map(t => `<span class="cg-cp-chip cg-cp-chip-bonus">${t}</span>`).join("")}</div></div>` : ""}
+            </div>
+          ` : ""}
         </article>
         <article class="cg-cp-card">
           <span class="cg-section-kicker">Hiring process</span>
           <h2>What to expect</h2>
-          <ol class="cg-cp-steps">
-            <li><b>1</b><div><strong>Application review</strong><span>1 week.</span></div></li>
-            <li><b>2</b><div><strong>Recruiter screen</strong><span>30 min.</span></div></li>
-            <li><b>3</b><div><strong>Manager interview</strong><span>45 min.</span></div></li>
-            <li><b>4</b><div><strong>Case</strong><span>Take-home.</span></div></li>
-            <li><b>5</b><div><strong>Panel</strong><span>2 interviews.</span></div></li>
-          </ol>
+          ${hproc && Array.isArray(hproc.steps) ? `
+            <ol class="cg-cp-steps">
+              ${hproc.steps.map((step, i) => `<li><b>${i + 1}</b><div><strong>${step}</strong></div></li>`).join("")}
+            </ol>
+            <div class="cg-cp-kv"><span>Avg. response</span><strong>${hproc.avgResponseTime || (responseLabel || "2-4 weeks")}</strong></div>
+            <div class="cg-cp-kv"><span>Difficulty</span><strong>${hproc.difficulty || org.hiringDifficulty || "Medium"}</strong></div>
+            ${hproc.assessmentNote ? `<div class="cg-cp-kv"><span>Assessment</span><strong>${hproc.assessmentNote}</strong></div>` : ""}
+          ` : `
+            <ol class="cg-cp-steps">
+              <li><b>1</b><div><strong>Application review</strong><span>1 week.</span></div></li>
+              <li><b>2</b><div><strong>Recruiter screen</strong><span>30 min.</span></div></li>
+              <li><b>3</b><div><strong>Manager interview</strong><span>45 min.</span></div></li>
+              <li><b>4</b><div><strong>Case</strong><span>Take-home.</span></div></li>
+              <li><b>5</b><div><strong>Panel</strong><span>2 interviews.</span></div></li>
+            </ol>
+          `}
         </article>
       </div>
 
@@ -8952,19 +9230,32 @@ function renderCompanyProfile() {
         <article class="cg-cp-card">
           <span class="cg-section-kicker">Salary</span>
           <h2>Typical bands</h2>
-          ${salaryBand ? `
-            <div class="cg-cp-kv"><span>PM</span><strong>${formatRM(salaryBand.min)} - ${formatRM(salaryBand.max)}</strong></div>
-            <div class="cg-cp-kv"><span>Senior PM</span><strong>${formatRM(salaryBand.min * 1.3)} - ${formatRM(salaryBand.max * 1.3)}</strong></div>
+          ${sben ? `
+            ${sben.freshGradSalary ? `<div class="cg-cp-kv"><span>Fresh graduate</span><strong>${sben.freshGradSalary}</strong></div>` : ""}
+            ${sben.internshipAllowance ? `<div class="cg-cp-kv"><span>Internship</span><strong>${sben.internshipAllowance}</strong></div>` : ""}
+            ${sben.bonus ? `<div class="cg-cp-kv"><span>Bonus</span><strong>${sben.bonus}</strong></div>` : ""}
+            ${org.salaryComparison && Number.isFinite(org.salaryComparison.industryPercentile) ? `<div class="cg-cp-kv"><span>vs. industry</span><strong>${org.salaryComparison.industryPercentile}th percentile</strong></div>` : ""}
+          ` : salaryBand ? `
+            <div class="cg-cp-kv"><span>Typical</span><strong>${formatRM(salaryBand.min)} - ${formatRM(salaryBand.max)}</strong></div>
+            <div class="cg-cp-kv"><span>Senior</span><strong>${formatRM(salaryBand.min * 1.3)} - ${formatRM(salaryBand.max * 1.3)}</strong></div>
           ` : `<p class="muted">Ask Vera for a benchmark on this employer.</p>`}
         </article>
         <article class="cg-cp-card">
           <span class="cg-section-kicker">Benefits</span>
           <h2>What comes with the role</h2>
           <div class="cg-cp-benefits">
-            <span>${icon("check-circle")} Medical</span>
-            <span>${icon("check-circle")} ${workMode}</span>
-            <span>${icon("check-circle")} Learning budget</span>
-            <span>${icon("check-circle")} Bonus</span>
+            ${sben ? `
+              ${sben.medical ? `<span>${icon("check-circle")} ${sben.medical}</span>` : ""}
+              ${sben.training ? `<span>${icon("check-circle")} ${sben.training}</span>` : ""}
+              ${sben.flexibleWork ? `<span>${icon("check-circle")} ${sben.flexibleWork}</span>` : ""}
+              ${sben.leave ? `<span>${icon("check-circle")} ${sben.leave}</span>` : ""}
+              ${sben.bonus ? `<span>${icon("check-circle")} ${sben.bonus}</span>` : ""}
+            ` : `
+              <span>${icon("check-circle")} Medical</span>
+              <span>${icon("check-circle")} ${workMode}</span>
+              <span>${icon("check-circle")} Learning budget</span>
+              <span>${icon("check-circle")} Bonus</span>
+            `}
           </div>
         </article>
       </div>
@@ -8973,13 +9264,34 @@ function renderCompanyProfile() {
         <span class="cg-section-kicker">Growth &amp; culture</span>
         <h2>How teams operate here</h2>
         <div class="cg-cp-culture-grid">
-          <div><span class="cg-cp-label">Mentorship</span><p>${cultureRow.mentorship}</p></div>
-          <div><span class="cg-cp-label">Training</span><p>Internal knowledge shares.</p></div>
-          <div><span class="cg-cp-label">Promotion</span><p>Every ~18 months.</p></div>
-          <div><span class="cg-cp-label">Work-life</span><p>${cultureRow.workLife}</p></div>
-          <div><span class="cg-cp-label">Management</span><p>OKRs; regular 1:1s.</p></div>
-          <div><span class="cg-cp-label">Overtime</span><p>Occasional.</p></div>
+          ${cgrowth || wculture ? `
+            <div><span class="cg-cp-label">Training</span><p>${(cgrowth && cgrowth.trainingQuality) || "Internal knowledge shares."}</p></div>
+            <div><span class="cg-cp-label">Promotion</span><p>${(cgrowth && cgrowth.promotionPath) || "Every ~18 months."}</p></div>
+            <div><span class="cg-cp-label">Mentorship</span><p>${(cgrowth && cgrowth.mentorship) || cultureRow.mentorship}</p></div>
+            <div><span class="cg-cp-label">Work-life</span><p>${(wculture && wculture.workLifeBalance) || cultureRow.workLife}</p></div>
+            <div><span class="cg-cp-label">Management</span><p>${(wculture && wculture.managementStyle) || "OKRs; regular 1:1s."}</p></div>
+            <div><span class="cg-cp-label">Pace</span><p>${(wculture && wculture.pace) || "Occasional overtime."}</p></div>
+            ${cgrowth && cgrowth.graduateProgram ? `<div><span class="cg-cp-label">Graduate program</span><p>${cgrowth.graduateProgram}</p></div>` : ""}
+            ${cgrowth && cgrowth.internalTransfer ? `<div><span class="cg-cp-label">Internal mobility</span><p>${cgrowth.internalTransfer}</p></div>` : ""}
+          ` : `
+            <div><span class="cg-cp-label">Mentorship</span><p>${cultureRow.mentorship}</p></div>
+            <div><span class="cg-cp-label">Training</span><p>Internal knowledge shares.</p></div>
+            <div><span class="cg-cp-label">Promotion</span><p>Every ~18 months.</p></div>
+            <div><span class="cg-cp-label">Work-life</span><p>${cultureRow.workLife}</p></div>
+            <div><span class="cg-cp-label">Management</span><p>OKRs; regular 1:1s.</p></div>
+            <div><span class="cg-cp-label">Overtime</span><p>Occasional.</p></div>
+          `}
         </div>
+        ${orgScores ? `
+          <div class="cg-cp-scores">
+            ${[["Culture", orgScores.culture], ["Growth", orgScores.growth], ["Pay", orgScores.pay], ["Work-life", orgScores.balance]].filter(([, v]) => Number.isFinite(v)).map(([label, v]) => `
+              <div class="cg-cp-score">
+                <div class="cg-cp-score-top"><span>${label}</span><strong>${Number(v).toFixed(1)}</strong></div>
+                <div class="cg-cp-score-bar"><i style="width:${Math.round((v / 5) * 100)}%"></i></div>
+              </div>
+            `).join("")}
+          </div>
+        ` : ""}
       </article>
       ` : `
       <div class="cg-cp-row">
@@ -9212,6 +9524,12 @@ function openMissionModal(task) {
 let dashboardTaskFilter = "";
 let activePostsThread = "";
 let activeInboxFilter = "All";
+// Category chip inside the Feed's "Your library" views (#saved / #liked).
+// Not in the hash: the hash already selects the library tab, and keeping the
+// chip out of it means Back returns you to the feed rather than stepping
+// through every chip you tried. Reset whenever the library tab changes.
+let feedLibraryFilter = "all";
+let feedLibraryTabSeen = "";
 let dashboardFocusSnoozed = false;
 
 function renderDashboard() {
@@ -10266,7 +10584,7 @@ function renderNotificationsPage() {
   if (!root) return;
   if (!requireAccount(root, "see your notifications")) return;
   const state = readState();
-  const all = normalizeNotifications(state.notifications);
+  const all = notificationsForRole(state);
   const unreadCount = all.filter(note => !note.read).length;
   const tabs = [["all", `All ${all.length}`], ["unread", `Unread ${unreadCount}`]];
   const filtered = notificationsFilterTab === "unread" ? all.filter(note => !note.read) : all;
@@ -10302,14 +10620,24 @@ function renderNotificationsPage() {
     </section>
   `).join("");
 
+  // This page is shared by both roles (the notification dropdown's "View all"
+  // is one shared component), so the back link must follow the session role -
+  // it used to send employers to the CANDIDATE dashboard. The href below is
+  // only the starting value; see the click handler at the end of this function,
+  // which re-resolves it from live state so a stale DOM can never win.
+  const notifIsEmployer = state.session.role === "employer";
+  const notifBackHref = notifIsEmployer ? "employer-app.html#dashboard" : "dashboard.html";
+  const notifBackLabel = notifIsEmployer ? "Back to Dashboard" : "Back to Today";
   root.innerHTML = `
     <section class="cg-notif-page">
-      <a class="cg-notif-back" href="dashboard.html">${icon("arrow-left")} Back to Today</a>
+      <a class="cg-notif-back" href="${notifBackHref}">${icon("arrow-left")} ${notifBackLabel}</a>
       <header class="cg-notif-hero">
         <div>
           <span class="cg-section-kicker">Activity</span>
           <h1>Notifications</h1>
-          <p>Everything Vera surfaced for you - interviews, matches, recruiter replies, and career-value moves.</p>
+          <p>${notifIsEmployer
+            ? "Everything Vera surfaced for your hiring - candidate activity, applicants, and pipeline moves."
+            : "Everything Vera surfaced for you - interviews, matches, recruiter replies, and career-value moves."}</p>
         </div>
         ${unreadCount ? `<button type="button" class="btn btn-ghost" data-notif-mark-all>${icon("check-check")} Mark all read</button>` : ""}
       </header>
@@ -10320,7 +10648,11 @@ function renderNotificationsPage() {
         <div class="cg-notif-empty">
           ${icon("bell-off")}
           <strong>${notificationsFilterTab === "unread" ? "No unread notifications" : "Nothing here yet"}</strong>
-          <small>${notificationsFilterTab === "unread" ? "You're all caught up." : "CareerGo will surface interviews, matches, and Vera's moves here."}</small>
+          <small>${notificationsFilterTab === "unread"
+            ? "You're all caught up."
+            : (notifIsEmployer
+              ? "CareerGo will surface applicants, candidate activity, and Vera's moves here."
+              : "CareerGo will surface interviews, matches, and Vera's moves here.")}</small>
         </div>
       `}
       ${hasMore ? `<div class="cg-notif-more"><button type="button" class="btn btn-ghost" data-notif-load-more>${icon("chevron-down")} Load older</button></div>` : ""}
@@ -10368,6 +10700,20 @@ function renderNotificationsPage() {
         go();
       }
     });
+  });
+
+  // Back link: re-resolve the destination from LIVE state on click instead of
+  // trusting the href baked in at render time. The rendered href is correct
+  // when it is written, but this page's DOM can outlive the state it was
+  // rendered from - a bfcache/back-forward restore replays the old DOM without
+  // re-running this function, and the app runs off file:// where a second tab
+  // shares the same localStorage. Either way an employer could click a link
+  // still pointing at the candidate dashboard. Resolving here makes the label
+  // and the destination impossible to disagree.
+  qs(".cg-notif-back", root)?.addEventListener("click", event => {
+    event.preventDefault();
+    const isEmployer = readState().session.role === "employer";
+    location.href = isEmployer ? "employer-app.html#dashboard" : "dashboard.html";
   });
 }
 
@@ -10806,6 +11152,225 @@ function wireVeraChatPanel() {
   });
 }
 
+/* =========================================================================
+   Employer Vera widget - the bottom-right FAB, rebuilt to match the
+   candidate's chatbox (renderHiringCopilot() used to open a static "Daily
+   Hiring Brief" digest with no way to type a question or hold a
+   conversation). Reuses the candidate's exact markup/CSS classes
+   (cg-vera-widget/cg-vera-popover/cg-vera-pop-*, cg-vera-chat-panel/
+   cg-vera-chat-sheet/...) for true visual parity - see the widened
+   [data-page="employers"] scope added to those rules in enterprise.css -
+   but keeps a fully separate conversation list and reply engine (see
+   normalizeEmployerVeraConversations above for why).
+
+   The reply engine is NOT a new one written from scratch: it flattens
+   getEmployerVeraStructuredResponse() - the same context-aware engine the
+   existing header "Ask Vera" drawer (renderEmployerVeraDrawer) already
+   uses - into a single plain-text bubble, so asking the same question in
+   either surface is grounded in the same analysis instead of forking a
+   second, shallower prompt-matcher. Quick-prompt chips come from
+   getEmployerVeraContext().suggestions for the same reason - they already
+   adapt to whatever employer view is currently open.
+   ========================================================================= */
+function employerVeraChatReply(text) {
+  const context = getEmployerVeraContext();
+  const response = getEmployerVeraStructuredResponse(text, context);
+  const bullets = response.points.map(([label, detail]) => `${label}: ${detail}`).join(" ");
+  return `${response.title}. ${bullets} Suggested move: ${response.move}`;
+}
+
+// The stat/reminder brief still comes from getDailyHiringBrief() - proven,
+// simple counts (new matches, interviews, offers) that are about TODAY,
+// independent of which view the employer is currently on, unlike the
+// context-aware reply engine above.
+function employerVeraInsight() {
+  const brief = getDailyHiringBrief();
+  const top = brief.items[0];
+  const bubble1 = brief.totalSignals
+    ? `Here's what changed since your last visit: ${brief.totalSignals} thing${brief.totalSignals === 1 ? "" : "s"} worth a look across your pipeline.`
+    : "Nothing urgent right now - I'll surface changes here as your pipeline updates.";
+  const question = top ? "What should I look at first?" : "Anything I should be doing today?";
+  const bubble2 = top ? top.text : (brief.suggestedActions[0] || "Keep an eye on new applicants and interview replies - I'll flag anything time-sensitive.");
+  const moveTitle = brief.suggestedActions[0] || (top ? top.text : "You're all caught up");
+  const stats = brief.stats.filter(s => Number(s.value) > 0).slice(0, 3);
+  return {
+    bubble1, question, bubble2, moveTitle,
+    stats: stats.length ? stats : brief.stats.slice(0, 3),
+    reminders: brief.items.slice(0, 3),
+    quickActions: brief.quickActions,
+    totalSignals: brief.totalSignals
+  };
+}
+
+function getActiveEmployerVeraConversation(state) {
+  return state.employerVeraConversations.find(c => c.id === state.employerActiveVeraConversationId) || state.employerVeraConversations[0];
+}
+
+function createEmployerVeraConversation(state, seedTopic) {
+  const now = Date.now();
+  const id = `econv-${now}-${Math.random().toString(36).slice(2, 7)}`;
+  const messages = seedTopic
+    ? [{ from: "user", text: seedTopic }, { from: "vera", text: employerVeraChatReply(seedTopic) }]
+    : [];
+  const conv = { id, title: seedTopic || "New chat", createdAt: now, updatedAt: now, messages };
+  state.employerVeraConversations = [conv, ...state.employerVeraConversations];
+  state.employerActiveVeraConversationId = id;
+  return state;
+}
+
+function appendEmployerVeraMessage(state, from, text) {
+  const conv = getActiveEmployerVeraConversation(state);
+  conv.messages.push({ from, text });
+  conv.updatedAt = Date.now();
+  if ((!conv.title || conv.title === "New chat") && from === "user") conv.title = text;
+  return state;
+}
+
+function employerVeraVisibleConversations(state) {
+  return state.employerVeraConversations.filter(c => c.messages.length > 0).sort((a, b) => b.updatedAt - a.updatedAt);
+}
+
+// veraConversationTitle/relativeConversationTime/veraHistoryItemHtml (defined
+// above, candidate side) take only (conv, activeId)/(ts) - no candidate-only
+// state - so they're reused as-is for employer conversations too.
+function employerVeraMessagesHtml(messages) {
+  const prompts = getEmployerVeraContext().suggestions || [];
+  const shown = messages.length ? messages : [{ from: "vera", text: "Ask me anything about your hiring - candidates, interviews, offers, or which roles need attention." }];
+  return shown.map(msg => `<p class="${msg.from === "vera" ? "incoming" : "outgoing"}">${msg.text}</p>`).join("")
+    + `<div class="cg-vera-quick-prompts" role="group" aria-label="Quick questions for Vera">${prompts.map(prompt => `<button type="button" class="cg-vera-quick-chip" data-vera-chat-quick-prompt="${escapeHtml(prompt)}">${prompt}</button>`).join("")}</div>`;
+}
+
+function employerVeraChatPanelMarkup(state) {
+  const conversations = employerVeraVisibleConversations(state);
+  const active = getActiveEmployerVeraConversation(state);
+  return `
+    <div class="cg-vera-chat-panel" data-emp-vera-chat-panel hidden>
+      <div class="cg-vera-chat-backdrop" data-emp-vera-chat-backdrop></div>
+      <aside class="cg-vera-chat-sheet" role="dialog" aria-modal="true" aria-label="Vera hiring copilot chat">
+        <div class="cg-vera-chat-history">
+          <div class="cg-vera-chat-history-head">
+            <span>Conversations</span>
+            <button type="button" data-emp-vera-new-chat>${icon("plus")} New chat</button>
+          </div>
+          <div class="cg-vera-chat-history-list" data-emp-vera-history-list>
+            ${conversations.map(conv => veraHistoryItemHtml(conv, active.id)).join("")}
+          </div>
+        </div>
+        <div class="cg-vera-chat-main">
+          <header class="cg-vera-chat-head">
+            <div><strong class="cg-vera-chat-title">Vera</strong><p>Your hiring copilot &middot; always online</p></div>
+            <span class="cg-vera-chat-badge">Personalized to your pipeline</span>
+            <button type="button" class="cg-vera-chat-close" data-emp-vera-chat-close aria-label="Close Vera chat">${icon("x")}</button>
+          </header>
+          <section class="cg-chat-thread" data-emp-vera-chat-messages aria-label="Conversation with Vera">
+            ${employerVeraMessagesHtml(active.messages)}
+          </section>
+          <form class="cg-message-composer" data-emp-vera-chat-composer>
+            <input placeholder="Write a message..." data-emp-vera-chat-input>
+            <button type="submit">${icon("send")} Send</button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  `;
+}
+
+function employerVeraPanelEls() {
+  const panel = qs("[data-emp-vera-chat-panel]");
+  if (!panel) return null;
+  return {
+    panel,
+    backdrop: qs("[data-emp-vera-chat-backdrop]", panel),
+    closeBtn: qs("[data-emp-vera-chat-close]", panel),
+    historyList: qs("[data-emp-vera-history-list]", panel),
+    messagesPane: qs("[data-emp-vera-chat-messages]", panel),
+    composer: qs("[data-emp-vera-chat-composer]", panel),
+    input: qs("[data-emp-vera-chat-input]", panel),
+    newChatBtn: qs("[data-emp-vera-new-chat]", panel)
+  };
+}
+
+function refreshEmployerVeraPanel() {
+  const els = employerVeraPanelEls();
+  if (!els) return;
+  const state = readState();
+  const isDraft = els.panel.dataset.draftMode === "1";
+  const conversations = employerVeraVisibleConversations(state);
+  const active = getActiveEmployerVeraConversation(state);
+  const highlightId = isDraft ? null : active.id;
+  els.historyList.innerHTML = conversations.map(conv => veraHistoryItemHtml(conv, highlightId)).join("");
+  els.messagesPane.innerHTML = employerVeraMessagesHtml(isDraft ? [] : active.messages);
+  createIcons();
+  els.messagesPane.scrollTop = els.messagesPane.scrollHeight;
+}
+
+function sendEmployerVeraChatMessage(text) {
+  const trimmed = text.trim();
+  if (!trimmed) return;
+  const els = employerVeraPanelEls();
+  let state = readState();
+  if (els && els.panel.dataset.draftMode === "1") {
+    state = createEmployerVeraConversation(state, null);
+    delete els.panel.dataset.draftMode;
+  }
+  state = appendEmployerVeraMessage(state, "user", trimmed);
+  state = appendEmployerVeraMessage(state, "vera", employerVeraChatReply(trimmed));
+  writeState(state);
+  refreshEmployerVeraPanel();
+}
+
+function openEmployerVeraPanel() {
+  const els = employerVeraPanelEls();
+  if (!els) return;
+  els.panel.hidden = false;
+  document.body.classList.add("cg-vera-chat-open");
+  refreshEmployerVeraPanel();
+  els.input.focus();
+}
+
+function closeEmployerVeraPanel() {
+  const els = employerVeraPanelEls();
+  if (!els) return;
+  els.panel.hidden = true;
+  document.body.classList.remove("cg-vera-chat-open");
+}
+
+function wireEmployerVeraChatPanel() {
+  const els = employerVeraPanelEls();
+  if (!els || els.panel.dataset.wired) return;
+  els.panel.dataset.wired = "1";
+  els.newChatBtn.addEventListener("click", () => {
+    els.panel.dataset.draftMode = "1";
+    refreshEmployerVeraPanel();
+    els.input.focus();
+  });
+  els.historyList.addEventListener("click", event => {
+    const item = event.target.closest("[data-vera-history-item]");
+    if (!item) return;
+    delete els.panel.dataset.draftMode;
+    const state = readState();
+    state.employerActiveVeraConversationId = item.dataset.veraHistoryItem;
+    writeState(state);
+    refreshEmployerVeraPanel();
+  });
+  els.messagesPane.addEventListener("click", event => {
+    const chip = event.target.closest("[data-vera-chat-quick-prompt]");
+    if (!chip) return;
+    sendEmployerVeraChatMessage(chip.dataset.veraChatQuickPrompt);
+  });
+  els.composer.addEventListener("submit", event => {
+    event.preventDefault();
+    const text = els.input.value;
+    els.input.value = "";
+    sendEmployerVeraChatMessage(text);
+  });
+  els.closeBtn.addEventListener("click", closeEmployerVeraPanel);
+  els.backdrop.addEventListener("click", closeEmployerVeraPanel);
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !els.panel.hidden) closeEmployerVeraPanel();
+  });
+}
+
 function veraWidgetMarkup() {
   const state = readState();
   const insight = veraInsight(state);
@@ -10851,6 +11416,17 @@ function veraWidgetMarkup() {
   `;
 }
 
+// wireVeraWidget() runs on every dashboard/role/etc. re-render (task filter,
+// snooze, apply, save - a dozen call sites), each time against a fresh
+// [data-vera-widget] node. The document click/keydown listeners below used to
+// get re-added on every single call with no guard - document is never torn
+// down, so those piled up forever (harmless today only because each stale
+// closure's captured widget is a detached node whose .contains() always
+// returns false). Bind the document listeners exactly once, and let them
+// read whichever widget/closePopover is current via these module-level refs.
+let currentVeraWidgetEl = null;
+let currentVeraWidgetClose = null;
+let veraWidgetDocListenersBound = false;
 function wireVeraWidget(root) {
   const widget = qs("[data-vera-widget]", root);
   if (!widget) return;
@@ -10892,12 +11468,17 @@ function wireVeraWidget(root) {
     openPopover();
   }));
   wireVeraChatPanel();
-  document.addEventListener("click", event => {
-    if (!widget.contains(event.target)) closePopover();
-  });
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") closePopover();
-  });
+  currentVeraWidgetEl = widget;
+  currentVeraWidgetClose = closePopover;
+  if (!veraWidgetDocListenersBound) {
+    veraWidgetDocListenersBound = true;
+    document.addEventListener("click", event => {
+      if (currentVeraWidgetEl && !currentVeraWidgetEl.contains(event.target)) currentVeraWidgetClose?.();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") currentVeraWidgetClose?.();
+    });
+  }
   input.addEventListener("focus", () => {
     quick.hidden = false;
   });
@@ -12084,7 +12665,7 @@ function veraProvenanceBadgeMarkup(key) {
 function renderEmployerOnboarding() {
   const root = qs("[data-employer-onboarding]");
   if (!root) return;
-  if (!requireAccount(root, "set up your employer workspace")) return;
+  if (!requireAccount(root, "set up your employer workspace", "employer")) return;
   let wizardStep = 0;
   let forceCreateNew = false;
 
@@ -17803,11 +18384,10 @@ function renderPosts() {
   const state = readState();
   qs(".page-hero")?.classList.add("is-hidden");
   const activeTab = (location.hash || "#for-you").replace("#", "");
-  const feedTabs = [
-    ["milestones", "Milestones"],
-    ["discussions", "Discussions"],
-    ["hiring", "Hiring"]
-  ];
+  // The old Milestones/Discussions/Hiring nav under the composer was removed:
+  // on the main feed it filtered a stream people scroll rather than search, so
+  // it mostly just hid posts. The same taxonomy now lives inside the Liked
+  // library view, where you ARE looking for one specific thing you kept.
   const trendItems = [
     { id: "pm-transitions", title: "PM transitions", count: "1.2k posts today", icon: "trending-up", keywords: ["pm", "product", "transition", "switch"] },
     { id: "ai-product-roles", title: "AI product roles", count: "840 posts today", icon: "sparkles", keywords: ["ai", "product", "role"] },
@@ -17867,9 +18447,6 @@ function renderPosts() {
       const hay = `${post.author} ${post.title} ${post.body}`.toLowerCase();
       return trend ? trend.keywords.some(keyword => hay.includes(keyword)) : true;
     }
-    if (activeTab === "milestones") return post.category === "milestone" || /learned|progress|project|portfolio/i.test(post.title);
-    if (activeTab === "discussions") return post.category === "discussion";
-    if (activeTab === "hiring") return post.category === "hiring" || /job|role|apply|interview/i.test(`${post.title} ${post.body}`);
     return true;
   });
   const feedPosts = filteredPosts.length ? filteredPosts : enrichedPosts;
@@ -18090,79 +18667,187 @@ function renderPosts() {
         <span>${icon("sparkles")} ${job.why[0]}</span>
       </div>
       <div class="cg-feed-actions">
-        <a href="discover.html?job=${job.id}">${icon("briefcase")} Open role</a>
+        <a href="${pipelineJobHref(job)}">${icon("briefcase")} Open role</a>
         <button type="button" data-feed-unsave-job="${job.id}">${icon("bookmark-x")} Remove</button>
       </div>
     </article>
   `;
   const savedJobs = DATA.jobs.filter(job => state.savedJobs.includes(job.id));
   const savedOrgs = [...DATA.companies, ...DATA.universities].filter(org => state.savedOrgs.includes(org.id));
-  const isDirectoryTab = ["companies", "universities", "saved"].includes(activeTab);
+  const savedCompanies = DATA.companies.filter(org => state.savedOrgs.includes(org.id));
+  const savedUniversities = DATA.universities.filter(org => state.savedOrgs.includes(org.id));
+  const savedPosts = enrichedPosts.filter(post => post.saved);
+  const likedPosts = enrichedPosts.filter(post => post.liked);
+  const savedTotal = savedPosts.length + savedJobs.length + savedOrgs.length;
+  const likedTotal = likedPosts.length;
+
+  /* ---------------------------------------------------------------------
+   * "Your library" - the Feed's second half. Browsing (For you / Network /
+   * Communities / Trending) is the stream; this is everything the person
+   * deliberately kept. Saved was previously reachable only by typing
+   * posts.html#saved or via the account menu, and Liked was not surfaced
+   * anywhere at all even though `post.liked` has always been persisted.
+   *
+   * Each library view carries its own category chips, because "saved" and
+   * "liked" hold different things: you can save a post, job, company or
+   * university, but you can only like a post - so Liked is categorised by
+   * post type instead (the taxonomy retired from the main feed).
+   * ------------------------------------------------------------------- */
+  const isLibraryTab = ["saved", "liked"].includes(activeTab);
+  const isDirectoryTab = ["companies", "universities"].includes(activeTab);
+  const isBrowseTab = !isLibraryTab && !isDirectoryTab && activeTab !== "messages";
+  if (isLibraryTab && feedLibraryTabSeen !== activeTab) {
+    feedLibraryTabSeen = activeTab;
+    feedLibraryFilter = "all";
+  }
+
+  const libraryFilters = activeTab === "liked"
+    ? [
+      ["all", "All", likedTotal],
+      ["milestone", "Milestones", likedPosts.filter(post => post.category === "milestone").length],
+      ["discussion", "Discussions", likedPosts.filter(post => post.category === "discussion").length],
+      ["hiring", "Hiring", likedPosts.filter(post => post.category === "hiring").length]
+    ]
+    : [
+      ["all", "All", savedTotal],
+      ["posts", "Posts", savedPosts.length],
+      ["jobs", "Jobs", savedJobs.length],
+      ["companies", "Companies", savedCompanies.length],
+      ["universities", "Universities", savedUniversities.length]
+    ];
+  if (!libraryFilters.some(([key]) => key === feedLibraryFilter)) feedLibraryFilter = "all";
+
+  // Library post cards keep a live action row - the old saved view rendered
+  // them read-only, so the only way to unsave something was to hunt it down
+  // again in the main feed.
+  const libraryPostCard = (post, tag) => `
+    <article class="cg-feed-post">
+      <div class="cg-feed-post-head">
+        <span class="cg-feed-avatar">${postInitials(post.author)}</span>
+        <div><h2>${post.author || "CareerGo member"}</h2><p>${post.title}</p></div>
+        <time>${post.time}</time>
+      </div>
+      <span class="cg-feed-tag">${tag}</span>
+      <p class="cg-feed-body">${post.body}</p>
+      <div class="cg-feed-actions">
+        <button type="button" data-like-post="${post.id}" class="${post.liked ? "active" : ""}">${icon("heart")} ${post.reactions || 0}</button>
+        <button type="button" data-save-post="${post.id}" class="${post.saved ? "active" : ""}">${icon("bookmark")} ${post.saved ? "Saved" : "Save"}</button>
+        <a href="posts.html#for-you">${icon("corner-up-left")} Open in feed</a>
+      </div>
+    </article>
+  `;
+
+  const libraryEmpty = (title, body) => `
+    <article class="cg-feed-post cg-library-empty">
+      <span class="cg-library-empty-icon">${icon(activeTab === "liked" ? "heart" : "bookmark")}</span>
+      <h2>${title}</h2>
+      <p class="cg-feed-body">${body}</p>
+      <a class="btn btn-primary" href="#for-you" data-feed-tab-link>Browse the feed ${icon("arrow-right")}</a>
+    </article>
+  `;
+
+  let libraryContent = "";
+  if (activeTab === "liked") {
+    const shown = feedLibraryFilter === "all" ? likedPosts : likedPosts.filter(post => post.category === feedLibraryFilter);
+    libraryContent = shown.length
+      ? shown.map(post => libraryPostCard(post, "Liked")).join("")
+      : libraryEmpty(
+        likedTotal ? "Nothing liked in this category." : "You have not liked anything yet.",
+        likedTotal
+          ? "Try another category, or clear the filter to see everything you liked."
+          : "Tap the heart on a post and it lands here, so the advice you found useful is easy to get back to."
+      );
+  } else if (activeTab === "saved") {
+    const parts = [];
+    const show = key => feedLibraryFilter === "all" || feedLibraryFilter === key;
+    if (show("jobs")) parts.push(...savedJobs.map(savedJobCard));
+    if (show("companies")) parts.push(...savedCompanies.map(orgCard));
+    if (show("universities")) parts.push(...savedUniversities.map(orgCard));
+    if (show("posts")) parts.push(...savedPosts.map(post => libraryPostCard(post, "Saved post")));
+    libraryContent = parts.length
+      ? parts.join("")
+      : libraryEmpty(
+        savedTotal ? "Nothing saved in this category." : "Nothing saved yet.",
+        savedTotal
+          ? "Try another category, or clear the filter to see everything you saved."
+          : "Save a post, role, company or university and it stays here - one place for everything you want to come back to."
+      );
+  }
+
   const feedTitle = activeTab === "companies"
     ? "Companies people are watching."
     : activeTab === "universities"
       ? "Universities shaping career paths."
-      : "Everything you saved for later.";
+      : activeTab === "liked"
+        ? "Posts you found useful."
+        : "Everything you saved for later.";
+  const librarySubtitle = activeTab === "liked"
+    ? "Every post you liked, grouped by what it was about."
+    : "Posts, roles, companies and universities you kept - all in one place.";
   const directoryContent = activeTab === "companies"
     ? DATA.companies.map(orgCard).join("")
     : activeTab === "universities"
       ? DATA.universities.map(orgCard).join("")
-      : activeTab === "saved"
-        ? [
-          ...savedJobs.map(savedJobCard),
-          ...savedOrgs.map(orgCard),
-          ...enrichedPosts.filter(post => post.saved).map(post => `
-            <article class="cg-feed-post">
-              <div class="cg-feed-post-head">
-                <span class="cg-feed-avatar">${postInitials(post.author)}</span>
-                <div><h2>${post.author || "CareerGo member"}</h2><p>${post.title}</p></div>
-                <time>${post.time}</time>
-              </div>
-              <span class="cg-feed-tag">Saved post</span>
-              <p class="cg-feed-body">${post.body}</p>
-            </article>
-          `)
-        ].join("") || `<article class="cg-feed-post"><h2>Nothing saved yet.</h2><p class="cg-feed-body">Save companies, universities, jobs, or posts and they will stay here inside Feed.</p></article>`
-        : "";
+      : "";
   root.innerHTML = appShell("posts", `
     <section class="cg-feed-shell">
       <aside class="cg-feed-left" aria-label="Feed sections">
+        <span class="cg-feed-left-group">Feed</span>
         ${[
           ["for-you", "For you", "sparkles"],
           ["network", "Network", "users-round"],
           ["communities", "Communities", "hash"],
           ["trend-pm-transitions", "Trending", "flame"]
         ].map(([key, label, ic]) => `<a class="${activeTab === key || (key === "for-you" && !activeTrend && activeTab === "for-you") ? "active" : ""}" href="#${key}" data-feed-tab-link>${icon(ic)} <span>${label}</span></a>`).join("")}
+        <span class="cg-feed-left-group">Your library</span>
+        ${[
+          ["saved", "Saved", "bookmark", savedTotal],
+          ["liked", "Liked", "heart", likedTotal]
+        ].map(([key, label, ic, count]) => `
+          <a class="${activeTab === key ? "active" : ""}" href="#${key}" data-feed-tab-link>
+            ${icon(ic)} <span>${label}</span>${count ? `<b class="cg-feed-left-count">${count}</b>` : ""}
+          </a>
+        `).join("")}
         <article class="cg-feed-left-note">
           <span class="cg-feed-left-note-icon">${icon("compass")}</span>
           <strong>Looking for opportunities?</strong>
-          <p>Companies, universities, and roles now live in Discover.</p>
-          <a class="btn btn-primary" href="discover.html">Discover ${icon("arrow-right")}</a>
-          <small>Saved items are in your Profile.</small>
+          <p>Roles, companies and universities - matched to your profile.</p>
+          <div class="cg-feed-left-jump">
+            ${[
+              ["open-roles", "Open roles", "briefcase"],
+              ["featured-companies", "Companies hiring", "building-2"],
+              ["featured-universities", "Universities", "graduation-cap"]
+            ].map(([id, label, ic]) => `<a href="discover.html#${id}">${icon(ic)}<span>${label}</span>${icon("arrow-right")}</a>`).join("")}
+          </div>
         </article>
       </aside>
       <main class="cg-feed-main">
-        <header class="cg-feed-hero ${isDirectoryTab ? "" : "cg-feed-hero-compact"}">
-          ${isDirectoryTab ? `<span class="cg-overline">${activeTab}</span><h1>${feedTitle}</h1>` : `<h1>Feed</h1>`}
-        </header>
+        ${isBrowseTab ? "" : `<header class="cg-feed-hero">
+          ${isDirectoryTab ? `<span class="cg-overline">${activeTab}</span><h1>${feedTitle}</h1>` : ""}
+          ${isLibraryTab ? `<span class="cg-overline">Your library</span><h1>${feedTitle}</h1><p class="cg-feed-hero-sub">${librarySubtitle}</p>` : ""}
+        </header>`}
 
-        ${isDirectoryTab ? "" : `<form class="cg-feed-composer" data-post-form>
+        ${isBrowseTab ? `<form class="cg-feed-composer" data-post-form>
           <span class="cg-feed-avatar cg-feed-avatar-add" aria-hidden="true">${icon("plus")}</span>
           <input name="body" aria-label="Post body" placeholder="Share a milestone, lesson, or question...">
           <input data-post-media name="media" type="file" accept="image/*,.pdf,.doc,.docx" hidden>
           <button class="btn btn-ghost" type="button" data-media-post>${icon("image")} Media</button>
           <button class="btn btn-primary" type="submit">${icon("plus")} Post</button>
           <div class="cg-media-preview" data-media-preview hidden></div>
-        </form>`}
+        </form>` : ""}
 
         ${activeTrend ? `<div class="cg-active-trend"><span>${icon("flame")} ${trendItems.find(item => item.id === activeTrend)?.title || "Trending"}</span><a href="#for-you" data-feed-tab-link>Clear</a></div>` : ""}
 
-        ${isDirectoryTab ? "" : `<nav class="cg-feed-tabs" aria-label="Feed filters">
-          ${feedTabs.map(([key, label]) => `<a class="${activeTab === key ? "active" : ""}" href="#${key}" data-feed-tab-link>${label}</a>`).join("")}
-        </nav>`}
+        ${isLibraryTab ? `<nav class="cg-library-filters" aria-label="${activeTab === "liked" ? "Liked" : "Saved"} categories">
+          ${libraryFilters.map(([key, label, count]) => `
+            <button type="button" class="${feedLibraryFilter === key ? "active" : ""}" data-library-filter="${key}"${count ? "" : " disabled"}>
+              ${label}${count ? `<b>${count}</b>` : ""}
+            </button>
+          `).join("")}
+        </nav>` : ""}
 
         <section class="cg-feed-list" aria-label="Career feed">
-          ${isDirectoryTab ? directoryContent : feedPosts.map(post => `
+          ${isLibraryTab ? libraryContent : isDirectoryTab ? directoryContent : feedPosts.map(post => `
             <article class="cg-feed-post">
               <div class="cg-feed-post-head">
                 <span class="cg-feed-avatar">${postInitials(post.author)}</span>
@@ -18266,6 +18951,10 @@ function renderPosts() {
     });
   });
   qsa("[data-feed-tab-link]", root).forEach(link => link.addEventListener("click", () => window.setTimeout(renderPosts, 0)));
+  qsa("[data-library-filter]", root).forEach(button => button.addEventListener("click", () => {
+    feedLibraryFilter = button.dataset.libraryFilter;
+    renderPosts();
+  }));
   const findOrSeedPost = (next, id) => {
     let post = next.posts.find(item => item.id === id);
     if (!post) {
@@ -18372,18 +19061,10 @@ function renderPosts() {
       toggle.textContent = expanded ? "Show less" : "Show more";
     });
   });
-  syncFeedSidebarSticky();
+  // Double rAF so the shell's top is measured AFTER layout settles - a
+  // synchronous measure here reads a pre-settle top and undersizes the shell.
+  requestAnimationFrame(() => requestAnimationFrame(syncFeedSidebarSticky));
   if (!isDirectoryTab) initPageTour("posts");
-}
-
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "\"": "&quot;",
-    "'": "&#39;"
-  }[char]));
 }
 
 const EMPLOYER_NAV_GROUPS = [
@@ -18405,8 +19086,6 @@ let employerBackToTopScrollHandler = null;
 let employerBackToTopClickHandler = null;
 let employerVeraDrawerOpen = false;
 let employerVeraPrompt = "What needs my attention today?";
-let employerCopilotOpen = false;
-let copilotBriefExpanded = false;
 
 const REMINDER_PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
 
@@ -18453,107 +19132,11 @@ function getSmartHiringReminders() {
 // to that same drawer for open-ended questions instead of duplicating its
 // prompt-matching engine.
 
-// Item 16's "Quick Action Floating Button" is folded into this existing
-// copilot panel rather than a second bottom-right FAB - two floating
-// buttons in the same corner would be exactly the kind of duplicated
-// action surface the redesign explicitly asks to avoid. "Ask Vera" was
-// previously both a footer button here AND would have been one of these
-// six quick actions; kept as one entry in this grid instead of both.
-// The FAB popover IS the Daily Hiring Brief (CAREERGO_UI_SPEC.md's Feed
-// redesign §Part A) - previously a large always-visible panel in the Feed's
-// middle column, now collapsed into this global, every-page FAB instead of
-// only living on one route. getDailyHiringBrief() (stats/items/quickActions)
-// is the single source for both this popover and, before this change, the
-// old inline panel - moving it here didn't require a second data model.
-function renderHiringCopilotPanelBody() {
-  const brief = getDailyHiringBrief();
-  const actionRows = copilotBriefExpanded ? brief.items : brief.items.slice(0, 3);
-  return `
-    <div class="emp-copilot-head">
-      <div class="emp-copilot-head-id">
-        <img class="emp-copilot-vera-mark" src="assets/vera-ai-coach.png" alt="" width="20" height="20">
-        <div>
-          <span class="emp-copilot-eyebrow">Today's Hiring Brief <span class="emp-copilot-vera-chip">Vera</span></span>
-          <p class="emp-copilot-sub">What changed since your last visit.</p>
-        </div>
-      </div>
-      <button type="button" class="btn-icon-sm" data-copilot-close aria-label="Close">${icon("x")}</button>
-    </div>
-    <div class="emp-copilot-body">
-      <div class="emp-copilot-stat-grid">
-        ${brief.stats.map(s => `
-          <button type="button" class="emp-copilot-stat-tile" data-copilot-nav="${s.nav}">
-            <span class="emp-copilot-stat-icon">${icon(s.icon)}</span>
-            <strong>${s.value}</strong>
-            <span>${s.label}</span>
-          </button>
-        `).join("")}
-      </div>
-      ${actionRows.length ? `
-        <div class="emp-copilot-reminder-list">
-          ${actionRows.map(item => `
-            <div class="emp-copilot-reminder">
-              <span class="emp-copilot-reminder-icon">${icon(item.icon)}</span>
-              <p>${item.text}</p>
-              ${item.cta ? `<button type="button" class="btn btn-ghost btn-sm" data-copilot-nav="${item.nav}">${item.cta}</button>` : ""}
-            </div>
-          `).join("")}
-        </div>
-      ` : `<p class="emp-empty-hint">Nothing urgent right now - Vera will surface changes here as your pipeline updates.</p>`}
-    </div>
-    <div class="emp-copilot-quick-actions">
-      <span class="emp-tags-label">Quick actions</span>
-      <div class="emp-copilot-quick-grid">
-        ${brief.quickActions.map(a => `<button type="button" class="emp-copilot-quick-btn" data-copilot-nav="${a.nav}">${icon(a.icon)}<span>${a.label}</span></button>`).join("")}
-      </div>
-    </div>
-    ${brief.items.length > 3 ? `<button type="button" class="emp-attention-role-link emp-copilot-see-full" data-copilot-toggle-brief>${copilotBriefExpanded ? "Show less" : `See full brief (${brief.items.length})`} ${icon(copilotBriefExpanded ? "chevron-up" : "chevron-down")}</button>` : ""}
-  `;
-}
-
-function renderHiringCopilot() {
-  const brief = getDailyHiringBrief();
-  return `
-    <div class="emp-hiring-copilot" data-hiring-copilot>
-      <div class="emp-copilot-panel" data-copilot-panel ${employerCopilotOpen ? "" : "hidden"} role="dialog" aria-modal="true" aria-label="Today's Hiring Brief">
-        ${renderHiringCopilotPanelBody()}
-      </div>
-      <button type="button" class="emp-copilot-fab" data-copilot-toggle aria-haspopup="dialog" aria-expanded="${employerCopilotOpen}" aria-label="Today's Hiring Brief${brief.totalSignals ? `, ${brief.totalSignals} new items` : ""}">
-        <img class="emp-copilot-vera-mark" src="assets/vera-ai-coach.png" alt="" width="20" height="20">
-        ${brief.totalSignals ? `<span class="emp-copilot-badge">${brief.totalSignals}</span>` : ""}
-      </button>
-    </div>
-  `;
-}
-
-function refreshHiringCopilot(root) {
-  const panel = qs("[data-copilot-panel]", root);
-  if (panel) { panel.innerHTML = renderHiringCopilotPanelBody(); createIcons(); bindHiringCopilotPanel(root); }
-  const fabWrap = qs("[data-hiring-copilot]", root);
-  if (fabWrap) {
-    const brief = getDailyHiringBrief();
-    const fab = qs("[data-copilot-toggle]", fabWrap);
-    let badge = qs(".emp-copilot-badge", fab);
-    if (brief.totalSignals) {
-      if (!badge) { badge = document.createElement("span"); badge.className = "emp-copilot-badge"; fab.appendChild(badge); }
-      badge.textContent = String(brief.totalSignals);
-    } else if (badge) badge.remove();
-    fab.setAttribute("aria-label", `Today's Hiring Brief${brief.totalSignals ? `, ${brief.totalSignals} new items` : ""}`);
-  }
-}
-
-function closeCopilotPanel(root) {
-  employerCopilotOpen = false;
-  const panel = qs("[data-copilot-panel]", root);
-  if (panel) panel.hidden = true;
-  const toggle = qs("[data-copilot-toggle]", root);
-  toggle?.setAttribute("aria-expanded", "false");
-  toggle?.focus();
-}
-
-// Standard focusable-elements trap: while the popover is open, Tab/Shift+Tab
-// cycle only among its own focusable children instead of escaping into the
-// page behind it (CAREERGO_UI_SPEC.md §13 - focus trapped while open).
+// Standard focusable-elements trap: while a modal/popover is open, Tab/
+// Shift+Tab cycle only among its own focusable children instead of escaping
+// into the page behind it (CAREERGO_UI_SPEC.md §13). Generic - also reused
+// by the "Your Reach" modal below, not exclusive to the hiring copilot
+// despite the name.
 function trapCopilotFocus(event, panel) {
   if (event.key !== "Tab") return;
   const focusable = qsa('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])', panel)
@@ -18565,46 +19148,200 @@ function trapCopilotFocus(event, panel) {
   else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
 }
 
-function bindHiringCopilotPanel(root) {
-  qs("[data-copilot-close]", root)?.addEventListener("click", () => closeCopilotPanel(root));
-  qs("[data-copilot-toggle-brief]", root)?.addEventListener("click", () => { copilotBriefExpanded = !copilotBriefExpanded; refreshHiringCopilot(root); });
-  qsa("[data-copilot-nav]", root).forEach(btn => btn.addEventListener("click", () => {
-    const nav = btn.dataset.copilotNav;
-    closeCopilotPanel(root);
+// Item 16's "Quick Action Floating Button" is folded into this same widget
+// rather than a second bottom-right FAB - two floating buttons in the same
+// corner would be exactly the kind of duplicated action surface the
+// redesign explicitly asks to avoid. "Ask Vera" was previously both a
+// footer button here AND would have been one of these quick actions; kept
+// as one entry in the grid instead of both.
+//
+// Rebuilt (see the big comment block above, just before employerVeraChatReply)
+// from a static "Daily Hiring Brief" digest into a real chatbox matching the
+// candidate's cg-vera-widget: opening insight + suggested move + reminders +
+// quick actions, THEN a live message thread, quick-prompt chips, and a
+// composer you can actually type into - plus an expand button that opens a
+// full conversation space with history, mirroring the candidate's
+// cg-vera-chat-panel exactly. getDailyHiringBrief() (stats/items/
+// quickActions) still feeds the opening insight; it just no longer IS the
+// whole widget.
+function renderHiringCopilotInsightHtml() {
+  const insight = employerVeraInsight();
+  return `
+    <div class="cg-vera-pop-bubble">${insight.bubble1}</div>
+    <div class="cg-vera-pop-question">${insight.question}</div>
+    <div class="cg-vera-pop-bubble">${insight.bubble2}</div>
+    <div class="cg-vera-pop-move">
+      <span>Vera's suggested move today</span>
+      <h4>${insight.moveTitle}</h4>
+      <div class="cg-vera-pop-stats">
+        ${insight.stats.map(stat => `<div><span>${stat.label}</span><strong>${stat.value}</strong></div>`).join("")}
+      </div>
+    </div>
+    ${insight.reminders.length ? `
+      <div class="emp-copilot-reminder-list">
+        ${insight.reminders.map(item => `
+          <div class="emp-copilot-reminder">
+            <span class="emp-copilot-reminder-icon">${icon(item.icon)}</span>
+            <p>${item.text}</p>
+            ${item.cta ? `<button type="button" class="btn btn-ghost btn-sm" data-copilot-nav="${item.nav}">${item.cta}</button>` : ""}
+          </div>
+        `).join("")}
+      </div>
+    ` : ""}
+    <div class="emp-copilot-quick-actions">
+      <span class="emp-tags-label">Quick actions</span>
+      <div class="emp-copilot-quick-grid">
+        ${insight.quickActions.map(a => `<button type="button" class="emp-copilot-quick-btn" data-copilot-nav="${a.nav}">${icon(a.icon)}<span>${a.label}</span></button>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderEmployerQuickPromptChipsHtml() {
+  const prompts = getEmployerVeraContext().suggestions || [];
+  return prompts.map(prompt => `<button type="button" class="cg-vera-pop-quick-chip" data-vera-pop-quick-prompt="${escapeHtml(prompt)}">${prompt}</button>`).join("");
+}
+
+function renderHiringCopilot() {
+  const state = readState();
+  const insight = employerVeraInsight();
+  const active = getActiveEmployerVeraConversation(state);
+  const thread = active.messages.map(msg => msg.from === "vera"
+    ? `<div class="cg-vera-pop-bubble">${msg.text}</div>`
+    : `<div class="cg-vera-pop-question">${msg.text}</div>`
+  ).join("");
+  return `
+    <div class="emp-hiring-copilot cg-vera-widget" data-hiring-copilot data-vera-widget>
+      <div class="cg-vera-popover" data-vera-popover hidden>
+        <div class="cg-vera-pop-head">
+          <span>Vera</span>
+          <b class="cg-vera-pop-online">online</b>
+          <button type="button" class="cg-vera-pop-expand" data-vera-pop-expand aria-label="Open full conversation">${icon("external-link")}</button>
+          <button type="button" class="cg-vera-pop-close" data-vera-close aria-label="Close Vera">${icon("x")}</button>
+        </div>
+        <div class="cg-vera-pop-body" data-vera-pop-body>
+          <div data-vera-pop-insight>${renderHiringCopilotInsightHtml()}</div>
+          <div class="cg-vera-pop-thread" data-vera-pop-thread>${thread}</div>
+        </div>
+        <div class="cg-vera-pop-quick" data-vera-pop-quick hidden role="group" aria-label="Quick questions for Vera">
+          ${renderEmployerQuickPromptChipsHtml()}
+        </div>
+        <form class="cg-vera-pop-composer" data-vera-pop-form>
+          <input name="message" placeholder="Ask Vera about your hiring..." aria-label="Ask Vera" autocomplete="off" data-vera-pop-input>
+          <button type="submit" aria-label="Send">${icon("send")}</button>
+        </form>
+      </div>
+      <button type="button" class="cg-vera-trigger emp-copilot-fab" data-vera-trigger aria-label="Ask Vera${insight.totalSignals ? `, ${insight.totalSignals} new items` : ""}">
+        <img class="cg-vera-trigger-logo" src="assets/vera-ai-coach.png" alt="Vera AI">
+        ${insight.totalSignals ? `<span class="emp-copilot-badge">${insight.totalSignals}</span>` : ""}
+      </button>
+    </div>
+    ${employerVeraChatPanelMarkup(state)}
+  `;
+}
+
+// Refreshes just the "brief" portion (insight + quick-prompt chips + FAB
+// badge) each time the popover opens, without touching the thread - the
+// brief is live data (computed live off DATA.candidates/DATA.employerRoles,
+// same as before) that can go stale while the popover stays closed across
+// hash navigations, but the conversation thread must persist untouched.
+function refreshHiringCopilotWidget(root) {
+  const insightEl = qs("[data-vera-pop-insight]", root);
+  if (insightEl) insightEl.innerHTML = renderHiringCopilotInsightHtml();
+  const quickEl = qs("[data-vera-pop-quick]", root);
+  if (quickEl) quickEl.innerHTML = renderEmployerQuickPromptChipsHtml();
+  const fab = qs("[data-vera-trigger]", root);
+  if (fab) {
+    const insight = employerVeraInsight();
+    let badge = qs(".emp-copilot-badge", fab);
+    if (insight.totalSignals) {
+      if (!badge) { badge = document.createElement("span"); badge.className = "emp-copilot-badge"; fab.appendChild(badge); }
+      badge.textContent = String(insight.totalSignals);
+    } else if (badge) badge.remove();
+    fab.setAttribute("aria-label", `Ask Vera${insight.totalSignals ? `, ${insight.totalSignals} new items` : ""}`);
+  }
+  createIcons();
+}
+
+// Mirrors wireVeraWidget() (candidate side) almost exactly - same open/close/
+// click-outside/Escape/quick-prompt/composer behavior - plus one addition:
+// delegated [data-copilot-nav] handling for the reminder and quick-action
+// buttons folded into the insight section.
+function wireHiringCopilot(root) {
+  const widget = qs("[data-hiring-copilot]", root);
+  if (!widget) return;
+  const popover = qs("[data-vera-popover]", widget);
+  const trigger = qs("[data-vera-trigger]", widget);
+  const body = qs("[data-vera-pop-body]", popover);
+  const thread = qs("[data-vera-pop-thread]", popover);
+  const form = qs("[data-vera-pop-form]", popover);
+  const input = qs("[data-vera-pop-input]", form);
+  const quick = qs("[data-vera-pop-quick]", popover);
+
+  const openPopover = () => {
+    refreshHiringCopilotWidget(root);
+    popover.hidden = false;
+    body.scrollTop = 0;
+  };
+  const closePopover = () => {
+    popover.hidden = true;
+    quick.hidden = true;
+  };
+  const sendMessage = text => {
+    const reply = employerVeraChatReply(text);
+    let next = readState();
+    next = appendEmployerVeraMessage(next, "user", text);
+    next = appendEmployerVeraMessage(next, "vera", reply);
+    writeState(next);
+    thread.insertAdjacentHTML("beforeend", `<div class="cg-vera-pop-question">${text}</div><div class="cg-vera-pop-bubble">${reply}</div>`);
+    body.scrollTop = body.scrollHeight;
+  };
+
+  trigger.addEventListener("click", () => {
+    if (popover.hidden) openPopover(); else closePopover();
+  });
+  qs("[data-vera-close]", popover).addEventListener("click", closePopover);
+  qs("[data-vera-pop-expand]", popover)?.addEventListener("click", () => {
+    closePopover();
+    openEmployerVeraPanel();
+  });
+  popover.addEventListener("click", event => {
+    const navBtn = event.target.closest("[data-copilot-nav]");
+    if (!navBtn) return;
+    closePopover();
+    const nav = navBtn.dataset.copilotNav;
     if (nav === "feed") {
       employerNavigateTo("feed");
       setTimeout(() => qs("[data-feed-composer-text]")?.focus(), 150);
       return;
     }
     employerNavigateTo(nav);
-  }));
-}
-
-function bindHiringCopilot(root) {
-  bindHiringCopilotPanel(root);
-  qs("[data-copilot-toggle]", root)?.addEventListener("click", event => {
-    event.stopPropagation();
-    employerCopilotOpen = !employerCopilotOpen;
-    const panel = qs("[data-copilot-panel]", root);
-    if (employerCopilotOpen) {
-      refreshHiringCopilot(root);
-      panel.hidden = false;
-      // Move focus into the popover on open (§13) - the close button is
-      // always present and always the most sensible first stop.
-      qs("[data-copilot-close]", panel)?.focus();
-    } else {
-      panel.hidden = true;
-    }
-    qs("[data-copilot-toggle]", root)?.setAttribute("aria-expanded", String(employerCopilotOpen));
   });
-  qs("[data-copilot-panel]", root)?.addEventListener("click", event => event.stopPropagation());
-  qs("[data-copilot-panel]", root)?.addEventListener("keydown", event => trapCopilotFocus(event, qs("[data-copilot-panel]", root)));
-  document.addEventListener("click", () => {
-    const panel = qs("[data-copilot-panel]", root);
-    if (panel && !panel.hidden && employerCopilotOpen) closeCopilotPanel(root);
+  wireEmployerVeraChatPanel();
+  document.addEventListener("click", event => {
+    if (!widget.contains(event.target)) closePopover();
   });
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && employerCopilotOpen) closeCopilotPanel(root);
+    if (event.key === "Escape") closePopover();
+  });
+  input.addEventListener("focus", () => { quick.hidden = false; });
+  input.addEventListener("blur", () => { window.setTimeout(() => { quick.hidden = true; }, 120); });
+  quick.addEventListener("mousedown", event => {
+    if (event.target.closest("[data-vera-pop-quick-prompt]")) event.preventDefault();
+  });
+  quick.addEventListener("click", event => {
+    const chip = event.target.closest("[data-vera-pop-quick-prompt]");
+    if (!chip) return;
+    quick.hidden = true;
+    sendMessage(chip.dataset.veraPopQuickPrompt);
+  });
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    quick.hidden = true;
+    sendMessage(text);
   });
 }
 
@@ -18622,7 +19359,7 @@ function renderEmployerShell(root) {
   // explicitly commented "for both the candidate and employer workspace
   // navs" but was never actually wired up here - the header previously had
   // a static bell with no click handler at all.
-  const notifications = Array.isArray(state.notifications) ? state.notifications : [];
+  const notifications = notificationsForRole(state);
   root.innerHTML = `
     <header class="emp-app-header">
       <div class="emp-app-header-inner">
@@ -18634,17 +19371,17 @@ function renderEmployerShell(root) {
         <nav class="emp-app-nav" aria-label="Employer navigation" data-emp-nav-list>
           ${EMPLOYER_NAV_GROUPS[0].items.map(([key, label]) => `<a href="#${key}" class="emp-nav-item" data-emp-nav="${key}">${label}</a>`).join("")}
         </nav>
+        <div class="emp-app-search-field">
+          ${icon("search")}
+          <input type="text" placeholder="Search candidates, roles, applicants..." data-emp-search-input autocomplete="off">
+          <div class="emp-search-results" data-emp-search-results hidden></div>
+        </div>
         <div class="emp-app-header-actions">
-          <div class="emp-app-search-field">
-            ${icon("search")}
-            <input type="text" placeholder="Search candidates, roles, applicants..." data-emp-search-input autocomplete="off">
-            <div class="emp-search-results" data-emp-search-results hidden></div>
-          </div>
           <button type="button" class="emp-icon-btn" data-emp-messages aria-label="Inbox">${icon("message-circle")}</button>
           ${notificationMenuMarkup(notifications)}
           <div class="emp-account-menu-wrap">
             <button type="button" class="emp-avatar-trigger" data-emp-account-toggle aria-haspopup="menu" aria-expanded="false">
-              <span>${getFirstName(state).charAt(0).toUpperCase()}</span>
+              <span>${String(getFirstName(state) || "A").slice(0, 2).toUpperCase()}</span>
             </button>
             <div class="emp-account-menu" data-emp-account-menu hidden role="menu">
               <div class="emp-account-menu-identity"><strong>${getFirstName(state)}</strong><small>${employer.company || "Your Workspace"}</small></div>
@@ -18668,7 +19405,7 @@ function renderEmployerShell(root) {
     }
   });
 
-  bindHiringCopilot(root);
+  wireHiringCopilot(root);
 
   qsa("[data-emp-nav]", root).forEach(link => link.addEventListener("click", event => {
     event.preventDefault();
@@ -22437,36 +23174,73 @@ function pushRecentEmployerSearch(query) {
   writeState(state);
 }
 
+/* Views the global search can jump to. Without this, searching an obvious
+   destination word ("settings", "pipeline", "inbox") returned nothing at all,
+   which is the single fastest way to make a search box feel broken. */
+const EMPLOYER_SEARCH_VIEWS = [
+  { id: "dashboard", label: "Dashboard", hint: "Hiring overview", icon: "layout-dashboard", keywords: ["dashboard", "home", "overview", "today"] },
+  { id: "roles", label: "Roles", hint: "Your job postings", icon: "briefcase", keywords: ["roles", "jobs", "postings", "vacancies", "openings"] },
+  { id: "pipeline", label: "Talent Pipeline", hint: "Candidates by stage", icon: "kanban", keywords: ["pipeline", "talent", "candidates", "applicants", "kanban", "stages"] },
+  { id: "company", label: "Company Profile", hint: "How candidates see you", icon: "building-2", keywords: ["company", "profile", "brand", "employer page"] },
+  { id: "feed", label: "Feed", hint: "Community posts", icon: "messages-square", keywords: ["feed", "posts", "community"] },
+  { id: "messages", label: "Inbox", hint: "Candidate conversations", icon: "message-circle", keywords: ["messages", "inbox", "chat", "conversations", "dm"] },
+  { id: "settings", label: "Settings", hint: "Account and preferences", icon: "settings", keywords: ["settings", "preferences", "account", "notifications"] },
+  { id: "saved-candidates", label: "Saved candidates", hint: "Your shortlist", icon: "bookmark", keywords: ["saved", "shortlist", "bookmarks", "favourites", "favorites"] }
+];
+
+// Mirrors the candidate workspace search (searchWorkspaceCatalog): each group
+// caps at 5 items and reports its true total, so the panel can show the same
+// icon + title + meta rows and the same "Showing top X of Y matches" footer.
+const EMPLOYER_SEARCH_GROUP_CAP = 5;
+
 function filterEmployerSearch(query) {
   const q = query.trim().toLowerCase();
-  if (!q) return [];
+  if (!q) return { groups: [], totalShown: 0, totalAvailable: 0 };
   const groups = [];
-  const roleMatches = DATA.employerRoles.filter(r => r.title.toLowerCase().includes(q));
-  if (roleMatches.length) groups.push({ label: "Roles", items: roleMatches.map(r => ({ type: "role", id: r.id, primary: r.title, secondary: r.status })) });
-  const candidateMatches = DATA.candidates.filter(c =>
-    c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q) || (c.skills || []).some(s => s.toLowerCase().includes(q))
-  );
-  if (candidateMatches.length) groups.push({ label: "Candidates", items: candidateMatches.map(c => ({ type: "candidate", id: c.id, primary: c.name, secondary: c.role })) });
-  const conversationMatches = (DATA.employerConversations || []).filter(conv => {
-    const cand = DATA.candidates.find(c => c.id === conv.candidateId);
-    return cand && cand.name.toLowerCase().includes(q);
-  });
-  if (conversationMatches.length) {
-    groups.push({
-      label: "Messages", items: conversationMatches.map(conv => {
-        const cand = DATA.candidates.find(c => c.id === conv.candidateId);
-        const lastMsg = conv.messages[conv.messages.length - 1];
-        return { type: "conversation", id: conv.candidateId, primary: cand.name, secondary: lastMsg ? lastMsg.text.slice(0, 44) : "No messages yet" };
-      })
+  let totalAvailable = 0;
+  const pushGroup = (label, all, toItem) => {
+    if (!all.length) return;
+    totalAvailable += all.length;
+    groups.push({ label, items: all.slice(0, EMPLOYER_SEARCH_GROUP_CAP).map(toItem) });
+  };
+
+  pushGroup("Go to",
+    EMPLOYER_SEARCH_VIEWS.filter(view => view.label.toLowerCase().includes(q) || view.keywords.some(word => word.includes(q))),
+    view => ({ type: "view", id: view.id, primary: view.label, secondary: view.hint, icon: view.icon }));
+  pushGroup("Roles",
+    DATA.employerRoles.filter(r => r.title.toLowerCase().includes(q)),
+    r => ({ type: "role", id: r.id, primary: r.title, secondary: r.status, icon: "briefcase" }));
+  pushGroup("Candidates",
+    DATA.candidates.filter(c => c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q) || (c.skills || []).some(s => s.toLowerCase().includes(q))),
+    c => ({ type: "candidate", id: c.id, primary: c.name, secondary: c.role, icon: "user-round" }));
+  pushGroup("Messages",
+    (DATA.employerConversations || []).filter(conv => {
+      const cand = DATA.candidates.find(c => c.id === conv.candidateId);
+      return cand && cand.name.toLowerCase().includes(q);
+    }),
+    conv => {
+      const cand = DATA.candidates.find(c => c.id === conv.candidateId);
+      const lastMsg = conv.messages[conv.messages.length - 1];
+      return { type: "conversation", id: conv.candidateId, primary: cand.name, secondary: lastMsg ? lastMsg.text.slice(0, 44) : "No messages yet", icon: "message-circle" };
     });
-  }
-  const postMatches = DATA.communityPosts.filter(p => (p.author + " " + p.body + " " + p.category).toLowerCase().includes(q)).slice(0, 4);
-  if (postMatches.length) {
-    groups.push({
-      label: "Posts", items: postMatches.map(p => ({ type: "post", id: p.id, primary: p.author, secondary: p.body.slice(0, 54) }))
-    });
-  }
-  return groups;
+  pushGroup("Posts",
+    DATA.communityPosts.filter(p => (p.author + " " + p.body + " " + p.category).toLowerCase().includes(q)),
+    p => ({ type: "post", id: p.id, primary: p.author, secondary: p.body.slice(0, 54), icon: "file-text" }));
+  // Same org catalog the candidate-side global search reads (searchPublicCatalog
+  // / buildOrgCatalog) - employers researching a competitor or a campus
+  // partner land on the same public companies.html / universities.html
+  // directories candidates use, since there's no employer-only equivalent.
+  const orgCatalog = buildOrgCatalog();
+  const orgMatch = org => matchesQuery([org.name, org.industry, org.location, org.summary, org.signal, ...(org.tags || [])], q);
+  pushGroup("Companies",
+    orgCatalog.companies.filter(orgMatch),
+    org => ({ type: "company", id: org.id, primary: org.name, secondary: `${org.industry} - ${org.location}`, icon: "building-2" }));
+  pushGroup("Universities",
+    orgCatalog.universities.filter(orgMatch),
+    org => ({ type: "university", id: org.id, primary: org.name, secondary: `${org.industry} - ${org.location}`, icon: "graduation-cap" }));
+
+  const totalShown = groups.reduce((sum, g) => sum + g.items.length, 0);
+  return { groups, totalShown, totalAvailable };
 }
 
 function initEmployerGlobalSearch() {
@@ -22493,41 +23267,91 @@ function initEmployerGlobalSearch() {
     if (!btn) return;
     const { type, id } = btn.dataset;
     pushRecentEmployerSearch(input.value);
-    if (type === "role") employerNavigateTo("role-builder", { id });
+    if (type === "view") employerNavigateTo(id, {}, { force: true });
+    else if (type === "role") employerNavigateTo("role-builder", { id });
     else if (type === "candidate") { employerNavigateTo("pipeline"); openCandidateProfileModal(id); }
     else if (type === "conversation") openConversationForCandidate(id);
     else if (type === "post") {
       pendingFeedSearchQuery = input.value.trim();
       employerNavigateTo("feed", {}, { force: true });
+    } else if (type === "company" || type === "university") {
+      // Not the companies.html/universities.html *browse-all* directory - that
+      // page deliberately blocks the employer role and bounces to Employer OS
+      // (see requireRole-style gate in that renderer). company-profile.html is
+      // the single-entity detail page underneath it (shared for companies and
+      // universities via org.type) and carries no such gate - just a
+      // session.loggedIn check, which an employer session already satisfies.
+      window.location.href = `company-profile.html?org=${encodeURIComponent(id)}`;
+      return;
     }
     input.value = "";
     close();
   }
 
+  // One result row: icon badge + title + meta, identical structure and classes
+  // (minus the cg-/emp- prefix) to the candidate workspace search's
+  // .cg-search-result, so the two panels read as the same component.
+  const resultRow = item => `
+    <button type="button" class="emp-search-result" data-emp-search-result data-type="${item.type}" data-id="${escapeHtml(item.id)}">
+      <span class="emp-search-result-icon">${icon(item.icon || "search")}</span>
+      <span class="emp-search-result-body"><strong>${escapeHtml(item.primary)}</strong><span>${escapeHtml(item.secondary || "")}</span></span>
+    </button>
+  `;
+
+  // Focusing the empty field used to call close() whenever there were no
+  // recent searches - i.e. on every fresh account, clicking the search bar did
+  // visibly nothing, which is what made it read as broken. It now always opens
+  // with something: recents if there are any, otherwise the jump targets plus
+  // a line saying what is searchable.
   function renderRecent() {
     const state = readState();
     const recent = state.recentSearches || [];
-    if (!recent.length) { close(); return; }
-    results.innerHTML = `
-      <div class="emp-search-recent-head">
-        <span class="emp-search-group-label">Recent searches</span>
-        <button type="button" data-emp-search-clear-recent>Clear</button>
+    const recentBlock = recent.length ? `
+      <div class="emp-search-group">
+        <span class="emp-search-group-label emp-search-recent-head">Recent searches<button type="button" data-emp-search-clear-recent>Clear</button></span>
+        ${recent.map(q => `<button type="button" class="emp-search-result" data-emp-search-recent="${escapeHtml(q)}"><span class="emp-search-result-icon">${icon("clock")}</span><span class="emp-search-result-body"><strong>${escapeHtml(q)}</strong></span></button>`).join("")}
       </div>
-      ${recent.map(q => `<button type="button" class="emp-search-result" data-emp-search-recent="${escapeHtml(q)}">${icon("clock")}<span>${escapeHtml(q)}</span></button>`).join("")}
+    ` : "";
+    results.innerHTML = `
+      ${recentBlock}
+      <div class="emp-search-group">
+        <span class="emp-search-group-label">Jump to</span>
+        ${EMPLOYER_SEARCH_VIEWS.slice(0, 4).map(view => resultRow({ type: "view", id: view.id, primary: view.label, secondary: view.hint, icon: view.icon })).join("")}
+      </div>
+      <div class="emp-search-footer">Search roles, candidates, messages, posts, companies and universities.</div>
+    `;
+    results.hidden = false;
+    createIcons();
+    highlightIndex = -1;
+  }
+
+  // A query with no matches used to close the panel too - identical to the
+  // "broken" behaviour above. Say so instead.
+  function renderNoMatches() {
+    results.innerHTML = `
+      <div class="emp-search-empty">
+        <strong>No matches for "${escapeHtml(input.value.trim())}"</strong>
+        <span>Try a role title, a candidate name, a company/university, or a section like "pipeline".</span>
+      </div>
     `;
     results.hidden = false;
     highlightIndex = -1;
   }
 
-  function renderGroups(groups) {
-    if (!groups.length) { close(); return; }
+  function renderGroups(result) {
+    const groups = result.groups || [];
+    if (!groups.length) { renderNoMatches(); return; }
+    const footer = result.totalAvailable > result.totalShown
+      ? `<div class="emp-search-footer">Showing top ${result.totalShown} of ${result.totalAvailable} matches</div>`
+      : "";
     results.innerHTML = groups.map(group => `
       <div class="emp-search-group">
         <span class="emp-search-group-label">${group.label}</span>
-        ${group.items.map(item => `<button type="button" class="emp-search-result" data-emp-search-result data-type="${item.type}" data-id="${item.id}"><strong>${item.primary}</strong><span>${item.secondary}</span></button>`).join("")}
+        ${group.items.map(resultRow).join("")}
       </div>
-    `).join("");
+    `).join("") + footer;
     results.hidden = false;
+    createIcons();
     highlightIndex = -1;
   }
 
@@ -25930,7 +26754,12 @@ function renderEmployerFeed(root) {
   // dropdown that lists the trending topics; Saved stays a bookmark dropdown.
   function renderFeedSidebarNav(state) {
     const savedCount = (state.savedTalent || []).length;
+    // Wrapped in a white card with a "Feed" overline to mirror the candidate
+    // feed's left rail (its .cg-feed-left card + group labels). Same nav items
+    // and handlers as before - only the container chrome changed.
     return `
+      <div class="emp-feed-nav-card">
+      <span class="emp-feed-nav-heading">Feed</span>
       <nav class="emp-feed-nav-list">
         <button type="button" class="emp-feed-nav-item ${activeFilter === "foryou" ? "active" : ""}" data-feed-nav="foryou">${veraMark()} For You</button>
         <button type="button" class="emp-feed-nav-item ${activeFilter === "following" ? "active" : ""}" data-feed-nav="following">${icon("users")} Network</button>
@@ -25956,6 +26785,7 @@ function renderEmployerFeed(root) {
           </div>
         </div>
       </nav>
+      </div>
     `;
   }
 
@@ -25965,7 +26795,6 @@ function renderEmployerFeed(root) {
     const company = DATA.companies.find(c => c.id === "maybank");
 
     root.innerHTML = `
-      ${renderPageHero({ title: "See and scroll your feed.", sub: "Share updates, discover talent and catch what's moving." })}
       <div class="emp-feed-layout" data-feed-region>
         <div class="emp-feed-nav">
           ${renderFeedSidebarNav(state)}
@@ -26324,11 +27153,6 @@ function renderEmployerFeed(root) {
       panel.hidden = !isHidden;
       btn.setAttribute("aria-expanded", String(isHidden));
     }));
-    document.addEventListener("click", () => {
-      qsa("[data-feed-post-menu-panel]", root).forEach(p => p.hidden = true);
-      qsa("[data-feed-post-menu]", root).forEach(b => b.setAttribute("aria-expanded", "false"));
-      if (savedDropdownOpen || trendingDropdownOpen) { savedDropdownOpen = false; trendingDropdownOpen = false; draw(); }
-    });
     qs("[data-saved-dropdown-menu]", root)?.addEventListener("click", event => event.stopPropagation());
     qs("[data-trending-dropdown-menu]", root)?.addEventListener("click", event => event.stopPropagation());
 
@@ -26513,6 +27337,14 @@ function renderEmployerFeed(root) {
     resizeTimer = setTimeout(sizeFeedRegion, 120);
   });
 
+  // Post-menu / saved-dropdown / trending-dropdown outside-click close. Bound
+  // once here (not inside bind(), which reruns on every draw()) - same
+  // stacking hazard as the recDetails popover listener just below.
+  document.addEventListener("click", () => {
+    qsa("[data-feed-post-menu-panel]", root).forEach(p => p.hidden = true);
+    qsa("[data-feed-post-menu]", root).forEach(b => b.setAttribute("aria-expanded", "false"));
+    if (savedDropdownOpen || trendingDropdownOpen) { savedDropdownOpen = false; trendingDropdownOpen = false; draw(); }
+  });
   // Details popover: close on outside-click or Esc. Bound once here (not
   // inside bind(), which reruns on every draw()) since document-level
   // listeners would otherwise stack up across redraws.
@@ -27554,7 +28386,7 @@ function renderEmployerCompany(root) {
         editMode ? `
           <button type="button" class="btn btn-ghost" data-company-edit-cancel>Cancel</button>
           <button type="button" class="btn btn-primary" data-company-edit-save>${icon("check")} Save</button>
-        ` : `<button type="button" class="btn btn-secondary btn-sm" data-company-edit>Edit Profile</button>`
+        ` : `<button type="button" class="btn btn-primary" data-company-edit>${icon("pencil")} Edit Profile</button>`
       )}
 
       <div class="card emp-company-hero">
@@ -29490,25 +30322,28 @@ function init() {
   initWorkspaceRailTooltips();
   initWorkspaceRailScrollSync();
   initFeedSidebarStickySync();
+  initRoleAwareRestore();
 }
 
-function loadDesignSystem() {
-  if (document.getElementById("careergo-design-system")) return Promise.resolve();
-
-  return new Promise(resolve => {
-    const stylesheet = document.createElement("link");
-    stylesheet.id = "careergo-design-system";
-    stylesheet.rel = "stylesheet";
-    stylesheet.href = "design-system.css";
-    stylesheet.addEventListener("load", resolve, { once: true });
-    stylesheet.addEventListener("error", resolve, { once: true });
-    document.head.appendChild(stylesheet);
+// Pages whose markup depends on session.role (nav links, back links, which
+// notifications are listed) go stale if the browser restores them from the
+// back-forward cache: `pageshow` fires with persisted=true and NO script re-runs,
+// so the DOM still reflects whatever role was active when it was first rendered.
+// Switching roles and pressing Back was enough to see an employer page wearing
+// candidate links. Re-render the role-sensitive surfaces on restore.
+let roleAwareRestoreBound = false;
+function initRoleAwareRestore() {
+  if (roleAwareRestoreBound || typeof window === "undefined") return;
+  roleAwareRestoreBound = true;
+  window.addEventListener("pageshow", event => {
+    if (!event.persisted) return;
+    renderNavigation();
+    renderNotificationsPage();
   });
 }
 
 if (typeof document !== "undefined") {
-  document.addEventListener("DOMContentLoaded", async () => {
-    await loadDesignSystem();
+  document.addEventListener("DOMContentLoaded", () => {
     init();
   });
 }

@@ -1,0 +1,66 @@
+/* =========================================================================
+   Employer Company Profile - align to the candidate profile's editorial
+   concept: less white space, Fraunces section headings, softer weights.
+   The base rules in styles.css (~15490-15540) deliberately ship a bold
+   40px/700 heading + 32/40px spacing + 700/800-weight numbers; this pass
+   tones that down to match the candidate side's .cg-cp-* (Fraunces 400
+   headings, tighter rhythm). Scoped to .emp-company-* and .emp-glance-*
+   classes, which are exclusive to this page, so no other Employer OS
+   surface is affected.
+
+   Kept as its own small file rather than appended to styles.css: an earlier
+   version of this exact rule set, written directly into styles.css, never
+   applied there despite being valid CSS with correct specificity and
+   balanced braces. Root cause, found via CDP CSS.getMatchedStylesForNode
+   plus a debug custom-property probe, then a binary search across the rule
+   set: a comment just like this one used star-slash shorthand to name two
+   class prefixes side by side. An asterisk immediately followed by a slash
+   is the comment-closing token, so writing it inside the prose closed the
+   comment early, mid-sentence - and everything from there to the next
+   recoverable point parsed as invalid CSS, silently eating the real rule
+   underneath. Nothing about it looked wrong: no visible syntax error, no
+   brace imbalance, nothing a "does this file parse" check would catch.
+   Lesson: never type an asterisk directly followed by a slash inside a CSS
+   comment's prose, even as shorthand for two names - spell it out instead.
+   ========================================================================= */
+
+/* Section headings: Fraunces 400 ~28px (was a bulky ~40px/700). */
+html body .emp-app-shell .emp-company-section-head h2,
+html body .emp-app-shell .emp-company-section > h2 {
+  font-family: "Fraunces", Georgia, "Times New Roman", serif !important;
+  font-size: 28px !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.15 !important;
+}
+
+/* Tighter section padding + inter-section rhythm (was 32px / 40px). */
+html body .emp-app-shell .emp-company-section {
+  padding: 24px !important;
+  margin-bottom: 24px !important;
+}
+
+/* "Company at a Glance" cards: a touch less padding, softer value weight
+   (700 -> 600) so the grid reads calmer and less bulky. */
+html body .emp-app-shell .emp-glance-card { padding: 14px !important; }
+html body .emp-app-shell .emp-glance-value,
+html body .emp-app-shell .emp-glance-value-wrap {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+/* Hero KPI numbers: soften the very heavy 800 weight to 600 (matches the
+   candidate profile's stat weight); keep the uppercase labels as-is since the
+   candidate side uses the same small-caps kicker convention. */
+html body .emp-app-shell .emp-company-hero-kpi strong {
+  font-weight: 600 !important;
+}
+html body .emp-app-shell .emp-company-hero-facts strong {
+  font-weight: 600 !important;
+}
+
+/* Source tags are functional metadata, not headings - they don't need the
+   heavy 700 uppercase treatment competing with the softened heading. */
+html body .emp-app-shell .emp-source-tag {
+  font-weight: 600 !important;
+}

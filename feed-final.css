@@ -52,8 +52,14 @@ html body[data-page="posts"]:not(#_) .cg-messages-shell {
 
 html body[data-page="posts"]:not(#_) .cg-feed-shell {
   display: grid !important;
-  grid-template-columns: 230px minmax(430px, 560px) 300px !important;
-  gap: 56px !important;
+  /* Center max raised 560->590 and the column gap tightened 56->40: the old
+     56px gaps (112px total) starved the center column, so the composer's input
+     shrank to ~250px at 1280px and a cramped ~200px just above the 1181px
+     3-column breakpoint. These values keep the center at ~590px on desktop
+     (composer input ~285px, the roomy "as before" width) and still fill the
+     1200px container exactly (230 + 590 + 300 + 2*40 = 1200). */
+  grid-template-columns: 230px minmax(430px, 590px) 300px !important;
+  gap: 40px !important;
   align-items: start !important;
   width: 100% !important;
   padding: 40px 0 70px !important;
@@ -162,29 +168,6 @@ html body[data-page="posts"]:not(#_) .cg-feed-left-note p {
   line-height: 1.5 !important;
 }
 
-html body[data-page="posts"]:not(#_) .cg-feed-left-note .btn {
-  justify-self: start !important;
-  margin-top: 8px !important;
-  height: 32px !important;
-  min-height: 32px !important;
-  padding: 0 14px !important;
-  border-radius: 8px !important;
-  font-size: 13px !important;
-}
-
-html body[data-page="posts"]:not(#_) .cg-feed-left-note .btn svg {
-  width: 14px !important;
-  height: 14px !important;
-}
-
-html body[data-page="posts"]:not(#_) .cg-feed-left-note small {
-  margin-top: 4px !important;
-  color: var(--feed-muted) !important;
-  -webkit-text-fill-color: var(--feed-muted) !important;
-  font-size: 11px !important;
-  line-height: 1.4 !important;
-}
-
 html body[data-page="posts"]:not(#_) .cg-feed-main {
   display: grid !important;
   gap: 24px !important;
@@ -227,9 +210,20 @@ html body[data-page="posts"]:not(#_) .cg-feed-composer {
   align-items: center !important;
   gap: 12px !important;
   width: 100% !important;
-  min-height: 0 !important;
+  /* min-height must be content-based, NOT 0. The composer is a row in the
+     .cg-feed-main grid, which is over-full (many posts) and scrolls. With
+     min-height:0 the grid was free to crush this row to its non-shrinkable
+     parts only - padding + border (46px) - collapsing the content area to 0 so
+     the +/input/buttons spilled OUT of the white card. max-content pins the
+     row to the controls' real height, so the padding below actually shows. */
+  min-height: max-content !important;
   margin: 0 !important;
-  padding: 16px !important;
+  /* Roomier outer padding (was a tight 16px, which left the +/input/Media/Post
+     row almost flush to the white card's edges). 22px top/bottom + 24px
+     left/right gives comfortable breathing room on all sides, matching the
+     reference. Internal control styling (input pill, button shapes/colours,
+     icons) is untouched. */
+  padding: 22px 24px !important;
   border: 1px solid var(--feed-line) !important;
   border-radius: 18px !important;
   background: #ffffff !important;
@@ -727,4 +721,293 @@ html body[data-page="posts"]:not(#_) .cg-feed-grow-card .btn svg {
   html body[data-page="posts"]:not(#_) .cg-feed-hero h1 {
     font-size: 38px !important;
   }
+}
+
+
+/* =========================================================================
+   Feed left rail: "Feed" vs "Your library" + library category chips
+   -------------------------------------------------------------------------
+   The rail is one flat list of links, so the two halves are separated by
+   plain <span> group labels rather than nested containers - .cg-feed-left is
+   `display:grid` with a 4px gap and every rule in it targets `a`, so adding
+   wrappers would have broken the existing spacing and hover rules.
+   ========================================================================= */
+html body[data-page="posts"]:not(#_) .cg-feed-left-group {
+  display: block !important;
+  margin: 10px 0 2px !important;
+  padding: 0 12px !important;
+  color: var(--feed-muted) !important;
+  -webkit-text-fill-color: var(--feed-muted) !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-feed-left-group:first-child {
+  margin-top: 0 !important;
+}
+
+/* The rail's links are a 20px/1fr grid; the count needs a third track. */
+html body[data-page="posts"]:not(#_) .cg-feed-left a:has(.cg-feed-left-count) {
+  grid-template-columns: 20px 1fr auto !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-feed-left-count {
+  display: inline-grid !important;
+  place-items: center !important;
+  min-width: 20px !important;
+  height: 18px !important;
+  padding: 0 6px !important;
+  border-radius: 999px !important;
+  background: rgba(31, 51, 44, 0.09) !important;
+  color: var(--feed-ink) !important;
+  -webkit-text-fill-color: var(--feed-ink) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-feed-left a.active .cg-feed-left-count {
+  background: rgba(31, 51, 44, 0.16) !important;
+}
+
+/* ---- "Looking for opportunities?" promo ----
+   Was a single "Discover" button under one vague line. Now three deep links
+   into the exact Discover sections the box is talking about, so the rail
+   answers "where did roles/companies/universities go?" in one tap instead of
+   dropping you at the top of a long page. Deliberately NOT counts: the demo
+   catalogue is small (5 roles, 4 companies), and "5 open roles" reads as an
+   empty product. ---- */
+html body[data-page="posts"]:not(#_) .cg-feed-left-jump {
+  display: grid !important;
+  gap: 2px !important;
+  margin: 10px 0 0 !important;
+  padding: 8px 0 0 !important;
+  border-top: 1px solid rgba(31, 51, 44, 0.12) !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-feed-left-jump a {
+  display: grid !important;
+  grid-template-columns: 16px 1fr 14px !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-height: 32px !important;
+  padding: 0 8px !important;
+  margin: 0 -8px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--feed-ink) !important;
+  -webkit-text-fill-color: var(--feed-ink) !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  transition: background 0.15s ease !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-feed-left-jump a:hover {
+  background: rgba(255, 255, 255, 0.65) !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-feed-left-jump a svg {
+  width: 14px !important;
+  height: 14px !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  stroke-width: 2px !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-feed-left-jump a svg:last-child {
+  width: 12px !important;
+  height: 12px !important;
+  opacity: 0.45 !important;
+}
+
+/* ---- Library category chips ---- */
+html body[data-page="posts"]:not(#_) .cg-library-filters {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 0 0 16px !important;
+  padding: 0 0 16px !important;
+  border-bottom: 1px solid var(--feed-line) !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-library-filters button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 32px !important;
+  padding: 0 14px !important;
+  border: 1px solid var(--feed-line) !important;
+  border-radius: 999px !important;
+  background: var(--feed-card) !important;
+  color: var(--feed-muted) !important;
+  -webkit-text-fill-color: var(--feed-muted) !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-library-filters button b {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  opacity: 0.7 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-library-filters button:hover:not(:disabled) {
+  border-color: rgba(31, 51, 44, 0.28) !important;
+  color: var(--feed-ink) !important;
+  -webkit-text-fill-color: var(--feed-ink) !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-library-filters button.active {
+  border-color: transparent !important;
+  background: #1f332c !important;
+  color: #f8f4ea !important;
+  -webkit-text-fill-color: #f8f4ea !important;
+}
+
+/* Empty categories stay visible but unclickable - hiding them would make the
+   row jump around every time you save or unsave something. */
+html body[data-page="posts"]:not(#_) .cg-library-filters button:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}
+
+/* ---- Library hero subtitle + empty state ---- */
+html body[data-page="posts"]:not(#_) .cg-feed-hero-sub {
+  margin: 6px 0 0 !important;
+  color: var(--feed-muted) !important;
+  -webkit-text-fill-color: var(--feed-muted) !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-library-empty {
+  display: grid !important;
+  justify-items: start !important;
+  gap: 6px !important;
+  text-align: left !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-library-empty-icon {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  margin-bottom: 6px !important;
+  border-radius: 12px !important;
+  background: var(--feed-mint) !important;
+  color: var(--feed-ink) !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-library-empty-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  stroke-width: 2px !important;
+}
+
+html body[data-page="posts"]:not(#_) .cg-library-empty .btn {
+  margin-top: 10px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 16px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+}
+
+/* =========================================================================
+   Candidate Feed - locked app-shell scroll (parity with the employer feed)
+   -------------------------------------------------------------------------
+   At the full 3-column layout the shell is sized to the viewport by JS
+   (syncFeedSidebarSticky) and does not itself scroll; the center column
+   scrolls and both rails stay pinned - so a tall rail's bottom is always
+   reachable without scrolling the whole document (the old sticky bug).
+
+   Gated at >=1181px, the only width where all three columns coexist. Below
+   that the aside already reflows in-flow (max-width:1180px block above), so
+   natural page scroll is correct there and the JS clears the inline height.
+   ========================================================================= */
+@media (min-width: 1181px) {
+  /* Lock the document so ONLY the feed columns scroll (same as the employer
+     app-shell). Without this the page could still scroll ~64px: main/.os-layout
+     carry min-height:100vh, which - starting below the 64px top bar - overflows
+     the document by the top bar's height. The shell fills the viewport and its
+     columns own all scrolling, so clipping that empty overflow is harmless. */
+  html:has(body[data-page="posts"] .cg-feed-shell) { height: 100%; overflow: hidden; }
+  html body[data-page="posts"]:not(#_):has(.cg-feed-shell) { height: 100vh; overflow: hidden; }
+
+  html body[data-page="posts"]:not(#_):has(.cg-feed-shell) .cg-feed-shell {
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    align-items: stretch !important;   /* full-height columns, not top-aligned */
+    padding: 28px 0 0 !important;       /* bottom breathing room lives on the columns */
+  }
+
+  html body[data-page="posts"]:not(#_) .cg-feed-left,
+  html body[data-page="posts"]:not(#_) .cg-feed-aside,
+  html body[data-page="posts"]:not(#_) .cg-feed-main {
+    position: static !important;        /* kill the old sticky/translate model */
+    top: auto !important;
+    transform: none !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Center column as a flex column, NOT the base grid. When .cg-feed-main is a
+     fixed-height (100%) grid whose rows overflow, the grid compresses the
+     composer's `auto` row to its non-shrinkable parts (padding+border, 46px)
+     and the controls spill out - and an item min-height won't force the row to
+     grow back. A flex column with non-shrinking children keeps every child at
+     its natural height and simply scrolls, sidestepping grid row-sizing. Only
+     needed here at >=1181px (below that the column has natural height, so the
+     base grid never compresses). */
+  html body[data-page="posts"]:not(#_) .cg-feed-main {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+  html body[data-page="posts"]:not(#_) .cg-feed-main > * {
+    flex: 0 0 auto !important;   /* never shrink a child to fit the scroll box */
+  }
+
+  /* Hide the scrollbar on ALL three columns, center included. A global rule in
+     styles.css (`::-webkit-scrollbar-thumb { background: rgba(47,174,122,.36)
+     !important }`) themes every scrollbar, so the center column's bar rendered
+     as a chunky styled thumb butting against the composer - it read as a bug.
+     Hidden here, the feed still scrolls by wheel/trackpad (posts obviously
+     continue below), and all three columns are visually clean and consistent.
+     display:none on the ::-webkit-scrollbar container also suppresses that
+     global themed thumb, since the container itself no longer renders. */
+  html body[data-page="posts"]:not(#_) .cg-feed-left,
+  html body[data-page="posts"]:not(#_) .cg-feed-aside,
+  html body[data-page="posts"]:not(#_) .cg-feed-main {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  html body[data-page="posts"]:not(#_) .cg-feed-left::-webkit-scrollbar,
+  html body[data-page="posts"]:not(#_) .cg-feed-aside::-webkit-scrollbar,
+  html body[data-page="posts"]:not(#_) .cg-feed-main::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  /* Breathing room so the last post/rail card isn't flush to the fold. */
+  html body[data-page="posts"]:not(#_) .cg-feed-main { padding-bottom: 28px !important; }
+  html body[data-page="posts"]:not(#_) .cg-feed-left { padding-bottom: 12px !important; }
+  html body[data-page="posts"]:not(#_) .cg-feed-aside { padding-bottom: 12px !important; }
 }
