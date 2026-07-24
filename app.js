@@ -12061,7 +12061,7 @@ function renderCreateAccountWizard(root) {
           </label>
           <label class="cg-onboard-field">
             <span>${isEmployer ? "Work email" : "Email"}</span>
-            <input name="email" type="email" required autocomplete="email" placeholder="${isEmployer ? "you@company.com" : "you@email.com"}" value="${isEmployer ? "hiring@nimbuslabs.com" : "mira.tan@email.com"}">
+            <input name="email" type="email" required autocomplete="email" placeholder="${isEmployer ? "you@company.com" : "you@email.com"}" value="${isEmployer ? "hiring@yourcompany.com" : "mira.tan@email.com"}">
           </label>
           <label class="cg-onboard-field">
             <span>Password</span>
