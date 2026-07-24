@@ -24302,6 +24302,266 @@ main[data-employer-onboarding] {
   height: 15px;
 }
 
+.cg-onboard-password-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #5b6a66;
+}
+
+.cg-onboard-password-hint.is-satisfied {
+  color: #1f5560;
+}
+
+.cg-onboard-password-hint svg {
+  width: 12px;
+  height: 12px;
+}
+
+.cg-onboard-field-error input {
+  border-color: #d6342a;
+}
+
+.cg-onboard-field-error-text {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #d6342a;
+}
+
+.cg-onboard-field-invalid {
+  border-color: #d6342a !important;
+}
+
+/* Step 3 "Your company" - join/create screen (spec Sec 13 skeleton, State A
+   company-found card). Reuses .cg-onboard-shell-split for the two-column
+   grid and .cg-onboard-preview-col for State B's live preview, same as the
+   screens either side of it. */
+.cg-onboard-shimmer-bar {
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #eeeae0 25%, #f7f3ea 50%, #eeeae0 75%);
+  background-size: 200% 100%;
+  animation: cgOnboardShimmer 1.1s ease-in-out infinite;
+}
+
+@keyframes cgOnboardShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cg-onboard-shimmer-bar {
+    animation: none;
+    background: #eeeae0;
+  }
+}
+
+.cg-onboard-escape {
+  margin-top: 16px;
+  text-align: left;
+}
+
+.cg-onboard-company-card {
+  padding: 16px;
+  border: 1px solid #e4dfd3;
+  border-radius: 18px;
+  background: #fff;
+  align-self: start;
+}
+
+.cg-onboard-company-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cg-onboard-company-monogram {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: #efe8d8;
+  font-family: "Fraunces", serif;
+  font-size: 14px;
+  color: #1b2e28;
+  flex-shrink: 0;
+}
+
+.cg-onboard-company-card-head strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1b2e28;
+}
+
+.cg-onboard-company-card-head small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: #5b6a66;
+}
+
+.cg-onboard-company-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: #5b6a66;
+}
+
+.cg-onboard-company-card-meta svg {
+  width: 12px;
+  height: 12px;
+}
+
+.cg-onboard-company-card-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e4dfd3;
+  font-size: 11px;
+  color: #5b6a66;
+}
+
+.cg-onboard-company-card-foot svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Vera assist rail (Step 3 State B only). This page (employer-onboarding.html)
+   loads enterprise.css, not styles.css, so it has no --emp-* custom
+   properties in scope - values below are the literal hex equivalents already
+   used throughout .cg-onboard-* on this page (#c8dddf = teal-soft,
+   #1f5560 = green/teal, #1b2e28 = ink, #5b6a66 = muted, #e4dfd3 = line). */
+.cg-onboard-shell-split-vera {
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+
+.cg-onboard-vera-rail {
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-self: start;
+}
+
+.cg-onboard-vera-rail .cg-onboard-preview-col {
+  position: static;
+  /* Cancels the older, unscoped `.cg-onboard-preview-col { order: -1 }` rule
+     (below 900px, from the .cg-onboard-profile-shell breakpoint) which would
+     otherwise reorder the preview card ahead of the Vera card in this rail's
+     flex-column stack - DOM order (Vera card, then preview) must hold here. */
+  order: 0;
+}
+
+@media (max-width: 1023px) {
+  .cg-onboard-shell-split-vera {
+    grid-template-columns: 1fr;
+  }
+  .cg-onboard-vera-rail {
+    position: static;
+  }
+}
+
+.cg-onboard-owl-tile {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: #c8dddf;
+}
+.cg-onboard-owl-tile-sm { width: 28px; height: 28px; border-radius: 10px; }
+.cg-onboard-owl-tile-sm img { width: 20px; height: 20px; object-fit: contain; }
+.cg-onboard-owl-tile-md { width: 32px; height: 32px; border-radius: 12px; }
+.cg-onboard-owl-tile-md img { width: 24px; height: 24px; object-fit: contain; }
+
+.cg-onboard-import-card {
+  margin-bottom: 12px;
+  padding: 16px;
+  border: 1px solid #e4dfd3;
+  border-radius: 18px;
+  background: #fff;
+}
+.cg-onboard-import-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cg-onboard-import-title { font-size: 14px; font-weight: 500; color: #1b2e28; }
+.cg-onboard-import-optional { margin-left: auto; font-size: 12px; font-weight: 400; color: #5b6a66; }
+.cg-onboard-import-helper { margin: 6px 0 0; font-size: 13px; font-weight: 400; color: #5b6a66; }
+.cg-onboard-import-row { display: flex; gap: 8px; margin-top: 12px; }
+.cg-onboard-import-input {
+  flex: 1;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #e4dfd3;
+  border-radius: 8px;
+  font: 400 14px/1.4 Inter, sans-serif;
+  color: #1b2e28;
+}
+.cg-onboard-import-btn {
+  height: 40px;
+  padding: 0 16px;
+  white-space: nowrap;
+}
+.cg-onboard-import-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.cg-onboard-import-btn svg { width: 16px; height: 16px; }
+
+.cg-onboard-import-shimmer { margin-top: 14px; display: flex; flex-direction: column; gap: 12px; }
+
+.cg-onboard-provenance-badge[hidden],
+.cg-onboard-vera-footer[hidden],
+.cg-onboard-import-shimmer[hidden] {
+  display: none;
+}
+
+.cg-onboard-provenance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #c8dddf;
+  color: #1f5560;
+  font-size: 10px;
+  font-weight: 500;
+}
+.cg-onboard-provenance-badge svg { width: 10px; height: 10px; }
+
+.cg-onboard-vera-card { padding: 16px; border: 1px solid #e4dfd3; border-radius: 18px; background: #fff; }
+.cg-onboard-vera-head { display: flex; align-items: center; gap: 8px; }
+.cg-onboard-vera-overline { font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #5b6a66; }
+.cg-onboard-vera-message {
+  margin: 12px 0 0;
+  min-height: 64px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #1b2e28;
+}
+.cg-onboard-vera-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e4dfd3;
+  font-size: 12px;
+  font-weight: 400;
+  color: #5b6a66;
+}
+.cg-onboard-vera-footer .cg-onboard-link { font-size: 12px; }
+
 .cg-onboard-terms {
   margin: 16px 0 0;
   font-size: 12px;

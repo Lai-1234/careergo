@@ -12281,6 +12281,14 @@ body[data-page="home"] .home-metrics span {
 body[data-page="employers"] .home-back-top {
   right: auto;
   left: max(28px, env(safe-area-inset-left));
+  /* Matches the candidate workspace pages' rendered shape - there, a broad
+     ":is(.btn, ..., button) { border-radius: 8px !important }" reset
+     (scoped to dashboard/discover/grow/etc.) incidentally squares off this
+     button too, since it's a bare <button>. Employer pages aren't in that
+     selector list, so .home-back-top's own base 999px (circle) would
+     otherwise show through here instead - this reproduces the same 8px
+     look intentionally rather than relying on that accidental side effect. */
+  border-radius: 8px;
 }
 @media (max-width: 640px) {
   body[data-page="employers"] .home-back-top {
@@ -13401,6 +13409,13 @@ body[data-page="login"] .login-create-account {
   --emp-green-nav: #16414a;
   --emp-teal: #1f5560;
   --emp-teal-soft: #c8dddf;
+  /* Added for the sign-up + Settings rework (2 new tokens total, per the
+     token-mapping decision): no existing token represented a white card
+     surface (every card in this file hardcoded #fff) or a soft hover fill,
+     so these two fill that gap. --emp-accent is derived from --emp-green
+     via color-mix rather than a new literal color. */
+  --emp-surface: #fff;
+  --emp-accent: color-mix(in oklch, var(--emp-green) 10%, transparent);
   --emp-aqua: #a6cbd1;
   --emp-ai: #6f5fc4;
   --emp-destructive: #d6342a;
@@ -13621,9 +13636,11 @@ body[data-page="login"] .login-create-account {
   position: fixed; top: 0; left: 0; right: 0; z-index: 60; flex: 0 0 auto;
   height: 64px;
   border-bottom: 1px solid rgba(227, 220, 200, 0.7);
-  background: rgba(248, 244, 234, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  /* Solid white, no blur - matches the candidate/public nav convention
+     (enterprise.css's "Navbar parity pass"); this employer header was
+     previously translucent-cream-with-blur, the one surface CLAUDE.md
+     flagged as not yet brought in line with that parity pass. */
+  background: #ffffff;
 }
 /* Keeps native scroll-into-view (tab focus, in-page jumps) from landing a
    target under the 64px fixed header. */
@@ -14142,10 +14159,16 @@ body:has([data-employer-app]) { margin: 0; }
 .emp-menu-divider { height: 1px; margin: 4px 6px; background: var(--emp-line, var(--line)); }
 .emp-vera-why-overlay { padding: 14px; }
 .emp-menu-back {
-  display: flex !important; align-items: center; gap: 6px; margin-bottom: 4px; padding-bottom: 8px !important;
-  border-bottom: 1px solid var(--emp-line, var(--line)); color: var(--emp-muted, var(--muted)) !important; font-weight: 600 !important;
+  display: flex !important; align-items: center; gap: 6px; width: 100%;
+  margin: 0 0 4px !important; padding: 6px 10px !important;
+  border: 0 !important; border-bottom: 1px solid var(--emp-line, var(--line)) !important; border-radius: 0 !important;
+  background: none !important; box-shadow: none !important;
+  color: var(--emp-muted, var(--muted)) !important; font-family: inherit !important;
+  font-size: 12px !important; font-weight: 600 !important; text-align: left; cursor: pointer;
+  transition: color 0.12s ease;
 }
-.emp-menu-back svg { width: 13px; height: 13px; }
+.emp-menu-back:hover, .emp-menu-back:focus-visible { color: var(--emp-green, #07382f) !important; outline: none !important; }
+.emp-menu-back svg { width: 14px; height: 14px; }
 .emp-close-reasons { display: grid; gap: 8px; margin: 14px 0; }
 .emp-stage-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
 .emp-stage-tile { padding: 12px; border: 1px solid var(--line); border-radius: 12px; text-align: center; }
@@ -14155,6 +14178,257 @@ body:has([data-employer-app]) { margin: 0; }
 .emp-empty-state { display: grid; justify-items: center; gap: 10px; padding: 48px 24px; text-align: center; }
 .emp-empty-state h2 { margin: 0; font-size: 18px; }
 .emp-empty-state p { margin: 0; max-width: 420px; color: var(--muted); font-size: 14px; }
+
+/* Dashboard pending-approval branch (spec: Step 3 State A join request). */
+.cg-onboard-pending-wrap { display: flex; justify-content: center; margin-top: 96px; }
+.cg-onboard-pending-card {
+  width: 100%; max-width: 480px; padding: 16px;
+  border: 1px solid var(--emp-line); border-radius: var(--emp-radius-card);
+  background: var(--emp-surface); box-shadow: var(--emp-shadow-card);
+  text-align: center;
+}
+.cg-onboard-pending-icon {
+  display: grid; place-items: center; width: 56px; height: 56px; margin: 0 auto;
+  border-radius: var(--emp-radius-xl); background: var(--emp-bg-deep); color: var(--emp-green);
+}
+.cg-onboard-pending-icon svg { width: 32px; height: 32px; }
+.cg-onboard-pending-card h2 { margin: 16px 0 0; font-family: var(--emp-serif); font-size: 22px; font-weight: 400; color: var(--emp-ink); }
+.cg-onboard-pending-card p { margin: 8px 0 0; font-size: var(--emp-body-sm); color: var(--emp-muted); }
+
+/* Settings (route "settings") - sidebar + section-nav + scroll-spy, ported
+   from the candidate Settings page's pattern (renderSettings(), .cg-set-*
+   in enterprise.css - scoped to body[data-page="settings"] and unreachable
+   here since employer-app.html never loads enterprise.css). Card recipe
+   matches the rest of the Employer OS: radius --emp-radius-card, 1px
+   --emp-line border, --emp-surface background, --emp-shadow-card shadow. */
+.emp-set-eyebrow { font-size: var(--emp-label); font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--emp-muted); }
+
+.emp-set-layout {
+  display: grid;
+  grid-template-columns: 262px minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+  margin-top: 32px;
+}
+
+.emp-set-rail {
+  position: sticky;
+  top: 84px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.emp-set-identity {
+  display: flex; flex-direction: column; gap: 12px; padding: 16px;
+  border: 1px solid var(--emp-line); border-radius: var(--emp-radius-card);
+  background: var(--emp-surface); box-shadow: var(--emp-shadow-card);
+}
+.emp-set-avatar {
+  display: grid; place-items: center; width: 46px; height: 46px; border-radius: 999px;
+  background: linear-gradient(135deg, var(--emp-green), var(--emp-aqua));
+  color: var(--emp-cream-text); font-family: var(--emp-serif); font-size: 17px; font-weight: 500;
+}
+.emp-set-identity-copy strong { display: block; font-size: 15px; font-weight: 600; color: var(--emp-ink); line-height: 1.25; }
+.emp-set-identity-copy small {
+  display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 12px; font-weight: 400; color: var(--emp-muted);
+}
+.emp-set-identity ul {
+  display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 12px 0 0;
+  border-top: 1px solid var(--emp-line); list-style: none;
+}
+.emp-set-identity li { display: flex; align-items: center; gap: 8px; font-size: 12.5px; line-height: 1.4; color: var(--emp-muted); }
+.emp-set-identity li svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--emp-green); }
+.emp-set-identity > a {
+  display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600;
+  color: var(--emp-green); text-decoration: none;
+}
+.emp-set-identity > a svg { width: 14px; height: 14px; }
+
+.emp-set-nav {
+  display: flex; flex-direction: column; gap: 2px; padding: 8px;
+  border: 1px solid var(--emp-line); border-radius: var(--emp-radius-card);
+  background: var(--emp-surface); box-shadow: var(--emp-shadow-card);
+}
+.emp-set-nav a {
+  display: flex; align-items: center; gap: 9px; min-height: 34px; padding: 0 9px; border-radius: 9px;
+  font-size: 13px; font-weight: 500; color: var(--emp-muted); text-decoration: none;
+  transition: background 150ms var(--emp-motion-ease), color 150ms var(--emp-motion-ease);
+}
+.emp-set-nav a:hover { background: var(--emp-accent); }
+.emp-set-nav a.active { background: var(--emp-teal-soft); color: var(--emp-ink); }
+.emp-set-nav a i { display: inline-grid; place-items: center; flex-shrink: 0; color: var(--emp-green); }
+.emp-set-nav a svg { width: 15px; height: 15px; }
+
+.emp-set-stack { display: flex; flex-direction: column; gap: 12px; }
+.emp-set-card-section { display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 84px; }
+
+/* Notification dropdown - ported from enterprise.css's .cg-nd-* block
+   (not loaded on employer-app.html), so notificationMenuMarkup()'s shared
+   output - "Shared bell dropdown for both the candidate and employer
+   workspace navs" per its own comment - actually looks the same in both
+   places. Values copied 1:1 for visual parity rather than remapped onto
+   --emp-* tokens throughout, since several (per-notification-type icon
+   tints) have no clean token equivalent. The trigger button is reskinned
+   to the employer header's own small round icon-button look. */
+.emp-app-header .notification-menu-wrap { position: relative; }
+/* Doubled-class prefix (.emp-app-shell.emp-app-shell) is required here, not
+   cosmetic - the trigger renders with the shared .btn.btn-ghost classes,
+   and ".emp-app-shell.emp-app-shell .btn { border-radius: var(--emp-radius-
+   md) !important }" (a pre-existing global button-radius reset) otherwise
+   beats a plain ".emp-app-header .notification-trigger" rule on both
+   specificity and !important. Same pattern already used elsewhere in this
+   file for exactly this reason. Sized to match .emp-icon-btn (the Inbox
+   icon right next to it) exactly - 34x34, same translucent-white fill -
+   rather than a slightly different one-off size. */
+.emp-app-shell.emp-app-shell .emp-app-header .notification-trigger {
+  display: grid; place-items: center; width: 34px !important; height: 34px !important;
+  min-width: 0 !important; min-height: 0 !important; padding: 0 !important;
+  border-radius: 999px !important; border: 0; background: rgba(255, 255, 255, 0.5);
+  color: var(--emp-muted); box-shadow: none;
+  transition: background 150ms var(--emp-motion-ease), color 150ms var(--emp-motion-ease);
+}
+.emp-app-header .notification-trigger:hover,
+.emp-app-header .notification-trigger[aria-expanded="true"] {
+  background: rgba(255, 255, 255, 0.85); color: var(--emp-ink);
+}
+.emp-app-header .notification-trigger svg { width: 17px; height: 17px; }
+.emp-app-header .notification-trigger strong {
+  position: absolute; top: -2px; right: -2px; min-width: 16px; height: 16px; padding: 0 4px;
+  display: grid; place-items: center; border-radius: 999px;
+  background: var(--emp-destructive); color: #fff; font-size: 10px; font-weight: 700; line-height: 1;
+}
+.emp-app-header .notification-menu { position: absolute; top: calc(100% + 12px); right: 0; z-index: 220; }
+.emp-app-header .notification-menu.cg-nd-panel {
+  width: min(384px, calc(100vw - 24px)); padding: 0; overflow: hidden;
+  border: 1px solid #e4dfd3; border-radius: 18px; background: #fff;
+  box-shadow: 0 20px 46px -24px rgba(27, 46, 40, .42);
+}
+.emp-app-header .cg-nd-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 15px 16px 13px; background: #fff; border-bottom: 1px solid #f0eadd;
+}
+.emp-app-header .cg-nd-kicker { display: block; font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #8a948f; }
+.emp-app-header .cg-nd-head > div strong { display: block; margin-top: 3px; font-family: var(--emp-sans); font-weight: 600; font-size: 15px; color: #1b2e28; }
+.emp-app-header .cg-nd-markall {
+  display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border: 0; border-radius: 8px;
+  color: #1f5560; background: transparent; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  transition: background .15s ease;
+}
+.emp-app-header .cg-nd-markall:hover { background: #eef4f2; }
+.emp-app-header .cg-nd-markall svg { width: 14px; height: 14px; }
+.emp-app-header .cg-nd-list { max-height: min(64vh, 460px); overflow-y: auto; overflow-x: hidden; background: #fff; }
+.emp-app-header .cg-nd-item {
+  position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 13px 16px 13px 20px;
+  background: #fff; border-bottom: 1px solid #f3eee2; cursor: pointer; transition: background .14s ease;
+}
+.emp-app-header .cg-nd-item:last-child { border-bottom: 0; }
+.emp-app-header .cg-nd-item:hover { background: #fbfaf6; }
+.emp-app-header .cg-nd-item.is-unread { background: rgba(200, 221, 223, .16); }
+.emp-app-header .cg-nd-item.is-unread:hover { background: rgba(200, 221, 223, .28); }
+.emp-app-header .cg-nd-dot { position: absolute; left: 8px; top: 20px; width: 7px; height: 7px; border-radius: 999px; background: transparent; }
+.emp-app-header .cg-nd-item.is-unread .cg-nd-dot { background: #1f5560; }
+.emp-app-header .cg-nd-copy { flex: 1 1 auto; min-width: 0; display: block; }
+.emp-app-header .cg-nd-copy > * + * { margin-top: 2px; }
+.emp-app-header .cg-nd-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; width: 100%; }
+.emp-app-header .cg-nd-top strong { flex: 1 1 auto; min-width: 0; font-size: 13.5px; font-weight: 600; line-height: 1.3; color: #1b2e28; }
+.emp-app-header .cg-nd-top time { flex: none; font-size: 11px; font-weight: 500; color: #9aa39e; white-space: nowrap; }
+.emp-app-header .cg-nd-copy small { font-size: 12.5px; line-height: 1.45; color: #5b6a66; }
+.emp-app-header .cg-nd-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid #f0eadd; background: #fbfaf6; }
+.emp-app-header .cg-nd-foot small { font-size: 12px; color: #8a948f; }
+.emp-app-header .cg-nd-foot a { font-size: 13px; font-weight: 600; color: #1f5560; text-decoration: none; }
+.emp-app-header .cg-nd-foot a:hover { text-decoration: underline; }
+.emp-app-header .cg-nd-empty { display: grid; justify-items: center; gap: 6px; padding: 34px 16px; text-align: center; }
+.emp-app-header .cg-nd-empty svg { width: 30px; height: 30px; color: #1f5560; }
+.emp-app-header .cg-nd-empty strong { font-size: 14px; color: #1b2e28; }
+.emp-app-header .cg-nd-empty small { max-width: 240px; font-size: 12px; color: #5b6a66; }
+.emp-app-header .notification-icon {
+  flex: none; width: 36px; height: 36px; display: inline-grid; place-items: center; border-radius: 999px;
+  color: #1f5560; background: #e4ede9;
+}
+.emp-app-header .notification-icon svg { width: 17px; height: 17px; }
+.emp-app-header .notification-icon.type-interview { color: #1f5560; background: #dce9e4; }
+.emp-app-header .notification-icon.type-recruiter { color: #2e6f78; background: #dceaec; }
+.emp-app-header .notification-icon.type-autopilot { color: #263c33; background: #e1e7df; }
+.emp-app-header .notification-icon.type-application { color: #8a6d1e; background: #f1e6c8; }
+.emp-app-header .notification-icon.type-worth { color: #2e7d6b; background: #d9ebe0; }
+.emp-app-header .notification-icon.type-network { color: #2e6f78; background: #dceaec; }
+.emp-app-header .notification-icon.type-growth { color: #263c33; background: #e1e7df; }
+.emp-app-header .notification-icon.type-role { color: #8a6d1e; background: #f1e6c8; }
+.emp-app-header .notification-icon.type-vera { background: #d6e6e4; }
+.emp-app-header .notification-icon.type-vera img { width: 22px; height: 22px; border-radius: 999px; object-fit: cover; }
+
+.emp-set-card {
+  padding: 16px; border: 1px solid var(--emp-line); border-radius: var(--emp-radius-card);
+  background: var(--emp-surface); box-shadow: var(--emp-shadow-card);
+}
+.emp-set-card h3 { margin: 0 0 12px; font-family: var(--emp-serif); font-size: 18px; font-weight: 400; color: var(--emp-ink); }
+.emp-set-card-quiet { opacity: 0.9; }
+
+.emp-set-field { display: grid; gap: 6px; margin-top: 12px; }
+.emp-set-field:first-of-type { margin-top: 0; }
+.emp-set-field > span { font-size: 13px; font-weight: 400; color: var(--emp-muted); }
+.emp-set-field input {
+  height: 40px; padding: 0 12px; border: 1px solid var(--emp-line); border-radius: var(--emp-radius-md);
+  font: 400 14px/1.4 var(--emp-sans); color: var(--emp-ink); background: var(--emp-surface);
+}
+.emp-set-field input:disabled { opacity: 0.5; }
+.emp-set-field input:focus-visible { outline: 2px solid var(--emp-green); outline-offset: 2px; }
+.emp-set-field-invalid { border-color: var(--emp-destructive) !important; }
+
+.emp-set-hint { display: block; margin-top: 6px; font-size: 12px; font-weight: 400; color: var(--emp-muted); }
+.emp-set-invite-error { color: var(--emp-destructive); }
+.emp-set-invite-error[hidden] { display: none; }
+
+.emp-set-card-actions { display: flex; justify-content: flex-end; margin-top: 16px; }
+
+.emp-set-access-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--emp-muted); }
+.emp-set-access-row span:last-child { color: var(--emp-ink); }
+.emp-set-access-row-divider { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--emp-line); }
+
+.emp-set-badge {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px;
+  font-size: 10px; font-weight: 400; font-family: var(--emp-sans);
+}
+.emp-set-badge svg { width: 10px; height: 10px; }
+.emp-set-badge-owner { background: color-mix(in oklch, var(--emp-teal-soft) 40%, transparent); color: var(--emp-ink); }
+.emp-set-badge-member { border: 1px solid var(--emp-line); color: var(--emp-muted); }
+.emp-set-badge-pending { border: 1px solid var(--emp-line); color: var(--emp-muted); }
+
+.emp-set-team-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 12px; gap: 12px; }
+.emp-set-team-header h3 { margin: 0; font-family: var(--emp-sans); font-size: 14px; font-weight: 500; color: var(--emp-ink); }
+.emp-set-team-header p { margin: 4px 0 0; font-size: 12px; font-weight: 400; color: var(--emp-muted); }
+
+.emp-set-team-card { padding: 0; overflow: hidden; }
+.emp-set-team-row {
+  display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 12px 16px;
+  border-bottom: 1px solid var(--emp-line);
+}
+.emp-set-team-row:last-child { border-bottom: none; }
+.emp-set-team-avatar {
+  display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; border-radius: 999px;
+  background: var(--emp-bg-deep); font-family: var(--emp-serif); font-size: 14px; color: var(--emp-ink);
+}
+.emp-set-team-row-info { flex: 1; min-width: 0; }
+.emp-set-team-row-info strong { display: block; font-size: 13px; font-weight: 500; color: var(--emp-ink); }
+.emp-set-team-row-info small { display: block; margin-top: 2px; font-size: 11px; color: var(--emp-muted); }
+.emp-set-team-menu-btn {
+  display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border: none; border-radius: var(--emp-radius-md);
+  background: transparent; color: var(--emp-muted); cursor: pointer;
+}
+.emp-set-team-menu-btn:hover { background: var(--emp-accent); color: var(--emp-ink); }
+.emp-set-team-menu-btn svg { width: 16px; height: 16px; }
+
+.emp-set-team-empty { display: grid; justify-items: center; gap: 8px; padding: 40px; text-align: center; }
+.emp-set-empty-icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: var(--emp-radius-xl); background: var(--emp-bg-deep); color: var(--emp-green); }
+.emp-set-empty-icon svg { width: 32px; height: 32px; }
+.emp-set-team-empty h3 { margin: 8px 0 0; font-family: var(--emp-serif); font-size: 22px; font-weight: 400; color: var(--emp-ink); }
+.emp-set-team-empty p { margin: 0; font-size: 13px; color: var(--emp-muted); }
+
+.emp-set-invite-card { margin-bottom: 12px; }
+.emp-set-invite-row { display: flex; align-items: flex-end; gap: 8px; }
+.emp-set-invite-field { flex: 1; margin-top: 0; }
 .emp-wizard-steps { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
 .emp-wizard-step {
   display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px;
@@ -14716,8 +14990,19 @@ body:has([data-employer-app]) { margin: 0; }
 .emp-cand-match-badge:focus-visible { outline: 2px solid var(--emp-green, #07382f); outline-offset: 1px; }
 /* Row 2: role, muted, single line. */
 .emp-cand-position { margin: 0; font-size: 13px; font-weight: 400; color: var(--emp-muted, var(--muted)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* Row 3: next action + when, muted single line (spec: --muted-foreground). */
+/* Row 3: next action + when, muted single line (spec: --muted-foreground).
+   Truncated at rest (e.g. "Recruiter Screen · Tomo...") so the collapsed
+   card stays one line - but un-truncated the moment the card expands
+   (hover/focus-within/.is-expanded, same triggers as .emp-cand-actions
+   below), since there's room for the full line once the card has grown. */
 .emp-cand-next-action { margin: 0; font-size: 12px; font-weight: 500; color: var(--emp-muted, var(--muted)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (hover: hover) {
+  .emp-cand-card:hover .emp-cand-next-action { white-space: normal; overflow: visible; text-overflow: clip; }
+}
+.emp-cand-card:focus-within .emp-cand-next-action,
+.emp-cand-card.is-expanded .emp-cand-next-action {
+  white-space: normal; overflow: visible; text-overflow: clip;
+}
 /* Row 4: status badges - only rendered when the card actually has badges, so
    badge-less cards sit tight with no reserved dead space. These are status
    info (not actions): they hold a fixed position directly below the next-
@@ -14854,10 +15139,17 @@ body:has([data-employer-app]) { margin: 0; }
 }
 .emp-scorecard-card { padding: 12px 14px; margin-bottom: 8px; border: 1px solid var(--line); }
 .emp-scorecard-card p { margin: 4px 0 0; font-size: 12px; line-height: 1.5; }
+/* Candidate detail: a centred popup modal, not a side drawer - same fixed
+   backdrop + independently-centred panel as the drawer used before, just
+   repositioned. Kept as DOM siblings (not nested) since other code queries
+   both independently; centring is done via fixed + transform on .emp-drawer
+   itself rather than restructuring the markup. */
 .emp-drawer-backdrop { position: fixed; inset: 0; z-index: 70; background: rgba(15, 23, 42, 0.32); }
 .emp-drawer {
-  position: fixed; top: 0; right: 0; bottom: 0; z-index: 71; width: min(420px, 100vw); background: #fff;
-  box-shadow: -12px 0 32px rgba(15, 23, 42, 0.16); overflow-y: auto; padding: 22px;
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 71; width: min(720px, calc(100vw - 48px)); max-height: calc(100vh - 48px);
+  background: #fff; border-radius: 18px; box-shadow: 0 24px 64px -20px rgba(15, 23, 42, 0.4);
+  overflow-y: auto; padding: 22px;
 }
 .emp-drawer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
 .emp-drawer-head-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
@@ -14876,6 +15168,34 @@ body:has([data-employer-app]) { margin: 0; }
 .emp-drawer-primary .btn { width: 100%; }
 .emp-drawer-tabs { flex-wrap: wrap; }
 .emp-drawer-body { padding-top: 4px; }
+
+/* Profile tab enrichment: contact row, career goal, structured work
+   history/education/portfolio (real detail, not just summary strings). */
+.emp-drawer-contact { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; }
+.emp-drawer-contact-item {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--emp-muted, var(--muted));
+  text-decoration: none;
+}
+.emp-drawer-contact-item svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--emp-green, #07382f); }
+a.emp-drawer-contact-item:hover { color: var(--emp-green, #07382f); }
+.emp-drawer-goal {
+  display: flex; align-items: flex-start; gap: 8px; margin: 0 0 14px; padding: 10px 12px;
+  border-radius: 10px; background: rgba(7, 56, 47, 0.04); font-size: 12.5px; line-height: 1.5; color: var(--emp-ink, var(--text));
+}
+.emp-drawer-goal svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; color: var(--emp-green, #07382f); }
+.emp-drawer-section { margin: 14px 0; }
+.emp-drawer-history-item { margin-top: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--emp-line, var(--line)); }
+.emp-drawer-history-item:last-child { border-bottom: 0; padding-bottom: 0; }
+.emp-drawer-history-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.emp-drawer-history-head strong { font-size: 13px; color: var(--emp-ink, var(--text)); }
+.emp-drawer-history-head span { flex-shrink: 0; font-size: 11px; color: var(--emp-muted, var(--muted)); }
+.emp-drawer-history-company { margin: 2px 0 0; font-size: 12.5px; color: var(--emp-muted, var(--muted)); }
+.emp-drawer-history-item ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.emp-drawer-history-item li { font-size: 12.5px; line-height: 1.45; color: var(--emp-ink, var(--text)); }
+.emp-drawer-portfolio-item { margin-top: 10px; }
+.emp-drawer-portfolio-item:first-child { margin-top: 0; }
+.emp-drawer-portfolio-item strong { display: block; font-size: 13px; color: var(--emp-ink, var(--text)); }
+.emp-drawer-portfolio-item p { margin: 2px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--emp-muted, var(--muted)); }
 .emp-drawer-timeline { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 10px; }
 .emp-drawer-timeline li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--soft); }
 .emp-drawer-timeline li.done { color: var(--text); }
@@ -15106,6 +15426,17 @@ body:has([data-employer-app]) { margin: 0; }
   position: sticky; top: 0; z-index: 30; margin-bottom: 32px;
   background: var(--emp-bg); border-bottom: 1px solid var(--emp-line);
 }
+/* .emp-app-main carries padding-top:20px, and a sticky child can only pin
+   to the top of the scrollport's CONTENT box - so a 20px strip of that
+   padding sits ABOVE the stuck bar, and page content scrolls up through it
+   in full view (white glance cards against the cream bar, clearly visible -
+   the older "same colour makes it moot" note above only holds for the bar's
+   own edges, not for content crossing this strip). This paints that strip
+   in the bar's colour so the bar reads as flush against the fixed header. */
+.emp-company-tabbar-wrap::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 100%;
+  height: 24px; background: var(--emp-bg); pointer-events: none;
+}
 .emp-company-tabbar {
   position: relative; display: flex; align-items: center; gap: 24px; height: 48px;
   overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none;
@@ -15153,12 +15484,21 @@ body:has([data-employer-app]) { margin: 0; }
    .emp-requirements-grid/.emp-stat-row list pattern used by every other
    section on this page (Requirements, Hiring, Salary, Growth, Reviews) -
    scoped so this redesign doesn't ripple into those. */
-.emp-glance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 14px 0 20px; }
+.emp-glance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 14px 0 20px; }
+/* Content-driven height (no min-height floor) + 16px padding, per the
+   design system's card rules - these are short label/value pairs, and the
+   old 165px floor plus 24px padding made the whole "at a glance" block
+   roughly twice as tall as its content needed. */
 .emp-glance-card {
-  display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 165px;
-  padding: 24px; border-radius: 16px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08));
+  display: flex; flex-direction: column; gap: 6px; min-width: 0;
+  padding: 16px; border-radius: 16px; border: 1px solid var(--emp-line, rgba(7, 56, 47, 0.08));
   background: #fff; transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
 }
+/* 7 cards in a 3-col grid leaves the last one stranded alone with two empty
+   cells beside it. When (and only when) the final card starts its own row,
+   let it span the full width instead of leaving that gap. Both selectors are
+   count-aware, so adding/removing a card doesn't strand this rule. */
+.emp-glance-card:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
 .emp-glance-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); border-color: transparent; }
 .emp-glance-icon { color: var(--emp-green, #07382f); }
 .emp-glance-icon svg { width: 20px; height: 20px; }
@@ -15166,9 +15506,18 @@ body:has([data-employer-app]) { margin: 0; }
 .emp-glance-value, .emp-glance-value-wrap { font-size: 15px; font-weight: 700; color: var(--emp-ink, var(--text)); word-break: break-word; }
 .emp-glance-link { color: var(--emp-green, #07382f); text-decoration: none; }
 .emp-glance-link:hover { text-decoration: underline; }
-.emp-glance-list { display: flex; flex-direction: column; gap: 2px; }
+/* Horizontal, separated by middots - stacked vertically this was 3 lines
+   tall on its own, which is what made the orphaned Office Locations card
+   so oversized. */
+.emp-glance-list { display: flex; flex-flow: row wrap; row-gap: 4px; }
+.emp-glance-list span + span::before {
+  content: "·"; margin: 0 8px; color: var(--emp-muted, var(--soft)); font-weight: 400;
+}
 @media (max-width: 900px) {
   .emp-glance-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Same orphan rule re-derived for the 2-column track count. */
+  .emp-glance-card:last-child:nth-child(3n + 1) { grid-column: auto; }
+  .emp-glance-card:last-child:nth-child(2n + 1) { grid-column: 1 / -1; }
 }
 @media (max-width: 600px) {
   .emp-glance-grid { grid-template-columns: 1fr; }
@@ -17047,7 +17396,7 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
   .emp-table { min-width: 640px; }
   .emp-talent-filters { grid-template-columns: 1fr; }
   .emp-kanban { grid-template-columns: repeat(7, 200px); }
-  .emp-drawer { width: 100vw; }
+  .emp-drawer { width: calc(100vw - 24px); max-height: calc(100vh - 24px); }
   .emp-vera-drawer { width: 100vw; padding: 18px; }
   .emp-vera-compose { grid-template-columns: 1fr; }
   .emp-requirements-grid, .emp-highlight-watchout-grid, .emp-edit-layout { grid-template-columns: 1fr; }

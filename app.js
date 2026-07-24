@@ -827,6 +827,12 @@ const DATA = {
       source: "Applied", owner: "Jason", fit: 79, location: "Kuala Lumpur", availability: "3 weeks", salaryExpectation: "RM 6k - 8k",
       education: "BSc Computer Science, UPM", experience: "1.5 years", careerStage: "Early career", portfolio: "Moderate",
       skills: ["Java", "SQL", "Microservices"], strength: "Recently applied with a relevant microservices side project.", concern: null,
+      email: "ahmad.zulkifli@email.com", phone: "+60 12-345 6721",
+      careerGoal: "Looking to move from monolith maintenance into greenfield microservices work with more ownership over service design.",
+      workHistory: [{ title: "Backend Developer", company: "Maju Software Sdn Bhd", duration: "Jan 2024 - Present", bullets: ["Maintained Java/Spring services for an internal billing system used by 40+ staff", "Migrated two legacy modules to a microservices split, cutting deploy time by ~30%"] }],
+      educationDetail: { degree: "BSc Computer Science", school: "Universiti Putra Malaysia", year: "2023", cgpa: "3.4" },
+      portfolioItems: [{ title: "Order microservice side project", description: "Personal project splitting a monolithic order-processing flow into 3 Spring Boot services with a message queue between them." }],
+      languages: ["English", "Bahasa Malaysia"], certifications: [],
       interview: null, finalReview: null, offer: null, hired: null,
       timeline: [{ label: "Applied", date: "3 weeks ago", done: true }],
       notes: [], activity: [{ text: "Applied to Backend Engineer", date: "3 weeks ago" }]
@@ -836,6 +842,15 @@ const DATA = {
       source: "Applied", owner: "Mira", fit: 92, location: "Kuala Lumpur", availability: "2 weeks", salaryExpectation: "RM 2k - 2.5k",
       education: "BA Design, Taylor's", experience: "1 year internship", careerStage: "Fresh Graduate", portfolio: "Strong",
       skills: ["Figma", "User Research", "Design Systems"], strength: "Portfolio shows banking onboarding work and strong research evidence.", concern: "Limited experience with design systems at scale.",
+      email: "siti.nur@email.com", phone: "+60 16-778 2340",
+      careerGoal: "Wants to grow from intern-level UI work into end-to-end product design, owning research through to shipped features.",
+      workHistory: [{ title: "Product Design Intern", company: "Maybank (Digital Banking)", duration: "Jun 2025 - Present", bullets: ["Redesigned the account-onboarding flow, reducing drop-off in usability testing from 34% to 19%", "Ran 12 moderated user interviews and turned findings into a shared research repository for the design team"] }],
+      educationDetail: { degree: "BA Design (Communication Design)", school: "Taylor's University", year: "2025", cgpa: "3.7" },
+      portfolioItems: [
+        { title: "Banking onboarding redesign", description: "End-to-end case study covering research, wireframes, and a shipped Figma prototype for a bank account signup flow." },
+        { title: "Campus food-ordering app concept", description: "Personal project exploring a queue-avoidance ordering app for university canteens, including a small usability test round." }
+      ],
+      languages: ["English", "Bahasa Malaysia"], certifications: ["Google UX Design Certificate"],
       interview: null, finalReview: null, offer: null, hired: null,
       timeline: [{ label: "Applied", date: "9 days ago", done: true }, { label: "Reviewed", date: "6 days ago", done: true }, { label: "Shortlisted", date: "2 days ago", done: true }],
       notes: [{ author: "Mira", text: "Strong portfolio, worth a screening call.", date: "2 days ago" }],
@@ -846,6 +861,12 @@ const DATA = {
       source: "Referral", owner: "Jason", fit: 84, location: "Remote / Selangor", availability: "1 month", salaryExpectation: "RM 6k - 8k",
       education: "Diploma Software Engineering", experience: "2 years freelance", careerStage: "Career Switcher", portfolio: "Strong",
       skills: ["React", "TypeScript", "Testing"], strength: "Transferable freelance delivery evidence with strong component testing habits.", concern: "No prior full-time employment.",
+      email: "priya.nair@email.com", phone: "+60 19-223 4456",
+      careerGoal: "Switching from freelance client work to a full-time product team where she can grow past solo delivery into a larger codebase.",
+      workHistory: [{ title: "Freelance Frontend Developer", company: "Self-employed (various SME clients)", duration: "2023 - Present", bullets: ["Delivered 6 React/TypeScript client dashboards, each with a Jest + React Testing Library suite", "Set up CI test gates for two clients who previously shipped with no automated tests"] }],
+      educationDetail: { degree: "Diploma in Software Engineering", school: "Sunway College", year: "2022", cgpa: "3.6" },
+      portfolioItems: [{ title: "Client dashboard case studies", description: "Three anonymized case studies of freelance React dashboards, each documenting the testing approach used." }],
+      languages: ["English", "Tamil", "Bahasa Malaysia"], certifications: [],
       interview: null, finalReview: null, offer: null, hired: null,
       timeline: [{ label: "Applied", date: "12 days ago", done: true }, { label: "Reviewed", date: "8 days ago", done: true }, { label: "Shortlisted", date: "4 days ago", done: true }],
       notes: [], activity: [{ text: "Moved to Shortlisted", date: "4 days ago" }, { text: "Referred by a current employee", date: "12 days ago" }]
@@ -855,6 +876,12 @@ const DATA = {
       source: "Applied", owner: "Mira", fit: 88, location: "Petaling Jaya", availability: "Immediate", salaryExpectation: "RM 4.8k - 6.5k",
       education: "BSc Statistics, UM", experience: "Graduate projects", careerStage: "Looking for first full-time job", portfolio: "Moderate",
       skills: ["SQL", "Python", "Dashboards"], strength: "Strong SQL dashboard proof and clear interest in marketplace analytics.", concern: null,
+      email: "daniel.lim@email.com", phone: "+60 17-889 1023",
+      careerGoal: "Fresh graduate aiming to start in marketplace/growth analytics, where he can tie SQL work directly to business metrics.",
+      workHistory: [{ title: "Data Analytics Capstone", company: "Universiti Malaya (final-year project)", duration: "Aug 2025 - Dec 2025", bullets: ["Built a SQL + Python pipeline analysing 2 years of a local e-commerce dataset for churn signals", "Presented findings to a panel of 3 lecturers and 2 industry reviewers, scoring in the top 10% of the cohort"] }],
+      educationDetail: { degree: "BSc Statistics", school: "Universiti Malaya", year: "2025", cgpa: "3.8" },
+      portfolioItems: [{ title: "Marketplace churn analysis dashboard", description: "A Power BI dashboard built from the capstone project, tracking cohort retention and churn drivers." }],
+      languages: ["English", "Mandarin", "Bahasa Malaysia"], certifications: ["Google Data Analytics Certificate"],
       interview: { round: 1, totalRounds: 2, nextInterview: { type: "Recruiter Screen", date: "Tomorrow", time: "2:30 PM" }, interviewers: ["Mira"], feedbackSubmitted: 0, feedbackTotal: 1, scorecards: [] },
       finalReview: null, offer: null, hired: null,
       timeline: [{ label: "Applied", date: "2 weeks ago", done: true }, { label: "Reviewed", date: "10 days ago", done: true }, { label: "Shortlisted", date: "6 days ago", done: true }, { label: "Interview scheduled", date: "1 day ago", done: true }, { label: "Feedback submitted", date: "", done: false }, { label: "Decision", date: "", done: false }],
@@ -865,6 +892,12 @@ const DATA = {
       source: "Applied", owner: "Jason", fit: 90, location: "Kuala Lumpur", availability: "2 weeks", salaryExpectation: "RM 7k - 8k",
       education: "BSc Computer Science, MMU", experience: "2 years", careerStage: "Early career", portfolio: "Strong",
       skills: ["React", "Node.js", "AWS"], strength: "Cleared technical rounds with strong system design answers.", concern: "Limited large-team collaboration experience.",
+      email: "farah.alia@email.com", phone: "+60 13-556 7789",
+      careerGoal: "Looking for a role with more system-design ownership after two years mostly building features solo at a small startup.",
+      workHistory: [{ title: "Full-Stack Engineer", company: "Bilik Digital Sdn Bhd", duration: "Mar 2024 - Present", bullets: ["Owned a React + Node.js booking product end-to-end as the sole engineer for most of its life", "Migrated the backend to AWS (ECS + RDS), cutting hosting cost by ~25%"] }],
+      educationDetail: { degree: "BSc Computer Science", school: "Multimedia University", year: "2023", cgpa: "3.5" },
+      portfolioItems: [{ title: "Booking platform architecture writeup", description: "A short technical writeup of the booking product's architecture, covering the AWS migration and its trade-offs." }],
+      languages: ["English", "Bahasa Malaysia"], certifications: ["AWS Certified Cloud Practitioner"],
       interview: {
         round: 2, totalRounds: 2, nextInterview: null, interviewers: ["Jason", "Mira"], feedbackSubmitted: 2, feedbackTotal: 2,
         scorecards: [
@@ -883,6 +916,12 @@ const DATA = {
       source: "Applied", owner: "Mira", fit: 81, location: "Petaling Jaya", availability: "Immediate", salaryExpectation: "RM 5k - 5.5k",
       education: "BSc Statistics, UM", experience: "Graduate projects", careerStage: "Fresh Graduate", portfolio: "Moderate",
       skills: ["SQL", "Power BI", "Excel"], strength: "Strong coursework portfolio, immediately available.", concern: null,
+      email: "weijun.tan@email.com", phone: "+60 14-667 8891",
+      careerGoal: "First full-time role - wants to build a foundation in reporting and dashboarding before specialising further.",
+      workHistory: [{ title: "Data Analytics Coursework Projects", company: "Universiti Malaya (coursework)", duration: "2023 - 2025", bullets: ["Built 4 Power BI dashboards across coursework modules covering sales, survey, and operations datasets", "Tutored 2 juniors informally on SQL joins and window functions"] }],
+      educationDetail: { degree: "BSc Statistics", school: "Universiti Malaya", year: "2025", cgpa: "3.5" },
+      portfolioItems: [{ title: "Coursework dashboard collection", description: "A set of 4 Power BI dashboards from coursework, shared as a portfolio PDF with screenshots and write-ups." }],
+      languages: ["English", "Mandarin", "Bahasa Malaysia"], certifications: [],
       interview: { round: 2, totalRounds: 2, nextInterview: null, interviewers: ["Mira"], feedbackSubmitted: 1, feedbackTotal: 1, scorecards: [{ interviewer: "Mira", recommendation: "Yes", strengths: ["Fast learner", "Solid SQL fundamentals"], concerns: [], notes: "Ready to contribute from day one." }] },
       finalReview: { overallResult: "Approved for offer", teamRecommendations: [{ name: "Mira", verdict: "Yes" }], strengths: ["Immediately available", "Strong coursework evidence"], concerns: [], openQuestions: [] },
       offer: { status: "Sent", amount: "RM 5,200 / month", sentDate: "3 days ago", expiryDate: "in 4 days", counterAmount: null, approvedRange: { min: "RM 4,500", max: "RM 5,500" } },
@@ -895,6 +934,12 @@ const DATA = {
       source: "Applied", owner: "Mira", fit: 95, location: "Kuala Lumpur", availability: "Accepted", salaryExpectation: "RM 2k - 2.5k",
       education: "BA Design, Taylor's", experience: "Internship-level", careerStage: "Fresh Graduate", portfolio: "Strong",
       skills: ["Figma", "Prototyping"], strength: "Accepted offer after a strong final-round portfolio review.", concern: null,
+      email: "kevin.ong@email.com", phone: "+60 12-990 4432",
+      careerGoal: "Wants to build his first real product design portfolio piece inside a structured team before considering freelance work.",
+      workHistory: [{ title: "Design Teaching Assistant", company: "Taylor's University (School of Design)", duration: "Jan 2025 - May 2025", bullets: ["Supported a second-year prototyping module, reviewing Figma files for 25 students weekly", "Ran two workshop sessions on interactive prototyping basics"] }],
+      educationDetail: { degree: "BA Design (Communication Design)", school: "Taylor's University", year: "2025", cgpa: "3.8" },
+      portfolioItems: [{ title: "Final-year portfolio review piece", description: "A high-fidelity prototype of a campus events app, the piece that led the panel to a strong final-round recommendation." }],
+      languages: ["English", "Mandarin", "Bahasa Malaysia"], certifications: [],
       interview: { round: 1, totalRounds: 1, nextInterview: null, interviewers: ["Mira"], feedbackSubmitted: 1, feedbackTotal: 1, scorecards: [{ interviewer: "Mira", recommendation: "Strong yes", strengths: ["Exceptional portfolio", "Strong prototyping skills"], concerns: [], notes: "Best portfolio review of the intern cycle." }] },
       finalReview: { overallResult: "Approved for offer", teamRecommendations: [{ name: "Mira", verdict: "Strong yes" }], strengths: ["Exceptional portfolio"], concerns: [], openQuestions: [] },
       offer: { status: "Accepted", amount: "RM 2,200 / month", sentDate: "3 weeks ago", expiryDate: null, counterAmount: null, approvedRange: { min: "RM 1,800", max: "RM 2,500" } },
@@ -908,6 +953,11 @@ const DATA = {
       source: "Applied", owner: "Jason", fit: 58, location: "Kuala Lumpur", availability: "1 month", salaryExpectation: "RM 5.5k - 7k",
       education: "BSc Information Technology, UiTM", experience: "1 year", careerStage: "Early career", portfolio: "Moderate",
       skills: ["Java", "SQL"], strength: "Solid Java fundamentals.", concern: "No distributed systems or Kafka experience required for this role.",
+      email: "hafiz.rahman@email.com", phone: "+60 11-234 5567",
+      careerGoal: "Looking to move from support-style maintenance work into a role with more backend feature ownership.",
+      workHistory: [{ title: "IT Support & Junior Developer", company: "Sistem Rangkaian Sdn Bhd", duration: "Jul 2024 - Present", bullets: ["Maintained internal Java tools and handled first-line support tickets", "Wrote SQL reports for the finance team on an ad hoc basis"] }],
+      educationDetail: { degree: "BSc Information Technology", school: "Universiti Teknologi MARA", year: "2024", cgpa: "3.1" },
+      portfolioItems: [], languages: ["English", "Bahasa Malaysia"], certifications: [],
       interview: null, finalReview: null, offer: null, hired: null,
       timeline: [{ label: "Applied", date: "3 weeks ago", done: true }, { label: "Reviewed", date: "2 weeks ago", done: true }, { label: "Rejected", date: "1 week ago", done: true }],
       notes: [], activity: [{ text: "Rejected: Skill mismatch", date: "1 week ago" }]
@@ -917,6 +967,12 @@ const DATA = {
       source: "Applied", owner: "Jason", fit: 74, location: "Penang", availability: "1 month", salaryExpectation: "RM 6k - 7.5k",
       education: "BSc Software Engineering, USM", experience: "2 years", careerStage: "Early career", portfolio: "Moderate",
       skills: ["Java", "Spring"], missing: ["Kafka"], strength: "Solid Java/Spring service work with clean API design.", concern: "No event-streaming (Kafka) experience yet.",
+      email: "nurul.aina@email.com", phone: "+60 16-112 3345",
+      careerGoal: "Wants to move into distributed-systems work and is already studying event streaming on her own time.",
+      workHistory: [{ title: "Backend Engineer", company: "Penang Logistics Tech", duration: "Feb 2023 - Present", bullets: ["Built and maintained 5 internal REST APIs in Spring Boot for a warehouse management system", "Documented API contracts that cut cross-team integration questions noticeably"] }],
+      educationDetail: { degree: "BSc Software Engineering", school: "Universiti Sains Malaysia", year: "2023", cgpa: "3.3" },
+      portfolioItems: [{ title: "Warehouse API documentation set", description: "A cleaned-up, anonymized version of the API documentation she authored at her current job." }],
+      languages: ["English", "Bahasa Malaysia"], certifications: [],
       interview: null, finalReview: null, offer: null, hired: null,
       timeline: [{ label: "Applied", date: "4 days ago", done: true }],
       notes: [], activity: [{ text: "Applied to Backend Engineer", date: "4 days ago" }]
@@ -926,6 +982,11 @@ const DATA = {
       source: "Applied", owner: "Mira", fit: 71, location: "Kuala Lumpur", availability: "2 weeks", salaryExpectation: "RM 4.5k - 5.5k",
       education: "BSc Actuarial Science, UM", experience: "Graduate projects", careerStage: "Fresh Graduate", portfolio: "Moderate",
       skills: ["SQL", "Excel"], missing: ["Python"], strength: "Strong SQL and spreadsheet modelling from actuarial coursework.", concern: "No Python for analytics yet.",
+      email: "jason.teoh@email.com", phone: "+60 17-556 8823",
+      careerGoal: "Fresh graduate hoping to pivot from pure actuarial modelling into broader business analytics.",
+      workHistory: [{ title: "Actuarial Modelling Coursework", company: "Universiti Malaya (coursework)", duration: "2022 - 2025", bullets: ["Built Excel/VBA pricing models across 3 actuarial modules", "Used SQL for a group project analysing 5 years of claims data"] }],
+      educationDetail: { degree: "BSc Actuarial Science", school: "Universiti Malaya", year: "2025", cgpa: "3.4" },
+      portfolioItems: [], languages: ["English", "Mandarin", "Bahasa Malaysia"], certifications: [],
       interview: null, finalReview: null, offer: null, hired: null,
       timeline: [{ label: "Applied", date: "2 days ago", done: true }],
       notes: [], activity: [{ text: "Applied to Junior Data Analyst", date: "2 days ago" }]
@@ -935,6 +996,12 @@ const DATA = {
       source: "Applied", owner: "Jason", fit: 80, location: "Kuala Lumpur", availability: "3 weeks", salaryExpectation: "RM 5.5k - 7k",
       education: "BSc Computer Science, Sunway", experience: "2 years", careerStage: "Early career", portfolio: "Strong",
       skills: ["React", "CSS"], missing: ["Accessibility"], strength: "Polished React UI work with a strong portfolio.", concern: "Limited accessibility (WCAG) experience.",
+      email: "marcus.chan@email.com", phone: "+60 12-887 6612",
+      careerGoal: "Wants to broaden from purely visual UI work into accessibility-aware frontend engineering.",
+      workHistory: [{ title: "Frontend Developer", company: "Bintang Studio", duration: "Jun 2023 - Present", bullets: ["Built and maintained the React component library used across 4 client marketing sites", "Led a visual refresh that improved a client's mobile conversion rate by 12%"] }],
+      educationDetail: { degree: "BSc Computer Science", school: "Sunway University", year: "2023", cgpa: "3.5" },
+      portfolioItems: [{ title: "Component library showcase", description: "A Storybook-style showcase of the reusable React components he built at Bintang Studio." }],
+      languages: ["English", "Mandarin", "Bahasa Malaysia"], certifications: [],
       interview: null, finalReview: null, offer: null, hired: null,
       timeline: [{ label: "Applied", date: "11 days ago", done: true }, { label: "Reviewed", date: "7 days ago", done: true }, { label: "Shortlisted", date: "3 days ago", done: true }],
       notes: [{ author: "Jason", text: "Nice portfolio — worth a technical screen.", date: "3 days ago" }],
@@ -945,6 +1012,12 @@ const DATA = {
       source: "Applied", owner: "Mira", fit: 83, location: "Kuala Lumpur", availability: "2 weeks", salaryExpectation: "RM 4.8k - 6k",
       education: "BSc Data Science, MMU", experience: "1 year", careerStage: "Early career", portfolio: "Moderate",
       skills: ["Python", "SQL"], missing: [], strength: "Strong Python + SQL foundation with a tidy analysis portfolio.", concern: null,
+      email: "aisyah.rahman@email.com", phone: "+60 19-345 6690",
+      careerGoal: "One year into her first analyst role, looking for a team with a stronger data culture to grow her craft faster.",
+      workHistory: [{ title: "Junior Data Analyst", company: "Klik Retail Sdn Bhd", duration: "Jun 2024 - Present", bullets: ["Built weekly Python/SQL reports on inventory turnover for 3 retail categories", "Automated a manual Excel reporting process, saving roughly 4 hours a week"] }],
+      educationDetail: { degree: "BSc Data Science", school: "Multimedia University", year: "2024", cgpa: "3.6" },
+      portfolioItems: [{ title: "Inventory analysis notebook", description: "A Jupyter notebook walkthrough of the inventory turnover analysis she automated at Klik Retail." }],
+      languages: ["English", "Bahasa Malaysia"], certifications: [],
       interview: { round: 1, totalRounds: 2, nextInterview: { type: "Technical Interview", date: "In 2 days", time: "11:00 AM" }, interviewers: ["Mira"], feedbackSubmitted: 0, feedbackTotal: 1, scorecards: [] },
       finalReview: null, offer: null, hired: null,
       timeline: [{ label: "Applied", date: "2 weeks ago", done: true }, { label: "Reviewed", date: "9 days ago", done: true }, { label: "Shortlisted", date: "5 days ago", done: true }, { label: "Interview scheduled", date: "1 day ago", done: true }, { label: "Feedback submitted", date: "", done: false }, { label: "Decision", date: "", done: false }],
@@ -955,6 +1028,12 @@ const DATA = {
       source: "Referral", owner: "Jason", fit: 86, location: "Kuala Lumpur", availability: "1 month", salaryExpectation: "RM 8k - 9.5k",
       education: "BSc Computer Science, UM", experience: "4 years", careerStage: "Mid level", portfolio: "Strong",
       skills: ["Go", "Postgres"], missing: [], strength: "Strong distributed-systems background in Go with solid Postgres tuning.", concern: "Java is secondary to Go for this candidate.",
+      email: "weisheng.lim@email.com", phone: "+60 12-778 3321",
+      careerGoal: "Referred by a current employee - looking for more architectural ownership than his current senior-engineer role gives him.",
+      workHistory: [{ title: "Senior Backend Engineer", company: "Grabify Logistics", duration: "Aug 2021 - Present", bullets: ["Designed a Go-based order-routing service handling ~2M events/day", "Led a Postgres partitioning project that cut query latency by 40% on the largest table"] }],
+      educationDetail: { degree: "BSc Computer Science", school: "Universiti Malaya", year: "2021", cgpa: "3.6" },
+      portfolioItems: [{ title: "Order-routing service design doc", description: "A sanitised architecture doc for the Go order-routing service, covering the partitioning strategy and load numbers." }],
+      languages: ["English", "Mandarin", "Bahasa Malaysia"], certifications: [],
       interview: {
         round: 2, totalRounds: 2, nextInterview: null, interviewers: ["Jason", "Mira"], feedbackSubmitted: 2, feedbackTotal: 2,
         scorecards: [
@@ -973,6 +1052,12 @@ const DATA = {
       source: "Applied", owner: "Mira", fit: 78, location: "Kuala Lumpur", availability: "Immediate", salaryExpectation: "RM 2k - 2.5k",
       education: "BA Design, The One Academy", experience: "Internship-level", careerStage: "Fresh Graduate", portfolio: "Strong",
       skills: ["Figma", "Prototyping"], missing: [], strength: "Clean prototyping work and a strong intern portfolio.", concern: null,
+      email: "meiling.chong@email.com", phone: "+60 16-990 2278",
+      careerGoal: "Immediately available and looking for her first full design role after a design-school-heavy prototyping focus.",
+      workHistory: [{ title: "Design Intern", company: "Studio Rekabentuk", duration: "Jan 2025 - May 2025", bullets: ["Prototyped 3 mobile app concepts for client pitches in Figma", "Assisted a senior designer on a full rebrand deck for a retail client"] }],
+      educationDetail: { degree: "BA Design", school: "The One Academy", year: "2025", cgpa: "3.7" },
+      portfolioItems: [{ title: "Client pitch prototypes", description: "Three high-fidelity Figma prototypes built during her internship, used in real client pitch decks." }],
+      languages: ["English", "Mandarin", "Bahasa Malaysia"], certifications: [],
       interview: { round: 1, totalRounds: 1, nextInterview: null, interviewers: ["Mira"], feedbackSubmitted: 1, feedbackTotal: 1, scorecards: [{ interviewer: "Mira", recommendation: "Yes", strengths: ["Strong prototyping", "Good design sense"], concerns: [], notes: "Solid intern-level portfolio review." }] },
       finalReview: { overallResult: "Approved for offer", teamRecommendations: [{ name: "Mira", verdict: "Yes" }], strengths: ["Strong prototyping"], concerns: [], openQuestions: [] },
       offer: { status: "Sent", amount: "RM 2,300 / month", sentDate: "2 days ago", expiryDate: "in 5 days", counterAmount: null, approvedRange: { min: "RM 1,800", max: "RM 2,500" } },
@@ -985,6 +1070,12 @@ const DATA = {
       source: "Applied", owner: "Jason", fit: 89, location: "Kuala Lumpur", availability: "Accepted", salaryExpectation: "RM 6.5k - 8k",
       education: "BSc Computer Science, APU", experience: "3 years", careerStage: "Early career", portfolio: "Strong",
       skills: ["React", "Node.js"], missing: [], strength: "Full-stack delivery record with strong React and Node.js work.", concern: null,
+      email: "ravi.kumar@email.com", phone: "+60 19-667 4432",
+      careerGoal: "Accepted the offer looking for a bigger-scale product to apply his full-stack delivery experience to.",
+      workHistory: [{ title: "Full-Stack Engineer", company: "PayLagi Fintech", duration: "Mar 2022 - Present", bullets: ["Shipped a React + Node.js merchant dashboard used by 500+ small business merchants", "Owned the payments reconciliation module end-to-end, including a rewrite that fixed a recurring rounding bug"] }],
+      educationDetail: { degree: "BSc Computer Science", school: "Asia Pacific University", year: "2022", cgpa: "3.5" },
+      portfolioItems: [{ title: "Merchant dashboard case study", description: "A case study of the merchant dashboard product, covering the reconciliation-module rewrite and its impact." }],
+      languages: ["English", "Tamil", "Bahasa Malaysia"], certifications: [],
       interview: { round: 2, totalRounds: 2, nextInterview: null, interviewers: ["Jason", "Mira"], feedbackSubmitted: 2, feedbackTotal: 2, scorecards: [{ interviewer: "Jason", recommendation: "Strong yes", strengths: ["Full-stack depth", "Clear communication"], concerns: [], notes: "Strong end-to-end delivery examples." }] },
       finalReview: { overallResult: "Approved for offer", teamRecommendations: [{ name: "Jason", verdict: "Strong yes" }], strengths: ["Full-stack depth"], concerns: [], openQuestions: [] },
       offer: { status: "Accepted", amount: "RM 7,000 / month", sentDate: "3 weeks ago", expiryDate: null, counterAmount: null, approvedRange: { min: "RM 6,000", max: "RM 8,000" } },
@@ -2210,6 +2301,31 @@ function wireStaticLoginForm() {
     }
     const user = next.auth.users.find(item => item.email === email && item.password === password);
     if (!user) {
+      // Employer sign-up + Settings rework: accounts created via the new
+      // company join/create flow live in the separate careergo_users store,
+      // not next.auth.users - check there too before failing the login.
+      if (isEmployer) {
+        const employerUser = findEmployerUserByEmail(email);
+        if (employerUser && employerUser.password && employerUser.password === password) {
+          setEmployerSessionUserId(employerUser.id);
+          const employerCompanyRecord = findEmployerCompanyById(employerUser.companyId);
+          next.session = { loggedIn: true, role: "employer", currentUserId: employerUser.id, name: employerUser.name };
+          next.employerProfile = {
+            ...(next.employerProfile || {}),
+            roleDescription: employerUser.hiringRole || "",
+            company: employerCompanyRecord?.name || "",
+            companySize: employerCompanyRecord?.size || "",
+            industry: employerCompanyRecord?.industry || "",
+            pitch: employerCompanyRecord?.pitch || "",
+            updatedAt: nowStamp()
+          };
+          if (next.profile?.personal) next.profile.personal.fullName = next.profile.personal.fullName || employerUser.name;
+          writeState(next);
+          showToast("Welcome back.");
+          location.href = redirectTarget || "employer-app.html";
+          return;
+        }
+      }
       showToast("No matching account found on this device.", "info");
       return;
     }
@@ -10901,7 +11017,145 @@ function persistAuthRole(role) {
   }
 }
 
+/* ---------------------------------------------------------------------
+   Employer Identity Store - careergo_companies / careergo_users /
+   careergo_session (spec: employer sign-up + Settings rework). This is a
+   NEW, additive data model that sits alongside state.employerProfile - it
+   powers the sign-up wizard's company join/create flow and the Settings
+   page, but does not replace state.employerProfile (still written in
+   parallel below so unchanged employer pages like the top nav / Dashboard /
+   Company Profile keep reading a real company name). These three
+   localStorage keys are read/written ONLY through the functions below. */
+const EMPLOYER_STORE_KEYS = { companies: "careergo_companies", users: "careergo_users", session: "careergo_session" };
+let employerStoreFallback = { companies: [], users: [], session: null };
+
+function employerStoreReadList(kind) {
+  try {
+    const raw = localStorage.getItem(EMPLOYER_STORE_KEYS[kind]);
+    return raw ? JSON.parse(raw) : (employerStoreFallback[kind] || []);
+  } catch (error) {
+    return employerStoreFallback[kind] || [];
+  }
+}
+
+function employerStoreWriteList(kind, list) {
+  employerStoreFallback[kind] = list;
+  try {
+    localStorage.setItem(EMPLOYER_STORE_KEYS[kind], JSON.stringify(list));
+  } catch (error) {
+    /* in-memory fallback above already holds the value for this session */
+  }
+}
+
+function getEmployerCompanies() { return employerStoreReadList("companies"); }
+function setEmployerCompanies(list) { employerStoreWriteList("companies", list); }
+function getEmployerUsers() { return employerStoreReadList("users"); }
+function setEmployerUsers(list) { employerStoreWriteList("users", list); }
+
+function getEmployerSessionUserId() {
+  try {
+    return localStorage.getItem(EMPLOYER_STORE_KEYS.session) || employerStoreFallback.session || null;
+  } catch (error) {
+    return employerStoreFallback.session;
+  }
+}
+
+function setEmployerSessionUserId(userId) {
+  employerStoreFallback.session = userId || null;
+  try {
+    if (userId) localStorage.setItem(EMPLOYER_STORE_KEYS.session, userId);
+    else localStorage.removeItem(EMPLOYER_STORE_KEYS.session);
+  } catch (error) {
+    /* in-memory fallback above already holds the value for this session */
+  }
+}
+
+function findEmployerCompanyByDomain(domain) {
+  const needle = String(domain || "").trim().toLowerCase();
+  return getEmployerCompanies().find(c => String(c.domain || "").trim().toLowerCase() === needle) || null;
+}
+function findEmployerCompanyById(id) {
+  return getEmployerCompanies().find(c => c.id === id) || null;
+}
+function findEmployerUserByEmail(email) {
+  const needle = String(email || "").trim().toLowerCase();
+  return getEmployerUsers().find(u => u.email === needle) || null;
+}
+function currentEmployerUser() {
+  const id = getEmployerSessionUserId();
+  if (!id) return null;
+  return getEmployerUsers().find(u => u.id === id) || null;
+}
+function currentEmployerCompany() {
+  const user = currentEmployerUser();
+  return user ? findEmployerCompanyById(user.companyId) : null;
+}
+function employerCompanyTeammates(companyId) {
+  return getEmployerUsers().filter(u => u.companyId === companyId);
+}
+
+function deriveCompanyNameFromDomain(domain) {
+  // Deliberately simple - no word-splitting/cleverness (spec). The field is
+  // editable, so the user fixes spacing/casing themselves if needed.
+  const label = String(domain || "").split(".")[0] || "";
+  if (!label) return "Your Company";
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+const EMPLOYER_FREE_EMAIL_DOMAINS = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "live.com", "icloud.com", "proton.me", "protonmail.com", "qq.com", "163.com"];
+
+function createEmployerCompanyRecord({ name, domain, size, industry, logo = null, pitch = "" }) {
+  const company = { id: "c_" + Date.now(), name, domain, size, industry, logo, pitch, createdAt: nowStamp() };
+  setEmployerCompanies([...getEmployerCompanies(), company]);
+  return company;
+}
+
+function createEmployerUserRecord({ companyId, name, email, password = "", role, status, hiringRole = "" }) {
+  const user = {
+    id: "u_" + Date.now() + "_" + Math.round(Math.random() * 1e4),
+    companyId, name, email: String(email).trim().toLowerCase(),
+    emailDomain: String(email).split("@")[1] || "",
+    password, role, status, hiringRole, createdAt: nowStamp()
+  };
+  setEmployerUsers([...getEmployerUsers(), user]);
+  return user;
+}
+
+/* Demo/hackathon seed - runs once (no-ops if either list is already
+   populated) so every demo path in the sign-up spec works out of the box. */
+function buildEmployerSeedData() {
+  const company = {
+    id: "c_nimbus", name: "Nimbus Labs", domain: "nimbuslabs.com", size: "51-200", industry: "Technology",
+    logo: null, pitch: "Nimbus Labs builds developer tools that help engineering teams ship faster.", createdAt: nowStamp()
+  };
+  const users = [
+    { id: "u_hiring", companyId: company.id, name: "Lai Si Xiang", email: "hiring@nimbuslabs.com", emailDomain: "nimbuslabs.com", password: "nimbus123", role: "owner", status: "active", hiringRole: "Hiring Manager", createdAt: nowStamp() },
+    { id: "u_sarah", companyId: company.id, name: "Sarah Tan", email: "sarah@nimbuslabs.com", emailDomain: "nimbuslabs.com", password: "", role: "member", status: "active", hiringRole: "Recruiter / Talent Acquisition", createdAt: nowStamp() },
+    { id: "u_wei", companyId: company.id, name: "Lim Wei", email: "wei@nimbuslabs.com", emailDomain: "nimbuslabs.com", password: "", role: "member", status: "active", hiringRole: "HR / People Team", createdAt: nowStamp() },
+    { id: "u_amir", companyId: company.id, name: "Amir Hakim", email: "amir@nimbuslabs.com", emailDomain: "nimbuslabs.com", password: "", role: "member", status: "pending", hiringRole: "", createdAt: nowStamp() }
+  ];
+  return { company, users };
+}
+
+function seedEmployerStore() {
+  if (getEmployerCompanies().length || getEmployerUsers().length) return;
+  const { company, users } = buildEmployerSeedData();
+  setEmployerCompanies([company]);
+  setEmployerUsers(users);
+}
+
+// Used by "Reset demo data" (Step 2) - unlike seedEmployerStore(), this
+// always re-seeds regardless of current contents, so a tester can get back
+// to a known-good careergo_companies/careergo_users state on demand.
+function resetEmployerStore() {
+  const { company, users } = buildEmployerSeedData();
+  setEmployerCompanies([company]);
+  setEmployerUsers(users);
+  setEmployerSessionUserId(null);
+}
+
 const ONBOARD_WIZARD_STEPS = 5;
+const EMPLOYER_WIZARD_STEPS = 4;
 
 /* Shared onboarding preview (Part 1) - one component rendered on both the
    talent flow (Living Portfolio) and the employer flow (Company Card). It
@@ -10920,12 +11174,6 @@ function onboardPreviewCard(mode, data) {
           <small>${esc(metaLine) || "Industry · Company size"}</small>
         </div>
         <div class="cg-onboard-preview-body">
-          <section>
-            <span class="cg-onboard-preview-label">Hiring for</span>
-            ${(data.roles && data.roles.length)
-              ? `<div class="cg-onboard-preview-chips">${data.roles.map(role => `<span class="cg-onboard-preview-chip">${esc(role)}</span>`).join("")}</div>`
-              : `<p class="cg-onboard-preview-empty">Pick the roles you're hiring for and they appear here.</p>`}
-          </section>
           ${data.roleFocus ? `<section><span class="cg-onboard-preview-label">Your focus</span><p>${esc(data.roleFocus)}</p></section>` : ""}
         </div>
         <div class="cg-onboard-preview-verify">${icon("check")} Verified by CareerGo as you complete it</div>
@@ -10959,15 +11207,15 @@ const ONBOARD_ELIGIBILITY_OPTIONS = ["Malaysian citizen", "Permanent resident", 
 const ONBOARD_LEVEL_OPTIONS = ["SPM / O-Level", "Foundation", "Diploma", "Bachelor's degree", "Master's degree", "PhD", "Professional certificate"];
 const ONBOARD_AVAILABILITY_OPTIONS = ["Immediately", "Within 1 month", "1-3 months", "3+ months", "Just exploring"];
 
-function onboardWizardChrome(stepIndex, topRightHtml) {
+function onboardWizardChrome(stepIndex, topRightHtml, totalSteps = ONBOARD_WIZARD_STEPS) {
   return `
     <header class="cg-onboard-topbar">
       <a class="cg-onboard-brand" href="index.html" aria-label="CareerGo home"><img src="assets/careergo-logo-script.png" alt="CareerGo"></a>
       <div class="cg-onboard-progress-group">
-        <div class="cg-onboard-progress" role="progressbar" aria-valuenow="${stepIndex + 1}" aria-valuemin="1" aria-valuemax="${ONBOARD_WIZARD_STEPS}">
-          ${Array.from({ length: ONBOARD_WIZARD_STEPS }, (_, i) => `<i class="${i <= stepIndex ? "done" : ""}"></i>`).join("")}
+        <div class="cg-onboard-progress" role="progressbar" aria-valuenow="${stepIndex + 1}" aria-valuemin="1" aria-valuemax="${totalSteps}">
+          ${Array.from({ length: totalSteps }, (_, i) => `<i class="${i <= stepIndex ? "done" : ""}"></i>`).join("")}
         </div>
-        <span class="cg-onboard-progress-label">Step ${stepIndex + 1} of ${ONBOARD_WIZARD_STEPS}</span>
+        <span class="cg-onboard-progress-label">Step ${stepIndex + 1} of ${totalSteps}</span>
       </div>
       <div class="cg-onboard-topbar-right">${topRightHtml}</div>
     </header>
@@ -11184,7 +11432,7 @@ function renderCreateAccountWizard(root) {
     const isEmployer = selectedRole === "employer";
     const topRight = `<a href="${loginHref}">Log in</a>`;
     root.innerHTML = wizardStep === 0 ? `
-      ${onboardWizardChrome(0, topRight)}
+      ${onboardWizardChrome(0, topRight, isEmployer ? EMPLOYER_WIZARD_STEPS : ONBOARD_WIZARD_STEPS)}
       <section class="cg-onboard-shell cg-onboard-shell-wide">
         <div class="cg-onboard-eyebrow">Welcome</div>
         <h1>What brings you to CareerGo?</h1>
@@ -11216,7 +11464,7 @@ function renderCreateAccountWizard(root) {
         </footer>
       </section>
     ` : `
-      ${onboardWizardChrome(1, topRight)}
+      ${onboardWizardChrome(1, topRight, isEmployer ? EMPLOYER_WIZARD_STEPS : ONBOARD_WIZARD_STEPS)}
       <section class="cg-onboard-shell">
         <div class="cg-onboard-eyebrow">Your account</div>
         <h1>Create your CareerGo account.</h1>
@@ -11227,6 +11475,10 @@ function renderCreateAccountWizard(root) {
           <button class="cg-onboard-social" type="button" data-enter-demo>${icon("github")} Continue with GitHub</button>
           <div class="cg-onboard-divider"><span>OR</span></div>
           <label class="cg-onboard-field">
+            <span>Full name</span>
+            <input name="fullName" type="text" required autocomplete="name" placeholder="Lai Si Xiang" value="${isEmployer ? "Lai Si Xiang" : "Mira Tan"}">
+          </label>
+          <label class="cg-onboard-field">
             <span>${isEmployer ? "Work email" : "Email"}</span>
             <input name="email" type="email" required autocomplete="email" placeholder="${isEmployer ? "you@company.com" : "you@email.com"}" value="${isEmployer ? "hiring@nimbuslabs.com" : "mira.tan@email.com"}">
           </label>
@@ -11236,15 +11488,12 @@ function renderCreateAccountWizard(root) {
               <input id="wizard-password" name="password" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters" value="Career2026!">
               <button type="button" class="cg-onboard-eye" data-toggle-password="wizard-password" aria-label="Show password">${icon("eye")}</button>
             </span>
-          </label>
-          <label class="cg-onboard-field">
-            <span>Confirm password</span>
-            <input name="confirmPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="Re-enter your password" value="Career2026!">
+            <small class="cg-onboard-password-hint" data-password-hint>At least 8 characters</small>
           </label>
           <button class="cg-onboard-btn-primary cg-onboard-btn-block" type="submit">Create account ${icon("arrow-right")}</button>
         </form>
         <p class="cg-onboard-terms">By creating an account, you agree to CareerGo's <a href="about.html">Terms</a> and <a href="about.html">Privacy Policy</a>.</p>
-        <p class="cg-onboard-terms">Demo build - re-testing signup? <button type="button" class="cg-onboard-link" data-clear-demo-data>Clear local demo data</button> to reuse the same email.</p>
+        <p class="cg-onboard-terms">Demo build - re-testing signup? <button type="button" class="cg-onboard-link" data-clear-demo-data>Reset demo data</button> to reuse the same email.</p>
         <footer class="cg-onboard-footer">
           <button class="cg-onboard-link" type="button" data-wizard-back>${icon("arrow-left")} Back</button>
           <a href="${loginHref}">Already have an account? Log in</a>
@@ -11272,32 +11521,87 @@ function renderCreateAccountWizard(root) {
     });
     qs("[data-clear-demo-data]", root)?.addEventListener("click", () => {
       localStorage.removeItem(STORE_KEY);
-      showToast("Local demo data cleared - you can reuse the same email.");
+      resetEmployerStore();
+      showToast("Demo data reset - you can reuse the same email.");
       renderStep();
     });
     qsa("[data-enter-demo]", root).forEach(btn => btn.addEventListener("click", () => startDemoDashboard(selectedRole)));
+
+    const passwordInput = qs("#wizard-password", root);
+    const passwordHint = qs("[data-password-hint]", root);
+    function updatePasswordHint() {
+      const satisfied = (passwordInput?.value || "").length >= 8;
+      passwordHint.classList.toggle("is-satisfied", satisfied);
+      passwordHint.innerHTML = satisfied ? `${icon("check")} At least 8 characters` : "At least 8 characters";
+      if (satisfied) createIcons();
+    }
+    passwordInput?.addEventListener("input", updatePasswordHint);
+
+    function clearEmailError() {
+      const emailField = qs('[name="email"]', root);
+      qs("[data-email-error]", root)?.remove();
+      emailField?.closest(".cg-onboard-field")?.classList.remove("cg-onboard-field-error");
+    }
+    function showEmailError(message) {
+      const emailField = qs('[name="email"]', root);
+      const wrap = emailField?.closest(".cg-onboard-field");
+      wrap?.classList.add("cg-onboard-field-error");
+      const errorEl = document.createElement("small");
+      errorEl.dataset.emailError = "true";
+      errorEl.className = "cg-onboard-field-error-text";
+      errorEl.textContent = message;
+      wrap?.appendChild(errorEl);
+    }
+    qs('[name="email"]', root)?.addEventListener("input", clearEmailError);
+
+    function clearFullNameError() {
+      const field = qs('[name="fullName"]', root);
+      qs("[data-fullname-error]", root)?.remove();
+      field?.closest(".cg-onboard-field")?.classList.remove("cg-onboard-field-error");
+    }
+    function showFullNameError(message) {
+      const field = qs('[name="fullName"]', root);
+      const wrap = field?.closest(".cg-onboard-field");
+      wrap?.classList.add("cg-onboard-field-error");
+      const errorEl = document.createElement("small");
+      errorEl.dataset.fullnameError = "true";
+      errorEl.className = "cg-onboard-field-error-text";
+      errorEl.textContent = message;
+      wrap?.appendChild(errorEl);
+    }
+    qs('[name="fullName"]', root)?.addEventListener("input", clearFullNameError);
+
     qs("[data-account-form]", root)?.addEventListener("submit", event => {
       event.preventDefault();
+      clearEmailError();
+      clearFullNameError();
       const form = new FormData(event.currentTarget);
       const next = readState();
+      const fullName = String(form.get("fullName") || "").trim();
       const email = String(form.get("email") || "").trim().toLowerCase();
       const password = String(form.get("password") || "");
-      const confirm = String(form.get("confirmPassword") || "");
+      if (fullName.length < 2) {
+        showFullNameError("Enter your full name.");
+        return;
+      }
       if (!email || !password) {
         showToast("Enter an email and password to continue.", "info");
         return;
       }
-      if (password !== confirm) {
-        showToast("Passwords do not match.", "info");
+      const authRole = selectedRole === "employer" ? "employer" : "candidate";
+      // Domain capture + free-mail block (spec: Step 2C/2D) only applies to the
+      // employer flow - a candidate has no company to match a work domain
+      // against, so their signup (any email provider) is untouched.
+      const emailDomain = email.split("@")[1] || "";
+      if (authRole === "employer" && EMPLOYER_FREE_EMAIL_DOMAINS.includes(emailDomain)) {
+        showEmailError("Use your work email so we can connect you to your company.");
         return;
       }
       if (next.auth.users.some(item => item.email === email)) {
         showToast("An account with this email already exists on this device.", "info");
         return;
       }
-      const authRole = selectedRole === "employer" ? "employer" : "candidate";
       const roleType = authRole === "employer" ? AUTH_ROLE_EMPLOYER_TYPE : AUTH_ROLE_CANDIDATE_TYPE;
-      const fullName = deriveNameFromEmail(email);
       const profile = createEmptyProfile({ fullName, email, country: "Malaysia", preferredLanguage: "English", roleType });
       profile.personal.roleType = roleType;
       profile.onboardingStatus.started = true;
@@ -11341,6 +11645,23 @@ function onboardChipGroup(name, options, selected, multi) {
       ${options.map(option => `<button type="button" class="cg-onboard-chip ${selected.includes(option) ? "selected" : ""}" data-chip-value="${option}">${option}</button>`).join("")}
     </div>
   `;
+}
+
+function clearOnboardFieldErrors(scopeRoot) {
+  qsa("[data-field-error]", scopeRoot).forEach(el => el.remove());
+  qsa(".cg-onboard-field-invalid", scopeRoot).forEach(el => el.classList.remove("cg-onboard-field-invalid"));
+}
+
+function markOnboardFieldError(scopeRoot, selector, message) {
+  const target = qs(selector, scopeRoot);
+  if (!target) return null;
+  target.classList.add("cg-onboard-field-invalid");
+  const note = document.createElement("small");
+  note.dataset.fieldError = "true";
+  note.className = "cg-onboard-field-error-text";
+  note.textContent = message;
+  target.insertAdjacentElement("afterend", note);
+  return target;
 }
 
 function renderCandidateOnboarding() {
@@ -11707,130 +12028,254 @@ function renderCandidateOnboarding() {
 }
 
 const ONBOARD_EMPLOYER_ROLE_OPTIONS = ["Hiring Manager", "Recruiter / Talent Acquisition", "HR / People Team", "Founder / Business Owner", "Employer Brand / University Relations"];
-const ONBOARD_EMPLOYER_PURPOSE_OPTIONS = ["Create and publish roles", "Review applications", "Manage interviews", "Discover candidates", "Build talent pools", "Strengthen employer presence", "Connect with universities"];
 const ONBOARD_EMPLOYER_SIZE_OPTIONS = ["1-10", "11-50", "51-200", "201-1000", "1000+"];
 const ONBOARD_EMPLOYER_INDUSTRY_OPTIONS = ["Technology", "Finance", "Consulting", "Healthcare", "Energy", "Retail", "Public sector", "Media"];
-const ONBOARD_EMPLOYER_HIRING_ROLES = ["Software Engineer", "Data Analyst", "Product Manager", "Designer", "Sales", "Marketing", "Operations", "Finance", "HR / People", "Customer Success", "Intern / Graduate"];
+
+// Vera assist rail (Step 3 State B only) - link import + focus-driven tips.
+const VERA_ASSIST_MESSAGES = {
+  idle: "Paste a link above and I'll fill what I can. Or just start typing - I'll follow along.",
+  imported: "Got it. I filled these from LinkedIn - check them and change anything that looks off.",
+  partial: "I found the name, but not the size, industry or pitch. Fill those in below and I'll keep up.",
+  failed: "I couldn't read that link. Fill this in manually - it takes about a minute."
+};
+const VERA_ASSIST_HINTS = {
+  company: "Use the name candidates would recognise, not the legal entity. 'Nimbus Labs', not 'Nimbus Labs Sdn Bhd'.",
+  size: "A rough band is fine. This helps me match candidates who suit your stage.",
+  industry: "Pick the closest one. You can change it later in Company Profile.",
+  role: "This shapes your workspace - I surface different things for a recruiter than for a hiring manager.",
+  pitch: "Two or three sentences: what you build, and who for. Candidates read this before they read the job.",
+  logo: "Optional. It shows on your role cards and in search results."
+};
+
+// Deterministic, no-network link lookup. Never invents a value - a wrong
+// confident fill is worse than an empty field, so anything not explicitly
+// matched below fills nothing rather than guessing.
+function veraImportLookup(rawUrl) {
+  const cleaned = String(rawUrl || "").trim().toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/+$/, "");
+  if (!cleaned) return { status: "failed" };
+  const linkedinMatch = cleaned.match(/^linkedin\.com\/company\/([a-z0-9-]+)/);
+  if (linkedinMatch) {
+    const slug = linkedinMatch[1];
+    if (slug === "nimbus-labs") {
+      return {
+        status: "success", source: "LinkedIn",
+        fields: {
+          company: "Nimbus Labs", size: "51-200", industry: "Technology",
+          pitch: "Nimbus Labs builds developer tools that help engineering teams ship faster - trusted by 400+ startups across Southeast Asia."
+        }
+      };
+    }
+    const name = slug.split("-").filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    return name ? { status: "partial", source: "LinkedIn", fields: { company: name } } : { status: "failed" };
+  }
+  if (cleaned.includes(".")) {
+    const domainLabel = (cleaned.split("/")[0] || "").split(".")[0] || "";
+    if (!domainLabel) return { status: "failed" };
+    const name = domainLabel.charAt(0).toUpperCase() + domainLabel.slice(1);
+    return { status: "partial", source: "your website", fields: { company: name } };
+  }
+  return { status: "failed" };
+}
+
+function veraProvenanceBadgeMarkup(key) {
+  return `<span class="cg-onboard-provenance-badge" data-badge-for="${key}" hidden>${icon("sparkles")}<span data-badge-text></span></span>`;
+}
 
 function renderEmployerOnboarding() {
   const root = qs("[data-employer-onboarding]");
   if (!root) return;
   if (!requireAccount(root, "set up your employer workspace")) return;
   let wizardStep = 0;
+  let forceCreateNew = false;
 
   function renderStep() {
     const state = readState();
     const employerProfile = state.employerProfile || {};
+    const esc = value => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    const profileEmail = String(state.profile?.personal?.email || "").trim().toLowerCase();
+    const emailDomain = profileEmail.split("@")[1] || "";
+    const authUserRecord = () => (state.auth.users || []).find(u => u.id === state.session.currentUserId) || {};
+    const personName = () => state.profile?.personal?.fullName || deriveNameFromEmail(profileEmail);
 
+    // Step 3 "Your company" (spec: claude-code-prompt-signup-v2.md) - merges
+    // the old two-step "Tell us how you hire" + "Give candidates a reason"
+    // into one domain-matched join-or-create screen. Renders a 400ms
+    // shimmer skeleton first (spec Sec 13), then resolves into State A
+    // (join, if the work-email domain matches an existing careergo_companies
+    // record) or State B (create, otherwise).
     if (wizardStep === 0) {
+      const matchedCompany = forceCreateNew ? null : findEmployerCompanyByDomain(emailDomain);
+      console.info(`[step3] domain=${emailDomain} matched=${matchedCompany ? matchedCompany.id : "none"} state=${matchedCompany ? "A" : "B"}`);
       root.innerHTML = `
-        ${onboardWizardChrome(2, `<a href="employer-app.html">Save & exit</a>`)}
-        <section class="cg-onboard-shell cg-onboard-shell-split">
-          <div class="cg-onboard-main">
-            <div class="cg-onboard-eyebrow">Personalise</div>
-            <h1>Tell us how you hire.</h1>
-            <p class="cg-onboard-sub">CareerGo will tailor the workspace around your responsibilities.</p>
-            <div class="cg-onboard-question">
-              <header><span>${icon("user-round")} What best describes your role?</span><small>Choose one</small></header>
-              ${onboardChipGroup("role", ONBOARD_EMPLOYER_ROLE_OPTIONS, [employerProfile.roleDescription || ""], false)}
-            </div>
-            <div class="cg-onboard-question">
-              <header><span>${icon("target")} What are you here to do?</span><small>Select any</small></header>
-              ${onboardChipGroup("purpose", ONBOARD_EMPLOYER_PURPOSE_OPTIONS, employerProfile.purposes || [], true)}
-            </div>
-            <div class="cg-onboard-question">
-              <header><span>${icon("building-2")} Company information</span><small>Kept lightweight</small></header>
-              <label class="cg-onboard-field"><span>Company name</span><input type="text" placeholder="e.g. CareerGo" data-company-name value="${employerProfile.company || ""}"></label>
-              <p class="cg-onboard-subquestion">Company size</p>
-              ${onboardChipGroup("size", ONBOARD_EMPLOYER_SIZE_OPTIONS, [employerProfile.companySize || ""], false)}
-              <p class="cg-onboard-subquestion">Industry</p>
-              ${onboardChipGroup("industry", ONBOARD_EMPLOYER_INDUSTRY_OPTIONS, [employerProfile.industry || ""], false)}
-            </div>
-            <footer class="cg-onboard-footer">
-              <a href="register.html">${icon("arrow-left")} Back</a>
-              <button class="cg-onboard-btn-primary" type="button" data-wizard-continue>Continue ${icon("arrow-right")}</button>
-            </footer>
-          </div>
-          <aside class="cg-onboard-vera-card">
-            <span class="cg-onboard-vera-kicker">${icon("sparkles")} Vera - AI coach</span>
-            <h3>Built for hiring teams.</h3>
-            <p>Vera will use this to shape your workspace, dashboards and the first candidates we surface.</p>
-          </aside>
+        ${onboardWizardChrome(2, `<a href="employer-app.html">Save & exit</a>`, EMPLOYER_WIZARD_STEPS)}
+        <section class="cg-onboard-shell cg-onboard-shell-wide">
+          <div class="cg-onboard-shimmer-bar" data-company-skeleton></div>
         </section>
       `;
       createIcons();
-      qsa("[data-chip-group]", root).forEach(group => {
-        const multi = group.dataset.multi === "1";
-        qsa("[data-chip-value]", group).forEach(chip => chip.addEventListener("click", () => {
-          if (multi) {
-            chip.classList.toggle("selected");
-          } else {
-            qsa("[data-chip-value]", group).forEach(item => item.classList.toggle("selected", item === chip));
-          }
-        }));
-      });
-      qs("[data-wizard-continue]", root)?.addEventListener("click", () => {
-        const roleChip = qs('[data-chip-group="role"] .selected', root);
-        const purposeChips = qsa('[data-chip-group="purpose"] .selected', root);
-        const sizeChip = qs('[data-chip-group="size"] .selected', root);
-        const industryChip = qs('[data-chip-group="industry"] .selected', root);
-        const next = readState();
-        next.employerProfile = {
-          ...(next.employerProfile || {}),
-          roleDescription: roleChip?.dataset.chipValue || "",
-          purposes: purposeChips.map(chip => chip.dataset.chipValue),
-          company: String(qs("[data-company-name]", root)?.value || "").trim(),
-          companySize: sizeChip?.dataset.chipValue || "",
-          industry: industryChip?.dataset.chipValue || "",
-          updatedAt: nowStamp()
-        };
-        writeState(next);
-        wizardStep = 1;
-        renderStep();
-      });
+      setTimeout(() => renderCompanyResolved(matchedCompany), 400);
       return;
     }
 
-    // Step 1 (NEW): company branding + hiring roles with a live Company Card preview.
-    if (wizardStep === 1) {
-      const esc = value => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-      const savedRoles = (employerProfile.hiringRoles || []).filter(role => ONBOARD_EMPLOYER_HIRING_ROLES.includes(role));
+    function renderCompanyResolved(matchedCompany) {
+      if (matchedCompany) {
+        root.innerHTML = `
+          ${onboardWizardChrome(2, `<a href="employer-app.html">Save & exit</a>`, EMPLOYER_WIZARD_STEPS)}
+          <section class="cg-onboard-shell cg-onboard-shell-split">
+            <div class="cg-onboard-main">
+              <div class="cg-onboard-eyebrow">Company found</div>
+              <h1>You're joining ${esc(matchedCompany.name)}.</h1>
+              <p class="cg-onboard-sub">Your work email matches this company.</p>
+              <div class="cg-onboard-question">
+                <header><span>${icon("user-round")} What best describes your role?</span><small>Choose one</small></header>
+                ${onboardChipGroup("role", ONBOARD_EMPLOYER_ROLE_OPTIONS, [employerProfile.roleDescription || ""], false)}
+              </div>
+              <footer class="cg-onboard-footer">
+                <a href="register.html">${icon("arrow-left")} Back</a>
+                <button class="cg-onboard-btn-primary" type="button" data-request-join>Request to join ${icon("arrow-right")}</button>
+              </footer>
+              <div class="cg-onboard-escape">
+                <button type="button" class="cg-onboard-link" data-force-create>Not your company? Create a new one</button>
+              </div>
+            </div>
+            <aside class="cg-onboard-company-card">
+              <div class="cg-onboard-company-card-head">
+                <span class="cg-onboard-company-monogram">${esc((matchedCompany.name || "C").charAt(0).toUpperCase())}</span>
+                <div>
+                  <strong>${esc(matchedCompany.name)}</strong>
+                  <small>${esc(matchedCompany.industry)} · ${esc(matchedCompany.size)} employees</small>
+                </div>
+              </div>
+              <div class="cg-onboard-company-card-meta">${icon("users")} ${employerCompanyTeammates(matchedCompany.id).length} team member${employerCompanyTeammates(matchedCompany.id).length === 1 ? "" : "s"} already here</div>
+              <div class="cg-onboard-company-card-foot">${icon("info")} An owner will approve your access.</div>
+            </aside>
+          </section>
+        `;
+        createIcons();
 
+        qsa("[data-chip-group]", root).forEach(group => {
+          qsa("[data-chip-value]", group).forEach(chip => chip.addEventListener("click", () => {
+            qsa("[data-chip-value]", group).forEach(item => item.classList.toggle("selected", item === chip));
+          }));
+        });
+        qs("[data-force-create]", root)?.addEventListener("click", () => {
+          forceCreateNew = true;
+          renderCompanyResolved(null);
+        });
+        qs("[data-request-join]", root)?.addEventListener("click", () => {
+          clearOnboardFieldErrors(root);
+          const roleChip = qs('[data-chip-group="role"] .selected', root);
+          if (!roleChip) {
+            markOnboardFieldError(root, '[data-chip-group="role"]', "Choose the option that best describes your role.")?.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+          }
+          const authUser = authUserRecord();
+          const user = createEmployerUserRecord({
+            companyId: matchedCompany.id, name: personName(), email: profileEmail, password: authUser.password || "",
+            role: "member", status: "pending", hiringRole: roleChip.dataset.chipValue
+          });
+          setEmployerSessionUserId(user.id);
+          const next = readState();
+          next.employerProfile = { ...(next.employerProfile || {}), roleDescription: roleChip.dataset.chipValue, company: matchedCompany.name, companySize: matchedCompany.size, industry: matchedCompany.industry, updatedAt: nowStamp() };
+          next.onboarding = { ...next.onboarding, employerDone: true };
+          next.session = { ...next.session, loggedIn: true, role: "employer", name: getUserName(next) };
+          syncCurrentUser(next);
+          writeState(next);
+          showToast(`Request sent - the owners at ${matchedCompany.name} will review it.`);
+          location.href = "employer-app.html#dashboard";
+        });
+        return;
+      }
+
+      // State B: no matching company - create one. Company name is asked
+      // exactly once in this flow, so always derive the initial value from
+      // the work-email domain (spec) rather than any stale prefill.
+      const derivedName = deriveCompanyNameFromDomain(emailDomain);
       root.innerHTML = `
-        ${onboardWizardChrome(3, `<a href="employer-app.html">Save & exit</a>`)}
-        <section class="cg-onboard-shell cg-onboard-shell-split cg-onboard-profile-shell">
+        ${onboardWizardChrome(2, `<a href="employer-app.html">Save & exit</a>`, EMPLOYER_WIZARD_STEPS)}
+        <section class="cg-onboard-shell cg-onboard-shell-split cg-onboard-shell-split-vera">
           <div class="cg-onboard-main" data-onboard-form>
-            <div class="cg-onboard-eyebrow">Company profile</div>
-            <h1>Give candidates a reason to say yes.</h1>
-            <p class="cg-onboard-sub">A logo and a short pitch help Vera present your roles well. Edit anytime.</p>
+            <div class="cg-onboard-eyebrow">Your company</div>
+            <h1>Set up ${esc(derivedName)}.</h1>
+            <p class="cg-onboard-sub">Only you can see this until you invite your team.</p>
+
+            <div class="cg-onboard-import-card">
+              <div class="cg-onboard-import-head">
+                <span class="cg-onboard-owl-tile cg-onboard-owl-tile-sm"><img src="assets/vera-ai-coach.png" alt=""></span>
+                <span class="cg-onboard-import-title">Start from a link</span>
+                <span class="cg-onboard-import-optional">Optional</span>
+              </div>
+              <p class="cg-onboard-import-helper">Paste your LinkedIn company page or website. I'll fill in what I can find.</p>
+              <div class="cg-onboard-import-row">
+                <input type="text" class="cg-onboard-import-input" data-import-url placeholder="linkedin.com/company/nimbus-labs">
+                <button type="button" class="cg-onboard-btn-primary cg-onboard-import-btn" data-import-read disabled>${icon("sparkles")} Read link</button>
+              </div>
+            </div>
 
             <div class="cg-onboard-question">
-              <header><span>${icon("image")} Company branding</span></header>
-              <div class="cg-onboard-logo-row">
-                <span class="cg-onboard-logo-tile" data-logo-tile>${(employerProfile.company || "C").charAt(0).toUpperCase()}</span>
+              <header><span>${icon("building-2")} Company information</span></header>
+              <div class="cg-onboard-import-shimmer" data-import-shimmer hidden>
+                <div class="cg-onboard-shimmer-bar"></div>
+                <div class="cg-onboard-shimmer-bar"></div>
+                <div class="cg-onboard-shimmer-bar"></div>
+              </div>
+              <div data-import-fields>
+                <label class="cg-onboard-field" data-vera-hint="company">
+                  <span>Company name ${veraProvenanceBadgeMarkup("company")}</span>
+                  <input data-f="company" value="${esc(derivedName)}" placeholder="e.g. Nimbus Labs">
+                </label>
+                <div data-vera-hint="size">
+                  <p class="cg-onboard-subquestion">Company size ${veraProvenanceBadgeMarkup("size")}</p>
+                  ${onboardChipGroup("size", ONBOARD_EMPLOYER_SIZE_OPTIONS, [], false)}
+                </div>
+                <div data-vera-hint="industry">
+                  <p class="cg-onboard-subquestion">Industry ${veraProvenanceBadgeMarkup("industry")}</p>
+                  ${onboardChipGroup("industry", ONBOARD_EMPLOYER_INDUSTRY_OPTIONS, [], false)}
+                </div>
+              </div>
+            </div>
+
+            <div class="cg-onboard-question" data-vera-hint="role">
+              <header><span>${icon("user-round")} What best describes your role?</span><small>Choose one</small></header>
+              ${onboardChipGroup("role", ONBOARD_EMPLOYER_ROLE_OPTIONS, [employerProfile.roleDescription || ""], false)}
+            </div>
+
+            <div class="cg-onboard-question">
+              <header><span>${icon("image")} Company branding</span><small>Optional - add this later</small></header>
+              <div class="cg-onboard-logo-row" data-vera-hint="logo">
+                <span class="cg-onboard-logo-tile" data-logo-tile>${(derivedName || "C").charAt(0).toUpperCase()}</span>
                 <div>
                   <label class="cg-onboard-logo-upload" data-logo-drop tabindex="0">
                     <input type="file" accept="image/*" hidden data-logo-input>
                     ${icon("upload")} Upload logo
                   </label>
-                  <small data-logo-name>PNG or SVG - shown on your roles and company card.</small>
+                  <small data-logo-name>PNG or SVG.</small>
                 </div>
               </div>
-              <label class="cg-onboard-field"><span>Company name</span><input data-f="company" value="${esc(employerProfile.company || "")}" placeholder="e.g. CareerGo"></label>
-              <label class="cg-onboard-field"><span>Company pitch <i>(2-3 sentences)</i></span><textarea class="cg-onboard-textarea" data-f="pitch" rows="3" placeholder="What you do, who you serve, and why people love working with you.">${esc(employerProfile.pitch || "")}</textarea></label>
-            </div>
-
-            <div class="cg-onboard-question">
-              <header><span>${icon("briefcase-business")} What roles are you hiring for?</span><small>Select any</small></header>
-              ${onboardChipGroup("hiringroles", ONBOARD_EMPLOYER_HIRING_ROLES, savedRoles, true)}
+              <label class="cg-onboard-field" data-vera-hint="pitch">
+                <span>Company pitch <i>(2-3 sentences)</i> ${veraProvenanceBadgeMarkup("pitch")}</span>
+                <textarea class="cg-onboard-textarea" data-f="pitch" rows="3" placeholder="What you do, who you serve, and why people love working with you."></textarea>
+              </label>
             </div>
 
             <footer class="cg-onboard-footer">
-              <button class="cg-onboard-link" type="button" data-wizard-back>${icon("arrow-left")} Back</button>
-              <button class="cg-onboard-btn-primary" type="button" data-wizard-continue>Continue ${icon("arrow-right")}</button>
+              <a href="register.html">${icon("arrow-left")} Back</a>
+              <button class="cg-onboard-btn-primary" type="button" data-wizard-continue>Create company ${icon("arrow-right")}</button>
             </footer>
           </div>
-          <div class="cg-onboard-preview-col" data-preview-col></div>
+          <aside class="cg-onboard-vera-rail">
+            <div class="cg-onboard-vera-card">
+              <div class="cg-onboard-vera-head">
+                <span class="cg-onboard-owl-tile cg-onboard-owl-tile-md"><img src="assets/vera-ai-coach.png" alt=""></span>
+                <span class="cg-onboard-vera-overline">VERA</span>
+              </div>
+              <p class="cg-onboard-vera-message" data-vera-message>${VERA_ASSIST_MESSAGES.idle}</p>
+              <div class="cg-onboard-vera-footer" data-vera-footer hidden>
+                <span data-vera-footer-count></span> <button type="button" class="cg-onboard-link" data-vera-undo>Undo</button>
+              </div>
+            </div>
+            <div class="cg-onboard-preview-col" data-preview-col></div>
+          </aside>
         </section>
       `;
       createIcons();
@@ -11838,17 +12283,10 @@ function renderEmployerOnboarding() {
       const formRoot = qs("[data-onboard-form]", root);
       const previewCol = qs("[data-preview-col]", root);
       const fieldVal = key => String(qs(`[data-f="${key}"]`, formRoot)?.value || "").trim();
-      const selectedRoles = () => qsa('[data-chip-group="hiringroles"] .selected', formRoot).map(chip => chip.dataset.chipValue);
+      const selectedChip = name => qs(`[data-chip-group="${name}"] .selected`, formRoot)?.dataset.chipValue || "";
 
       function collectData() {
-        return {
-          company: fieldVal("company"),
-          pitch: fieldVal("pitch"),
-          industry: employerProfile.industry,
-          size: employerProfile.companySize,
-          roles: selectedRoles(),
-          roleFocus: employerProfile.roleDescription
-        };
+        return { company: fieldVal("company"), pitch: fieldVal("pitch"), industry: selectedChip("industry"), size: selectedChip("size"), roles: [], roleFocus: selectedChip("role") };
       }
       function renderPreview() {
         previewCol.innerHTML = onboardPreviewCard("employer", collectData());
@@ -11858,13 +12296,125 @@ function renderEmployerOnboarding() {
       }
       renderPreview();
 
+      // --- Vera assist rail: import lookup, provenance badges, focus tips ---
+      let importState = { status: "idle" };
+      const userEditedFields = new Set();
+      const activeBadges = new Set();
+      const veraTrackingEnabled = window.matchMedia("(min-width: 1024px)").matches;
+
+      function veraBaseMessage() {
+        if (importState.status === "success") return VERA_ASSIST_MESSAGES.imported;
+        if (importState.status === "partial") return VERA_ASSIST_MESSAGES.partial;
+        if (importState.status === "failed") return VERA_ASSIST_MESSAGES.failed;
+        return VERA_ASSIST_MESSAGES.idle;
+      }
+      function setVeraMessage(text) {
+        if (!veraTrackingEnabled) return;
+        const el = qs("[data-vera-message]", root);
+        if (el) el.textContent = text;
+      }
+      function updateVeraFooter() {
+        const footer = qs("[data-vera-footer]", root);
+        if (!footer) return;
+        if (activeBadges.size === 0) { footer.hidden = true; return; }
+        footer.hidden = false;
+        qs("[data-vera-footer-count]", footer).textContent = `Filled ${activeBadges.size} field${activeBadges.size === 1 ? "" : "s"} ·`;
+      }
+      function markVeraFilled(key, sourceLabel) {
+        activeBadges.add(key);
+        const badge = qs(`[data-badge-for="${key}"]`, formRoot);
+        if (badge) { badge.hidden = false; qs("[data-badge-text]", badge).textContent = ` From ${sourceLabel}`; }
+        updateVeraFooter();
+      }
+      function clearVeraBadge(key) {
+        if (!activeBadges.has(key)) return;
+        activeBadges.delete(key);
+        const badge = qs(`[data-badge-for="${key}"]`, formRoot);
+        if (badge) badge.hidden = true;
+        updateVeraFooter();
+      }
+      function applyImportResult(result) {
+        importState = result.status === "failed" ? { status: "failed" } : { status: result.status, source: result.source };
+        if (result.status === "failed") { setVeraMessage(veraBaseMessage()); return; }
+        const fields = result.fields || {};
+        if (fields.company && !userEditedFields.has("company")) {
+          qs('[data-f="company"]', formRoot).value = fields.company;
+          markVeraFilled("company", result.source);
+        }
+        if (fields.size && !userEditedFields.has("size")) {
+          qsa('[data-chip-group="size"] [data-chip-value]', formRoot).forEach(c => c.classList.toggle("selected", c.dataset.chipValue === fields.size));
+          markVeraFilled("size", result.source);
+        }
+        if (fields.industry && !userEditedFields.has("industry")) {
+          qsa('[data-chip-group="industry"] [data-chip-value]', formRoot).forEach(c => c.classList.toggle("selected", c.dataset.chipValue === fields.industry));
+          markVeraFilled("industry", result.source);
+        }
+        if (fields.pitch && !userEditedFields.has("pitch")) {
+          qs('[data-f="pitch"]', formRoot).value = fields.pitch;
+          markVeraFilled("pitch", result.source);
+        }
+        setVeraMessage(veraBaseMessage());
+        renderPreview();
+      }
+
+      qs("[data-import-url]", root)?.addEventListener("input", event => {
+        qs("[data-import-read]", root).disabled = !event.target.value.trim();
+      });
+      qs("[data-import-read]", root)?.addEventListener("click", () => {
+        const btn = qs("[data-import-read]", root);
+        const url = qs("[data-import-url]", root).value;
+        const originalLabel = btn.innerHTML;
+        btn.disabled = true;
+        btn.textContent = "Reading...";
+        qs("[data-import-fields]", formRoot).hidden = true;
+        qs("[data-import-shimmer]", formRoot).hidden = false;
+        setTimeout(() => {
+          qs("[data-import-fields]", formRoot).hidden = false;
+          qs("[data-import-shimmer]", formRoot).hidden = true;
+          btn.disabled = !qs("[data-import-url]", root).value.trim();
+          btn.innerHTML = originalLabel;
+          applyImportResult(veraImportLookup(url));
+        }, 1200);
+      });
+
+      qs("[data-vera-undo]", root)?.addEventListener("click", () => {
+        activeBadges.forEach(key => {
+          if (key === "company") qs('[data-f="company"]', formRoot).value = "";
+          if (key === "size") qsa('[data-chip-group="size"] .selected', formRoot).forEach(c => c.classList.remove("selected"));
+          if (key === "industry") qsa('[data-chip-group="industry"] .selected', formRoot).forEach(c => c.classList.remove("selected"));
+          if (key === "pitch") qs('[data-f="pitch"]', formRoot).value = "";
+          userEditedFields.delete(key);
+          const badge = qs(`[data-badge-for="${key}"]`, formRoot);
+          if (badge) badge.hidden = true;
+        });
+        activeBadges.clear();
+        importState = { status: "idle" };
+        updateVeraFooter();
+        setVeraMessage(veraBaseMessage());
+        renderPreview();
+      });
+
+      if (veraTrackingEnabled) {
+        formRoot.addEventListener("focusin", event => {
+          const hintEl = event.target.closest("[data-vera-hint]");
+          if (hintEl) setVeraMessage(VERA_ASSIST_HINTS[hintEl.dataset.veraHint] || veraBaseMessage());
+        });
+        formRoot.addEventListener("focusout", () => setVeraMessage(veraBaseMessage()));
+      }
+
       qsa("[data-chip-group]", formRoot).forEach(group => {
         qsa("[data-chip-value]", group).forEach(chip => chip.addEventListener("click", () => {
-          chip.classList.toggle("selected");
+          qsa("[data-chip-value]", group).forEach(item => item.classList.toggle("selected", item === chip));
+          userEditedFields.add(group.dataset.chipGroup);
+          clearVeraBadge(group.dataset.chipGroup);
           renderPreview();
         }));
       });
-      formRoot.addEventListener("input", renderPreview);
+      formRoot.addEventListener("input", event => {
+        const hintEl = event.target.closest("[data-vera-hint]");
+        if (hintEl) { userEditedFields.add(hintEl.dataset.veraHint); clearVeraBadge(hintEl.dataset.veraHint); }
+        renderPreview();
+      });
       qs("[data-logo-input]", formRoot)?.addEventListener("change", event => {
         const file = event.target.files && event.target.files[0];
         const nameNote = qs("[data-logo-name]", formRoot);
@@ -11872,33 +12422,49 @@ function renderEmployerOnboarding() {
         showToast("Logo added to your company card.");
       });
 
-      qs("[data-wizard-back]", root)?.addEventListener("click", () => { wizardStep = 0; renderStep(); });
       qs("[data-wizard-continue]", root)?.addEventListener("click", () => {
+        clearOnboardFieldErrors(root);
+        const name = fieldVal("company");
+        const size = selectedChip("size");
+        const industry = selectedChip("industry");
+        const role = selectedChip("role");
+        let firstInvalid = null;
+        if (name.length < 2) firstInvalid = firstInvalid || markOnboardFieldError(formRoot, '[data-f="company"]', "Enter your company name.");
+        if (!size) firstInvalid = firstInvalid || markOnboardFieldError(formRoot, '[data-chip-group="size"]', "Choose a company size.");
+        if (!industry) firstInvalid = firstInvalid || markOnboardFieldError(formRoot, '[data-chip-group="industry"]', "Choose an industry.");
+        if (!role) firstInvalid = firstInvalid || markOnboardFieldError(formRoot, '[data-chip-group="role"]', "Choose the option that best describes your role.");
+        if (firstInvalid) { firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+
+        const company = createEmployerCompanyRecord({ name, domain: emailDomain, size, industry, logo: null, pitch: fieldVal("pitch") });
+        const authUser = authUserRecord();
+        const user = createEmployerUserRecord({ companyId: company.id, name: personName(), email: profileEmail, password: authUser.password || "", role: "owner", status: "active", hiringRole: role });
+        setEmployerSessionUserId(user.id);
+
         const next = readState();
-        next.employerProfile = {
-          ...(next.employerProfile || {}),
-          company: fieldVal("company") || (next.employerProfile || {}).company || "",
-          pitch: fieldVal("pitch"),
-          hiringRoles: selectedRoles(),
-          updatedAt: nowStamp()
-        };
+        next.employerProfile = { ...(next.employerProfile || {}), roleDescription: role, company: company.name, companySize: size, industry, pitch: company.pitch, updatedAt: nowStamp() };
         writeState(next);
-        wizardStep = 2;
+        wizardStep = 1;
         renderStep();
       });
-      return;
     }
 
+    // Checklist (spec Step 4A/B) is computed off the new employer identity
+    // store, not state.employerProfile - logo/pitch/company now live on the
+    // careergo_companies record, hiringRole on the careergo_users record.
+    const empCompany = currentEmployerCompany();
+    const empUser = currentEmployerUser();
+    const empTeammates = empCompany ? employerCompanyTeammates(empCompany.id) : [];
     const employerChecks = [
-      ["Hiring context", Boolean(employerProfile.roleDescription) || (employerProfile.purposes || []).length > 0],
-      ["Company details", Boolean(employerProfile.company) && Boolean(employerProfile.companySize)],
-      ["Company pitch", Boolean(employerProfile.pitch)],
-      ["Hiring roles", (employerProfile.hiringRoles || []).length > 0]
+      ["Company details", Boolean(empCompany?.name) && Boolean(empCompany?.size) && Boolean(empCompany?.industry)],
+      ["Company logo", Boolean(empCompany?.logo)],
+      ["Company pitch", Boolean(empCompany?.pitch)],
+      ["Your role", Boolean(empUser?.hiringRole)],
+      ["Invite a team member", empTeammates.length >= 2]
     ];
-    const empDone = 1 + employerChecks.filter(([, done]) => done).length;
-    const empTotal = 6;
+    const empDone = employerChecks.filter(([, done]) => done).length;
+    const empTotal = employerChecks.length;
     root.innerHTML = `
-      ${onboardWizardChrome(4, `<a href="employer-app.html">Save & exit</a>`)}
+      ${onboardWizardChrome(3, `<a href="employer-app.html">Save & exit</a>`, EMPLOYER_WIZARD_STEPS)}
       <section class="cg-onboard-shell cg-onboard-shell-wide">
         <div class="cg-onboard-finish-grid">
           <article class="cg-onboard-meet-card">
@@ -11912,7 +12478,7 @@ function renderEmployerOnboarding() {
               <span class="cg-onboard-vera-kicker">${icon("sparkles")} Prepared for you</span>
               <h3>Vera will help you start with:</h3>
               <div class="cg-onboard-prepared-list">
-                <div><span>${icon("plus")}</span>${(employerProfile.hiringRoles || []).length ? `${employerProfile.hiringRoles.length} role${employerProfile.hiringRoles.length === 1 ? "" : "s"} ready to publish` : "Set up your first role"}</div>
+                <div><span>${icon("plus")}</span>Set up your first role</div>
                 <div><span>${icon("users-round")}</span>Understand candidate activity</div>
                 <div><span>${icon("route")}</span>Matched candidates for your open roles</div>
               </div>
@@ -11922,11 +12488,11 @@ function renderEmployerOnboarding() {
               <h3>${Math.round((empDone / empTotal) * 100)}% complete</h3>
               ${progressBar(Math.round((empDone / empTotal) * 100))}
               <div class="cg-onboard-checklist">
-                <div class="done"><span>${icon("check-circle-2")}</span>Basic information</div>
                 ${employerChecks.map(([label, done]) => done
                   ? `<div class="done"><span>${icon("check-circle-2")}</span>${label}</div>`
-                  : `<div><span>${label}</span><a href="employer-app.html">Add</a></div>`).join("")}
-                <div><span>Invite team member</span><a href="employer-app.html">Add</a></div>
+                  : label === "Invite a team member"
+                    ? `<div><span>${label}</span><a href="employer-app.html#settings/team" data-invite-team>Add</a></div>`
+                    : `<div><span>${label}</span><a href="employer-app.html">Add</a></div>`).join("")}
               </div>
             </article>
             <footer class="cg-onboard-footer">
@@ -18052,6 +18618,11 @@ function getUnreadConversationCount() {
 function renderEmployerShell(root) {
   const state = readState();
   const employer = state.employerProfile || {};
+  // Shared bell dropdown (notificationMenuMarkup/notificationRowMarkup) is
+  // explicitly commented "for both the candidate and employer workspace
+  // navs" but was never actually wired up here - the header previously had
+  // a static bell with no click handler at all.
+  const notifications = Array.isArray(state.notifications) ? state.notifications : [];
   root.innerHTML = `
     <header class="emp-app-header">
       <div class="emp-app-header-inner">
@@ -18070,10 +18641,7 @@ function renderEmployerShell(root) {
             <div class="emp-search-results" data-emp-search-results hidden></div>
           </div>
           <button type="button" class="emp-icon-btn" data-emp-messages aria-label="Inbox">${icon("message-circle")}</button>
-          <button type="button" class="emp-icon-btn emp-icon-btn-badge" aria-label="Notifications${getUnreadConversationCount() ? `, ${getUnreadConversationCount()} unread` : ""}">
-            ${icon("bell")}
-            ${getUnreadConversationCount() ? `<span class="emp-icon-btn-badge-dot">${getUnreadConversationCount()}</span>` : ""}
-          </button>
+          ${notificationMenuMarkup(notifications)}
           <div class="emp-account-menu-wrap">
             <button type="button" class="emp-avatar-trigger" data-emp-account-toggle aria-haspopup="menu" aria-expanded="false">
               <span>${getFirstName(state).charAt(0).toUpperCase()}</span>
@@ -18092,6 +18660,7 @@ function renderEmployerShell(root) {
     ${renderHiringCopilot()}
   `;
   createIcons();
+  bindNotificationMenu();
 
   root.addEventListener("click", event => {
     if (event.target.closest("[data-emp-messages]")) {
@@ -18799,6 +19368,7 @@ function renderEmployerView(view, params, root) {
     case "saved-candidates": return renderEmployerSavedCandidates(root);
     case "company": return renderEmployerCompany(root);
     case "company-edit": return renderEmployerCompanyEdit(root);
+    case "settings": return renderEmployerSettings(root, params);
     default: return renderEmployerPlaceholder(root, view);
   }
 }
@@ -18818,6 +19388,25 @@ function dashboardRoleNextAction(role) {
 
 function renderEmployerDashboard(root) {
   const state = readState();
+  // Read-only pending-approval branch (spec: Step 3 State A "Request to
+  // join") - a member whose join request hasn't been approved yet sees this
+  // instead of the real dashboard. Everything else in this function, and
+  // the top nav rendered separately by renderEmployerShell, is unchanged.
+  const pendingMember = currentEmployerUser();
+  if (pendingMember && pendingMember.status === "pending") {
+    const pendingCompany = currentEmployerCompany();
+    root.innerHTML = `
+      <div class="cg-onboard-pending-wrap">
+        <div class="cg-onboard-pending-card">
+          <span class="cg-onboard-pending-icon">${icon("clock")}</span>
+          <h2>Waiting for approval</h2>
+          <p>We've let the owners at ${pendingCompany?.name || "your company"} know.</p>
+        </div>
+      </div>
+    `;
+    createIcons();
+    return;
+  }
   const employer = state.employerProfile || {};
   const company = DATA.companies.find(c => c.id === "maybank");
   const roles = DATA.employerRoles;
@@ -22829,13 +23418,45 @@ function renderEmployerTalentPipeline(root, params = {}) {
         </div>
         <div class="emp-drawer-body">
           ${drawerTab === "overview" ? `
-            <div class="emp-stat-row"><span>Experience</span><strong>${c.experience}</strong></div>
-            <div class="emp-stat-row"><span>Education</span><strong>${c.education}</strong></div>
-            <div class="emp-stat-row"><span>Career stage</span><strong>${c.careerStage}</strong></div>
-            <div class="emp-stat-row"><span>Portfolio</span><strong>${c.portfolio}</strong></div>
-            <div class="emp-stat-row"><span>Availability</span><strong>${c.availability}</strong></div>
-            <div class="emp-stat-row"><span>Salary expectation</span><strong>${c.salaryExpectation}</strong></div>
-            <div class="emp-tags"><span class="emp-tags-label">Skills</span><div class="pill-row">${c.skills.map(s => `<span class="pill">${s}</span>`).join("")}</div></div>
+            <div class="emp-drawer-contact">
+              ${c.email ? `<a href="mailto:${escapeHtml(c.email)}" class="emp-drawer-contact-item">${icon("mail")}${escapeHtml(c.email)}</a>` : ""}
+              ${c.phone ? `<span class="emp-drawer-contact-item">${icon("phone")}${escapeHtml(c.phone)}</span>` : ""}
+              <span class="emp-drawer-contact-item">${icon("map-pin")}${escapeHtml(c.location)}</span>
+            </div>
+            ${c.careerGoal ? `<p class="emp-drawer-goal">${icon("target")} ${escapeHtml(c.careerGoal)}</p>` : ""}
+            <div class="emp-stat-row"><span>Career stage</span><strong>${escapeHtml(c.careerStage)}</strong></div>
+            <div class="emp-stat-row"><span>Availability</span><strong>${escapeHtml(c.availability)}</strong></div>
+            <div class="emp-stat-row"><span>Salary expectation</span><strong>${escapeHtml(c.salaryExpectation)}</strong></div>
+            ${(c.workHistory && c.workHistory.length) ? `
+              <div class="emp-drawer-section">
+                <span class="emp-tags-label">Work experience</span>
+                ${c.workHistory.map(job => `
+                  <div class="emp-drawer-history-item">
+                    <div class="emp-drawer-history-head"><strong>${escapeHtml(job.title)}</strong><span>${escapeHtml(job.duration)}</span></div>
+                    <p class="emp-drawer-history-company">${escapeHtml(job.company)}</p>
+                    ${(job.bullets && job.bullets.length) ? `<ul>${job.bullets.map(b => `<li>${escapeHtml(b)}</li>`).join("")}</ul>` : ""}
+                  </div>
+                `).join("")}
+              </div>
+            ` : `<div class="emp-stat-row"><span>Experience</span><strong>${escapeHtml(c.experience)}</strong></div>`}
+            <div class="emp-drawer-section">
+              <span class="emp-tags-label">Education</span>
+              ${c.educationDetail ? `
+                <div class="emp-drawer-history-item">
+                  <div class="emp-drawer-history-head"><strong>${escapeHtml(c.educationDetail.degree)}</strong><span>${escapeHtml(c.educationDetail.year)}</span></div>
+                  <p class="emp-drawer-history-company">${escapeHtml(c.educationDetail.school)}${c.educationDetail.cgpa ? ` · CGPA ${escapeHtml(c.educationDetail.cgpa)}` : ""}</p>
+                </div>
+              ` : `<p class="emp-empty-hint">${escapeHtml(c.education)}</p>`}
+            </div>
+            ${(c.portfolioItems && c.portfolioItems.length) ? `
+              <div class="emp-drawer-section">
+                <span class="emp-tags-label">Portfolio</span>
+                ${c.portfolioItems.map(p => `<div class="emp-drawer-portfolio-item"><strong>${escapeHtml(p.title)}</strong><p>${escapeHtml(p.description)}</p></div>`).join("")}
+              </div>
+            ` : `<div class="emp-stat-row"><span>Portfolio</span><strong>${escapeHtml(c.portfolio)}</strong></div>`}
+            <div class="emp-tags"><span class="emp-tags-label">Skills</span><div class="pill-row">${c.skills.map(s => `<span class="pill">${escapeHtml(s)}</span>`).join("")}</div></div>
+            ${(c.languages && c.languages.length) ? `<div class="emp-tags"><span class="emp-tags-label">Languages</span><div class="pill-row">${c.languages.map(l => `<span class="pill">${escapeHtml(l)}</span>`).join("")}</div></div>` : ""}
+            ${(c.certifications && c.certifications.length) ? `<div class="emp-tags"><span class="emp-tags-label">Certifications</span><div class="pill-row">${c.certifications.map(cert => `<span class="pill">${escapeHtml(cert)}</span>`).join("")}</div></div>` : ""}
           ` : ""}
           ${drawerTab === "why" ? `
             <div class="emp-callout-label emp-vera-accent">${veraMark()} AI summary</div>
@@ -23094,7 +23715,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
     switch (action) {
       case "view-profile": openDrawerId = c.id; drawerTab = "overview"; draw(); break;
       case "open-resume": openDrawerId = c.id; drawerTab = "application"; draw(); break;
-      case "send-message": showToast("Candidate messaging is coming in a future update.", "info"); break;
+      case "send-message": openConversationForCandidate(c.id); break;
       case "schedule-interview": pendingAction = { type: "schedule", id: c.id }; draw(); break;
       case "interview-questions": openCandidateAiModal(`Interview questions for ${c.name}`, `<ol class="emp-ai-question-list">${generateInterviewQuestions(c).map(q => `<li>${escapeHtml(q)}</li>`).join("")}</ol>`); break;
       case "compare": showToast("Candidate comparison is coming in the next update.", "info"); break;
@@ -23830,7 +24451,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
     });
 
     // Stage-action drawer (spec §6).
-    qs("[data-stage-drawer-close]", root)?.addEventListener("click", () => { stageDrawerId = null; draw(); });
+    qsa("[data-stage-drawer-close]", root).forEach(el => el.addEventListener("click", () => { stageDrawerId = null; draw(); }));
     qs("[data-stage-resume]", root)?.addEventListener("click", () => showToast("Résumé preview is coming in a future update.", "info"));
     qsa("[data-onboard-task]", root).forEach(cb => cb.addEventListener("change", () => {
       const c = DATA.candidates.find(cand => cand.id === cb.dataset.cid);
@@ -23844,7 +24465,10 @@ function renderEmployerTalentPipeline(root, params = {}) {
       runStageDecision(c, btn.dataset.stageDecision);
     }));
 
-    qs("[data-drawer-close]", root)?.addEventListener("click", () => { openDrawerId = null; draw(); });
+    // Both the backdrop AND the header X carry data-drawer-close, so bind
+    // every match (qsa) - qs() would wire only the first (the backdrop),
+    // leaving the X button dead, which is exactly why it didn't close.
+    qsa("[data-drawer-close]", root).forEach(el => el.addEventListener("click", () => { openDrawerId = null; draw(); }));
     qsa("[data-drawer-tab]", root).forEach(btn => btn.addEventListener("click", () => { drawerTab = btn.dataset.drawerTab; draw(); }));
     qs("[data-drawer-add-note]", root)?.addEventListener("click", () => {
       const textarea = qs("[data-drawer-note-input]", root);
@@ -28308,6 +28932,287 @@ function renderEmployerCompanyEdit(root) {
   draw();
 }
 
+/* ---------------------------------------------------------------------
+   Employer Settings (route "settings"). Ported from the candidate
+   Settings page's sidebar + section-nav + scroll-spy pattern
+   (renderSettings(), .cg-set-* in enterprise.css) - that CSS is scoped to
+   body[data-page="settings"] and enterprise.css isn't even loaded on
+   employer-app.html, so this is a values port into the .emp-set-*
+   namespace (styles.css), not a literal class reuse. Account and Team are
+   both always-rendered sections on one scrollable page (no more tabs);
+   the wizard's "Invite a team member" link (#settings/team) now scrolls to
+   the Team section and marks it active on load instead of switching views.
+   Reads/writes the employer identity store (careergo_companies/users/
+   session) added for this rework. */
+function renderEmployerSettings(root, params = {}) {
+  const state = readState();
+  const meUser = currentEmployerUser();
+  const company = currentEmployerCompany();
+  const name = getUserName(state);
+  const email = meUser?.email || state.profile?.personal?.email || "";
+  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase() || "CG";
+  const roleLabel = meUser?.role === "owner" ? "Owner" : "Member";
+
+  root.innerHTML = `
+    <section class="emp-set">
+      <header class="emp-view-header">
+        <div class="emp-set-eyebrow">Settings</div>
+        <h1>Workspace</h1>
+      </header>
+      <div class="emp-set-layout">
+        <aside class="emp-set-rail">
+          <div class="emp-set-identity">
+            <div class="emp-set-avatar">${escapeHtml(initials)}</div>
+            <div class="emp-set-identity-copy">
+              <strong>${escapeHtml(name)}</strong>
+              <small>${escapeHtml(email || "No email on file")}</small>
+            </div>
+            <ul>
+              <li>${icon("building-2")} ${escapeHtml(company?.name || "No company yet")}</li>
+              <li>${icon("briefcase-business")} ${escapeHtml(roleLabel)}</li>
+            </ul>
+            <a href="#company">${icon("arrow-right")} View company profile</a>
+          </div>
+          <nav class="emp-set-nav" aria-label="Settings sections">
+            <a href="#emp-set-account" data-emp-set-nav="account"><i>${icon("user-round")}</i><span>Account</span></a>
+            <a href="#emp-set-team" data-emp-set-nav="team"><i>${icon("users")}</i><span>Team</span></a>
+          </nav>
+        </aside>
+        <div class="emp-set-stack">
+          <section class="emp-set-card-section" id="emp-set-account" data-emp-set-section="account" data-account-panel></section>
+          <section class="emp-set-card-section" id="emp-set-team" data-emp-set-section="team" data-team-panel></section>
+        </div>
+      </div>
+    </section>
+  `;
+  createIcons();
+
+  renderEmployerSettingsAccount(qs("[data-account-panel]", root));
+  renderEmployerSettingsTeam(qs("[data-team-panel]", root));
+
+  const navLinks = qsa("[data-emp-set-nav]", root);
+  let navLockUntil = 0;
+  navLinks.forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    const target = qs(`#emp-set-${link.dataset.empSetNav}`, root);
+    if (!target) return;
+    navLinks.forEach(other => other.classList.toggle("active", other === link));
+    navLockUntil = Date.now() + 900;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }));
+  // Unlike the candidate Settings page (whole-document scroll), every
+  // employer view except Pipeline scrolls inside .emp-app-main's own
+  // internal scrollbox - IntersectionObserver's default root (viewport)
+  // never moves in that case, so the spy would silently never fire without
+  // an explicit root pointing at the actual scrolling ancestor.
+  const sections = qsa("[data-emp-set-section]", root);
+  const scrollRoot = qs(".emp-app-main");
+  if (sections.length && scrollRoot && "IntersectionObserver" in window) {
+    const spy = new IntersectionObserver(entries => {
+      // Ignore the observer while a nav click's smooth scroll is still
+      // running - same guard as the candidate Settings scroll-spy, for the
+      // same reason (a bottom section can't reach the band on its own).
+      if (Date.now() < navLockUntil) return;
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.dataset.empSetSection;
+        navLinks.forEach(link => link.classList.toggle("active", link.dataset.empSetNav === id));
+      });
+    }, { root: scrollRoot, rootMargin: "-120px 0px -65% 0px", threshold: 0 });
+    sections.forEach(section => spy.observe(section));
+  }
+
+  const initialNav = params.id === "team" ? qs('[data-emp-set-nav="team"]', root) : navLinks[0];
+  initialNav?.classList.add("active");
+  if (params.id === "team") {
+    const teamSection = qs("#emp-set-team", root);
+    if (teamSection) {
+      navLockUntil = Date.now() + 900;
+      requestAnimationFrame(() => teamSection.scrollIntoView({ behavior: "smooth", block: "start" }));
+    }
+  }
+}
+
+function renderEmployerSettingsAccount(panel) {
+  const state = readState();
+  const meUser = currentEmployerUser();
+  const company = currentEmployerCompany();
+  const fullName = getUserName(state);
+  const email = meUser?.email || state.profile?.personal?.email || "";
+  const roleLabel = meUser?.role === "owner" ? "Owner" : "Member";
+
+  panel.innerHTML = `
+    <div class="emp-set-card">
+      <h3>Profile</h3>
+      <label class="emp-set-field"><span>Full name</span><input type="text" data-set-fullname value="${escapeHtml(fullName)}"></label>
+      <label class="emp-set-field"><span>Work email</span><input type="email" value="${escapeHtml(email)}" disabled></label>
+      <small class="emp-set-hint">Email can't be changed.</small>
+      <div class="emp-set-card-actions"><button type="button" class="btn btn-primary btn-sm" data-set-save-profile>Save changes</button></div>
+    </div>
+    <div class="emp-set-card">
+      <h3>Password</h3>
+      <label class="emp-set-field"><span>Current password</span><input type="password" data-set-current-password autocomplete="current-password"></label>
+      <label class="emp-set-field"><span>New password</span><input type="password" data-set-new-password autocomplete="new-password"></label>
+      <small class="emp-set-hint">At least 8 characters.</small>
+      <div class="emp-set-card-actions"><button type="button" class="btn btn-primary btn-sm" data-set-save-password>Update password</button></div>
+    </div>
+    <div class="emp-set-card emp-set-card-quiet">
+      <h3>Your access</h3>
+      <div class="emp-set-access-row"><span>Role</span><span class="emp-set-badge emp-set-badge-owner">${escapeHtml(roleLabel)}</span></div>
+      <div class="emp-set-access-row emp-set-access-row-divider"><span>Company</span><span>${escapeHtml(company?.name || "-")}</span></div>
+    </div>
+  `;
+  createIcons();
+
+  qs("[data-set-save-profile]", panel)?.addEventListener("click", () => {
+    const name = String(qs("[data-set-fullname]", panel)?.value || "").trim();
+    if (!name) { showToast("Enter your name.", "info"); return; }
+    const next = readState();
+    next.profile.personal.fullName = name;
+    syncCurrentUser(next);
+    writeState(next);
+    if (meUser) setEmployerUsers(getEmployerUsers().map(u => u.id === meUser.id ? { ...u, name } : u));
+    const avatarInitial = qs(".emp-avatar-trigger span");
+    if (avatarInitial) avatarInitial.textContent = name.charAt(0).toUpperCase();
+    const identityName = qs(".emp-account-menu-identity strong");
+    if (identityName) identityName.textContent = name.split(" ")[0];
+    showToast("Profile updated.");
+  });
+
+  qs("[data-set-save-password]", panel)?.addEventListener("click", () => {
+    const current = String(qs("[data-set-current-password]", panel)?.value || "");
+    const nextPassword = String(qs("[data-set-new-password]", panel)?.value || "");
+    const storedPassword = meUser?.password || "";
+    if (storedPassword && current !== storedPassword) { showToast("Current password is incorrect.", "info"); return; }
+    if (nextPassword.length < 8) { showToast("New password must be at least 8 characters.", "info"); return; }
+    if (meUser) setEmployerUsers(getEmployerUsers().map(u => u.id === meUser.id ? { ...u, password: nextPassword } : u));
+    const next = readState();
+    next.auth.users = (next.auth.users || []).map(u => u.id === next.session.currentUserId ? { ...u, password: nextPassword } : u);
+    writeState(next);
+    qs("[data-set-current-password]", panel).value = "";
+    qs("[data-set-new-password]", panel).value = "";
+    showToast("Password updated.");
+  });
+}
+
+function employerTeamRowMarkup(user, isOwner) {
+  const initial = (user.name || user.email || "?").charAt(0).toUpperCase();
+  const badge = user.status === "pending"
+    ? `<span class="emp-set-badge emp-set-badge-pending">${icon("clock")} Pending</span>`
+    : user.role === "owner"
+      ? `<span class="emp-set-badge emp-set-badge-owner">Owner</span>`
+      : `<span class="emp-set-badge emp-set-badge-member">Member</span>`;
+  return `
+    <div class="emp-set-team-row">
+      <span class="emp-set-team-avatar">${escapeHtml(initial)}</span>
+      <div class="emp-set-team-row-info">
+        <strong>${escapeHtml(user.name || "")}</strong>
+        <small>${escapeHtml(user.email || "")}</small>
+      </div>
+      ${badge}
+      ${isOwner && user.role !== "owner" ? `<button type="button" class="emp-set-team-menu-btn" data-team-row-menu="${user.id}" aria-label="Row actions">${icon("more-horizontal")}</button>` : ""}
+    </div>
+  `;
+}
+
+function renderEmployerSettingsTeam(panel) {
+  const company = currentEmployerCompany();
+  const meUser = currentEmployerUser();
+  const isOwner = meUser?.role === "owner";
+  const teammates = company ? employerCompanyTeammates(company.id) : [];
+  const pendingCount = teammates.filter(u => u.status === "pending").length;
+
+  panel.innerHTML = `
+    <div class="emp-set-team-header">
+      <div>
+        <h3>Team members</h3>
+        <p>${teammates.length} people${pendingCount ? ` · ${pendingCount} pending` : ""}</p>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm" data-invite-member-toggle>${icon("plus")} Invite member</button>
+    </div>
+    <div data-invite-row></div>
+    ${teammates.length <= 1 ? `
+      <div class="emp-set-card emp-set-team-empty">
+        <span class="emp-set-empty-icon">${icon("users")}</span>
+        <h3>You're the only one here</h3>
+        <p>Invite a teammate to share this workspace.</p>
+      </div>
+    ` : `
+      <div class="emp-set-card emp-set-team-card">
+        ${teammates.map(u => employerTeamRowMarkup(u, isOwner)).join("")}
+      </div>
+    `}
+  `;
+  createIcons();
+
+  qs("[data-invite-member-toggle]", panel)?.addEventListener("click", () => {
+    const inviteRoot = qs("[data-invite-row]", panel);
+    if (inviteRoot.innerHTML.trim()) { inviteRoot.innerHTML = ""; return; }
+    inviteRoot.innerHTML = `
+      <div class="emp-set-card emp-set-invite-card">
+        <div class="emp-set-invite-row">
+          <label class="emp-set-field emp-set-invite-field"><span>Work email</span><input type="email" data-invite-email placeholder="name@${escapeHtml(company?.domain || "company.com")}"></label>
+          <button type="button" class="btn btn-primary btn-sm" data-invite-send>Send invite</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-invite-cancel>Cancel</button>
+        </div>
+        <small class="emp-set-hint">Domain must match ${escapeHtml(company?.domain || "")}</small>
+        <small class="emp-set-hint emp-set-invite-error" data-invite-error hidden></small>
+      </div>
+    `;
+    createIcons();
+    qs("[data-invite-cancel]", inviteRoot)?.addEventListener("click", () => { inviteRoot.innerHTML = ""; });
+    qs("[data-invite-send]", inviteRoot)?.addEventListener("click", () => {
+      const emailInput = qs("[data-invite-email]", inviteRoot);
+      const email = String(emailInput?.value || "").trim().toLowerCase();
+      const errorEl = qs("[data-invite-error]", inviteRoot);
+      const domain = email.split("@")[1] || "";
+      const showInviteError = message => {
+        errorEl.textContent = message;
+        errorEl.hidden = false;
+        emailInput?.classList.add("emp-set-field-invalid");
+      };
+      if (!email || domain !== company?.domain) { showInviteError(`Use a ${company?.domain || "company"} email address.`); return; }
+      if (findEmployerUserByEmail(email)) { showInviteError("This person is already on the team."); return; }
+      const namePart = email.split("@")[0].replace(/[._-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      createEmployerUserRecord({ companyId: company.id, name: namePart, email, password: "", role: "member", status: "pending", hiringRole: "" });
+      showToast("Invite sent.");
+      renderEmployerSettingsTeam(panel);
+    });
+  });
+
+  qsa("[data-team-row-menu]", panel).forEach(btn => btn.addEventListener("click", () => {
+    const userId = btn.dataset.teamRowMenu;
+    const user = getEmployerUsers().find(u => u.id === userId);
+    if (!user) return;
+    const items = [];
+    if (user.status === "pending") {
+      items.push(`<button type="button" role="menuitem" data-team-action="approve">Approve</button>`);
+      items.push(`<button type="button" role="menuitem" data-team-action="decline">Decline</button>`);
+    } else if (user.role !== "owner") {
+      items.push(`<button type="button" role="menuitem" data-team-action="remove">Remove from team</button>`);
+    }
+    const overlay = openFloatingOverlay(btn, `<div class="emp-cand-menu-overlay">${items.join("")}</div>`, { width: 200, align: "right" });
+    if (!overlay) return;
+    qsa("[data-team-action]", overlay).forEach(actionBtn => actionBtn.addEventListener("click", () => {
+      const action = actionBtn.dataset.teamAction;
+      if (action === "decline" && !confirm("Decline this join request?")) return;
+      if (action === "remove" && !confirm("Remove this person from the team?")) return;
+      if (action === "approve") {
+        setEmployerUsers(getEmployerUsers().map(u => u.id === userId ? { ...u, status: "active" } : u));
+        showToast("Approved.");
+      } else if (action === "decline") {
+        setEmployerUsers(getEmployerUsers().filter(u => u.id !== userId));
+        showToast("Request declined.");
+      } else if (action === "remove") {
+        setEmployerUsers(getEmployerUsers().filter(u => u.id !== userId));
+        showToast("Removed from team.");
+      }
+      closeFloatingOverlay();
+      renderEmployerSettingsTeam(panel);
+    }));
+  }));
+}
+
 function renderEmployerPlaceholder(root, view) {
   const title = EMPLOYER_VIEW_TITLES[view] || "This view";
   root.innerHTML = `
@@ -28532,6 +29437,7 @@ function initGlobalBackToTop() {
 function init() {
   ensureBrandFonts();
   ensureDemoDashboardSession();
+  seedEmployerStore();
   wireStaticLoginForm();
   renderNavigation();
   renderFeatured();
