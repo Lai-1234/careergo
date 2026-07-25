@@ -2,9 +2,6 @@
   "name": "careergo",
   "version": "1.0.0",
   "main": "app.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
     "test": "node --test tests/readiness.test.js tests/wizard-migration.test.js tests/pipeline.test.js tests/pipeline-card.test.js tests/pipeline-vera.test.js tests/wizard-vera-checks.test.js tests/pipeline-ask.test.js tests/pipeline-insights.test.js"
   },
