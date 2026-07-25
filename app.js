@@ -12001,15 +12001,21 @@ function seedMockCandidateProfile(profile) {
 
 /* Same idea for a fresh employer signup - company branding + hiring roles
    pre-filled so the employer onboarding wizard is also click-through-able. */
+// Company fields here must match DATA.companies' "maybank" entry - the
+// employer dashboard, Company Profile, and every role/pipeline view are all
+// hard-coded to that one seeded company regardless of what's in
+// employerProfile, so anywhere employerProfile.company (or size/industry/
+// pitch) surfaces on its own - like the account-menu identity - needs to
+// tell the same story instead of naming a different company.
 function seedMockEmployerProfile(state) {
   state.employerProfile = {
     ...(state.employerProfile || {}),
     roleDescription: "Hiring Manager",
     purposes: ["Create and publish roles", "Discover candidates"],
-    company: "Nimbus Labs",
-    companySize: "51-200",
-    industry: "Technology",
-    pitch: "Nimbus Labs builds developer tools that help engineering teams ship faster - trusted by 400+ startups across Southeast Asia.",
+    company: "Maybank",
+    companySize: "1000+",
+    industry: "Finance",
+    pitch: "Malaysia's largest financial group with strong graduate programs, structured teams, and broad digital transformation work.",
     hiringRoles: ["Software Engineer", "Product Manager"],
     updatedAt: nowStamp()
   };
@@ -12076,7 +12082,7 @@ function renderCreateAccountWizard(root) {
           </label>
           <label class="cg-onboard-field">
             <span>${isEmployer ? "Work email" : "Email"}</span>
-            <input name="email" type="email" required autocomplete="email" placeholder="${isEmployer ? "you@company.com" : "you@email.com"}" value="${isEmployer ? "hiring@yourcompany.com" : "mira.tan@email.com"}">
+            <input name="email" type="email" required autocomplete="email" placeholder="${isEmployer ? "you@company.com" : "you@email.com"}" value="${isEmployer ? "hiring@maybank.com.my" : "mira.tan@email.com"}">
           </label>
           <label class="cg-onboard-field">
             <span>Password</span>
@@ -12826,11 +12832,11 @@ function renderEmployerOnboarding() {
                 </label>
                 <div data-vera-hint="size">
                   <p class="cg-onboard-subquestion">Company size ${veraProvenanceBadgeMarkup("size")}</p>
-                  ${onboardChipGroup("size", ONBOARD_EMPLOYER_SIZE_OPTIONS, [], false)}
+                  ${onboardChipGroup("size", ONBOARD_EMPLOYER_SIZE_OPTIONS, ["1000+"], false)}
                 </div>
                 <div data-vera-hint="industry">
                   <p class="cg-onboard-subquestion">Industry ${veraProvenanceBadgeMarkup("industry")}</p>
-                  ${onboardChipGroup("industry", ONBOARD_EMPLOYER_INDUSTRY_OPTIONS, [], false)}
+                  ${onboardChipGroup("industry", ONBOARD_EMPLOYER_INDUSTRY_OPTIONS, ["Finance"], false)}
                 </div>
               </div>
             </div>
@@ -12854,7 +12860,7 @@ function renderEmployerOnboarding() {
               </div>
               <label class="cg-onboard-field" data-vera-hint="pitch">
                 <span>Company pitch <i>(2-3 sentences)</i> ${veraProvenanceBadgeMarkup("pitch")}</span>
-                <textarea class="cg-onboard-textarea" data-f="pitch" rows="3" placeholder="What you do, who you serve, and why people love working with you."></textarea>
+                <textarea class="cg-onboard-textarea" data-f="pitch" rows="3" placeholder="What you do, who you serve, and why people love working with you.">Malaysia's largest financial group with strong graduate programs, structured teams, and broad digital transformation work.</textarea>
               </label>
             </div>
 
