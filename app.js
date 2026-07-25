@@ -3696,7 +3696,26 @@ function bindAccountMenu() {
   }
 }
 
-function publicNav() {
+function publicNav(state) {
+  // "companies"/"universities" (and the rest of publicPages in
+  // renderNavigation) always render this public-styled nav regardless of
+  // actual session state - by design, so a guest browsing them never sees a
+  // half-workspace UI. But that means a visitor who IS logged in (most
+  // often an employer, since companies.html's own content deliberately
+  // bounces a logged-in employer to "use Employer OS instead") would see
+  // "Login"/"Create Account" right next to a screen telling them they're
+  // already logged in as an employer - a direct, confusing contradiction.
+  // Swap the action buttons for something that matches reality instead of
+  // switching the whole nav (which would misrepresent an employer as a
+  // candidate, since workspaceTopNav() is candidate-only).
+  const loggedIn = Boolean(state?.session?.loggedIn);
+  const isEmployer = state?.session?.role === "employer";
+  const actions = loggedIn
+    ? `<a class="btn btn-primary cg-nav-cta" href="${isEmployer ? "employer-app.html" : "dashboard.html"}">${icon("layout-dashboard")} ${isEmployer ? "Employer OS" : "Your Dashboard"}</a>`
+    : `
+      <a class="btn btn-ghost" href="login.html">Login</a>
+      <a class="btn btn-primary cg-nav-cta" href="register.html">Create Account ${icon("arrow-right")}</a>
+    `;
   return `
     <a class="brand public-site-brand" href="index.html"><img class="brand-logo" src="assets/careergo-logo-script.png" alt="CareerGo logo"><span class="brand-text"><strong>CareerGo</strong><span>Career OS</span></span></a>
     <nav class="nav-links public-site-nav" aria-label="Public navigation">
@@ -3706,10 +3725,7 @@ function publicNav() {
         ["community", "Community", "community.html"]
       ].map(([, label, href]) => `<a href="${href}">${label}</a>`).join("")}
     </nav>
-    <div class="nav-actions public-site-actions">
-      <a class="btn btn-ghost" href="login.html">Login</a>
-      <a class="btn btn-primary cg-nav-cta" href="register.html">Create Account ${icon("arrow-right")}</a>
-    </div>
+    <div class="nav-actions public-site-actions">${actions}</div>
   `;
 }
 
@@ -4690,12 +4706,15 @@ function renderNavigation() {
   topbar.classList.toggle("workspace-topbar", useWorkspaceNav);
   topbar.classList.toggle("public-topbar", !useWorkspaceNav);
   topbar.dataset.navMode = useWorkspaceNav ? "workspace" : "public";
-  navInner.innerHTML = useWorkspaceNav ? workspaceTopNav() : publicNav();
+  navInner.innerHTML = useWorkspaceNav ? workspaceTopNav() : publicNav(state);
   ensureWorkspaceNavbarStyles();
   if (mobileNav) {
+    const mobileAction = loggedIn
+      ? `<a href="${state.session.role === "employer" ? "employer-app.html" : "dashboard.html"}">${state.session.role === "employer" ? "Employer OS" : "Your Dashboard"}</a>`
+      : `<a href="login.html">Login</a><a href="register.html">Create Account</a>`;
     mobileNav.innerHTML = useWorkspaceNav
       ? ""
-      : `<a href="explore.html">Explore</a><a href="companies.html">Opportunities</a><a href="community.html">Community</a><a href="login.html">Login</a><a href="register.html">Create Account</a>`;
+      : `<a href="explore.html">Explore</a><a href="companies.html">Opportunities</a><a href="community.html">Community</a>${mobileAction}`;
   }
   createIcons();
   setActiveNav();
