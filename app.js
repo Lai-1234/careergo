@@ -19418,7 +19418,7 @@ function renderEmployerShell(root) {
   root.innerHTML = `
     <header class="emp-app-header">
       <div class="emp-app-header-inner">
-        <a class="emp-app-brand" href="index.html">
+        <a class="emp-app-brand" href="employer-app.html" aria-label="Employer dashboard">
           <img class="emp-app-logo" src="assets/careergo-logo-script.png" alt="CareerGo">
           <span class="emp-app-badge">Employer</span>
         </a>
