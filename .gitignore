@@ -3,8 +3,9 @@ node_modules/
 *.log
 *.png
 !assets/careergo-logo.png
-!assets/careergo-logo-enterprise.png
-!assets/careergo-logo-full-enterprise.png
 !assets/careergo-logo-script.png
 !assets/vera-ai-coach.png
 careergo-ui-redesign/
+
+# Internal AI-pair-programming notes - kept locally, not published
+CLAUDE.md
