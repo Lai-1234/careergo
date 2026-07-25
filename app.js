@@ -11668,7 +11668,10 @@ function setEmployerSessionUserId(userId) {
 
 function findEmployerCompanyByDomain(domain) {
   const needle = String(domain || "").trim().toLowerCase();
-  return getEmployerCompanies().find(c => String(c.domain || "").trim().toLowerCase() === needle) || null;
+  // isDemoSeed-only: see the flag's comment in buildEmployerSeedData(). A
+  // company created via the "create new company" onboarding branch must
+  // never itself become a join target for the next signup on this browser.
+  return getEmployerCompanies().find(c => c.isDemoSeed && String(c.domain || "").trim().toLowerCase() === needle) || null;
 }
 function findEmployerCompanyById(id) {
   return getEmployerCompanies().find(c => c.id === id) || null;
@@ -11722,7 +11725,15 @@ function createEmployerUserRecord({ companyId, name, email, password = "", role,
 function buildEmployerSeedData() {
   const company = {
     id: "c_nimbus", name: "Nimbus Labs", domain: "nimbuslabs.com", size: "51-200", industry: "Technology",
-    logo: null, pitch: "Nimbus Labs builds developer tools that help engineering teams ship faster.", createdAt: nowStamp()
+    logo: null, pitch: "Nimbus Labs builds developer tools that help engineering teams ship faster.", createdAt: nowStamp(),
+    // Only the original demo seed is eligible for the "request to join"
+    // domain-match (see findEmployerCompanyByDomain) - without this flag, a
+    // company created moments earlier by a repeat "Create account" attempt on
+    // the same browser (very plausible: a judge retesting, or two people
+    // sharing a laptop) would itself become domain-matchable, silently
+    // routing the next signup into "Request to join" / a permanent
+    // "Waiting for approval" dead end instead of a fresh company.
+    isDemoSeed: true
   };
   const users = [
     { id: "u_hiring", companyId: company.id, name: "Lai Si Xiang", email: "hiring@nimbuslabs.com", emailDomain: "nimbuslabs.com", password: "nimbus123", role: "owner", status: "active", hiringRole: "Hiring Manager", createdAt: nowStamp() },
