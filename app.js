@@ -12253,6 +12253,10 @@ function renderCreateAccountWizard(root) {
       next.session = { loggedIn: true, role: authRole, currentUserId: profile.id, name: profile.personal.fullName };
       next.profile = profile;
       next.onboarding = { ...next.onboarding, candidateDone: false, employerDone: false, currentStep: 0, lastSavedAt: nowStamp() };
+      // A brand-new account should always see the guided tour once it reaches
+      // the dashboard - reset it here in case this browser previously ran the
+      // demo login (or an earlier account) and left the tour marked done/skipped.
+      next.guidedTour = { dashboard: { status: "new", step: 0, startedAt: "" } };
       if (authRole === "employer") seedMockEmployerProfile(next);
       next.notifications = normalizeNotifications([{ id: "n-welcome", type: "vera", title: "Welcome to CareerGo", body: "A little more context helps Vera personalize your workspace.", href: "dashboard.html" }]);
       writeState(next);
