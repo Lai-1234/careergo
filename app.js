@@ -2318,6 +2318,16 @@ function startDemoDashboard(role = "candidate") {
    profile, not the rich application-record seeding the candidate path does. */
 function applyDemoEmployerAccount(state) {
   seedMockEmployerProfile(state);
+  // careergo_session (getEmployerSessionUserId/setEmployerSessionUserId) is a
+  // separate localStorage key from the main app state, only ever written by
+  // the "request to join a company" flow - it's never cleared by a normal
+  // login or by this quick-demo shortcut. If this browser ever went through
+  // that join flow before (even once, even from an old bug), that pending
+  // member id sticks around forever and renderEmployerDashboard() shows
+  // "Waiting for approval" on every future demo entry, regardless of this
+  // fresh session having nothing to do with it. Clear it here so a quick
+  // demo entry always starts from a clean slate.
+  setEmployerSessionUserId(null);
   state.session = { loggedIn: true, role: "employer", currentUserId: "demo-employer", name: "Priya Menon", isDemo: true };
   state.onboarding = { ...state.onboarding, employerDone: true, lastSavedAt: nowStamp() };
   // Seed the employer's own notifications, keeping any candidate ones already
@@ -2404,6 +2414,11 @@ function wireStaticLoginForm() {
       showToast("No matching account found on this device.", "info");
       return;
     }
+    // This is a normal state.auth.users account, unrelated to the separate
+    // employer-directory join/pending system (careergo_session) - clear any
+    // stale pointer left over from an earlier join request on this browser
+    // so it can't leak "Waiting for approval" onto an unrelated account.
+    if (user.role === "employer") setEmployerSessionUserId(null);
     next.session = { loggedIn: true, role: user.role || "candidate", currentUserId: user.id, name: user.fullName };
     if (user.profile) next.profile = normalizeProfile(user.profile);
     writeState(next);
