@@ -26758,24 +26758,30 @@ function renderEmployerFeed(root) {
   // dropdown that lists the trending topics; Saved stays a bookmark dropdown.
   function renderFeedSidebarNav(state) {
     const savedCount = (state.savedTalent || []).length;
-    // Wrapped in a white card with a "Feed" overline to mirror the candidate
-    // feed's left rail (its .cg-feed-left card + group labels). Same nav items
-    // and handlers as before - only the container chrome changed.
+    // Wrapped in a white card with "Feed"/"Your Library" overlines and the
+    // same icon set as the candidate feed's left rail (.cg-feed-left), so the
+    // two read as one component. Trending and Saved stay dropdowns here
+    // (topic filter, saved-by-type filter) - real functionality the
+    // candidate side's plain links don't need - only the grouping/styling
+    // and icon choices are unified, not the dropdown behavior itself.
     return `
       <div class="emp-feed-nav-card">
       <span class="emp-feed-nav-heading">Feed</span>
       <nav class="emp-feed-nav-list">
-        <button type="button" class="emp-feed-nav-item ${activeFilter === "foryou" ? "active" : ""}" data-feed-nav="foryou">${veraMark()} For You</button>
-        <button type="button" class="emp-feed-nav-item ${activeFilter === "following" ? "active" : ""}" data-feed-nav="following">${icon("users")} Network</button>
+        <button type="button" class="emp-feed-nav-item ${activeFilter === "foryou" ? "active" : ""}" data-feed-nav="foryou">${icon("sparkles")} For You</button>
+        <button type="button" class="emp-feed-nav-item ${activeFilter === "following" ? "active" : ""}" data-feed-nav="following">${icon("users-round")} Network</button>
         <div class="emp-feed-saved-wrap">
           <button type="button" class="emp-feed-nav-item emp-feed-nav-item--saved ${trendingKeyword ? "active" : ""}" data-trending-dropdown-toggle aria-haspopup="menu" aria-expanded="${trendingDropdownOpen}">
-            ${icon("trending-up")}<span>Trending</span>
+            ${icon("flame")}<span>Trending</span>
             ${icon("chevron-down")}
           </button>
           <div class="emp-actions-menu" data-trending-dropdown-menu role="menu" ${trendingDropdownOpen ? "" : "hidden"}>
             ${DATA.trendingTopics.map(t => `<button type="button" role="menuitem" data-feed-trending="${t.id}">${icon("trending-up")} ${escapeHtml(t.label)}</button>`).join("")}
           </div>
         </div>
+      </nav>
+      <span class="emp-feed-nav-heading emp-feed-nav-heading--second">Your Library</span>
+      <nav class="emp-feed-nav-list">
         <div class="emp-feed-saved-wrap">
           <button type="button" class="emp-feed-nav-item emp-feed-nav-item--saved" data-saved-dropdown-toggle aria-haspopup="menu" aria-expanded="${savedDropdownOpen}">
             ${icon("bookmark")}<span>Saved</span>
