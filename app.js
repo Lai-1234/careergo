@@ -28437,7 +28437,6 @@ function renderEmployerCompany(root) {
         <nav class="emp-company-tabbar" data-company-nav aria-label="Company profile sections">
           <a href="#comp-overview" data-jump="comp-overview" role="tab" class="active" aria-selected="true">Overview</a>
           <a href="#comp-roles" data-jump="comp-roles" role="tab" aria-selected="false">Roles</a>
-          <a href="#comp-requirements" data-jump="comp-requirements" role="tab" aria-selected="false">Requirements</a>
           <a href="#comp-hiring" data-jump="comp-hiring" role="tab" aria-selected="false">Hiring</a>
           <a href="#comp-salary" data-jump="comp-salary" role="tab" aria-selected="false">Salary &amp; Benefits</a>
           <a href="#comp-growth" data-jump="comp-growth" role="tab" aria-selected="false">Growth &amp; Culture</a>
@@ -28548,28 +28547,6 @@ function renderEmployerCompany(root) {
           `).join("") : `<p class="emp-empty-hint">No open roles right now.</p>`}
         </div>
         ${openRoles.length > 4 ? `<button type="button" class="btn btn-ghost btn-sm" data-company-toggle-roles>${showAllRoles ? "Show fewer roles" : `Show all ${openRoles.length} roles`}</button>` : ""}
-      </div>
-
-      <div class="card emp-company-section" id="comp-requirements">
-        <div class="emp-company-section-head"><h2>What Candidates Usually Need</h2>${sourceTag("Company provided")}</div>
-        <p class="emp-company-section-desc">Typical requirements candidates should understand before applying.</p>
-        <p class="emp-req-experience-note"><strong>Experience:</strong> ${editableField(company.averageRequirements.experience, "requirementsExperience")}</p>
-        <div class="emp-req-tier">
-          <h3 class="emp-req-tier-heading">Required</h3>
-          <div class="emp-req-chip-row">${editableChipList(editMode ? editDraft.requirementTiers.required : company.requirementTiers.required, "requirementTiers.required", "emp-req-chip emp-req-chip--required")}</div>
-        </div>
-        <div class="emp-req-tier">
-          <h3 class="emp-req-tier-heading">Preferred</h3>
-          <div class="emp-req-chip-row">${editableChipList(editMode ? editDraft.requirementTiers.preferred : company.requirementTiers.preferred, "requirementTiers.preferred", "emp-req-chip emp-req-chip--preferred")}</div>
-        </div>
-        <div class="emp-req-tier">
-          <h3 class="emp-req-tier-heading">Bonus</h3>
-          <div class="emp-req-chip-row">${editableChipList(editMode ? editDraft.requirementTiers.bonus : company.requirementTiers.bonus, "requirementTiers.bonus", "emp-req-chip emp-req-chip--bonus")}</div>
-        </div>
-        <div class="emp-vera-insight-box">
-          <div class="emp-callout-label">${veraMark()} Vera Insight</div>
-          <p>Candidates with these skills have a <strong>${company.requirementsInsight.higherInterviewRatePercent}% higher</strong> interview rate.</p>
-        </div>
       </div>
 
       <div class="card emp-company-section" id="comp-hiring">
