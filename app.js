@@ -2345,6 +2345,15 @@ function wireStaticLoginForm() {
 
   const roleTabs = qsa("[data-login-role]", form);
   const emailInput = qs("[data-login-email]", form);
+  // The two social buttons ("Continue with Google"/"Continue with LinkedIn")
+  // are not real OAuth - this is a static prototype with no backend. They're
+  // wired to the same generic data-enter-demo shortcut every other "Enter
+  // demo dashboard" button uses, which reads data-enter-demo-role off the
+  // clicked button (falling back to "candidate" if absent - see the
+  // app-wide handler in init()). They must be kept in sync with the
+  // candidate/employer toggle here, same as the tabs and email placeholder,
+  // or they silently ignore the toggle and always open the candidate demo.
+  const socialButtons = qsa("[data-enter-demo]", form);
   let selectedLoginRole = normalizeAuthRole(getInitialAuthRole());
 
   function applyLoginRole(role) {
@@ -2356,6 +2365,7 @@ function wireStaticLoginForm() {
       tab.setAttribute("aria-selected", String(active));
     });
     if (emailInput) emailInput.placeholder = selectedLoginRole === "employer" ? "you@company.com" : "you@email.com";
+    socialButtons.forEach(btn => { btn.dataset.enterDemoRole = selectedLoginRole; });
   }
   roleTabs.forEach(tab => tab.addEventListener("click", () => applyLoginRole(tab.dataset.loginRole)));
   applyLoginRole(selectedLoginRole);
