@@ -1,0 +1,304 @@
+/* ============================================================
+   Employer OS guided tour - a straight copy of the candidate's
+   .cg-tour-* CSS (enterprise.css, "Guided tour v2" block), since
+   employer-app.html never loads enterprise.css at all (only
+   styles.css). Widening enterprise.css's own selectors would do
+   nothing here - the stylesheet itself is never fetched on this
+   page. Same pattern as employer-vera-final.css for the Vera FAB.
+
+   The tour's guard/spot/pop layers are appended straight to
+   <body> (see showTourStep() in app.js), NOT nested inside
+   .emp-app-shell - so the .emp-app-shell.emp-app-shell prefix
+   trick used elsewhere on this page doesn't apply here. Instead,
+   two rules below (.cg-tour-pop h2, .cg-tour-launch-main b) use
+   bare h2/b tags that lose to styles.css's own unscoped, !important
+   reset (`:is(h1,h2,h3,h4,h5,h6,strong,b,label,...) { color:#1A1A1A
+   !important }`, ~line 9473) and its p/li sibling (~line 9477) -
+   fixed below with higher-specificity `html body ...` selectors
+   plus !important of their own, not an .emp-app-shell prefix.
+   ============================================================ */
+.cg-tour-guard {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  background: transparent;
+}
+
+.cg-tour-spot {
+  position: fixed;
+  z-index: 4001;
+  border-radius: 16px;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 9999px rgba(8, 22, 19, 0.58),
+    0 0 0 2px rgba(255, 255, 255, 0.85),
+    0 0 0 5px rgba(11, 109, 101, 0.9),
+    0 0 26px 6px rgba(11, 109, 101, 0.32);
+  transition: left .24s ease, top .24s ease, width .24s ease, height .24s ease;
+}
+
+.cg-tour-pop {
+  position: fixed;
+  z-index: 4003;
+  width: min(380px, calc(100vw - 32px));
+  padding: 20px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid rgba(14, 44, 37, 0.10);
+  box-shadow: 0 24px 60px rgba(8, 30, 26, 0.30);
+  color: #1b2e28;
+  transition: left .2s ease, top .2s ease;
+}
+
+.cg-tour-arrow {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  transform: rotate(45deg);
+  box-shadow: 0 2px 6px rgba(8, 30, 26, 0.10);
+}
+
+.cg-tour-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.cg-tour-avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(145deg, #087a68, #0b3444);
+}
+
+.cg-tour-avatar img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  filter: brightness(1.6) saturate(1.1);
+}
+
+.cg-tour-count {
+  display: block;
+  color: #5f7573;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cg-tour-dots {
+  display: flex;
+  gap: 5px;
+  margin-top: 7px;
+}
+
+.cg-tour-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(14, 44, 37, 0.16);
+  transition: transform .2s ease, background .2s ease;
+}
+
+.cg-tour-dots i.done { background: #8bb7ad; }
+
+.cg-tour-dots i.active {
+  background: #0b6d65;
+  transform: scale(1.3);
+}
+
+/* Bare h2 - loses to styles.css's unscoped `:is(h1,...,h6) !important`
+   reset without both a higher-specificity selector AND !important. */
+html body .cg-tour-pop h2 {
+  margin: 0 0 8px;
+  font-family: "Fraunces", ui-serif, Georgia, serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.15;
+  color: #14332b !important;
+}
+
+/* Bare p - loses to styles.css's unscoped `:is(p, li, ...) !important`
+   reset the same way. */
+html body .cg-tour-pop p {
+  margin: 0;
+  color: #4a5a54 !important;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.cg-tour-try {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(11, 109, 101, 0.22);
+  background: linear-gradient(135deg, rgba(11, 109, 101, 0.11), rgba(11, 109, 101, 0.04));
+}
+
+.cg-tour-try-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0b6d65;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cg-tour-try-label svg { width: 13px; height: 13px; }
+
+.cg-tour-try-text {
+  color: #274740;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.cg-tour-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.cg-tour-nav-right { display: flex; gap: 8px; }
+
+.cg-tour-skip {
+  border: 0;
+  background: none;
+  padding: 6px 4px;
+  color: #5f7573;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cg-tour-skip:hover { color: #14332b; text-decoration: underline; }
+
+.cg-tour-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cg-tour-btn svg { width: 15px; height: 15px; }
+
+.cg-tour-btn.ghost {
+  background: #ffffff;
+  border-color: rgba(14, 44, 37, 0.16);
+  color: #274740;
+}
+
+.cg-tour-btn.ghost:disabled { opacity: 0.4; cursor: default; }
+
+.cg-tour-btn.primary {
+  background: linear-gradient(135deg, #0b3444, #0b6d65);
+  color: #f4fbf9;
+}
+
+.cg-tour-btn.primary:hover { filter: brightness(1.06); }
+
+/* While a tour runs, hide the floating Vera FAB so nothing collides with
+   the popover (Vera now lives on the tour card itself). The employer
+   FAB reuses the candidate's exact .cg-vera-widget/.cg-vera-trigger
+   classes (see employer-vera-final.css), so this rule applies as-is. */
+html body.cg-tour-active .cg-vera-widget,
+html body.cg-tour-active .cg-vera-trigger { display: none !important; }
+
+/* Dismissible per-page launcher chip (secondary pages) */
+.cg-tour-launch {
+  position: fixed;
+  z-index: 1200;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 6px 6px 8px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(14, 44, 37, 0.12);
+  box-shadow: 0 14px 34px rgba(8, 30, 26, 0.20);
+}
+
+.cg-tour-launch-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: none;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 13px;
+  color: #274740;
+  cursor: pointer;
+}
+
+/* Bare b - same unscoped reset as .cg-tour-pop h2 above. */
+html body .cg-tour-launch-main b { color: #14332b !important; }
+
+.cg-tour-launch-avatar {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(145deg, #087a68, #0b3444);
+}
+
+.cg-tour-launch-avatar img {
+  width: 19px;
+  height: 19px;
+  object-fit: contain;
+  filter: brightness(1.6) saturate(1.1);
+}
+
+.cg-tour-launch-close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(14, 44, 37, 0.06);
+  color: #5f7573;
+  cursor: pointer;
+}
+
+.cg-tour-launch-close svg { width: 15px; height: 15px; }
+
+.cg-tour-launch-close:hover { background: rgba(14, 44, 37, 0.12); color: #14332b; }
+
+@media (max-width: 760px) {
+  .cg-tour-pop { width: auto; }
+  .cg-tour-launch {
+    left: 16px;
+    right: 16px;
+    transform: none;
+    justify-content: space-between;
+  }
+}

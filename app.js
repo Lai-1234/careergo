@@ -1458,6 +1458,30 @@ const DASHBOARD_TOUR_STEPS = [
   }
 ];
 
+const EMPLOYER_DASHBOARD_TOUR_STEPS = [
+  {
+    target: "[data-tour-target='emp-dash-hero']",
+    title: "Vera's highest-impact action",
+    body: "Every time you land here, Vera has already scanned your open roles and pipeline for the single change most likely to move the needle - not a generic to-do list.",
+    mission: "Review the requirement Vera flagged."
+  },
+  {
+    target: "[data-tour-target='emp-dash-kpis']",
+    title: "Hiring at a glance",
+    body: "Active roles, candidates waiting for review, interviews this week, and offers out - the four numbers worth checking first each morning.",
+    mission: "Tap a tile to jump straight into it."
+  }
+  // Deliberately just these two steps: the Employer OS's Dashboard/Roles/
+  // Company/Feed views run inside a locked 100vh app-shell (only Talent
+  // Pipeline scrolls as a normal document - see the "Talent Pipeline scroll
+  // model" note in CLAUDE.md). showTourStep()'s wide-target branch scrolls
+  // via window.scrollTo(), which does nothing on a locked-shell page, so a
+  // step targeting anything below the initial fold (e.g. the Ask Vera strip
+  // near the bottom) positions its popover off-screen and can never be
+  // dismissed. Keep targets on this page above the fold until the shared
+  // tour engine is made locked-shell-aware.
+];
+
 const APPLICATION_STAGES = [
   { key: "saved", label: "Saved", icon: "bookmark", tone: "gold" },
   { key: "applied", label: "Applied", icon: "send", tone: "cyan" },
@@ -2013,7 +2037,7 @@ function normalizeEducationEntries(list) {
   }));
 }
 
-const TOUR_PAGE_KEYS = ["dashboard", "discover", "grow", "market", "autopilot", "posts"];
+const TOUR_PAGE_KEYS = ["dashboard", "discover", "grow", "market", "autopilot", "posts", "emp-dashboard", "emp-roles", "emp-pipeline", "emp-feed", "emp-company"];
 
 function ensureGuidedTour(state) {
   const guidedTour = state.guidedTour || {};
@@ -3219,6 +3243,65 @@ const TOUR_STEPS = {
   ]
 };
 
+/* Employer OS tour content - kept fully separate from TOUR_STEPS/candidate
+   pages, same "separate system, not a shared object with a discriminator"
+   pattern used everywhere else the two sides diverge (notifications,
+   Vera conversations, feed data). Dashboard auto-runs once via
+   EMPLOYER_DASHBOARD_TOUR_STEPS above; every other page here gets the
+   dismissible launcher chip, same as the candidate side. */
+const EMPLOYER_TOUR_STEPS = {
+  "emp-roles": [
+    {
+      target: "[data-tour-target='emp-roles-create']",
+      title: "Post a role",
+      body: "Start here to create a role - Vera checks salary competitiveness and flags biased language as you write it, before it ever goes live.",
+      mission: "Open Create role and see Vera's live checks."
+    },
+    {
+      target: "[data-tour-target='emp-roles-table']",
+      title: "Every role, one place",
+      body: "Create, publish, pause, close and archive your roles from here, filtered by status.",
+      mission: "Filter down to just your open roles."
+    }
+  ],
+  "emp-pipeline": [
+    {
+      target: "[data-tour-target='emp-pipeline-board']",
+      title: "The Talent Pipeline board",
+      body: "Every candidate, staged from New through Hired, each carrying an AI match score - so you know who to look at first without reading every application.",
+      mission: "Open a candidate card to see their match breakdown."
+    }
+  ],
+  "emp-feed": [
+    {
+      target: "[data-tour-target='emp-feed-composer']",
+      title: "Post as your company",
+      body: "Share hiring updates, milestones, or questions to the same feed candidates and mentors are reading.",
+      mission: "Draft one update, even if you don't publish it yet."
+    },
+    {
+      target: "[data-tour-target='emp-feed-vera-rec']",
+      title: "Vera Hiring Recommendations",
+      body: "Vera surfaces strong-match candidates directly here, not just inside the Pipeline - each with a match score and the evidence behind it.",
+      mission: "Open Details on the current recommendation."
+    }
+  ],
+  "emp-company": [
+    {
+      target: "[data-tour-target='emp-company-kpis']",
+      title: "Company health, at a glance",
+      body: "Health score, hiring activity, application conversion, and profile completeness - the four signals worth checking before anything else on this page.",
+      mission: "Check which number needs attention first."
+    },
+    {
+      target: "[data-tour-target='emp-company-tabs']",
+      title: "Insights and Health Score",
+      body: "Insights breaks down your hiring funnel stage by stage; Health Score rolls all of it into one AI-generated read on how healthy your hiring really is.",
+      mission: "Open Health Score and see your full breakdown."
+    }
+  ]
+};
+
 /* ============================================================
    Guided tour v2 - one engine for every page (dashboard + the
    TOUR_STEPS pages). A step highlights its target with a real
@@ -3234,11 +3317,18 @@ const TOUR_PAGE_LABELS = {
   grow: "Growth",
   market: "Career Value",
   autopilot: "Pipeline",
-  posts: "Feed"
+  posts: "Feed",
+  "emp-dashboard": "Dashboard",
+  "emp-roles": "Roles",
+  "emp-pipeline": "Talent Pipeline",
+  "emp-feed": "Feed",
+  "emp-company": "Company Profile"
 };
 
 function tourStepsFor(pageKey) {
-  return pageKey === "dashboard" ? DASHBOARD_TOUR_STEPS : (TOUR_STEPS[pageKey] || []);
+  if (pageKey === "dashboard") return DASHBOARD_TOUR_STEPS;
+  if (pageKey === "emp-dashboard") return EMPLOYER_DASHBOARD_TOUR_STEPS;
+  return TOUR_STEPS[pageKey] || EMPLOYER_TOUR_STEPS[pageKey] || [];
 }
 
 function getTourState(pageKey) {
@@ -3520,12 +3610,18 @@ function showTourLauncher(pageKey) {
 
 function initPageTour(pageKey) {
   const state = readState();
-  if (!state.session.loggedIn || !state.onboarding.candidateDone) return;
+  if (!state.session.loggedIn) return;
+  // Employer pages use their own onboarding-completion flag - an employer
+  // session never sets candidateDone, so gating every page on that flag
+  // (as before) meant the tour engine silently never ran anywhere in the
+  // Employer OS, for any employer, ever.
+  const isEmployer = state.session.role === "employer";
+  if (isEmployer ? !state.onboarding.employerDone : !state.onboarding.candidateDone) return;
   const tour = getTourState(pageKey);
   if (tour.status === "completed" || tour.status === "skipped") return;
-  if (pageKey === "dashboard") {
+  if (pageKey === "dashboard" || pageKey === "emp-dashboard") {
     // The guided intro auto-runs once, on the landing page, for a new user.
-    window.setTimeout(() => showTourStep("dashboard", tour.step || 0), 200);
+    window.setTimeout(() => showTourStep(pageKey, tour.step || 0), 200);
   } else {
     // Every other page politely offers its own tour instead of forcing it.
     window.setTimeout(() => showTourLauncher(pageKey), 200);
@@ -20275,7 +20371,7 @@ function renderEmployerDashboard(root) {
     <div class="emp-page-container">
       ${renderPageHero({ title: `Good morning, ${getFirstName(state)}.`, sub: `${todayLabel} — here's what needs your attention across hiring today.` })}
 
-      <div class="emp-dash-hero-grid">
+      <div class="emp-dash-hero-grid" data-tour-target="emp-dash-hero">
         <section class="emp-dash-hero">
           <div>
             <div class="emp-dash-hero-label">${veraMark()} Vera · Highest-impact action</div>
@@ -20311,7 +20407,7 @@ function renderEmployerDashboard(root) {
         </aside>
       </div>
 
-      <div class="emp-kpi-row">
+      <div class="emp-kpi-row" data-tour-target="emp-dash-kpis">
         <button type="button" class="emp-kpi-tile emp-kpi-clickable" data-dashboard-nav="roles">
           <span>Active Roles</span><strong>${openCount}</strong><span class="emp-kpi-sub">${rolesNeedingAttentionCount} needs attention</span>
         </button>
@@ -20475,6 +20571,7 @@ function renderEmployerDashboard(root) {
   qsa("[data-dashboard-vera-prompt]", root).forEach(btn => btn.addEventListener("click", () => {
     openEmployerVera(btn.dataset.dashboardVeraPrompt);
   }));
+  initPageTour("emp-dashboard");
 }
 
 function parseSalaryRangeMid(str) {
@@ -21086,9 +21183,9 @@ function renderEmployerRolesList(root) {
         </div>
       `, `
         <button type="button" class="btn btn-ghost" data-action="ask-vera-global">${veraMark()} Ask Vera</button>
-        <button type="button" class="btn btn-primary" data-action="create-role">${icon("plus")} Create role</button>
+        <button type="button" class="btn btn-primary" data-action="create-role" data-tour-target="emp-roles-create">${icon("plus")} Create role</button>
       `)}
-      <div class="card">
+      <div class="card" data-tour-target="emp-roles-table">
         <div class="table-wrap">
           <table class="emp-table">
             <thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>
@@ -21248,6 +21345,7 @@ function renderEmployerRolesList(root) {
   ensureRolesDelegation(root);
   currentRolesClickHandler = handleClick;
   draw();
+  initPageTour("emp-roles");
 }
 
 const EMPLOYER_ROLE_BUILDER_STEPS = ["Role Basics", "Role Details", "Candidate Profile", "Offer & Hiring Setup", "Preview & Publish"];
@@ -24226,7 +24324,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
   function renderBoard(list) {
     const priorityId = pickPriorityCandidate(list)?.id || null;
     return `
-      <div class="emp-pipeline-board" data-pipeline-board aria-label="Candidate pipeline board">
+      <div class="emp-pipeline-board" data-pipeline-board data-tour-target="emp-pipeline-board" aria-label="Candidate pipeline board">
         ${EMPLOYER_TALENT_PIPELINE_STAGES.map(stage => {
           const stageCandidates = list.filter(c => c.stage === stage);
           const oldest = stageCandidates.map(daysInCurrentStage).filter(d => d !== null);
@@ -25456,6 +25554,7 @@ function renderEmployerTalentPipeline(root, params = {}) {
   window.addEventListener("resize", closeCalDayPopover);
 
   draw();
+  initPageTour("emp-pipeline");
 }
 
 function initialsOf(name) {
@@ -26238,7 +26337,7 @@ function renderEmployerFeed(root) {
     const drafts = state.feedDrafts || [];
     const scheduled = state.feedScheduledPosts || [];
     return `
-      <div class="card emp-feed-composer">
+      <div class="card emp-feed-composer" data-tour-target="emp-feed-composer">
         <div class="emp-feed-composer-head">
           <span class="emp-tags-label">Posting as</span>
           <select data-feed-identity>
@@ -26486,7 +26585,7 @@ function renderEmployerFeed(root) {
     const pool = getHiringRecommendationPool();
     if (!pool.length) {
       return `
-        <div class="card emp-vera-rec-widget">
+        <div class="card emp-vera-rec-widget" data-tour-target="emp-feed-vera-rec">
           <div class="emp-vera-rec-widget-head"><span class="emp-callout-label"><img class="emp-copilot-vera-mark" src="assets/vera-ai-coach.png" alt="" width="16" height="16"> Vera Hiring Recommendations</span></div>
           <p class="emp-empty-hint">No active candidates to recommend right now. Vera will surface matches as new applicants come in.</p>
         </div>
@@ -26495,7 +26594,7 @@ function renderEmployerFeed(root) {
     const index = recRotateIndex % pool.length;
     const entry = pool[index];
     return `
-      <div class="card emp-vera-rec-widget" data-vera-rec-widget tabindex="0" aria-roledescription="carousel" aria-label="Vera hiring recommendations">
+      <div class="card emp-vera-rec-widget" data-vera-rec-widget data-tour-target="emp-feed-vera-rec" tabindex="0" aria-roledescription="carousel" aria-label="Vera hiring recommendations">
         <div class="emp-vera-rec-widget-head">
           <span class="emp-callout-label"><img class="emp-copilot-vera-mark" src="assets/vera-ai-coach.png" alt="" width="16" height="16"> Vera Hiring Recommendations</span>
         </div>
@@ -27433,6 +27532,7 @@ function renderEmployerFeed(root) {
   });
 
   draw();
+  initPageTour("emp-feed");
 }
 
 // ---------- Employer Direct Messaging (items 10, 11, 12, 14) ----------
@@ -28483,7 +28583,7 @@ function renderEmployerCompany(root) {
           </div>
         </div>
         <div class="emp-company-hero-right">
-          <div class="emp-company-hero-kpis">
+          <div class="emp-company-hero-kpis" data-tour-target="emp-company-kpis">
             <div class="emp-company-hero-kpi">
               <strong>${company.healthScore}<span class="emp-company-hero-kpi-suffix">/100</span></strong>
               <span class="emp-company-hero-kpi-label">Company Health</span>
@@ -28505,7 +28605,7 @@ function renderEmployerCompany(root) {
       </div>
 
       <div class="emp-company-tabbar-wrap" data-company-tabbar-wrap>
-        <nav class="emp-company-tabbar" data-company-nav aria-label="Company profile sections">
+        <nav class="emp-company-tabbar" data-company-nav data-tour-target="emp-company-tabs" aria-label="Company profile sections">
           <a href="#comp-overview" data-jump="comp-overview" role="tab" class="active" aria-selected="true">Overview</a>
           <a href="#comp-roles" data-jump="comp-roles" role="tab" aria-selected="false">Roles</a>
           <a href="#comp-hiring" data-jump="comp-hiring" role="tab" aria-selected="false">Hiring</a>
@@ -29448,6 +29548,7 @@ function renderEmployerCompany(root) {
   }
 
   draw();
+  initPageTour("emp-company");
 }
 
 const COMPANY_EDIT_SECTIONS = [
