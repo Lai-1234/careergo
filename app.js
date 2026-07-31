@@ -4792,6 +4792,72 @@ function ensureWorkspaceNavbarStyles() {
         display: none !important;
       }
     }
+
+    /* enterprise.css's "navbar parity" pass (search that file for
+       .topbar.topbar.topbar:has(.cg-workspace-tabs)) deliberately repeats the
+       .topbar class for a specificity boost so it reliably wins over every
+       earlier page-specific .topbar rule in that file - including, it turns
+       out, the mobile 2-row nav-inner layout this same injected stylesheet
+       defines above (both the .topbar:has(...) and .topbar.workspace-topbar
+       variants top out at 2-3 classes of specificity, well under that
+       5-class rule). The static rule forces .nav-inner to display:flex and
+       height:64px at every width, so at <=760px the tab row
+       (Dashboard/Discover/Growth/Career Value/Pipeline/Feed) still lays out
+       as a second row but gets clipped away below the pinned 64px box by the
+       .topbar{overflow:hidden} rule right next to it - not display:none (so
+       it is still in the tab order), just invisible and unreachable. Matching
+       that same specificity-boost technique (one repeat further, so this
+       wins the tie) is what actually restores the 2-row mobile layout. */
+    @media (max-width: 760px) {
+      html body .topbar.topbar.topbar.topbar.workspace-topbar {
+        height: auto !important;
+        min-height: 74px !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .nav-inner {
+        display: grid !important;
+        height: auto !important;
+        min-height: 74px !important;
+        grid-template-columns: auto auto !important;
+        grid-template-areas: "brand actions" "tabs tabs" !important;
+        row-gap: 8px !important;
+        padding: 10px 0 !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-top-brand {
+        grid-area: brand !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-workspace-tabs {
+        grid-area: tabs !important;
+        width: 100% !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-user-actions {
+        grid-area: actions !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-navbar-logo {
+        width: 132px !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-message-trigger {
+        display: none !important;
+      }
+    }
+
+    /* Same squeeze, wider range: .cg-workspace-tabs already goes
+       overflow-x:auto at <=1180px (single-row tablet layout, see the block
+       above with the same media condition) as much as it does in the <=760px
+       2-row layout above, and both reset the pills' automatic min-width to 0
+       the same way - so "Dashboard" etc. were collapsing to unreadable
+       slivers at tablet widths too, not just phone widths. */
+    @media (max-width: 1180px) {
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-workspace-tabs a {
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+      }
+    }
   `;
   document.head.appendChild(style);
 }

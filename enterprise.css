@@ -3614,7 +3614,16 @@ body[data-page="home"] .home-cta-panel a:hover {
     border-color: rgba(197, 211, 215, 0.52);
   }
 
-  body[data-page="home"] .home-stage-line i {
+  /* createIcons() (lucide) swaps every <i data-lucide> for an <svg
+     class="lucide ...">, so the bare "i" tag selector below never matches
+     the rendered icon - grid-row:span 3 silently did nothing, the icon
+     auto-placed as a normal 1x1 cell, and "Student" (etc.) auto-flowed into
+     the now-empty column 1 instead of stacking under "Stage 1" in column 2,
+     overlapping the description text next to it. Matching the actual
+     rendered element is what makes the icon hold column 1 across all 3
+     rows again. */
+  body[data-page="home"] .home-stage-line i,
+  body[data-page="home"] .home-stage-line svg {
     grid-row: span 3;
     margin: 0 !important;
   }
