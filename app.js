@@ -3393,13 +3393,19 @@ function positionTourLayers(pop, spot, arrow, target) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
+  // The spot's box-shadow IS the visible highlight ring + dimmer cutout, so it
+  // must always wrap the target's real, full rendered box - never the banded
+  // height from tourAnchorRect() (that cap exists only to keep the popover
+  // placement math below sane for full-width sections; using it here was
+  // cutting the bottom of wide cards off outside the highlighted hole).
+  const full = target.getBoundingClientRect();
   const pad = 8;
-  const sx = Math.max(4, a.left - pad);
-  const sy = Math.max(4, a.top - pad);
+  const sx = Math.max(4, full.left - pad);
+  const sy = Math.max(4, full.top - pad);
   spot.style.left = `${sx}px`;
   spot.style.top = `${sy}px`;
-  spot.style.width = `${Math.min(vw - 8, a.width + pad * 2)}px`;
-  spot.style.height = `${Math.min(vh - 8, a.height + pad * 2)}px`;
+  spot.style.width = `${Math.min(vw - 8, full.width + pad * 2)}px`;
+  spot.style.height = `${Math.min(vh - 8, full.height + pad * 2)}px`;
 
   if (vw <= 760) {
     pop.style.left = "16px";
@@ -14586,7 +14592,7 @@ function openResumeModal(jobId) {
           <button type="button" class="btn btn-ghost" data-close aria-label="Close">${icon("x")}</button>
         </div>
       </div>
-      <p class="cg-resume-hint">${icon("info")} Built from your full profile and career data. Update it in <a href="edit-career-data.html">Edit Career Data</a> or on your <a href="profile.html">profile</a>, then regenerate.</p>
+      <p class="cg-resume-hint">${icon("info")}<span>Built from your full profile and career data. Update it in <a href="edit-career-data.html">Edit Career Data</a> or on your <a href="profile.html">profile</a>, then regenerate.</span></p>
       ${readiness.ready ? "" : `
         <div class="cg-resume-gaps">
           <strong>${icon("alert-circle")} Complete these to generate a full resume</strong>

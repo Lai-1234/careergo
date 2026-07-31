@@ -23667,6 +23667,7 @@ html body[data-page="discover"] .cg-org-browse-empty{padding:32px 0;text-align:c
   border-radius: 12px;
   background: rgba(216, 239, 235, 0.5);
   font-size: 13px;
+  line-height: 1.5;
   color: #1d4f48;
 }
 
@@ -23676,10 +23677,19 @@ html body[data-page="discover"] .cg-org-browse-empty{padding:32px 0;text-align:c
   height: 14px;
 }
 
+/* The icon + the whole sentence are the only two flex children (the
+   sentence, links included, is a single <span>) so the paragraph wraps
+   as one normal text flow instead of each word/link becoming its own
+   flex item and wrapping independently. */
+.cg-resume-hint span {
+  flex: 1;
+}
+
 .cg-resume-hint a {
   color: #0b6d65;
   font-weight: 600;
   text-decoration: underline;
+  white-space: nowrap;
 }
 
 .cg-resume-sheet {
@@ -26452,7 +26462,7 @@ html body[data-page="home"] .home-hero-actions .home-btn-secondary.home-btn-seco
    Opportunities/Universities pages (companies.html/universities.html)
    AND the logged-in Discover > Companies/Universities pages
    (discover-companies.html/discover-universities.html), replacing the
-   old, separately-maintained .cg-featured-org-*/.cg-org-* Discover
+   old, separately-maintained .cg-featured-org-* / .cg-org-* Discover
    implementation.
    Sizing/toggle/grid/card rules live directly in directory-final.css
    (now loaded on all three page contexts, with :is() scoping broadened
