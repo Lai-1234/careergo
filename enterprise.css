@@ -31687,3 +31687,179 @@ html body .topbar.workspace-topbar:has(.cg-top-brand.is-employer) .cg-search-she
 @media (max-width: 640px) {
   .cg-cp-scores { grid-template-columns: 1fr; }
 }
+
+/* market.html "Career Value Timetable" chart - the 5 milestone labels
+   (.cg-worth-point) are absolutely positioned at fixed percentages (0/24/
+   47/70/98%) of .cg-worth-chart's width, each a fixed 145px (132px at
+   <=900px, see the earlier <=900px block) wide. That math only works on the
+   980px-wide desktop canvas: once .cg-worth-chart shrinks to the phone/
+   tablet width the <=900px block already gives it, the ~68-79px gaps
+   between anchor points are far narrower than each 132-145px label, so
+   every label overlaps its neighbor - worst for the last two (Month 3/
+   Month 6), which collide even at 768px tablet width because Month 6 is
+   right-anchored (translateX(-100%)) back into Month 3's box. Squeezing the
+   fixed-overlay approach onto a <=900px canvas isn't fixable by shrinking
+   further without making the text unreadable, so this replaces the
+   overlay with a plain stacked list (each label's own row, full width, no
+   absolute positioning) - the same "reflow instead of cramming" fix as the
+   homepage stage-timeline. Desktop (>900px) keeps the original overlay
+   untouched. */
+@media (max-width: 900px) {
+  html body[data-page="market"] .cg-worth-chart {
+    height: auto !important;
+    min-height: 0 !important;
+    padding-bottom: 4px !important;
+  }
+
+  html body[data-page="market"] .cg-worth-chart svg {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 180px !important;
+    display: block !important;
+  }
+
+  html body[data-page="market"] .cg-worth-point {
+    position: static !important;
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 12px 0 !important;
+    border-top: 1px solid rgba(14, 44, 37, 0.08) !important;
+    transform: none !important;
+    text-align: left !important;
+  }
+
+  html body[data-page="market"] .cg-worth-point:first-child {
+    margin-top: 16px !important;
+  }
+
+  html body[data-page="market"] .cg-worth-point:last-child {
+    transform: none !important;
+    text-align: left !important;
+  }
+
+  html body[data-page="market"] .cg-worth-point span {
+    flex: 0 0 60px !important;
+    font-size: 14px !important;
+    white-space: nowrap !important;
+  }
+
+  html body[data-page="market"] .cg-worth-point small {
+    flex: 1 !important;
+    max-width: none !important;
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+  }
+}
+
+/* posts.html feed shell (.cg-feed-shell: left nav rail / main feed / right
+   aside) has at least 5 redundant "make it responsive" passes layered into
+   this file across earlier redesigns, each redeclaring grid-template-columns
+   for the same selector at the same <=1180px/<=860px breakpoints with
+   growing specificity boosts (the last uses :not(#_), a zero-cost ID-level
+   specificity trick also used elsewhere in this file). Whichever of those
+   passes is actually winning at phone widths resolves to two real grid
+   tracks (measured live: ~42px + ~271px) rather than the intended single
+   1fr column, so .cg-feed-left (the icon+label nav rail, meant to be ~210-
+   260px on desktop) gets squeezed into a ~42px sliver - barely wider than
+   its own icons - while each nav link keeps its desktop
+   "grid-template-columns: 22px 1fr" layout, so labels like "Communities"/
+   "Trending" render in a ~20px-wide text column, overflow visually, and
+   pile on top of each other and of the main feed to their right. Rather
+   than debug which of the five earlier passes is winning by what margin,
+   this drops .cg-feed-shell out of grid layout entirely at <=860px so its
+   three children (.cg-feed-left, .cg-feed-main, .cg-feed-aside) just stack
+   in normal block flow - immune to any further grid-track fights - and
+   turns the nav rail into a wrapping row of pill chips (the same pattern
+   .mobile-nav already uses elsewhere) instead of a cramped vertical rail.
+   :not(#_):not(#_) matches the existing trick's specificity twice over so
+   this reliably wins regardless of which earlier pass would otherwise. */
+@media (max-width: 860px) {
+  html body[data-page="posts"]:not(#_):not(#_) .cg-feed-shell {
+    display: block !important;
+  }
+
+  html body[data-page="posts"]:not(#_):not(#_) .cg-feed-left {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    gap: 8px !important;
+    margin-bottom: 20px !important;
+  }
+
+  html body[data-page="posts"]:not(#_):not(#_) .cg-feed-left-group {
+    flex: 1 0 100% !important;
+    margin-top: 8px !important;
+  }
+
+  html body[data-page="posts"]:not(#_):not(#_) .cg-feed-left-group:first-child {
+    margin-top: 0 !important;
+  }
+
+  html body[data-page="posts"]:not(#_):not(#_) .cg-feed-left a {
+    grid-template-columns: 18px auto auto !important;
+    width: auto !important;
+    min-height: 40px !important;
+    padding: 0 14px !important;
+    font-size: 14px !important;
+  }
+
+  html body[data-page="posts"]:not(#_):not(#_) .cg-feed-main {
+    width: 100% !important;
+  }
+
+  html body[data-page="posts"]:not(#_):not(#_) .cg-feed-aside {
+    display: block !important;
+    width: 100% !important;
+    margin-top: 24px !important;
+  }
+
+  html body[data-page="posts"]:not(#_):not(#_) .cg-feed-aside section {
+    margin-bottom: 20px !important;
+  }
+}
+
+/* Leftover from the abandoned .os-sidebar/#sidebar-open-btn hamburger nav
+   (initSidebarToggle() in app.js - dead code, .os-sidebar doesn't exist in
+   the current markup): ".nav-actions > :not(.sidebar-toggle):not(
+   .account-menu-wrap) { display: none }" at <=640px was written assuming a
+   hamburger button would replace the message/notification icons on narrow
+   screens. Since that hamburger never renders, the rule just silently hides
+   the notification bell (.notification-menu-wrap, a direct child of
+   .nav-actions.cg-user-actions) on every phone width with nothing to
+   replace it - not a visible layout bug (nothing overlaps), but a real
+   dead-end: there is no way to reach notifications from a phone. Restoring
+   just the bell here (not .cg-message-trigger, which has its own,
+   apparently intentional, separate <=760px hide already in place above). */
+@media (max-width: 640px) {
+  html body .topbar.workspace-topbar .nav-actions.cg-user-actions > .notification-menu-wrap {
+    display: block !important;
+  }
+
+  /* Now that the bell is reachable again, its dropdown surfaced a second,
+     independent bug: .notification-menu is width:min(380px,100vw-28px) but
+     right:0 relative to .notification-menu-wrap specifically (the bell's
+     own wrapper), not the row's actual right edge - the avatar sits to the
+     bell's right (avatar right edge = .nav-inner's right edge, confirmed
+     flush), so right:0 anchors ~48px short of the true edge and the ~360px
+     panel spills off the left side of the screen.
+     position:fixed would sidestep that math by pinning to the viewport
+     instead of the trigger, but .topbar has backdrop-filter, which per spec
+     makes it the containing block for any position:fixed descendant - the
+     panel just ends up fixed to the topbar's own small box instead of the
+     viewport (worse: mostly off-screen above it). Reaching the real edge
+     from .notification-menu-wrap's containing block instead - a fixed
+     -48px, derived from the live measured gap between the bell wrapper and
+     the avatar/.nav-inner's shared right edge, which is stable across
+     phone widths since it's built from fixed-px gaps (icon gap + avatar
+     width), not viewport width - is what actually keeps it on-screen. */
+  html body .topbar.workspace-topbar .notification-menu {
+    right: -48px !important;
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+  }
+}
