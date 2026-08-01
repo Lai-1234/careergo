@@ -14957,6 +14957,35 @@ body:has([data-employer-app]) { margin: 0; }
   .emp-cand-card { padding: 8px 10px; }
   .emp-pipeline-col-name { font-size: 12px; }
 }
+/* Mobile Board fallback (<=760px, same breakpoint where viewMode already
+   defaults to List - see renderEmployerTalentPipeline() in app.js). The
+   spec above ("6 equal columns, never scroll") is deliberate and stays
+   untouched at every width above this - but a user CAN still manually
+   tap back to Board on a phone, and 6 columns squeezed into ~330px each
+   render at ~50px wide: avatars show as a bare initial, everything else
+   ("Re", "Sc", "To 2:3 PM") is a random truncated fragment. Below this
+   breakpoint only, turn the grid into a horizontally swipeable,
+   scroll-snap carousel - one stage column at (most of) full width per
+   "page", with the next one peeking in at the edge as the scroll
+   affordance, so a card renders exactly like it does on desktop, just
+   one stage at a time instead of all six squeezed in the same eyeful. */
+@media (max-width: 760px) {
+  .emp-pipeline-board {
+    display: flex;
+    grid-template-columns: none;
+    align-items: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+  .emp-pipeline-col {
+    flex: 0 0 82%;
+    scroll-snap-align: start;
+  }
+  .emp-cand-card { padding: 10px 12px; }
+  .emp-pipeline-col-name { font-size: 13px; }
+}
 /* Column: a real tinted surface (2-4% of forest over cream) and a grid child
    that shrinks with the board (min-width:0). overflow is visible (spec §8) -
    the column no longer clips; cards can't bleed into a neighbour because each
