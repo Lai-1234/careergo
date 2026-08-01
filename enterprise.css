@@ -1259,6 +1259,10 @@ small,
   display: none;
 }
 
+.cg-thread-back {
+  display: none;
+}
+
 .btn,
 button.btn,
 .open-os-btn,
@@ -16114,15 +16118,78 @@ html body[data-page="posts"] .cg-message-composer input {
 
   html body[data-page="posts"] .cg-inbox-panel {
     height: auto !important;
-    max-height: 340px !important;
+    max-height: none !important;
+    overflow: visible !important;
     border-right: 0 !important;
     border-bottom: 1px solid rgba(18, 59, 52, 0.12) !important;
     padding: 24px !important;
   }
 
+  /* Was overflow-y:auto inside a max-height:340px box - h1 + search +
+     filters + the footer link alone ate ~320px of that, leaving the
+     scrollable list ~20px tall so only a sliver of the first thread card
+     showed. Letting the list grow to its natural height (page scrolls
+     instead) shows every card in full. */
+  html body[data-page="posts"] .cg-thread-list {
+    overflow: visible !important;
+  }
+
+  /* Below this breakpoint the list (aside) and the open conversation
+     (nested <main class="cg-message-thread">) used to both render in the
+     single grid column at once - a truncated thread card, "Looking to
+     message someone new?", and a second full render of the same person's
+     name/conversation all stacked on top of each other. [data-mobile-view],
+     set in JS (postsMobileView) and flipped by tapping a thread card /
+     the new back button, shows exactly one at a time. */
+  html body[data-page="posts"] .cg-messages-shell[data-mobile-view="list"] .cg-message-thread {
+    display: none !important;
+  }
+
+  html body[data-page="posts"] .cg-messages-shell[data-mobile-view="detail"] .cg-inbox-panel {
+    display: none !important;
+  }
+
   html body[data-page="posts"] .cg-message-thread {
-    height: 520px !important;
-    padding: 24px !important;
+    height: auto !important;
+    padding: 20px 20px 150px !important;
+  }
+
+  html body[data-page="posts"] .cg-message-thread > header {
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  /* Was a fixed 520px box with overflow:hidden while its content (header +
+     messages + composer) ran ~660px tall on a 3-message thread - the extra
+     140px got clipped, and the chat thread's own internal scrollbar (needed
+     to reach it) rendered on real devices as a thin vertical line bleeding
+     past the last bubble to the bottom of the screen. Letting the thread
+     grow with its content and scroll the page instead removes both. */
+  html body[data-page="posts"] .cg-chat-thread {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  html body[data-page="posts"] .cg-thread-back {
+    display: inline-flex !important;
+    flex-shrink: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: rgba(20, 32, 26, 0.06) !important;
+    color: #123c34 !important;
+    cursor: pointer !important;
+  }
+
+  html body[data-page="posts"] .cg-thread-back svg {
+    width: 16px !important;
+    height: 16px !important;
   }
 }
 

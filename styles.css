@@ -13854,6 +13854,18 @@ body:has([data-employer-app]) { margin: 0; }
   .emp-app-main:has(.emp-dm-layout),
   .emp-app-main:has(.emp-pipeline-region) { overflow: visible; }
 }
+/* The "New here? Take the X tour" launcher chip (.cg-tour-launch,
+   employer-tour-final.css) is position:fixed at the bottom of the
+   viewport on every Employer OS view - at <=760px it goes full-width
+   (left/right:16px, bottom:24px, ~50px tall). .emp-app-main never
+   reserved any space for it, so whatever content happened to be at the
+   bottom of the (now natural-page-scroll, see the 1023px block above)
+   document sat directly underneath and got covered. 150px matches the
+   footprint + safety margin already used for the candidate side's
+   equivalent floating-FAB clearance fix. */
+@media (max-width: 760px) {
+  .emp-app-main { padding-bottom: 150px !important; }
+}
 .emp-app-sidebar, .emp-app-sidebar-overlay, .emp-app-body { display: none; } /* legacy sidebar fully retired */
 .emp-page-container {
   /* centering/padding now lives on .emp-app-main itself so every view inherits it automatically */
@@ -14259,6 +14271,19 @@ body:has([data-employer-app]) { margin: 0; }
   gap: 22px;
   align-items: start;
   margin-top: 32px;
+}
+
+/* This page had no mobile handling at all - below 720px the fixed 262px
+   rail left only a sliver for minmax(0,1fr), squeezing every label/input
+   in the Profile and Password cards down to a few truncated characters
+   ("Work emai", "Passwor"). .emp-set-rail's position:sticky (meant to
+   pin the identity card + nav alongside a taller form column on desktop)
+   then visually overlaid the "Save changes"/"Update password" buttons on
+   top of that squeezed column's text as the page scrolled. Stacking to
+   one column and dropping the sticky both come from the same fix. */
+@media (max-width: 720px) {
+  .emp-set-layout { grid-template-columns: 1fr; }
+  .emp-set-rail { position: static; }
 }
 
 .emp-set-rail {
@@ -15739,15 +15764,42 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 
 @media (max-width: 720px) {
   .emp-timeline { flex-direction: column; align-items: stretch; padding-bottom: 8px; }
-  .emp-timeline-stage { flex-direction: row; text-align: left; align-items: flex-start; padding: 10px 4px; }
-  .emp-timeline-node { flex-direction: column; width: auto; align-self: stretch; margin: 0 14px 0 0; }
-  .emp-timeline-connector { position: static; width: 2px; flex: 1; margin: 4px auto 0; }
-  .emp-timeline-stat-row { flex-direction: row; gap: 10px; flex-wrap: wrap; }
+  /* Was flex-direction:row with the icon node as one item and
+     stage-name/stat-row/tooltip as three more UNGROUPED siblings - with
+     no flex-wrap and none of those three given a width, they all fought
+     for the same single row and overlapped (a stat like "35% drop-off"
+     landing on top of "off", stats on top of the description). Grid
+     puts the icon in its own column spanning every row (the "current
+     stage" glow + connector line still run down its full height) and
+     stacks name -> stats -> description as three rows in column 2 -
+     matching the icon grid-row:span fix already applied elsewhere for
+     the exact same "flex siblings never got wrapped" root cause. */
+  .emp-timeline-stage {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto;
+    column-gap: 14px; row-gap: 4px; text-align: left; align-items: start; padding: 10px 4px;
+  }
+  .emp-timeline-node { grid-column: 1; grid-row: 1 / -1; flex-direction: column; width: auto; align-self: stretch; margin: 0; }
+  .emp-timeline-stage-name { grid-column: 2; grid-row: 1; }
+  .emp-timeline-stat-row { grid-column: 2; grid-row: 2; flex-direction: row; gap: 10px; flex-wrap: wrap; }
   .emp-timeline-tooltip {
+    grid-column: 2; grid-row: 3;
     position: static; opacity: 1; transform: none; pointer-events: auto; width: auto;
     margin-top: 6px; padding: 0; background: transparent; font-size: 12px;
   }
+  .emp-timeline-connector { position: static; width: 2px; flex: 1; margin: 4px auto 0; }
   .emp-app-shell.emp-app-shell .emp-timeline-tooltip { color: var(--emp-muted, var(--soft)) !important; opacity: 1 !important; }
+}
+
+@media (max-width: 720px) {
+  /* .emp-source-tag is flex-shrink:0 + white-space:nowrap by design (it's
+     a pill, not meant to squish its own text) - fine when it has room to
+     sit beside a section h2, but justify-content:space-between with no
+     wrap left it nowhere to go on narrow screens except off the right
+     edge of the viewport ("Company provided + live roles" on the Salary
+     & Benefits section). Letting the head wrap drops the badge to its
+     own line under the title instead of clipping it. */
+  .emp-company-section-head { flex-wrap: wrap; }
+  .emp-company-section-head h2 { font-size: 28px; }
 }
 
 /* Salary section - company-vs-market comparison. Meta tiles (percentile,
@@ -16609,6 +16661,29 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
   scrollbar-width: none; -ms-overflow-style: none;
 }
 .emp-feed-filters::-webkit-scrollbar { display: none; }
+@media (max-width: 720px) {
+  /* This row is a deliberate horizontal-scroll rail (see the comment
+     above it) with its scrollbar hidden, same as the Company Profile tab
+     nav - by design, not a bug. But with no visual cue at all, a phone
+     screen showing "All | Hiring | Candidate | Discussion" cut off mid-
+     pill at the right edge reads as "the rest is missing", not
+     "scrollable". Masking the last 10% to transparent (over the row's
+     own solid background, so it blends rather than hard-clips) fades
+     out whatever chip is sitting at that edge as a scroll hint, without
+     changing the underlying scroll-not-wrap design.  */
+  .emp-feed-filters {
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, #000 0%, #000 92%, transparent 100%);
+  }
+  /* "Media"/"Add context" + the mention/hashtag/save/schedule/preview
+     icon row + "Post" used to force onto one nowrap flex row - none of
+     them had room, so "Add context" crowded straight into the icon
+     strip next to it and "Media" got pushed off the left edge.
+     flex-wrap lets the icon row + Post drop to their own line instead
+     of fighting the two text buttons for space. */
+  .emp-feed-composer-actions { flex-wrap: wrap; justify-content: flex-start; }
+  .emp-feed-composer-utility { margin-right: 0; }
+}
 .emp-feed-filter-chip {
   flex-shrink: 0; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--emp-line, var(--line)); background: #fff;
   font-size: 12px; font-weight: 600; color: var(--emp-muted, var(--soft)); cursor: pointer;
@@ -17397,17 +17472,43 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .emp-app-shell.emp-app-shell .emp-dm-bubble-row.outgoing .emp-dm-bubble p { color: #fff !important; }
 .emp-app-shell.emp-app-shell .emp-dm-vera-suggests-box p { color: var(--emp-ink, var(--text)) !important; }
 
+.emp-dm-thread-back { display: none; }
+
 /* Below 1024px the fixed-shell scroll model (sizeDmRegion()) is cleared
    in JS - fall back to natural stacked scroll, same pattern as Feed. */
 @media (max-width: 1023px) {
   .emp-dm-layout { grid-template-columns: 1fr; height: auto !important; overflow: visible; }
   /* Stacked: swap the vertical divider for a horizontal one and drop the
      thread's left padding. */
-  .emp-dm-conversations { max-height: 320px; overflow-y: auto; padding: 0 0 16px; border-right: 0; border-bottom: 1px solid var(--emp-line, var(--line)); }
+  /* Was max-height:320px + overflow-y:auto - the search field, filter
+     chips and "Looking for more candidates?" footer alone ate most of
+     that, squeezing the actual conversation list down to a sliver (one
+     truncated row visible). Letting it grow with its content and scroll
+     the page instead shows every conversation in full. */
+  .emp-dm-conversations { max-height: none; overflow-y: visible; padding: 0 0 16px; border-right: 0; border-bottom: 1px solid var(--emp-line, var(--line)); }
   .emp-dm-thread { min-height: 480px; padding-left: 0; padding-top: 12px; }
-  .emp-dm-thread-head { flex-wrap: wrap; }
-  .emp-dm-thread-head-info { flex-basis: 100%; order: 1; }
-  .emp-dm-thread-head-actions { order: 2; }
+  .emp-dm-thread-head { flex-wrap: wrap; align-items: center; }
+  /* Back sits inline with the name (order:1/2, sharing line 1); the
+     status pill + overflow menu wrap to their own full-width line 2. */
+  .emp-dm-thread-head-info { order: 2; flex: 1 1 auto; min-width: 0; }
+  .emp-dm-thread-head-actions { order: 3; flex-basis: 100%; }
+  /* Below this breakpoint .emp-dm-conversations (the list) and
+     .emp-dm-thread (the open conversation) both used to render at once,
+     stacked in the single grid column - a truncated conversation row
+     immediately followed by a second, full render of the same
+     candidate's name and thread. data-mobile-view (dmMobileView in JS,
+     flipped by tapping a conversation row / the new back button) shows
+     exactly one at a time, same pattern as the candidate side's
+     posts.html Messages fix. */
+  .emp-dm-layout[data-mobile-view="list"] .emp-dm-thread { display: none; }
+  .emp-dm-layout[data-mobile-view="detail"] .emp-dm-conversations { display: none; }
+  .emp-dm-thread-back {
+    display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center;
+    width: 32px; height: 32px; min-width: 32px; padding: 0; margin: 0 0 0 -2px;
+    border: 0; border-radius: 999px; background: rgba(7, 56, 47, 0.06); color: var(--emp-ink, var(--text));
+    order: 1; cursor: pointer;
+  }
+  .emp-dm-thread-back svg { width: 16px; height: 16px; }
 }
 
 .emp-kanban { display: grid; grid-template-columns: repeat(7, minmax(160px, 1fr)); gap: 12px; overflow-x: auto; }
