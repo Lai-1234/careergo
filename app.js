@@ -11559,6 +11559,7 @@ function veraChatPanelMarkup(state) {
           <div class="cg-vera-chat-history-head">
             <span>Conversations</span>
             <button type="button" data-vera-new-chat>${icon("plus")} New chat</button>
+            <button type="button" class="cg-vera-history-close" data-vera-history-close aria-label="Close conversations"><span aria-hidden="true">&times;</span></button>
           </div>
           <div class="cg-vera-chat-history-list" data-vera-history-list>
             ${conversations.map(conv => veraHistoryItemHtml(conv, active.id)).join("")}
@@ -11566,6 +11567,7 @@ function veraChatPanelMarkup(state) {
         </div>
         <div class="cg-vera-chat-main">
           <header class="cg-vera-chat-head">
+            <button type="button" class="cg-vera-history-toggle" data-vera-history-toggle aria-label="Show conversations" aria-expanded="false">${icon("menu")}</button>
             <div><h2>Coach Vera</h2><p>Your AI career coach &middot; always online</p></div>
             <span class="cg-vera-chat-badge">Personalized to your profile</span>
             <button type="button" class="cg-vera-chat-close" data-vera-chat-close aria-label="Close Vera chat">${icon("x")}</button>
@@ -11588,14 +11590,31 @@ function veraPanelEls() {
   if (!panel) return null;
   return {
     panel,
+    sheet: qs(".cg-vera-chat-sheet", panel),
     backdrop: qs("[data-vera-chat-backdrop]", panel),
     closeBtn: qs("[data-vera-chat-close]", panel),
     historyList: qs("[data-vera-history-list]", panel),
     messagesPane: qs("[data-vera-chat-messages]", panel),
     composer: qs("[data-vera-chat-composer]", panel),
     input: qs("[data-vera-chat-input]", panel),
-    newChatBtn: qs("[data-vera-new-chat]", panel)
+    newChatBtn: qs("[data-vera-new-chat]", panel),
+    historyToggle: qs("[data-vera-history-toggle]", panel),
+    historyClose: qs("[data-vera-history-close]", panel)
   };
+}
+
+// Mobile-only: below 760px the Conversations sidebar is hidden by default
+// (see the @media block in enterprise.css) and opens as a full-screen
+// overlay via the hamburger button in the chat header - toggled by this
+// attribute rather than a module-level flag since the panel's whole
+// subtree already gets torn down/rebuilt by refreshVeraPanel() on every
+// conversation switch, and an attribute on a still-present element
+// (unlike a local variable a fresh render wouldn't see) survives that.
+function setVeraHistoryOpen(open) {
+  const els = veraPanelEls();
+  if (!els || !els.sheet) return;
+  els.sheet.dataset.historyOpen = open ? "true" : "false";
+  els.historyToggle?.setAttribute("aria-expanded", open ? "true" : "false");
 }
 
 function refreshVeraPanel() {
@@ -11641,6 +11660,7 @@ function openVeraPanel(options = {}) {
   writeState(state);
   els.panel.hidden = false;
   document.body.classList.add("cg-vera-chat-open");
+  setVeraHistoryOpen(false);
   refreshVeraPanel();
   els.input.focus();
 }
@@ -11659,6 +11679,7 @@ function wireVeraChatPanel() {
   els.newChatBtn.addEventListener("click", () => {
     els.panel.dataset.draftMode = "1";
     refreshVeraPanel();
+    setVeraHistoryOpen(false);
     els.input.focus();
   });
   els.historyList.addEventListener("click", event => {
@@ -11669,7 +11690,12 @@ function wireVeraChatPanel() {
     state.activeVeraConversationId = item.dataset.veraHistoryItem;
     writeState(state);
     refreshVeraPanel();
+    setVeraHistoryOpen(false);
   });
+  els.historyToggle?.addEventListener("click", () => {
+    setVeraHistoryOpen(els.sheet.dataset.historyOpen !== "true");
+  });
+  els.historyClose?.addEventListener("click", () => setVeraHistoryOpen(false));
   els.messagesPane.addEventListener("click", event => {
     const chip = event.target.closest("[data-vera-chat-quick-prompt]");
     if (!chip) return;
