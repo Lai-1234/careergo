@@ -10054,6 +10054,12 @@ function openMissionModal(task) {
 let dashboardTaskFilter = "";
 let activePostsThread = "";
 let activeInboxFilter = "All";
+// Mobile-only: the Messages tab renders the thread list and the open
+// conversation in the same DOM (desktop shows both side by side), so below
+// the .cg-messages-shell breakpoint we show exactly one at a time, gated by
+// this flag + [data-mobile-view] in the CSS. Starts on "list" so mobile
+// lands on the inbox rather than a conversation nobody picked.
+let postsMobileView = "list";
 // Category chip inside the Feed's "Your library" views (#saved / #liked).
 // Not in the hash: the hash already selects the library tab, and keeping the
 // chip out of it means Back returns you to the feed rather than stepping
@@ -19015,7 +19021,10 @@ function renderPosts() {
     .toUpperCase();
   if (activeTab === "messages") {
     const requestedPerson = new URLSearchParams(location.search).get("person");
-    if (requestedPerson && DATA.people.some(person => person.id === requestedPerson)) activePostsThread = requestedPerson;
+    if (requestedPerson && DATA.people.some(person => person.id === requestedPerson)) {
+      activePostsThread = requestedPerson;
+      postsMobileView = "detail";
+    }
     if (!activePostsThread || activePostsThread === "vera") activePostsThread = "aisha";
 
     const humanThreads = [
@@ -19079,6 +19088,7 @@ function renderPosts() {
 
     const threadPanel = `
           <header>
+            <button type="button" class="cg-thread-back" data-thread-back aria-label="Back to inbox">${icon("arrow-left")}</button>
             <div><h2>${activeThread.name}</h2><p>${activeThread.role}  - Usually replies within 2h</p></div>
             <span>Warm - 3 replies this week</span>
           </header>
@@ -19099,7 +19109,7 @@ function renderPosts() {
     `;
 
     root.innerHTML = appShell("posts", `
-      <section class="cg-messages-shell">
+      <section class="cg-messages-shell" data-mobile-view="${postsMobileView}">
         <aside class="cg-inbox-panel">
           <span class="cg-overline">Messages</span>
           <h1>Inbox</h1>
@@ -19132,12 +19142,17 @@ function renderPosts() {
     wireVeraWidget(root);
     qsa("[data-thread-id]", root).forEach(card => card.addEventListener("click", () => {
       activePostsThread = card.dataset.threadId;
+      postsMobileView = "detail";
       renderPosts();
     }));
     qsa("[data-inbox-filter]", root).forEach(button => button.addEventListener("click", () => {
       activeInboxFilter = button.dataset.inboxFilter;
       renderPosts();
     }));
+    qs("[data-thread-back]", root)?.addEventListener("click", () => {
+      postsMobileView = "list";
+      renderPosts();
+    });
     const humanComposer = qs("[data-human-thread-composer]", root);
     const humanInput = qs("[data-human-thread-input]", root);
     if (humanComposer && humanInput) {
@@ -24520,7 +24535,13 @@ function renderEmployerTalentPipeline(root, params = {}) {
   let query = "";
   let stageFilterX = "all";
   let specialFilter = null;
-  let viewMode = "board";
+  // Board is a deliberate 6-equal-columns-at-every-width design (spec §3/§4
+  // in renderBoard() below - no horizontal scroll, no stacking, by design),
+  // which reads fine on a laptop but squeezes every column to single-letter
+  // initials on a phone. Rather than fight that spec, default to the same
+  // data as a normal table (List) below phone width - Board stays one tap
+  // away via the tab for anyone who wants it.
+  let viewMode = window.innerWidth <= 760 ? "list" : "board";
   let openDrawerId = params.id || null;
   let drawerTab = "overview";
   let pendingAction = null;
@@ -28176,6 +28197,13 @@ function computeCompanyCompleteness(company) {
 
 function renderEmployerMessages(root, params = {}) {
   let activeConversationId = null;
+  // Mobile-only: below 1023px .emp-dm-layout's two columns (conversation
+  // list + open thread) stack instead of sitting side by side - both used
+  // to just render at once, so a mobile visitor saw a truncated list card
+  // followed immediately by the full thread. Show exactly one at a time,
+  // gated by this flag + [data-mobile-view] in CSS, same pattern as the
+  // candidate side's posts.html Messages fix.
+  let dmMobileView = "list";
   let conversationFilter = "all";
   let searchQuery = "";
   let replyAssistantType = "interview";
@@ -28323,6 +28351,7 @@ function renderEmployerMessages(root, params = {}) {
     return `
       <div class="emp-dm-thread">
         <div class="emp-dm-thread-head">
+          <button type="button" class="emp-dm-thread-back" data-dm-thread-back aria-label="Back to inbox">${icon("arrow-left")}</button>
           <div class="emp-dm-thread-head-info">
             <strong class="emp-dm-thread-head-name">${escapeHtml(cand.name)}</strong>
             <p class="emp-cand-meta emp-dm-subline">${subline}</p>
@@ -28455,11 +28484,12 @@ function renderEmployerMessages(root, params = {}) {
     if (!activeConversationId || !findConversation(activeConversationId)) {
       const preferred = params.id ? getConversations().find(c => c.candidateId === params.id) : null;
       activeConversationId = (preferred || filteredConversations()[0] || getConversations()[0])?.id || null;
+      if (preferred) dmMobileView = "detail";
     }
     const conv = activeConversationId ? findConversation(activeConversationId) : null;
 
     root.innerHTML = `
-      <div class="emp-dm-layout" data-dm-region>
+      <div class="emp-dm-layout" data-dm-region data-mobile-view="${dmMobileView}">
         ${renderConversationList()}
         ${conv ? renderThread(conv) : `
           <div class="emp-dm-thread emp-dm-empty-thread">
@@ -28508,8 +28538,14 @@ function renderEmployerMessages(root, params = {}) {
       // Ask Vera), so switching threads is now the way a dismissed card
       // comes back - without this it would stay hidden permanently.
       veraSuggestOpen = true;
+      dmMobileView = "detail";
       draw();
     }));
+
+    qs("[data-dm-thread-back]", root)?.addEventListener("click", () => {
+      dmMobileView = "list";
+      draw();
+    });
 
     qs("[data-dm-goto-roles]", root)?.addEventListener("click", () => employerNavigateTo("roles"));
 
