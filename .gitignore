@@ -12,3 +12,7 @@ CLAUDE.md
 DEMO_SCRIPT.md
 CareerGo_Demo_Screenshot_Guide.docx
 CareerGo_Slide_Captions.docx
+
+# Mobile-audit test output (screenshots, storage state, reports) - the
+# harness itself (tests/mobile-audit/*.js) is kept, its output isn't.
+tests/mobile-audit/shots/

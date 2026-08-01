@@ -4858,6 +4858,106 @@ function ensureWorkspaceNavbarStyles() {
         white-space: nowrap !important;
       }
     }
+
+    /* MOBILE/TABLET-ONLY FIX (<=1180px covers the same range the two blocks
+       above already constrain to phone/tablet): the workspace "Ask Vera"
+       search (.cg-vera-search) was set to display:none at this range with no
+       replacement anywhere in the page - Search was completely unreachable
+       from the top nav on every phone and tablet width. Give it its own full
+       width row instead of hiding it, unifying the tablet single-row layout
+       and the phone 2-row layout above into one 3-row stack (brand+actions /
+       tabs / search). Also restores .cg-message-trigger at <=760px - it was
+       hidden there even though the identical icon already fits comfortably
+       at 761-1180px, so there was no principled reason to drop it once the
+       nav wraps to 2 rows. Matches (does not exceed) the
+       .topbar.topbar.topbar.topbar.workspace-topbar specificity-boost
+       already used above so this reliably wins the cascade; placed last in
+       this stylesheet so it wins the tie against the earlier same-specificity
+       blocks at both 1180px and 760px. */
+    @media (max-width: 1180px) {
+      /* The topbar's own box was still pinned to a fixed, non-auto 64px
+         height throughout 761-1180px (only the <=760px rules further up
+         unlock height:auto, for the older 2-row brand+actions/tabs stack) -
+         the 3-row grid below needs ~150px, and since it's now the SAME
+         range this file gives that 3-row layout to, the extra two rows
+         just spilled out of the topbar's short fixed box and visually
+         overlapped whatever page content happened to scroll in underneath
+         (confirmed in an emulator at 768px: the search row sat on top of
+         the page's own h1/eyebrow text one card down). overflow isn't
+         hidden here (that's also <=760px-only), so nothing was clipped -
+         it only ever overlapped, which is easy to miss without actually
+         looking. */
+      html body .topbar.topbar.topbar.topbar.workspace-topbar,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) {
+        height: auto !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .nav-inner,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) .nav-inner {
+        display: grid !important;
+        grid-template-columns: auto auto !important;
+        grid-template-areas: "brand actions" "tabs tabs" "search search" !important;
+        height: auto !important;
+        min-height: 74px !important;
+        row-gap: 8px !important;
+        padding: 10px 0 !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-top-brand,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) .cg-top-brand {
+        grid-area: brand !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-workspace-tabs,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) .cg-workspace-tabs {
+        grid-area: tabs !important;
+        width: 100% !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-user-actions,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) .cg-user-actions {
+        grid-area: actions !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-vera-search,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) .cg-vera-search {
+        display: grid !important;
+        grid-area: search !important;
+        justify-self: stretch !important;
+        width: 100% !important;
+        max-width: none !important;
+      }
+    }
+
+    @media (max-width: 760px) {
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-message-trigger {
+        display: inline-flex !important;
+      }
+    }
+
+    /* MOBILE-ONLY (<=760px, matching the exact range of the plain
+       ".topbar{overflow:hidden}" rule in enterprise.css that causes this -
+       tablet/1180px-and-under is unaffected since that rule doesn't apply
+       there): the notification bell panel and the account-menu dropdown
+       are both position:absolute overlays anchored inside .topbar, growing
+       well past its own ~74-114px auto-height box (they're taken out of
+       flow, so they don't contribute to that auto-height the way the
+       search/tabs rows do). With overflow:hidden on .topbar, anything past
+       that box was silently cut away - confirmed in an emulator: opening
+       notifications only ever showed the "3 new updates / Mark all read"
+       header before the dashboard page content resumed as if nothing was
+       open, with all 5 notification rows invisible below it (the box and
+       its content were genuinely there per computed styles - background,
+       real text - just painted outside .topbar's clipped box). Plain
+       overflow:visible is enough here (unlike the workspace-tabs section
+       dropdown elsewhere in this file, which needed a full DOM portal
+       because its OWN overflow-x:auto - required for the horizontal tab
+       scroll - clips independently of whatever .topbar allows). */
+    @media (max-width: 760px) {
+      html body .topbar.topbar.topbar.topbar.workspace-topbar {
+        overflow: visible !important;
+      }
+    }
   `;
   document.head.appendChild(style);
 }
@@ -4991,10 +5091,61 @@ function bindNotificationMenu() {
 // above - renderNavigation() calls all three together on every re-render.
 let currentWorkspaceNavCloseAll = null;
 let workspaceNavDocListenersBound = false;
+// MOBILE/TABLET-ONLY (<=1180px, matching the breakpoint below where
+// .cg-workspace-tabs switches to overflow-x:auto - see
+// ensureWorkspaceNavbarStyles): the dropdown itself (position:absolute,
+// centered under its trigger via left:50%+translateX(-50%)) render fine at
+// that point, but never actually became visible on screen at narrow
+// widths - confirmed in an emulator (chevron flips, aria-expanded flips,
+// computed opacity/visibility both say "open"), and confirmed by root
+// cause: per the CSS Overflow spec, an ancestor with overflow-x:auto and
+// overflow-y left unset gets overflow-y silently upgraded to auto too, so
+// .cg-workspace-tabs (needed scrollable for the 6-tab row to fit) was
+// clipping any descendant - like this dropdown - that extends past its
+// own ~40px-tall box, exactly like the plain "hidden" case would.
+// position:fixed does not sidestep this: .topbar has backdrop-filter,
+// which per spec makes IT the containing block for any position:fixed
+// descendant, so a merely-fixed dropdown just stayed fixed to topbar's
+// own small box instead of the viewport (same root cause already called
+// out on the notification-menu fix elsewhere in this file). The only way
+// out is a real portal - move the open dropdown to <body> (no
+// transform/filter ancestor there to hijack it) with viewport-relative
+// fixed coordinates computed from the trigger's own rect, then move it
+// back on close so desktop's hover/DOM structure is unaffected.
+const WORKSPACE_DROPDOWN_PORTAL_BREAKPOINT = 1180;
+
+function portalOpenWorkspaceDropdown(wrap, dropdown, trigger) {
+  if (dropdown.dataset.portalled === "true") return;
+  dropdown.dataset.portalled = "true";
+  dropdown._cgPortalHome = wrap;
+  const anchor = trigger.getBoundingClientRect();
+  document.body.appendChild(dropdown);
+  const dropdownWidth = dropdown.getBoundingClientRect().width || 264;
+  const maxLeft = window.innerWidth - dropdownWidth - 12;
+  const left = Math.max(12, Math.min(anchor.left, maxLeft));
+  dropdown.style.setProperty("position", "fixed", "important");
+  dropdown.style.setProperty("top", `${Math.round(anchor.bottom + 8)}px`, "important");
+  dropdown.style.setProperty("left", `${Math.round(left)}px`, "important");
+  dropdown.style.setProperty("transform", "none", "important");
+  dropdown.style.setProperty("max-height", `${Math.round(window.innerHeight - anchor.bottom - 24)}px`, "important");
+  dropdown.style.setProperty("overflow-y", "auto", "important");
+}
+
+function portalCloseWorkspaceDropdown(dropdown) {
+  if (dropdown.dataset.portalled !== "true") return;
+  delete dropdown.dataset.portalled;
+  const home = dropdown._cgPortalHome;
+  ["position", "top", "left", "transform", "max-height", "overflow-y"].forEach(prop => dropdown.style.removeProperty(prop));
+  home?.appendChild(dropdown);
+  dropdown._cgPortalHome = null;
+}
+
 function bindWorkspaceNavDropdowns() {
   const wraps = qsa(".cg-nav-item-wrap");
   if (!wraps.length) return;
   const closeTimers = new WeakMap();
+  const dropdownForWrap = new Map();
+  wraps.forEach(wrap => dropdownForWrap.set(wrap, qs(".cg-nav-dropdown", wrap)));
   const cancelCloseTimer = wrap => {
     const timer = closeTimers.get(wrap);
     if (timer) {
@@ -5006,9 +5157,12 @@ function bindWorkspaceNavDropdowns() {
     cancelCloseTimer(wrap);
     wrap.classList.remove("is-open", "hover-open");
     qs(".cg-nav-dropdown-toggle", wrap)?.setAttribute("aria-expanded", "false");
+    const dropdown = dropdownForWrap.get(wrap);
+    if (dropdown) portalCloseWorkspaceDropdown(dropdown);
   });
   wraps.forEach(wrap => {
     const toggle = qs(".cg-nav-dropdown-toggle", wrap);
+    const dropdown = dropdownForWrap.get(wrap);
     toggle?.addEventListener("click", event => {
       event.preventDefault();
       event.stopPropagation();
@@ -5017,6 +5171,9 @@ function bindWorkspaceNavDropdowns() {
       if (!wasOpen) {
         wrap.classList.add("is-open");
         toggle.setAttribute("aria-expanded", "true");
+        if (dropdown && window.innerWidth <= WORKSPACE_DROPDOWN_PORTAL_BREAKPOINT) {
+          portalOpenWorkspaceDropdown(wrap, dropdown, toggle);
+        }
       }
     });
     // Grace period so the dropdown doesn't snap shut while the pointer is
