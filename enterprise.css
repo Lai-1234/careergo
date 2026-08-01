@@ -904,7 +904,14 @@ body[data-page="home"] .site-footer span {
   .home-compare,
   .home-metrics-grid,
   .home-logo-row {
-    grid-template-columns: 1fr;
+    /* minmax(0, 1fr), not bare 1fr - a bare 1fr track's automatic minimum
+       is its content's min-content size, so a child with non-shrinking
+       content (the Application Tracker preview card's company/role/status
+       row, in .home-browser-grid's case) can force the single column wider
+       than .home-browser-grid's own padded box, pushing that one card's
+       right edge past the grid's rounded background - visually reading as
+       a card "peeking out" from behind rather than a real overlap. */
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .home-preview-card.tracker {
@@ -1242,6 +1249,14 @@ small,
   padding: 0 0 12px;
   gap: 8px;
   overflow-x: auto;
+}
+
+.public-nav-toggle {
+  display: none;
+}
+
+.workspace-nav-toggle {
+  display: none;
 }
 
 .btn,
@@ -2375,14 +2390,125 @@ body[data-page="discover"] .jobs-page-layout>.jobs-split {
     display: none !important;
   }
 
-  .mobile-nav:not(:empty) {
+  /* .public-nav-toggle only exists in the DOM on public-nav pages (see
+     publicNav() in app.js) - workspace pages never render it, so this
+     can't put a stray hamburger on the logged-in dashboard/etc topbar. */
+  .public-nav-toggle {
+    display: inline-flex !important;
+    flex-shrink: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: rgba(20, 32, 26, 0.06) !important;
+    color: inherit !important;
+    cursor: pointer;
+  }
+
+  .public-nav-toggle svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  /* Adding .public-nav-toggle as a 3rd nav-inner child (alongside brand and
+     nav-actions) pushed narrow phones (320-375px) over budget: nav-inner's
+     32px gap was sized for exactly 2 items with zero slack (confirmed by
+     measurement - brand + nav-actions already summed to nav-inner's full
+     content width before this button existed). With a 3rd item and the
+     same 32px gap, flexbox had to claw back ~68px from somewhere, and since
+     nothing had flex-shrink:0, it took it almost entirely from the brand
+     logo (a replaced element, so it has no min-content floor the way text
+     does) - collapsing an ~67px logo to under 2px instead of an even
+     squeeze. flex-shrink:0 stops that; the tighter gap plus the CTA
+     tightening below make room for it without reintroducing the overflow. */
+  html body .nav-inner.nav-inner.nav-inner.nav-inner:has(.public-nav-toggle) {
+    gap: 10px !important;
+  }
+
+  .nav-inner:has(.public-nav-toggle) .brand,
+  .nav-inner:has(.public-nav-toggle) .public-site-brand {
+    flex-shrink: 0 !important;
+  }
+
+  /* Was an always-visible second row (display:flex the moment .mobile-nav
+     had content) - that duplicated whatever .nav-actions already showed
+     (Login/Create Account, or Your Dashboard once logged in) and, worse,
+     rendered as a horizontally-scrolling strip with no scroll affordance,
+     so Community/the last item could be clipped at the viewport edge with
+     nothing indicating there was more to swipe to. Now .public-nav-toggle
+     (above) opens/closes it instead - see bindPublicNavToggle() in app.js -
+     and it only ever holds the 3 links .nav-links hides (Explore/
+     Opportunities/Community), not the CTA, so there's nothing left to
+     duplicate. */
+  .mobile-nav:not(:empty)[data-open="true"] {
     display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    gap: 4px !important;
+    border-radius: 0 0 16px 16px !important;
+    box-shadow: 0 16px 32px rgba(20, 32, 26, 0.18) !important;
+    z-index: 180 !important;
+    overflow: visible !important;
+  }
+
+  .mobile-nav[data-open="true"] a {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  /* The dropdown is position:absolute inside .topbar, extending past its
+     64px box - .topbar{overflow:hidden} (elsewhere in this range) would
+     silently clip it away exactly like the notification/account-menu bug
+     documented above, so overflow needs to open up whenever it's open. */
+  html body .topbar:has(.mobile-nav[data-open="true"]) {
+    overflow: visible !important;
   }
 
   .workspace-search {
     display: none !important;
   }
+}
 
+/* Narrow-phone-only: even after the gap/flex-shrink fixes above, a fully
+   protected (flex-shrink:0) logo + "Login" + "Create Account" + hamburger
+   still doesn't fit in ~264px of content width without one more cut -
+   measured a ~40px shortfall at 320px (iPhone SE) after the 1020px-block
+   fixes alone. Shrinking the logo slightly and tightening the CTA
+   buttons' padding closes it without touching anything above 480px, where
+   there's enough room already. The actual declarations live in
+   ensurePublicNavStyles() (app.js) rather than here - .brand-logo,
+   .nav-actions and .btn each already carry a dozen+ competing !important
+   overrides elsewhere in this file (some scoped no narrower than "no media
+   query at all"), several with more type/class weight than is reasonable
+   to keep out-specifying here. A JS-appended <style> tag sorts after every
+   static stylesheet, so equal-specificity ties resolve in its favor without
+   an escalating specificity war - same trick ensureWorkspaceNavbarStyles()
+   already relies on nearby in this file. */
+@media (max-width: 480px) {
+  .public-nav-toggle {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+  }
+
+  .public-nav-toggle svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+@media (max-width: 1020px) {
   .os-layout {
     grid-template-columns: 1fr !important;
     padding-bottom: 100px !important;
@@ -2471,9 +2597,9 @@ body[data-page="discover"] .jobs-page-layout>.jobs-split {
     justify-content: flex-start !important;
   }
 
-  .mobile-nav:not(:empty) {
+  .mobile-nav:not(:empty)[data-open="true"] {
     width: 100% !important;
-    padding: 0 16px 12px !important;
+    padding: 12px 16px 16px !important;
     background: var(--cg-nav) !important;
   }
 
@@ -2565,6 +2691,66 @@ body[data-page="discover"] .jobs-page-layout>.jobs-split {
 
   main {
     padding-bottom: 110px !important;
+  }
+
+  /* Pages that render BOTH persistent bottom-corner FABs at once -
+     .home-back-top (left: 28px, up to 52px tall) and .cg-vera-widget's
+     trigger (right: 44px, 68px tall), both anchored bottom:32px (see
+     styles.css/enterprise.css for each) - need more than the generic
+     110px above: 32+68=100px of combined footprint left only ~10px of
+     clearance, easy to eat into with any card's own padding/shadow.
+     Confirmed in an emulator on market.html's "Top value drivers" list -
+     "Effort - 8 hrs - 2 weeks" and the "+n% VALUE" figure sat directly
+     behind the buttons. 150px (100px footprint + 50px safety margin)
+     covers every page in this list, not just market.html - discover,
+     grow, autopilot and posts all share the exact same two FABs and the
+     same 110px shortfall. */
+  html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="role"], [data-page="notifications"], [data-page="employers"]) main {
+    padding-bottom: 150px !important;
+  }
+
+  /* posts.html nests a second <main class="cg-feed-main"> inside the
+     page's own outer <main> (a pre-existing structural quirk, not
+     something introduced here) - the bare "main" selector above matches
+     both, so the feed column ALSO got 150px reserved beneath its last
+     post, well before .cg-feed-aside (the "Trending"/sidebar widgets,
+     stacked below it on mobile) even starts. That's a real mid-page gap,
+     not FAB clearance - only the outermost <main> is ever the true
+     bottom of the page. Reset it on any nested main so the rule above
+     only ever affects the one that actually sits at the page's end. */
+  html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="role"], [data-page="notifications"], [data-page="employers"]) main main {
+    padding-bottom: 0 !important;
+  }
+
+  /* discover.html's <main> also carries a data-jobs-page attribute, which
+     an unrelated, unscoped (applies at every width) rule elsewhere in
+     this file keys off to set padding-bottom:96px !important - higher
+     specificity than the 150px rule above (an extra attribute selector),
+     so it wins outright regardless of this block's own cascade position.
+     Matching that exact selector here, in a mobile-only block placed
+     later in the file, is what lets 150px actually take effect on this
+     page too - confirmed via CDP that 96px was the winning value before
+     this rule was added. */
+  html body[data-page="discover"]:has(.cg-discover-v2) main[data-jobs-page][data-jobs-page] {
+    padding-bottom: 150px !important;
+  }
+}
+
+/* MOBILE/TABLET-SCOPED FIX: .mobile-nav's link text always uses
+   --cg-nav-muted (rgba(255,255,255,.72), a light color meant to sit on the
+   dark --cg-nav pill-bar background) - but that dark background is only
+   ever applied to .mobile-nav inside the <=760px block above. Between
+   761-1020px, .nav-links is already hidden (see styles.css "@media
+   (max-width: 1020px) { .nav-links { display: none } }") so .mobile-nav is
+   the only nav available, but it falls back to the light
+   ".topbar, .mobile-nav" background used elsewhere - near-white text on a
+   near-white bar, unreadable (confirmed in an emulator at 768px: the
+   Explore/Opportunities/Community/Login row was there but essentially
+   invisible). Extend the same dark treatment already used at <=760px to
+   the rest of the range .mobile-nav is actually in use. */
+@media (max-width: 1020px) {
+  html body .mobile-nav:not(:empty) {
+    background: var(--cg-nav) !important;
   }
 }
 
@@ -3588,16 +3774,45 @@ body[data-page="home"] .home-cta-panel a:hover {
 
   body[data-page="home"] .home-stage-line::before,
   body[data-page="home"] .home-stage-line::after {
+    /* The unscoped "@media(max-width:1180px) { .home-stage-line::before,
+       .home-float-card { display:none } }" rule further up this file kills
+       the dashed line for the 761-1180px 3-col/2-row tablet layout, where a
+       single straight line wouldn't make sense against a wrapped grid -
+       correct there. But max-width queries stack: at <=760px that same
+       rule is still in effect too, silently cancelling the vertical line
+       this block is trying to draw back in (verified via CDP - display:
+       none was the only declaration for this property in the whole
+       cascade, nothing here was contesting it). Every article::before dot
+       below was rendering fine even so, just with no line linking them -
+       exactly the "scattered dots" the timeline was reported to look
+       like. */
+    display: block !important;
     top: 28px !important;
-    bottom: 28px;
-    left: 24px !important;
+    bottom: 28px !important;
+    /* 18px, not the 24px the desktop-derived value implies - measured
+       against the rendered icon (grid-row:span 3, justify-items:start, so
+       it sits flush at the icon column's left edge rather than centered
+       across the full 48px column): its horizontal center lands 18px from
+       .home-stage-line's own left edge, consistently across all 6 stages.
+       Matches the article::before dot fix below so the line actually
+       threads through the icons instead of running 6px to their side. */
+    left: 18px !important;
     right: auto !important;
     width: 2px !important;
-    height: auto;
+    /* !important: the desktop rule (same combined ::before/::after
+       selector, further up) sets height:2px !important - without matching
+       it, top+bottom (both set here) can't stretch the line the way
+       height:auto is meant to; the box stayed pinned at a literal 2px
+       tall instead of spanning from the first icon to the last. */
+    height: auto !important;
   }
 
+  /* !important: the desktop background two rules up (same selector) is
+     !important too - without matching it here, this vertical dashed
+     pattern loses outright and the desktop horizontal gradient (a 90deg
+     gradient squeezed into a 2px-wide vertical sliver) renders instead. */
   body[data-page="home"] .home-stage-line::before {
-    background: repeating-linear-gradient(180deg, rgba(86, 107, 141, 0.22) 0 7px, transparent 7px 13px);
+    background: repeating-linear-gradient(180deg, rgba(86, 107, 141, 0.22) 0 7px, transparent 7px 13px) !important;
   }
 
   body[data-page="home"] .home-stage-section.is-visible .home-stage-line::after {
@@ -3612,6 +3827,25 @@ body[data-page="home"] .home-cta-panel a:hover {
     padding: 14px;
     background: rgba(255, 255, 255, 0.72);
     border-color: rgba(197, 211, 215, 0.52);
+  }
+
+  /* The connector dot (article::before) is desktop layout leftover: there
+     it sits above each stage, centered over that stage's own column
+     (left:50%; top:-20px), lining up with the horizontal line running
+     through the row above. On mobile the line is vertical and article is a
+     [icon | text] row instead of a column, so left:50% landed mid-way
+     through the TEXT (roughly x=155 of a 310px-wide article) while
+     top:-20px floated it up into the gap before the article - both totally
+     disconnected from the actual line at left:18px, and different on every
+     stage since nothing tied the dot to the icon's position. Pin it to the
+     icon's measured center instead (left:18px, matching the line above;
+     top:8px, the icon's vertical center relative to the article's own top
+     edge - confirmed identical across all 6 stages) so every dot sits
+     exactly on the line, right on its icon. */
+  body[data-page="home"] .home-stage-line article::before {
+    top: 8px !important;
+    left: 18px !important;
+    transform: translate(-50%, -50%) !important;
   }
 
   /* createIcons() (lucide) swaps every <i data-lucide> for an <svg
@@ -4919,6 +5153,16 @@ body[data-page="discover"]:has(.cg-discover) main[data-jobs-page] {
   .cg-mentor-grid,
   .cg-top-pick-side {
     grid-template-columns: 1fr;
+  }
+
+  /* Same overflow-clip-with-no-ellipsis issue as the .cg-discover-v2
+     variant of this input (see that fix elsewhere in this file) - long
+     placeholders here get hard-clipped mid-word with no visual affordance
+     that text is missing. */
+  .cg-discover-search input {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .cg-question-card {
@@ -8897,12 +9141,30 @@ body[data-page="autopilot"] .cg-apjob .cg-cp-card h2 {
     grid-template-columns: 1fr;
   }
 
+  /* Each article is [<small> time, <span class="pill"> status, <div> title+
+     body] - 3 direct grid items. The old "auto minmax(0,1fr)" put time in
+     col1 and the STATUS PILL in col2 on row 1, then wrapped the title/body
+     div down to row 2 col1 - but col1's "auto" track sizes to the WIDEST
+     max-content contribution across every row sharing it, and a block div's
+     max-content width is measured as if its text never wrapped. A title/
+     body div is far wider un-wrapped than a timestamp, so col1 (and with it
+     col2, and the pill inside it) got pushed well past the card's own
+     right edge - measured up to 74px past the 390px viewport for longer
+     statuses ("Recommended", "Rule changed"), clipped by a nested
+     ancestor's overflow before it ever became a page-level scrollbar. The
+     "grid-column:1/-1" meant to fix this targeted .cg-ap-log h3/p, but
+     those are nested inside the div, not direct grid items themselves, so
+     it never did anything (same mismatch as the stage-timeline icon bug
+     elsewhere in this file). Swapping the columns puts the pill (small,
+     bounded by its own text) in the safe "auto" slot and the time in a
+     minmax(0,1fr) slot that can't blow up the row; targeting the div
+     directly is what actually makes grid-column:1/-1 span it down to its
+     own full-width row. */
   .cg-ap-log article {
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
-  .cg-ap-log h3,
-  .cg-ap-log p {
+  .cg-ap-log article > div {
     grid-column: 1 / -1;
   }
 }
@@ -10137,6 +10399,42 @@ html body[data-page="autopilot"] .cg-pipeline-review.cg-pipeline-review .btn-pri
   .cg-pipeline-hero>.btn {
     position: static;
     justify-self: start;
+  }
+}
+
+/* .cg-worth-driver-grid/.cg-worth-scenarios (market.html) collapse to a
+   single-column OUTER grid at <=1180px (see the .cg-worth-driver-grid rule
+   in the @media(max-width:1180px) block above), but each card's INNER
+   layout - the driver-grid article's now/target columns, the scenario
+   article's value/label columns, the worth-slider's label+value row, and
+   the salary-timetable chart - only got told to also collapse/scroll
+   <=720px (a few rules down in the next block). That left a 721-900px gap
+   that includes the common 768px tablet width: the outer card is full
+   width, but its still-multi-column inner content needs more than that
+   width to lay out, and the ~126px of overflow it produces is invisibly
+   clipped by html/body's overflow-x:hidden rather than causing visible
+   page scroll (confirmed via computed min-content width at 768px, and via
+   an emulator screenshot showing chart labels and RM values clipped flush
+   against the right edge). Widening just these four selectors to 900px -
+   matching the breakpoint their own outer containers already collapse at -
+   closes the gap; .cg-pipeline-impact article shares the same rule
+   (autopilot.html's equivalent card) and gets the same widened treatment
+   for consistency, since its outer container collapses on the same
+   schedule. */
+@media (max-width: 900px) {
+  .cg-worth-driver-grid article,
+  .cg-worth-scenarios article,
+  .cg-pipeline-impact article {
+    grid-template-columns: 1fr;
+  }
+
+  .cg-worth-slider div {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .cg-worth-chart {
+    overflow-x: auto;
   }
 }
 
@@ -12883,6 +13181,23 @@ html body[data-page="edit-career-data"] .cg-edit-wide {
   grid-column: 1 / -1 !important;
 }
 
+@media (max-width: 480px) {
+  /* .cg-edit-note is display:flex with an icon + running text that
+     includes an inline <a> - flexbox turns the text before/after the link
+     into separate anonymous flex items sitting side by side, and with no
+     flex-wrap each item wraps ITS OWN text internally instead of the
+     paragraph wrapping as one continuous flow, producing a scrambled
+     interleaved-columns reading order once the sentence is too long for
+     one line (confirmed in an emulator at 375px - not reproducible at
+     wider widths, including desktop, where the sentence fits on one line
+     and the split into flex items is never visually apparent). Wrapping
+     the flex container is enough to put each run on its own full-width
+     line instead of two narrow side-by-side columns. */
+  html body[data-page="edit-career-data"] .cg-edit-note {
+    flex-wrap: wrap !important;
+  }
+}
+
 html body[data-page="edit-career-data"] .cg-edit-note {
   display: flex !important;
   gap: 7px !important;
@@ -14338,6 +14653,19 @@ html body[data-page="discover"] .cg-discover-v2 .cg-mentor-card footer a {
     display: flex !important;
     align-items: stretch !important;
     flex-direction: column !important;
+  }
+
+  /* The placeholder ("Search companies, jobs, universities, industries,
+     salaries...") is long enough to overflow the input even in its own
+     full-width row here - browsers hard-clip overflowing placeholder text
+     at the input's edge with no ellipsis by default, cutting it mid-word
+     ("...industries, s"). text-overflow:ellipsis is well-supported for
+     both value and placeholder text on <input> and makes that clip read
+     as an intentional truncation instead of a rendering bug. */
+  html body[data-page="discover"] .cg-discover-v2 .cg-discover-search input {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 
   html body[data-page="discover"] .cg-discover-v2 .cg-discover-hero h1 {
@@ -16724,9 +17052,97 @@ html body[data-page="autopilot"] .cg-pipeline-hero>.btn * {
     gap: 18px !important;
   }
 
+  /* Used to just be overflow-x:auto - functional, but with no scroll
+     affordance a phone loaded scrolled to the start, so Career Value/
+     Pipeline/Feed sat clipped at the visible edge with nothing indicating
+     there was more to swipe to (verified in an emulator - "Career Value"
+     rendered as a bare "C", its other ~70px scrolled off-screen).
+     .workspace-nav-toggle (a hamburger, see workspaceTopNav() in app.js)
+     now opens this as a full-width vertical dropdown instead, matching the
+     public marketing nav's mobile pattern - see bindWorkspaceNavToggle(). */
   html body .topbar:has(.cg-workspace-tabs) .cg-workspace-tabs {
-    overflow-x: auto !important;
-    justify-content: start !important;
+    display: none !important;
+  }
+
+  html body .topbar.topbar.topbar:has(.cg-workspace-tabs) .cg-workspace-tabs[data-open="true"] {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    gap: 2px !important;
+    background: #ffffff !important;
+    border-radius: 0 0 16px 16px !important;
+    box-shadow: 0 16px 32px rgba(20, 32, 26, 0.18) !important;
+    z-index: 900 !important;
+    max-height: calc(100vh - 90px) !important;
+    overflow-y: auto !important;
+  }
+
+  /* Stack every top-level tab (plain <a> like Dashboard/Feed, and the
+     .cg-nav-item-wrap pill wrapping Discover/Growth/Career Value/Pipeline)
+     as full-width rows instead of the desktop inline-pill row - same
+     .topbar.topbar.topbar specificity boost the rest of the navbar-parity
+     pass uses to reliably win over those pill rules further down this
+     file. The per-tab chevron dropdown itself needs no changes here: at
+     this width bindWorkspaceNavDropdowns() already portals it to <body>
+     (WORKSPACE_DROPDOWN_PORTAL_BREAKPOINT=1180), and the
+     "[data-portalled]" rules further down this file style it independent
+     of where in the DOM it lives. */
+  html body .topbar.topbar.topbar:has(.cg-workspace-tabs) .cg-workspace-tabs[data-open="true"] > a[data-nav],
+  html body .topbar.topbar.topbar:has(.cg-workspace-tabs) .cg-workspace-tabs[data-open="true"] .cg-nav-item-wrap {
+    display: flex !important;
+    width: 100% !important;
+    height: auto !important;
+    justify-content: space-between !important;
+    padding: 12px 14px !important;
+    border-radius: 10px !important;
+    font-size: 15px !important;
+  }
+
+  html body .topbar.topbar.topbar:has(.cg-workspace-tabs) .cg-workspace-tabs[data-open="true"] .cg-nav-dropdown-toggle {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  html body .topbar.topbar.topbar:has(.cg-workspace-tabs) .cg-workspace-tabs[data-open="true"] .cg-nav-dropdown-toggle svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .workspace-nav-toggle {
+    display: inline-flex !important;
+    flex-shrink: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: rgba(20, 32, 26, 0.06) !important;
+    color: inherit !important;
+    cursor: pointer;
+  }
+
+  .workspace-nav-toggle svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  /* The dropdown is position:absolute inside .topbar, extending past its
+     own box - a plain ".topbar{overflow:hidden}" rule elsewhere in this
+     range would otherwise clip it away exactly like the notification/
+     account-menu/public-nav-dropdown bugs documented elsewhere in this
+     file, so overflow needs to open up whenever it's open. */
+  html body .topbar:has(.cg-workspace-tabs[data-open="true"]) {
+    overflow: visible !important;
   }
 
   html body .topbar:has(.cg-workspace-tabs) .cg-vera-search,
@@ -24163,6 +24579,23 @@ main[data-employer-onboarding] {
   margin-top: 28px;
 }
 
+@media (max-width: 480px) {
+  /* Side-by-side on a phone left too little room for "Already have an
+     account? Log in" next to the pill-shaped Continue button, so the
+     phrase broke mid-word ("...Log" / "in") right beside it (confirmed in
+     an emulator at 375px). Stacking gives the link its own full-width
+     line. */
+  .cg-onboard-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .cg-onboard-footer a {
+    text-align: center;
+  }
+}
+
 .cg-onboard-footer a,
 .cg-onboard-link {
   border: 0;
@@ -24535,6 +24968,22 @@ main[data-employer-onboarding] {
 .cg-onboard-import-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .cg-onboard-import-btn svg { width: 16px; height: 16px; }
 
+@media (max-width: 480px) {
+  /* The input (flex:1) and the nowrap "Read link" button no longer overflow
+     the page (fixed above via the grid-template-columns change), but side
+     by side on a phone-width card they still squeeze the input down to
+     showing only the first ~20 characters of a pasted URL. Stacking them
+     gives the URL its own full-width line instead. */
+  .cg-onboard-import-row {
+    flex-direction: column;
+  }
+
+  .cg-onboard-import-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .cg-onboard-import-shimmer { margin-top: 14px; display: flex; flex-direction: column; gap: 12px; }
 
 .cg-onboard-provenance-badge[hidden],
@@ -24608,6 +25057,22 @@ main[data-employer-onboarding] {
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
+}
+
+@media (max-width: 480px) {
+  /* No flex-wrap means a long label + hint pair (e.g. "Projects,
+     coursework or certifications" + "Optional - great if you have no
+     formal work yet") never gets to drop onto its own line - each side
+     just squeezes and wraps independently within its own half of the row,
+     reading as two cramped, interleaved columns instead of a label with a
+     hint underneath (confirmed in an emulator at 375px; most other
+     question headers have short enough label/hint pairs that this never
+     shows up). Wrapping the row lets the hint fall to a second line
+     whenever it doesn't fit next to the label - a no-op for the
+     already-short pairs. */
+  .cg-onboard-question > header {
+    flex-wrap: wrap;
+  }
 }
 
 .cg-onboard-question > header span {
@@ -24895,17 +25360,28 @@ main[data-employer-onboarding] {
 }
 
 @media (max-width: 860px) {
+  /* minmax(0, 1fr), not a bare 1fr: the desktop rule
+     (.cg-onboard-shell-split { grid-template-columns: minmax(0, 1fr) 300px })
+     explicitly zeroes the track's minimum size so its content can shrink
+     below its own intrinsic width. A bare "1fr" here drops that minimum
+     back to its "auto" default (effectively max-content), so any
+     non-shrinking row inside - confirmed culprit: the "Start from a link"
+     LinkedIn-import row, an input + a nowrap "Read link" button - forced
+     the whole single-column card ~27px wider than the 375px viewport, with
+     every label/button on the page clipped at the right edge as a result
+     (verified in an emulator). Keeping the explicit 0 minimum here is what
+     lets that row's input actually shrink to fit instead. */
   .cg-onboard-shell-split,
   .cg-onboard-finish-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .cg-onboard-role-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .cg-onboard-checklist {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .cg-onboard-topbar {
@@ -25328,6 +25804,22 @@ body[data-page="dashboard"] .cg-rp .cg-rp-card-id h3 {
   align-items: center;
   gap: 8px;
   flex: 0 0 auto;
+}
+
+@media (max-width: 480px) {
+  /* flex: 0 0 auto means this row (as a flex ITEM of its own parent) never
+     shrinks below its content's natural width - "View X open roles" +
+     "Save" + "Monitor with Autopilot" together measured 477px, so on a
+     375px phone the row itself never gets narrow enough for its own
+     flex-wrap to trigger, and "Monitor with Autopilot" rendered as an
+     unreachable sliver past the right edge (confirmed: document-level
+     scrollWidth doesn't grow, an ancestor clips it, so it wasn't even
+     reachable by scrolling). Letting the row shrink to fit its container
+     is what lets its own wrap actually happen. */
+  .cg-cp-hero-actions {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
 }
 
 .cg-cp-autopilot-pill {
@@ -26261,6 +26753,29 @@ html body .topbar.topbar.topbar:has(.cg-workspace-tabs) {
   box-shadow: 0 2px 6px rgba(20, 32, 26, 0.08) !important;
 }
 
+/* MOBILE-SCOPED FIX: the fixed height:64px above (no media query, so it
+   applies at every width) is correct on desktop where .public-site-nav is
+   the only nav row - but at <=1020px .nav-links/.public-site-nav is hidden
+   (see styles.css "@media (max-width: 1020px) { .nav-links { display:
+   none } }") and .public-nav-toggle (a hamburger button) opens .mobile-nav
+   (Explore/Opportunities/Community) as an absolutely-positioned dropdown
+   instead (see bindPublicNavToggle() in app.js). Closed, it's display:none
+   and the topbar's fixed 64px single-row height is correct as-is. Open, it
+   needs to escape the topbar's own box - a plain ".topbar{overflow:hidden}"
+   rule elsewhere in this same range would otherwise clip it away exactly
+   like the notification/account-menu bug documented above. Gated on
+   [data-open="true"], not just :not(:empty) - the nav has content on every
+   public-page load regardless of whether the dropdown is open, so :not
+   (:empty) alone would leave this permanently active. Matches the
+   .topbar.topbar.topbar specificity boost used throughout this navbar-
+   parity pass so it reliably wins over the always-on rule above. */
+@media (max-width: 1020px) {
+  html body .topbar.topbar.topbar:has(.mobile-nav[data-open="true"]) {
+    height: auto !important;
+    overflow: visible !important;
+  }
+}
+
 html body .topbar.topbar.topbar:has(.public-site-nav) .nav-inner,
 html body .topbar.topbar.topbar:has(.cg-workspace-tabs) .nav-inner {
   height: 64px !important;
@@ -26753,6 +27268,66 @@ html body .topbar.topbar.topbar:has(.cg-workspace-tabs) .cg-nav-dropdown a:hover
 @media (hover: none) {
   html body .topbar.topbar.topbar:has(.cg-workspace-tabs) .cg-nav-dropdown-toggle {
     opacity: 1 !important;
+  }
+}
+
+/* MOBILE/TABLET-ONLY: companion to the portal fix in
+   bindWorkspaceNavDropdowns() (app.js) - at <=1180px that function moves an
+   opened .cg-nav-dropdown to a direct child of <body> (see that function's
+   own comment for why: overflow-x:auto on the scrollable tab row was
+   silently clipping it, and position:fixed alone can't escape because
+   .topbar's backdrop-filter traps it as the containing block instead of
+   the viewport). Every rule above this point is keyed to
+   "...:has(.cg-workspace-tabs) .cg-nav-dropdown" - a descendant selector
+   that stops matching the instant the element is no longer nested inside
+   .topbar, which silently dropped every visual style (background, padding,
+   radius, shadow, per-link layout) and left a portalled dropdown as a
+   single run-on line of unstyled text. Re-declare the same visual design
+   here against the [data-portalled] attribute instead, which doesn't care
+   where in the DOM the element lives. Position/top/left/transform are set
+   inline by the JS itself (also !important) and are intentionally not
+   repeated here. */
+@media (max-width: 1180px) {
+  html body .cg-nav-dropdown[data-portalled="true"] {
+    display: block !important;
+    min-width: 264px !important;
+    padding: 8px !important;
+    border: 1px solid #e4dfd3 !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    box-shadow: 0 20px 44px -18px rgba(27, 46, 40, 0.5), 0 2px 8px -2px rgba(27, 46, 40, 0.15) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    z-index: 2000 !important;
+  }
+
+  html body .cg-nav-dropdown[data-portalled="true"] a {
+    display: block !important;
+    padding: 10px 14px !important;
+    border-radius: 8px !important;
+    border-left: 2px solid transparent !important;
+    color: #1b2e28 !important;
+    -webkit-text-fill-color: #1b2e28 !important;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    letter-spacing: normal !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    background: transparent !important;
+  }
+
+  html body .cg-nav-dropdown[data-portalled="true"] a + a {
+    margin-top: 1px !important;
+  }
+
+  html body .cg-nav-dropdown[data-portalled="true"] a:hover,
+  html body .cg-nav-dropdown[data-portalled="true"] a:active {
+    background: rgba(31, 85, 96, 0.1) !important;
+    border-left-color: #1f5560 !important;
+    color: #173b35 !important;
+    -webkit-text-fill-color: #173b35 !important;
   }
 }
 
@@ -27425,6 +28000,18 @@ html body[data-page="notifications"] .container.os-layout {
 @media (max-width: 640px) {
   .cg-notif-hero { flex-direction: column; align-items: flex-start; }
   .cg-notif-row-actions { opacity: 1; }
+
+  /* .cg-notif-hero > div:first-child has flex: 1 1 320px, a WIDTH
+     intention for the default row layout above. flex-basis follows the
+     flex container's main axis, which switching to flex-direction:column
+     just turned from horizontal to vertical - so that same 320px became a
+     minimum HEIGHT instead, stretching the title/description block (which
+     only needs ~170px of content) and leaving a large empty band before
+     "Mark all read" (confirmed in an emulator at 375px). Resetting the
+     basis to auto lets it size to its actual content again. */
+  .cg-notif-hero > div:first-child {
+    flex-basis: auto;
+  }
 }
 
 /* ============================================================
@@ -30659,6 +31246,22 @@ html body[data-page="settings"] .cg-set .btn-ghost {
   color: #0b6d65;
 }
 
+@media (max-width: 900px) {
+  /* 26x26px is well under a comfortable ~40px touch target, and this
+     "add role to this stage" button has no bigger hit area than its own
+     visible circle (no padding to tap into) - confirmed cramped in an
+     emulator at both 375px and 768px, not just phone width. */
+  .cg-pipeline-stage-add {
+    width: 40px;
+    height: 40px;
+  }
+
+  .cg-pipeline-stage-add svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 /* --- shared card buttons ---------------------------------------------- */
 .cg-pipeline-btn {
   display: inline-flex;
@@ -31796,6 +32399,18 @@ html body .topbar.workspace-topbar:has(.cg-top-brand.is-employer) .cg-search-she
     margin-top: 8px !important;
   }
 
+  /* .cg-feed-left-note (the "Looking for opportunities?" promo card) is
+     also a direct flex child of .cg-feed-left, same as .cg-feed-left-group
+     above, but never got the same flex:1 0 100% - at 768px there's just
+     enough leftover row width after "Saved 8 / Liked" for it to float up
+     beside them instead of dropping to its own row, leaving a large
+     awkward gap (only wrapped "correctly" at 375px by accident, because
+     there wasn't enough row width left there either way). */
+  html body[data-page="posts"]:not(#_):not(#_) .cg-feed-left-note {
+    flex: 1 0 100% !important;
+    margin-top: 8px !important;
+  }
+
   html body[data-page="posts"]:not(#_):not(#_) .cg-feed-left-group:first-child {
     margin-top: 0 !important;
   }
@@ -31861,5 +32476,20 @@ html body .topbar.workspace-topbar:has(.cg-top-brand.is-employer) .cg-search-she
     right: -48px !important;
     max-height: 70vh !important;
     overflow-y: auto !important;
+  }
+
+  /* Sibling bug to the notification-menu one just above: .account-menu also
+     carries .glass-card, and that class's own blanket
+     "@media(max-width:640px){width:100%}" card-sizing rule (correct for
+     actual in-flow cards) resolves the percentage against .account-menu's
+     containing block - .account-menu-wrap, which is just the 36px avatar
+     button - collapsing the whole Profile/Settings/Saved Items/Logout menu
+     to ~46px wide with every label wrapping into an unreadable sliver
+     (confirmed in an emulator). Unlike the notification bell,
+     .account-menu-wrap is already the row's rightmost element (the avatar
+     sits flush with .nav-inner's right edge), so right:0 already lands
+     correctly - only width needs restoring. */
+  html body .topbar.workspace-topbar .account-menu {
+    width: min(230px, calc(100vw - 24px)) !important;
   }
 }

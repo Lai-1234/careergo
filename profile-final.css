@@ -915,6 +915,23 @@ html body:is([data-page="profile"],[data-page="public-profile"]) .cg-up-edu-card
   }
 }
 
+/* .cg-up-identity's 2-column grid (minmax(0,1fr) text column + auto actions
+   column) only collapsed to a single column <=760px, but the actions
+   column (4 non-wrapping buttons) already needs more room than that on its
+   own - at the common 768px tablet width the text column's minmax(0,...)
+   track was measured resolving to ~0.3px while actions claimed the rest,
+   wrapping every word of the name/title/school/location onto its own line
+   and pushing "Contact info" behind the buttons (confirmed in an
+   emulator). Widening just this one rule to 900px - independent of the
+   760px block below, which the rest of the page's mobile-only layout
+   changes stay scoped to - is the minimal fix. */
+@media (max-width: 900px) {
+  .cg-up-identity {
+    grid-template-columns: 1fr;
+    padding-inline: 20px;
+  }
+}
+
 @media (max-width: 760px) {
   html body:is([data-page="profile"],[data-page="public-profile"]) .container.os-layout {
     width: min(100% - 28px, 1200px) !important;
@@ -922,11 +939,6 @@ html body:is([data-page="profile"],[data-page="public-profile"]) .cg-up-edu-card
 
   html body:is([data-page="profile"],[data-page="public-profile"]) .os-main {
     padding-top: 32px !important;
-  }
-
-  .cg-up-identity {
-    grid-template-columns: 1fr;
-    padding-inline: 20px;
   }
 
   .cg-up-avatar {

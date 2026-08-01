@@ -3808,6 +3808,43 @@ function bindAccountMenu() {
   }
 }
 
+// Same rebind-every-render / bind-document-listeners-once pattern as
+// bindAccountMenu() above - .public-nav-toggle and .mobile-nav are both
+// replaced wholesale on every renderNavigation() call (innerHTML swap for
+// the toggle's parent, direct innerHTML swap for the nav itself), so any
+// listener bound straight to those nodes would leak on every re-render.
+let currentPublicNavClose = null;
+let publicNavDocListenersBound = false;
+function bindPublicNavToggle() {
+  const toggle = qs("[data-public-nav-toggle]");
+  const menu = qs(".mobile-nav");
+  if (!toggle || !menu) return;
+  const close = () => {
+    toggle.setAttribute("aria-expanded", "false");
+    menu.removeAttribute("data-open");
+  };
+  const open = () => {
+    toggle.setAttribute("aria-expanded", "true");
+    menu.dataset.open = "true";
+  };
+  toggle.addEventListener("click", event => {
+    event.stopPropagation();
+    menu.dataset.open === "true" ? close() : open();
+  });
+  menu.addEventListener("click", event => event.stopPropagation());
+  // Closing on a link tap (rather than waiting for the ensuing navigation)
+  // avoids the dropdown visibly hanging open for a frame on slower loads.
+  menu.querySelectorAll("a").forEach(a => a.addEventListener("click", close));
+  currentPublicNavClose = close;
+  if (!publicNavDocListenersBound) {
+    publicNavDocListenersBound = true;
+    document.addEventListener("click", () => currentPublicNavClose?.());
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") currentPublicNavClose?.();
+    });
+  }
+}
+
 function publicNav(state) {
   // "companies"/"universities" (and the rest of publicPages in
   // renderNavigation) always render this public-styled nav regardless of
@@ -3838,6 +3875,7 @@ function publicNav(state) {
       ].map(([, label, href]) => `<a href="${href}">${label}</a>`).join("")}
     </nav>
     <div class="nav-actions public-site-actions">${actions}</div>
+    <button type="button" class="public-nav-toggle" data-public-nav-toggle aria-expanded="false" aria-controls="public-mobile-nav" aria-label="Open navigation menu">${icon("menu")}</button>
   `;
 }
 
@@ -3973,7 +4011,7 @@ function workspaceTopNav() {
       <a class="brand cg-top-brand" href="dashboard.html" aria-label="CareerGo dashboard">
         <img class="cg-navbar-logo" src="assets/careergo-logo-script.png" alt="CareerGo">
       </a>
-      <nav class="nav-links cg-workspace-tabs" aria-label="CareerGo workspace" data-tour-target="workspace-nav">
+      <nav class="nav-links cg-workspace-tabs" id="cg-workspace-tabs-nav" aria-label="CareerGo workspace" data-tour-target="workspace-nav">
         ${workspaceLinks.map(([key, label, href]) => {
           const activeClass = isWorkspaceTabActive(key) ? "active" : "";
           const sections = navSectionsForKey(key);
@@ -3999,6 +4037,7 @@ function workspaceTopNav() {
         <div class="cg-search-panel" data-search-panel hidden></div>
       </div>
       <div class="nav-actions cg-user-actions">
+        <button type="button" class="workspace-nav-toggle" data-workspace-nav-toggle aria-expanded="false" aria-controls="cg-workspace-tabs-nav" aria-label="Open navigation menu">${icon("menu")}</button>
         <a class="btn btn-ghost cg-message-trigger" href="posts.html#messages" aria-label="Messages">
           ${icon("message-circle")}
         </a>
@@ -4041,8 +4080,8 @@ function workspaceTopNav() {
       <img class="cg-navbar-logo" src="assets/careergo-logo-script.png" alt="CareerGo">
       <span class="cg-nav-role-chip">Employer</span>
     </a>
-    <nav class="nav-links cg-workspace-tabs" aria-label="Employer workspace">
-      ${EMPLOYER_NAV_GROUPS[0].items.map(([key, label]) => `<a href="employer-app.html#${key}">${label}</a>`).join("")}
+    <nav class="nav-links cg-workspace-tabs" id="cg-workspace-tabs-nav" aria-label="Employer workspace">
+      ${EMPLOYER_NAV_GROUPS[0].items.map(([key, label]) => `<a data-nav="${key}" href="employer-app.html#${key}">${label}</a>`).join("")}
     </nav>
     <div class="cg-search-shell">
       <form class="workspace-search cg-vera-search" role="search" data-workspace-search data-tour-target="workspace-search" style="grid-template-columns:24px minmax(0,1fr) !important">
@@ -4051,6 +4090,7 @@ function workspaceTopNav() {
       </form>
     </div>
     <div class="nav-actions cg-user-actions">
+      <button type="button" class="workspace-nav-toggle" data-workspace-nav-toggle aria-expanded="false" aria-controls="cg-workspace-tabs-nav" aria-label="Open navigation menu">${icon("menu")}</button>
       <a class="btn btn-ghost cg-message-trigger" href="employer-app.html#messages" aria-label="Inbox">
         ${icon("message-circle")}
       </a>
@@ -4068,6 +4108,43 @@ function workspaceTopNav() {
       </div>
     </div>
   `;
+}
+
+// .brand-logo, .nav-actions and .btn each already carry a dozen+ competing
+// !important overrides elsewhere in the stylesheets (several unscoped by
+// any media query, so they're always "in the running" regardless of
+// viewport). Out-specifying the strongest of those from within
+// enterprise.css turned into an escalating arms race - appending a <style>
+// tag here instead means equal-specificity ties resolve in this block's
+// favor purely by virtue of being last in the document, same trick
+// ensureWorkspaceNavbarStyles() below already relies on.
+function ensurePublicNavStyles() {
+  if (document.getElementById("careergo-public-nav-style")) return;
+  const style = document.createElement("style");
+  style.id = "careergo-public-nav-style";
+  style.textContent = `
+    /* Narrow-phone-only (<=480px): logo + Login + Create Account + the
+       hamburger (.public-nav-toggle, added for the mobile nav dropdown -
+       see bindPublicNavToggle()) don't fit ~264px of content width without
+       this - measured a ~40px shortfall at 320px (iPhone SE) even after
+       protecting the logo/toggle from flex-shrink and tightening
+       .nav-inner's gap in enterprise.css. */
+    @media (max-width: 480px) {
+      html body .topbar.topbar.topbar:has(.public-nav-toggle) .brand-logo {
+        height: 20px !important;
+      }
+
+      html body .topbar.topbar.topbar:has(.public-nav-toggle) .nav-actions.public-site-actions {
+        gap: 6px !important;
+      }
+
+      html body .topbar.topbar.topbar:has(.public-nav-toggle) .nav-actions.public-site-actions .btn {
+        padding: 0 8px !important;
+        font-size: 13px !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
 }
 
 function ensureWorkspaceNavbarStyles() {
@@ -4858,6 +4935,127 @@ function ensureWorkspaceNavbarStyles() {
         white-space: nowrap !important;
       }
     }
+
+    /* MOBILE/TABLET-ONLY FIX (<=1180px covers the same range the two blocks
+       above already constrain to phone/tablet): the workspace "Ask Vera"
+       search (.cg-vera-search) was set to display:none at this range with no
+       replacement anywhere in the page - Search was completely unreachable
+       from the top nav on every phone and tablet width. Give it its own full
+       width row instead of hiding it, unifying the tablet single-row layout
+       and the phone 2-row layout above into one 3-row stack (brand+actions /
+       tabs / search). Also restores .cg-message-trigger at <=760px - it was
+       hidden there even though the identical icon already fits comfortably
+       at 761-1180px, so there was no principled reason to drop it once the
+       nav wraps to 2 rows. Matches (does not exceed) the
+       .topbar.topbar.topbar.topbar.workspace-topbar specificity-boost
+       already used above so this reliably wins the cascade; placed last in
+       this stylesheet so it wins the tie against the earlier same-specificity
+       blocks at both 1180px and 760px. */
+    @media (max-width: 1180px) {
+      /* The topbar's own box was still pinned to a fixed, non-auto 64px
+         height throughout 761-1180px (only the <=760px rules further up
+         unlock height:auto, for the older 2-row brand+actions/tabs stack) -
+         the 3-row grid below needs ~150px, and since it's now the SAME
+         range this file gives that 3-row layout to, the extra two rows
+         just spilled out of the topbar's short fixed box and visually
+         overlapped whatever page content happened to scroll in underneath
+         (confirmed in an emulator at 768px: the search row sat on top of
+         the page's own h1/eyebrow text one card down). overflow isn't
+         hidden here (that's also <=760px-only), so nothing was clipped -
+         it only ever overlapped, which is easy to miss without actually
+         looking. */
+      html body .topbar.topbar.topbar.topbar.workspace-topbar,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) {
+        height: auto !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .nav-inner,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) .nav-inner {
+        display: grid !important;
+        grid-template-columns: auto auto !important;
+        grid-template-areas: "brand actions" "tabs tabs" "search search" !important;
+        height: auto !important;
+        min-height: 74px !important;
+        row-gap: 8px !important;
+        padding: 10px 0 !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-top-brand,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) .cg-top-brand {
+        grid-area: brand !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-workspace-tabs,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) .cg-workspace-tabs {
+        grid-area: tabs !important;
+        width: 100% !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-user-actions,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) .cg-user-actions {
+        grid-area: actions !important;
+      }
+
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-vera-search,
+      html body .topbar.topbar.topbar.topbar:has(.cg-vera-search) .cg-vera-search {
+        display: grid !important;
+        grid-area: search !important;
+        justify-self: stretch !important;
+        width: 100% !important;
+        max-width: none !important;
+      }
+    }
+
+    @media (max-width: 760px) {
+      html body .topbar.topbar.topbar.topbar.workspace-topbar .cg-message-trigger {
+        display: inline-flex !important;
+      }
+    }
+
+    /* MOBILE-ONLY (<=760px, matching the exact range of the plain
+       ".topbar{overflow:hidden}" rule in enterprise.css that causes this -
+       tablet/1180px-and-under is unaffected since that rule doesn't apply
+       there): the notification bell panel and the account-menu dropdown
+       are both position:absolute overlays anchored inside .topbar, growing
+       well past its own ~74-114px auto-height box (they're taken out of
+       flow, so they don't contribute to that auto-height the way the
+       search/tabs rows do). With overflow:hidden on .topbar, anything past
+       that box was silently cut away - confirmed in an emulator: opening
+       notifications only ever showed the "3 new updates / Mark all read"
+       header before the dashboard page content resumed as if nothing was
+       open, with all 5 notification rows invisible below it (the box and
+       its content were genuinely there per computed styles - background,
+       real text - just painted outside .topbar's clipped box). Plain
+       overflow:visible is enough here (unlike the workspace-tabs section
+       dropdown elsewhere in this file, which needed a full DOM portal
+       because its OWN overflow-x:auto - required for the horizontal tab
+       scroll - clips independently of whatever .topbar allows). */
+    @media (max-width: 760px) {
+      html body .topbar.topbar.topbar.topbar.workspace-topbar {
+        overflow: visible !important;
+      }
+    }
+
+    /* .cg-workspace-tabs is forced "display:flex !important" unconditionally
+       by two rules earlier in this same injected stylesheet (both
+       necessary - one for :has(.cg-vera-search) pages, one for
+       .workspace-topbar generally - see above). enterprise.css's mobile
+       hamburger toggle (.workspace-nav-toggle, bindWorkspaceNavToggle() in
+       this file) needs .cg-workspace-tabs to default to display:none at
+       <=1040px and only become flex once opened - but that rule lives in a
+       <link>-loaded stylesheet, which loses any specificity tie to
+       anything in this JS-appended <style> tag by virtue of coming earlier
+       in the document (confirmed via CDP: the two "flex !important" rules
+       above were winning outright, leaving the tab list permanently
+       visible - and truncating "Career Value" to "C" again exactly the
+       way the toggle was built to fix). Closing the loop here, last in
+       this stylesheet and at matching specificity, is what actually makes
+       the closed state stick. */
+    @media (max-width: 1040px) {
+      html body .topbar.topbar.topbar:has(.cg-workspace-tabs) .cg-workspace-tabs:not([data-open="true"]) {
+        display: none !important;
+      }
+    }
   `;
   document.head.appendChild(style);
 }
@@ -4886,19 +5084,26 @@ function renderNavigation() {
   topbar.dataset.navMode = useWorkspaceNav ? "workspace" : "public";
   navInner.innerHTML = useWorkspaceNav ? workspaceTopNav() : publicNav(state);
   ensureWorkspaceNavbarStyles();
+  ensurePublicNavStyles();
   if (mobileNav) {
-    const mobileAction = loggedIn
-      ? `<a href="${state.session.role === "employer" ? "employer-app.html" : "dashboard.html"}">${state.session.role === "employer" ? "Employer OS" : "Your Dashboard"}</a>`
-      : `<a href="login.html">Login</a><a href="register.html">Create Account</a>`;
+    // The public nav's CTA(s) (Login/Create Account, or Your Dashboard once
+    // logged in) already render in .nav-actions and stay visible at every
+    // width - duplicating them here too used to leave the mobile dropdown
+    // repeating whatever the top-row button already said. This list is only
+    // the links that .nav-links hides at <=1020px (see styles.css), i.e.
+    // the ones with nowhere else to go on mobile/tablet.
+    if (!mobileNav.id) mobileNav.id = "public-mobile-nav";
     mobileNav.innerHTML = useWorkspaceNav
       ? ""
-      : `<a href="explore.html">Explore</a><a href="companies.html">Opportunities</a><a href="community.html">Community</a>${mobileAction}`;
+      : `<a href="explore.html">Explore</a><a href="companies.html">Opportunities</a><a href="community.html">Community</a>`;
   }
   createIcons();
   setActiveNav();
   bindAccountMenu();
   bindNotificationMenu();
   bindWorkspaceNavDropdowns();
+  bindWorkspaceNavToggle();
+  bindPublicNavToggle();
   const workspaceSearchForm = qs("[data-workspace-search]");
   if (workspaceSearchForm?.classList.contains("cg-vera-search")) {
     attachLiveSearch(workspaceSearchForm, query => renderSearchPanelContent(query, "workspace", readState()), () => renderSearchDefaultContent(readState()));
@@ -4991,10 +5196,61 @@ function bindNotificationMenu() {
 // above - renderNavigation() calls all three together on every re-render.
 let currentWorkspaceNavCloseAll = null;
 let workspaceNavDocListenersBound = false;
+// MOBILE/TABLET-ONLY (<=1180px, matching the breakpoint below where
+// .cg-workspace-tabs switches to overflow-x:auto - see
+// ensureWorkspaceNavbarStyles): the dropdown itself (position:absolute,
+// centered under its trigger via left:50%+translateX(-50%)) render fine at
+// that point, but never actually became visible on screen at narrow
+// widths - confirmed in an emulator (chevron flips, aria-expanded flips,
+// computed opacity/visibility both say "open"), and confirmed by root
+// cause: per the CSS Overflow spec, an ancestor with overflow-x:auto and
+// overflow-y left unset gets overflow-y silently upgraded to auto too, so
+// .cg-workspace-tabs (needed scrollable for the 6-tab row to fit) was
+// clipping any descendant - like this dropdown - that extends past its
+// own ~40px-tall box, exactly like the plain "hidden" case would.
+// position:fixed does not sidestep this: .topbar has backdrop-filter,
+// which per spec makes IT the containing block for any position:fixed
+// descendant, so a merely-fixed dropdown just stayed fixed to topbar's
+// own small box instead of the viewport (same root cause already called
+// out on the notification-menu fix elsewhere in this file). The only way
+// out is a real portal - move the open dropdown to <body> (no
+// transform/filter ancestor there to hijack it) with viewport-relative
+// fixed coordinates computed from the trigger's own rect, then move it
+// back on close so desktop's hover/DOM structure is unaffected.
+const WORKSPACE_DROPDOWN_PORTAL_BREAKPOINT = 1180;
+
+function portalOpenWorkspaceDropdown(wrap, dropdown, trigger) {
+  if (dropdown.dataset.portalled === "true") return;
+  dropdown.dataset.portalled = "true";
+  dropdown._cgPortalHome = wrap;
+  const anchor = trigger.getBoundingClientRect();
+  document.body.appendChild(dropdown);
+  const dropdownWidth = dropdown.getBoundingClientRect().width || 264;
+  const maxLeft = window.innerWidth - dropdownWidth - 12;
+  const left = Math.max(12, Math.min(anchor.left, maxLeft));
+  dropdown.style.setProperty("position", "fixed", "important");
+  dropdown.style.setProperty("top", `${Math.round(anchor.bottom + 8)}px`, "important");
+  dropdown.style.setProperty("left", `${Math.round(left)}px`, "important");
+  dropdown.style.setProperty("transform", "none", "important");
+  dropdown.style.setProperty("max-height", `${Math.round(window.innerHeight - anchor.bottom - 24)}px`, "important");
+  dropdown.style.setProperty("overflow-y", "auto", "important");
+}
+
+function portalCloseWorkspaceDropdown(dropdown) {
+  if (dropdown.dataset.portalled !== "true") return;
+  delete dropdown.dataset.portalled;
+  const home = dropdown._cgPortalHome;
+  ["position", "top", "left", "transform", "max-height", "overflow-y"].forEach(prop => dropdown.style.removeProperty(prop));
+  home?.appendChild(dropdown);
+  dropdown._cgPortalHome = null;
+}
+
 function bindWorkspaceNavDropdowns() {
   const wraps = qsa(".cg-nav-item-wrap");
   if (!wraps.length) return;
   const closeTimers = new WeakMap();
+  const dropdownForWrap = new Map();
+  wraps.forEach(wrap => dropdownForWrap.set(wrap, qs(".cg-nav-dropdown", wrap)));
   const cancelCloseTimer = wrap => {
     const timer = closeTimers.get(wrap);
     if (timer) {
@@ -5006,9 +5262,12 @@ function bindWorkspaceNavDropdowns() {
     cancelCloseTimer(wrap);
     wrap.classList.remove("is-open", "hover-open");
     qs(".cg-nav-dropdown-toggle", wrap)?.setAttribute("aria-expanded", "false");
+    const dropdown = dropdownForWrap.get(wrap);
+    if (dropdown) portalCloseWorkspaceDropdown(dropdown);
   });
   wraps.forEach(wrap => {
     const toggle = qs(".cg-nav-dropdown-toggle", wrap);
+    const dropdown = dropdownForWrap.get(wrap);
     toggle?.addEventListener("click", event => {
       event.preventDefault();
       event.stopPropagation();
@@ -5017,6 +5276,9 @@ function bindWorkspaceNavDropdowns() {
       if (!wasOpen) {
         wrap.classList.add("is-open");
         toggle.setAttribute("aria-expanded", "true");
+        if (dropdown && window.innerWidth <= WORKSPACE_DROPDOWN_PORTAL_BREAKPOINT) {
+          portalOpenWorkspaceDropdown(wrap, dropdown, toggle);
+        }
       }
     });
     // Grace period so the dropdown doesn't snap shut while the pointer is
@@ -5053,6 +5315,62 @@ function bindWorkspaceNavDropdowns() {
       if (event.key !== "Escape") return;
       currentWorkspaceNavCloseAll?.();
       if (document.activeElement?.closest(".cg-nav-item-wrap")) document.activeElement.blur();
+    });
+  }
+}
+
+// .cg-workspace-tabs (Dashboard/Discover/Growth/Career Value/Pipeline/Feed)
+// used to just get "overflow-x:auto" at <=1040px - functional, but with no
+// scroll affordance a phone loaded scrolled to the start, so the last tab
+// or two (routinely "Career Value") sat clipped at the visible edge,
+// reading as truncated text ("Career Value" -> "C") rather than "swipe for
+// more". Same fix as the public marketing nav's hamburger (see
+// bindPublicNavToggle): a toggle button opens the tab list as a full-width
+// vertical dropdown instead, so every tab's full label is always reachable
+// without discovering a hidden scroll gesture first. This is a SEPARATE
+// toggle from the per-tab chevron dropdowns bindWorkspaceNavDropdowns()
+// manages just above - those already work correctly at this width (they've
+// portalled to <body> since WORKSPACE_DROPDOWN_PORTAL_BREAKPOINT=1180), so
+// this only needs to handle showing/hiding the tab list itself and, on
+// close, sweeping up any of those portalled dropdowns left open under it.
+let currentWorkspaceTabsClose = null;
+let workspaceTabsToggleDocListenersBound = false;
+function bindWorkspaceNavToggle() {
+  const toggle = qs("[data-workspace-nav-toggle]");
+  const tabs = qs(".cg-workspace-tabs");
+  if (!toggle || !tabs) return;
+  const close = () => {
+    toggle.setAttribute("aria-expanded", "false");
+    tabs.removeAttribute("data-open");
+    qsa(".cg-nav-item-wrap.is-open").forEach(wrap => wrap.classList.remove("is-open", "hover-open"));
+    qsa(".cg-nav-dropdown-toggle[aria-expanded='true']").forEach(t => t.setAttribute("aria-expanded", "false"));
+    qsa('.cg-nav-dropdown[data-portalled="true"]').forEach(portalCloseWorkspaceDropdown);
+  };
+  const open = () => {
+    toggle.setAttribute("aria-expanded", "true");
+    tabs.dataset.open = "true";
+  };
+  toggle.addEventListener("click", event => {
+    event.stopPropagation();
+    tabs.dataset.open === "true" ? close() : open();
+  });
+  // Closing on a top-level tab tap (rather than waiting for the ensuing
+  // navigation) avoids the dropdown visibly hanging open for a frame on
+  // slower loads - same reasoning as the public nav toggle. Section links
+  // inside a chevron's dropdown aren't reachable here once portalled (they
+  // move to <body>, outside this delegated listener) - that's fine, a
+  // click there still bubbles to the document-level close below since
+  // nothing along that path stops it.
+  tabs.addEventListener("click", event => {
+    event.stopPropagation();
+    if (event.target.closest("a[data-nav]")) close();
+  });
+  currentWorkspaceTabsClose = close;
+  if (!workspaceTabsToggleDocListenersBound) {
+    workspaceTabsToggleDocListenersBound = true;
+    document.addEventListener("click", () => currentWorkspaceTabsClose?.());
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") currentWorkspaceTabsClose?.();
     });
   }
 }

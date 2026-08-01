@@ -470,6 +470,20 @@ body:is([data-page="companies"], [data-page="universities"], [data-page="discove
   background: linear-gradient(135deg, #004a41 0%, #0b6d65 100%) !important;
 }
 
+@media (max-width: 480px) {
+  /* .cg-directory-footer-count (the "XX% employed"/"Global alumni network"
+     stat text sharing this same footer row) already has white-space:nowrap
+     - this button never got the same treatment, so on narrow cards its
+     "Ask Vera" label got squeezed and wrapped into "Ask" / "Vera" on two
+     lines, making the pill taller and inconsistent card-to-card (confirmed
+     on ~12 of 14 university cards in an emulator at 375px; companies.html's
+     shorter footer text doesn't create the same squeeze). */
+  body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card footer a.cg-directory-ask-vera {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+}
+
 body:is([data-page="companies"], [data-page="universities"], [data-page="discover"]) .cg-directory-card footer a.cg-directory-ask-vera .cg-vera-mark {
   width: 14px !important;
   height: 14px !important;

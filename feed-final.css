@@ -714,6 +714,19 @@ html body[data-page="posts"]:not(#_) .cg-feed-grow-card .btn svg {
     grid-template-columns: 40px 1fr !important;
   }
 
+  /* The composer has 4 visible grid items (avatar, text input, "Media"
+     button, "Post" button) but this breakpoint only defines 2 column
+     tracks, so the implicit grid auto-wrapped the buttons into a second
+     row using the SAME 40px/1fr tracks meant for the avatar/input row -
+     "Media" got squeezed into the 40px avatar column and clipped to
+     "Medi" (confirmed in an emulator at both 375px and 768px). Spanning
+     both buttons across the full width puts each on its own full-width
+     row instead of fighting over a 40px-wide track. */
+  html body[data-page="posts"]:not(#_) .cg-feed-composer [data-media-post],
+  html body[data-page="posts"]:not(#_) .cg-feed-composer button[type="submit"] {
+    grid-column: 1 / -1 !important;
+  }
+
   html body[data-page="posts"]:not(#_) .cg-feed-composer .btn {
     width: 100% !important;
   }

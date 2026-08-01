@@ -12746,7 +12746,17 @@ body[data-page="login"] .login-create-account {
   }
 
   body[data-page="login"] .login-story-card {
-    min-height: 420px;
+    /* min-height was originally sized to visually match the form column
+       it sits beside on desktop's 2-column grid - but .login-redesign just
+       collapsed to grid-template-columns:1fr a few lines up, so there's no
+       sibling column left to match. With space-between still active, that
+       leftover fixed floor just stretched a wide, short-wrapping card and
+       left a large empty band between the intro copy and the "Vera - AI
+       Coach" note (confirmed in an emulator at 768px - not visible at
+       375px, where the narrower single-column width wraps the heading
+       onto enough lines to fill the space on its own). auto lets the card
+       size to its actual content instead. */
+    min-height: auto;
   }
 }
 
@@ -14048,6 +14058,16 @@ body:has([data-employer-app]) { margin: 0; }
 .emp-flow-bottleneck p { margin: 4px 0 12px; font-family: var(--emp-sans); font-size: 13px; color: var(--emp-muted); line-height: 1.5; }
 @media (max-width: 1023px) {
   .emp-dash-pipeline-row { grid-template-columns: repeat(6, 168px); overflow-x: auto; padding-bottom: 4px; }
+
+  /* .emp-dash-health-rings had no mobile/tablet override at all: a fixed
+     repeat(6, 1fr) grid squeezed each of the 6 score rings (Candidate
+     Experience/Hiring Speed/Compensation/Career Growth/Transparency/...)
+     down to ~56-58px columns in a ~269px-wide card on phone width, and the
+     6th ring rendered mostly cut off past the card's own edge (confirmed
+     in an emulator - "Transparency" showed as a truncated "Trans" label
+     with no visible ring). 3-per-row wraps the same rings into two legible
+     rows instead. */
+  .emp-dash-health-rings { grid-template-columns: repeat(3, 1fr); row-gap: 20px; }
 }
 
 /* ---------- Roles needing attention (dense table) ---------- */
@@ -16104,6 +16124,15 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
 .emp-health-predicted-banner {
   display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 18px;
   border-radius: 14px; background: rgba(111, 95, 196, 0.07); border: 1px solid rgba(111, 95, 196, 0.18);
+}
+@media (max-width: 640px) {
+  /* No wrap at all on the flex row above meant the "+N points" delta pill
+     (white-space:nowrap, see .emp-health-predicted-delta) got pushed past
+     the card's right edge and off the viewport on phone width - confirmed
+     in an emulator at 375px, the pill was ~50px off-screen. Wrapping it
+     onto its own line is the minimal fix; the pill itself stays intact
+     (still nowrap) since "+6 points" reads fine on one line. */
+  .emp-health-predicted-banner { flex-wrap: wrap; }
 }
 .emp-health-predicted-banner strong { display: block; margin-top: 2px; font-size: 26px; }
 .emp-health-predicted-delta {
