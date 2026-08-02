@@ -856,6 +856,24 @@ html body[data-page="posts"]:not(#_) .cg-feed-left-jump a svg:last-child {
   opacity: 0.45 !important;
 }
 
+/* MOBILE-SCOPED FIX: enterprise.css has a <=860px rule (also :not(#_):not(#_)
+   -boosted) that turns .cg-feed-left's own nav links (For you/Network/Saved/
+   Liked, etc.) into auto-sized pill chips via ".cg-feed-left a
+   {grid-template-columns: 18px auto auto}". These three promo links are
+   also <a> descendants of .cg-feed-left (nested inside .cg-feed-left-note),
+   so that generic selector unintentionally caught them too, overriding this
+   file's own fixed 16px/1fr/14px column layout above. With the arrow column
+   no longer fixed-width, it absorbed whatever space the auto-sized label
+   column didn't use - so each row's arrow landed wherever that row's own
+   label text happened to end, instead of sharing one right edge. Restoring
+   the original column layout at the same breakpoint (feed-final.css loads
+   after enterprise.css, so equal specificity here wins the tie). */
+@media (max-width: 860px) {
+  html body[data-page="posts"]:not(#_):not(#_) .cg-feed-left-jump a {
+    grid-template-columns: 16px 1fr 14px !important;
+  }
+}
+
 /* ---- Library category chips ---- */
 html body[data-page="posts"]:not(#_) .cg-library-filters {
   display: flex !important;
