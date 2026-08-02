@@ -19115,8 +19115,11 @@ function renderPosts() {
     const threadPanel = `
           <header>
             <button type="button" class="cg-thread-back" data-thread-back aria-label="Back to inbox">${icon("arrow-left")}</button>
-            <div><h2>${activeThread.name}</h2><p>${activeThread.role}  - Usually replies within 2h</p></div>
-            <span>Warm - 3 replies this week</span>
+            <div class="cg-thread-head-info"><h2>${activeThread.name}</h2><p>${activeThread.role}  - Usually replies within 2h</p></div>
+            <div class="cg-thread-head-actions">
+              <span>Warm - 3 replies this week</span>
+              <button type="button" class="cg-thread-menu-btn" data-thread-menu aria-haspopup="menu" aria-expanded="false" aria-label="Conversation options" title="More options">${icon("more-horizontal")}</button>
+            </div>
           </header>
           <section class="cg-chat-thread" aria-label="Conversation with ${activeThread.name}">
             ${activeThread.messages.length ? activeThread.messages.map(msg => `<p class="${msg.dir}${msg.delivered ? " delivered" : ""}">${msg.text}${msg.delivered ? `<small>${icon("check-check")} Delivered</small>` : ""}</p>`).join("") : `<p class="cg-inbox-empty">Say hello to start the conversation with ${activeThread.name}.</p>`}
@@ -19178,6 +19181,25 @@ function renderPosts() {
     qs("[data-thread-back]", root)?.addEventListener("click", () => {
       postsMobileView = "list";
       renderPosts();
+    });
+    qs("[data-thread-menu]", root)?.addEventListener("click", event => {
+      event.stopPropagation();
+      const triggerEl = event.currentTarget;
+      const menuHtml = `
+        <div class="emp-cand-menu-overlay">
+          <button type="button" role="menuitem" data-thread-menu-action="mute">${icon("bell-off")} Mute notifications</button>
+          <button type="button" role="menuitem" data-thread-menu-action="report">${icon("flag")} Report conversation</button>
+        </div>
+      `;
+      const overlayEl = openFloatingOverlay(triggerEl, menuHtml, { width: 200, align: "right" });
+      if (!overlayEl) return;
+      qsa("[data-thread-menu-action]", overlayEl).forEach(item => item.addEventListener("click", actionEvent => {
+        actionEvent.stopPropagation();
+        const action = item.dataset.threadMenuAction;
+        closeFloatingOverlay();
+        if (action === "mute") showToast(`Notifications muted for ${activeThread.name}.`);
+        else if (action === "report") showToast("Conversation reported - our team will review it shortly.", "info");
+      }));
     });
     const humanComposer = qs("[data-human-thread-composer]", root);
     const humanInput = qs("[data-human-thread-input]", root);
