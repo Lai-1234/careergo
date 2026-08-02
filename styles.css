@@ -17589,6 +17589,17 @@ textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.5; }
   .emp-stage-row { grid-template-columns: repeat(2, 1fr); }
   .emp-wizard-body { grid-template-columns: 1fr; }
   .emp-table { min-width: 640px; }
+  /* .table-wrap (overflow-x:auto, scrollbar hidden) is a deliberate
+     horizontal-scroll pattern - same reasoning as .emp-feed-filters'
+     mobile mask-image fix above. Without it, the Candidate Pipeline List
+     view (the default mobile view - see viewMode in
+     renderEmployerTalentPipeline) reads as "Role fit/Source/Owner/Next
+     action got cut off" rather than "swipe to see more columns", since
+     nothing hints there's more table to the right. */
+  .table-wrap {
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 94%, transparent 100%);
+    mask-image: linear-gradient(90deg, #000 0%, #000 94%, transparent 100%);
+  }
   .emp-talent-filters { grid-template-columns: 1fr; }
   .emp-kanban { grid-template-columns: repeat(7, 200px); }
   .emp-drawer { width: calc(100vw - 24px); max-height: calc(100vh - 24px); }
