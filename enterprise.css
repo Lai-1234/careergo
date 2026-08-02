@@ -889,6 +889,13 @@ body[data-page="home"] .site-footer span {
   }
 
   .home-search {
+    /* Base .home-search is display:flex (desktop: icon, input, button all
+       in one row) - nothing below 760px ever switched it to grid, so this
+       grid-template-columns was silently inert on a flex container. The
+       input (flex:1 1 auto, min-width:0) then absorbed all the negative
+       space left by the button's own mobile width:100% rule below,
+       collapsing to a few px wide with no room to show its placeholder. */
+    display: grid;
     grid-template-columns: auto 1fr;
     padding: 16px;
   }
@@ -916,6 +923,38 @@ body[data-page="home"] .site-footer span {
 
   .home-preview-card.tracker {
     grid-column: auto;
+  }
+
+  /* Desktop's single row (avatar | text | badge, 3rd column auto-width)
+     only works because the text column has room to stay on one line. On a
+     narrow card, minmax(0, 1fr) alone still isn't enough - a single
+     unbreakable word in the role text (e.g. "Product") can be wider than
+     the column has left once the badge also claims space on the same row,
+     and that word then overflows straight into the badge's column instead
+     of wrapping. Dropping the badge to its own row below the text (avatar
+     spanning both rows, same grid-row-span pattern used for the "How Hiring
+     Works" timeline) removes the competition for width entirely, so the
+     text column gets the card's full remaining width regardless of how
+     many lines it wraps to. */
+  .home-application {
+    grid-template-columns: 38px 1fr;
+    grid-template-rows: auto auto;
+    row-gap: 4px;
+  }
+
+  .home-application span {
+    grid-row: 1 / -1;
+  }
+
+  .home-application strong {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .home-application em {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
   }
 
   .home-browser,
