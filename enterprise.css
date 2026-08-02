@@ -19009,6 +19009,19 @@ html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"]
     bottom: 22px !important;
   }
 
+  /* The widget above is position:fixed (right:18/bottom:22, 56px trigger),
+     so it occupies the same screen-space corner regardless of scroll
+     position - the page's true bottom edge needs reserved clearance or the
+     last real content there is permanently stuck under it, unreachable no
+     matter how far the user scrolls. Same reasoning/pattern as
+     .emp-app-main's padding-bottom for the tour tooltip on the employer
+     side. Targets <main> rather than .os-main - not every page that
+     renders this widget (e.g. discover.html, role.html) actually has an
+     .os-main wrapper, but every one of them renders inside a <main>. */
+  html body:has(.cg-vera-widget) main {
+    padding-bottom: 100px !important;
+  }
+
   html body:is([data-page="dashboard"], [data-page="discover"], [data-page="grow"], [data-page="market"], [data-page="autopilot"], [data-page="posts"], [data-page="role"], [data-page="notifications"], [data-page="employers"]) .cg-vera-trigger {
     width: 56px !important;
     height: 56px !important;
