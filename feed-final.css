@@ -22,6 +22,22 @@ html body[data-page="posts"]:not(#_) .topbar {
   box-shadow: 0 2px 6px rgba(20, 32, 26, 0.08) !important;
 }
 
+/* MOBILE-SCOPED FIX: the fixed height:64px above (:not(#_) gives it an
+   ID-level specificity boost, so it wins at every width, including over
+   app.js's generic "grow to fit the search row" mobile rule for
+   .topbar:has(.cg-vera-search), which has no ID in its own specificity and
+   so can never outrank this regardless of media query). Below 760px the
+   shared workspace topbar becomes two rows (icon row, then the Ask Vera
+   search bar) and needs to grow with them - same selector/specificity as
+   the desktop rule above so it wins the tie only inside this media query,
+   leaving the fixed 64px desktop bar untouched. */
+@media (max-width: 760px) {
+  html body[data-page="posts"]:not(#_) .topbar {
+    height: auto !important;
+    min-height: 74px !important;
+  }
+}
+
 html body[data-page="posts"]:not(#_):has(.cg-feed-shell) .container.os-layout,
 html body[data-page="posts"]:not(#_):has(.cg-feed-shell) main > .container {
   width: min(100% - 48px, 1200px) !important;
