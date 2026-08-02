@@ -13933,6 +13933,36 @@ body:has([data-employer-app]) { margin: 0; }
 .emp-page-toolbar__group--end { margin-left: auto; }
 .emp-page-toolbar__group:empty { display: none; }
 .emp-page-toolbar .emp-subtabs { margin-bottom: 0; }
+
+/* .emp-page-toolbar__group--end's margin-left:auto pushes it to the row's
+   right edge on desktop, which reads fine there because it shares the row
+   with the left group (subtabs/heading text) filling the space beside it.
+   On mobile the left group is often empty (Company Profile passes "" for
+   it - :empty above hides it) or wraps onto its own line above (Roles'
+   status pills), so the end group ends up alone on a line with nothing to
+   its left, and margin-left:auto shoves it into an isolated island at the
+   right edge with a wide dead gap beside it. Dropping the auto-margin and
+   making the group (and its buttons) full-width removes that gap instead
+   of just narrowing it, and reads as a deliberate mobile action bar rather
+   than a floating button - same pattern as the primary CTA on
+   card/composer footers elsewhere in this file. Reordering .btn-primary
+   first surfaces the primary action (Create role / Save) above the
+   secondary one (Ask Vera / Cancel) instead of leaving it wherever it
+   happens to fall in DOM order. */
+@media (max-width: 900px) {
+  .emp-page-toolbar__group--end {
+    width: 100%;
+    margin-left: 0;
+    flex-direction: column;
+  }
+  .emp-page-toolbar__group--end .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .emp-page-toolbar__group--end .btn-primary {
+    order: -1;
+  }
+}
 .emp-wizard-header-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; margin-top: 8px; flex-wrap: wrap; }
 .emp-wizard-cancel-link {
   border: 0; background: none; padding: 0; cursor: pointer;

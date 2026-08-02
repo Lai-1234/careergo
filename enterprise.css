@@ -15945,14 +15945,19 @@ html body[data-page="posts"] .cg-message-thread>header {
 html body[data-page="posts"] .cg-message-thread h2 {
   margin: 0 !important;
   color: #123c34 !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 500 !important;
 }
 
+/* Matches the Employer conversation view's subline (.emp-dm-subline) exact
+   rendered size - that component has no font-size rule of its own, so it
+   renders at the browser default (16px). Set explicitly here rather than
+   left implicit, so it can't silently drift if this page's ambient default
+   ever changes. */
 html body[data-page="posts"] .cg-message-thread header p {
   margin: 2px 0 0 !important;
   color: #7c8981 !important;
-  font-size: 12px !important;
+  font-size: 16px !important;
   font-weight: 400 !important;
 }
 
@@ -15963,6 +15968,37 @@ html body[data-page="posts"] .cg-message-thread header span {
   background: #dcefeb !important;
   font-size: 11px !important;
   font-weight: 500 !important;
+}
+
+/* Groups the status badge + new "..." menu button so they move as one unit
+   (matches the Employer thread header's .emp-dm-thread-head-actions). */
+html body[data-page="posts"] .cg-message-thread .cg-thread-head-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-shrink: 0 !important;
+}
+
+html body[data-page="posts"] .cg-message-thread .cg-thread-menu-btn {
+  flex-shrink: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: rgba(18, 59, 52, 0.06) !important;
+  color: #123c34 !important;
+  cursor: pointer !important;
+}
+
+html body[data-page="posts"] .cg-message-thread .cg-thread-menu-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+html body[data-page="posts"] .cg-message-thread .cg-thread-menu-btn:hover {
+  background: rgba(18, 59, 52, 0.12) !important;
 }
 
 html body[data-page="posts"] .cg-chat-thread {
@@ -16193,9 +16229,31 @@ html body[data-page="posts"] .cg-message-composer input {
     padding: 20px 20px 150px !important;
   }
 
+  /* Below this breakpoint the header used to stay a single unwrapped flex
+     row (back button + name/subline + status badge), same as desktop - the
+     name/subline column had to squeeze into whatever width was left over
+     once the fixed-width back button and nowrap badge took theirs, so
+     "Coach Vera"-sized names wrapped across 2+ lines in a narrow column
+     with a lot of dead space around the badge. Matches the Employer
+     conversation view's own mobile treatment (.emp-dm-thread-head at
+     <=1023px): wrap the row, let the name/subline block claim the
+     remaining width on line 1 next to the back button, and drop the
+     badge+menu-button group to its own full-width line 2 below. */
   html body[data-page="posts"] .cg-message-thread > header {
+    flex-wrap: wrap !important;
     align-items: center !important;
     gap: 10px !important;
+  }
+
+  html body[data-page="posts"] .cg-message-thread .cg-thread-head-info {
+    order: 2 !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  html body[data-page="posts"] .cg-message-thread .cg-thread-head-actions {
+    order: 3 !important;
+    flex-basis: 100% !important;
   }
 
   /* Was a fixed 520px box with overflow:hidden while its content (header +
@@ -18748,6 +18806,37 @@ html body .cg-vera-chat-panel .cg-vera-history-item small {
     margin-left: auto;
     background: rgba(255, 255, 255, 0.12);
     color: #fffaf2;
+  }
+
+  /* .cg-vera-chat-head is a single flex row (history-toggle, title+subtitle
+     div, badge, close), sized by content on desktop. At mobile widths the
+     nowrap badge ("Personalized to your profile") and the close button both
+     hold their full content width via flex-shrink:0, so the title/subtitle
+     div - the only shrinkable item - gets squeezed into whatever narrow
+     column is left, wrapping "Coach Vera" and its subtitle across 2-4 lines
+     instead of using the row's actual width. Wrapping the row and giving the
+     title div flex-basis:100% forces it onto its own full-width line below
+     the icon row, so it wraps naturally instead of being squeezed; ordering
+     badge/close after history-toggle (which already has order:-1 above) and
+     pushing close to the far right via margin-left:auto keeps the icon row
+     itself compact instead of space-between spreading a gap across it. */
+  .cg-vera-chat-head {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .cg-vera-chat-head > div {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .cg-vera-chat-badge {
+    order: 1;
+  }
+
+  .cg-vera-chat-close {
+    order: 2;
+    margin-left: auto;
   }
 }
 
